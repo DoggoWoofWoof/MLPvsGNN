@@ -2,7 +2,7 @@
 
 Declared in `docs/FSV_FAST_VERSIONS.md` (amendment A1). Device NVIDIA RTX 4500 Ada Generation, torch 2.8.0+cu128.
 
-**Fast version:** none yet. **Next:** L2 full_run.
+**Fast version:** L2. **Next:** nothing.
 
 ## L3: without topo_STRUCT, depth_STRUCT, SEED, DISTS, WALK, WALKF
 
@@ -54,5 +54,29 @@ counts: {"GAIN": 1, "LOSS": 0, "WITHIN": 7}
 | WQ-hotpotqa | webqsp | 0.6658, 0.6512, 0.6523 | 0.6840 | +0.0182 | 0.0281 | WITHIN (beside) |
 | WQ-musique | musique-3hop | 0.4329, 0.4272, 0.4404 | 0.4557 | +0.0228 | 0.0133 | GAIN (beside) |
 | WQ-musique | musique-4hop | 0.3130, 0.3167, 0.3179 | 0.3210 | +0.0080 | 0.0087 | WITHIN (beside) |
+
+
+### Full run: ADMITTED
+
+counts: {"GAIN": 1, "LOSS": 0, "UNCONFIRMED_GAIN": 0, "WITHIN": 7}
+
+| split | read | d0 | d1 | d2 | floor | call |
+|---|---|---:|---:|---:|---:|---|
+| WQ-musique | hotpotqa | -0.0014 | +0.0003 | +0.0044 | 0.0075 | WITHIN |
+| WQ-musique | 2wiki | +0.0042 | +0.0031 | +0.0060 | 0.0075 | WITHIN |
+| WQ-musique | musique | +0.0162 | +0.0292 | +0.0228 | 0.0156 | GAIN |
+| WQ-hotpotqa | musique | -0.0019 | -0.0096 | -0.0055 | 0.0081 | WITHIN |
+| WQ-hotpotqa | 2wiki | +0.0028 | +0.0048 | +0.0059 | 0.0075 | WITHIN |
+| WQ-hotpotqa | hotpotqa | +0.0018 | +0.0072 | +0.0141 | 0.0180 | WITHIN |
+| WQ-hotpotqa | musique-3hop | +0.0053 | -0.0013 | +0.0018 | 0.0164 | WITHIN |
+| WQ-hotpotqa | musique-4hop | -0.0062 | -0.0056 | -0.0148 | 0.0129 | WITHIN |
+| WQ-musique | metaqa | +0.0296 | +0.0408 | +0.0704 | 0.0329 | WITHIN (beside) |
+| WQ-musique | squad | -0.0012 | -0.0034 | -0.0034 | 0.0075 | WITHIN (beside) |
+| WQ-musique | webqsp | +0.0076 | +0.0089 | +0.0103 | 0.0075 | GAIN (beside) |
+| WQ-hotpotqa | metaqa | +0.0224 | +0.0262 | +0.0268 | 0.0612 | WITHIN (beside) |
+| WQ-hotpotqa | squad | -0.0013 | -0.0034 | -0.0012 | 0.0075 | WITHIN (beside) |
+| WQ-hotpotqa | webqsp | +0.0182 | +0.0154 | +0.0118 | 0.0331 | WITHIN (beside) |
+| WQ-musique | musique-3hop | +0.0228 | +0.0289 | +0.0202 | 0.0106 | GAIN (beside) |
+| WQ-musique | musique-4hop | +0.0080 | +0.0111 | +0.0241 | 0.0229 | WITHIN (beside) |
 
 

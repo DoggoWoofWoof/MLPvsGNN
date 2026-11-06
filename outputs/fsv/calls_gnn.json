@@ -554,15 +554,202 @@
      "LOSS": 0,
      "WITHIN": 7
     }
+   },
+   "full_run": {
+    "verdict": "ADMITTED",
+    "problems": [],
+    "reads": [
+     {
+      "split": "WQ-musique",
+      "read": "hotpotqa",
+      "delta": {
+       "0": -0.0014,
+       "1": 0.0003,
+       "2": 0.0044
+      },
+      "floor": 0.0075,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-musique",
+      "read": "2wiki",
+      "delta": {
+       "0": 0.0042,
+       "1": 0.0031,
+       "2": 0.006
+      },
+      "floor": 0.0075,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-musique",
+      "read": "musique",
+      "delta": {
+       "0": 0.0162,
+       "1": 0.0292,
+       "2": 0.0228
+      },
+      "floor": 0.01562,
+      "call": "GAIN"
+     },
+     {
+      "split": "WQ-hotpotqa",
+      "read": "musique",
+      "delta": {
+       "0": -0.0019,
+       "1": -0.0096,
+       "2": -0.0055
+      },
+      "floor": 0.008116,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-hotpotqa",
+      "read": "2wiki",
+      "delta": {
+       "0": 0.0028,
+       "1": 0.0048,
+       "2": 0.0059
+      },
+      "floor": 0.0075,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-hotpotqa",
+      "read": "hotpotqa",
+      "delta": {
+       "0": 0.0018,
+       "1": 0.0072,
+       "2": 0.0141
+      },
+      "floor": 0.017985,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-hotpotqa",
+      "read": "musique-3hop",
+      "delta": {
+       "0": 0.0053,
+       "1": -0.0013,
+       "2": 0.0018
+      },
+      "floor": 0.01644,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-hotpotqa",
+      "read": "musique-4hop",
+      "delta": {
+       "0": -0.0062,
+       "1": -0.0056,
+       "2": -0.0148
+      },
+      "floor": 0.012874,
+      "call": "WITHIN"
+     }
+    ],
+    "beside": [
+     {
+      "split": "WQ-musique",
+      "read": "metaqa",
+      "delta": {
+       "0": 0.0296,
+       "1": 0.0408,
+       "2": 0.0704
+      },
+      "floor": 0.032856,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-musique",
+      "read": "squad",
+      "delta": {
+       "0": -0.0012,
+       "1": -0.0034,
+       "2": -0.0034
+      },
+      "floor": 0.0075,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-musique",
+      "read": "webqsp",
+      "delta": {
+       "0": 0.0076,
+       "1": 0.0089,
+       "2": 0.0103
+      },
+      "floor": 0.0075,
+      "call": "GAIN"
+     },
+     {
+      "split": "WQ-hotpotqa",
+      "read": "metaqa",
+      "delta": {
+       "0": 0.0224,
+       "1": 0.0262,
+       "2": 0.0268
+      },
+      "floor": 0.061151,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-hotpotqa",
+      "read": "squad",
+      "delta": {
+       "0": -0.0013,
+       "1": -0.0034,
+       "2": -0.0012
+      },
+      "floor": 0.0075,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-hotpotqa",
+      "read": "webqsp",
+      "delta": {
+       "0": 0.0182,
+       "1": 0.0154,
+       "2": 0.0118
+      },
+      "floor": 0.033078,
+      "call": "WITHIN"
+     },
+     {
+      "split": "WQ-musique",
+      "read": "musique-3hop",
+      "delta": {
+       "0": 0.0228,
+       "1": 0.0289,
+       "2": 0.0202
+      },
+      "floor": 0.010563,
+      "call": "GAIN"
+     },
+     {
+      "split": "WQ-musique",
+      "read": "musique-4hop",
+      "delta": {
+       "0": 0.008,
+       "1": 0.0111,
+       "2": 0.0241
+      },
+      "floor": 0.022906,
+      "call": "WITHIN"
+     }
+    ],
+    "counts": {
+     "GAIN": 1,
+     "LOSS": 0,
+     "UNCONFIRMED_GAIN": 0,
+     "WITHIN": 7
+    }
    }
   }
  },
  "problems": [],
- "fast_version": null,
- "next": [
-  "L2",
-  "full_run"
- ],
+ "fast_version": "L2",
+ "next": null,
  "steps": [
   [
    "L3",
@@ -573,8 +760,13 @@
    "L2",
    "screen",
    "PASS"
+  ],
+  [
+   "L2",
+   "full_run",
+   "ADMITTED"
   ]
  ],
  "zfsvg_sha256": "492609b28b66fa0b12b1f0a1cd16eaa2c62da672fc13516466c7c6aece597f02",
- "utc": "2026-11-05T04:33:23Z"
+ "utc": "2026-11-05T13:13:02Z"
 }
