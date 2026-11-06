@@ -29,6 +29,8 @@ stage, **ABL-U**, declared after the arms below are queued (section 8).
 A family that is out is an empty store (same node count, no edge) in every process that opens it. B, the seeds, the first
 stage, the rule, its budgets and cuts are the record's. R is always in or out as a whole (slot and NER store together
 on passage datasets). Arm names in `zabl.py` are the three stores G (slot), O (ner), K (knn); the table maps them.
+The arms K and 0 are built on the passage datasets under those names and on the KB datasets (S-out, ablation only) as
+`Kb` and `0b`, so that each arm's gate, reads and folders cover one set of datasets.
 
 | arm (zabl) | passage datasets (R = rule graph + ner) | KB datasets (S slot, R = ner) |
 | --- | --- | --- |
@@ -70,7 +72,7 @@ settings; those numbers stay B1H's.
    replaced by check 1; the replaced checks are named in the arm's gate record.
 4. Rows per carve and arm are filed beside (costs only).
 5. Before any arm's number is used, GOK re-read through ABL's own read path on webqsp/s1eval, seed 0, equals ML1's read
-   to 1e-4.
+   to 1e-4 (`zabl.py items --arm GOK`: fork, two reads, `check`, for zg6r and zrckp; the check files its result).
 
 ## 5. Calls (declared before any number)
 

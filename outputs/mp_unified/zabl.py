@@ -53,8 +53,8 @@ OUT = ROOT / "outputs" / "abl"
 CARVE = "s1eval"
 # the arm = which of G (graph slot), O (old ner store), K (knn) are in
 FLAGS = {"GOK": (1, 1, 1), "GK": (1, 0, 1), "G": (1, 0, 0), "OK": (0, 1, 1), "GO": (1, 1, 0), "K": (0, 0, 1),
-         "O": (0, 1, 0), "0": (0, 0, 0)}
-BUILD_ORDER = ("GO", "GK", "G", "K", "0", "OK", "O")          # the record, GOK, is ML1's reads: nothing is built
+         "O": (0, 1, 0), "0": (0, 0, 0), "Kb": (0, 0, 1), "0b": (0, 0, 0)}   # Kb, 0b: K and 0 built on the KB datasets
+BUILD_ORDER = ("GO", "GK", "G", "K", "0", "Kb", "0b", "OK", "O")          # the record, GOK, is ML1's reads: nothing is built
 FAMILY = ("structural", "ner", "knn")
 DATASETS = ("webqsp", "musique", "hotpotqa", "metaqa", "squad", "2wiki")        # smallest development carve first
 PASSAGE = ("musique", "squad", "hotpotqa", "2wiki")
@@ -62,7 +62,7 @@ KB = ("webqsp", "metaqa")
 # where an arm is built (docs/ABL_LINK_FAMILY_ABLATION.md section 2): R (slot + ner) moves as one on the passage
 # datasets; on the KB datasets S is the slot and R the ner store; removing S there is for ablation only (sout)
 APPLIES = {"GO": DATASETS, "GK": KB, "G": KB, "K": PASSAGE, "0": PASSAGE}
-APPLIES_SOUT = {"K": KB, "0": KB, "OK": KB, "O": KB}
+APPLIES_SOUT = {"Kb": KB, "0b": KB, "OK": KB, "O": KB}
 SHARDS = {"webqsp": 2, "musique": 3, "hotpotqa": 3, "metaqa": 6, "squad": 3, "2wiki": 5}   # pools shards per carve
 ARMS_ML = B.ARMS                                               # ("zg6r", "zrckp")
 SEEDS, SPLITS, SUF, FITS, TRAINS = B.SEEDS, B.SPLITS, B.SUF, B.FITS, B.TRAINS
@@ -465,6 +465,25 @@ def prune(arm):
     return 0
 
 
+def check_gok(fit, ds="webqsp"):
+    """ABL check 5: the record re-read through ABL's own read path (arm GOK, forked fit, the record's roots and gate)
+    equals ML1's filed read on the same carve, per question, to 1e-4 (ids, gold totals and every measure)."""
+    import p3c_claim1 as P3
+    mine = P3.load_read(ROOT, f"outputs/abl/fits/GOK/{fit}", ds)
+    ml1 = P3.load_read(ROOT, f"outputs/screen/fits/{fit}", ds)
+    ok = (np.array_equal(mine["ids"], ml1["ids"]) and np.array_equal(mine["gt"], ml1["gt"])
+          and mine["m"].shape == ml1["m"].shape)
+    worst = float(np.max(np.abs(mine["m"] - ml1["m"]))) if ok else None
+    ok = bool(ok and worst <= 1e-4)
+    write_json(arm_dir("GOK") / f"abl_check_{fit}__{ds}.json",
+               {"declared_in": DECLARED, "stage": STAGE, "check": "GOK re-read equals ML1's read (section 4.5)", "fit": fit,
+                "dataset": ds, "carve": CARVE, "abl_read_sha256": mine["sha256"], "ml1_read_sha256": ml1["sha256"],
+                "questions": int(mine["ids"].size), "max_abs_difference": worst, "equal_to_1e-4": ok,
+                "zabl_sha256": sha_src(__file__), "utc": utc()})
+    log(f"check GOK {fit}/{ds}: max |difference| {worst}; {'EQUAL' if ok else 'NOT EQUAL'}")
+    return 0 if ok else 1
+
+
 # ── the report ────────────────────────────────────────────────────────────────
 
 def per_q(arm, fit, ds):
@@ -544,10 +563,29 @@ CODE = ["outputs/mp_unified/zabl.py", "outputs/mp_unified/zb1p.py", "outputs/mp_
 LANE_GB = {"webqsp": 7.0, "musique": 9.5, "hotpotqa": 9.5, "metaqa": 9.5, "squad": 7.0, "2wiki": 9.5}
 
 
+def gok_items():
+    """Check 5's rows: the record forked and re-read on webqsp/s1eval for seed 0 of both models, then compared to ML1's
+    filed read (each a few minutes; the GPU share is the arms' reads')."""
+    py = "python outputs/host_ops/pylib_run.py outputs/mp_unified/zabl.py"
+    ins = ";".join(CODE)
+    fits = ("scr-ml1-zg6r-s0", "scr-ml1-zrckp-s0")
+    rows = [f"line|x||abl-GOK-fork|1|2|{ins}|python outputs/mp_unified/zabl.py fork --arm GOK"]
+    names = []
+    for f in fits:
+        n = f"abl-GOK-read-{f.replace('scr-ml1-', '')}"
+        names.append(n)
+        rows.append(f"line|x|abl-GOK-fork|{n}|1.1|6|{ins}|{py} read --arm GOK --name {f} --datasets webqsp --host|gpu:0.2")
+    for f, n in zip(fits, names):
+        rows.append(f"line|x|{n}|abl-GOK-check-{f.replace('scr-ml1-', '')}|1|2|{ins}|python outputs/mp_unified/zabl.py check --name {f}")
+    return rows
+
+
 def items(arm, lanes=6, sout=False):
     """Feeder rows (outputs/host_ops/hostfeed_items.txt format) for one arm: one chain item per carve, the fork, the
     gate and the twelve reads on the GPU. The reads wait on the gate; the gate on every chain; prune on the reads.
     With sout the arm's S-out carves (KB datasets, ablation only) under names ending -sout."""
+    if arm == "GOK":
+        return gok_items()
     table = APPLIES_SOUT if sout else APPLIES
     if arm not in table:
         raise SystemExit(f"ABL: arm {arm} is not built {'as S-out ' if sout else ''}anywhere")
@@ -577,13 +615,14 @@ def items(arm, lanes=6, sout=False):
 def selftest():
     assert dropped("GOK") == () and dropped("GK") == ("ner",) and dropped("G") == ("ner", "knn")
     assert dropped("OK") == ("structural",) and dropped("GO") == ("knn",) and dropped("0") == FAMILY
-    assert set(BUILD_ORDER) | {"GOK"} == set(FLAGS) and len(set(BUILD_ORDER)) == 7
-    assert len({FLAGS[a] for a in FLAGS}) == 8, "every subset of {G, O, K} once"
+    assert set(BUILD_ORDER) | {"GOK"} == set(FLAGS) and len(set(BUILD_ORDER)) == 9
+    assert len({FLAGS[a] for a in FLAGS}) == 8, "every subset of {G, O, K} once (Kb and 0b repeat K and 0)"
+    assert FLAGS["Kb"] == FLAGS["K"] and FLAGS["0b"] == FLAGS["0"]
     assert len(set(DATASETS)) == 6 and set(PASSAGE) | set(KB) == set(DATASETS) and not set(PASSAGE) & set(KB)
     assert all(a in FLAGS and set(d) <= set(DATASETS) for a, d in {**APPLIES, **APPLIES_SOUT}.items())
     assert set(APPLIES) | set(APPLIES_SOUT) == set(BUILD_ORDER)
     # R moves as one on the passage datasets: no passage dataset is built with the slot and ner apart (arms GK, G, OK, O)
-    for a in ("GK", "G", "OK", "O"):
+    for a in ("GK", "G", "OK", "O", "Kb", "0b"):
         assert not set(APPLIES.get(a, ())) & set(PASSAGE) and not set(APPLIES_SOUT.get(a, ())) & set(PASSAGE), a
     assert in_domain_splits("musique") == ("WQ-hotpotqa",) and in_domain_splits("hotpotqa") == ("WQ-musique",)
     assert in_domain_splits("metaqa") == () and set(in_domain_splits("2wiki")) == set(SPLITS)
@@ -594,7 +633,9 @@ def selftest():
     rows = items("GO", 6)
     assert len(rows) == 6 + 1 + 1 + 12 + 1 and all(r.count("|") >= 7 for r in rows)
     assert sum("gpu:" in r for r in rows) == 12 and all(r.startswith("line|x|") for r in rows)
-    assert len(items("GK", 6)) == 2 + 1 + 1 + 12 + 1 and len(items("K", 6, sout=True)) == 2 + 1 + 1 + 12 + 1
+    g = items("GOK")
+    assert len(g) == 1 + 2 + 2 and sum("gpu:" in r for r in g) == 2 and all(r.startswith("line|x|") for r in g)
+    assert len(items("GK", 6)) == 2 + 1 + 1 + 12 + 1 and len(items("Kb", 6, sout=True)) == 2 + 1 + 1 + 12 + 1
     assert items("0", 6)[0].split("|")[3] == "abl-0-musique" and "-sout-" not in "".join(items("0", 6))
     # the paired comparison: identical cells are LEVEL with difference 0; a cell 0.1 lower in every question is BELOW
     ids = np.array([str(i) for i in range(200)])
@@ -637,7 +678,7 @@ def main(argv=None):
     if a.selftest or a.cmd == "selftest":
         return selftest()
     need = {"pools": ("arm", "dataset"), "chain": ("arm", "dataset"), "step": ("arm", "dataset"), "gate": ("arm",),
-            "fork": ("arm",), "read": ("arm", "name"), "prune": ("arm",), "items": ("arm",)}
+            "fork": ("arm",), "read": ("arm", "name"), "prune": ("arm",), "items": ("arm",), "check": ("name",)}
     for k in need.get(a.cmd, ()):
         if getattr(a, k) is None:
             raise SystemExit(f"{a.cmd}: --{k} is required")
@@ -656,6 +697,8 @@ def main(argv=None):
         return read(a.arm, a.name, ds_list)
     if a.cmd == "prune":
         return prune(a.arm)
+    if a.cmd == "check":
+        return check_gok(a.name, (ds_list or ("webqsp",))[0])
     if a.cmd == "report":
         return report()
     if a.cmd == "items":
