@@ -228,6 +228,14 @@ def too_early(a):
     return datetime.datetime.now(datetime.timezone.utc) < datetime.datetime.fromisoformat(a.not_before)
 
 
+def forms_ok(zl, n, runs, n_a7):
+    """True when every form ran over the n questions of the passes so far: A7's step in each of the n_a7 batched forwards (zl layers each), the
+    module's step in none, A4's and A6's forms for n questions (zfsvy.forms_ran), and the cut forms once per cold run (runs, the JIT question's
+    included). The smoke pass asks for its own count, not the record's."""
+    ok = bool(B.STATS_B["step_b"] == zl * n_a7 and B.STATS_B["step_orig"] == 0 and Y.forms_ran(n))
+    return ok and bool(K.STATS == {"compile_cut": runs, "walk_zero": runs, "walkf_zero": runs} and K.put_back_ok())
+
+
 def sha_all():
     return {"zfsvc": T.sha_src(C.__file__), "zfsvt": T.sha_src(T.__file__), "zfsvx": T.sha_src(X.__file__), "zfsvy": T.sha_src(Y.__file__),
             "zfsvy_b16": T.sha_src(B.__file__), "zfsvy_cut": T.sha_src(K.__file__), "zfsvy_m4": T.sha_src(__file__)}
@@ -270,10 +278,9 @@ def run(a):
         fits = {"mlp": S.boxes["mlp"]["fit"], "gnn": S.boxes["gnn"]["fit"], "cut": S.cut.fit}
         runs, n_a7, stops = 0, 0, []
 
-        def forms_ran():
-            """True when every form ran, in the passes so far (the cut forms once per cold run, A7's step in each batched forward)."""
-            ok = bool(B.STATS_B["step_b"] == zl * n_a7 and B.STATS_B["step_orig"] == 0 and Y.forms_ran(nq))
-            return ok and bool(K.STATS == {"compile_cut": runs, "walk_zero": runs, "walkf_zero": runs} and K.put_back_ok())
+        def forms_ran(n):
+            """True when every form ran over the n questions of the passes so far (forms_ok, with this job's counts)."""
+            return forms_ok(zl, n, runs, n_a7)
 
         if full and not a.no_smoke:
             ns = min(int(a.smoke_nq), nq)
@@ -281,8 +288,9 @@ def run(a):
             runs += 1 + ns
             n_a7 += res["n_a7"]
             log(f"{a.dataset} smoke: {ns} questions at BLAS {blases[0]}; checks {res['checks']}; batches of 16 {res['b16']['checks']}")
-            if res["stop"] or not forms_ran():
-                raise SystemExit(f"{a.dataset}: the smoke pass failed (checks or forms): nothing recorded")
+            if res["stop"] or not forms_ran(ns):
+                raise SystemExit(f"{a.dataset}: the smoke pass failed (checks {res['stop']}, forms {forms_ran(ns)}): nothing recorded; "
+                                 f"{B.STATS_B} {X.STATS} {Y.STATS} {K.STATS} (cut runs expected {runs}, batched forwards {n_a7})")
             del res
             gc.collect()
         for blas in blases:
@@ -291,7 +299,7 @@ def run(a):
             n_a7 += res["n_a7"]
             log(f"{a.dataset} BLAS {blas}: {nq} questions timed; checks {res['checks']}")
             log(f"{a.dataset} BLAS {blas}: batches of 16 {res['b16']['checks']}")
-            if not forms_ran():
+            if not forms_ran(nq):
                 raise SystemExit(f"the forms did not run: {B.STATS_B} {X.STATS} {Y.STATS} {K.STATS} (cut runs expected {runs})")
             forms = {"fast_index": S.fast_index, "stats": dict(X.STATS), "stats_y": dict(Y.STATS), "stats_b": dict(B.STATS_B),
                      "stats_cut": dict(K.STATS), "cut_runs": runs}
@@ -696,6 +704,41 @@ def selftest_api():
     return int(bad)
 
 
+def selftest_forms():
+    """forms_ok on counters of a smoke pass (33 cold runs, 8 batched forwards) and of the record after it: the smoke is judged by its own count
+    of questions, not the record's (the first run on the real data failed there), and a missing form, a step of the module's or a cut form
+    left in force fails."""
+    bad, zl = 0, 3
+    saved = (dict(B.STATS_B), dict(K.STATS), Y.forms_ran, K.put_back_ok)
+    cover = {"n": 33}
+    Y.forms_ran = lambda n, b16=0: n <= cover["n"]
+    K.put_back_ok = lambda: True
+    try:
+        B.STATS_B.update(step_b=zl * 8, step_orig=0)
+        K.STATS.update(compile_cut=33, walk_zero=33, walkf_zero=33)
+        bad += not forms_ok(zl, 32, 33, 8)                                   # the smoke, judged by its 32 questions
+        bad += forms_ok(zl, 200, 33, 8)                                      # the record's count after the smoke alone: the job's first failure
+        cover["n"] = 234
+        B.STATS_B.update(step_b=zl * 296)
+        K.STATS.update(compile_cut=234, walk_zero=234, walkf_zero=234)
+        bad += not forms_ok(zl, 200, 234, 296)                               # the record pass after the smoke
+        bad += forms_ok(zl, 200, 234, 295)                                   # a batched forward that did not take A7's step
+        B.STATS_B.update(step_orig=1)
+        bad += forms_ok(zl, 200, 234, 296)                                   # a batched forward that took the module's step
+        B.STATS_B.update(step_orig=0)
+        K.STATS.update(walk_zero=233)
+        bad += forms_ok(zl, 200, 234, 296)                                   # a cut form that did not run
+        K.STATS.update(walk_zero=234)
+        K.put_back_ok = lambda: False
+        bad += forms_ok(zl, 200, 234, 296)                                   # a cut form left in force
+    finally:
+        B.STATS_B.update(saved[0])
+        K.STATS.update(saved[1])
+        Y.forms_ran, K.put_back_ok = saved[2], saved[3]
+    log(f"forms: the smoke judged by its own questions, the record by its; a missing form, the module's step and a form left in force fail; {bad} differ")
+    return int(bad)
+
+
 def selftest_guard():
     """The full run is refused before --not-before and a smoke run (--nq) is not; both parse."""
     bad = 0
@@ -711,7 +754,7 @@ def selftest_guard():
 def selftest(a):
     C._load()
     K.bind()
-    bad = {"order": selftest_order(), "guard": selftest_guard(), "api": selftest_api()}
+    bad = {"order": selftest_order(), "guard": selftest_guard(), "api": selftest_api(), "forms": selftest_forms()}
     with tempfile.TemporaryDirectory() as tmp:
         bad["fake"] = selftest_pass(tmp)
     log("SELFTEST " + ("PASS" if not any(bad.values()) else f"FAIL {bad}"))

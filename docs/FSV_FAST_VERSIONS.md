@@ -1622,3 +1622,46 @@ files only), and the calls that name the verdicts of Family 2 are made by a late
 
 **Commit policy.** This correction and `zfsvy_m4.py` are committed together, before any M4 pass and before any item of this
 correction is sent. The raw files and the logs are never committed; no other host job is sent with the items.
+
+**Correction 5 (6 November, about 10:33 IST, before any M4 number): the smoke pass's form check, and the three items under new names.**
+The first M4 item (`fsvm4-hotpotqa`, sent at 10:06 IST under correction 4) ran its setup, the pin and the smoke pass, and stopped there,
+as the smoke is built to do: "nothing recorded" (5 minutes 9 seconds, no raw file of either kind, no number of any stage). This
+correction declares the one change that stops it happening again. It makes no number, runs nothing on the host itself and sends no item
+itself.
+
+**What the smoke showed.** The checks of the 32 questions were clean on all three versions: no question failing, the pool and the
+inputs as PKO's rule has them, every score within 1e-4 of its fit's filed read with the same top five, the batched step's scores byte
+for byte the module's for both GNNs. The job stopped on the other half of the smoke's test, whether every form ran.
+
+**The cause, read from the code.** `run` asked `zfsvy.forms_ran` for the record's question count (200) after the smoke had run 33 cold
+questions; that function demands counters of at least that many questions (A4's and A6's forms, once per question and version), so a
+33-question pass could never meet it. The record passes were never reached. The first run printed no counters, so this reading is the
+code's, not a log's; the change below makes the failure message print them.
+
+**The change, and nothing else.** In `zfsvy_m4.py`:
+- The form check becomes a module function, `forms_ok(zl, n, runs, n_a7)`: the same four tests as before (A7's step in every batched
+  forward and the module's in none, `zfsvy.forms_ran(n)`, the cut forms once per cold run, the cut view put back), with the question
+  count n as an argument. The smoke asks for its own count (`forms_ran(ns)`, 32); each record and beside pass asks for 200, as before.
+- The smoke's failure message now says whether the checks or the forms failed and prints the counters (`STATS_B`, `X.STATS`,
+  `Y.STATS`, `K.STATS`, the cut runs expected, the batched forwards).
+- The self-test gains `selftest_forms`: the counters of a smoke (33 cold runs, 8 batched forwards) pass for 32 questions and fail for
+  200, the counters after the record pass (234 cold runs, 296 batched forwards) pass for 200, and a batched forward that did not take
+  A7's step, one that took the module's step, a cut form that did not run and a cut form left in force each fail.
+
+The self-test passes on the laptop (SELFTEST PASS, ruff clean on F and E9), with no data and no host timing. No threshold, tolerance,
+form, pass, check, stop or output of correction 3 or 4 changes: the smoke's checks, the record's and the beside pass's are as they were.
+
+**The items.** The feeder retried the failed item once and held it until 10:22; the block was taken out of the queue at 10:13, before
+the retry, so nothing ran twice. The three old names stay in the feeder's records as failed or never sent, and their dependents cannot
+start. The items go in again under new names, unchanged otherwise: `fsvm4b-hotpotqa`, `fsvm4b-musique` and `fsvm4b-2wiki`, 2 CPUs and 28,
+34 and 37 GB, chained one behind the other, the first on `isb-s0-hp` (ended), the inputs listed first, the command of correction 3
+(`--blas 2 --lps 2,4 --require-pin`, no retry wrapper), inserted ahead of the feeder's waiting head, with nothing else beside them. The
+module's sha changes with the fix, so the input line is re-read from the committed file. If the smoke stops the job again, the counters
+in its message decide the next correction.
+
+**What is not changed.** Sections 1 to 15 and corrections 1 to 4 above this one, the cuts, the reads, the rule, the pool, the forms of
+both families, the threads, the pin, the question sets, the bars, the guard of correction 4 and M5's and A7's numbers; `zfsvc.py`,
+`zfsvt.py`, `zfsvx.py`, `zfsvy.py`, `zfsvy_b16.py` and `zfsvy_cut.py`.
+
+**Commit policy.** This correction and `zfsvy_m4.py` are committed together, before the items are sent. The raw files and the logs are
+never committed; no other host job is sent with the items.
