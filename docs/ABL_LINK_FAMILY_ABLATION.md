@@ -81,8 +81,16 @@ Build order (the user's asks first: take R out, take K out, take both out, from 
 6. The union slot graph: every row is the union of the two sources' rows (all rows checked), with its source files' sha256.
 7. The KB rule graph (section 8): its build record names the node file's sha256, the text recipe's sha256 and the rule's
    code; beside it the share of its edges that are also KB triples (filed, not a gate).
-8. The types of each slot graph are fit on that graph (never the record's), by the record's scripts unchanged
-   (`zu2m_a_types.py`, `zu2p.py types`), and their records name the graph file's sha256.
+8. The types of each slot graph are fit on that graph (never carried over from another), by the record's script
+   unchanged (`zu2m_a_types.py`'s types stage, called by `zabl_g.py` with the slot graph in place of the record's): the
+   EM centers on 200,000 pairs of the slot graph and every entry's class; the record's own files serve where the slot
+   is the record's graph (R on the passage datasets, S on the KB). On the KB a slot that holds S's typed rows keeps
+   them, and an entry only R's graph supplies has an empty block (the carried walk, RWe, weights an entry by its class,
+   so no block is read). The passage score classes (`zu2p.py`) exist on the rule graph's pairs only: U2k scores a
+   mention link or a sibling pair and refuses any other neighbour. So a slot's score class for a pair is the record's
+   class where the rule graph holds the pair and the null class where it does not (S alone: every class null); the
+   equal-count cuts over the scored entries are R's in every slot that holds R. Records name the graph file's sha256
+   and the types files' sha256.
 
 ## 5. Calls (declared before any number)
 

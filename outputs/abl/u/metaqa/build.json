@@ -1,0 +1,48 @@
+{
+ "nodes": 43234,
+ "descriptive_nodes": 43234,
+ "surfaces": 72171,
+ "common_forms": 149,
+ "forms_seen": 17855,
+ "mention_directed_edges": 358635,
+ "sibling_pairs": 0,
+ "groups_with_siblings": 0,
+ "largest_group": 1,
+ "undirected_neighbours": 490288,
+ "mean_degree": 11.34,
+ "link_stats": {
+  "surface_links": 358635,
+  "ambiguous": 0
+ },
+ "overlap": {
+  "r_entries": 490288,
+  "kb_entries": 249338,
+  "both": 249158,
+  "share_of_r_in_kb": 0.5082,
+  "share_of_kb_in_r": 0.9993
+ },
+ "declared_in": "docs/ABL_LINK_FAMILY_ABLATION.md, section 8",
+ "stage": "ABL-U",
+ "dataset": "metaqa",
+ "graph": "W2_S",
+ "rule": "NEW_RULE, variant W2, form S",
+ "freeze_record_sha256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+ "text_recipe": {
+  "sep": "; ",
+  "own_name": false,
+  "sha256": "b1871bb379801ffae997393ddf71acfc6af995cc8ba5b3267f86bf5c40aa67b7"
+ },
+ "code_sha256": {
+  "zabl_u": "72d3ee471d933b44d867a948aa866f53dd41411732b63fdfd4a9d98ac9dc5780",
+  "zu2b": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+  "zu2b_fast": "09b9b96bc494da19fa115b0cf28c220dc8801a0bc24e0addf58e4a938df361b9",
+  "u1d": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+  "u1b": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88"
+ },
+ "dense_manifest_sha256": "6ed812224adc5b43035c44eb9dc8f6fa27c3ef2d0d7cc540ea1b00f0937c43e1",
+ "npz": "outputs/abl/u/metaqa/W2_S.npz",
+ "npz_sha256": "3f2b97d1474552dae2fea1f7f8be5e83f7960950b38c0ca41bd3a78025aa7dd5",
+ "secs": 71.5,
+ "utc": "2026-11-06 18:01:34Z"
+}
