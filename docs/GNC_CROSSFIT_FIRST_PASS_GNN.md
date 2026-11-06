@@ -164,7 +164,7 @@ ISB's fit folders are read only.
 
 ## 10. Amendments
 
-**A1 (7 Nov 02:30 IST, with the code, before any half fit runs; no data, no number).** Two points where the code is
+**A1 (7 Nov 02:25 IST, with the code, before any half fit runs; no data, no number).** Two points where the code is
 exact and sections 2.2 and 2.3 were loose:
 
 - **What a held-out read covers.** Section 2.3 reads each half fit on the other half of the four training carves. The code
