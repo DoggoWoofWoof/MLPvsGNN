@@ -348,3 +348,14 @@ in `outputs/www/ira.json`. The seed-0 stop said GO and the screen's fits ran (`i
 - **What follows (section 6's table, fixed before the fit):** `ira-re-gate` passed at 08:33, so the full run's fits
   (`ira-re-k4-s1`, `-s2`, `-s1-hp`, `-s2-hp`) go on the queue behind `stk-own-ira`, and `ira-re-calls-full` files the
   full run's verdict under both rules.
+
+**The full run, 6 November 2026.** Filed in `outputs/ira/calls.json` and `calls.md` (made on the host by `ira-re-calls-full` from the four fits `ira-re-k4-s1`, `-s2`, `-s1-hp`, `-s2-hp` beside the screen's seed-0 fits); the six-read rule's file is `outputs/www/ira.json`. The screen block is unchanged from the one filed in fc2186e.
+
+| rule | verdict | counts | closest reads |
+|---|---|---|---|
+| own (DEP's sixteen reads) | NOT_ADOPTED | 0 GAIN, 0 LOSS, 16 WITHIN | WQ-musique metaqa +0.0349, +0.0210, +0.0226 (floor 0.0443); WQ-musique musique +0.0043, +0.0132, +0.0135 (0.0161); WQ-hotpotqa musique-4hop +0.0099, -0.0049, +0.0025 (0.0125) |
+| WWW (the six reads, 6cb8f39) | zwww prints INCOMPLETE; by hand NOT_ADOPTED | 0 GAIN, 0 LOSS, 6 WITHIN | the screen's one GAIN, WQ-hotpotqa musique-4hop, is WITHIN with the seeds in: its seed-1 delta is -0.0049 |
+
+- **Why zwww prints INCOMPLETE.** The full-run block keeps the four musique-slice reads under `slices`; `zwww.py` reads a block's `reads` and `beside` only, so it reports WQ-hotpotqa musique-3hop and musique-4hop as missing. Both reads are in the file and WITHIN, so no LOSS stands and no GAIN is on a dataset read: the rule's call is NOT_ADOPTED. `zwww.py` is unchanged; reading `slices` is an amendment for the user to decide.
+- **What follows (section 6's table):** the form as declared closes; `calls.json` `next_form_by_rule` is `three_rounds`. It needs its own file; nothing is declared here.
+- Beside, deciding nothing: the fitted plans' lambda is 0.1142 on `scr-ira-k4-s0` and 0.0000 on the other five fits (`scr-ira-k4-s0-hp`, `-s1`, `-s1-hp`, `-s2`, `-s2-hp`), so the slots' context went unused in five of six fits. RTR's screen on the same base stays NO_GAIN (16 WITHIN).

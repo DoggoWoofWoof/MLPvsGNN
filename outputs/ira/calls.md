@@ -23,6 +23,27 @@ counts: {"GAIN": 3, "LOSS": 0, "WITHIN": 13}
 | WQ-hotpotqa | musique-3hop | 0.5333, 0.5443, 0.5430 | 0.5360 | +0.0026 | 0.0207 | WITHIN |
 | WQ-hotpotqa | musique-4hop | 0.3765, 0.3833, 0.3772 | 0.3864 | +0.0099 | 0.0096 | GAIN |
 
+## Full run: NOT_ADOPTED
+
+| split | read | d0 | d1 | d2 | floor | call |
+|---|---|---:|---:|---:|---:|---|
+| WQ-musique | metaqa | +0.0349 | +0.0210 | +0.0226 | 0.0443 | WITHIN |
+| WQ-musique | squad | -0.0010 | -0.0015 | -0.0022 | 0.0075 | WITHIN |
+| WQ-musique | musique | +0.0043 | +0.0132 | +0.0135 | 0.0161 | WITHIN |
+| WQ-musique | hotpotqa | +0.0001 | -0.0020 | +0.0011 | 0.0075 | WITHIN |
+| WQ-musique | 2wiki | +0.0027 | -0.0045 | +0.0057 | 0.0079 | WITHIN |
+| WQ-musique | webqsp | +0.0086 | +0.0011 | -0.0005 | 0.0188 | WITHIN |
+| WQ-hotpotqa | metaqa | +0.0093 | -0.0135 | -0.0222 | 0.0472 | WITHIN |
+| WQ-hotpotqa | squad | -0.0023 | -0.0006 | +0.0005 | 0.0075 | WITHIN |
+| WQ-hotpotqa | musique | +0.0033 | -0.0027 | +0.0012 | 0.0082 | WITHIN |
+| WQ-hotpotqa | hotpotqa | +0.0061 | +0.0069 | +0.0117 | 0.0212 | WITHIN |
+| WQ-hotpotqa | 2wiki | -0.0008 | -0.0004 | +0.0029 | 0.0075 | WITHIN |
+| WQ-hotpotqa | webqsp | +0.0042 | +0.0120 | +0.0096 | 0.0225 | WITHIN |
+| WQ-musique | musique-3hop | -0.0004 | +0.0206 | +0.0101 | 0.0254 | WITHIN |
+| WQ-musique | musique-4hop | -0.0006 | -0.0006 | +0.0185 | 0.0251 | WITHIN |
+| WQ-hotpotqa | musique-3hop | +0.0026 | +0.0018 | -0.0026 | 0.0183 | WITHIN |
+| WQ-hotpotqa | musique-4hop | +0.0099 | -0.0049 | +0.0025 | 0.0125 | WITHIN |
+
 ## Beside (deciding nothing)
 
 RTR's screen on the same base: NO_GAIN {"GAIN": 0, "LOSS": 0, "WITHIN": 16}
@@ -31,5 +52,9 @@ RTR's screen on the same base: NO_GAIN {"GAIN": 0, "LOSS": 0, "WITHIN": 16}
 |---|---:|---:|---:|---:|---:|---:|
 | scr-ira-k4-s0 | 0.1142 | 1.7751 | -0.0022 | 4.9622 | 0.4593 | 6.5699 |
 | scr-ira-k4-s0-hp | 0.0000 | 1.5334 | -0.0011 | 5.1017 | 0.5212 | 5.1592 |
+| scr-ira-k4-s1 | 0.0000 | 1.8591 | 0.0015 | 4.9152 | 0.4580 | 5.6633 |
+| scr-ira-k4-s1-hp | 0.0000 | 1.5064 | 0.0003 | 4.8543 | 0.6352 | 5.0952 |
+| scr-ira-k4-s2 | 0.0000 | 1.3220 | 0.0009 | 4.0899 | 0.3193 | 4.5973 |
+| scr-ira-k4-s2-hp | 0.0000 | 1.6935 | -0.0000 | 4.7458 | 0.5768 | 4.8013 |
 
-next form by section 6's rule: None
+next form by section 6's rule: three_rounds

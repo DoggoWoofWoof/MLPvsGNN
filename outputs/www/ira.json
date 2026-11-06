@@ -18,10 +18,10 @@
   "s0_fit": null,
   "s0_read_sha256": null
  },
- "calls_sha256": "ff1ae643ba93c183d7e2b1fabd7c4c2dedcbb56a35ef9c267d19620484786d9d",
+ "calls_sha256": "dd771a5b8fa55ae31c2bfb7197548c7051659253b0e65cfa15cd77a5e38589ae",
  "problems": [],
  "zwww_sha256": "63ebe9228100ddf6674ab1f56b337d5b2ce936ae16d3773177681f6969fc7174",
- "utc": "2026-11-04T03:04:13Z",
+ "utc": "2026-11-06T00:47:04Z",
  "screen": {
   "www": "ADOPT_FOR_FULL_RUN",
   "own": "ADOPT_FOR_FULL_RUN",
@@ -243,5 +243,151 @@
    }
   ]
  },
- "full_run": null
+ "full_run": {
+  "www": "INCOMPLETE",
+  "own": "NOT_ADOPTED",
+  "counts": {
+   "WITHIN": 4
+  },
+  "missing": [
+   "WQ-hotpotqa musique-3hop",
+   "WQ-hotpotqa musique-4hop"
+  ],
+  "reads": [
+   {
+    "split": "WQ-musique",
+    "dataset": "hotpotqa",
+    "delta": {
+     "0": 0.0001,
+     "1": -0.002,
+     "2": 0.0011
+    },
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "dataset": "2wiki",
+    "delta": {
+     "0": 0.0027,
+     "1": -0.0045,
+     "2": 0.0057
+    },
+    "floor": 0.007882,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "dataset": "musique",
+    "delta": {
+     "0": 0.0033,
+     "1": -0.0027,
+     "2": 0.0012
+    },
+    "floor": 0.008244,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "dataset": "2wiki",
+    "delta": {
+     "0": -0.0008,
+     "1": -0.0004,
+     "2": 0.0029
+    },
+    "floor": 0.0075,
+    "call": "WITHIN"
+   }
+  ],
+  "beside": [
+   {
+    "split": "WQ-musique",
+    "dataset": "metaqa",
+    "delta": {
+     "0": 0.0349,
+     "1": 0.021,
+     "2": 0.0226
+    },
+    "floor": 0.044297,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "dataset": "squad",
+    "delta": {
+     "0": -0.001,
+     "1": -0.0015,
+     "2": -0.0022
+    },
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "dataset": "musique",
+    "delta": {
+     "0": 0.0043,
+     "1": 0.0132,
+     "2": 0.0135
+    },
+    "floor": 0.016086,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "dataset": "webqsp",
+    "delta": {
+     "0": 0.0086,
+     "1": 0.0011,
+     "2": -0.0005
+    },
+    "floor": 0.018756,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "dataset": "metaqa",
+    "delta": {
+     "0": 0.0093,
+     "1": -0.0135,
+     "2": -0.0222
+    },
+    "floor": 0.047192,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "dataset": "squad",
+    "delta": {
+     "0": -0.0023,
+     "1": -0.0006,
+     "2": 0.0005
+    },
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "dataset": "hotpotqa",
+    "delta": {
+     "0": 0.0061,
+     "1": 0.0069,
+     "2": 0.0117
+    },
+    "floor": 0.021234,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "dataset": "webqsp",
+    "delta": {
+     "0": 0.0042,
+     "1": 0.012,
+     "2": 0.0096
+    },
+    "floor": 0.022522,
+    "call": "WITHIN"
+   }
+  ]
+ }
 }
