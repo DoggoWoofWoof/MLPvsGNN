@@ -139,28 +139,59 @@ def blocks_allow_empty(ip, col, typed):
 # ── the slot graphs ───────────────────────────────────────────────────────────
 
 
+def empty_typed(n):
+    """The KB store's typed rows with no fact: an entry has no fact in a slot that does not hold S."""
+    return (np.zeros(n + 1, np.int64), np.zeros(0, np.int32), np.zeros(0, np.int16), np.zeros(0, np.int8))
+
+
+def base_of(name, n, store=None, rec=None, gc=None):
+    """What the slots are built on, without opening the dataset again: on a passage dataset the record's chosen graph
+    (U2c's, W2_S); on a KB dataset the KB structural store (its collapsed rows and typed rows). `store` is that store
+    as the pools open it; `rec` is open_record's tuple (the types stage), from which the same is taken; `gc` is the
+    graph_csr to read the chosen graph with (an arm that patches graph_csr passes the original)."""
+    import zu2c as U2C
+    if name in PASSAGE:
+        if rec is not None:
+            ip, col, desc = rec[3], rec[4], rec[2]
+        else:
+            ip, col, desc = (gc or U2C.graph_csr)(name, "chosen", n)
+        return SimpleNamespace(name=name, n=int(n), passage=True, rip=np.asarray(ip, np.int64),
+                               rcol=np.asarray(col, np.int32), rdesc=desc, typed=None)
+    if rec is not None:
+        ip, col, typed = rec[3], rec[4], rec[5]
+    else:
+        ip, col = store.indptr, store.col
+        typed = (store.typed_indptr, store.typed_col, store.typed_rel, store.typed_dir)
+    return SimpleNamespace(name=name, n=int(n), passage=False, rip=np.asarray(ip, np.int64),
+                           rcol=np.asarray(col, np.int32), rdesc={"graph": "cached (the KB)"},
+                           typed=tuple(np.asarray(a) for a in typed))
+
+
 def open_record(name):
-    """(AT, ds, desc, ip, col, typed, nodes): U2m (a)'s opening of the record's structural family for the dataset."""
+    """(AT, ds, desc, ip, col, typed, nodes, base): U2m (a)'s opening of the record's structural family."""
     import zu2m_a_types as AT
     ds, desc, ip, col, typed, nodes = AT.open_structural(name)
-    return (AT, ds, desc, ip, col, typed, nodes)
+    rec = (AT, ds, desc, ip, col, typed, nodes)
+    return rec + (base_of(name, ip.size - 1, rec=rec),)
 
 
-def graph_of(name, slot, rec):
-    """(ip, col, typed or None, description) of a slot on a dataset; `rec` is open_record's tuple. S on a passage
-    dataset and R on a KB dataset are read from their files; the record's own graph is the other one."""
+def graph_of(base, slot):
+    """(ip, col, typed or None, description) of a slot. S on a passage dataset (graph "today") and R on a KB dataset
+    (ABL-U's build) are read from their files; the record's own graph is the other one; "" is no entry at all. On a KB
+    dataset every slot keeps the KB store's typed layout: S's typed rows where the slot holds S, none otherwise."""
     import zu2c as U2C
-    _AT, _ds, desc, ip, col, typed, _nodes = rec
-    n = ip.size - 1
-    passage = name in PASSAGE
+    name, n = base.name, base.n
+    edesc = {"graph": "empty", "nodes": n}
+    if slot == "":
+        return np.zeros(n + 1, np.int64), np.zeros(0, np.int32), (None if base.passage else empty_typed(n)), edesc
     if slot == "S":
-        if passage:
+        if base.passage:
             sip, scol, sdesc = U2C.graph_csr(name, "today", n)
             return np.asarray(sip, np.int64), np.asarray(scol, np.int32), None, sdesc
-        return ip, col, typed, desc
+        return base.rip, base.rcol, base.typed, base.rdesc
     if slot == "R":
-        if passage:
-            return ip, col, None, desc
+        if base.passage:
+            return base.rip, base.rcol, None, base.rdesc
         p = U_OUT / name / "W2_S.npz"
         bj = json.loads((U_OUT / name / "build.json").read_text(encoding="utf-8"))
         if sha_file(p) != bj["npz_sha256"]:
@@ -169,7 +200,8 @@ def graph_of(name, slot, rec):
             rip, rcol = z["indptr"].astype(np.int64), z["col"].astype(np.int32)
         if rip.size != n + 1:
             raise SystemExit(f"{p}: {rip.size - 1} nodes, not {n}")
-        return rip, rcol, None, {"graph": "W2_S", "npz": bj["npz"], "npz_sha256": bj["npz_sha256"], "abl": "ABL-U"}
+        return rip, rcol, empty_typed(n), {"graph": "W2_S", "npz": bj["npz"], "npz_sha256": bj["npz_sha256"],
+                                           "abl": "ABL-U"}
     if slot == "SR":
         p = OUT / name / "SR.npz"
         bj = json.loads((OUT / name / "SR.json").read_text(encoding="utf-8"))
@@ -177,16 +209,17 @@ def graph_of(name, slot, rec):
             raise SystemExit(f"{p}: not the file SR.json names")
         with np.load(p) as z:
             uip, ucol = z["indptr"].astype(np.int64), z["col"].astype(np.int32)
-        return uip, ucol, (typed if not passage else None), {"graph": "SR", "npz": bj["npz"],
-                                                             "npz_sha256": bj["npz_sha256"], "parts": bj["parts"]}
+        return uip, ucol, base.typed, {"graph": "SR", "npz": bj["npz"], "npz_sha256": bj["npz_sha256"],
+                                       "parts": bj["parts"]}
     raise SystemExit(f"slot {slot}: one of {SLOTS}")
 
 
 def build_stage(name, rec=None):
     rec = rec or open_record(name)
-    n = rec[3].size - 1
-    S = graph_of(name, "S", rec)
-    R = graph_of(name, "R", rec)
+    base = rec[7]
+    n = base.n
+    S = graph_of(base, "S")
+    R = graph_of(base, "R")
     t0 = time.time()
     uip, ucol = union_csr(n, S[0], S[1], R[0], R[1])
     rng = np.random.default_rng(0)
@@ -216,7 +249,7 @@ def fit_em(rec, name, slot, ip, col, typed, sdesc):
     """U2m (a)'s types stage, unchanged, on the slot's graph: the EM fit on 200,000 of its pairs, every entry's class,
     and on a typed slot the facts' blocks (an entry with no fact, one only R's graph supplies, has an empty block). Its
     outputs go to outputs/abl/g/<D>/<slot>/em/ instead of U2m's folder."""
-    AT, ds, _desc, _rip, _rcol, _rtyped, nodes = rec
+    AT, ds, _desc, _rip, _rcol, _rtyped, nodes = rec[:7]
     keep = (AT.open_structural, AT.blocks, AT.OUT)
 
     def open_slot(name_):
@@ -236,10 +269,9 @@ def fit_em(rec, name, slot, ip, col, typed, sdesc):
 def types_stage(name, slot, rec=None):
     import zu2p as P
     rec = rec or open_record(name)
-    AT = rec[0]
-    rdesc, rip, rcol = rec[2], rec[3], rec[4]
-    n = rip.size - 1
-    ip, col, typed, sdesc = graph_of(name, slot, rec)
+    AT, base = rec[0], rec[7]
+    n = base.n
+    ip, col, typed, sdesc = graph_of(base, slot)
     t0 = time.time()
     own = (slot == "R" and name in PASSAGE) or (slot == "S" and name in KB)
     if not own:
@@ -249,14 +281,14 @@ def types_stage(name, slot, rec=None):
            "entries": int(col.size), "typed": typed is not None, "own_record_graph": own,
            "em_dir": rel(AT.OUT) if own else rel(od / slot / "em")}
     if name in PASSAGE:
-        cls_s, zbar, srec = P.load_types(name, rdesc)
+        cls_s, zbar, srec = P.load_types(name, base.rdesc)
         cls_s = np.asarray(cls_s)
         if slot == "R":
             cls_slot, hit = cls_s, int(cls_s.size)
         elif slot == "S":
             cls_slot, hit = np.full(col.size, P.NULL, cls_s.dtype), 0
         else:
-            cls_slot, hit = lookup_classes(n, ip, col, rip, rcol, cls_s, cls_s.dtype.type(P.NULL))
+            cls_slot, hit = lookup_classes(n, ip, col, base.rip, base.rcol, cls_s, cls_s.dtype.type(P.NULL))
         sha_sc = save_npz(od / slot / "score.npz", cls=cls_slot, zbar=np.asarray(zbar))
         out.update(score_record_file_sha256=srec["file_sha256"], score_cls_sha256=sha_arr(cls_slot),
                    score_npz=rel(od / slot / "score.npz"), score_file_sha256=sha_sc,
@@ -268,56 +300,75 @@ def types_stage(name, slot, rec=None):
     return 0
 
 
-def load_slot(name, slot, rec=None):
+def slot_meta(name, slot):
+    """(desc, em_file_sha256, score_file_sha256) of a slot's types, read from the records alone (no dataset): what
+    U2s's record is made to name for the arm."""
+    import zu2m_a_types as AT
+    import zu2p as P
+    if slot == "":
+        arec = json.loads((AT.OUT / f"{name}.json").read_text(encoding="utf-8"))
+        with np.load(AT.OUT / f"{name}.npz") as z:
+            mu = np.asarray(z["mu"], np.float64)
+        return {"desc": {"graph": "empty", "nodes": int(arec["nodes"])}, "em_file_sha256": sha_arr(mu),
+                "score_file_sha256": sha_arr(np.zeros(P.NT))}
+    tj = json.loads((OUT / name / slot / "types.json").read_text(encoding="utf-8"))
+    ej = json.loads((ROOT / tj["em_dir"] / f"{name}.json").read_text(encoding="utf-8"))
+    return {"desc": tj["graph"], "em_file_sha256": ej["file_sha256"], "score_file_sha256": tj.get("score_file_sha256")}
+
+
+def load_slot(base, slot, orig_at=None):
     """What an arm swaps in for a slot on a dataset: SimpleNamespace(ip, col, typed, desc, at_load, p_load, info), every
     file checked against its record. at_load(name, desc) and p_load(name, desc) have U2m (a)'s and U2p's load_types
-    signatures and results, so an arm patches them in. `slot` "" is the empty slot (no entries)."""
+    signatures and results, so an arm patches them in. `slot` "" is the empty slot (no entry). No dataset is opened:
+    `base` is base_of(name, n, store)."""
+    import zu2m_a_types as AT
     import zu2p as P
-    rec = rec or open_record(name)
-    AT, rdesc, rip = rec[0], rec[2], rec[3]
-    n = rip.size - 1
-    orig_at = AT.load_types
+    name = base.name
+    orig_at = orig_at or AT.load_types
+    ip, col, typed, sdesc = graph_of(base, slot)
     if slot == "":
-        mu = np.asarray(orig_at(name, rdesc)[0]["mu"], np.float64)
-        e8 = np.zeros(0, np.int8)
-        edesc = {"graph": "empty", "nodes": int(n)}
+        mu = np.asarray(orig_at(name, base.rdesc)[0]["mu"], np.float64)
+        arr = {"mu": mu, "cls": np.zeros(0, np.int8)}
+        if typed is not None:
+            arr.update(bst=np.zeros(0, np.int64), bln=np.zeros(0, np.int32))
         sha = sha_arr(mu)
 
         def at_load(name_, desc=None):
-            if name_ != name or (desc is not None and desc != edesc):
-                raise SystemExit(f"ABL: the empty slot's types asked for {name_} on {desc}")
-            return {"mu": mu, "cls": e8}, {"file_sha256": sha, "null": int(mu.shape[0]), "entries": 0, "typed": False,
-                                           "graph_detail": edesc}
+            if name_ != name:
+                raise SystemExit(f"ABL: the empty slot's types asked for {name_}")
+            return dict(arr), {"file_sha256": sha, "null": int(mu.shape[0]), "entries": 0, "typed": typed is not None,
+                               "graph_detail": sdesc}
 
         def p_load(d, desc=None):
-            if d != name or (desc is not None and desc != edesc):
-                raise SystemExit(f"ABL: the empty slot's score types asked for {d} on {desc}")
-            return e8.copy(), np.zeros(P.NT), {"file_sha256": sha_arr(np.zeros(P.NT)), "entries": 0}
+            if d != name:
+                raise SystemExit(f"ABL: the empty slot's score types asked for {d}")
+            return np.zeros(0, np.int8), np.zeros(P.NT), {"file_sha256": sha_arr(np.zeros(P.NT)), "entries": 0,
+                                                         "graph_detail": sdesc}
 
-        return SimpleNamespace(ip=np.zeros(n + 1, np.int64), col=np.zeros(0, np.int32), typed=None, desc=edesc,
-                               at_load=at_load, p_load=p_load if name in PASSAGE else None,
-                               info={"slot": "", "entries": 0})
-    ip, col, typed, sdesc = graph_of(name, slot, rec)
+        return SimpleNamespace(ip=ip, col=col, typed=typed, desc=sdesc, at_load=at_load,
+                               p_load=p_load if base.passage else None, info={"slot": "", "entries": 0})
     tj = json.loads((OUT / name / slot / "types.json").read_text(encoding="utf-8"))
     if tj["graph"] != sdesc or tj["entries"] != int(col.size) or tj["typed"] != (typed is not None):
         raise SystemExit(f"{name}/{slot}: the types were fit for another graph")
     em_dir = ROOT / tj["em_dir"]
 
     def at_load(name_, desc=None):
-        if name_ != name or (desc is not None and desc != sdesc):
-            raise SystemExit(f"ABL: the types of {name}/{slot} asked for {name_} on {desc}")
+        if name_ != name:
+            raise SystemExit(f"ABL: the types of {name}/{slot} asked for {name_}")
         keep = AT.OUT
         try:
             AT.OUT = em_dir
-            arr, arec = orig_at(name, sdesc)
+            arr, arec = orig_at(name, None)
         finally:
             AT.OUT = keep
+        if arec["graph_detail"] != (base.rdesc if tj["own_record_graph"] else sdesc):
+            raise SystemExit(f"ABL: the EM types of {name}/{slot} were fit on another graph")
         if int(arec["entries"]) != int(col.size) or int(np.asarray(arr["cls"]).size) != int(col.size):
             raise SystemExit(f"ABL: the EM types of {name}/{slot} do not fit its graph")
         return arr, arec
 
     p_load = None
-    if name in PASSAGE:
+    if base.passage:
         ps = ROOT / tj["score_npz"]
         if sha_file(ps) != tj["score_file_sha256"]:
             raise SystemExit(f"{ps}: not the file {name}/{slot}/types.json names")
@@ -327,8 +378,8 @@ def load_slot(name, slot, rec=None):
             raise SystemExit(f"{ps}: the score classes are not the record's description")
 
         def p_load(d, desc=None):
-            if d != name or (desc is not None and desc != sdesc):
-                raise SystemExit(f"ABL: the score types of {name}/{slot} asked for {d} on {desc}")
+            if d != name:
+                raise SystemExit(f"ABL: the score types of {name}/{slot} asked for {d}")
             return sc[0], sc[1], {"file_sha256": tj["score_file_sha256"], "entries": int(col.size),
                                   "graph_detail": sdesc}
 

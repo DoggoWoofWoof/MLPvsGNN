@@ -1,10 +1,12 @@
 """ABL (docs/ABL_LINK_FAMILY_ABLATION.md): what each link family carries, with the models of record fixed.
 
-The record holds three stores in the pool rule: the graph slot G (`structural`: N, U2b's W2_S, on the four passage
-datasets; S, the KB, on MetaQA and WebQSP), O (`ner`, the old NER store) and K (`knn`). An arm is a subset of {G, O, K}:
-a family that is out is an empty store (same node count, no edges) in every process that opens it. The first stage, B,
-the seeds, the rule and its budgets are the record's. ML1's pair-1 fits (zg6r, zrckp; seeds 0-2; both WQ splits) are
-forked and read on the arm's pools; nothing is refitted. No LLM, no corpus hyperlink, no test split.
+Three families, the same on every dataset: S (the original structural edges the store ships with), R (our rules as one
+family: the rule graph W2_S together with the NER store) and K (nearest-neighbour links). An arm is a subset of {S, R, K}:
+what fills the `structural` slot (S's graph, R's rule graph, their union, or nothing; zabl_g.py builds each and its types),
+and whether the `ner` store (R) and the `knn` store (K) are in. A family that is out is an empty store (same node count,
+no edge) in every process that opens it. The first stage, B, the seeds, the rule and its budgets are the record's. ML1's
+pair-1 fits (zg6r, zrckp; seeds 0-2; both WQ splits) are forked and read on the arm's pools; nothing is refitted. No LLM,
+no test split.
 
     python outputs/mp_unified/zabl.py --selftest
     python outputs/mp_unified/zabl.py pools --arm A --dataset D [--shard i/k] [--limit Q] [--host]
@@ -14,6 +16,7 @@ forked and read on the arm's pools; nothing is refitted. No LLM, no corpus hyper
     python outputs/mp_unified/zabl.py fork --arm A
     python outputs/mp_unified/zabl.py read --arm A --name FIT [--datasets d1,d2]           # the host's GPU
     python outputs/mp_unified/zabl.py prune --arm A                                         # look and cache go, reads stay
+    python outputs/mp_unified/zabl.py check --name FIT                                      # check 5 (arm REC, musique)
     python outputs/mp_unified/zabl.py report
     python outputs/mp_unified/zabl.py items --arm A [--lanes N]                             # feeder rows, printed
 """
@@ -25,7 +28,7 @@ for _v in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS"):
 os.environ.setdefault("NUMBA_NUM_THREADS", "2")
 os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")   # ML1's reads (zml1s.where_ok)
 
-from pathlib import Path  # noqa: E402
+from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -33,36 +36,35 @@ for _p in (ROOT / "scripts", ROOT / "src", HERE):
     if str(_p) not in sys.path:
         sys.path.insert(0, str(_p))
 
-import argparse  # noqa: E402
-import concurrent.futures as cf  # noqa: E402
-import contextlib  # noqa: E402
-import json  # noqa: E402
-import shutil  # noqa: E402
-import subprocess  # noqa: E402
-import tempfile  # noqa: E402
-import time  # noqa: E402
-from types import SimpleNamespace  # noqa: E402
+import argparse
+import concurrent.futures as cf
+import contextlib
+import copy
+import json
+import shutil
+import subprocess
+import tempfile
+import time
+from types import SimpleNamespace
 
-import numpy as np  # noqa: E402
-
-import zb1p as B  # noqa: E402  (helpers, module loader and PKO's checks; B1P's own stage is not run from here)
+import numpy as np
+import zabl_g as G
+import zb1p as B
 
 DECLARED = "docs/ABL_LINK_FAMILY_ABLATION.md"
 STAGE = "ABL"
 OUT = ROOT / "outputs" / "abl"
 CARVE = "s1eval"
-# the arm = which of G (graph slot), O (old ner store), K (knn) are in
-FLAGS = {"GOK": (1, 1, 1), "GK": (1, 0, 1), "G": (1, 0, 0), "OK": (0, 1, 1), "GO": (1, 1, 0), "K": (0, 0, 1),
-         "O": (0, 1, 0), "0": (0, 0, 0), "Kb": (0, 0, 1), "0b": (0, 0, 0)}   # Kb, 0b: K and 0 built on the KB datasets
-BUILD_ORDER = ("GO", "GK", "G", "K", "0", "Kb", "0b", "OK", "O")          # the record, GOK, is ML1's reads: nothing is built
-FAMILY = ("structural", "ner", "knn")
+# the arm = what fills the structural slot ("" nothing, S, R, SR = their union), and whether the ner store (R's other
+# half) and the knn store (K) are in. REC is the record on the passage datasets (R + K), for check 5 only.
+ARM = {"SRK": ("SR", 1, 1), "SR": ("SR", 1, 0), "SK": ("S", 0, 1), "RK": ("R", 1, 1), "S": ("S", 0, 0),
+       "R": ("R", 1, 0), "K": ("", 0, 1), "0": ("", 0, 0)}
+CHECK_ARM = "REC"
+BUILD_ORDER = ("SRK", "SK", "SR", "S", "RK", "R", "K", "0")              # the user's asks first; RK on passage is ML1's
+BASE_ARM = "SRK"
 DATASETS = ("webqsp", "musique", "hotpotqa", "metaqa", "squad", "2wiki")        # smallest development carve first
 PASSAGE = ("musique", "squad", "hotpotqa", "2wiki")
 KB = ("webqsp", "metaqa")
-# where an arm is built (docs/ABL_LINK_FAMILY_ABLATION.md section 2): R (slot + ner) moves as one on the passage
-# datasets; on the KB datasets S is the slot and R the ner store; removing S there is for ablation only (sout)
-APPLIES = {"GO": DATASETS, "GK": KB, "G": KB, "K": PASSAGE, "0": PASSAGE}
-APPLIES_SOUT = {"Kb": KB, "0b": KB, "OK": KB, "O": KB}
 SHARDS = {"webqsp": 2, "musique": 3, "hotpotqa": 3, "metaqa": 6, "squad": 3, "2wiki": 5}   # pools shards per carve
 ARMS_ML = B.ARMS                                               # ("zg6r", "zrckp")
 SEEDS, SPLITS, SUF, FITS, TRAINS = B.SEEDS, B.SPLITS, B.SUF, B.FITS, B.TRAINS
@@ -71,6 +73,7 @@ PYLIB_RUN = B.PYLIB_RUN
 STEPS = ("pools", "merge", "look", "bases", "cache", "links", "kt", "record")
 NO_STEP1 = {"state": "not applicable: an ABL arm has no step-1 cache (docs/ABL_LINK_FAMILY_ABLATION.md)"}
 BOOT = 2000
+CHECK_FITS = ("scr-ml1-zg6r-s0-hp", "scr-ml1-zrckp-s0-hp")      # check 5: musique's in-domain fits of seed 0
 
 log, utc, sha_file, sha_src, rel = B.log, B.utc, B.sha_file, B.sha_src, B.rel
 read_json, write_json, Patches = B.read_json, B.write_json, B.Patches
@@ -80,10 +83,17 @@ def arm_dir(arm):
     return OUT / arm
 
 
+def applies(arm):
+    """The datasets an arm is built on: all six, except RK on the passage datasets, which is the record (ML1's reads)."""
+    if arm not in ARM:
+        raise SystemExit(f"ABL: arm {arm}: one of {sorted(ARM)}")
+    return tuple(d for d in DATASETS if not (arm == "RK" and d in PASSAGE))
+
+
 def dropped(arm):
-    if arm not in FLAGS:
-        raise SystemExit(f"ABL: arm {arm}: one of {sorted(FLAGS)}")
-    return tuple(f for f, k in zip(FAMILY, FLAGS[arm]) if not k)
+    """The stores that are out among ner and knn."""
+    _slot, ner, knn = ARM[arm]
+    return tuple(f for f, k in (("ner", ner), ("knn", knn)) if not k)
 
 
 def in_domain_splits(ds):
@@ -94,41 +104,84 @@ def roots_of(M, arm):
     return M.PK.roots(arm_dir(arm))
 
 
-# ── a family that is out ─────────────────────────────────────────────────────
+# ── a family that is out, and the slot's content ─────────────────────────────
 
-def empty_store(M, family, n):
-    """A family store of n nodes with no edge, of the class the walks read (zu2c.csr_store for the structural family;
-    FamilyStore with empty weights for ner and knn)."""
-    if family == "structural":
-        return M.U2C.csr_store(n, np.zeros(n + 1, np.int64), np.zeros(0, np.int32))
+def empty_store(family, n):
+    """A ner or knn store of n nodes with no edge."""
     from mp_retrieval.m3b_pools import FamilyStore
     return FamilyStore(family, int(n), np.zeros(n + 1, np.int64), np.zeros(0, np.int32),
                        weight=np.zeros(0, np.float16), edges_stored=0)
 
 
+def slot_store(M, name, slot, sl, st0):
+    """The structural store of a slot. A passage dataset: U2c's store of the slot graph (one relation). A KB dataset: the
+    KB store's layout with the slot's collapsed rows and typed rows (S's typed rows where the slot holds S, none
+    otherwise; the relation counts are S's, or zero without S)."""
+    n = sl.ip.size - 1
+    if name in PASSAGE:
+        return M.U2C.csr_store(n, sl.ip, sl.col)
+    if slot == "S":
+        return st0
+    from mp_retrieval.m3b_pools import FamilyStore
+    has_s = sl.typed[1].size > 0
+    return FamilyStore("structural", int(n), np.ascontiguousarray(sl.ip, np.int64), np.ascontiguousarray(sl.col, np.int32),
+                       typed_indptr=sl.typed[0], typed_col=sl.typed[1], typed_rel=sl.typed[2], typed_dir=sl.typed[3],
+                       rel_count=(st0.rel_count if has_s else np.zeros_like(st0.rel_count)),
+                       edges_stored=int(sl.col.size) // 2)
+
+
 @contextlib.contextmanager
 def on_arm(M, name, arm):
-    """The package's dataset opened with the arm's families out, for zpko.pools_pass, look_shard, cache, links and KT
-    (every patch put back on exit). A family that is out is asserted to hold no edge wherever it is loaded."""
+    """The package's dataset opened with the arm's slot and stores, for zpko.pools_pass, look_shard, cache, links and KT
+    (every patch put back on exit). A family that is out is asserted to hold no edge wherever it is loaded; the slot's
+    graph, its types and U2s's record (the graph-dependent parts) are the arm's."""
+    slot, _ner, _knn = ARM[arm]
     drop = dropped(arm)
-    PK, S4, U2C = M.PK, M.S4, M.U2C
+    PK, S4, U2C, E, ZP = M.PK, M.S4, M.U2C, M.E, M.ZP
+    passage = name in PASSAGE
     P_ = Patches()
-    seen = {"empty": []}
+    seen = {"empty": [], "slot": slot}
+    cache = {}
     try:
         mp_mod = S4.m3b_pools
         orig_store = mp_mod.load_or_build_store
+        orig_gc = U2C.graph_csr
+
+        def ensure(n_):
+            """A passage dataset's slot before any store is opened (the pools ask for the graph first)."""
+            if "sl" not in cache:
+                base = G.base_of(name, int(n_), gc=orig_gc)
+                cache.update(sl=G.load_slot(base, slot, orig_at=orig_at), st0=None, base=base)
+            return cache["sl"]
+
+        def the_slot(ds_, cache_dir):
+            if "sl" not in cache:
+                n = int(ds_.n_nodes)
+                st0 = None if passage else orig_store(ds_, "structural", cache_dir)
+                base = G.base_of(name, n, store=st0, gc=orig_gc)
+                sl = G.load_slot(base, slot, orig_at=orig_at)
+                if slot == "" and sl.col.size:
+                    raise SystemExit(f"ABL {arm}/{name}: the empty slot holds edges")
+                cache.update(sl=sl, st0=st0, base=base)
+            return cache["sl"]
 
         def load_store(ds_, family, cache_dir):
-            if ds_.name != name or family not in drop:
+            if ds_.name != name:
                 return orig_store(ds_, family, cache_dir)
-            st = empty_store(M, family, int(ds_.n_nodes))
-            if int(np.asarray(st.col).size):
-                raise SystemExit(f"ABL {arm}/{name}: the {family} store that is out holds edges")
-            seen["empty"].append(family)
-            return st
+            if family in drop:
+                st = empty_store(family, int(ds_.n_nodes))
+                if int(np.asarray(st.col).size):
+                    raise SystemExit(f"ABL {arm}/{name}: the {family} store that is out holds edges")
+                seen["empty"].append(family)
+                return st
+            if family != "structural":
+                return orig_store(ds_, family, cache_dir)
+            sl = the_slot(ds_, cache_dir)
+            if "store" not in cache:
+                cache["store"] = slot_store(M, name, slot, sl, cache["st0"])
+            return cache["store"]
 
         P_.set(mp_mod, load_or_build_store=load_store)
-        E = M.E
 
         def union_pools(name_, carve_, pop, prep, bases):
             """Step 4e's union_pools without its frozen-pool check (an arm's pool differs from step 4d's by design):
@@ -154,37 +207,56 @@ def on_arm(M, name, arm):
             return None, None, bs_all, [np.asarray(p, np.int64) for p in prep.pools], None
 
         P_.set(E, union_pools=union_pools)
-        if "structural" in drop:
-            orig_gc = U2C.graph_csr
-
+        if passage:
             def graph_csr(name_, graph, n_):
-                g = orig_gc(name_, graph, n_)
-                if g is None or name_ != name:
-                    return g
-                ip, _col, desc = g                      # the record's description kept: U2e's check still holds
-                return np.zeros(np.asarray(ip).size, np.int64), np.zeros(0, np.int32), desc
+                if name_ != name or graph != "chosen":
+                    return orig_gc(name_, graph, n_)
+                sl = ensure(int(n_))
+                return sl.ip.copy(), sl.col.copy(), copy.deepcopy(sl.desc)
 
-            orig_at, orig_p = PK.AT.load_types, PK.P.load_types
+            orig_u2e = ZP.u2e_graph
 
-            def at_load(name_, desc=None):
-                arr, rec = orig_at(name_, desc)
+            def u2e_graph(name_):
                 if name_ != name:
-                    return arr, rec
-                arr = dict(arr)
-                arr["cls"] = np.zeros(0, np.asarray(arr["cls"]).dtype)
-                return arr, dict(rec, entries=0, abl={"arm": arm, "per_entry_classes": "empty: no slot entries"})
-
-            def p_load(d, desc=None):
-                cls, zbar, rec = orig_p(d, desc)
-                if d != name:
-                    return cls, zbar, rec
-                return (np.zeros(0, np.asarray(cls).dtype), zbar,
-                        dict(rec, entries=0, entries_null=0, abl={"arm": arm, "per_entry_classes": "empty"}))
+                    return orig_u2e(name_)
+                return copy.deepcopy(cache["sl"].desc if "sl" in cache else G.slot_meta(name, slot)["desc"])
 
             P_.set(U2C, graph_csr=graph_csr)
-            P_.set(PK.AT, load_types=at_load)
-            P_.set(PK.P, load_types=p_load)
-        yield SimpleNamespace(drop=drop, seen=seen)
+            P_.set(ZP, u2e_graph=u2e_graph)
+        orig_rec = PK.u2s_record
+
+        def u2s_record(name_, v_=None):
+            rec, npz = orig_rec(name_, v_)
+            if name_ != name:
+                return rec, npz
+            meta = G.slot_meta(name, slot)
+            out = dict(rec, em_types_sha256=meta["em_file_sha256"])
+            if passage:
+                out.update(graph_detail=copy.deepcopy(meta["desc"]), score_types_sha256=meta["score_file_sha256"])
+            return out, npz
+
+        P_.set(PK, u2s_record=u2s_record)
+        orig_at, orig_p = PK.AT.load_types, PK.P.load_types
+
+        def at_load(name_, desc=None):
+            if name_ != name:
+                return orig_at(name_, desc)
+            if "sl" not in cache:
+                raise SystemExit(f"ABL {arm}/{name}: the types asked for before the slot")
+            if desc is not None and desc != (cache["sl"].desc if passage else cache["base"].rdesc):
+                raise SystemExit(f"ABL {arm}/{name}: the types asked for on {desc}, not the slot's graph")
+            return cache["sl"].at_load(name_, None)
+
+        def p_load(d, desc=None):
+            if d != name:
+                return orig_p(d, desc)
+            if "sl" not in cache or (desc is not None and desc != cache["sl"].desc):
+                raise SystemExit(f"ABL {arm}/{name}: the score types asked for on {desc}, not the slot's graph")
+            return cache["sl"].p_load(d, None)
+
+        P_.set(PK.AT, load_types=at_load)
+        P_.set(PK.P, load_types=p_load)
+        yield SimpleNamespace(drop=drop, seen=seen, cache=cache)
     finally:
         P_.restore()
 
@@ -363,8 +435,8 @@ def fork(arm):
 
 
 def arm_roots(ML, arm):
-    """ML1's roots and gate for an arm; GOK reads on the record's own."""
-    if arm == "GOK":
+    """ML1's roots and gate for an arm; REC (check 5) reads on the record's own."""
+    if arm == CHECK_ARM:
         return dict(ML.ROOTS), ML.GATE
     b = f"outputs/abl/{arm}"
     return ({**ML.ROOTS, "pools": f"{b}/pools", "plook": f"{b}/look", "cache": f"{b}/cache", "rmatch": f"{b}/chains/rmatch",
@@ -374,12 +446,12 @@ def arm_roots(ML, arm):
 def read(arm, fit, datasets=None):
     """ML1's read of a fork on the arm's roots and gate (zml1s's code, no stamp); the reads land in the fork."""
     import zml1s as ML
-    import zwq as WQ
     import zp1c3 as Z3
+    import zwq as WQ
     if fit not in FITS or ML.ALL_FITS.get(fit) is None:
         raise SystemExit(f"ABL: {fit} is not one of ML1's zg6r or zrckp fits")
     mlarm, _seed, _split = ML.ALL_FITS[fit]
-    datasets = tuple(datasets or (built(arm) if arm != "GOK" else DATASETS))
+    datasets = tuple(datasets or (built(arm) if arm != CHECK_ARM else ("musique",)))
     if not datasets:
         raise SystemExit(f"ABL {arm}: no carve is filed")
     fdir = OUT / "fits" / arm / fit
@@ -468,33 +540,33 @@ def prune(arm, datasets=None):
     return 0
 
 
-def check_gok(fit, ds="webqsp", load_read=None, out=None):
-    """ABL check 5: the record re-read through ABL's own read path (arm GOK, forked fit, the record's roots and gate)
-    equals ML1's filed read on the same carve, per question, to 1e-4 (ids, gold totals and every measure)."""
+def check_rec(fit, ds="musique", load_read=None, out=None):
+    """ABL check 5: the passage record re-read through ABL's own read path (arm REC, forked fit, the record's roots and
+    gate) equals ML1's filed read on the same carve, per question, to 1e-4 (ids, gold totals and every measure)."""
     import p3c_claim1 as P3
     load_read = load_read or P3.load_read
-    mine = load_read(ROOT, f"outputs/abl/fits/GOK/{fit}", ds)
+    mine = load_read(ROOT, f"outputs/abl/fits/{CHECK_ARM}/{fit}", ds)
     ml1 = load_read(ROOT, f"outputs/screen/fits/{fit}", ds)
     ok = (np.array_equal(mine["ids"], ml1["ids"]) and np.array_equal(mine["gt"], ml1["gt"])
           and mine["m"].shape == ml1["m"].shape)
     worst = float(np.max(np.abs(mine["m"] - ml1["m"]))) if ok else None
     ok = bool(ok and worst <= 1e-4)
-    rec = {"declared_in": DECLARED, "stage": STAGE, "check": "GOK re-read equals ML1's read (section 4.5)", "fit": fit,
+    rec = {"declared_in": DECLARED, "stage": STAGE, "check": "REC re-read equals ML1's read (section 4.5)", "fit": fit,
            "dataset": ds, "carve": CARVE, "abl_read_sha256": mine["sha256"], "ml1_read_sha256": ml1["sha256"],
            "questions": int(mine["ids"].size), "max_abs_difference": worst, "equal_to_1e-4": ok,
            "zabl_sha256": sha_src(__file__), "utc": utc()}
     if out is None:
-        write_json(arm_dir("GOK") / f"abl_check_{fit}__{ds}.json", rec)
-    log(f"check GOK {fit}/{ds}: max |difference| {worst}; {'EQUAL' if ok else 'NOT EQUAL'}")
+        write_json(arm_dir(CHECK_ARM) / f"abl_check_{fit}__{ds}.json", rec)
+    log(f"check REC {fit}/{ds}: max |difference| {worst}; {'EQUAL' if ok else 'NOT EQUAL'}")
     return (0 if ok else 1) if out is None else rec
 
 
 # ── the report ────────────────────────────────────────────────────────────────
 
 def per_q(arm, fit, ds):
-    """One fit's per-question R@5 on a carve, from the arm's fork (GOK: ML1's filed read)."""
+    """One fit's per-question R@5 on a carve, from the arm's fork (RK on a passage dataset is the record: ML1's filed read)."""
     import p3c_claim1 as P3
-    fdir = f"outputs/screen/fits/{fit}" if arm == "GOK" else f"outputs/abl/fits/{arm}/{fit}"
+    fdir = f"outputs/screen/fits/{fit}" if (arm == "RK" and ds in PASSAGE) else f"outputs/abl/fits/{arm}/{fit}"
     if not (ROOT / fdir / "reads" / f"{ds}__{CARVE}.npz").exists():
         return None
     r = P3.load_read(ROOT, fdir, ds)
@@ -531,28 +603,60 @@ def compare(a, b):
             "call": call, "fits_below": below, "fits": len(a["per_fit"]), "questions": int(ok.sum())}
 
 
+ADDS = (("S adds (SRK - RK)", "RK", "SRK"), ("R adds (SRK - SK)", "SK", "SRK"), ("K adds (SRK - SR)", "SR", "SRK"),
+        ("S alone (S - 0)", "0", "S"), ("R alone (R - 0)", "0", "R"), ("K alone (K - 0)", "0", "K"))
+
+
+def fmt(c):
+    return (f"{100 * c['diff']:+.1f} ({100 * c['ci'][0]:+.1f}, {100 * c['ci'][1]:+.1f}) | {c['call']} | "
+            f"{c['fits_below']}/{c['fits']}")
+
+
 def report():
-    rec = {"declared_in": DECLARED, "stage": STAGE, "boot": BOOT, "arms": {}, "missing": []}
-    lines = [f"# ABL report (declared in {DECLARED})", "",
-             "R@5 x100 on each development carve (s1eval), the pair-1 fits of ML1 fixed, three seeds; arm minus GOK (the record) "
-             "with a 95% interval from 2,000 paired bootstrap resamples over questions; call = BELOW / LEVEL / ABOVE; "
-             "'below' = fits (of those read) where the arm is below GOK.", "",
-             "| arm | dataset | regime | model | GOK | arm | diff (CI) | call | below |", "|---|---|---|---|---:|---:|---|---|---|"]
-    for arm in BUILD_ORDER:
-        for ds in built(arm):
+    rec = {"declared_in": DECLARED, "stage": STAGE, "boot": BOOT, "base": BASE_ARM, "arms": {}, "adds": {}, "gnn_minus_mlp": {},
+           "missing": []}
+    cap = ("R@5 x100 on each development carve (s1eval), the pair-1 fits of ML1 fixed, three seeds (both splits where a "
+           "dataset is read under both); differences in points with a 95% interval from 2,000 paired bootstrap resamples "
+           "over questions; call = BELOW / LEVEL / ABOVE; 'below' = fits (of those read) where the first is below the second.")
+    lines = [f"# ABL report (declared in {DECLARED})", "", cap, "", f"## Arm minus {BASE_ARM} (all three families)", "",
+             f"| arm | dataset | regime | model | {BASE_ARM} | arm | diff (CI) | call | below |",
+             "|---|---|---|---|---:|---:|---|---|---|"]
+    for arm in BUILD_ORDER[1:]:
+        for ds in DATASETS:
             for regime in ("in-domain", "held out"):
                 for mlarm in ARMS_ML:
-                    a, b = cell("GOK", ds, mlarm, regime), cell(arm, ds, mlarm, regime)
+                    a, b = cell(BASE_ARM, ds, mlarm, regime), cell(arm, ds, mlarm, regime)
                     if a is None or b is None:
-                        if (a is not None) and b is None and any(
-                                (OUT / "fits" / arm).glob("*")):
+                        if a is not None and ds in applies(arm) and (OUT / "fits" / arm).exists():
                             rec["missing"].append(f"{arm}/{ds}/{mlarm}/{regime}")
                         continue
                     c = compare(a, b)
                     rec["arms"].setdefault(arm, {}).setdefault(ds, {}).setdefault(regime, {})[mlarm] = c
-                    lines.append(f"| {arm} | {ds} | {regime} | {mlarm} | {100 * c['a']:.1f} | {100 * c['b']:.1f} | "
-                                 f"{100 * c['diff']:+.1f} ({100 * c['ci'][0]:+.1f}, {100 * c['ci'][1]:+.1f}) | {c['call']} | "
-                                 f"{c['fits_below']}/{c['fits']} |")
+                    lines.append(f"| {arm} | {ds} | {regime} | {mlarm} | {100 * c['a']:.1f} | {100 * c['b']:.1f} | {fmt(c)} |")
+    lines += ["", "## What each family adds (the second arm minus the first)", "",
+              "| effect | dataset | regime | model | first | second | diff (CI) | call | below |",
+              "|---|---|---|---|---:|---:|---|---|---|"]
+    for label, x, y in ADDS:
+        for ds in DATASETS:
+            for regime in ("in-domain", "held out"):
+                for mlarm in ARMS_ML:
+                    a, b = cell(x, ds, mlarm, regime), cell(y, ds, mlarm, regime)
+                    if a is None or b is None:
+                        continue
+                    c = compare(a, b)
+                    rec["adds"].setdefault(label, {}).setdefault(ds, {}).setdefault(regime, {})[mlarm] = c
+                    lines.append(f"| {label} | {ds} | {regime} | {mlarm} | {100 * c['a']:.1f} | {100 * c['b']:.1f} | {fmt(c)} |")
+    lines += ["", "## GNN minus MLP, per arm (zg6r minus zrckp)", "",
+              "| arm | dataset | regime | zrckp | zg6r | diff (CI) | call | below |", "|---|---|---|---:|---:|---|---|---|"]
+    for arm in BUILD_ORDER:
+        for ds in DATASETS:
+            for regime in ("in-domain", "held out"):
+                m, g_ = cell(arm, ds, "zrckp", regime), cell(arm, ds, "zg6r", regime)
+                if m is None or g_ is None:
+                    continue
+                c = compare(m, g_)
+                rec["gnn_minus_mlp"].setdefault(arm, {}).setdefault(ds, {})[regime] = c
+                lines.append(f"| {arm} | {ds} | {regime} | {100 * c['a']:.1f} | {100 * c['b']:.1f} | {fmt(c)} |")
     rec["zabl_sha256"] = sha_src(__file__)
     rec["utc"] = utc()
     write_json(OUT / "report.json", rec)
@@ -657,122 +761,139 @@ CODE = [
     "outputs/mp_unified/zpko.py",
     "outputs/mp_unified/zb1p.py",
     "outputs/mp_unified/zpkoh.py",
+    "outputs/mp_unified/zabl_g.py",
+    "outputs/mp_unified/zabl_u.py",
+    "outputs/mp_unified/zu2m_a_types.py",
+    "outputs/mp_unified/zu2m_a.py",
+    "outputs/mp_unified/zu2p.py",
+    "outputs/mp_unified/zu2k.py",
 ]
-# a read on the card as B1P's reads ran (zb1p rows): a transient WinError 32 retried, 0.27 of the card's memory, a share of 0.29
 READ = ("python outputs/host_ops/retry_cmd.py --tries 3 --wait 90 --cuda -- python outputs/host_ops/cuda_alloc.py --frac 0.27 "
         "--gc 0.9 -- outputs/mp_unified/zabl.py")
 SMALL = ("webqsp", "musique")                          # carves whose look and cache are a few GB (1.5k and 2.4k questions)
 LANE_GB = {"webqsp": 7.0, "musique": 9.5, "hotpotqa": 9.5, "metaqa": 9.5, "squad": 7.0, "2wiki": 9.5}
+G_GB = {"webqsp": 40, "metaqa": 20, "musique": 20, "squad": 20, "hotpotqa": 40, "2wiki": 50}   # the slot graphs and types
 
 
-def gok_items():
-    """Check 5's rows: the record forked and re-read on webqsp/s1eval for seed 0 of both models, then compared to ML1's
-    filed read (each a few minutes; the GPU share is the arms' reads')."""
+def g_items():
+    """The slot graphs and their types, once per dataset (zabl_g.py all): the KB datasets wait on ABL-U's build."""
     ins = ";".join(CODE)
-    fits = ("scr-ml1-zg6r-s0", "scr-ml1-zrckp-s0")
-    rows = [f"line|x||abl-GOK-fork|1|2|{ins}|python outputs/mp_unified/zabl.py fork --arm GOK"]
-    names = []
-    for f in fits:
-        n = f"abl-GOK-read-{f.replace('scr-ml1-', '')}"
-        names.append(n)
-        rows.append(f"line|x|abl-GOK-fork|{n}|1.1|6|{ins}|{READ} read --arm GOK --name {f} --datasets webqsp|gpu:0.29")
-    for f, n in zip(fits, names):
-        rows.append(f"line|x|{n}|abl-GOK-check-{f.replace('scr-ml1-', '')}|1|2|{ins}|python outputs/mp_unified/zabl.py check --name {f}")
+    rows = []
+    for ds in DATASETS:
+        dep = f"abl-u-{ds}" if ds in KB else ""
+        rows.append(f"line|x|{dep}|abl-g-{ds}|2|{G_GB[ds]}|{ins}|python outputs/host_ops/retry_cmd.py --tries 3 --wait 90 -- "
+                    f"python outputs/host_ops/pylib_run.py outputs/mp_unified/zabl_g.py all {ds} --host")
     return rows
 
 
-def items(arm, lanes=6, sout=False):
+def rec_items():
+    """Check 5's rows: the passage record forked and re-read on musique/s1eval (seed 0, in-domain, both models) through
+    ABL's read path, then compared to ML1's filed read."""
+    ins = ";".join(CODE)
+    rows = [f"line|x||abl-REC-fork|1|2|{ins}|python outputs/mp_unified/zabl.py fork --arm {CHECK_ARM}"]
+    names = []
+    for f in CHECK_FITS:
+        n = f"abl-REC-read-{f.replace('scr-ml1-', '')}"
+        names.append(n)
+        rows.append(f"line|x|abl-REC-fork|{n}|1.1|6|{ins}|{READ} read --arm {CHECK_ARM} --name {f} --datasets musique|gpu:0.29")
+    for f, n in zip(CHECK_FITS, names):
+        rows.append(f"line|x|{n}|abl-REC-check-{f.replace('scr-ml1-', '')}|1|2|{ins}|python outputs/mp_unified/zabl.py check --name {f}")
+    return rows
+
+
+def items(arm, lanes=6):
     """Feeder rows (outputs/host_ops/hostfeed_items.txt format) for one arm. The arm's datasets run one after another
     (smallest carve first) so that its disk peak is one dataset's: chain, then the gate on that dataset, then the twelve
-    reads on the GPU, then the prune of its look and cache; the next dataset's chain waits on that prune. Arms are
-    independent of one another and run side by side as the host's lanes allow. With sout the arm's S-out carves (KB
-    datasets, ablation only) under names ending -sout."""
-    if arm == "GOK":
-        return gok_items()
-    table = APPLIES_SOUT if sout else APPLIES
-    if arm not in table:
-        raise SystemExit(f"ABL: arm {arm} is not built {'as S-out ' if sout else ''}anywhere")
-    dss = [d for d in DATASETS if d in table[arm]]
+    reads on the GPU, then the prune of its look and cache; the next dataset's chain waits on that prune. A chain also
+    waits on the dataset's slot graphs (abl-g-<D>) when the arm's slot is not empty. Arms are independent of one another
+    and run side by side as the host's lanes allow."""
+    if arm == CHECK_ARM:
+        return rec_items()
+    dss = applies(arm)
+    slot = ARM[arm][0]
     py = "python outputs/host_ops/pylib_run.py outputs/mp_unified/zabl.py"
     retry = "python outputs/host_ops/retry_cmd.py --tries 3 --wait 90 --"
     ins = ";".join(CODE)
-    tag = f"{arm}-sout" if sout else arm
-    rows = [f"line|x||abl-{tag}-fork|1|2|{ins}|python outputs/mp_unified/zabl.py fork --arm {arm}"]
+    rows = [f"line|x||abl-{arm}-fork|1|2|{ins}|python outputs/mp_unified/zabl.py fork --arm {arm}"]
     prev = ""
     for ds in dss:
-        n = f"abl-{tag}-{ds}"
-        rows.append(f"line|x|{prev}|{n}|{2 * lanes}|{lanes * LANE_GB[ds]:g}|{ins}|{retry} {py} chain --arm {arm} --dataset {ds} --lanes {lanes} --host")
-        g = f"abl-{tag}-gate-{ds}"
+        n = f"abl-{arm}-{ds}"
+        deps = ",".join(x for x in (prev, f"abl-g-{ds}" if slot else "", f"abl-u-{ds}" if ds in KB and "R" in slot else "") if x)
+        rows.append(f"line|x|{deps}|{n}|{2 * lanes}|{lanes * LANE_GB[ds]:g}|{ins}|{retry} {py} chain --arm {arm} --dataset {ds} --lanes {lanes} --host")
+        g = f"abl-{arm}-gate-{ds}"
         rows.append(f"line|x|{n}|{g}|2|8|{ins}|{py} gate --arm {arm} --datasets {ds} --host")
         reads = []
         for fit in FITS:
-            r = f"abl-{tag}-read-{ds}-{fit.replace('scr-ml1-', '')}"
+            r = f"abl-{arm}-read-{ds}-{fit.replace('scr-ml1-', '')}"
             reads.append(r)
-            rows.append(f"line|x|{g},abl-{tag}-fork|{r}|1.1|6|{ins}|{READ} read --arm {arm} --name {fit} --datasets {ds}|gpu:0.29")
-        pr = f"abl-{tag}-prune-{ds}"
+            rows.append(f"line|x|{g},abl-{arm}-fork|{r}|1.1|6|{ins}|{READ} read --arm {arm} --name {fit} --datasets {ds}|gpu:0.29")
+        pr = f"abl-{arm}-prune-{ds}"
         rows.append(f"line|x|{','.join(reads)}|{pr}|1|2|{ins}|python outputs/mp_unified/zabl.py prune --arm {arm} --datasets {ds}")
         prev = g if ds in SMALL else pr            # a small carve's files are a few GB: the next chain need not wait for the card
     return rows
 
 
 def selftest():
-    assert dropped("GOK") == () and dropped("GK") == ("ner",) and dropped("G") == ("ner", "knn")
-    assert dropped("OK") == ("structural",) and dropped("GO") == ("knn",) and dropped("0") == FAMILY
-    assert set(BUILD_ORDER) | {"GOK"} == set(FLAGS) and len(set(BUILD_ORDER)) == 9
-    assert len({FLAGS[a] for a in FLAGS}) == 8, "every subset of {G, O, K} once (Kb and 0b repeat K and 0)"
-    assert FLAGS["Kb"] == FLAGS["K"] and FLAGS["0b"] == FLAGS["0"]
+    assert len(ARM) == 8 and len(set(ARM.values())) == 8 and set(BUILD_ORDER) == set(ARM) and len(BUILD_ORDER) == 8
+    for arm, (slot, ner, knn) in ARM.items():          # the eight subsets of {S, R, K}, each once, named by its letters
+        letters = ({"S"} if "S" in slot else set()) | ({"R"} if "R" in slot else set()) | ({"K"} if knn else set())
+        assert ner == int("R" in slot), arm              # the ner store is R's other half
+        assert letters == (set() if arm == "0" else set(arm)), arm
+    assert len({frozenset(set(a) - {"0"}) for a in ARM}) == 8
+    assert dropped("SRK") == () and dropped("SR") == ("knn",) and dropped("SK") == ("ner",) and dropped("RK") == ()
+    assert dropped("S") == ("ner", "knn") and dropped("R") == ("knn",) and dropped("K") == ("ner",) and dropped("0") == ("ner", "knn")
     assert len(set(DATASETS)) == 6 and set(PASSAGE) | set(KB) == set(DATASETS) and not set(PASSAGE) & set(KB)
-    assert all(a in FLAGS and set(d) <= set(DATASETS) for a, d in {**APPLIES, **APPLIES_SOUT}.items())
-    assert set(APPLIES) | set(APPLIES_SOUT) == set(BUILD_ORDER)
-    # R moves as one on the passage datasets: no passage dataset is built with the slot and ner apart (arms GK, G, OK, O)
-    for a in ("GK", "G", "OK", "O", "Kb", "0b"):
-        assert not set(APPLIES.get(a, ())) & set(PASSAGE) and not set(APPLIES_SOUT.get(a, ())) & set(PASSAGE), a
+    assert applies("SRK") == DATASETS and applies("RK") == ("webqsp", "metaqa") and applies("0") == DATASETS
     assert in_domain_splits("musique") == ("WQ-hotpotqa",) and in_domain_splits("hotpotqa") == ("WQ-musique",)
     assert in_domain_splits("metaqa") == () and set(in_domain_splits("2wiki")) == set(SPLITS)
     assert set(in_domain_splits("webqsp")) == set(SPLITS) and set(in_domain_splits("squad")) == set(SPLITS)
-    assert len(FITS) == 12 and all(k in SHARDS for k in DATASETS)
-    # an empty family store has no edge and the right size
-    # (zu2c.csr_store and FamilyStore need the package modules: checked where they import)
-    rows = items("GO", 6)
+    assert len(FITS) == 12 and all(k in SHARDS for k in DATASETS) and set(CHECK_FITS) <= set(FITS)
+    # an empty ner or knn store has no edge and the right size
+    st = empty_store("ner", 5)
+    assert st.indptr.shape == (6,) and st.col.size == 0 and st.weight.size == 0
+    rows = items("SRK", 6)
     assert len(rows) == 1 + 6 * (1 + 1 + 12 + 1) and all(r.count("|") >= 7 for r in rows)
     assert sum("gpu:" in r for r in rows) == 72 and all(r.startswith("line|x|") for r in rows)
     names = [r.split("|")[3] for r in rows]
     assert len(names) == len(set(names)), "item names are unique"
     by = {r.split("|")[3]: r.split("|")[2].split(",") for r in rows}
-    # the datasets run one after another: each chain waits on the previous dataset's prune, never on a later item
-    assert by["abl-GO-musique"] == ["abl-GO-gate-webqsp"] and by["abl-GO-webqsp"] == [""]
-    assert by["abl-GO-metaqa"] == ["abl-GO-prune-hotpotqa"] and by["abl-GO-hotpotqa"] == ["abl-GO-gate-musique"]
-    assert all(d in names[:names.index(n)] for n, ds_ in by.items() for d in ds_ if d)
-    g = items("GOK")
-    assert len(g) == 1 + 2 + 2 and sum("gpu:" in r for r in g) == 2 and all(r.startswith("line|x|") for r in g)
-    assert len(items("GK", 6)) == 1 + 2 * 15 and len(items("Kb", 6, sout=True)) == 1 + 2 * 15
-    assert len(items("K", 6)) == 1 + 4 * 15 and len(items("0", 6)) == 1 + 4 * 15
-    assert items("0", 6)[0].split("|")[3] == "abl-0-fork" and items("0", 6)[1].split("|")[3] == "abl-0-musique" and "-sout-" not in "".join(items("0", 6))
+    # the datasets run one after another: each chain waits on the previous dataset's prune (or gate), and on its slot graphs
+    assert by["abl-SRK-webqsp"] == ["abl-g-webqsp", "abl-u-webqsp"] and by["abl-SRK-musique"] == ["abl-SRK-gate-webqsp", "abl-g-musique"]
+    assert by["abl-SRK-metaqa"] == ["abl-SRK-prune-hotpotqa", "abl-g-metaqa", "abl-u-metaqa"]
+    assert all(d in names[:names.index(n)] or d.startswith(("abl-g-", "abl-u-"))
+               for n, ds_ in by.items() for d in ds_ if d)
+    k = items("K", 6)
+    assert not any("abl-g-" in r.split("|")[2] for r in k), "the empty slot needs no slot graph"
+    assert len(items("RK", 6)) == 1 + 2 * 15 and len(items("0", 6)) == 1 + 6 * 15
+    g = g_items()
+    assert [r.split("|")[3] for r in g] == [f"abl-g-{d}" for d in DATASETS] and g[0].split("|")[2] == "abl-u-webqsp"
+    r5 = items(CHECK_ARM)
+    assert len(r5) == 1 + 2 + 2 and sum("gpu:" in r for r in r5) == 2 and all(r.startswith("line|x|") for r in r5)
     # check 5 on fake reads: equal reads pass, a 1e-3 change fails
     def fake(delta=0.0):
         def lr(_root, fit, _ds):
             m = np.full((4, 3), 0.5) + (delta if "abl" in fit else 0.0)
             return {"ids": np.array(list("abcd")), "gt": np.ones(4, np.int64), "m": m, "sha256": "x"}
         return lr
-    assert check_gok("f", "d", fake(), out=True)["equal_to_1e-4"]
-    assert not check_gok("f", "d", fake(1e-3), out=True)["equal_to_1e-4"]
+    assert check_rec("f", "d", fake(), out=True)["equal_to_1e-4"]
+    assert not check_rec("f", "d", fake(1e-3), out=True)["equal_to_1e-4"]
     # cell(): which fits make the in-domain and held-out reads of a dataset (fit names are ML1's), with per_q faked
     seen = []
 
     def fake_per_q(arm_, fit_, ds_):
         seen.append(fit_)
         return np.array(list("abc")), np.ones(3, np.int64), np.full(3, 0.5), "sha"
-    real_pq, g = per_q, globals()
-    g["per_q"] = fake_per_q
+    real_pq, g_ = per_q, globals()
+    g_["per_q"] = fake_per_q
     try:
-        mi = cell("GK", "musique", "zg6r", "in-domain")
-        mh = cell("GK", "musique", "zg6r", "held out")
-        wi = cell("GK", "webqsp", "zrckp", "in-domain")
-        wh = cell("GK", "webqsp", "zrckp", "held out")
-        ki = cell("GK", "metaqa", "zg6r", "in-domain")
-        kh = cell("GK", "metaqa", "zg6r", "held out")
+        mi = cell("SK", "musique", "zg6r", "in-domain")
+        mh = cell("SK", "musique", "zg6r", "held out")
+        wi = cell("SK", "webqsp", "zrckp", "in-domain")
+        wh = cell("SK", "webqsp", "zrckp", "held out")
+        ki = cell("SK", "metaqa", "zg6r", "in-domain")
+        kh = cell("SK", "metaqa", "zg6r", "held out")
     finally:
-        g["per_q"] = real_pq
+        g_["per_q"] = real_pq
     assert mi and mh and wi and kh and wh is None and ki is None, "webqsp has no held-out fits; metaqa has no in-domain fits"
     assert len(mi["fits"]) == 3 and len(mh["fits"]) == 3 and len(wi["fits"]) == 6 and len(kh["fits"]) == 6
     assert set(mi["fits"]) | set(mh["fits"]) <= set(FITS) and not set(mi["fits"]) & set(mh["fits"])
@@ -803,7 +924,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", nargs="?")
     ap.add_argument("kind", nargs="?")
-    ap.add_argument("--arm", choices=sorted(FLAGS))
+    ap.add_argument("--arm", choices=sorted(ARM) + [CHECK_ARM])
     ap.add_argument("--dataset", choices=DATASETS)
     ap.add_argument("--datasets")
     ap.add_argument("--limit", type=int, default=0)
@@ -812,7 +933,6 @@ def main(argv=None):
     ap.add_argument("--lanes", type=int, default=6)
     ap.add_argument("--name")
     ap.add_argument("--host", action="store_true")
-    ap.add_argument("--sout", action="store_true", help="items: the arm's S-out carves (KB datasets, ablation only)")
     ap.add_argument("--selftest", action="store_true")
     a = ap.parse_args(argv)
     if a.selftest or a.cmd == "selftest":
@@ -838,11 +958,11 @@ def main(argv=None):
     if a.cmd == "prune":
         return prune(a.arm, ds_list)
     if a.cmd == "check":
-        return check_gok(a.name, (ds_list or ("webqsp",))[0])
+        return check_rec(a.name, (ds_list or ("musique",))[0])
     if a.cmd == "report":
         return report()
     if a.cmd == "items":
-        print("\n".join(items(a.arm, a.lanes, a.sout)))
+        print("\n".join(g_items() + items(a.arm, a.lanes) if a.kind == "with-g" else items(a.arm, a.lanes)))
         return 0
     raise SystemExit(__doc__)
 
