@@ -62,7 +62,7 @@ ARM = {"SRK": ("SR", 1, 1), "SR": ("SR", 1, 0), "SK": ("S", 0, 1), "RK": ("R", 1
 CHECK_ARM = "REC"
 BUILD_ORDER = ("SRK", "SK", "SR", "S", "RK", "R", "K", "0")              # the user's asks first; RK on passage is ML1's
 BASE_ARM = "SRK"
-DATASETS = ("webqsp", "musique", "hotpotqa", "metaqa", "squad", "2wiki")        # smallest development carve first
+DATASETS = ("musique", "metaqa", "hotpotqa", "squad", "2wiki", "webqsp")   # the order an arm runs them (section 6)
 PASSAGE = ("musique", "squad", "hotpotqa", "2wiki")
 KB = ("webqsp", "metaqa")
 SHARDS = {"webqsp": 2, "musique": 3, "hotpotqa": 3, "metaqa": 6, "squad": 3, "2wiki": 5}   # pools shards per carve
@@ -803,7 +803,7 @@ def rec_items():
 
 def items(arm, lanes=6):
     """Feeder rows (outputs/host_ops/hostfeed_items.txt format) for one arm. The arm's datasets run one after another
-    (smallest carve first) so that its disk peak is one dataset's: chain, then the gate on that dataset, then the twelve
+    (DATASETS' order) so that its disk peak is one dataset's: chain, then the gate on that dataset, then the twelve
     reads on the GPU, then the prune of its look and cache; the next dataset's chain waits on that prune. A chain also
     waits on the dataset's slot graphs (abl-g-<D>) when the arm's slot is not empty. Arms are independent of one another
     and run side by side as the host's lanes allow."""
@@ -843,7 +843,7 @@ def selftest():
     assert dropped("SRK") == () and dropped("SR") == ("knn",) and dropped("SK") == ("ner",) and dropped("RK") == ()
     assert dropped("S") == ("ner", "knn") and dropped("R") == ("knn",) and dropped("K") == ("ner",) and dropped("0") == ("ner", "knn")
     assert len(set(DATASETS)) == 6 and set(PASSAGE) | set(KB) == set(DATASETS) and not set(PASSAGE) & set(KB)
-    assert applies("SRK") == DATASETS and applies("RK") == ("webqsp", "metaqa") and applies("0") == DATASETS
+    assert applies("SRK") == DATASETS and applies("RK") == ("metaqa", "webqsp") and applies("0") == DATASETS
     assert in_domain_splits("musique") == ("WQ-hotpotqa",) and in_domain_splits("hotpotqa") == ("WQ-musique",)
     assert in_domain_splits("metaqa") == () and set(in_domain_splits("2wiki")) == set(SPLITS)
     assert set(in_domain_splits("webqsp")) == set(SPLITS) and set(in_domain_splits("squad")) == set(SPLITS)
@@ -858,15 +858,15 @@ def selftest():
     assert len(names) == len(set(names)), "item names are unique"
     by = {r.split("|")[3]: r.split("|")[2].split(",") for r in rows}
     # the datasets run one after another: each chain waits on the previous dataset's prune (or gate), and on its slot graphs
-    assert by["abl-SRK-webqsp"] == ["abl-g-webqsp", "abl-u-webqsp"] and by["abl-SRK-musique"] == ["abl-SRK-gate-webqsp", "abl-g-musique"]
-    assert by["abl-SRK-metaqa"] == ["abl-SRK-prune-hotpotqa", "abl-g-metaqa", "abl-u-metaqa"]
+    assert by["abl-SRK-musique"] == ["abl-g-musique"] and by["abl-SRK-metaqa"] == ["abl-SRK-gate-musique", "abl-g-metaqa", "abl-u-metaqa"]
+    assert by["abl-SRK-webqsp"] == ["abl-SRK-prune-2wiki", "abl-g-webqsp", "abl-u-webqsp"]
     assert all(d in names[:names.index(n)] or d.startswith(("abl-g-", "abl-u-"))
                for n, ds_ in by.items() for d in ds_ if d)
     k = items("K", 6)
     assert not any("abl-g-" in r.split("|")[2] for r in k), "the empty slot needs no slot graph"
     assert len(items("RK", 6)) == 1 + 2 * 15 and len(items("0", 6)) == 1 + 6 * 15
     g = g_items()
-    assert [r.split("|")[3] for r in g] == [f"abl-g-{d}" for d in DATASETS] and g[0].split("|")[2] == "abl-u-webqsp"
+    assert [r.split("|")[3] for r in g] == [f"abl-g-{d}" for d in DATASETS] and g[-1].split("|")[2] == "abl-u-webqsp" and g[1].split("|")[2] == "abl-u-metaqa"
     r5 = items(CHECK_ARM)
     assert len(r5) == 1 + 2 + 2 and sum("gpu:" in r for r in r5) == 2 and all(r.startswith("line|x|") for r in r5)
     # check 5 on fake reads: equal reads pass, a 1e-3 change fails

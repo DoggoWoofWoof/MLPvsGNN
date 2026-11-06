@@ -114,7 +114,8 @@ dataset (RK on passage is free): about 350 lane-hours in all, 30 hours at 12 lan
 each, section 3 of the records) and the KB rule builds. Twelve GPU reads per arm beside the IDP fits. Disk is up to
 86 GiB per full arm (look 32 GiB of it, regenerated per arm because the rows differ): arms run dataset by dataset
 (chain, gate, twelve reads, prune of its look and cache), so a dataset's footprint is the peak. Inside an arm the carves
-go smallest first (webqsp, musique, hotpotqa, metaqa, squad, 2wiki).
+go in the order musique, metaqa, hotpotqa, squad, 2wiki, webqsp (the small carves first, and webqsp last because
+its rule graph, ABL-U's build on 2.59M nodes, is the longest wait; the order changes no number).
 
 ## 7. Not claimed
 
