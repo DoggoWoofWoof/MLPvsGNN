@@ -456,6 +456,9 @@ def main(argv=None):
         return _selftest()
     if a.dataset not in PASSAGE + KB:
         ap.error("a dataset of the six")
+    if a.host:
+        import zpkoh  # the host's mirror of the package, as every PKO process opens it
+        zpkoh.apply_mirror()
     if a.cmd == "build":
         return build_stage(a.dataset)
     if a.cmd == "types" and a.slot:
