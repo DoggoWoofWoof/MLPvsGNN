@@ -124,11 +124,14 @@ names nothing (U2b switch 4), so the rule has nothing to read until a node has t
 package for a KB entity is its name and its KB facts. So, as the declared recipe (changeable by the user, in which case
 the KB arms are rebuilt):
 
-- **Node text for the rule only** (the encoder's node vectors stay the name-only vectors of the substrate): the entity's
-  name, then ". ", then the names of its distinct KB neighbours, both directions, in node-id order, separated by "; ".
-  The rule's boundary, forms, prefix and common-form switches, its AMBIG guard (50), its context choice by the frozen
+- **Node text for the rule only** (the encoder's node vectors stay the name-only vectors of the substrate): the names of
+  the entity's distinct KB neighbours, both directions, in node-id order, joined by "; " (its own name is left out, so no
+  name is read as a mention of a shorter name inside it; an entity with no neighbour keeps its name alone and names
+  nothing). The rule's boundary, forms, prefix and common-form switches, its AMBIG guard (50), its context choice by the frozen
   dense vectors and its variant W2 with the sibling links (the chosen graph, W2_S) are U2b's code, unchanged
   (`zu2b.Surfaces`, `stat_pass`, `link_pass`, `sibling_pairs`, `undirected_csr`).
+- The capitalization statistic that gates common forms is computed over these texts, where every name is capitalized;
+  the build record files how many forms it marks common (MetaQA: 149 of its surfaces).
 - Output: `outputs/abl/u/<dataset>/W2_S.npz` with a record (node file sha256, the recipe's sha256, the code's sha256,
   edge counts, the share of edges that are KB triples).
 - Then the slot graphs (S ∪ R's graph, R's graph) and their EM types (section 4, check 8). On the KB the slot graph keeps
