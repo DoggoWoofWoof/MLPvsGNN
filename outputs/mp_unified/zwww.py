@@ -91,9 +91,10 @@ def key_of(r):
 
 
 def rows_of(blk):
-    """{(split, read): row} over a block's deciding and beside rows."""
+    """{(split, read): row} over a block's deciding, beside and slice rows (IRA's full run keeps the musique slices in
+    "slices"; amendment of 6 Nov 2026, docs/WWW_SCOPE_RULE.md)."""
     blk = blk or {}
-    return {key_of(r): r for r in (blk.get("reads") or []) + (blk.get("beside") or [])}
+    return {key_of(r): r for r in (blk.get("reads") or []) + (blk.get("beside") or []) + (blk.get("slices") or [])}
 
 
 # ── the rule ─────────────────────────────────────────────────────────────────
@@ -322,6 +323,19 @@ def selftest():
     assert full_verdict(blk({(HP_SPLIT, "musique-3hop"): GAIN}))[0] == NOT_ADOPTED
     assert full_verdict(blk({(HP_SPLIT, "2wiki"): GAIN, (HP_SPLIT, "musique"): LOSS}))[0] == NOT_ADOPTED
     assert full_verdict(blk({(HP_SPLIT, "2wiki"): GAIN, (S0_SPLIT, "squad"): LOSS}))[0] == ADOPT
+    # a block that keeps the two musique slices in "slices" (IRA's full run) is read whole: no read missing, and a
+    # slice LOSS decides
+    def with_slices(b):
+        sl = [r for r in b["reads"] if r["read"] in ("musique-3hop", "musique-4hop")]
+        return dict(b, reads=[r for r in b["reads"] if r not in sl], slices=sl)
+
+    sb = with_slices(blk({(HP_SPLIT, "2wiki"): GAIN}))
+    assert full_verdict(sb)[0] == ADOPT and full_verdict(sb)[2] == [], full_verdict(sb)[2]
+    assert screen_verdict(with_slices(blk({})))[0] == NO_GAIN
+    assert full_verdict(with_slices(blk({})))[0] == NOT_ADOPTED
+    sb = with_slices(blk({(HP_SPLIT, "2wiki"): GAIN, (HP_SPLIT, "musique-4hop"): LOSS}))
+    assert full_verdict(sb)[0] == NOT_ADOPTED
+    assert full_verdict(dict(sb, slices=[]))[0] == INCOMPLETE                # without "slices" read, the reads are missing
     # the stop: webqsp's LOSS is GO, hotpotqa's STOP; a problem or a missing read is GO
     s0rows = lambda c: [row(S0_SPLIT, x, c.get(x, WITHIN)) for x in ("webqsp", "squad", "hotpotqa", "2wiki")]
     assert stop_of({"rows": s0rows({"webqsp": LOSS}), "problems": []})[0] == GO

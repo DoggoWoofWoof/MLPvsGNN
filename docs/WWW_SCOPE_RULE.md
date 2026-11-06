@@ -112,3 +112,15 @@ would re-base every stage (twelve base fits) inside the last three days.
 - The stop: GO on webqsp's LOSS, STOP on hotpotqa's or 2wiki's, GO when stale, on a problem or with a read missing.
 - The wrapper runs or skips its command, and the gate gives codes 0, 1 and 2.
 - The audit on RWT's two-form record.
+
+## 7. Amendment, 6 November 2026: a block's slices rows are read
+
+`zwww.py` read a block's `reads` and `beside` rows. IRA's full run files its musique-3hop and musique-4hop rows (both
+splits, four rows) under `slices`, so two of the six deciding reads were not found, and its WWW full-run verdict printed
+INCOMPLETE (f5536e9 filed it so; read by hand it is NOT_ADOPTED: 6 WITHIN, no LOSS, no GAIN). `rows_of` now reads
+`slices` as well. The six reads, the calls and the rule are as declared above; the WQ-musique slices stay beside.
+
+A survey of the 24 filed `calls.json` files (30 blocks) found one block with a `slices` key, IRA's full run, and no other
+block whose verdict or missing reads change. The self-test gained a case for a block that keeps its slices under `slices`:
+read whole, a slice LOSS decides, and without them the reads are missing. `outputs/www/ira.json` is regenerated after
+this commit; the expected reading is WWW NOT_ADOPTED, own NOT_ADOPTED, six WITHIN, none missing.
