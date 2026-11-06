@@ -161,3 +161,20 @@ Feeder items, LF, inserted before the head of the queue's long CPU blocks, GPU f
 
 Writes: `outputs/gnc` and the fits `scr-gnc-*` only. LTM's lists, fold fits and columns, GNR's first passes and ML1's and
 ISB's fit folders are read only.
+
+## 10. Amendments
+
+**A1 (7 Nov 02:30 IST, with the code, before any half fit runs; no data, no number).** Two points where the code is
+exact and sections 2.2 and 2.3 were loose:
+
+- **What a held-out read covers.** Section 2.3 reads each half fit on the other half of the four training carves. The code
+  reads each half fit on the whole of each training carve (the carve is loaded whole, as in GNR's first pass, and the rows
+  cap and the read path are unchanged), and the assembly (section 2.4) takes a question's five rows from the half fit that
+  did not train on it, so every training question is covered once, by the fit that did not train on it, and the other half
+  fit's rows for it are not used. A half fit's own half is read as well, and its held-out file prints that in-sample R@5
+  (`R@5_trained`) beside its held-out R@5 (`R@5_heldout`): the gap between them is what in-sample anchors flatter. Nothing in
+  the rule, the reads, the fits or the columns changes.
+- **What a half fit shares with the base.** The block-liveness rule (`lean_gpu.dead_blocks`: a block whose values are
+  constant over every training row is dropped) is evaluated over the whole carve, as in every other fit, because it reads
+  values, not labels; a half fit's batches, its context statistics and its loss see its half's questions only. Section 8's
+  "shared inputs fit on every question" covers it.
