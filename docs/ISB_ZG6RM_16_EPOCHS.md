@@ -180,3 +180,16 @@ cannot be filed before the freeze, its screen is filed beside and nothing replac
 record (section 6).
 
 **What does not change.** Sections 1 to 8: the arm, the fits, the rule and what follows.
+
+## 11. Results
+
+**The screen, 6 November 2026 (filed 09:04 IST).** Filed in `outputs/isb/calls.json` and `calls.md` (made on the host by `isb-calls` from `scr-isb-zg6rm16-s0` and `scr-isb-zg6rm16-s0-hp` beside ML1's zg6r, ISO's zg6r-m and the base seeds). The seed-0 fits trained for 20,476 s (`-s0`) and 13,017 s (`-s0-hp`) on the host's GPU; no problems.
+
+| rule | verdict | counts | the reads that decide |
+|---|---|---|---|
+| own (section 4, twelve reads) | **KEEP** | 3 GAIN, 2 LOSS, 7 WITHIN | LOSS: WQ-musique metaqa -0.0936 (floor 0.0621) and WQ-hotpotqa metaqa -0.1104 (0.0637); GAIN: WQ-musique musique +0.0148 (0.0110) and webqsp +0.0212 (0.0142), WQ-hotpotqa musique +0.0154 (0.0126) |
+
+- **What the rule does.** KEEP on a LOSS on any read: zg6r stays and seeds 1 and 2 do not run (section 4). `isb-gate` stopped at 09:05 and the feeder dropped `isb-calls-full` at 09:18, as declared. A verdict closes only the form it tested.
+- **Beside, deciding nothing (section 5).** musique by hop count, zg6r-m16 minus zg6r at seed 0: WQ-musique 3-hop +0.0031 and 4-hop +0.0099; WQ-hotpotqa 3-hop +0.0206 and 4-hop +0.0043. On the metaqa reads zg6r-m16 keeps a negative share of zg6r's gain over zspk (-16.0 and -2.2 times); on musique and webqsp it gains.
+- **The six-read rule (`zwww.py`, probe only).** `zwww.py call --stage isb` prints the screen as INCOMPLETE: it finds four of the six deciding reads (one GAIN, WQ-hotpotqa musique; three WITHIN) and reports WQ-hotpotqa's musique-3hop and musique-4hop as missing, because `calls.json` keeps the slices at its top level with deltas only, with no floors and no calls. Both deltas are positive (+0.0206, +0.0043), so neither read can be a LOSS: if both are WITHIN or GAIN, the six-read rule would read ADOPT_FOR_FULL_RUN where ISB's own rule reads KEEP. The two rules disagree on the form; ISB's own gate is the declared one, so nothing ran on the six-read call. `zwww.py` is unchanged and no `outputs/www/isb.json` is filed.
+- **What follows (section 6's table, fixed before the fit):** KEEP, so zg6r stays. The next form named there is zg6r-m in zg6r's two phases (each ISO zg6r-m fit continued from its p@swa state for 8 epochs, fresh Adam, SWA from epoch 2); it needs its own declared file and nothing is declared here. Results freeze on 6-7 November, so nothing from ISB reaches the frozen results.
