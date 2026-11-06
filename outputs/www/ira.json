@@ -20,8 +20,8 @@
  },
  "calls_sha256": "dd771a5b8fa55ae31c2bfb7197548c7051659253b0e65cfa15cd77a5e38589ae",
  "problems": [],
- "zwww_sha256": "63ebe9228100ddf6674ab1f56b337d5b2ce936ae16d3773177681f6969fc7174",
- "utc": "2026-11-06T00:47:04Z",
+ "zwww_sha256": "f7f157343b69d109756520fd32d8bd79e38aae0bd4e8cb89ee59eb1d97bb26f1",
+ "utc": "2026-11-06T02:22:48Z",
  "screen": {
   "www": "ADOPT_FOR_FULL_RUN",
   "own": "ADOPT_FOR_FULL_RUN",
@@ -244,15 +244,12 @@
   ]
  },
  "full_run": {
-  "www": "INCOMPLETE",
+  "www": "NOT_ADOPTED",
   "own": "NOT_ADOPTED",
   "counts": {
-   "WITHIN": 4
+   "WITHIN": 6
   },
-  "missing": [
-   "WQ-hotpotqa musique-3hop",
-   "WQ-hotpotqa musique-4hop"
-  ],
+  "missing": [],
   "reads": [
    {
     "split": "WQ-musique",
@@ -296,6 +293,28 @@
      "2": 0.0029
     },
     "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique-3hop",
+    "delta": {
+     "0": 0.0026,
+     "1": 0.0018,
+     "2": -0.0026
+    },
+    "floor": 0.018285,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-hotpotqa",
+    "read": "musique-4hop",
+    "delta": {
+     "0": 0.0099,
+     "1": -0.0049,
+     "2": 0.0025
+    },
+    "floor": 0.012529,
     "call": "WITHIN"
    }
   ],
@@ -386,6 +405,28 @@
      "2": 0.0096
     },
     "floor": 0.022522,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "musique-3hop",
+    "delta": {
+     "0": -0.0004,
+     "1": 0.0206,
+     "2": 0.0101
+    },
+    "floor": 0.025439,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "musique-4hop",
+    "delta": {
+     "0": -0.0006,
+     "1": -0.0006,
+     "2": 0.0185
+    },
+    "floor": 0.025127,
     "call": "WITHIN"
    }
   ]
