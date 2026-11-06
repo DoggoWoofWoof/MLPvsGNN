@@ -10,7 +10,7 @@ zfsvy_cut.py's (imported, not edited), A4's, A6's and A7's forms are zfsvy.py's 
     python outputs/mp_unified/zfsvy_m4.py report
 
 The raw files go to outputs/fsv/timing/m4/raw (raw_smoke for a run with --nq) and are never committed; report.json and report.md in
-outputs/fsv/timing/m4 are. The full run refuses to start before --not-before (00:00 IST on 7 November 2026).
+outputs/fsv/timing/m4 are. The full run refuses to start before --not-before (09:30 IST on 6 November 2026, Correction 4).
 """
 import sys
 
@@ -37,7 +37,7 @@ VERS = ("mlp", "gnn", "cut")                 # the full MLP, the full GNN, the c
 V16 = (("mlp", "m5"), ("gnn", "m5"), ("gnn", "a7"), ("cut", "m5"), ("cut", "a7"))   # a batch's five forwards: the layer step is the module's (m5) or A7's
 OUT_M4 = C.OUT / "m4"
 PASSES = (("b2", "BLAS 2 (the record)"), ("b1", "BLAS 1 (beside the record)"))
-NOT_BEFORE = "2026-11-06T18:30:00+00:00"     # 00:00 IST on 7 November 2026
+NOT_BEFORE = "2026-11-06T04:00:00+00:00"     # 09:30 IST on 6 November 2026 (Correction 4; Correction 3 had 00:00 IST on 7 November)
 SMOKE_NQ = 32
 STAGES = ("compile", "rows", "links", "inputs", "b", "c", "model_only", "end_to_end", "warm_b1")      # the series every ratio is taken over
 
@@ -238,7 +238,7 @@ def run(a):
     round of batches of 16) whose failure stops the job before the record, then each BLAS count's pass over the 200 questions. The raw files go
     to outputs/fsv/timing/m4/raw (raw_smoke with --nq)."""
     if too_early(a):
-        log(f"{a.dataset}: not before {a.not_before} (the freeze): nothing started")
+        log(f"{a.dataset}: not before {a.not_before}: nothing started")
         return 3
     C._load()
     K.bind()
@@ -703,8 +703,8 @@ def selftest_guard():
     late = SimpleNamespace(nq=0, not_before=(datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=1)).isoformat())
     smoke = SimpleNamespace(nq=20, not_before=early.not_before)
     bad += (not too_early(early)) + too_early(late) + too_early(smoke)
-    bad += datetime.datetime.fromisoformat(NOT_BEFORE).astimezone(datetime.timezone(datetime.timedelta(hours=5, minutes=30))).isoformat()[:19] != "2026-11-07T00:00:00"
-    log(f"guard: before {NOT_BEFORE} (00:00 IST on 7 November) a full run starts nothing; {bad} differ")
+    bad += datetime.datetime.fromisoformat(NOT_BEFORE).astimezone(datetime.timezone(datetime.timedelta(hours=5, minutes=30))).isoformat()[:19] != "2026-11-06T09:30:00"
+    log(f"guard: before {NOT_BEFORE} (09:30 IST on 6 November) a full run starts nothing; {bad} differ")
     return int(bad)
 
 

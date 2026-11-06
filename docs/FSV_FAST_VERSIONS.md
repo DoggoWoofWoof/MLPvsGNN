@@ -1573,3 +1573,52 @@ made by a later file, as section 5 says.
 
 **Commit policy.** This correction and `zfsvy_m4.py` are committed together, before any M4 pass and before any item of this
 correction is sent. The raw files, the smoke's files and the logs are never committed; no other host job is sent with the items.
+
+**Correction 4 (6 November, about 10:04 IST, before any M4 pass): M4 may start now.** Correction 3 said the three M4 items run
+"once the freeze has begun" and had `zfsvy_m4.py` refuse a full run before 00:00 IST on 7 November. The user told the coordinator on
+the morning of 6 November to stop postponing and run M4 now. This correction checks section 6's rule on that day's records, so that
+the pair M4 times is fixed before M4 starts, and relaxes the guard. It makes no number, runs nothing on the host itself and sends no
+item itself: the three items go to the feeder after this commit, inserted ahead of the feeder's waiting head.
+
+**Why now.** The freeze time was a placement rule, not a measurement rule. It kept the timing from running beside the fits that
+could still change a pair, and section 6 asks for one check: whether the pair of record at the freeze is zg6r and zrckpn. Every form
+that could change that pair is closed as of this morning.
+- The GNN: IRA's full run is filed NOT_ADOPTED (f5536e9; its six-read record regenerated in 7f63f7d under the slices amendment a5abf3f);
+  ISB's screen is filed KEEP under its own declared rule (aa58c5a), its full run was dropped by its gate, and zg6r stays; the stack
+  of GNN forms is IRA alone, which is not adopted. D6 waits for after the freeze (user, 4 November) and is not a form of this pair.
+- The MLP: zrckpn stays; no MLP form is open (the capacity track is closed, CAP 97b0ae2).
+- The cut: L2 is ADMITTED (634a8ad) on zg6r, and correction 2's six development items all passed (correction 3).
+
+So section 6's rule is checked and not triggered: the pair of record is zg6r and zrckpn, the admitted level is L2, and no
+admitted level needs a second screen. If a later change made another pair the pair of record, M4's numbers would belong to the pair
+named here, and a later correction would say so and time the new pair; nothing is changed in silence.
+
+**The guard.** `NOT_BEFORE` in `zfsvy_m4.py` moves from 18:30 UTC on 6 November (00:00 IST on 7 November) to 04:00 UTC on 6 November
+(09:30 IST on 6 November, before the user's release). The guard stays as a mechanism: a full run before `--not-before` still starts
+nothing and exits 3, a run with `--nq` is still not bound, and the self-test's guard check names the new time. The two other lines
+that named the old time (the docstring and the refusal's log line) are reworded. Nothing else in the module changes: the forms, the
+passes, the checks, the stops, the raw files and the report are those of correction 3. The self-test passed on the laptop after the
+edit (SELFTEST PASS, ruff clean on F and E9), with no data and no host timing.
+
+**The three items.** Unchanged from correction 3: one job per dataset, `fsvm4-hotpotqa`, `fsvm4-musique` and `fsvm4-2wiki`, each 2
+CPUs and 28, 34 and 37 GB, each depending on the one before (so one runs at a time), the first on `isb-s0-hp`, which has ended
+(done, return code 0), with the inputs listed first and the command of correction 3 (`--blas 2 --lps 2,4 --require-pin`, no retry
+wrapper). The module's sha changes with the guard, so the first input line is re-read from the committed file. The optional smoke of
+correction 3 (`fsvm4-smoke-hotpotqa`) is not sent: each job's own smoke pass (32 questions, BLAS 2) runs first and stops the job
+before the record if a check fails.
+
+**The host.** M4 is a timing: it runs on a quiet host and nothing is sent beside it. At the time of this correction the host has no
+running mpr job but the feeder, the watchdog and the auto-cleanup, and the feeder's three remaining items wait behind a hold; the
+items are placed ahead of that head and the feeder is not otherwise touched. A timed job of another track that appears while M4
+runs would make the affected pass not a measurement: the raw files record the host's CPU load around each pass (1 s samples before
+and after, printed in the report), and a pass read under such a load is repeated (`--overwrite`) rather than filed.
+
+**What is not changed.** Sections 1 to 15 and corrections 1 to 3 above this one, the cuts, the reads, the rule, the pool, the forms
+of both families, the threads, the pin, the question sets and the bars; M5's and A7's numbers; `zfsvc.py`, `zfsvt.py`, `zfsvx.py`,
+`zfsvy.py`, `zfsvy_b16.py` and `zfsvy_cut.py`.
+
+**What follows.** When the three passes are in, `report` is run, its two files are masked and committed (`git add -f`, those two
+files only), and the calls that name the verdicts of Family 2 are made by a later file, as section 5 says.
+
+**Commit policy.** This correction and `zfsvy_m4.py` are committed together, before any M4 pass and before any item of this
+correction is sent. The raw files and the logs are never committed; no other host job is sent with the items.
