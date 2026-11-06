@@ -1449,3 +1449,127 @@ not zg6r and zrckpn.
 **Commit policy.** This correction and `zfsvy_cut.py` are committed together, before any development job of the module runs. The
 development logs, the reference files and the development JSON are never committed; the six items go to the feeder after this
 commit, and no other host job is sent with them.
+
+**Correction 3 (6 November, about 08:26 IST, before any M4 pass): the six development items read, M4's code and its check without
+data, the three M4 items.** The six items of correction 2 finished on the host this morning (all done, 06:46 to 06:55 IST). Every check
+of this section passed on every dataset, so no form is dropped and the cut path M4 times is the one correction 2 declared. This
+correction reads the items and declares M4's code (`run`, `report` and `selftest`) and its three items. It makes no number of the cut
+path, runs nothing on the host itself and sends no item itself: the items go to the feeder after this commit, inserted by the feeder's
+owner, and the three M4 items not before 00:00 IST on 7 November (the freeze).
+
+**The six items read.** Pass or fail only. The per-stage times the development job printed are development numbers, not measurements:
+they are not filed and not quoted anywhere.
+
+| dataset | reference read of the cut fit (`ref`) | development job (`devy`, 40 questions) | peak of `ref`, GB (working set / commit) | peak of `devy`, GB (working set / commit) |
+|---|---|---|---:|---:|
+| hotpotqa | PASS | PASS | 2.3 / 3.5 | 14.7 / 14.5 |
+| musique | PASS | PASS | 8.0 / 8.3 | 15.8 / 16.5 |
+| 2wiki | PASS | PASS | 6.3 / 7.2 | 22.4 / 22.5 |
+
+The peaks are rx's records of the six jobs; the reservations were 14 GB for each `ref` and 19, 23 and 28 GB for the `devy` items, so
+none was exceeded. Each check passed on every dataset:
+- the reference read of each cut fit agrees with the fit's filed read: the scores of its first 64 questions within 1e-4 with the same
+  top five on all 64, the top and hit of all 201 questions, and its batch-1 top five on all 201 (the file is written under
+  `outputs/fsv/timing/ref/`, never committed);
+- on each of the 40 questions of each dataset: A2's checks on the full MLP and the full GNN; the cut path against the full path with the
+  cut pick selected from its inputs (`cutref`), byte for byte in each kept column of X, the pack's inputs, the features, the question
+  index, the base z and the scores; the cut path's features and base z against the cut fit's carve; and both cut paths' scores against
+  the cut fit's filed read, within 1e-4 with the same top five on 40 of 40;
+- the forms ran: A4's and A6's by their counters, and the cut forms (`compile_cut`, `walk_zeros` and `walkf_zeros`) once per question
+  with the module's functions back in place after; the warm batches of 16 on the cut packs gave A7's step byte for byte the module's
+  on both batches of each dataset.
+
+Information, not checks: the cut columns of the cut path's X were zero on 40 of 40 questions of each dataset; float16 NEXT values that
+differ from the filed read were counted as A2 counts them (one value, in one hotpotqa question; none in musique and 2wiki).
+
+**No form is dropped.** Section 15's rule applies to a form that fails; none did. M4 times all four pieces of the cut (G_struct's
+compile laps and G_walk's two walk calls left out, the cut pick's five blocks and encoder, A7's batched step on the cut packs), and says
+which ran by their counters (`forms` in each raw file, the report's checks table).
+
+**M4's code.** `outputs/mp_unified/zfsvy_m4.py` (new, committed with this correction) imports `zfsvy_cut.py` first, and so
+`zfsvy_b16.py`, `zfsvy.py`, `zfsvx.py`, `zfsvc.py` and `zfsvt.py`; it edits none of them, and reuses their stages, forms, checks and
+reduction (`zfsvc.stage_a`, `run_model`, `build`, `forward`, `check_scores`, `_series`, `_ratio`; `zfsvy_cut.run_version`,
+`attach_cut`, `cut_view`; `zfsvy_b16.forward_t`) as they are.
+- `run --dataset D --blas 2 --lps 2,4 --require-pin` is one job per dataset: the setup of A7's job (the full fits, A4's and A6's forms
+  in force), the cut fit's model and reference (`attach_cut`), the index-time work (`prepass`), the pin (two logical processors, EcoQoS
+  off, above-normal priority; the job stops if it is not pinned) and the load of every processor sampled for 1 s before and after each
+  pass. Then a smoke pass and two timed passes.
+  - The smoke pass: the first 32 questions at BLAS 2, one round of the two batches of 16, checked as the record is. If a check or a
+    form fails the job stops and records nothing.
+  - The record pass (BLAS 2), then the beside pass (BLAS 1), each over the first 200 questions after the JIT question (the carve's
+    201st) with the same pin and load. A pass writes its raw file when it ends.
+  - Cold, batch 1, one thread: per question, stage (a) once on the shared pool (PKO's rule on A4's forms), charged in full to every
+    version; then the three versions, each its (b) (compile, rows, links, columns, assemble) and (c) (eager forward, top five) as
+    `zfsvc.run_model` times them. The order rotates: the question's number modulo 3 picks the version that leads, so each leads a
+    third of the questions. The cut GNN runs inside `cut_view` and `cut_forms` (the cut model, blocks and fit; the three replaced
+    functions in force for its run only), the full MLP and GNN as in M5.
+  - Warm at batch 1: the forward alone, on features built beforehand from the cold packs (one question at a time, outside the clock),
+    the three versions in the question's order.
+  - Warm at batch 16: the first 192 questions in twelve batches; one round that is not counted, then five; each batch's features are
+    built outside the clock and its five forwards timed in an order that rotates with the batch and the round: the full MLP, the full
+    GNN with the module's layer step and with A7's batched step, and the cut GNN with each. A question's time is its batch's over 16.
+    The record's warm b16 of the GNNs is A7's step (byte for byte the module's, section 14); the module's step is reported beside.
+  - Checks, untimed, as `zfsvc.run`'s and A7's: each version's scores against its own fit's filed read at batch 1 (within 1e-4, the
+    same top five), the pool, the KT columns and I against PKO's rule, the float16 NEXT flips counted; for the warm batches, A7's step
+    byte for byte the module's for both GNNs and every variant's scores, question by question, against the filed read. The record pass
+    keeps the questions on which no version fails a check and stops (exit 1, files still written) if more than 2% fail or a batched
+    step differs from the module's; the beside pass times every question and counts the failures, as M5's.
+  - Forms: the job stops, writing no file for that pass, unless every form ran: A4's and A6's by `zfsvy.forms_ran`, A7's by one batched
+    layer step per layer of each batched forward and none that fell back, the cut forms once per cold run of the cut path (the
+    smoke's and the JIT question's included) and the module's functions put back.
+  - The raw files are `outputs/fsv/timing/m4/raw/<dataset>__b2.json` and `__b1.json` (`raw_smoke` for a run with `--nq`); a finished
+    pass is not repeated without `--overwrite`. They are never committed.
+  - The guard: `--not-before` is 2026-11-06T18:30:00+00:00, which is 00:00 IST on 7 November; a run without `--nq` that starts earlier
+    starts nothing and exits 3. It is a safety on the feeder's owner's placement of the items, not the way they wait. A run with
+    `--nq` (a smoke on the real data) is not bound; it writes `raw_smoke` only, its numbers are development numbers, and it is run only
+    when no other timed job is on the host.
+- `report` reduces the raw files, per BLAS pass and dataset, with no call: per stage (a), (b)'s parts, (b), (c), model-only and end to
+  end, the p50 and p95 of each of the three versions; the ratios of the p50s, paired by question (by batch and round for the warm
+  batches of 16), with the 2.5th and 97.5th percentiles over 2,000 resamples (`numpy` `default_rng(0)`, `zfsvc._ratio`): cut GNN / full
+  MLP (Family 2), full GNN / full MLP (Family 1 again, the same job) and full GNN / cut GNN (the cut's gain), for end to end (the first
+  column: the headline), model-only, (b), (c), the parts of (b) and the warm times at batches of 1 and 16; stage (a)'s share of each
+  end-to-end time; the checks, the forms that ran, the pin and the load; and, beside and deciding nothing, the first half of the
+  questions against the second, each version led first, second and third, and p95 over p50. It writes `outputs/fsv/timing/m4/report.json`
+  and `report.md`, which are masked as M5's were and committed with `git add -f`; the raw files are not.
+- `selftest` needs no data and times nothing: the rotation (each version leads equally), the guard (a full run before the time starts
+  nothing, a smoke is not bound), the signatures of the 27 functions the module calls in the modules it imports, and a run of `one_pass`,
+  the raw files and `report` on a fake world whose stage times are constants (rows, the kept mask, the stop rule, the batched-forward
+  count, the ratios equal to the constants' ratios inside their intervals, the report's bytes equal on two reductions, and a missing raw
+  directory stopping `report`). It passed on the laptop before this commit (6 November, 08:22 IST).
+
+**The three items** (one chain, in this order, each after the one before; two CPUs each, the pin `--lps 2,4` as M5's and A7's). The
+commands go through `pylib_run.py` after `outputs/host_ops/pylib_run.py outputs/mp_unified/zfsvy_m4.py`, with no retry wrapper (a timed
+pass is not rerun by one; a failed job is sent again by hand):
+
+| item | command | host GB | after |
+|---|---|---:|---|
+| `fsvm4-hotpotqa` | `run --dataset hotpotqa --blas 2 --lps 2,4 --require-pin` | 28 | `isb-s0-hp` (the seed-0 fit on the GPU) |
+| `fsvm4-musique` | `run --dataset musique --blas 2 --lps 2,4 --require-pin` | 34 | `fsvm4-hotpotqa` |
+| `fsvm4-2wiki` | `run --dataset 2wiki --blas 2 --lps 2,4 --require-pin` | 37 | `fsvm4-musique` |
+
+The inputs are `pylib_run.py`, the numba zip and the seven modules of the chain (`zfsvt.py`, `zfsvc.py`, `zfsvx.py`, `zfsvy.py`,
+`zfsvy_b16.py`, `zfsvg.py`, `zfsvy_cut.py`) with `zfsvy_m4.py`; the fits, caches and cut-fit folders are on the host already. The
+reservations come from rx's records of the nearest jobs, each taken as the larger of the working set and the commit peak: M5's passes
+(hotpotqa 21.6, musique 23.3, 2wiki 29.4 GB, two versions' packs held), A7's (20.5, 20.8, 27.8), the pair's development items (14.9,
+13.3, 22.5) and the cut development items above (14.7, 16.5, 22.5). M4 holds three versions' packs, so each reservation is the cut
+development item's peak plus one and a half times M5's excess over the pair's development item, plus a margin: hotpotqa 14.7 + 1.5 x
+6.7 = 24.8, musique 16.5 + 1.5 x 10.0 = 31.5 and 2wiki 22.5 + 1.5 x 6.8 = 32.7, reserved at 28, 34 and 37. They are estimates, re-read
+from the first run as A2's were; the smoke pass and the beside pass add no second copy (a pass's packs are freed when its file is
+written). The chain is estimated at two to three hours.
+
+The feeder's owner places the items at or after 00:00 IST on 7 November, when the host is quiet: no other timed job running, and the
+seed-0 fit of the ISB track off the GPU (the first item names it). Before the freeze a smoke of the module on the real data may run
+once, `run --dataset hotpotqa --nq 20 --blas 2 --lps 2,4 --require-pin` (2 CPUs, 28 GB, `fsvm4-smoke-hotpotqa`, no dependency), only
+when no timed job is on the host; its output is development numbers, unfiled and unquoted, and it is not M4.
+
+**What is not changed.** Sections 1 to 14, section 15 and corrections 1 and 2 above this one, the cuts, the reads, the rule, the pool,
+the forms of both families, the threads, the pin, the question sets and the bars; M5's and A7's numbers; `zfsvc.py`, `zfsvt.py`,
+`zfsvx.py`, `zfsvy.py`, `zfsvy_b16.py` and `zfsvy_cut.py`.
+
+**What follows.** The three items run once the freeze has begun and the host is quiet, with section 6's rule applied first: if the
+pair of record at the freeze is not zg6r and zrckpn, the items wait for a correction. When the three passes are in, `report` is run,
+its two files are masked and committed (`git add -f`, those two files only), and the calls that name the verdicts of Family 2 are
+made by a later file, as section 5 says.
+
+**Commit policy.** This correction and `zfsvy_m4.py` are committed together, before any M4 pass and before any item of this
+correction is sent. The raw files, the smoke's files and the logs are never committed; no other host job is sent with the items.
