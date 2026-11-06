@@ -332,7 +332,7 @@ def gate(arm, datasets=None, host=False):
         raise SystemExit(f"ABL {arm}: no carve is filed")
     with B.checks(M):
         verdict = M.PK.gate(R, carves=[(ds, CARVE) for ds in datasets])
-    write_json(arm_dir(arm) / "abl_gate.json", {"declared_in": DECLARED, "stage": STAGE, "arm": arm,
+    write_json(arm_dir(arm) / f"abl_gate_{'-'.join(datasets)}.json", {"declared_in": DECLARED, "stage": STAGE, "arm": arm,
                                                 "pko_gate": rel(R.gate), "pko_gate_sha256": sha_file(R.gate),
                                                 "verdict": verdict, "carves": list(datasets),
                                                 "zabl_sha256": sha_src(__file__), "utc": utc()})
@@ -448,40 +448,45 @@ def read(arm, fit, datasets=None):
     return 0
 
 
-def prune(arm):
-    """An arm's look and cache go once its reads are filed (they cost lane-hours to regenerate, so only reads and
-    records are required first); the pools, links, kt, records and reads stay."""
-    missing = [f"{fit}/{ds}" for fit in FITS for ds in built(arm)
+def prune(arm, datasets=None):
+    """A dataset's look and cache go once its twelve reads are filed (they cost lane-hours to regenerate, so only reads
+    and records are required first); the pools, links, kt, records and reads stay. One dataset at a time keeps an arm's
+    peak on disk to one dataset's footprint."""
+    datasets = tuple(datasets or built(arm))
+    missing = [f"{fit}/{ds}" for fit in FITS for ds in datasets
                if not (OUT / "fits" / arm / fit / "reads" / f"{ds}__{CARVE}.npz").exists()]
-    if missing:
+    if missing or not datasets:
         raise SystemExit(f"ABL: {arm} has {len(missing)} reads missing, e.g. {missing[:3]}; nothing pruned")
     freed = 0
-    for sub in ("look", "cache"):
-        d = arm_dir(arm) / sub
-        if d.exists():
-            freed += sum(p.stat().st_size for p in d.rglob("*") if p.is_file())
-            shutil.rmtree(d)
-    log(f"prune {arm}: {freed / 2**30:.1f} GiB of look and cache removed")
+    for ds in datasets:
+        for sub in ("look", "cache"):
+            d = arm_dir(arm) / sub / ds
+            if d.exists():
+                freed += sum(p.stat().st_size for p in d.rglob("*") if p.is_file())
+                shutil.rmtree(d)
+    log(f"prune {arm}/{','.join(datasets)}: {freed / 2**30:.1f} GiB of look and cache removed")
     return 0
 
 
-def check_gok(fit, ds="webqsp"):
+def check_gok(fit, ds="webqsp", load_read=None, out=None):
     """ABL check 5: the record re-read through ABL's own read path (arm GOK, forked fit, the record's roots and gate)
     equals ML1's filed read on the same carve, per question, to 1e-4 (ids, gold totals and every measure)."""
     import p3c_claim1 as P3
-    mine = P3.load_read(ROOT, f"outputs/abl/fits/GOK/{fit}", ds)
-    ml1 = P3.load_read(ROOT, f"outputs/screen/fits/{fit}", ds)
+    load_read = load_read or P3.load_read
+    mine = load_read(ROOT, f"outputs/abl/fits/GOK/{fit}", ds)
+    ml1 = load_read(ROOT, f"outputs/screen/fits/{fit}", ds)
     ok = (np.array_equal(mine["ids"], ml1["ids"]) and np.array_equal(mine["gt"], ml1["gt"])
           and mine["m"].shape == ml1["m"].shape)
     worst = float(np.max(np.abs(mine["m"] - ml1["m"]))) if ok else None
     ok = bool(ok and worst <= 1e-4)
-    write_json(arm_dir("GOK") / f"abl_check_{fit}__{ds}.json",
-               {"declared_in": DECLARED, "stage": STAGE, "check": "GOK re-read equals ML1's read (section 4.5)", "fit": fit,
-                "dataset": ds, "carve": CARVE, "abl_read_sha256": mine["sha256"], "ml1_read_sha256": ml1["sha256"],
-                "questions": int(mine["ids"].size), "max_abs_difference": worst, "equal_to_1e-4": ok,
-                "zabl_sha256": sha_src(__file__), "utc": utc()})
+    rec = {"declared_in": DECLARED, "stage": STAGE, "check": "GOK re-read equals ML1's read (section 4.5)", "fit": fit,
+           "dataset": ds, "carve": CARVE, "abl_read_sha256": mine["sha256"], "ml1_read_sha256": ml1["sha256"],
+           "questions": int(mine["ids"].size), "max_abs_difference": worst, "equal_to_1e-4": ok,
+           "zabl_sha256": sha_src(__file__), "utc": utc()}
+    if out is None:
+        write_json(arm_dir("GOK") / f"abl_check_{fit}__{ds}.json", rec)
     log(f"check GOK {fit}/{ds}: max |difference| {worst}; {'EQUAL' if ok else 'NOT EQUAL'}")
-    return 0 if ok else 1
+    return (0 if ok else 1) if out is None else rec
 
 
 # ── the report ────────────────────────────────────────────────────────────────
@@ -558,15 +563,110 @@ def report():
 
 # ── the feeder rows ───────────────────────────────────────────────────────────
 
-CODE = ["outputs/mp_unified/zabl.py", "outputs/mp_unified/zb1p.py", "outputs/mp_unified/zpko.py",
-        "outputs/mp_unified/zpkoh.py", "outputs/host_ops/pylib_run.py"]
+# the code the host needs (B1P's rows' list, which holds the closure of what zb1p and zpko import) and ABL's own files
+CODE = [
+    "outputs/mp_unified/chaincov.py",
+    "outputs/mp_unified/lean_cache.py",
+    "outputs/mp_unified/lean_gpu.py",
+    "outputs/mp_unified/lean_host.py",
+    "outputs/mp_unified/lean_mlp.py",
+    "outputs/mp_unified/lean_mlp2.py",
+    "outputs/mp_unified/lean_mlp3.py",
+    "outputs/mp_unified/lean_mlp4.py",
+    "outputs/mp_unified/lean_mlp5.py",
+    "outputs/mp_unified/lean_mlp7.py",
+    "outputs/mp_unified/lean_mlp7g.py",
+    "outputs/mp_unified/lean_mlp8.py",
+    "outputs/mp_unified/lean_score.py",
+    "outputs/mp_unified/lean_screen.py",
+    "outputs/mp_unified/lean_screen2.py",
+    "outputs/mp_unified/lean_screen3.py",
+    "outputs/mp_unified/lean_screen4.py",
+    "outputs/mp_unified/lean_screen5.py",
+    "outputs/mp_unified/look_p1c.py",
+    "outputs/mp_unified/look_p1c2.py",
+    "outputs/mp_unified/look_step1.py",
+    "outputs/mp_unified/look_x_six.py",
+    "outputs/mp_unified/relcols.py",
+    "outputs/mp_unified/relz.py",
+    "outputs/mp_unified/rmatch.py",
+    "outputs/mp_unified/screen_gate.py",
+    "outputs/mp_unified/screen_pair.py",
+    "outputs/mp_unified/screen_recall.py",
+    "outputs/mp_unified/u1b.py",
+    "outputs/mp_unified/u1d.py",
+    "outputs/mp_unified/zg2.py",
+    "outputs/mp_unified/zg6.py",
+    "outputs/mp_unified/zg6b.py",
+    "outputs/mp_unified/zg6b2.py",
+    "outputs/mp_unified/zg6r.py",
+    "outputs/mp_unified/zg6rw.py",
+    "outputs/mp_unified/zgs.py",
+    "outputs/mp_unified/zkg.py",
+    "outputs/mp_unified/zlink.py",
+    "outputs/mp_unified/zml1.py",
+    "outputs/mp_unified/zml1s.py",
+    "outputs/mp_unified/zp1c2.py",
+    "outputs/mp_unified/zp1c3.py",
+    "outputs/mp_unified/zp1c3p.py",
+    "outputs/mp_unified/zp1h.py",
+    "outputs/mp_unified/zprop.py",
+    "outputs/mp_unified/zrc.py",
+    "outputs/mp_unified/zrm.py",
+    "outputs/mp_unified/zu2b.py",
+    "outputs/mp_unified/zu2c.py",
+    "outputs/mp_unified/zu2d.py",
+    "outputs/mp_unified/zu2d_pools.py",
+    "outputs/mp_unified/zu2e.py",
+    "outputs/mp_unified/zu2n.py",
+    "outputs/mp_unified/zwq.py",
+    "outputs/mp_unified/zwqk.py",
+    "outputs/host_ops/retry_cmd.py",
+    "outputs/host_ops/cuda_alloc.py",
+    "outputs/mp_unified/ziso.py",
+    "outputs/mp_unified/zdep.py",
+    "docs/DEP_GNN_DEPTH.md",
+    "outputs/mp_unified/verdict_gate.py",
+    "outputs/mp_unified/zrtr.py",
+    "docs/RTR_GO_BACK_ROUNDS.md",
+    "outputs/mp_unified/ltwdiag.py",
+    "docs/LTW_LEARNED_NEXT_HOP.md",
+    "outputs/mp_unified/chndiag.py",
+    "docs/CHN_CHAIN_COMPLEMENT.md",
+    "src/mp_retrieval/m3b_features.py",
+    "scripts/m3b_compile.py",
+    "outputs/mp_unified/zu2s.py",
+    "outputs/mp_unified/look_u2d.py",
+    "scripts/p1c3_kt.py",
+    "scripts/p1e_anchor_kind.py",
+    "scripts/p1gb_pools.py",
+    "outputs/mp_unified/zdob.py",
+    "outputs/mp_unified/ltmcols.py",
+    "outputs/mp_unified/zltm.py",
+    "outputs/mp_unified/zltg.py",
+    "outputs/host_ops/pylib_run.py",
+    "outputs/host_ops/pylib/numba067_llvmlite049_cp313_win_amd64.zip",
+    "outputs/pkoh/inputs.json",
+    "outputs/mp_unified/look_b1.py",
+    "outputs/mp_unified/look_b1u.py",
+    "outputs/mp_unified/b1f.py",
+    "outputs/mp_unified/b1b.py",
+    "outputs/mp_unified/u1a.py",
+    "outputs/mp_unified/zabl.py",
+    "scripts/p3c_claim1.py",
+    "outputs/mp_unified/zpko.py",
+    "outputs/mp_unified/zb1p.py",
+    "outputs/mp_unified/zpkoh.py",
+]
+# a read on the card as B1P's reads ran (zb1p rows): a transient WinError 32 retried, 0.27 of the card's memory, a share of 0.29
+READ = ("python outputs/host_ops/retry_cmd.py --tries 3 --wait 90 --cuda -- python outputs/host_ops/cuda_alloc.py --frac 0.27 "
+        "--gc 0.9 -- outputs/mp_unified/zabl.py")
 LANE_GB = {"webqsp": 7.0, "musique": 9.5, "hotpotqa": 9.5, "metaqa": 9.5, "squad": 7.0, "2wiki": 9.5}
 
 
 def gok_items():
     """Check 5's rows: the record forked and re-read on webqsp/s1eval for seed 0 of both models, then compared to ML1's
     filed read (each a few minutes; the GPU share is the arms' reads')."""
-    py = "python outputs/host_ops/pylib_run.py outputs/mp_unified/zabl.py"
     ins = ";".join(CODE)
     fits = ("scr-ml1-zg6r-s0", "scr-ml1-zrckp-s0")
     rows = [f"line|x||abl-GOK-fork|1|2|{ins}|python outputs/mp_unified/zabl.py fork --arm GOK"]
@@ -574,16 +674,18 @@ def gok_items():
     for f in fits:
         n = f"abl-GOK-read-{f.replace('scr-ml1-', '')}"
         names.append(n)
-        rows.append(f"line|x|abl-GOK-fork|{n}|1.1|6|{ins}|{py} read --arm GOK --name {f} --datasets webqsp --host|gpu:0.2")
+        rows.append(f"line|x|abl-GOK-fork|{n}|1.1|6|{ins}|{READ} read --arm GOK --name {f} --datasets webqsp|gpu:0.29")
     for f, n in zip(fits, names):
         rows.append(f"line|x|{n}|abl-GOK-check-{f.replace('scr-ml1-', '')}|1|2|{ins}|python outputs/mp_unified/zabl.py check --name {f}")
     return rows
 
 
 def items(arm, lanes=6, sout=False):
-    """Feeder rows (outputs/host_ops/hostfeed_items.txt format) for one arm: one chain item per carve, the fork, the
-    gate and the twelve reads on the GPU. The reads wait on the gate; the gate on every chain; prune on the reads.
-    With sout the arm's S-out carves (KB datasets, ablation only) under names ending -sout."""
+    """Feeder rows (outputs/host_ops/hostfeed_items.txt format) for one arm. The arm's datasets run one after another
+    (smallest carve first) so that its disk peak is one dataset's: chain, then the gate on that dataset, then the twelve
+    reads on the GPU, then the prune of its look and cache; the next dataset's chain waits on that prune. Arms are
+    independent of one another and run side by side as the host's lanes allow. With sout the arm's S-out carves (KB
+    datasets, ablation only) under names ending -sout."""
     if arm == "GOK":
         return gok_items()
     table = APPLIES_SOUT if sout else APPLIES
@@ -591,26 +693,25 @@ def items(arm, lanes=6, sout=False):
         raise SystemExit(f"ABL: arm {arm} is not built {'as S-out ' if sout else ''}anywhere")
     dss = [d for d in DATASETS if d in table[arm]]
     py = "python outputs/host_ops/pylib_run.py outputs/mp_unified/zabl.py"
+    retry = "python outputs/host_ops/retry_cmd.py --tries 3 --wait 90 --"
     ins = ";".join(CODE)
     tag = f"{arm}-sout" if sout else arm
-    dflag = " --datasets " + ",".join(dss)
-    rows, chains = [], []
+    rows = [f"line|x||abl-{tag}-fork|1|2|{ins}|python outputs/mp_unified/zabl.py fork --arm {arm}"]
+    prev = ""
     for ds in dss:
         n = f"abl-{tag}-{ds}"
-        chains.append(n)
-        rows.append(f"line|x||{n}|{2 * lanes}|{lanes * LANE_GB[ds]:g}|{ins}|{py} chain --arm {arm} --dataset {ds} --lanes {lanes} --host")
-    rows.append(f"line|x||abl-{tag}-fork|1|2|{ins}|python outputs/mp_unified/zabl.py fork --arm {arm}")
-    rows.append(f"line|x|{','.join(chains)}|abl-{tag}-gate|2|8|{ins}|{py} gate --arm {arm}{dflag} --host")
-    reads = []
-    for fit in FITS:
-        n = f"abl-{tag}-read-{fit.replace('scr-ml1-', '')}"
-        reads.append(n)
-        rows.append(f"line|x|abl-{tag}-gate,abl-{tag}-fork|{n}|1.1|6|{ins}|{py} read --arm {arm} --name {fit}{dflag} --host|gpu:0.2")
-    rows.append(f"line|x|{','.join(reads)}|abl-{tag}-prune|1|2|{ins}|python outputs/mp_unified/zabl.py prune --arm {arm}")
+        rows.append(f"line|x|{prev}|{n}|{2 * lanes}|{lanes * LANE_GB[ds]:g}|{ins}|{retry} {py} chain --arm {arm} --dataset {ds} --lanes {lanes} --host")
+        g = f"abl-{tag}-gate-{ds}"
+        rows.append(f"line|x|{n}|{g}|2|8|{ins}|{py} gate --arm {arm} --datasets {ds} --host")
+        reads = []
+        for fit in FITS:
+            r = f"abl-{tag}-read-{ds}-{fit.replace('scr-ml1-', '')}"
+            reads.append(r)
+            rows.append(f"line|x|{g},abl-{tag}-fork|{r}|1.1|6|{ins}|{READ} read --arm {arm} --name {fit} --datasets {ds}|gpu:0.29")
+        prev = f"abl-{tag}-prune-{ds}"
+        rows.append(f"line|x|{','.join(reads)}|{prev}|1|2|{ins}|python outputs/mp_unified/zabl.py prune --arm {arm} --datasets {ds}")
     return rows
 
-
-# ── self-test ─────────────────────────────────────────────────────────────────
 
 def selftest():
     assert dropped("GOK") == () and dropped("GK") == ("ner",) and dropped("G") == ("ner", "knn")
@@ -631,12 +732,27 @@ def selftest():
     # an empty family store has no edge and the right size
     # (zu2c.csr_store and FamilyStore need the package modules: checked where they import)
     rows = items("GO", 6)
-    assert len(rows) == 6 + 1 + 1 + 12 + 1 and all(r.count("|") >= 7 for r in rows)
-    assert sum("gpu:" in r for r in rows) == 12 and all(r.startswith("line|x|") for r in rows)
+    assert len(rows) == 1 + 6 * (1 + 1 + 12 + 1) and all(r.count("|") >= 7 for r in rows)
+    assert sum("gpu:" in r for r in rows) == 72 and all(r.startswith("line|x|") for r in rows)
+    names = [r.split("|")[3] for r in rows]
+    assert len(names) == len(set(names)), "item names are unique"
+    by = {r.split("|")[3]: r.split("|")[2].split(",") for r in rows}
+    # the datasets run one after another: each chain waits on the previous dataset's prune, never on a later item
+    assert by["abl-GO-musique"] == ["abl-GO-prune-webqsp"] and by["abl-GO-webqsp"] == [""]
+    assert all(d in names[:names.index(n)] for n, ds_ in by.items() for d in ds_ if d)
     g = items("GOK")
     assert len(g) == 1 + 2 + 2 and sum("gpu:" in r for r in g) == 2 and all(r.startswith("line|x|") for r in g)
-    assert len(items("GK", 6)) == 2 + 1 + 1 + 12 + 1 and len(items("Kb", 6, sout=True)) == 2 + 1 + 1 + 12 + 1
-    assert items("0", 6)[0].split("|")[3] == "abl-0-musique" and "-sout-" not in "".join(items("0", 6))
+    assert len(items("GK", 6)) == 1 + 2 * 15 and len(items("Kb", 6, sout=True)) == 1 + 2 * 15
+    assert len(items("K", 6)) == 1 + 4 * 15 and len(items("0", 6)) == 1 + 4 * 15
+    assert items("0", 6)[0].split("|")[3] == "abl-0-fork" and items("0", 6)[1].split("|")[3] == "abl-0-musique" and "-sout-" not in "".join(items("0", 6))
+    # check 5 on fake reads: equal reads pass, a 1e-3 change fails
+    def fake(delta=0.0):
+        def lr(_root, fit, _ds):
+            m = np.full((4, 3), 0.5) + (delta if "abl" in fit else 0.0)
+            return {"ids": np.array(list("abcd")), "gt": np.ones(4, np.int64), "m": m, "sha256": "x"}
+        return lr
+    assert check_gok("f", "d", fake(), out=True)["equal_to_1e-4"]
+    assert not check_gok("f", "d", fake(1e-3), out=True)["equal_to_1e-4"]
     # the paired comparison: identical cells are LEVEL with difference 0; a cell 0.1 lower in every question is BELOW
     ids = np.array([str(i) for i in range(200)])
     rng = np.random.default_rng(0)
@@ -696,7 +812,7 @@ def main(argv=None):
     if a.cmd == "read":
         return read(a.arm, a.name, ds_list)
     if a.cmd == "prune":
-        return prune(a.arm)
+        return prune(a.arm, ds_list)
     if a.cmd == "check":
         return check_gok(a.name, (ds_list or ("webqsp",))[0])
     if a.cmd == "report":
