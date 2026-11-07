@@ -1,0 +1,48 @@
+{
+ "nodes": 2592894,
+ "descriptive_nodes": 2592894,
+ "surfaces": 5910867,
+ "common_forms": 33486,
+ "forms_seen": 291182,
+ "mention_directed_edges": 353518743,
+ "sibling_pairs": 324291030,
+ "groups_with_siblings": 105255,
+ "largest_group": 9837,
+ "undirected_neighbours": 1000890934,
+ "mean_degree": 386.013,
+ "link_stats": {
+  "surface_links": 23529636,
+  "ambiguous": 0
+ },
+ "overlap": {
+  "r_entries": 1000890934,
+  "kb_entries": 11765002,
+  "both": 11732638,
+  "share_of_r_in_kb": 0.0117,
+  "share_of_kb_in_r": 0.9972
+ },
+ "declared_in": "docs/ABL_LINK_FAMILY_ABLATION.md, section 8",
+ "stage": "ABL-U",
+ "dataset": "webqsp",
+ "graph": "W2_S",
+ "rule": "NEW_RULE, variant W2, form S",
+ "freeze_record_sha256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "nodes_sha256": "b39c615122ad55f587eaea0c3fc5c7eff4190e6236fa258006e957dcfda948fe",
+ "text_recipe": {
+  "sep": "; ",
+  "own_name": false,
+  "sha256": "b1871bb379801ffae997393ddf71acfc6af995cc8ba5b3267f86bf5c40aa67b7"
+ },
+ "code_sha256": {
+  "zabl_u": "dafde17682eec75cbcb14c45428e4f02068d71db4a2450d896fa4fa4a0fd2451",
+  "zu2b": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+  "zu2b_fast": "09b9b96bc494da19fa115b0cf28c220dc8801a0bc24e0addf58e4a938df361b9",
+  "u1d": "c4b62ce8b69f4dd871806065eef1b908dfc24ecfa2ec01f70c9b0a2060854524",
+  "u1b": "cb485a77ea6315007145d111cafa8b9fe9bdfbb98d8bee9d2a2ed34efa729d88"
+ },
+ "dense_manifest_sha256": "7fcf5e2d91b2b0dd5de1755a5496512595c4b721b02a006a305d95915245dafe",
+ "npz": "outputs/abl/u/webqsp/W2_S.npz",
+ "npz_sha256": "a2e79a93c350f6e4de9455af07b11684b875444d2fb61ed6f2555b443ed093c4",
+ "secs": 3749.5,
+ "utc": "2026-11-07 08:45:37Z"
+}
