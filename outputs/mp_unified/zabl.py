@@ -60,6 +60,10 @@ CARVE = "s1eval"
 ARM = {"SRK": ("SR", 1, 1), "SR": ("SR", 1, 0), "SK": ("S", 0, 1), "RK": ("R", 1, 1), "S": ("S", 0, 0),
        "R": ("R", 1, 0), "K": ("", 0, 1), "0": ("", 0, 0)}
 CHECK_ARM = "REC"
+# SWP (docs/SWP_S_TO_R_SWAP.md, 8 Nov): two arms with the ner and knn stores both in and the slot S or empty, so that the swap S -> R is RK
+# against SNK with N and K fixed. They are not among the eight subsets of {S, R, K}, so the grid, its report and its self-test stay as filed.
+ARM_SWP = {"SNK": ("S", 1, 1), "NK": ("", 1, 1)}
+ARM_ALL = {**ARM, **ARM_SWP}
 BUILD_ORDER = ("SRK", "SK", "SR", "S", "RK", "R", "K", "0")              # the user's asks first; RK on passage is ML1's
 BASE_ARM = "SRK"
 DATASETS = ("musique", "metaqa", "hotpotqa", "squad", "2wiki", "webqsp")   # the order an arm runs them (section 6)
@@ -86,14 +90,14 @@ def arm_dir(arm):
 
 def applies(arm):
     """The datasets an arm is built on: all six, except RK on the passage datasets, which is the record (ML1's reads)."""
-    if arm not in ARM:
-        raise SystemExit(f"ABL: arm {arm}: one of {sorted(ARM)}")
+    if arm not in ARM_ALL:
+        raise SystemExit(f"ABL: arm {arm}: one of {sorted(ARM_ALL)}")
     return tuple(d for d in DATASETS if not (arm == "RK" and d in PASSAGE))
 
 
 def dropped(arm):
     """The stores that are out among ner and knn."""
-    _slot, ner, knn = ARM[arm]
+    _slot, ner, knn = ARM_ALL[arm]
     return tuple(f for f, k in (("ner", ner), ("knn", knn)) if not k)
 
 
@@ -136,7 +140,7 @@ def on_arm(M, name, arm):
     """The package's dataset opened with the arm's slot and stores, for zpko.pools_pass, look_shard, cache, links and KT
     (every patch put back on exit). A family that is out is asserted to hold no edge wherever it is loaded; the slot's
     graph, its types and U2s's record (the graph-dependent parts) are the arm's."""
-    slot, _ner, _knn = ARM[arm]
+    slot, _ner, _knn = ARM_ALL[arm]
     drop = dropped(arm)
     PK, S4, U2C, E, ZP = M.PK, M.S4, M.U2C, M.E, M.ZP
     passage = name in PASSAGE
@@ -861,7 +865,7 @@ def items(arm, lanes=6):
     if arm == CHECK_ARM:
         return rec_items()
     dss = applies(arm)
-    slot = ARM[arm][0]
+    slot = ARM_ALL[arm][0]
     py = "python outputs/host_ops/pylib_run.py outputs/mp_unified/zabl.py"
     retry = "python outputs/host_ops/retry_cmd.py --tries 3 --wait 90 --"
     ins = ";".join(CODE)
@@ -885,6 +889,8 @@ def items(arm, lanes=6):
 
 
 def selftest():
+    assert set(ARM_SWP) == {"SNK", "NK"} and not set(ARM_SWP) & set(ARM) and dropped("SNK") == () and dropped("NK") == ()
+    assert ARM_ALL["SNK"] == ("S", 1, 1) and ARM_ALL["NK"] == ("", 1, 1) and applies("SNK") == DATASETS == applies("NK")
     assert len(ARM) == 8 and len(set(ARM.values())) == 8 and set(BUILD_ORDER) == set(ARM) and len(BUILD_ORDER) == 8
     for arm, (slot, ner, knn) in ARM.items():          # the eight subsets of {S, R, K}, each once, named by its letters
         letters = ({"S"} if "S" in slot else set()) | ({"R"} if "R" in slot else set()) | ({"K"} if knn else set())
@@ -987,7 +993,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", nargs="?")
     ap.add_argument("kind", nargs="?")
-    ap.add_argument("--arm", choices=sorted(ARM) + [CHECK_ARM])
+    ap.add_argument("--arm", choices=sorted(ARM_ALL) + [CHECK_ARM])
     ap.add_argument("--dataset", choices=DATASETS)
     ap.add_argument("--datasets")
     ap.add_argument("--limit", type=int, default=0)
