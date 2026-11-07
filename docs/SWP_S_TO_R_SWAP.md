@@ -115,12 +115,34 @@ slot on SQuAD, so the other slot is a swap at read time (S -> R on the KBs; R ->
 **No threshold, no adoption call.** The NK builds (the empty slot, rows `swp3-*`, same twelve reads per cell) sit behind the RK WebQSP rows on purpose, so they cannot starve that build. ABL's doc records the arms as its amendment A5. SQuAD's S is the title-mention rule, so
 there too the comparison is rule against rule.
 
-## 5. Part C, the user's call: models trained on S
+## 5. Part C, declared 8 Nov 05:30 (the user: "you need to train with S in the fit and R outside as well ... do this for all datasets"): the pair trained on S
 
-For the passage datasets the pair of record was never trained on S. The user's direction (trained on S, read with R) needs either refits
-of GNX and zrckpn on S + N + K pools (about a day of card time for the six GNX fits alone) or the older SNK-trained pair (zrckp, zspk, 14 Oct;
-zrc, zsp, 9 Oct) read with R, which U1a did on HippoRAG 2's three settings only. Until the user chooses, Part A and Part B stand as the
-read-time swap on the fits of record, in both directions where they exist (KB: trained on S, R swapped in; passages: trained on R, S swapped in).
+**Question.** The fits of record for 2Wiki, HotpotQA, MuSiQue and SQuAD were trained with R in the slot (U2c), so Parts A and B read S in at read time on those
+datasets: the reverse of the user's direction. Part C trains the same-input pair with **S in the slot (S + N + K)** and reads it with S, R and nothing in the slot,
+so both directions stand side by side. On MetaQA and WebQSP the fits of record already trained on S; the S-trained fits are new there too (they are trained
+on all five training datasets together, so one fit per split has S in every slot).
+
+**What runs (seed 0 on both WQ splits, as ABL's amendment A3; one fit per model and split).**
+1. Arm **SNKF** (`outputs/mp_unified/zswpc.py`, on ABL's chain, not edited): the five training carves (squad, hotpotqa, 2wiki: `fit`; musique: `s1fit`; webqsp: `fit`)
+   built with the slot holding S, N and K in, under `outputs/abl/SNKF`; its gate over the five.
+2. LTM on SNKF (`ltmcols.py`, not edited): lists, the five fold fits per split, the cross-fitted columns of the training carves.
+3. The fits, in a separate copy of the code tree on the host (the "S-world": its own `outputs/pko` = SNKF, its own `screen`, `ml1`, `ltm`), so that no fit, stamp or
+   column of the record can be written by them: zspk (seed 0), zg6r (starts from that zspk), GNX (zg6r + the columns of step 2), zrckpn (CPU, the columns of step 2).
+   The code is the record's, byte for byte (shas listed in the S-world's manifest).
+4. Reads of the four S-trained fits (GNX, zrckpn, both splits) with the slot S / R / empty: SQuAD, MetaQA, WebQSP on Part B's arms (s1eval; REC / SNK / NK / RK),
+   2Wiki, HotpotQA, MuSiQue on B1H's carves (b1 = S, b1w = R, b1t = empty). Columns of every read carve come from the S-trained scorer of the fit's split.
+
+**Report** (`zswpc.py report`, after the reads): per dataset and regime (in-domain / held out), per model, R@5 at each slot; the paired interval of R minus S and of
+empty minus S for each model (trained on S), printed beside the same rows of Parts A and B (trained on R); GNX minus zrckpn at each slot. A step gets a call by its
+interval (above / level / below); no threshold, no adoption call; no ratio is quoted without its interval.
+
+**What it can and cannot show.** It shows, for each family, how much of a model's recall survives when the slot is swapped, from either training family. It cannot
+show a seed spread (one fit per split; the intervals are over questions). On MuSiQue and SQuAD S is a title-mention rule, so the comparison there is rule against
+rule. "Do we need message passing" is read from the GNX − zrckpn gap at each slot, not from the swap.
+
+**Guards.** The S-world is read-only toward the record: a fit named like a record fit exists only inside it. The record's `outputs/screen`, `outputs/pko`, `outputs/ltm`
+are never a write target of a Part C process. Rows pin the S-world's folders so the host cleaner keeps them. The SNKF build is checked on the first dataset
+(squad) before the other four are queued.
 
 ## 6. What the paper's wording must carry (for the paper session; this stage edits nothing under paper/)
 
