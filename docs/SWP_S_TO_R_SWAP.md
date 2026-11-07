@@ -77,9 +77,9 @@ Facts that fix the design:
 
 | dataset | slot S | slot R | slot empty |
 |---|---|---|---|
-| SQuAD | SNK (new build) | REC (the record) | NK (not queued yet) |
-| MetaQA | REC | RK (ABL's row, moved up) | NK (not queued yet) |
-| WebQSP | REC | RK (ABL's row, moved up) | NK (not queued yet) |
+| SQuAD | SNK (new build) | REC (the record) | NK (queued, `swp3-*`) |
+| MetaQA | REC | RK (ABL's row, moved up) | NK (queued, `swp3-*`) |
+| WebQSP | REC | RK (ABL's row, moved up) | NK (queued, `swp3-*`) |
 
 The pair is GNX and zrckpn (6 fits each: seeds 0 to 2 on both WQ splits), the same fits as Part A. Nothing trains. `zswp.py` (commit b25504e) forks each
 fit to `outputs/swp/fits/<arm>/<fit>` without its reads (models.pt sha-checked), builds LTM's candidate lists and next-hop columns on the arm's carve
@@ -93,7 +93,7 @@ S minus empty with paired 95% intervals (ABL's `compare`, 2,000 resamples of the
 listed as missing, not filled. The direction is named in every row: the fits of record were trained with S in the slot on the KB datasets and R in the
 slot on SQuAD, so the other slot is a swap at read time (S -> R on the KBs; R -> S on SQuAD).
 
-**No threshold, no adoption call.** The NK builds (the empty slot) are queued after the first six cells are read. SQuAD's S is the title-mention rule, so
+**No threshold, no adoption call.** The NK builds (the empty slot, rows `swp3-*`, same twelve reads per cell) sit behind the RK WebQSP rows on purpose, so they cannot starve that build. ABL's doc records the arms as its amendment A5. SQuAD's S is the title-mention rule, so
 there too the comparison is rule against rule.
 
 ## 5. Part C, the user's call: models trained on S

@@ -273,3 +273,11 @@ identical to the filed one; and on the host with the full WebQSP table, `occurre
 random distinct texts of every length class, 22.0 s for the second part's against 2.4 s now (the 30 texts of 10,000 to 100,000
 characters: 18.0 s against 0.9 s); the index costs 47 s to build (560,046 pairs, 6,390 of them indexed deeper). The running job
 `abl7-u-webqsp` is replaced by `abl8-u-webqsp` with the same command; the five rows that wait on the build wait on it.
+
+## 12. Amendment A5 (8 Nov 2026, 04:20 IST, before any ABL number; the commit message of 7b03029 calls it "A4"): two arms for the swap
+
+The user's ruling of 8 Nov (docs/SWP_S_TO_R_SWAP.md) asks for the swap S -> R with N and K fixed. ABL's eight arms do not hold the other two
+cells of that swap, so `zabl.py` gains `ARM_SWP = {"SNK": ("S", 1, 1), "NK": ("", 1, 1)}` beside the filed eight (`ARM` is unchanged; RK = `("R", 1, 1)`
+is the third cell). `ARM_ALL = {**ARM, **ARM_SWP}` is what `applies`, `dropped`, `on_arm`, `items` and the `--arm` choices read; ABL's grid, its report and
+its self-test are unchanged and the self-test now also asserts the two arms. Their builds and reads are the SWP stage's (`swp-*`, `swp3-*` rows), not ABL's grid;
+RK on MetaQA and WebQSP is ABL's own row, moved ahead in the host queue. No ABL number depends on the change.
