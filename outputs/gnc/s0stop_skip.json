@@ -1,0 +1,44 @@
+{
+ "stage": "GNC",
+ "hp_fit": "scr-gnc-nx-s0-hp",
+ "skipped": true,
+ "command": [
+  "python",
+  "outputs/host_ops/retry_cmd.py",
+  "--tries",
+  "3",
+  "--wait",
+  "90",
+  "--cuda",
+  "--",
+  "python",
+  "outputs/host_ops/cuda_alloc.py",
+  "--frac",
+  "0.8",
+  "--gc",
+  "0.9",
+  "--",
+  "outputs/mp_unified/zgnc.py",
+  "fit",
+  "--name",
+  "scr-gnc-nx-s0-hp"
+ ],
+ "verdict": "NOT_ADOPTED",
+ "s0stop_utc": "2026-11-07T07:42:34Z",
+ "loss_rows": [
+  {
+   "split": "WQ-musique",
+   "read": "webqsp",
+   "base": [
+    0.6632,
+    0.6586,
+    0.6593
+   ],
+   "new": 0.6508,
+   "delta": -0.0124,
+   "floor": 0.0085,
+   "call": "LOSS"
+  }
+ ],
+ "utc": "2026-11-07T08:02:41Z"
+}

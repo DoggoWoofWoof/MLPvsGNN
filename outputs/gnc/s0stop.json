@@ -1,0 +1,146 @@
+{
+ "stage": "GNC",
+ "declared_in": "docs/GNC_CROSSFIT_FIRST_PASS_GNN.md",
+ "rule": "LTG's in-domain rule (zltg.decide_screen)",
+ "s0_fit": "scr-gnc-nx-s0",
+ "hp_fit": "scr-gnc-nx-s0-hp",
+ "split": "WQ-musique",
+ "deciding_reads": [
+  "WQ-musique squad",
+  "WQ-musique hotpotqa",
+  "WQ-musique 2wiki",
+  "WQ-musique webqsp"
+ ],
+ "decision": "STOP",
+ "verdict": "NOT_ADOPTED",
+ "loss_rows": [
+  {
+   "split": "WQ-musique",
+   "read": "webqsp",
+   "base": [
+    0.6632,
+    0.6586,
+    0.6593
+   ],
+   "new": 0.6508,
+   "delta": -0.0124,
+   "floor": 0.0085,
+   "call": "LOSS"
+  }
+ ],
+ "missing": [],
+ "rows": [
+  {
+   "split": "WQ-musique",
+   "read": "squad",
+   "base": [
+    0.9142,
+    0.9145,
+    0.9163
+   ],
+   "new": 0.9148,
+   "delta": 0.0006,
+   "floor": 0.0075,
+   "call": "WITHIN"
+  },
+  {
+   "split": "WQ-musique",
+   "read": "hotpotqa",
+   "base": [
+    0.8593,
+    0.8596,
+    0.8562
+   ],
+   "new": 0.8586,
+   "delta": -0.0007,
+   "floor": 0.0075,
+   "call": "WITHIN"
+  },
+  {
+   "split": "WQ-musique",
+   "read": "2wiki",
+   "base": [
+    0.9269,
+    0.9297,
+    0.9215
+   ],
+   "new": 0.9269,
+   "delta": 0.0,
+   "floor": 0.0086,
+   "call": "WITHIN"
+  },
+  {
+   "split": "WQ-musique",
+   "read": "webqsp",
+   "base": [
+    0.6632,
+    0.6586,
+    0.6593
+   ],
+   "new": 0.6508,
+   "delta": -0.0124,
+   "floor": 0.0085,
+   "call": "LOSS"
+  }
+ ],
+ "beside": [
+  {
+   "split": "WQ-musique",
+   "read": "musique",
+   "base": [
+    0.5086,
+    0.5039,
+    0.5134
+   ],
+   "new": 0.5134,
+   "delta": 0.0048,
+   "floor": 0.0095,
+   "call": "WITHIN"
+  },
+  {
+   "split": "WQ-musique",
+   "read": "metaqa",
+   "base": [
+    0.3615,
+    0.3477,
+    0.3461
+   ],
+   "new": 0.3874,
+   "delta": 0.0259,
+   "floor": 0.0292,
+   "call": "WITHIN"
+  },
+  {
+   "split": "WQ-musique",
+   "read": "musique-3hop",
+   "base": [
+    0.4329,
+    0.4272,
+    0.4404
+   ],
+   "new": 0.439,
+   "delta": 0.0061,
+   "floor": 0.0133,
+   "call": "WITHIN"
+  },
+  {
+   "split": "WQ-musique",
+   "read": "musique-4hop",
+   "base": [
+    0.313,
+    0.3167,
+    0.3179
+   ],
+   "new": 0.3154,
+   "delta": 0.0025,
+   "floor": 0.0087,
+   "call": "WITHIN"
+  }
+ ],
+ "problems": [],
+ "s0_read_sha256": "1e43e55b9792692aeb6b917fab80f6818cc1043c1ff3e3552e826fd9eacf4c40",
+ "calls_sha256": "0e401ad6d771bddb832147a12df942c60b46002d94ed28039db0f9294fa5bdc7",
+ "calls_screen_verdict": "INCOMPLETE",
+ "s0stop_sha256": "9a8150bdeabdf2de7b1a0e76b2914808a7174aeb9ee89b7020b81ee6ed900f3c",
+ "utc": "2026-11-07T07:42:34Z"
+}

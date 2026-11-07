@@ -1,0 +1,147 @@
+{
+ "stage": "GNC",
+ "declared_in": "docs/WWW_SCOPE_RULE.md",
+ "rule": "WWW: the six in-domain reads of 2wiki, HotpotQA and MuSiQue decide",
+ "deciding_reads": [
+  "WQ-musique hotpotqa",
+  "WQ-musique 2wiki",
+  "WQ-hotpotqa musique",
+  "WQ-hotpotqa 2wiki",
+  "WQ-hotpotqa musique-3hop",
+  "WQ-hotpotqa musique-4hop"
+ ],
+ "stop": {
+  "www": "GO",
+  "own": "STOP",
+  "why": "no LOSS on hotpotqa, 2wiki of WQ-musique",
+  "loss_rows": [],
+  "s0_fit": "scr-gnc-nx-s0",
+  "s0_read_sha256": "1e43e55b9792692aeb6b917fab80f6818cc1043c1ff3e3552e826fd9eacf4c40"
+ },
+ "calls_sha256": "a596a7c1757fbd6fb4c03f8ed2b0c4a78b731ba94171ef3c2b8fd9cbdd164730",
+ "problems": [],
+ "zwww_sha256": "f7f157343b69d109756520fd32d8bd79e38aae0bd4e8cb89ee59eb1d97bb26f1",
+ "utc": "2026-11-07T08:07:29Z",
+ "screen": {
+  "www": "INCOMPLETE",
+  "own": "INCOMPLETE",
+  "counts": {
+   "WITHIN": 2
+  },
+  "missing": [
+   "WQ-hotpotqa musique",
+   "WQ-hotpotqa 2wiki",
+   "WQ-hotpotqa musique-3hop",
+   "WQ-hotpotqa musique-4hop"
+  ],
+  "reads": [
+   {
+    "split": "WQ-musique",
+    "read": "hotpotqa",
+    "base": [
+     0.8593,
+     0.8596,
+     0.8562
+    ],
+    "new": 0.8586,
+    "delta": -0.0007,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "2wiki",
+    "base": [
+     0.9269,
+     0.9297,
+     0.9215
+    ],
+    "new": 0.9269,
+    "delta": 0.0,
+    "floor": 0.0086,
+    "call": "WITHIN"
+   }
+  ],
+  "beside": [
+   {
+    "split": "WQ-musique",
+    "read": "squad",
+    "base": [
+     0.9142,
+     0.9145,
+     0.9163
+    ],
+    "new": 0.9148,
+    "delta": 0.0006,
+    "floor": 0.0075,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "webqsp",
+    "base": [
+     0.6632,
+     0.6586,
+     0.6593
+    ],
+    "new": 0.6508,
+    "delta": -0.0124,
+    "floor": 0.0085,
+    "call": "LOSS"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "musique",
+    "base": [
+     0.5086,
+     0.5039,
+     0.5134
+    ],
+    "new": 0.5134,
+    "delta": 0.0048,
+    "floor": 0.0095,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "metaqa",
+    "base": [
+     0.3615,
+     0.3477,
+     0.3461
+    ],
+    "new": 0.3874,
+    "delta": 0.0259,
+    "floor": 0.0292,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "musique-3hop",
+    "base": [
+     0.4329,
+     0.4272,
+     0.4404
+    ],
+    "new": 0.439,
+    "delta": 0.0061,
+    "floor": 0.0133,
+    "call": "WITHIN"
+   },
+   {
+    "split": "WQ-musique",
+    "read": "musique-4hop",
+    "base": [
+     0.313,
+     0.3167,
+     0.3179
+    ],
+    "new": 0.3154,
+    "delta": 0.0025,
+    "floor": 0.0087,
+    "call": "WITHIN"
+   }
+  ]
+ },
+ "full_run": null
+}

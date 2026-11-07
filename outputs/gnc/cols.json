@@ -1,0 +1,155 @@
+{
+ "declared_in": "docs/GNC_CROSSFIT_FIRST_PASS_GNN.md",
+ "cache_root": "outputs/pko/cache",
+ "splits": {
+  "WQ-musique": {
+   "webqsp/fit": {
+    "rows": 5810431,
+    "record_sha256": "f2b566708c0bff909e47e7b079742fa5b5d7abd1ddea0623f6b311cd0e7d915a",
+    "fit_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125",
+    "training_carve": true,
+    "nan": 0
+   },
+   "squad/fit": {
+    "rows": 292994,
+    "record_sha256": "70402fe6832fb1118bb957932630930c19197525c596faffab58682e1bcfae8c",
+    "fit_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125",
+    "training_carve": true,
+    "nan": 0
+   },
+   "hotpotqa/fit": {
+    "rows": 4177279,
+    "record_sha256": "e40dbc1f7ccafc2b9bdcb8d47b690a7d1b9c1efbb1eb54aabe865041c8c0748f",
+    "fit_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125",
+    "training_carve": true,
+    "nan": 0
+   },
+   "2wiki/fit": {
+    "rows": 6333879,
+    "record_sha256": "9c0ba7b9f0e4878f3213199eba494111e9fd189bc416400e0965222d3c81afde",
+    "fit_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125",
+    "training_carve": true,
+    "nan": 0
+   },
+   "metaqa/s1eval": {
+    "rows": 42796440,
+    "record_sha256": "2391c8ca11f0c127ed046674bb58fbbe504a98119bd4becefcf6d0d26b835d77",
+    "fit_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125",
+    "training_carve": false,
+    "nan": 0
+   },
+   "squad/s1eval": {
+    "rows": 594063,
+    "record_sha256": "068b2bb5f7e09349d1667effd0ef1574f76722b908ab66a6b7b51c34d931c957",
+    "fit_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125",
+    "training_carve": false,
+    "nan": 0
+   },
+   "musique/s1eval": {
+    "rows": 12722170,
+    "record_sha256": "eb18162965427fd74030a58b832b60bf02a3d8b1bbfae51bf150036a78c146ff",
+    "fit_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125",
+    "training_carve": false,
+    "nan": 0
+   },
+   "hotpotqa/s1eval": {
+    "rows": 5228156,
+    "record_sha256": "75327b448c6421141a7ec625ddfd8f72360cad72f36b93919bb164d31b20df1d",
+    "fit_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125",
+    "training_carve": false,
+    "nan": 0
+   },
+   "2wiki/s1eval": {
+    "rows": 13597212,
+    "record_sha256": "7286c3fb9975f9392223cb5b15777b914dcb34f641b2d7c5f29211c930c26593",
+    "fit_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125",
+    "training_carve": false,
+    "nan": 0
+   },
+   "webqsp/s1eval": {
+    "rows": 7219527,
+    "record_sha256": "bb814a8379139dd738bee9d55f59f554e41cddf68d89925ece78245881897cb6",
+    "fit_sha256": "8456ed7419da70b9cf4d7358f4bb98e634761e51fa2168d961462474f1a80125",
+    "training_carve": false,
+    "nan": 0
+   }
+  },
+  "WQ-hotpotqa": {
+   "webqsp/fit": {
+    "rows": 5810431,
+    "record_sha256": "14cdbc344a8e9227c61b8a4e8181f8896a68c7d3b990d714493204f7e61685b8",
+    "fit_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0",
+    "training_carve": true,
+    "nan": 0
+   },
+   "squad/fit": {
+    "rows": 292994,
+    "record_sha256": "1eac4dbbec3fe328ecdf1d9c701178d57f9a3c230f6fa39426f7f53422cb696b",
+    "fit_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0",
+    "training_carve": true,
+    "nan": 0
+   },
+   "musique/s1fit": {
+    "rows": 25112502,
+    "record_sha256": "9c2f3ec0794c325608da60f4f460a4248aad6dd2716bb68649f994a342333b01",
+    "fit_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0",
+    "training_carve": true,
+    "nan": 0
+   },
+   "2wiki/fit": {
+    "rows": 6333879,
+    "record_sha256": "e59d7d85359d17f81de5ff8d6f4c104f0be03191a2ec1a3aa6f45bbb3a7a72f1",
+    "fit_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0",
+    "training_carve": true,
+    "nan": 0
+   },
+   "metaqa/s1eval": {
+    "rows": 42796440,
+    "record_sha256": "c7318dd52c81c6529bd54f3b8ba33c25339fda47ea6c0847bd15b305f85cf753",
+    "fit_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0",
+    "training_carve": false,
+    "nan": 0
+   },
+   "squad/s1eval": {
+    "rows": 594063,
+    "record_sha256": "7b946c4c0a142610d6120477db162f1965d75ba072d3583b3a4b9bb6c67e3596",
+    "fit_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0",
+    "training_carve": false,
+    "nan": 0
+   },
+   "musique/s1eval": {
+    "rows": 12722170,
+    "record_sha256": "a614aa3e34eaf340fafbb660bdedd307a1e5ccea903f2afd8e7f7f24694a1f03",
+    "fit_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0",
+    "training_carve": false,
+    "nan": 0
+   },
+   "hotpotqa/s1eval": {
+    "rows": 5228156,
+    "record_sha256": "679534ea6807c4a033fbbbe2ef86c21883dff494eb65f01e8fbf022724f5722c",
+    "fit_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0",
+    "training_carve": false,
+    "nan": 0
+   },
+   "2wiki/s1eval": {
+    "rows": 13597212,
+    "record_sha256": "dad7a010d3489ffd858e0c589edd1b701c3381efdf908f6019054973285d2822",
+    "fit_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0",
+    "training_carve": false,
+    "nan": 0
+   },
+   "webqsp/s1eval": {
+    "rows": 7219527,
+    "record_sha256": "5bec9d4e9c80fa348d6267c38857907ce6e33c928a996beff950803db75d6e3c",
+    "fit_sha256": "4026adb96bb6ff723e40ee8b7777c027a3dca531341b4523d79854b19fad27f0",
+    "training_carve": false,
+    "nan": 0
+   }
+  }
+ },
+ "problems": [],
+ "pass": true,
+ "utc": "2026-11-07T06:09:26Z",
+ "seed": 0,
+ "gnc_problems": []
+}
