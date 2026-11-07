@@ -11,6 +11,8 @@ zabl's chain starts the steps through this file (zabl.__file__ is this file's) s
     python outputs/mp_unified/zswpc.py selftest
 """
 import argparse
+import contextlib
+import os
 import sys
 from pathlib import Path
 
@@ -69,6 +71,74 @@ def gate(datasets=None, host=False):
     return 0
 
 
+# ── the fits, in the S-world only ────────────────────────────────────────────
+
+SPLITS = ("WQ-musique", "WQ-hotpotqa")
+MODELS = {"zspk": "scr-ml1-zspk-s0", "zg6r": "scr-ml1-zg6r-s0", "gnx": "scr-gnx-nx-s0", "zrckpn": "scr-ltm-zrckpn-s0"}
+FITS = tuple(f"{base}{suf}" for base in MODELS.values() for suf in ("", "-hp"))
+
+
+def fit_kind(name):
+    for k, base in MODELS.items():
+        if name in (base, base + "-hp"):
+            return k
+    raise SystemExit(f"SWPC: {name} is not one of Part C's fits ({', '.join(FITS)})")
+
+
+def in_world():
+    """The S-world and nothing else: SWORLD set by sworld.py run, this file under a tree named sworld, outputs/pko the SNKF build, and
+    the fit folders inside the tree itself (not through a junction to the record)."""
+    if os.environ.get("SWORLD") != "1" or ROOT.name != "sworld":
+        raise SystemExit("SWPC: a Part C fit runs only in the S-world (python outputs/host_ops/sworld.py run -- ...)")
+    pko = Path(os.path.realpath(ROOT / "outputs" / "pko"))
+    if pko.parts[-3:] != ("outputs", "abl", ARM):
+        raise SystemExit(f"SWPC: the S-world's outputs/pko is {pko}, not {ARM}")
+    for d in ("screen", "ml1", "ltm", "gnx"):
+        p = ROOT / "outputs" / d
+        if os.path.realpath(p) != os.path.realpath(ROOT) + os.sep + "outputs" + os.sep + d:
+            raise SystemExit(f"SWPC: {p} is not the S-world's own folder")
+    return True
+
+
+def noop_read(_name, _env):
+    return 0
+
+
+def train(name):
+    """One fit trained in the S-world and not read there (the read on the record's s1eval carves is not Part C's): zml1s.fit with its read
+    replaced by a no-op, inside the model's own context (zgnx.on_gnx, zltm.on_ltm), after the checks of the S-world and of the columns."""
+    in_world()
+    kind = fit_kind(name)
+    split = SPLITS[1] if name.endswith("-hp") else SPLITS[0]
+    import zml1s as M1
+    WQ = M1.WQ
+    fd = Path(os.path.realpath(WQ.fit_dir(name)))
+    if not str(fd).startswith(os.path.realpath(ROOT) + os.sep):
+        raise SystemExit(f"SWPC: {name}'s fit folder {fd} is outside the S-world")
+    log(f"train {name} ({kind}, {split}) in {ROOT}")
+    if kind in ("zspk", "zg6r"):
+        with WQ.patch(M1, read=noop_read):
+            return M1.fit(name)
+    import ltmcols as LTMC
+    miss = [f"{ds}/{c}" for ds, c in LTMC.train_carves(split)
+            if not (LTMC.cols_dir(LTMC.OUT, split, ds, c) / "record.json").is_file()]
+    if miss:
+        raise SystemExit(f"SWPC: {name}: no LTM columns of {miss} under {split}")
+    if kind == "gnx":
+        import zgnx as GX
+        G = GX.import_g()
+        call = GX.DEP.iso_call()
+        if name not in GX.FITS:
+            raise SystemExit(f"SWPC: {name} is not a GNX fit")
+        log(f"{name}: NEXT into {GX.DEP.base_fit(GX.FITS[name][1], split, call)}'s model (ISO {call})")
+        with GX.on_gnx(G, call), WQ.patch(M1, read=noop_read):
+            return M1.fit(name)
+    import zltm as LTM
+    LTM.import_arm()
+    with LTM.on_ltm(), WQ.patch(M1, read=noop_read):
+        return M1.fit(name)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", nargs="?")
@@ -80,7 +150,12 @@ def main(argv=None):
     ap.add_argument("--shard")
     ap.add_argument("--lanes", type=int, default=3)
     ap.add_argument("--host", action="store_true")
+    ap.add_argument("--name")
     a = ap.parse_args(argv)
+    if a.cmd == "train":
+        if not a.name:
+            raise SystemExit("train: --name is required")
+        return train(a.name)
     if a.cmd == "selftest":
         return selftest()
     if a.arm != ARM:
@@ -119,6 +194,29 @@ def selftest():
             pass
     finally:
         Z.CARVE, Z.__file__ = keep
+    assert [fit_kind(n) for n in FITS] == ["zspk", "zspk", "zg6r", "zg6r", "gnx", "gnx", "zrckpn", "zrckpn"]
+    for bad in ("scr-ml1-zrckp-s0", "scr-gnx-nx-s1", "x"):
+        try:
+            fit_kind(bad)
+            raise AssertionError(bad)
+        except SystemExit:
+            pass
+    keep = dict(os.environ)
+    try:
+        os.environ.pop("SWORLD", None)
+        for f in (in_world, lambda: train("scr-ml1-zspk-s0")):         # the record's tree never trains a Part C fit
+            try:
+                f()
+                raise AssertionError("must refuse outside the S-world")
+            except SystemExit:
+                pass
+    finally:
+        os.environ.clear()
+        os.environ.update(keep)
+    import zgnx
+    import zltm
+    import zml1s
+    assert set(FITS) <= set(zml1s.ALL_FITS) | set(zgnx.FITS) | set(zltm.FITS), "a Part C fit is in no module's fit table"
     print("zswpc self-test: OK")
     return 0
 
