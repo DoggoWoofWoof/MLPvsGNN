@@ -191,3 +191,13 @@ NOT_ADOPTED is "any LOSS" among the deciding reads (section 4), the screen's NOT
 show; they complete the table and the WWW gate's six reads, and are reported with the others. `s0stop.json` and
 `s0stop_skip.json` stay as filed; the filed report prints the stop and the complete reads side by side. The cost is about two
 hours of the card, which section 5 had saved on a STOP.
+
+**A3 (7 Nov 2026, 19:58 IST, before any WQ-hotpotqa number; changes A2).** The user, after A2 was queued: "leave it for now", to spend the
+card on the ablation and the same-input model. The four feeder rows A2 named (`gnc2-nx-s0-hp`, `gnc2-compare`, `gnc2-calls`,
+`gnc2-gate`) are parked behind a dependency no job has (`hold-gnc2-hp`), so nothing runs; no GNC fit or read beyond the filed ones
+exists. The screen stays as filed in 01ea9f3: the seed-0 stop is STOP (a LOSS on WQ-musique webqsp, minus 0.0124 against 0.0085),
+the screen is NOT_ADOPTED by section 5, and `calls.md` and the WWW gate read INCOMPLETE (four WQ-hotpotqa reads missing). To run
+the fit later, remove `hold-gnc2-hp` from the fit's dependencies; A2 then applies unchanged. **A correction to A2's reason.** A2 quotes
+"it is the exact same inputs". GNC's GNN does not read the MLP's inputs: its NEXT columns are scored against the GNN's own
+first-pass top five (cross-fitted for the training carves), while the MLP of record's and GNX's columns are scored against the first
+stage's top rows. The identical-input pair is zrckpn with GNX (docs/IDP_IDENTICAL_INPUT_PAIR.md, filed c5781cf), not GNC.
