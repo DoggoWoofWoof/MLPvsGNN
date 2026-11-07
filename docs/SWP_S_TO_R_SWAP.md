@@ -64,6 +64,25 @@ ones and every record remain; B1H's pools, links, kt, columns and gate are intac
 regenerated array equals the sha256 the filed cache record names (a difference stops the stage), and puts the filed records back so no sha that names them
 changes. The reads depend on it. Nothing else of B1H is touched; the regenerated files are pinned by the queued reads.
 
+### 3b. Part A filed (8 Nov 04:53 IST; `outputs/idpb/report.{md,json}`, 604f21c)
+
+GNX, zrckpn and zg6r on B1H's b1t -> b1w -> b1, R@5 in points, in-domain, 3-seed means; the interval is on b1 - b1w (S in the slot against the rule links, both with N and K in). The fits were
+trained with the rule links in the slot, so b1 is S swapped in at read time.
+
+| setting | model | b1t | b1w | b1 | b1 - b1w | call |
+|---|---|---:|---:|---:|---|---|
+| 2wiki | GNX | 77.6 | 95.0 | 95.3 | +0.3 (-0.4, +1.0) | level |
+| 2wiki | zrckpn | 77.0 | 94.1 | 94.4 | +0.3 (-0.4, +0.9) | level |
+| hotpotqa | GNX | 91.0 | 94.1 | 96.5 | +2.4 (+1.7, +3.1) | S above R |
+| hotpotqa | zrckpn | 90.4 | 93.4 | 95.6 | +2.2 (+1.5, +2.9) | S above R |
+| musique | GNX | 66.2 | 69.1 | 69.0 | -0.1 (-0.6, +0.4) | level (S is a title-mention rule) |
+| musique | zrckpn | 64.5 | 67.4 | 67.3 | -0.1 (-0.6, +0.4) | level |
+
+GNX minus zrckpn is +0.6 to +0.9 on 2wiki and hotpotqa and +1.6 to +1.8 on musique in-domain, on every carve, and the change of that gap from b1t to b1w or b1 holds 0 in
+every in-domain row: putting structure in does not make the GNN gain on the MLP there (the zero-shot musique row shrinks it, -1.7 to -2.9). The b1 rows of GNX are new reads;
+the b1t, b1w rows of zrckpn and zg6r are B1M's, B1P's and B1H's. The share column of the report prints only where b1 - b1w is not level. Failures before it ran: the cleaner had
+removed B1H's regenerable look, cache, links and kt files (3a); the report's first run failed on `None in (...)` with arrays (fixed b49b7da).
+
 ## 4. Part B, declared 8 Nov 04:20 (before any pair-B read is filed): SQuAD, MetaQA and WebQSP, the same-input pair
 
 Facts that fix the design:
