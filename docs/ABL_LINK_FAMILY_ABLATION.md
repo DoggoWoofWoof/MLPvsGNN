@@ -192,3 +192,40 @@ read under both, one otherwise (a one-fit count is a sign, not a vote). A call s
 it does not say that another seed would agree. The report and anything written from it name seed 0 only. The seeds 1 and 2 reads
 are not queued: the prune removes each dataset's look and cache once its four reads are filed, so adding them later means
 regenerating those (lane-hours, section 6), and would be a further amendment.
+
+## 11. Amendment A4 (7 Nov 2026, 10:25 IST, before any ABL number): ABL-U's scan and CSR made linear (same arrays, speed only)
+
+**What happened.** Section 8's WebQSP build (`abl-u-webqsp`, host job 261106-233355) has run 10 h 46 min (38,285 CPU s) in U2b's
+first pass (`stat_pass`) without a progress line. The cause is U2b's `scan`: for every surface a node's text matches, `occ_look`
+runs `tl.find` over the whole text and `u1d.sent_start` copies `text[:p]`, so a node costs about degree^2.6. WebQSP's KB graph has
+31 nodes above 10,000 neighbours and two of 130,075 and 121,511; the texts of those hubs are 1 to 2 million characters. Measured on
+the biggest hub's own neighbour names: 5,000 neighbours 0.3 s, 20,000 neighbours 11.0 s. The second pass (`link_pass`) repeats the
+scan, so the old job could not finish soon even if the first pass ended now. Its sibling step also holds about 324 million ordered
+pairs (the largest title groups are 9,837, 7,793 and 7,384 unnamed nodes) several times over, which is why the row asks 28 GB.
+
+**The change.** In `zabl_u.py` only; `zu2b.py`, `zu2b_fast.py`, `u1b.py` and `u1d.py` are untouched.
+- `scan_fast` returns exactly what `zu2b.scan` returns (the hit list in order, the mid-sentence counts, the capmid set). It
+  finds a text's bounded occurrences in one pass over the text's word runs (a bounded occurrence of a title is a run of whole word
+  runs, so it starts at a run whose tuple the table indexes), applies `occ_look`'s own boundary test, and replaces
+  `sent_start`'s copy by a scan back over whitespace. It is installed as `zu2b.scan` for the process, so `stat_pass`, `link_pass`
+  and `zu2b_fast.link_pass` all use it. U2b's own is kept (`SCAN_SLOW`) for the checks and for the u1d boundary.
+- `lean_csr` returns exactly `zu2b.undirected_csr` of the mention edges and `zu2b.sibling_pairs` (same arrays, dtypes and
+  sibling-pair count) from sorted keys, without the pair lists or the second copy.
+- `stat_pass_logged` is `zu2b.stat_pass` with a progress line every 100,000 nodes. `--out DIR` writes a build under DIR and, when a
+  filed build of the same dataset exists, compares the arrays and the record's counts with it.
+
+**What does not change.** The rule (NEW_RULE, variant W2, form S), the text recipe, the surfaces, every count, the calls, the arms,
+the reads and the order of section 3 to 6. No ABL number depends on the speed.
+
+**How it was checked (before it runs on WebQSP).** `zabl_u.py --selftest` and `check`: `scan_fast` equals `zu2b.scan` on 308
+random texts with punctuation, parentheses, commas, digits, underscores, non-ASCII letters, newlines, no-break spaces and mixed
+case (3,740 hits, 341 capmid, 1,340 mid-sentence counts), under both rules; `lean_csr` equals `sibling_pairs` + `undirected_csr`
+on 40 random graphs; on MetaQA all 43,234 node texts agree and `stat_pass`'s `cap` and `low` are identical over 68,447 lowercase
+forms (U2b 6 s, fast 3 s); on WebQSP's biggest hub the first 5,000, 20,000 and 60,000 neighbours agree (11.0 s against 0.2 s at 20,000; 182.5 s against 1.4 s at 60,000). The host
+then rebuilds MetaQA with `--out` and compares the arrays and counts with the filed `outputs/abl/u/metaqa` before WebQSP
+starts again.
+
+**On the host.** The running WebQSP job is stopped by killing its python process; `retry_cmd.py` (3 tries) re-runs the same command
+in the same job with the new file, so the job, its reservation and every row that waits on it are unchanged. The old job's
+partial work is thrown away (it kept none: no file, no progress line). The new build's record (`build.json`) carries the new
+`code_sha256`; the MetaQA build filed earlier carries the old one, and the rebuild check shows they give the same arrays.
