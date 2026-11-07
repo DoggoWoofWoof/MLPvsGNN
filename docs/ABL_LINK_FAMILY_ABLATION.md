@@ -170,3 +170,25 @@ missing` and exited 1. No read had run and no number exists.
 retry of that chain took 13 min in all, its look, cache, links and KT being filed; WebQSP is not measured yet); every MetaQA and WebQSP chain of every arm carries them. **Not checkable against PKO:** on the KB, SRK adds R's rule graph
 (section 8) to the KB's triples, so its rmatch, zrc and typed arrays are not PKO's; the MuSiQue check 5 stays the only
 equality check against a record.
+
+## 10. Amendment A3 (7 Nov 2026, 09:50 IST, before any ABL number): the reads use seed 0 only
+
+**What happened.** Section 3 reads ML1's twelve pair-1 fits (zg6r, zrckp; seeds 0-2; both WQ splits) on every arm and dataset: 530
+reads in all with check 5, on a GPU that GNC's fits (D6) hold first. The user was told on 7 Nov that this could be cut to seed 0
+(about 177 reads) and answered "fine we are short of time anyways finish fast". No ABL number exists: the only reads filed are
+check 5's two (musique, seed 0, in-domain), which stay as they are.
+
+**The change.** Each arm and dataset is read by **four fits**: zg6r and zrckp, seed 0, WQ-musique (plain) and WQ-hotpotqa
+(`-hp`). The twelve fits are still forked (the fork copies are small and some already exist); only the four are read. In
+`zabl.py`: `SEEDS = (0,)` and `FITS` is the four seed-0 fits of B's twelve (the self-test asserts the subset). The prune of a
+dataset's look and cache waits for the four reads. In the host queue the reads of seeds 1 and 2 are removed and the prunes
+wait on the four. About 176 reads plus check 5's two remain. Nothing else changes: carves, regimes, arms, build, order, the read path, the
+bootstrap, the resamples, the intervals and the call rule of section 5.
+
+**What the calls then mean.** A cell is the difference of the seed-0 fit's per-question R@5 (arm minus SRK); the interval is the
+paired bootstrap over questions, as in section 5, so it carries the sampling variation of the questions and **not the variation
+of the fit's seed**. 'Below' counts the fits of those read where the arm is below SRK: at most two (the two splits) for a dataset
+read under both, one otherwise (a one-fit count is a sign, not a vote). A call says what the pools and edges do to **this fit**;
+it does not say that another seed would agree. The report and anything written from it name seed 0 only. The seeds 1 and 2 reads
+are not queued: the prune removes each dataset's look and cache once its four reads are filed, so adding them later means
+regenerating those (lane-hours, section 6), and would be a further amendment.

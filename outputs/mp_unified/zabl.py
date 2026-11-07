@@ -67,7 +67,8 @@ PASSAGE = ("musique", "squad", "hotpotqa", "2wiki")
 KB = ("webqsp", "metaqa")
 SHARDS = {"webqsp": 2, "musique": 3, "hotpotqa": 3, "metaqa": 6, "squad": 3, "2wiki": 5}   # pools shards per carve
 ARMS_ML = B.ARMS                                               # ("zg6r", "zrckp")
-SEEDS, SPLITS, SUF, FITS, TRAINS = B.SEEDS, B.SPLITS, B.SUF, B.FITS, B.TRAINS
+SEEDS, SPLITS, SUF, TRAINS = (0,), B.SPLITS, B.SUF, B.TRAINS       # amendment A3 (7 Nov): seed 0 only, B has 0-2
+FITS = tuple(f"scr-ml1-{arm}-s{seed}{SUF[split]}" for arm in ARMS_ML for seed in SEEDS for split in SPLITS)   # 4 of B's 12
 SCREEN_FITS = B.SCREEN_FITS
 PYLIB_RUN = B.PYLIB_RUN
 STEPS = ("pools", "merge", "look", "bases", "cache", "rmatch", "zrc", "links", "typed", "kt", "record")
@@ -571,7 +572,7 @@ def read(arm, fit, datasets=None):
 
 
 def prune(arm, datasets=None):
-    """A dataset's look and cache go once its twelve reads are filed (they cost lane-hours to regenerate, so only reads
+    """A dataset's look and cache go once its four reads (seed 0; amendment A3) are filed (they cost lane-hours to regenerate, so only reads
     and records are required first); the pools, links, kt, records and reads stay. One dataset at a time keeps an arm's
     peak on disk to one dataset's footprint."""
     datasets = tuple(datasets or built(arm))
@@ -665,7 +666,7 @@ def fmt(c):
 def report():
     rec = {"declared_in": DECLARED, "stage": STAGE, "boot": BOOT, "base": BASE_ARM, "arms": {}, "adds": {}, "gnn_minus_mlp": {},
            "missing": []}
-    cap = ("R@5 x100 on each development carve (s1eval), the pair-1 fits of ML1 fixed, three seeds (both splits where a "
+    cap = ("R@5 x100 on each development carve (s1eval), the pair-1 fits of ML1 fixed, seed 0 only (amendment A3; both splits where a "
            "dataset is read under both); differences in points with a 95% interval from 2,000 paired bootstrap resamples "
            "over questions; call = BELOW / LEVEL / ABOVE; 'below' = fits (of those read) where the first is below the second.")
     lines = [f"# ABL report (declared in {DECLARED})", "", cap, "", f"## Arm minus {BASE_ARM} (all three families)", "",
@@ -853,8 +854,8 @@ def rec_items():
 
 def items(arm, lanes=6):
     """Feeder rows (outputs/host_ops/hostfeed_items.txt format) for one arm. The arm's datasets run one after another
-    (DATASETS' order) so that its disk peak is one dataset's: chain, then the gate on that dataset, then the twelve
-    reads on the GPU, then the prune of its look and cache; the next dataset's chain waits on that prune. A chain also
+    (DATASETS' order) so that its disk peak is one dataset's: chain, then the gate on that dataset, then the four
+    reads (seed 0; amendment A3) on the GPU, then the prune of its look and cache; the next dataset's chain waits on that prune. A chain also
     waits on the dataset's slot graphs (abl-g-<D>) when the arm's slot is not empty. Arms are independent of one another
     and run side by side as the host's lanes allow."""
     if arm == CHECK_ARM:
@@ -897,13 +898,13 @@ def selftest():
     assert in_domain_splits("musique") == ("WQ-hotpotqa",) and in_domain_splits("hotpotqa") == ("WQ-musique",)
     assert in_domain_splits("metaqa") == () and set(in_domain_splits("2wiki")) == set(SPLITS)
     assert set(in_domain_splits("webqsp")) == set(SPLITS) and set(in_domain_splits("squad")) == set(SPLITS)
-    assert len(FITS) == 12 and all(k in SHARDS for k in DATASETS) and set(CHECK_FITS) <= set(FITS)
+    assert len(FITS) == 4 and set(FITS) <= set(B.FITS) and SEEDS == (0,) and all(k in SHARDS for k in DATASETS) and set(CHECK_FITS) <= set(FITS)
     # an empty ner or knn store has no edge and the right size
     st = empty_store("ner", 5)
     assert st.indptr.shape == (6,) and st.col.size == 0 and st.weight.size == 0
     rows = items("SRK", 6)
-    assert len(rows) == 1 + 6 * (1 + 1 + 12 + 1) and all(r.count("|") >= 7 for r in rows)
-    assert sum("gpu:" in r for r in rows) == 72 and all(r.startswith("line|x|") for r in rows)
+    assert len(rows) == 1 + 6 * (1 + 1 + 4 + 1) and all(r.count("|") >= 7 for r in rows)
+    assert sum("gpu:" in r for r in rows) == 24 and all(r.startswith("line|x|") for r in rows)
     names = [r.split("|")[3] for r in rows]
     assert len(names) == len(set(names)), "item names are unique"
     by = {r.split("|")[3]: r.split("|")[2].split(",") for r in rows}
@@ -914,7 +915,7 @@ def selftest():
                for n, ds_ in by.items() for d in ds_ if d)
     k = items("K", 6)
     assert not any("abl-g-" in r.split("|")[2] for r in k), "the empty slot needs no slot graph"
-    assert len(items("RK", 6)) == 1 + 2 * 15 and len(items("0", 6)) == 1 + 6 * 15
+    assert len(items("RK", 6)) == 1 + 2 * 7 and len(items("0", 6)) == 1 + 6 * 7
     g = g_items()
     assert [r.split("|")[3] for r in g] == [f"abl-g-{d}" for d in DATASETS] and g[-1].split("|")[2] == "abl-u-webqsp" and g[1].split("|")[2] == "abl-u-metaqa"
     r5 = items(CHECK_ARM)
@@ -945,7 +946,7 @@ def selftest():
     finally:
         g_["per_q"] = real_pq
     assert mi and mh and wi and kh and wh is None and ki is None, "webqsp has no held-out fits; metaqa has no in-domain fits"
-    assert len(mi["fits"]) == 3 and len(mh["fits"]) == 3 and len(wi["fits"]) == 6 and len(kh["fits"]) == 6
+    assert len(mi["fits"]) == 1 and len(mh["fits"]) == 1 and len(wi["fits"]) == 2 and len(kh["fits"]) == 2
     assert set(mi["fits"]) | set(mh["fits"]) <= set(FITS) and not set(mi["fits"]) & set(mh["fits"])
     assert all(f.endswith("-hp") for f in mi["fits"]) != all(f.endswith("-hp") for f in mh["fits"])
     # the paired comparison: identical cells are LEVEL with difference 0; a cell 0.1 lower in every question is BELOW
