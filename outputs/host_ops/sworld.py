@@ -8,7 +8,8 @@ clear and overwrite the record's. Here the same code runs in a sibling tree whos
         src, scripts, docs, configs, outputs/mp_unified/*.py, outputs/host_ops/*.py     copies of the record's code (shas in sworld_manifest.json)
         data, outputs/<every other folder>                                            junctions to the record's (inputs, read only by design)
         outputs/pko                                                                   junction to outputs/abl/SNKF (S + N + K training carves)
-        outputs/screen, ml1, ltm, gnx, dep, dob, iso, ltg                              the S-world's own (empty, or copies of small verdict files)
+        outputs/screen, ml1, ltm, gnx, swp, idpb, dep, dob, iso, ltg                    the S-world's own (empty, or copies of small verdict files)
+        outputs/pko_rec                                                               junction to the record's outputs/pko (reads on the record's roots)
 
     python outputs/host_ops/sworld.py make          (create or refresh; code copies are replaced, the S-world's own folders never)
     python outputs/host_ops/sworld.py verify        (the copied code equals the record's, byte for byte; nothing else)
@@ -31,9 +32,10 @@ CODE_DIRS = ("src", "scripts", "docs", "configs")                    # copied wh
 CODE_FILES = ("pyproject.toml", "experiments.py")
 CODE_OUT = ("mp_unified", "host_ops")                                # outputs/<d>/ top-level text files copied, subfolders junctioned
 SKIP_EXT = {".pyc"}
-OWN = ("screen", "ml1", "ltm", "gnx")                                # empty folders of the S-world
+OWN = ("screen", "ml1", "ltm", "gnx", "swp", "idpb")                  # empty folders of the S-world (swp, idpb: the reads of the S-trained fits)
 OWN_COPY = ("dep", "dob", "iso", "ltg")                              # small result files of the record that checks read (json, md, txt)
 PKO_TARGET = "outputs/abl/SNKF"
+EXTRA_LINKS = {"pko_rec": "outputs/pko"}                              # the record's own PKO base, for the reads on the record's roots (REC)
 MANIFEST = "sworld_manifest.json"
 
 
@@ -138,6 +140,8 @@ def make(world=WORLD, root=ROOT):
     target = root / PKO_TARGET
     if target.exists():
         junction(world / "outputs" / "pko", target)
+    for name, tgt in EXTRA_LINKS.items():
+        junction(world / "outputs" / name, root / tgt)
     (world / MANIFEST).write_text(json.dumps({"root": str(root), "files": code_files(root)}, indent=1), encoding="utf-8")
     print(f"sworld: made {world}; {len(made)} junctions; pko -> {'present' if target.exists() else 'NOT YET (outputs/abl/SNKF missing)'}")
     return 0
@@ -182,12 +186,17 @@ def selftest():
                      ("outputs/screen", "s.txt"), ("outputs/dep", "v.json"), ("data", "z.txt")):
             (root / d).mkdir(parents=True, exist_ok=True)
             (root / d / f).write_text("x", encoding="utf-8")
+        (root / "outputs/pko").mkdir(parents=True, exist_ok=True)
+        (root / "outputs/swp").mkdir(parents=True, exist_ok=True)
+        (root / "outputs/swp/f.txt").write_text("r", encoding="utf-8")
         (root / "outputs/mp_unified/look").mkdir()
         (root / "outputs/mp_unified/look/big.npz").write_text("big", encoding="utf-8")
         (root / "pyproject.toml").write_text("p", encoding="utf-8")
         make(world, root)
         assert is_link(world / "outputs/other") and is_link(world / "data") and is_link(world / "outputs/mp_unified/look")
         assert is_link(world / "outputs/pko") and os.path.realpath(world / "outputs/pko") == os.path.realpath(root / "outputs/abl/SNKF")
+        assert is_link(world / "outputs/pko_rec") and os.path.realpath(world / "outputs/pko_rec") == os.path.realpath(root / "outputs/pko")
+        assert not is_link(world / "outputs/swp") and not (world / "outputs/swp/f.txt").exists()
         assert not is_link(world / "outputs/screen") and list((world / "outputs/screen").iterdir()) == [world / "outputs/screen/fits"]
         assert not (world / "outputs/screen/s.txt").exists() and (world / "outputs/dep/v.json").exists()
         assert (world / "outputs/mp_unified/m.py").is_file() and (world / "src/a.py").is_file()
