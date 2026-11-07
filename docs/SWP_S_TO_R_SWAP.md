@@ -55,6 +55,15 @@ title-mention graph, which is itself a rule**).
   adds nothing the structure's inputs did not already give the MLP.
 - **No threshold, no adoption call.** The stage reports differences and intervals. It decides nothing about any model.
 
+### 3a. Amendment A1 (8 Nov 04:10, before any IDPB read is filed)
+
+The first test read (`idpb-main-m0`, 04:01) failed on `FileNotFoundError outputs/b1h/cache/2wiki/b1/part_0of1/xc.npy`: the host cleaner removed
+B1H's regenerable b1 look chunks and cache arrays on 7 Nov 16:49 (no queued item named them; 12 of the 17 arrays per cache part are gone, the small
+ones and every record remain; B1H's pools, links, kt, columns and gate are intact). `zidpb.py regen --dataset D` (rows `idpb-regen-{2wiki,hotpotqa,musique}`,
+2 cpu, 6 to 8 GB) sets the filed look and cache folders of the carve aside as `b1.filed`, runs B1H's own chain on B1H's root, checks that every
+regenerated array equals the sha256 the filed cache record names (a difference stops the stage), and puts the filed records back so no sha that names them
+changes. The reads depend on it. Nothing else of B1H is touched; the regenerated files are pinned by the queued reads.
+
 ## 4. Part B, not yet declared: SQuAD, MetaQA and WebQSP
 
 Declared in its own amendment before any number. Facts that fix its design:
