@@ -46,3 +46,28 @@ the same inputs ("the best mlp and the best gnn should have exactly the same inp
 - A fit that ends INCOMPLETE or with a read missing is re-run by name, not skipped. No threshold is declared: the stage reports
   differences and counts, it does not call ADOPT or NOT_ADOPTED.
 - The seed-0 numbers already filed are not recomputed. The cancelled ISB job lost about 1 h 10 min of a 6.5 h fit.
+
+## 5. Amendment A1 (7 Nov 2026, 20:03 IST, before any GNX read on B1P's carves)
+
+The user, 7 Nov: finish the ablations and the same-input model. Section 3 left one part open: GNX read on HippoRAG 2's three
+settings with B1M's columns, so that the pair is on identical inputs there too. This amendment declares it.
+
+- **What runs.** GNX's six fits (`scr-gnx-nx-s{0,1,2}` and `-hp`, filed by GNX and IDP; no training) are forked to
+  `outputs/idpa/fits/<v>/<fit>` without their reads (models.pt checked), once per variant (`w` = b1w, `t` = b1t), and each is
+  read on B1P's carve of the variant for musique, 2wiki and hotpotqa: B1P's roots, gate and carves, B1M's columns (LTM's own
+  scorers and fold fits, built on those carves by B1M; `outputs/b1m/ltm`, read only), the card, p@swa alone, the rows cap and the
+  device of the fit's own train. The read is zml1s's `run_arm(read)` under GNX's patches (`zgnx.on_gnx`) with B1P's patches for
+  the roots, the gate, the eval carves and the read flags; `zgnx.on_split` is given B1M's column folder. A read that loads no
+  columns for one of its three carves, or loads columns of another scorer than the fit's, stops unwritten.
+- **Module.** `outputs/mp_unified/zidpa.py` (`fork`, `read --name FIT --variant w|t`, `report`, `--selftest`). It imports
+  `zb1m.py`, `zb1p.py`, `zgnx.py`, `zml1s.py`, `zp1c3.py`, `b1b.py` and `b1f.py` and edits none of them, and writes under
+  `outputs/idpa/` only. Twelve reads (6 fits x 2 variants), each about the length of B1P's zg6r reads (2 to 4 min).
+- **The report.** Per setting, variant and domain (in-domain = the WQ splits that train on the dataset, zero-shot = the others),
+  the 3-seed R@5 of GNX, zrckpn (B1M's reads) and zg6r (B1P's reads), each with its 95% bootstrap interval (b1b's: 2,000
+  resamples of the questions, seed 0); GNX minus zrckpn and GNX minus zg6r with their intervals and a label by the interval
+  (GNX_ABOVE, OTHER_ABOVE, LEVEL; the same rule as B1M's GNN_ABOVE, MLP_ABOVE, LEVEL), with the number of fit pairs where GNX is
+  above; the b1w in-domain gap to the best published rows and the interval calls against them, as B1M files them. No threshold
+  is declared and no ADOPT or NOT_ADOPTED is called: the stage reports differences, intervals and counts, like section 4's.
+- **What it does not change.** zg6r stays the GNN of record; the tables of section 3 and the seed-0 numbers already filed stand.
+  Until `outputs/idpa/report.json` is filed, the b1 settings carry zrckpn against zg6r as B1M filed them.
+- **Stop.** A read that ends INCOMPLETE, or with a file missing, is re-run by name, not skipped.
