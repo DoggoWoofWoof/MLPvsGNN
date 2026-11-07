@@ -306,7 +306,7 @@ def report():
             gt, mt = means.get((GNX, "b1t", which)), means.get((MLP, "b1t", which))
             for carve in ("b1w", "b1"):
                 g, m = means.get((GNX, carve, which)), means.get((MLP, carve, which))
-                if None in (g, m, gt, mt):
+                if any(x is None for x in (g, m, gt, mt)):          # arrays: `None in (...)` compares them with ==
                     continue
                 s["gap_change"][f"{which}/{carve} vs b1t"] = H.ci_of((g - m) - (gt - mt))
         s["questions_note"] = "R@5 of the p@swa candidate, 1,000 questions, no LLM"
@@ -412,6 +412,7 @@ def selftest():
     # 5. the share and the gap change on synthetic means
     t, w, h = np.full(100, 0.5), np.full(100, 0.8), np.full(100, 0.9)
     assert abs(float((w - t).mean()) / float((h - t).mean()) - 0.75) < 1e-9
+    assert any(x is None for x in (t, w, None, h)) and not any(x is None for x in (t, w, h))   # the report's guard on arrays
     # 6. regen is wired, refuses an unknown dataset; damaged() sees a missing array and a missing look chunk
     with tempfile.TemporaryDirectory() as t:
         d = Path(t) / "kt"
