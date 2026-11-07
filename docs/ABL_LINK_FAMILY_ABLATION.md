@@ -230,7 +230,7 @@ in the same job with the new file, so the job, its reservation and every row tha
 partial work is thrown away (it kept none: no file, no progress line). The new build's record (`build.json`) carries the new
 `code_sha256`; the MetaQA build filed earlier carries the old one, and the rebuild check shows they give the same arrays.
 
-**A4, second part (7 Nov 2026, 11:05 IST, before any ABL number).** The first run of the fast scan on the host (rx job
+**A4, second part (7 Nov 2026, 11:03 IST, before any ABL number).** The first run of the fast scan on the host (rx job
 261107-103311, `abl5-u-webqsp`) had not logged its first 100,000 nodes after 21 minutes, 8 times slower than the same code
 on the laptop with a table a quarter of the size. The cause is in the candidate lookup that `scan_fast` took from U2b's table:
 at each word run it tries every title length listed under that run as a first word, and WebQSP's titles list 382 lengths
