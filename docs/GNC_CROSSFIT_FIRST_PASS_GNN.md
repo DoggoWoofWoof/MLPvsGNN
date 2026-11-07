@@ -178,3 +178,16 @@ exact and sections 2.2 and 2.3 were loose:
   constant over every training row is dropped) is evaluated over the whole carve, as in every other fit, because it reads
   values, not labels; a half fit's batches, its context statistics and its loss see its half's questions only. Section 8's
   "shared inputs fit on every question" covers it.
+
+**A2 (7 Nov 2026, 19:18 IST, after the WQ-musique fit's seed-0 read and the stop, before any WQ-hotpotqa number).** The seed-0 stop
+(section 5) answered STOP at 13:12 UTC+5:30 on one LOSS (WQ-musique, webqsp read: 0.6632 to 0.6508, minus 0.0124 against a floor of
+0.0085); `zgnc.py s0stop-run` then wrote `s0stop_skip.json` and did not run `scr-gnc-nx-s0-hp`, so `calls.md` and the WWW gate read
+INCOMPLETE for the four missing WQ-hotpotqa reads. The user's ruling (7 Nov, the chat): "we need to finish gnc because it is the
+exact same inputs". The WQ-hotpotqa fit is therefore run as declared: the same command and arguments (`zgnc.py fit --name
+scr-gnc-nx-s0-hp`, 0.83 of the card), as feeder rows `gnc2-nx-s0-hp`, `gnc2-compare`, `gnc2-calls` and `gnc2-gate`, without the
+stop's wrapper. Nothing in sections 2 to 4 changes: the same ten deciding reads, the same floor, the same rule. The WQ-musique
+fit's seed-0 numbers were read before this amendment (the stop is made of them); nothing of the WQ-hotpotqa fit has been. Because
+NOT_ADOPTED is "any LOSS" among the deciding reads (section 4), the screen's NOT_ADOPTED stands whatever the WQ-hotpotqa reads
+show; they complete the table and the WWW gate's six reads, and are reported with the others. `s0stop.json` and
+`s0stop_skip.json` stay as filed; the filed report prints the stop and the complete reads side by side. The cost is about two
+hours of the card, which section 5 had saved on a STOP.
