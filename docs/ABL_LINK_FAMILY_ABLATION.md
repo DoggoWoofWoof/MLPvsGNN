@@ -166,7 +166,7 @@ missing` and exited 1. No read had run and no number exists.
    part of the arm (the slot graph keeps S's typed rows; an arm without S has none), so ABL's read now takes the arm's own
    typed arrays (`outputs/abl/<arm>/typed`). Check 5 (arm REC, MuSiQue) is a passage carve and does not use them.
 
-**What it costs.** One more rmatch, zrc and typed step per chained chain (MetaQA about 90 s of steps, WebQSP about 1,000 s in
-PKO's timings); every MetaQA and WebQSP chain of every arm carries them. **Not checkable against PKO:** on the KB, SRK adds R's rule graph
+**What it costs.** One more rmatch, zrc and typed step per chained chain (measured on SRK, MetaQA: rmatch 79 s, zrc 78 s, typed 372 s; the
+retry of that chain took 13 min in all, its look, cache, links and KT being filed; WebQSP is not measured yet); every MetaQA and WebQSP chain of every arm carries them. **Not checkable against PKO:** on the KB, SRK adds R's rule graph
 (section 8) to the KB's triples, so its rmatch, zrc and typed arrays are not PKO's; the MuSiQue check 5 stays the only
 equality check against a record.
