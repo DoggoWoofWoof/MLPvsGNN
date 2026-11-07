@@ -144,6 +144,20 @@ rule. "Do we need message passing" is read from the GNX − zrckpn gap at each s
 are never a write target of a Part C process. Rows pin the S-world's folders so the host cleaner keeps them. The SNKF build is checked on the first dataset
 (squad) before the other four are queued.
 
+### 5a. Amendment (8 Nov 05:35, the user: B1L's LLM-edge comparison belongs in the MuSiQue table): a reference column, no new compute
+
+The Part A and Part C reports (and Part B's, where the dataset is one B1L read) carry B1L's filed rows (`outputs/b1l/report.json`, 568bf08) as a **reference block** for
+MuSiQue and 2Wiki: the record fits `zg6r` and `zrckpn` (trained with R, not GNX) read on b1t / b1w / b1o, in-domain and held out, with B1L's calls. Rules for the block:
+- it is labelled as reference: the edges are H4o's LLM-built P edges (not part of the standalone method), the fits are the record's, the pair is not the same-input pair;
+- b1o's entries are NULL-heavy (89.5% of MuSiQue's entries have the null score type) and the fits were fitted on W2_S-typed entries, so b1o − b1t is a lower bound on what a
+  model can take from LLM edges (B1L's own caveat);
+- the direction is named (rule links against LLM edges); b1w − b1o is quoted with its interval and call (in-domain MuSiQue NOT_LESS: `zg6r` GREATER, `zrckpn` SAME;
+  held out LESS for both); never "the rule beats the LLM";
+- a GNX read on b1o (the same-input pair on the LLM edges) is a new cell, not queued here: it needs LTM's lists and columns on b1o (B1L's, on the record scorer) and, for
+  Part C's S-trained fits, the S-scorer's columns on b1o.
+It does not test an upper bound for a multi-hop graph: the LLM edges are extracted from the passages, not drawn between a question's chain. That test would be an oracle graph
+(gold passages of one question linked to each other, label-using, a diagnostic upper bound only, never a method); it is **not** declared or queued.
+
 ## 6. What the paper's wording must carry (for the paper session; this stage edits nothing under paper/)
 
 - Name the direction of every swap (trained on which family, read with which).
