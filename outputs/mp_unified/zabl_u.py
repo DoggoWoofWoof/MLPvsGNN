@@ -21,6 +21,7 @@ for _v in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS"):
 sys.dont_write_bytecode = True
 
 import argparse  # noqa: E402
+from array import array  # noqa: E402
 import hashlib  # noqa: E402
 import json  # noqa: E402
 import time  # noqa: E402
@@ -192,9 +193,32 @@ def scan_fast(S, text, rule):
     return out, stat, capmid
 
 
+def scan_memo(S, text, rule):
+    """scan_fast, remembered by text (amendment A4, third part). scan is a pure function of (S, rule, text), WebQSP's node texts
+    repeat (1,109,157 distinct of 2,592,894) and the link pass scans the same texts as the first pass, so each distinct text is
+    scanned once. The memo holds the three outputs as plain integers (hit k*2+ok, capmid, the counts as lid, c, low triples);
+    every call returns fresh objects equal to scan_fast's."""
+    memo = S.__dict__.setdefault("_abl_memo", {}).setdefault(id(rule), {})
+    cnt = S.__dict__.setdefault("_abl_memo_n", [0, 0])
+    cnt[0] += 1
+    v = memo.get(text)
+    if v is None:
+        hits, st, cm = scan_fast(S, text, rule)
+        flat = []
+        for lid, (c, l_) in st.items():
+            flat += (lid, c, l_)
+        memo[text] = (array("q", [2 * k + int(ok) for k, ok in hits]), array("q", flat), tuple(cm))
+        cnt[1] += 1
+        return hits, st, cm
+    hk, fl, cmt = v
+    fl = fl.tolist()
+    return ([(x >> 1, bool(x & 1)) for x in hk.tolist()],
+            {fl[a]: [fl[a + 1], fl[a + 2]] for a in range(0, len(fl), 3)}, set(cmt))
+
+
 def install_fast_scan():
     """zu2b.stat_pass, zu2b.link_pass and zu2b_fast.link_pass all call zu2b.scan by name at run time."""
-    zu2b.scan = scan_fast
+    zu2b.scan = scan_memo
 
 
 def lean_csr(n, s_, t_, group, desc):
@@ -263,6 +287,10 @@ def build_graph(titles, texts, dense_get, rule=None, lo=0, progress=None, lean=T
     cap, low = stat_pass_logged(S, texts, titles, rule, stat_progress)
     common = low > cap
     edges, stats = zu2b_fast.link_pass(S, texts, titles, rule, common, dense_get, VARIANT, lo=lo, progress=progress)
+    calls, distinct = S.__dict__.pop("_abl_memo_n", [0, 0])
+    S.__dict__.pop("_abl_memo", None)
+    if calls:
+        log(f"  scan memo: {distinct} texts scanned for {calls} scans")
     s_, t_ = (a.astype(np.int64) for a in edges["W2"])
     key = s_ * n + t_
     if np.unique(key).size != key.size or (s_ == t_).any():
@@ -332,11 +360,11 @@ def build_stage(name, host=False, out=None):
         if (fz / "W2_S.npz").exists() and (fz / "build.json").exists():
             a, b, ref = np.load(fz / "W2_S.npz"), np.load(p), json.loads((fz / "build.json").read_text())
             same_rec = True
-        for key in ("descriptive_nodes", "surfaces", "common_forms", "forms_seen", "mention_directed_edges", "sibling_pairs",
-                    "groups_with_siblings", "largest_group", "undirected_neighbours"):
-            if ref.get(key) != rec.get(key):
-                same_rec = False
-                log(f"{name}: A4 check: {key} {rec.get(key)} here, {ref.get(key)} in the filed record")
+            for key in ("descriptive_nodes", "surfaces", "common_forms", "forms_seen", "mention_directed_edges", "sibling_pairs",
+                        "groups_with_siblings", "largest_group", "undirected_neighbours"):
+                if ref.get(key) != rec.get(key):
+                    same_rec = False
+                    log(f"{name}: A4 check: {key} {rec.get(key)} here, {ref.get(key)} in the filed record")
             same_arr = (np.array_equal(a["indptr"], b["indptr"]) and np.array_equal(a["col"], b["col"])
                         and a["col"].dtype == b["col"].dtype and a["indptr"].dtype == b["indptr"].dtype)
             log(f"{name}: A4 rebuild check against the filed {fz.relative_to(ROOT)}: arrays " + ("IDENTICAL" if same_arr else "DIFFERENT")
@@ -390,6 +418,9 @@ def toy_titles_texts(rng, n_titles=400, n_texts=300):
 def compare_scans(S, texts, rule, what):
     for i, tx in enumerate(texts):
         a, b = SCAN_SLOW(S, tx, rule), scan_fast(S, tx, rule)
+        m1, m2 = scan_memo(S, tx, rule), scan_memo(S, tx, rule)        # the first call fills the memo, the second reads it
+        if not (same_scan(a, m1) and same_scan(a, m2) and type(m2[0]) is list and all(type(h[1]) is bool for h in m2[0])):
+            raise SystemExit(f"{what}: text {i} differs through the memo ({len(tx)} chars)")
         if not same_scan(a, b):
             raise SystemExit(f"{what}: text {i} differs ({len(tx)} chars): slow {a[0][:3]} {a[1]} fast {b[0][:3]} {b[1]}")
 

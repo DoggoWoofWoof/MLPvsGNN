@@ -242,3 +242,17 @@ construction; it is checked as before: 308 random texts, 40 random graphs, MetaQ
 WebQSP's biggest hub identical at 20,000 neighbours; on the laptop with a table of 800,000 titles the scan costs 0.48 ms a node
 against 0.75 ms before. The running job is replaced by a new row (`abl6-u-webqsp`) with the same command; the five rows that
 wait on the build wait on it.
+
+**A4, third part (7 Nov 2026, 11:40 IST, before any ABL number).** WebQSP's 2,592,894 node texts are only 1,109,157 distinct
+texts (MetaQA's 43,234 are 36,974), and the link pass scans the same texts as the first pass. A scan depends on the table, the
+rule and the text alone, so `scan_memo` remembers `scan_fast`'s three outputs by text (the hits as integers, the capmid set, the
+lowercase-form counts) and each distinct text is scanned once for both passes; every call returns fresh objects equal to
+`scan_fast`'s, and the memo is dropped after the link pass. Nothing else changes: the rule, the arrays, the calls and the arms
+stay. Checked as before, with the memo in the path: the 308 random texts and the 40 random graphs; MetaQA's 43,234 texts
+through `scan_fast`, the memo's first call and its second call against U2b's scan, with `stat_pass` identical; and a rebuild of
+MetaQA's graph that is identical to the filed one (arrays and counts; 36,974 texts scanned for 86,468 scans). On the laptop,
+over WebQSP's first 100,000 nodes with a table of 800,000 titles (74,096 distinct texts among them), the two passes take 99.2 s
+with `scan_fast` alone and 60.7 s with the memo, with identical counts and edges. The second part's rebuild check also had its
+`for` loop one level too far out (the comparison printed once per key and would have failed on a missing filed build); it is
+re-indented and only runs with `--out`. The running job `abl6-u-webqsp` (sent 11:39, two minutes in, with the second part's code) is replaced by `abl7-u-webqsp` with the
+same command; the five rows that wait on the build wait on it.
