@@ -70,7 +70,7 @@ ARMS_ML = B.ARMS                                               # ("zg6r", "zrckp
 SEEDS, SPLITS, SUF, FITS, TRAINS = B.SEEDS, B.SPLITS, B.SUF, B.FITS, B.TRAINS
 SCREEN_FITS = B.SCREEN_FITS
 PYLIB_RUN = B.PYLIB_RUN
-STEPS = ("pools", "merge", "look", "bases", "cache", "links", "kt", "record")
+STEPS = ("pools", "merge", "look", "bases", "cache", "rmatch", "zrc", "links", "typed", "kt", "record")
 NO_STEP1 = {"state": "not applicable: an ABL arm has no step-1 cache (docs/ABL_LINK_FAMILY_ABLATION.md)"}
 BOOT = 2000
 CHECK_FITS = ("scr-ml1-zg6r-s0-hp", "scr-ml1-zrckp-s0-hp")      # check 5: musique's in-domain fits of seed 0
@@ -321,9 +321,12 @@ def run_step(kind, arm, name, index=None, shard=None, host=False):
     elif kind == "cache":
         with B.checks(M), on_arm(M, name, arm):
             PK.cache_part(name, CARVE, index, R)
-    elif kind == "links":
+    elif kind in ("rmatch", "zrc", "links"):
         with B.checks(M), on_arm(M, name, arm):
-            PK.chain_build("links", name, CARVE, R)
+            PK.chain_build(kind, name, CARVE, R)
+    elif kind == "typed":
+        with B.checks(M), on_arm(M, name, arm):
+            PK.typed_carve(name, CARVE, R)
     elif kind == "kt":
         PK.kt_stage(name, CARVE, R)
     elif kind == "record":
@@ -333,6 +336,24 @@ def run_step(kind, arm, name, index=None, shard=None, host=False):
         raise SystemExit(f"ABL: step {kind}: one of {STEPS}")
     log(f"step {kind} {arm}/{name} {index or shard or ''}: {time.time() - t:.0f} s")
     return 0
+
+
+def drop_failed_record(R, st):
+    """PKO's record step writes the record and then exits 1 when it names problems, and the chain would take that file
+    for a filed record. A record that names problems is ABL's own file under ABL's roots: it is removed (its problems
+    are logged) so the record step runs again. Returns the problems removed, or None."""
+    p = Path(R.records) / f"{st}.json"
+    if not p.exists():
+        return None
+    problems = read_json(p).get("problems")
+    if not problems:
+        return None
+    base = Path(R.base).resolve()
+    if not base.is_relative_to(OUT.resolve()) and not str(base).startswith(tempfile.gettempdir()):
+        raise SystemExit(f"ABL: {rel(p)} is not under ABL's roots; nothing removed")
+    p.unlink()
+    log(f"record {st}: a failed attempt's record named problems {problems}; removed, the step runs again")
+    return problems
 
 
 def chain(arm, name, lanes=1, host=False):
@@ -381,10 +402,19 @@ def chain(arm, name, lanes=1, host=False):
         one("bases")
     many("cache", [["--index", f"{i}/{nc}"] for i in range(nc)
                    if not (Path(R.cache) / name / CARVE / f"part_{i}of{nc}" / "record.json").exists()])
-    if not all((Path(R.links) / name / CARVE / f"part_{i}of{nc}" / "record.json").exists() for i in range(nc)):
-        one("links")
+    chained = (name, CARVE) in PK.CHAINED
+
+    def parts_filed(root):
+        return all((Path(root) / name / CARVE / f"part_{i}of{nc}" / "record.json").exists() for i in range(nc))
+
+    for what in (("rmatch", "zrc") if chained else ()) + ("links",):
+        if not parts_filed(getattr(R, what)):
+            one(what)
+    if chained and not (Path(R.typed) / name / CARVE / "record.json").exists():
+        one("typed")
     if not (Path(R.kt) / name / CARVE / "record.json").exists():
         one("kt")
+    drop_failed_record(R, st)
     if not (Path(R.records) / f"{st}.json").exists():
         one("record")
     log(f"chain {arm}/{name}: filed ({ent['questions']} questions, {ent['rows']} rows, {nl} look shards, {nc} parts)")
@@ -484,6 +514,8 @@ def read(arm, fit, datasets=None):
     t = time.time()
     try:
         P_.set(ML, ROOTS=roots, GATE=gate_path)
+        if arm != CHECK_ARM:
+            P_.set(ML, TYPED=f"outputs/abl/{arm}/typed")      # the chained carves' typed links are the arm's own
         P_.set(Z3, eval_carves=lambda: [(ds, CARVE) for ds in datasets])
         P_.set(rm, read=rm_read)
         if mlarm in ML.BASE_OF:
@@ -907,6 +939,18 @@ def selftest():
     c0, c1 = compare(a, a), compare(a, b)
     assert c0["call"] == "LEVEL" and abs(c0["diff"]) < 1e-12 and c1["call"] == "BELOW" and c1["fits_below"] == 2
     assert abs(c1["diff"] + 0.1) < 1e-9
+    # the chained carves (webqsp, metaqa) have PKO's rmatch, zrc and typed steps in ABL's chain, in PKO's order; a record a
+    # failed attempt left (it names problems) is removed so the record step runs again, a clean one is kept
+    assert STEPS.index("cache") < STEPS.index("rmatch") < STEPS.index("zrc") < STEPS.index("links") < STEPS.index("typed") \
+        < STEPS.index("kt") < STEPS.index("record") and len(set(STEPS)) == len(STEPS)
+    with tempfile.TemporaryDirectory() as td:
+        R_ = SimpleNamespace(base=Path(td), records=Path(td) / "records")
+        R_.records.mkdir()
+        assert drop_failed_record(R_, "metaqa__s1eval") is None                         # no record: nothing to do
+        write_json(R_.records / "metaqa__s1eval.json", {"problems": []})
+        assert drop_failed_record(R_, "metaqa__s1eval") is None and (R_.records / "metaqa__s1eval.json").exists()
+        write_json(R_.records / "metaqa__s1eval.json", {"problems": ["no rmatch records"]})
+        assert drop_failed_record(R_, "metaqa__s1eval") == ["no rmatch records"] and not (R_.records / "metaqa__s1eval.json").exists()
     print("zabl self-test: OK")
     return 0
 

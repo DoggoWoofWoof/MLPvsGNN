@@ -145,3 +145,28 @@ the KB arms are rebuilt):
   edge counts, the share of edges that are KB triples).
 - Then the slot graphs (S ∪ R's graph, R's graph) and their EM types (section 4, check 8). On the KB the slot graph keeps
   the KB's typed rows for S's entries; an entry only R's graph supplies has an empty typed run.
+
+## 9. Amendment A2 (7 Nov 2026, 06:51 IST, before any ABL number): the chained carves' steps and the arm's typed links
+
+**What happened.** Section 6's chain ended its steps at links, KT and the record. On the chained carves (WebQSP and MetaQA;
+PKO's `CHAINED`) PKO's record also names the rmatch and zrc chain records and the typed arrays, which PKO builds between the
+cache and the KT. The first chained chain (arm SRK, MetaQA) built its pools, look shards, cache parts, links and KT in 2 h 38 min
+and then its record step wrote a record that named `no rmatch records, no zrc records, typed/metaqa/s1eval/record.json is
+missing` and exited 1. No read had run and no number exists.
+
+**The correction (code only; calls, arms, reads and rules are unchanged).**
+1. For the chained carves the chain builds rmatch and zrc (PKO's `chain_build`), then links, then typed (PKO's `typed_carve`),
+   each on the arm's own roots and slot graph, in the order of PKO's `post_steps`. The passage datasets (MuSiQue, HotpotQA,
+   SQuAD, 2Wiki) are not chained: their chains are exactly the ones section 6 describes, and MuSiQue's filed SRK chain is
+   unchanged.
+2. PKO's record step writes the record and then exits 1 when it names problems, and the chain took that file for a filed record.
+   A record that names problems is now removed (its problems are logged) and the record step runs again. It is ABL's own file
+   under ABL's roots.
+3. ML1's read takes the chained carves' typed arrays from PKO's root (`zml1s.TYPED`). Sections 4 and 8 make the typed rows
+   part of the arm (the slot graph keeps S's typed rows; an arm without S has none), so ABL's read now takes the arm's own
+   typed arrays (`outputs/abl/<arm>/typed`). Check 5 (arm REC, MuSiQue) is a passage carve and does not use them.
+
+**What it costs.** One more rmatch, zrc and typed step per chained chain (MetaQA about 90 s of steps, WebQSP about 1,000 s in
+PKO's timings); every MetaQA and WebQSP chain of every arm carries them. **Not checkable against PKO:** on the KB, SRK adds R's rule graph
+(section 8) to the KB's triples, so its rmatch, zrc and typed arrays are not PKO's; the MuSiQue check 5 stays the only
+equality check against a record.
