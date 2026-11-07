@@ -256,3 +256,20 @@ with `scan_fast` alone and 60.7 s with the memo, with identical counts and edges
 `for` loop one level too far out (the comparison printed once per key and would have failed on a missing filed build); it is
 re-indented and only runs with `--out`. The running job `abl6-u-webqsp` (sent 11:39, two minutes in, with the second part's code) is replaced by `abl7-u-webqsp` with the
 same command; the five rows that wait on the build wait on it.
+
+**A4, fourth part (7 Nov 2026, 12:58 IST, before any ABL number).** `abl7-u-webqsp` (second part's lookup plus the memo) logged
+its first pass at 100,000 nodes per 9 to 20 minutes (500,000 nodes after 63 minutes), 20 to 30 times slower than the laptop on
+a table of 800,000 titles, so about 5 more hours for the first pass alone. A host check with the full table of 2,592,894 titles
+found the cause: the pair of the first two runs still lists up to 1,155 title lengths (long titles that begin alike), and the
+scan builds a tuple for each length at every occurrence of the pair; 60 random texts of 1,000 to 100,000 characters built
+1,251,475 tuples holding 544,927,069 elements (one text of 41,787 characters: 544,728 tuples, 3.1 s), while a text of the same
+size with short lists took 0.05 s. `prefix_node` indexes a pair that lists more than 8 lengths one run deeper, and so on to 48
+runs (a node is the ascending lengths, or a dict of the next run with a flag for a title that ends here); a title found at run
+k begins with the text's runs k, k+1, ... so only the lengths listed under the longest indexed prefix of the text can match,
+and the tuple lookup that follows is unchanged. Same candidates, same results by construction; checked as before and with the
+prefix index in the path: the 352 random texts (which now include chains of titles that share up to ten runs) at depths
+`PAIR_MAX` 1, 2, 3 and 8 against U2b's scan; MetaQA's 43,234 texts with `stat_pass` identical and MetaQA's rebuilt graph
+identical to the filed one; and on the host with the full WebQSP table, `occurrences` equal to the second part's on 2,534
+random distinct texts of every length class, 22.0 s for the second part's against 2.4 s now (the 30 texts of 10,000 to 100,000
+characters: 18.0 s against 0.9 s); the index costs 47 s to build (560,046 pairs, 6,390 of them indexed deeper). The running job
+`abl7-u-webqsp` is replaced by `abl8-u-webqsp` with the same command; the five rows that wait on the build wait on it.

@@ -97,11 +97,32 @@ def sent_start_fast(text, p):
     return i == 0 or text[i - 1] in u1d.SENT_END
 
 
+PAIR_MAX = 8                                           # lengths listed under a prefix before the index goes one run deeper
+DEPTH_MAX = 48
+
+
+def prefix_node(tuples, m):
+    """What can match under a prefix of m runs shared by `tuples` (all longer than or equal to m): the ascending lengths while
+    there are at most PAIR_MAX of them (a tuple), else a dict {None: a title of exactly m runs exists, next run: the node one
+    run deeper}."""
+    lens = sorted({len(x) for x in tuples})
+    if len(lens) <= PAIR_MAX or m >= DEPTH_MAX:
+        return tuple(lens)
+    kids = {}
+    for x in tuples:
+        if len(x) > m:
+            kids.setdefault(x[m], []).append(x)
+    node = {r: prefix_node(xs, m + 1) for r, xs in kids.items()}
+    node[None] = m in lens
+    return node
+
+
 def pair_index(T):
-    """(single, pair) of the table's run tuples: the first runs of the one-run titles, and {(run 1, run 2): ascending lengths}
-    of the longer ones. A title that occurs at run k starts with runs k and k+1, so trying only the lengths listed under that
-    pair finds every title the first-run lengths found (U2b tried every length listed under run 1 alone: 382 lengths, 92,000
-    tuple elements per 'award' in WebQSP's titles, the cost of the first pass there)."""
+    """(single, pair) of the table's run tuples: the first runs of the one-run titles, and {(run 1, run 2): node} of the longer
+    ones (a node is the ascending lengths that can match, or a dict one run deeper, see prefix_node). A title that occurs at
+    run k starts with the runs k, k+1, ... of the text, so only the lengths listed under that prefix can match (U2b tried
+    every length listed under run 1 alone: 382 lengths under 'award' in WebQSP; the pair alone still lists 1,155 lengths under
+    some pairs, 545 million tuple elements copied for 60 texts of the first pass)."""
     pi = T.__dict__.get("_abl_pairs")
     if pi is None:
         single, pair = set(), {}
@@ -110,7 +131,17 @@ def pair_index(T):
                 single.add(tup[0])
             else:
                 pair.setdefault(tup[:2], set()).add(len(tup))
-        pi = T.__dict__["_abl_pairs"] = (single, {k: tuple(sorted(v)) for k, v in pair.items()})
+        hot = {k for k, v in pair.items() if len(v) > PAIR_MAX}
+        pair = {k: tuple(sorted(v)) for k, v in pair.items()}
+        if hot:
+            groups = {}
+            for tup in T.idx:
+                if len(tup) > 1 and tup[:2] in hot:
+                    groups.setdefault(tup[:2], []).append(tup)
+            for k, xs in groups.items():
+                pair[k] = prefix_node(xs, 2)
+            del groups
+        pi = T.__dict__["_abl_pairs"] = (single, pair)
     return pi
 
 
@@ -131,14 +162,24 @@ def occurrences(T, tl):
         if r in single:
             cand.append(idx[(r,)])
         if k + 1 < nr:
-            ls = pair.get((r, runs[k + 1]))
-            if ls:
-                for L in ls:
-                    if k + L > nr:
-                        break
-                    js = idx.get(tuple(runs[k:k + L]))
-                    if js:
-                        cand.append(js)
+            node = pair.get((r, runs[k + 1]))
+            ls, d = (), 2
+            while node is not None:                    # the lengths under the longest prefix of the text's runs the index lists
+                if type(node) is tuple:
+                    ls += node
+                    break
+                if node[None]:
+                    ls += (d,)
+                if k + d >= nr:
+                    break
+                node = node.get(runs[k + d])
+                d += 1
+            for L in ls:
+                if k + L > nr:
+                    break
+                js = idx.get(tuple(runs[k:k + L]))
+                if js:
+                    cand.append(js)
         if not cand:
             continue
         start = spans[k][0]
@@ -412,6 +453,18 @@ def toy_titles_texts(rng, n_titles=400, n_texts=300):
             parts.append(seps[int(rng.integers(0, len(seps)))])
         texts.append("".join(parts))
     texts += ["", "alpha", " Alpha Bravo", "x Alpha Bravo", "Alpha Bravox", "xAlpha Bravo.", "\u0130stanbul is", "i\u0307stanbul. \u0130stanbul"]
+    phrase = ["alpha", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel", "india", "juliet"]
+    chain = [" ".join(phrase[:c]).title() for c in range(2, 11)] + [" ".join(phrase[:3] + ["x1"]).title(), " ".join(phrase[:4] + ["Lima"]),
+                                                                  " ".join(phrase[:3] + ["delta", "kilo"]), "Alpha Bravo, Charlie Delta"]
+    titles = titles + chain
+    for _ in range(40):
+        parts = []
+        for _k in range(int(rng.integers(1, 5))):
+            c = chain[int(rng.integers(0, len(chain)))]
+            parts.append(c if rng.random() < 0.7 else c + " " + phrase[int(rng.integers(0, 10))])
+            parts.append(seps[int(rng.integers(0, len(seps)))])
+        texts.append("".join(parts))
+    texts += [" ".join(phrase), " ".join(phrase[:5]), "alpha bravo charlie", "Alpha Bravo Charlie Delta Echo Foxtrot Golf Hotel India Juliet Kilo"]
     return titles, texts
 
 
@@ -442,11 +495,17 @@ def compare_csr(rng, trials=40):
 
 
 def check(name=None, hub=0, limit=0):
+    global PAIR_MAX
     rule = zu2b.NEW_RULE
     rng = np.random.default_rng(7)
     titles, texts = toy_titles_texts(rng)
     S = zu2b.Surfaces(titles, rule)
     compare_scans(S, texts, rule, "random texts")
+    keep = PAIR_MAX
+    for pm in (1, 2, 3):                               # the prefix index at depths that the toy titles reach
+        PAIR_MAX = pm
+        compare_scans(zu2b.Surfaces(titles, rule), texts, rule, f"prefix index at {pm}")
+    PAIR_MAX = keep
     for rl in (zu2b.U1D_RULE,):
         compare_scans(zu2b.Surfaces(titles, rl), texts, rl, "u1d rule")
     compare_csr(rng)
