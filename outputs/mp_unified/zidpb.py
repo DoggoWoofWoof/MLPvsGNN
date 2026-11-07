@@ -101,50 +101,81 @@ def fork():
     return 0
 
 
+STORES = ("look", "cache", "links", "kt")
+
+
+def damaged(store, d):
+    """A B1H store folder whose filed records name files that are gone: cache/links/kt arrays, or look chunks."""
+    d = Path(d)
+    if not d.exists():
+        return True
+    if store == "look":
+        for r in d.glob("record_*of*.json"):
+            chunks = read_json(r).get("chunks") or []
+            if any(not (d / "chunks" / f"c{int(i):05d}.npz").exists() for i in chunks):
+                return True
+        return False
+    for r in d.rglob("record.json"):
+        arr = read_json(r).get("arrays")
+        if isinstance(arr, dict) and any(not (r.parent / f"{k}.npy").exists() for k in arr):
+            return True
+    return False
+
+
 def regen(ds):
-    """B1H's b1 look chunks and cache arrays for one dataset, removed by the host cleaner on 7 Nov 16:49 (regenerable files no
-    queued item named), rebuilt by B1H's own chain. The filed look and cache folders are set aside as <carve>.filed, the chain
-    runs on B1H's root, every regenerated array is checked against the sha256 the filed cache record names, and the filed
-    records are put back so every sha that names them (the carve record, the gate) is unchanged. Refuses on any difference."""
+    """B1H's b1 look chunks and cache, links and kt arrays for one dataset, removed by the host cleaner on 7 Nov 16:49 (regenerable
+    files no queued item named), rebuilt by B1H's own chain. Each damaged store's filed folder is set aside as <carve>.filed, the
+    chain runs on B1H's root, every regenerated array is checked against the sha256 the filed record names, and the filed records
+    are put back so every sha that names them (the carve record, the gate) is unchanged. Refuses on any difference."""
     if ds not in SETTINGS:
         raise SystemExit(f"IDPB: regen --dataset is one of {', '.join(SETTINGS)}")
-    look, cache = H.OUT / "look" / ds / CARVE, H.OUT / "cache" / ds / CARVE
-    lf, cf = look.with_name(CARVE + ".filed"), cache.with_name(CARVE + ".filed")
-    for d, f in ((look, lf), (cache, cf)):
-        if f.exists():
+    new = {s: H.OUT / s / ds / CARVE for s in STORES}
+    old = {s: p.with_name(CARVE + ".filed") for s, p in new.items()}
+    for s in STORES:
+        if old[s].exists():
+            continue                                    # set aside by an earlier pass; verified below
+        if damaged(s, new[s]):
+            if not new[s].exists():
+                raise SystemExit(f"IDPB: {rel(new[s])} is missing and no {rel(old[s])} is set aside")
+            os.replace(new[s], old[s])
+            log(f"set aside {rel(new[s])} -> {rel(old[s])}")
+    if any(old[s].exists() for s in STORES):
+        H.chain(ds, host=True)
+    files = bad = n = 0
+    for s in STORES:
+        if not old[s].exists():
             continue
-        if not d.exists():
-            raise SystemExit(f"IDPB: {rel(d)} is missing and no {rel(f)} is set aside")
-        os.replace(d, f)
-        log(f"set aside {rel(d)} -> {rel(f)}")
-    H.chain(ds, host=True)
-    files = bad = 0
-    for fr in sorted(cf.glob("part_*/record.json")):
-        old, new = read_json(fr), cache / fr.parent.name / "record.json"
-        if not new.exists():
-            raise SystemExit(f"IDPB: the chain wrote no {rel(new)}")
-        for name, a in old["arrays"].items():
-            p = cache / fr.parent.name / f"{name}.npy"
-            files += 1
-            if not p.exists() or sha_file(p) != a["sha256"]:
-                bad += 1
-                log(f"DIFFERENT {rel(p)}")
+        for fr in sorted(old[s].rglob("record.json")):
+            rec = read_json(fr)
+            nr = new[s] / fr.relative_to(old[s])
+            if not nr.exists():
+                raise SystemExit(f"IDPB: the chain wrote no {rel(nr)}")
+            for name, a in (rec.get("arrays") or {}).items():
+                p = nr.parent / f"{name}.npy"
+                files += 1
+                if not p.exists() or sha_file(p) != a["sha256"]:
+                    bad += 1
+                    log(f"DIFFERENT {rel(p)}")
     if bad:
         raise SystemExit(f"IDPB: {bad} of {files} regenerated arrays of {ds}/{CARVE} differ from the filed record's sha256")
-    n = 0
-    for src_dir, dst_dir, pats in ((cf, cache, ("part_*/record.json",)),
-                                   (lf, look, ("record_*of*.json", "pools_*of*.json", "ids.json", "info.json"))):
+    for s in STORES:
+        if not old[s].exists():
+            continue
+        pats = ("record_*of*.json", "pools_*of*.json", "ids.json", "info.json") if s == "look" else ("**/record.json",)
         for pat in pats:
-            for f in sorted(src_dir.glob(pat)):
-                to = dst_dir / f.relative_to(src_dir)
+            for f in sorted(old[s].glob(pat)):
+                to = new[s] / f.relative_to(old[s])
                 if not to.exists():
                     raise SystemExit(f"IDPB: the chain wrote no {rel(to)}")
                 shutil.copyfile(f, to)
                 n += 1
-    log(f"regen {ds}/{CARVE}: {files} arrays equal the filed record's sha256; {n} filed records put back")
+    left = [s for s in STORES if damaged(s, new[s])]
+    if left:
+        raise SystemExit(f"IDPB: {ds}/{CARVE}: the stores {left} still miss files after the chain")
+    log(f"regen {ds}/{CARVE}: {files} arrays equal the filed records' sha256; {n} filed records put back")
     write_json(OUT / "regen" / f"{ds}.json", {"declared_in": DECLARED, "stage": STAGE, "dataset": ds, "carve": CARVE,
-                                              "arrays_checked": files, "records_restored": n,
-                                              "zidpb_sha256": sha_src(__file__), "utc": utc()})
+                                              "stores": [s for s in STORES if old[s].exists()], "arrays_checked": files,
+                                              "records_restored": n, "zidpb_sha256": sha_src(__file__), "utc": utc()})
     return 0
 
 
@@ -381,7 +412,22 @@ def selftest():
     # 5. the share and the gap change on synthetic means
     t, w, h = np.full(100, 0.5), np.full(100, 0.8), np.full(100, 0.9)
     assert abs(float((w - t).mean()) / float((h - t).mean()) - 0.75) < 1e-9
-    # 6. regen is wired, refuses an unknown dataset, and the arrays' file names follow the record's keys
+    # 6. regen is wired, refuses an unknown dataset; damaged() sees a missing array and a missing look chunk
+    with tempfile.TemporaryDirectory() as t:
+        d = Path(t) / "kt"
+        d.mkdir()
+        write_json(d / "record.json", {"arrays": {"kt": {"sha256": "x"}, "n": {"sha256": "y"}}})
+        (d / "n.npy").write_bytes(b"x")
+        assert damaged("kt", d) and not damaged("kt", Path(t) / "kt") is False
+        (d / "kt.npy").write_bytes(b"x")
+        assert not damaged("kt", d)
+        lk = Path(t) / "look"
+        (lk / "chunks").mkdir(parents=True)
+        write_json(lk / "record_0of1.json", {"chunks": [0, 1]})
+        (lk / "chunks" / "c00000.npz").write_bytes(b"x")
+        assert damaged("look", lk)
+        (lk / "chunks" / "c00001.npz").write_bytes(b"x")
+        assert not damaged("look", lk) and damaged("look", Path(t) / "nope")
     assert callable(regen) and callable(H.chain)
     try:
         regen("squad")
