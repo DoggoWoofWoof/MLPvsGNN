@@ -324,6 +324,14 @@ def cell(c):
     return "--" if c is None else f"{r100(c['R@5']):.1f}"
 
 
+def step_call(d):
+    """The call on a step b1 - b1w by its interval: S above R, S below R, or level (the interval holds 0)."""
+    if d is None:
+        return "--"
+    lo, hi = d["ci"]
+    return "S above R" if lo > 0 else "S below R" if hi < 0 else "level"
+
+
 def ci_txt(d):
     return "--" if d is None else f"{r100(d['R@5']):+.1f} ({r100(d['ci'][0]):+.1f}, {r100(d['ci'][1]):+.1f})"
 
@@ -336,8 +344,10 @@ def write_md(rec):
          f"(2wiki, hotpotqa: corpus hyperlinks; musique: title mentions, itself a rule). The fits were trained with the rule's "
          f"links in the slot, so every b1 row is a read-time swap of the slot, not a model trained on S. No threshold, no "
          f"adoption call.", "",
-         "| setting | domain | model | b1t | b1w | b1 | b1w - b1t | b1 - b1w | b1 - b1t | share of the b1 gain at b1w |",
-         "|---|---|---|---:|---:|---:|---|---|---|---:|"]
+         f"The share of the b1 gain at b1w is the ratio of two differences; it is printed only where b1 - b1w is not level (its interval "
+         f"excludes 0), because with overlapping intervals the ratio can pass 100% by noise (the JSON keeps every value).", "",
+         "| setting | domain | model | b1t | b1w | b1 | b1w - b1t | b1 - b1w | b1 - b1w call | b1 - b1t | share of the b1 gain at b1w |",
+         "|---|---|---|---:|---:|---:|---|---|---|---|---:|"]
     for ds, s in rec["settings"].items():
         for which, pk in (("in_domain", "paired"), ("zero_shot", "paired_zero_shot")):
             for arm in ARMS:
@@ -346,8 +356,9 @@ def write_md(rec):
                 p = s[pk]
                 sh = s["share_of_b1_gain_at_b1w"].get(f"{which}/{arm}")
                 L.append(f"| {ds} | {which.replace('_', '-')} | {arm} | " + " | ".join(cell(s[which].get(f"{arm}/{c}")) for c in CARVES)
-                         + f" | {ci_txt(p.get(f'b1w-b1t {arm}'))} | {ci_txt(p.get(f'b1-b1w {arm}'))} | {ci_txt(p.get(f'b1-b1t {arm}'))} | "
-                         + ("--" if sh is None else f"{sh:.2f}") + " |")
+                         + f" | {ci_txt(p.get(f'b1w-b1t {arm}'))} | {ci_txt(p.get(f'b1-b1w {arm}'))} | {step_call(p.get(f'b1-b1w {arm}'))} | "
+                         + f"{ci_txt(p.get(f'b1-b1t {arm}'))} | "
+                         + ("--" if sh is None or step_call(p.get(f'b1-b1w {arm}')) == "level" else f"{sh:.2f}") + " |")
     L += ["", "## Does message passing matter more with structure in? GNX minus zrckpn, same inputs", "",
           "| setting | domain | b1t | b1w | b1 | gap change b1t -> b1w | gap change b1t -> b1 |", "|---|---|---|---|---|---|---|"]
     for ds, s in rec["settings"].items():
@@ -412,6 +423,8 @@ def selftest():
     # 5. the share and the gap change on synthetic means
     t, w, h = np.full(100, 0.5), np.full(100, 0.8), np.full(100, 0.9)
     assert abs(float((w - t).mean()) / float((h - t).mean()) - 0.75) < 1e-9
+    assert step_call({"ci": [0.1, 0.9]}) == "S above R" and step_call({"ci": [-0.9, -0.1]}) == "S below R"
+    assert step_call({"ci": [-0.4, 1.0]}) == "level" and step_call(None) == "--"
     assert any(x is None for x in (t, w, None, h)) and not any(x is None for x in (t, w, h))   # the report's guard on arrays
     # 6. regen is wired, refuses an unknown dataset; damaged() sees a missing array and a missing look chunk
     with tempfile.TemporaryDirectory() as t:
