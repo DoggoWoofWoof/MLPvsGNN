@@ -222,8 +222,8 @@ random texts with punctuation, parentheses, commas, digits, underscores, non-ASC
 case (3,740 hits, 341 capmid, 1,340 mid-sentence counts), under both rules; `lean_csr` equals `sibling_pairs` + `undirected_csr`
 on 40 random graphs; on MetaQA all 43,234 node texts agree and `stat_pass`'s `cap` and `low` are identical over 68,447 lowercase
 forms (U2b 6 s, fast 3 s); on WebQSP's biggest hub the first 5,000, 20,000 and 60,000 neighbours agree (11.0 s against 0.2 s at 20,000; 182.5 s against 1.4 s at 60,000). The host
-then rebuilds MetaQA with `--out` and compares the arrays and counts with the filed `outputs/abl/u/metaqa` before WebQSP
-starts again.
+rebuilt MetaQA with `--out` (rx job 261107-102609, 22 s) and the arrays (`indptr`, `col`, dtypes) and the record's counts are
+identical to the filed `outputs/abl/u/metaqa` built with the old code. Only then does WebQSP start again.
 
 **On the host.** The running WebQSP job is stopped by killing its python process; `retry_cmd.py` (3 tries) re-runs the same command
 in the same job with the new file, so the job, its reservation and every row that waits on it are unchanged. The old job's

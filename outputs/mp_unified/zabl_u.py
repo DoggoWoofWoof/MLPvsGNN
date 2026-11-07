@@ -291,7 +291,7 @@ def build_stage(name, host=False, out=None):
     ip, col, rec = build_graph(titles, texts, dense.get, progress=lambda i, e: log(f"  {i}/{n} nodes, edges {e}"),
                                stat_progress=lambda i: log(f"  first pass {i}/{n} nodes"))
     rec["overlap"] = overlap(n, ip, col, kip, kcol)
-    od = (Path(out) if out else OUT) / name
+    od = (ROOT / out if out else OUT) / name
     od.mkdir(parents=True, exist_ok=True)
     p = od / "W2_S.npz"
     tmp = od / "W2_S.tmp.npz"
