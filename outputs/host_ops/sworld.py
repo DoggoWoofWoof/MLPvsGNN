@@ -13,7 +13,8 @@ clear and overwrite the record's. Here the same code runs in a sibling tree whos
 
     python outputs/host_ops/sworld.py make          (create or refresh; code copies are replaced, the S-world's own folders never)
     python outputs/host_ops/sworld.py verify        (the copied code equals the record's, byte for byte; nothing else)
-    python outputs/host_ops/sworld.py run -- CMD    (verify, then CMD with the S-world as the working directory)
+    python outputs/host_ops/sworld.py mode train|read   (outputs/pko -> SNKF for the training steps, -> the record's PKO base for the reads)
+    python outputs/host_ops/sworld.py run [--mode train|read] -- CMD   (verify, check the mode, then CMD with the S-world as the working directory)
     python outputs/host_ops/sworld.py selftest
 """
 import hashlib
@@ -35,6 +36,9 @@ SKIP_EXT = {".pyc"}
 OWN = ("screen", "ml1", "ltm", "gnx", "swp", "idpb")                  # empty folders of the S-world (swp, idpb: the reads of the S-trained fits)
 OWN_COPY = ("dep", "dob", "iso", "ltg")                              # small result files of the record that checks read (json, md, txt)
 PKO_TARGET = "outputs/abl/SNKF"
+READ_TARGET = "outputs/pko"                                           # read mode: the record's own PKO base (the S-trained fits are read on the record's roots)
+MODE_FILE = "sworld_mode.txt"                                         # "train" or "read": what outputs/pko points to
+VOLATILE = ("hostfeed_items.txt", "hostfeed2.py")                     # edited while the host runs; no fit imports them
 EXTRA_LINKS = {"pko_rec": "outputs/pko"}                              # the record's own PKO base, for the reads on the record's roots (REC)
 MANIFEST = "sworld_manifest.json"
 
@@ -90,8 +94,8 @@ def code_files(root, world=False):
         base = Path(root) / "outputs" / d
         for p in sorted(base.iterdir()):
             if p.is_file() and p.suffix in (".py", ".json", ".md", ".txt", ".toml") and p.stat().st_size < 4_000_000:
-                if d == "host_ops" and p.name in ("hostfeed_items.txt",):
-                    continue                                          # the record's queue is not code
+                if d == "host_ops" and p.name in VOLATILE:
+                    continue                                          # the record's queue and the feeder's own source are not code a fit runs
                 out[p.relative_to(root).as_posix()] = sha(p)
     return out
 
@@ -112,7 +116,7 @@ def make(world=WORLD, root=ROOT):
         for p in (root / "outputs" / d).iterdir():
             tgt = wd / p.name
             if p.is_file():
-                if p.suffix in (".py", ".json", ".md", ".txt", ".toml") and p.stat().st_size < 4_000_000 and p.name != "hostfeed_items.txt":
+                if p.suffix in (".py", ".json", ".md", ".txt", ".toml") and p.stat().st_size < 4_000_000 and p.name not in VOLATILE:
                     shutil.copy2(p, tgt)
             elif p.is_dir() and p.name != "__pycache__":
                 if junction(tgt, p):
@@ -156,24 +160,57 @@ def verify(world=WORLD, root=ROOT, quiet=False):
         a, b = root / rel, world / rel
         if not a.is_file() or not b.is_file() or sha(a) != want or sha(b) != want:
             bad.append(rel)
-    now = code_files(root)
-    new = sorted(set(now) - set(man))
-    if bad or new:
-        raise SystemExit(f"sworld: {len(bad)} files differ between the record and the S-world, e.g. {bad[:4]}; {len(new)} new in the record, e.g. {new[:4]} "
-                         f"(python outputs/host_ops/sworld.py make)")
+    if bad:
+        raise SystemExit(f"sworld: {len(bad)} files differ between the record and the S-world, e.g. {bad[:4]} (python outputs/host_ops/sworld.py make)")
+    new = sorted(set(code_files(root)) - set(man))                # a file added to the record after `make` is not run by the S-world: a note, not a failure
+    if new and not quiet:
+        print(f"sworld: {len(new)} files are new in the record since make (not in the S-world), e.g. {new[:4]}")
     if not quiet:
         print(f"sworld: verify OK ({len(man)} files equal)")
     return 0
 
 
-def run(cmd, world=WORLD, root=ROOT):
+def mode_of(world=WORLD):
+    p = Path(world) / MODE_FILE
+    return p.read_text(encoding="utf-8").strip() if p.is_file() else "train"
+
+
+def set_mode(mode, world=WORLD, root=ROOT):
+    """Point outputs/pko at SNKF (train) or at the record's PKO base (read). The fits are trained with S in the slot and read on the record's
+    roots and the arms' (zswp.py, zidpb.py), so the one tree serves both, never at once: the mode is a file the S-world's runs check."""
+    if mode not in ("train", "read"):
+        raise SystemExit("sworld: mode is train or read")
+    world, root = Path(world), Path(root)
+    link = world / "outputs" / "pko"
+    target = root / (PKO_TARGET if mode == "train" else READ_TARGET)
+    if link.exists() or is_link(link):
+        if not is_link(link):
+            raise SystemExit(f"sworld: {link} is a folder, not a junction")
+        if os.path.realpath(link) != os.path.realpath(target):
+            os.rmdir(link) if os.name == "nt" else link.unlink()    # the junction itself, never its target's files
+    junction(link, target)
+    (world / MODE_FILE).write_text(mode + chr(10), encoding="utf-8", newline=chr(10))
+    print(f"sworld: mode {mode}: outputs/pko -> {rel_of(target, root)}")
+    return 0
+
+
+def rel_of(p, root):
+    try:
+        return Path(p).relative_to(root).as_posix()
+    except ValueError:
+        return str(p)
+
+
+def run(cmd, world=WORLD, root=ROOT, mode="train"):
     verify(world, root, quiet=True)
     pko = Path(world) / "outputs" / "pko"
     if not pko.exists():
         raise SystemExit("sworld: outputs/pko is missing (SNKF is not built; python outputs/host_ops/sworld.py make)")
-    if os.path.realpath(pko) != os.path.realpath(Path(root) / PKO_TARGET):
-        raise SystemExit(f"sworld: {pko} is not SNKF")
-    env = dict(os.environ, PYTHONIOENCODING="utf-8", SWORLD="1")
+    want = PKO_TARGET if mode == "train" else READ_TARGET
+    if mode_of(world) != mode or os.path.realpath(pko) != os.path.realpath(Path(root) / want):
+        raise SystemExit(f"sworld: this step runs in {mode} mode (outputs/pko -> {want}); the S-world is in {mode_of(world)} mode, "
+                         f"{pko} -> {rel_of(os.path.realpath(pko), os.path.realpath(root))}")
+    env = dict(os.environ, PYTHONIOENCODING="utf-8", SWORLD="1", SWORLD_MODE=mode)
     return subprocess.run(cmd, cwd=str(world), env=env).returncode
 
 
@@ -214,6 +251,31 @@ def selftest():
         assert (world / "outputs/screen/fits/f/models.pt").exists() and not (root / "outputs/screen/fits").exists()
         r = run([sys.executable, "-c", "import os,sys;print(os.getcwd());sys.exit(3)"], world, root)
         assert r == 3
+        (root / "outputs/new_code.py").write_text("n", encoding="utf-8")
+        (root / "src/new_module.py").write_text("n", encoding="utf-8")
+        verify(world, root, quiet=True)                                           # a file added to the record after make is not a failure
+        assert set_mode("read", world, root) == 0 and mode_of(world) == "read"
+        assert os.path.realpath(world / "outputs/pko") == os.path.realpath(root / "outputs/pko") and (root / "outputs/abl/SNKF/x.txt").exists()
+        try:
+            run([sys.executable, "-c", "pass"], world, root, mode="train")
+            raise AssertionError("a train step must not run in read mode")
+        except SystemExit:
+            pass
+        assert run([sys.executable, "-c", "import os,sys;sys.exit(0 if os.environ.get('SWORLD_MODE')=='read' else 5)"], world, root, mode="read") == 0
+        assert set_mode("train", world, root) == 0 and mode_of(world) == "train"
+        assert os.path.realpath(world / "outputs/pko") == os.path.realpath(root / "outputs/abl/SNKF") and (root / "outputs/abl/SNKF/x.txt").exists()
+        try:
+            run([sys.executable, "-c", "pass"], world, root, mode="read")
+            raise AssertionError("a read step must not run in train mode")
+        except SystemExit:
+            pass
+        (root / "src/a.py").write_text("changed", encoding="utf-8")
+        try:
+            run([sys.executable, "-c", "pass"], world, root)
+            raise AssertionError("a changed record file must stop a run")
+        except SystemExit:
+            pass
+        (root / "src/a.py").write_text("x", encoding="utf-8")
     finally:
         for p in sorted(tmp.rglob("*"), key=lambda q: -len(q.parts)):
             if is_link(p):
@@ -231,10 +293,18 @@ def main(argv=None):
         return make()
     if a[0] == "verify":
         return verify()
+    if a[0] == "mode":
+        if len(a) != 2:
+            raise SystemExit("sworld: mode train|read")
+        return set_mode(a[1])
     if a[0] == "run":
         if "--" not in a:
-            raise SystemExit("sworld: run -- CMD")
-        return run(a[a.index("--") + 1:])
+            raise SystemExit("sworld: run [--mode train|read] -- CMD")
+        head = a[1:a.index("--")]
+        mode = head[head.index("--mode") + 1] if "--mode" in head else "train"
+        if mode not in ("train", "read"):
+            raise SystemExit("sworld: --mode is train or read")
+        return run(a[a.index("--") + 1:], mode=mode)
     if a[0] == "selftest":
         return selftest()
     raise SystemExit(__doc__)
