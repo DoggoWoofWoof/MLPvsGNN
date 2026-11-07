@@ -96,6 +96,23 @@ def sent_start_fast(text, p):
     return i == 0 or text[i - 1] in u1d.SENT_END
 
 
+def pair_index(T):
+    """(single, pair) of the table's run tuples: the first runs of the one-run titles, and {(run 1, run 2): ascending lengths}
+    of the longer ones. A title that occurs at run k starts with runs k and k+1, so trying only the lengths listed under that
+    pair finds every title the first-run lengths found (U2b tried every length listed under run 1 alone: 382 lengths, 92,000
+    tuple elements per 'award' in WebQSP's titles, the cost of the first pass there)."""
+    pi = T.__dict__.get("_abl_pairs")
+    if pi is None:
+        single, pair = set(), {}
+        for tup in T.idx:
+            if len(tup) == 1:
+                single.add(tup[0])
+            else:
+                pair.setdefault(tup[:2], set()).add(len(tup))
+        pi = T.__dict__["_abl_pairs"] = (single, {k: tuple(sorted(v)) for k, v in pair.items()})
+    return pi
+
+
 def occurrences(T, tl):
     """{surface k: ascending positions} of every bounded occurrence (zu2b.occ_look's test) of the lowercased surfaces of the
     table T in the lowercased text tl, for exactly the k that zu2b.Table.match returns. One pass over the text's runs: a
@@ -103,21 +120,28 @@ def occurrences(T, tl):
     spans = [(m.start(), m.group()) for m in u1b.WORD.finditer(tl)]
     runs = [g for _s, g in spans]
     nr, m, isw = len(runs), len(tl), u1b._isw
-    first, idx, low, key = T.first, T.idx, T.low, T.key
+    single, pair = pair_index(T)
+    idx, low, key = T.idx, T.low, T.key
     off = T.__dict__.setdefault("_abl_off", {})
     toks = set(runs)
     out = {}
     for k, r in enumerate(runs):
-        ls = first.get(r)
-        if ls is None:
+        cand = []
+        if r in single:
+            cand.append(idx[(r,)])
+        if k + 1 < nr:
+            ls = pair.get((r, runs[k + 1]))
+            if ls:
+                for L in ls:
+                    if k + L > nr:
+                        break
+                    js = idx.get(tuple(runs[k:k + L]))
+                    if js:
+                        cand.append(js)
+        if not cand:
             continue
         start = spans[k][0]
-        for L in ls:
-            if k + L > nr:
-                break
-            js = idx.get(tuple(runs[k:k + L]))
-            if not js:
-                continue
+        for js in cand:
             for j in js:
                 if key[j] not in toks:
                     continue

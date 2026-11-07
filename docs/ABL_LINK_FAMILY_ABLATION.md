@@ -229,3 +229,16 @@ identical to the filed `outputs/abl/u/metaqa` built with the old code. Only then
 in the same job with the new file, so the job, its reservation and every row that waits on it are unchanged. The old job's
 partial work is thrown away (it kept none: no file, no progress line). The new build's record (`build.json`) carries the new
 `code_sha256`; the MetaQA build filed earlier carries the old one, and the rebuild check shows they give the same arrays.
+
+**A4, second part (7 Nov 2026, 11:05 IST, before any ABL number).** The first run of the fast scan on the host (rx job
+261107-103311, `abl5-u-webqsp`) had not logged its first 100,000 nodes after 21 minutes, 8 times slower than the same code
+on the laptop with a table a quarter of the size. The cause is in the candidate lookup that `scan_fast` took from U2b's table:
+at each word run it tries every title length listed under that run as a first word, and WebQSP's titles list 382 lengths
+under 'award' (92,000 tuple elements per occurrence), 188 under 'government', 174 under 'regular' and about 100 under 'the',
+'i', 'in', 'tv'; the cost grows with the table, and the full table has 2.6 million titles. `pair_index` lists the lengths under
+the first **two** runs instead (a title found at run k starts with runs k and k+1, so the pair lists a superset of the lengths
+that can match, and the tuple lookup that follows is unchanged). Nothing else changes and the results are the same by
+construction; it is checked as before: 308 random texts, 40 random graphs, MetaQA's 43,234 texts with `stat_pass` identical,
+WebQSP's biggest hub identical at 20,000 neighbours; on the laptop with a table of 800,000 titles the scan costs 0.48 ms a node
+against 0.75 ms before. The running job is replaced by a new row (`abl6-u-webqsp`) with the same command; the five rows that
+wait on the build wait on it.
