@@ -356,9 +356,27 @@ def drop_failed_record(R, st):
     return problems
 
 
+def lower_priority():
+    """Windows: BELOW_NORMAL for this process; every step and shard it starts inherits the class, so a GPU fit on the same host
+    gets the cores first (7 Nov: a fit's epochs ran 400 s alone and 688 s beside a look step; 499-564 s once the look step was
+    lowered). Scheduling only: no input, call or result changes."""
+    if os.name != "nt":
+        return False
+    try:
+        import ctypes
+        k = ctypes.windll.kernel32
+        k.GetCurrentProcess.restype = ctypes.c_void_p
+        k.SetPriorityClass.argtypes = [ctypes.c_void_p, ctypes.c_uint32]
+        return bool(k.SetPriorityClass(k.GetCurrentProcess(), 0x4000))
+    except Exception:
+        return False
+
+
 def chain(arm, name, lanes=1, host=False):
     """The carve's whole chain, each step its own process; the independent shards, look shards and cache parts of a
     stage run `lanes` at a time. A step already filed is skipped."""
+    if host:
+        log(f"chain {arm}/{name}: below-normal priority {'set' if lower_priority() else 'not set'}")
     M = B.mods(host)
     PK = M.PK
     R = roots_of(M, arm)
