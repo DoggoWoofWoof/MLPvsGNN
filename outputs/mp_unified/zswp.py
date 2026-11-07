@@ -15,15 +15,38 @@ zidpb.py, zb1h.py, zgnx.py, zltm.py and ltmcols.py are imported and edited by no
     python outputs/mp_unified/zswp.py read --arm A --name FIT --dataset D   # one fit's read of the arm's carve (the host's GPU / CPU)
     python outputs/mp_unified/zswp.py report                                # the laptop: outputs/swp/report.{json,md}
 """
-import argparse
-import contextlib
-import json
 import os
-import shutil
 import sys
-import tempfile
-import time
-from pathlib import Path
+
+# A zrckpn read runs in zltm's environment (DOB's): 6 BLAS / OpenMP / MKL threads, the GPU hidden, before numpy or torch loads
+# (zb1h.py does this for read-mlp). zabl.py and zb1h.py put the PKO processes' 2 threads (and NUMBA_NUM_THREADS, CUBLAS_WORKSPACE_CONFIG)
+# into the environment at import, so the block runs again after the imports and again before the read; the variables the
+# queue gave the process come back. A GNX read and every lists / cols / report call keep the PKO environment.
+_MLP = sys.argv[1:2] == ["read"] and any(a.startswith("scr-ltm-zrckpn") for a in sys.argv)
+_ENV0 = dict(os.environ)
+
+
+def zrckpn_env():
+    for _v in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS"):
+        os.environ[_v] = "6"                                  # zltm's THREADS
+    os.environ["CUDA_VISIBLE_DEVICES"] = ""                   # a CPU read never sees the GPU (zltm's)
+    for _v in ("NUMBA_NUM_THREADS", "CUBLAS_WORKSPACE_CONFIG"):
+        if _v in _ENV0:
+            os.environ[_v] = _ENV0[_v]
+        else:
+            os.environ.pop(_v, None)
+
+
+if _MLP:
+    zrckpn_env()
+
+import argparse  # noqa: E402
+import contextlib  # noqa: E402
+import json  # noqa: E402
+import shutil  # noqa: E402
+import tempfile  # noqa: E402
+import time  # noqa: E402
+from pathlib import Path  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -34,6 +57,9 @@ import numpy as np  # noqa: E402
 import zabl as Z  # noqa: E402  (ABL: arms, roots, gates, per-question cells; read only)
 import zidpa as A  # noqa: E402  (IDP A1: GNX's fits and the read's guard; read only)
 import zb1h as H  # noqa: E402  (B1H: zrckpn's fits, fork rules and the read's shape; read only)
+
+if _MLP:
+    zrckpn_env()                                               # zabl, zidpa and zb1h have just set the PKO environment
 
 GX, M1 = A.GX, A.M1
 WQ = M1.WQ
@@ -231,6 +257,11 @@ def read(arm, fit, ds):
             finally:
                 GX.LOADED.clear()
     else:
+        if not _MLP:
+            raise SystemExit("SWP: a zrckpn read starts with `zswp.py read ... --name scr-ltm-zrckpn-*` (zltm's environment is set at start)")
+        import torch
+        zrckpn_env()
+        torch.set_num_threads(6)                          # zltm's THREADS (torch may have loaded under the PKO environment)
         import zltm as LTM
         import ltmcols as LTMC
         Z3P = LTM.import_arm()
@@ -420,7 +451,22 @@ def selftest():
         shutil.copytree(src, Path(t) / "dst", ignore=H.fork_ignore(src))
         kept = sorted(p.relative_to(Path(t) / "dst").as_posix() for p in (Path(t) / "dst").rglob("*") if p.is_file())
         assert kept == ["models.pt", "screen.json"], kept
-    # 6. the comparison on synthetic cells (ABL's paired bootstrap)
+    # 6. zrckpn's environment: 6 threads, the GPU hidden, zabl's PKO-only variables gone unless the queue gave them
+    saved = dict(os.environ)
+    try:
+        for v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):
+            os.environ[v] = "2"
+        os.environ["NUMBA_NUM_THREADS"] = "2"
+        os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
+        zrckpn_env()
+        assert all(os.environ[v] == "6" for v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"))
+        assert os.environ["CUDA_VISIBLE_DEVICES"] == ""
+        assert ("NUMBA_NUM_THREADS" in os.environ) == ("NUMBA_NUM_THREADS" in _ENV0)
+        assert ("CUBLAS_WORKSPACE_CONFIG" in os.environ) == ("CUBLAS_WORKSPACE_CONFIG" in _ENV0)
+    finally:
+        os.environ.clear()
+        os.environ.update(saved)
+    # 7. the comparison on synthetic cells (ABL's paired bootstrap)
     ids = np.arange(200)
     a = {"ids": ids, "gt": np.ones(200), "per_fit": [np.full(200, 0.5), np.full(200, 0.5)]}
     b = {"ids": ids, "gt": np.ones(200), "per_fit": [np.full(200, 0.8), np.full(200, 0.8)]}
