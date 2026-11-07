@@ -1,0 +1,16 @@
+{
+ "declared_in": "docs/SWP_S_TO_R_SWAP.md",
+ "stage": "IDPB",
+ "dataset": "musique",
+ "carve": "b1",
+ "stores": [
+  "look",
+  "cache",
+  "links",
+  "kt"
+ ],
+ "arrays_checked": 86,
+ "records_restored": 19,
+ "zidpb_sha256": "54933b5775104f373fb6fca55437b6a79721b9b9d7f5c8c05e0b575128459b54",
+ "utc": "2026-11-07T23:17:06Z"
+}

@@ -1,0 +1,15 @@
+{
+ "declared_in": "docs/SWP_S_TO_R_SWAP.md",
+ "stage": "IDPB",
+ "dataset": "2wiki",
+ "carve": "b1",
+ "stores": [
+  "look",
+  "cache",
+  "kt"
+ ],
+ "arrays_checked": 19,
+ "records_restored": 6,
+ "zidpb_sha256": "54933b5775104f373fb6fca55437b6a79721b9b9d7f5c8c05e0b575128459b54",
+ "utc": "2026-11-07T22:48:06Z"
+}

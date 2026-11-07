@@ -1,0 +1,14 @@
+{
+ "declared_in": "docs/SWP_S_TO_R_SWAP.md",
+ "stage": "IDPB",
+ "dataset": "hotpotqa",
+ "carve": "b1",
+ "stores": [
+  "look",
+  "cache"
+ ],
+ "arrays_checked": 17,
+ "records_restored": 5,
+ "zidpb_sha256": "54933b5775104f373fb6fca55437b6a79721b9b9d7f5c8c05e0b575128459b54",
+ "utc": "2026-11-07T22:48:04Z"
+}
