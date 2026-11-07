@@ -6,12 +6,15 @@ everything is written under outputs/idpb/.
 
     python outputs/mp_unified/zidpb.py --selftest
     python outputs/mp_unified/zidpb.py fork
+    python outputs/mp_unified/zidpb.py regen --dataset 2wiki|hotpotqa|musique            # the host: B1H's removed look chunks and cache arrays
     python outputs/mp_unified/zidpb.py read --name scr-gnx-nx-s0 --tag main|musique     # the host's GPU, the fit's own device
     python outputs/mp_unified/zidpb.py report                                           # the laptop
 
 fork   GNX's six fits copied to outputs/idpb/fits/h/<fit> without their reads; models.pt checked (as zidpa.fork).
 read   zml1s.run_arm(read) under zgnx.on_gnx with B1H's roots, gate (main: 2wiki and hotpotqa; musique: musique), carve b1 and
        B1H's column folder (outputs/b1h/ltm, read only), the flags as zidpa.read. idpb_read_<tag>.json lands beside the reads.
+regen  B1H's b1 look chunks and cache arrays (removed by the host cleaner on 7 Nov 16:49) rebuilt by B1H's own chain and checked
+       against the sha256 the filed cache record names; the filed records put back. Nothing else of B1H changes.
 report per setting and domain: R@5 of GNX, zrckpn and zg6r on b1t, b1w and b1 (3-seed means, 95% intervals), the paired steps
        b1w-b1t, b1-b1w, b1-b1t, the share of the b1 gain at b1w, GNX minus zrckpn on each carve and how that gap changes from
        b1t to b1w and to b1: outputs/idpb/report.json and report.md. GNX's b1t and b1w reads are IDPA's (outputs/idpa), zrckpn's
@@ -95,6 +98,53 @@ def fork():
         write_json(dst / "fork.json", {"declared_in": DECLARED, "stage": STAGE, "fit": fit, "source": rel(src),
                                        "models_sha256": want, "zidpb_sha256": sha_src(__file__), "utc": utc()})
         log(f"fork {rel(src)} -> {rel(dst)}")
+    return 0
+
+
+def regen(ds):
+    """B1H's b1 look chunks and cache arrays for one dataset, removed by the host cleaner on 7 Nov 16:49 (regenerable files no
+    queued item named), rebuilt by B1H's own chain. The filed look and cache folders are set aside as <carve>.filed, the chain
+    runs on B1H's root, every regenerated array is checked against the sha256 the filed cache record names, and the filed
+    records are put back so every sha that names them (the carve record, the gate) is unchanged. Refuses on any difference."""
+    if ds not in SETTINGS:
+        raise SystemExit(f"IDPB: regen --dataset is one of {', '.join(SETTINGS)}")
+    look, cache = H.OUT / "look" / ds / CARVE, H.OUT / "cache" / ds / CARVE
+    lf, cf = look.with_name(CARVE + ".filed"), cache.with_name(CARVE + ".filed")
+    for d, f in ((look, lf), (cache, cf)):
+        if f.exists():
+            continue
+        if not d.exists():
+            raise SystemExit(f"IDPB: {rel(d)} is missing and no {rel(f)} is set aside")
+        os.replace(d, f)
+        log(f"set aside {rel(d)} -> {rel(f)}")
+    H.chain(ds, host=True)
+    files = bad = 0
+    for fr in sorted(cf.glob("part_*/record.json")):
+        old, new = read_json(fr), cache / fr.parent.name / "record.json"
+        if not new.exists():
+            raise SystemExit(f"IDPB: the chain wrote no {rel(new)}")
+        for name, a in old["arrays"].items():
+            p = cache / fr.parent.name / f"{name}.npy"
+            files += 1
+            if not p.exists() or sha_file(p) != a["sha256"]:
+                bad += 1
+                log(f"DIFFERENT {rel(p)}")
+    if bad:
+        raise SystemExit(f"IDPB: {bad} of {files} regenerated arrays of {ds}/{CARVE} differ from the filed record's sha256")
+    n = 0
+    for src_dir, dst_dir, pats in ((cf, cache, ("part_*/record.json",)),
+                                   (lf, look, ("record_*of*.json", "pools_*of*.json", "ids.json", "info.json"))):
+        for pat in pats:
+            for f in sorted(src_dir.glob(pat)):
+                to = dst_dir / f.relative_to(src_dir)
+                if not to.exists():
+                    raise SystemExit(f"IDPB: the chain wrote no {rel(to)}")
+                shutil.copyfile(f, to)
+                n += 1
+    log(f"regen {ds}/{CARVE}: {files} arrays equal the filed record's sha256; {n} filed records put back")
+    write_json(OUT / "regen" / f"{ds}.json", {"declared_in": DECLARED, "stage": STAGE, "dataset": ds, "carve": CARVE,
+                                              "arrays_checked": files, "records_restored": n,
+                                              "zidpb_sha256": sha_src(__file__), "utc": utc()})
     return 0
 
 
@@ -331,14 +381,22 @@ def selftest():
     # 5. the share and the gap change on synthetic means
     t, w, h = np.full(100, 0.5), np.full(100, 0.8), np.full(100, 0.9)
     assert abs(float((w - t).mean()) / float((h - t).mean()) - 0.75) < 1e-9
+    # 6. regen is wired, refuses an unknown dataset, and the arrays' file names follow the record's keys
+    assert callable(regen) and callable(H.chain)
+    try:
+        regen("squad")
+        raise AssertionError("regen accepted squad")
+    except SystemExit:
+        pass
     print("zidpb self-test: OK")
     return 0
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", nargs="?", choices=("fork", "read", "report", "selftest"))
+    ap.add_argument("cmd", nargs="?", choices=("fork", "read", "regen", "report", "selftest"))
     ap.add_argument("--name")
+    ap.add_argument("--dataset", choices=SETTINGS)
     ap.add_argument("--tag", choices=tuple(TAGS))
     ap.add_argument("--selftest", action="store_true")
     a = ap.parse_args(argv)
@@ -350,6 +408,10 @@ def main(argv=None):
         return read(a.name, a.tag)
     if a.cmd == "fork":
         return fork()
+    if a.cmd == "regen":
+        if a.dataset is None:
+            raise SystemExit("regen: --dataset is required")
+        return regen(a.dataset)
     if a.cmd == "report":
         return report()
     raise SystemExit(__doc__)
