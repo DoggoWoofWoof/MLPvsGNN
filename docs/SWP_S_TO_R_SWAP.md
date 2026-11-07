@@ -64,15 +64,37 @@ ones and every record remain; B1H's pools, links, kt, columns and gate are intac
 regenerated array equals the sha256 the filed cache record names (a difference stops the stage), and puts the filed records back so no sha that names them
 changes. The reads depend on it. Nothing else of B1H is touched; the regenerated files are pinned by the queued reads.
 
-## 4. Part B, not yet declared: SQuAD, MetaQA and WebQSP
+## 4. Part B, declared 8 Nov 04:20 (before any pair-B read is filed): SQuAD, MetaQA and WebQSP, the same-input pair
 
-Declared in its own amendment before any number. Facts that fix its design:
+Facts that fix the design:
 - The pools of record are R + N + K on SQuAD (rule graph in the slot) and S + N + K on MetaQA and WebQSP (the KB triples in the slot).
-- ABL's arms put the NER store inside R, so none of its arms is the clean swap (slot S or R or empty, N and K in): SK has no N, RK is the
-  record on SQuAD and a new build on the KBs, K has no N. The swap needs three arms per dataset with N in: SNK, RNK, NK. Two are new
-  builds per dataset (about 3 to 10 lane-hours each by ABL section 6's measure, to be re-measured on these three small carves).
-- The same-input pair needs LTM's next-hop columns rebuilt per arm (ABL's amendment A1, unwritten).
+- ABL's arms with the slot set and N and K in are RK (ARM `("R", 1, 1)`); the other two cells of the swap were not ABL arms, so `zabl.py` gained
+  `ARM_SWP` (commit 7b03029): **SNK** = `("S", 1, 1)` and **NK** = `("", 1, 1)`, beside the eight filed subsets, which are unchanged.
+  `ARM_ALL = {**ARM, **ARM_SWP}`; `applies`, `dropped`, `on_arm`, `items` and `--arm` read it. The self-test asserts N and K are in every swap arm.
 - MetaQA has no in-domain fit (held out under both splits); WebQSP has no held-out fit. "In-domain on all six" holds for five.
+
+**Cells (full dev carve `s1eval`, every cell is built and read the same way):**
+
+| dataset | slot S | slot R | slot empty |
+|---|---|---|---|
+| SQuAD | SNK (new build) | REC (the record) | NK (not queued yet) |
+| MetaQA | REC | RK (ABL's row, moved up) | NK (not queued yet) |
+| WebQSP | REC | RK (ABL's row, moved up) | NK (not queued yet) |
+
+The pair is GNX and zrckpn (6 fits each: seeds 0 to 2 on both WQ splits), the same fits as Part A. Nothing trains. `zswp.py` (commit b25504e) forks each
+fit to `outputs/swp/fits/<arm>/<fit>` without its reads (models.pt sha-checked), builds LTM's candidate lists and next-hop columns on the arm's carve
+from LTM's own fold fits (`ltmcols.lists/cols` with `load_folds` pointed at LTM's folder, as B1H does), and reads each fit under `zgnx.on_gnx` or
+`zltm.on_ltm` on the arm's roots and gate (`zabl.arm_roots`; REC uses the record's roots and LTM's own columns). Queue rows `swp2-*`: one fork per arm, lists and
+two column rows per new cell, twelve reads per cell, a test read of GNX and of zrckpn on the record's SQuAD carve first (the other reads wait for them), a
+report. The prune rows of the three new cells wait for their twelve reads, because the reads need the cache.
+
+**Report** (`zswp.py report`, `outputs/swp/report.{json,md}`): per dataset and regime, R@5 of each model in each slot; R minus S, R minus empty and
+S minus empty with paired 95% intervals (ABL's `compare`, 2,000 resamples of the questions); GNX minus zrckpn per slot. A cell without its arm is
+listed as missing, not filled. The direction is named in every row: the fits of record were trained with S in the slot on the KB datasets and R in the
+slot on SQuAD, so the other slot is a swap at read time (S -> R on the KBs; R -> S on SQuAD).
+
+**No threshold, no adoption call.** The NK builds (the empty slot) are queued after the first six cells are read. SQuAD's S is the title-mention rule, so
+there too the comparison is rule against rule.
 
 ## 5. Part C, the user's call: models trained on S
 
