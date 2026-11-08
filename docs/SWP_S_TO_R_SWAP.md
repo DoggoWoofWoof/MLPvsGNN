@@ -143,6 +143,7 @@ rule. "Do we need message passing" is read from the GNX − zrckpn gap at each s
 **Guards.** The S-world is read-only toward the record: a fit named like a record fit exists only inside it. The record's `outputs/screen`, `outputs/pko`, `outputs/ltm`
 are never a write target of a Part C process. Rows pin the S-world's folders so the host cleaner keeps them. The SNKF build is checked on the first dataset
 (squad) before the other four are queued.
+**The S-world's modes (8 Nov 05:27).** `sworld.py mode train|read` repoints the S-world's `outputs/pko` to `outputs/abl/SNKF` (train: the fits are trained with S in the slot) or to the record's `outputs/pko` (read: the S-trained fits are read on the record's carves, Part B's arms and b1 / b1w / b1t). `run [--mode]` refuses a command whose mode differs from the file. Training goes through `zswpt.py` (train-only; the read of each fit is replaced by a no-op; it imports neither `zabl` nor `zswpc`, so zrckpn keeps zltm's own 6-thread, GPU-hidden environment and no module sets the PKO 2-thread one). `verify` fails only on a changed byte of the copied record code and prints a note for files added to the record after `make`.
 
 ### 5a. Amendment (8 Nov 05:35, the user: B1L's LLM-edge comparison belongs in the MuSiQue table): a reference column, no new compute
 
@@ -188,8 +189,7 @@ held-out read beside, exactly B1L's report (b1c / b1q minus b1t, b1w, b1o, and b
 
 **Reading it.** The oracle lifts a lot over b1w and b1o: a better multi-hop graph can help and our rules are the limit on MuSiQue. It lifts about as little: the limit is the first stage
 and the hop depth, not the graph. Either way the call is by the interval, no threshold; ORA ⊇ ORC by construction (more edges); ORC is the one to quote as "the chain edges", always as a ceiling.
-**Not queued yet:** the stage `zb1g.py` (the pairs come from `oraclepairs.py`, which reads B1a's raw MuSiQue files, `outputs/bench/hipporag2/raw/`) and the two chains (two full pool chains each, as B1L's note) wait
-for Part C's builds to finish so that they do not compete for the 26 cpus; the builder's selftest comes first.
+**Built and queued (8 Nov 05:43).** `zb1g.py --variant c|q` (selftest OK for both; `bench` built `outputs/b1c/` and `outputs/b1q/` on the laptop in under a second each: 84,420 and 85,732 directed structural edges against b1w's 82,858) and 40 rows `b1gc-*` / `b1gq-*` (B1L's MuSiQue rows mirrored: selftest, settings, fork, chain, gate, lists, columns for both splits, and the twelve reads of the record's `zg6r` and `zrckpn`, seeds 0-2). They sit after Part C's rows in the file, so Part C's builds have the priority. Still to add after Part C: the GNX reads on b1c / b1q, the S-trained pair on the same carves, and the report (b1c / b1q against b1t, b1w, b1o).
 
 ## 6. What the paper's wording must carry (for the paper session; this stage edits nothing under paper/)
 
