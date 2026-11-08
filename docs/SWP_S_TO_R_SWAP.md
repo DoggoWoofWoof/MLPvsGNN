@@ -191,6 +191,28 @@ held-out read beside, exactly B1L's report (b1c / b1q minus b1t, b1w, b1o, and b
 and the hop depth, not the graph. Either way the call is by the interval, no threshold; ORA ⊇ ORC by construction (more edges); ORC is the one to quote as "the chain edges", always as a ceiling.
 **Built and queued (8 Nov 05:43).** `zb1g.py --variant c|q` (selftest OK for both; `bench` built `outputs/b1c/` and `outputs/b1q/` on the laptop in under a second each: 84,420 and 85,732 directed structural edges against b1w's 82,858) and 40 rows `b1gc-*` / `b1gq-*` (B1L's MuSiQue rows mirrored: selftest, settings, fork, chain, gate, lists, columns for both splits, and the twelve reads of the record's `zg6r` and `zrckpn`, seeds 0-2). They sit after Part C's rows in the file, so Part C's builds have the priority. Still to add after Part C: the GNX reads on b1c / b1q, the S-trained pair on the same carves, and the report (b1c / b1q against b1t, b1w, b1o).
 
+### 5c. Part D filed (8 Nov 13:53 IST; `outputs/b1g/report.{md,json}`, `calls.json`): the oracle chain edges lift both models by about 11 points in-domain, as a ceiling
+
+All 40 rows `b1gc-*` / `b1gq-*` finished rc 0 on the host; the 24 read files were fetched (`rx fetch --glob`) and `zb1g.py report` ran on the laptop (missing reads 0). In-domain R@5 x100 on
+MuSiQue's 1,000 questions, no new fit, the models of record read on four link sets:
+
+| model | b1t | b1w (R) | b1c (R + ORC) | b1q (R + ORA) | b1c - b1w | b1q - b1w | b1q - b1c |
+|---|---:|---:|---:|---:|---|---|---|
+| zg6r | 66.0 | 69.0 | 79.6 | 80.3 | +10.7 (+9.6, +11.7) | +11.3 (+10.2, +12.5) | +0.6 (+0.1, +1.2) |
+| zrckpn | 64.5 | 67.4 | 78.2 | 78.9 | +10.8 (+9.7, +11.8) | +11.4 (+10.4, +12.6) | +0.7 (+0.1, +1.2) |
+
+All six pairs (b1c-b1w, b1q-b1w, b1q-b1c, b1c-b1t, b1q-b1t, b1w-b1t) are UP for both models by the interval. By hop depth (b1c - b1w): 2-hop +7.6 / +8.8, 3-hop +15.3 / +13.1, 4-hop
++11.5 / +12.6 (zg6r / zrckpn); ORA adds beyond ORC only on 4-hop questions (+5.4 / +4.9, UP), FLAT on 2-hop and 3-hop. The fits that did not train on MuSiQue: b1c 77.0 / 77.0, b1q 82.1 / 81.0.
+B1L's LLM edges (b1o, filed, across stages) read 67.4 / 67.3 in-domain: no lift over b1w, against about 11 points for the oracle edges.
+
+**Reading it (the branch declared above: "the oracle lifts a lot").** For these models, edges drawn between a question's own supporting paragraphs lift R@5 far more than anything the
+rules, the dataset's links or the LLM edges give, so on MuSiQue the graph is a limit beside the first stage. What the table does **not** say: (1) it is a ceiling that uses the labels, never an
+estimate of a buildable graph; R already holds 28.3% of the chain pairs and the other 781 are what b1c adds; (2) oracle edges join gold paragraphs only, so even on top of R a node that gains
+edges is gold, and a model that reads "linked to a high-ranked candidate" is helped by construction (the held-out fits, which learned other graphs, gain more: b1q - b1c +5.0 / +4.0).
+**The control that separates a connection from a degree cue is not built yet:** decoy edges with the same sources and a random non-gold corpus node as the target (same number of pairs, same
+degree gain on the golds, no gold-gold connection). If the decoy lift is near zero the +11 is the connection; if it is large, most of it is the degree cue. Proposed as Part D2, same
+machinery (`zb1g.py` with a third kind), about 20 rows; not queued until built and declared here.
+
 ## 6. What the paper's wording must carry (for the paper session; this stage edits nothing under paper/)
 
 - Name the direction of every swap (trained on which family, read with which).
