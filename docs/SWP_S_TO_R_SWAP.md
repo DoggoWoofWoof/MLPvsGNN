@@ -158,6 +158,27 @@ MuSiQue and 2Wiki: the record fits `zg6r` and `zrckpn` (trained with R, not GNX)
 It does not test an upper bound for a multi-hop graph: the LLM edges are extracted from the passages, not drawn between a question's chain. That test would be an oracle graph
 (gold passages of one question linked to each other, label-using, a diagnostic upper bound only, never a method); it is **not** declared or queued.
 
+### 5b. Part D declared 8 Nov 05:40 (the user: "sure"): an oracle multi-hop graph on MuSiQue, an upper bound, queued after Part C's builds
+
+**Question.** On MuSiQue S and R are both rules, and H4o's LLM edges (B1L) lift no more than the rules. None of the three is drawn between a question's chain. Would a graph that
+**is** drawn between the chain's passages lift the models, and by how much? That bounds what any better multi-hop graph can give; it is a diagnostic and never a method
+(the edges are built from the gold labels).
+
+**Design (the default, chosen now).** Two oracle link sets, each in the structural slot in place of S / R, N and K kept as in every other cell:
+- **ORC (chain):** an edge, both directions, between the supporting paragraphs of consecutive hops of a question, from MuSiQue's own `question_decomposition` (hop i to hop i+1);
+- **ORA (all gold pairs):** an edge between every two supporting paragraphs of a question (a superset of ORC; the looser bound).
+ORC is the strict multi-hop graph, ORA the generous one; both are built the same way, so ORA costs one more carve. The pairs are the 1,000-question B1 setting's (HippoRAG 2's MuSiQue
+questions). A cell holds only ORC (or only ORA) in the slot, nothing of S or R, so it compares with b1t (empty), b1w (R), b1 (S) and b1o (LLM) on the same questions.
+
+**How (B1L's machinery, `zb1l.py`, not edited).** A new stage `zb1g.py` (same shape as zb1l: `bench`, `settings`, `chain`, `gate`, `fork`, reads, `report`) with the pair file
+replaced by the oracle pairs: carves **b1g** (ORC) and **b1a** (ORA) on `outputs/b1g/`. Reads: the fits of record (`zg6r`, `zrckpn`: R-trained) and GNX, in-domain (WQ-hotpotqa fits) with the
+held-out read beside, exactly B1L's report (b1g/b1a minus b1t, b1w, b1o, paired by question, calls by the interval). Part C's S-trained pair is read on the same carves once Part C is built.
+
+**Reading it.** The oracle lifts a lot over b1w and b1o: a better multi-hop graph can help and our rules are the limit on MuSiQue. It lifts about as little: the limit is the first stage
+and the hop depth, not the graph. Either way the call is by the interval, no threshold; ORA ≥ ORC by construction (more edges), ORC is the one to quote as "a multi-hop graph".
+**Not queued yet:** the pair builder (the decomposition of the 1,000 questions is read from the dataset file on the host) and the two chains (two full pool chains each, as B1L's note) wait
+for Part C's builds to finish so that they do not compete for the 26 cpus; the builder's selftest comes first.
+
 ## 6. What the paper's wording must carry (for the paper session; this stage edits nothing under paper/)
 
 - Name the direction of every swap (trained on which family, read with which).
