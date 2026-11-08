@@ -158,13 +158,13 @@ MuSiQue and 2Wiki: the record fits `zg6r` and `zrckpn` (trained with R, not GNX)
 It does not test an upper bound for a multi-hop graph: the LLM edges are extracted from the passages, not drawn between a question's chain. That test would be an oracle graph
 (gold passages of one question linked to each other, label-using, a diagnostic upper bound only, never a method); it is **not** declared or queued.
 
-### 5b. Part D declared 8 Nov 05:40 (the user: "sure"): an oracle multi-hop graph on MuSiQue, an upper bound, queued after Part C's builds
+### 5b. Part D declared 8 Nov 05:31 (the user: "sure"): an oracle multi-hop graph on MuSiQue, an upper bound, queued after Part C's builds
 
 **Question.** On MuSiQue S and R are both rules, and H4o's LLM edges (B1L) lift no more than the rules. None of the three is drawn between a question's chain. Would a graph that
 **is** drawn between the chain's passages lift the models, and by how much? That bounds what any better multi-hop graph can give; it is a diagnostic and never a method
 (the edges are built from the gold labels).
 
-**Design (amended 8 Nov 06:00, before anything is built).** The oracle pairs are built by `oraclepairs.py` (laptop-tested on the real files) from the 1,000 questions' gold
+**Design (amended 8 Nov 05:37, before anything is built).** The oracle pairs are built by `oraclepairs.py` (laptop-tested on the real files) from the 1,000 questions' gold
 supporting paragraphs and MuSiQue's own `question_decomposition`; a hop's paragraph is matched to B1a's node by (title, text), and the hop nodes of every question equal the golds B1a filed
 (1,000 of 1,000, checked by the build):
 - **ORC (chain):** an edge between a sub-question's paragraph and the paragraph of each earlier sub-question its text refers to ("#1", "#2": the answers it depends on). A sub-question
@@ -176,7 +176,7 @@ asks the question that matters, "what do the right chain edges add to what the r
 what a better graph could give these models, not an estimate of any buildable one: the pairs use the labels, and a model that reads "linked to a high-ranked candidate" is helped by them
 by construction. The oracle-alone cell (no R) is not built unless asked.
 
-**Measured before any model (8 Nov 05:45, `oraclepairs.py coverage`, a count over the filed graph files of B1's MuSiQue setting, 11,656 passages, 1,000 questions).** Of the 1,090 chain
+**Measured before any model (8 Nov 05:41, `oraclepairs.py coverage`, a count over the filed graph files of B1's MuSiQue setting, 11,656 passages, 1,000 questions).** Of the 1,090 chain
 pairs (ORC), the graph already links: S (b1, title mentions) 294 (27.0%), R (b1w, W2_S) 309 (28.3%), N (NER) 629 (57.7%), K (kNN) 248 (22.8%); S+R+N+K together 764 (70.1%), R+N+K 762
 (69.9%), S+N+K 758 (69.5%). Of the 1,750 all-gold pairs (ORA): S 17.0%, R 17.9%, N 38.0%, K 14.6%, union 46.1%. Each graph holds 26-75 thousand pairs, of which under 1% are chain pairs
 (R 0.75%). So the rule links (and the dataset's own title-mention links) hold about a quarter of the chain's edges, NER holds more than half, and 30% of the chain's edges are in no family;
