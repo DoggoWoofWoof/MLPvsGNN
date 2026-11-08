@@ -13,6 +13,7 @@ The carve is chosen by --variant c|q (or B1G_VARIANT, which the chain's step pro
     python outputs/mp_unified/zb1g.py --variant c chain --dataset musique --host # PKO's chain on the carve
     python outputs/mp_unified/zb1g.py --variant c gate --tag musique --host
     python outputs/mp_unified/zb1g.py --variant c fork | lists | cols | read-gnn | read-mlp ...    # zb1h's, on B1G's roots
+    python outputs/mp_unified/zb1g.py report                                     # the laptop: b1c / b1q against b1t, b1w (paired by question), B1L's b1o beside
     python outputs/mp_unified/zb1g.py selftest
 """
 import os
@@ -42,6 +43,7 @@ if "--variant" in sys.argv:                                    # zb1h's header r
 import zb1l as L  # noqa: E402  (imports zb1h, whose header sets BLAS from sys.argv[1:2] before numpy loads)
 
 import argparse  # noqa: E402
+import contextlib  # noqa: E402
 import copy  # noqa: E402
 import json  # noqa: E402
 import shutil  # noqa: E402
@@ -192,6 +194,166 @@ def gate(tag, host=False):
     return 0
 
 
+# ── the report (the laptop): b1c and b1q against b1t and b1w, paired by question; B1L's b1o beside as a reference ──
+
+GNN, MLP = L.GNN, L.MLP
+MODELS = (GNN, MLP)
+STEP = ("UP", "DOWN", "FLAT")                                  # by the paired interval: above 0, below 0, neither
+CELL = {"t": "b1t", "w": "b1w", "c": "b1c", "q": "b1q"}
+PAIRS_G = (("b1c-b1w", "c", "w"), ("b1q-b1w", "q", "w"), ("b1q-b1c", "q", "c"), ("b1c-b1t", "c", "t"), ("b1q-b1t", "q", "t"), ("b1w-b1t", "w", "t"))
+HOPS = ("2hop", "3hop", "4hop")
+REPORT_OUT = ROOT / "outputs" / "b1g"
+GRAPH_KIND = {"c": "R + ORC (the chain's dependency edges)", "q": "R + ORA (every two supporting paragraphs)"}
+
+
+def consts_of(v):
+    out = ROOT / "outputs" / f"b1{v}"
+    return {"CARVE": f"b1{v}", "OUT": out, "LTM_OUT": out / "ltm", "B1A": out / "bench" / f"hipporag2_{v}", "CARVES": ("b1t", "b1w", f"b1{v}")}
+
+
+@contextlib.contextmanager
+def as_variant(v):
+    """zb1h's module globals set to variant v's carve and folders (read paths, the carve list) and put back."""
+    keep = {k: getattr(H, k) for k in consts_of(v)}
+    try:
+        for k, x in consts_of(v).items():
+            setattr(H, k, x)
+        yield
+    finally:
+        for k, x in keep.items():
+            setattr(H, k, x)
+
+
+def hop_of(kind):
+    return f"{str(kind)[0]}hop"
+
+
+def pairs_g(means, which, hop_mask=None):
+    """paired['b1c-b1w M'] = {R@5, ci} for every pair of PAIRS_G; calls[M] = {pair: UP | DOWN | FLAT}; over the questions in hop_mask if given."""
+    paired, calls = {}, {}
+    for arm in MODELS:
+        d = {k: means.get((arm, c, which)) for k, c in CELL.items()}
+        if any(x is None for x in d.values()):
+            continue
+        if hop_mask is not None:
+            d = {k: x[hop_mask] for k, x in d.items()}
+        for key, a_, b_ in PAIRS_G:
+            paired[f"{key} {arm}"] = H.ci_of(d[a_] - d[b_])
+        calls[arm] = {key: L.word(paired[f"{key} {arm}"]["ci"], *STEP) for key, _a, _b in PAIRS_G}
+    return paired, calls
+
+
+def agree(words):
+    """The one word the models share, MIXED where they differ, INCOMPLETE where a model is missing."""
+    words = list(words)
+    if len(words) != len(MODELS) or not all(words):
+        return "INCOMPLETE"
+    return words[0] if len(set(words)) == 1 else "MIXED"
+
+
+def report():
+    import b1b as BB
+    rec = {"declared_in": DECLARED, "stage": STAGE, "candidate": BB.CAND, "boot": {"resamples": BB.BOOT, "seed": BB.SEED},
+           "in_domain": {k: list(x) for k, x in H.IN_DOMAIN.items()}, "missing": [], "kinds": dict(GRAPH_KIND)}
+    ds = "musique"
+    qs = H.read_json(ROOT / "outputs" / "bench" / "hipporag2" / ds / "queries.json")
+    ids, gc = [str(q["id"]) for q in qs], [len(q["golds"]) for q in qs]
+    hops = np.asarray([hop_of(q["kind"]) for q in qs])
+    means, blocks = {}, {}
+    for v in "cq":
+        if not (consts_of(v)["B1A"] / ds / "build.json").exists():
+            raise SystemExit(f"B1G report: {consts_of(v)['B1A'] / ds} is not built")
+        with as_variant(v):
+            perq, shas = H.read_set(ds, ids, gc, rec["missing"])
+            blk, mean = H.reads_block(ds, perq, shas)
+        blocks[v] = blk
+        for k, x in mean.items():
+            if k[1] in ("b1t", "b1w") and k in means:
+                assert np.array_equal(means[k], x), f"B1G: {k} differs between the variants' reads of the shared carves"
+            means[k] = x
+    s = {"questions": len(ids), "hops": {h: int((hops == h).sum()) for h in HOPS}, "graph": dict(GRAPH_KIND),
+         "in_domain": {}, "zero_shot": {}, "fits": {v: blocks[v]["fits"] for v in "cq"}}
+    for which, pk, ck in (("in_domain", "paired", "calls"), ("zero_shot", "paired_zero_shot", "calls_zero_shot")):
+        for v in "cq":
+            for k, x in blocks[v][which].items():
+                s[which][k] = x
+        s[pk], s[ck] = pairs_g(means, which)
+    s["by_hops"] = {}
+    for h in HOPS:
+        m = hops == h
+        pr, cl = pairs_g(means, "in_domain", m)
+        s["by_hops"][h] = {"questions": int(m.sum()), "paired": pr, "calls": cl}
+    s["call"] = {key: agree([s["calls"].get(a, {}).get(key) for a in MODELS]) for key, _a, _b in PAIRS_G}
+    b1l = ROOT / "outputs" / "b1l" / "report.json"
+    if b1l.exists():                                            # B1L's b1o rows (H4o's LLM-built edges), filed, as a labelled reference
+        ref = H.read_json(b1l)["settings"][ds]
+        s["reference_b1o"] = {"source": H.rel(b1l), "sha256": H.sha_file(b1l), "note": "H4o's LLM-built P pairs; a read-only reference, not a cell of this stage",
+                              "in_domain": {a: ref["in_domain"].get(f"{a}/b1o") for a in MODELS},
+                              "zero_shot": {a: ref["zero_shot"].get(f"{a}/b1o") for a in MODELS}}
+    s["links"] = {v: H.read_json(consts_of(v)["B1A"] / ds / "build.json")["b1g"] for v in "cq"}
+    rec["settings"] = {ds: s}
+    rec["zb1g_sha256"] = H.sha_src(__file__)
+    rec["zb1h_sha256"] = H.sha_src(H.__file__)
+    rec["utc"] = H.utc()
+    H.write_json(REPORT_OUT / "report.json", rec)
+    H.write_json(REPORT_OUT / "calls.json", {"declared_in": DECLARED, "call": s["call"], "calls": s["calls"], "calls_zero_shot": s["calls_zero_shot"],
+                                             "by_hops": {h: x["calls"] for h, x in s["by_hops"].items()}})
+    write_md(rec)
+    log(f"report: {H.rel(REPORT_OUT / 'report.md')}; missing {len(rec['missing'])}; call {s['call']}")
+    return 0
+
+
+def write_md(rec):
+    def lv(c):
+        return f"{100 * c['R@5']:.1f} ({100 * c['R5_ci'][0]:.1f}-{100 * c['R5_ci'][1]:.1f})" if c else "--"
+
+    def df(c):
+        return f"{100 * c['R@5']:+.1f} ({100 * c['ci'][0]:+.1f}, {100 * c['ci'][1]:+.1f})" if c else "--"
+
+    s = rec["settings"]["musique"]
+    T = [f"# B1G report (declared in {DECLARED}, section 5b)", "",
+         "R@5 x100 on HippoRAG 2's MuSiQue setting (1,000 questions), no new fit. The models of record (zg6r, zrckpn; fitted without LLM links, on W2_S pools) are read on "
+         "b1t (the text links only), b1w (the rule's W2_S links) and two carves whose structural family is **the rule's pairs plus oracle pairs drawn between the supporting "
+         f"paragraphs of each question** (b1c: {GRAPH_KIND['c']}; b1q: {GRAPH_KIND['q']}). The oracle uses the labels: it is a ceiling for what a better multi-hop graph could give, "
+         "never a method and never an estimate of a graph anyone can build. In-domain = the mean over the fits that trained on MuSiQue's partner split; "
+         "95% bootstrap intervals over the questions (2,000 resamples, seed 0); calls by the interval (UP / DOWN / FLAT), no threshold.", ""]
+    for which, title, key in (("in_domain", "In-domain", "paired"), ("zero_shot", "Held-out (fits that did not train on MuSiQue)", "paired_zero_shot")):
+        T += [f"## {title}", "", "| model | b1t | b1w | b1c | b1q | b1c - b1w | b1q - b1w | b1q - b1c | b1w - b1t |", "|---|---:|---:|---:|---:|---|---|---|---|"]
+        for arm in MODELS:
+            ld = {c: s[which].get(f"{arm}/{c}") for c in ("b1t", "b1w", "b1c", "b1q")}
+            if not any(ld.values()):
+                continue
+            pr = {k: s[key].get(f"{k} {arm}") for k, _a, _b in PAIRS_G}
+            T.append(f"| {arm} | {lv(ld['b1t'])} | {lv(ld['b1w'])} | {lv(ld['b1c'])} | {lv(ld['b1q'])} | {df(pr['b1c-b1w'])} | {df(pr['b1q-b1w'])} | "
+                     f"{df(pr['b1q-b1c'])} | {df(pr['b1w-b1t'])} |")
+        T.append("")
+    ref = s.get("reference_b1o")
+    if ref:
+        T += ["## Reference: B1L's b1o (H4o's LLM-built P pairs), the filed rows, not a cell of this stage", "", "| model | in-domain b1o | held-out b1o |", "|---|---:|---:|"]
+        for arm in MODELS:
+            T.append(f"| {arm} | {lv(ref['in_domain'].get(arm))} | {lv(ref['zero_shot'].get(arm))} |")
+        T += ["", f"Source `{ref['source']}` (sha256 {ref['sha256'][:12]}). The comparison with b1c / b1q is across stages: same fits, same questions, different link sets.", ""]
+    T += ["## By hop depth (in-domain, paired by question)", "", "| hops | questions | model | b1c - b1w | b1q - b1w | b1q - b1c | calls (c-w / q-w / q-c) |", "|---|---:|---|---|---|---|---|"]
+    for h in HOPS:
+        x = s["by_hops"][h]
+        for arm in MODELS:
+            pr, cl = x["paired"], x["calls"].get(arm)
+            if not cl:
+                continue
+            T.append(f"| {h} | {x['questions']} | {arm} | {df(pr[f'b1c-b1w {arm}'])} | {df(pr[f'b1q-b1w {arm}'])} | {df(pr[f'b1q-b1c {arm}'])} | "
+                     f"{cl['b1c-b1w']} / {cl['b1q-b1w']} / {cl['b1q-b1c']} |")
+    T += ["", "## The call (in-domain, both models)", "", "| pair | call |", "|---|---|"]
+    for key, _a, _b in PAIRS_G:
+        T.append(f"| {key} | {s['call'][key]} |")
+    T += ["", "## The oracle pairs", "", "| carve | oracle pairs | already in W2_S | new | union pairs | directed edges in the file |", "|---|---:|---:|---:|---:|---:|"]
+    for v in "cq":
+        k = s["links"][v]
+        T.append(f"| b1{v} | {k['oracle_pairs']} | {k['oracle_in_w2s']} | {k['oracle_new']} | {k['union_pairs']} | {k['directed_edges_file']} |")
+    T += ["", f"Missing reads: {len(rec['missing'])}."]
+    REPORT_OUT.mkdir(parents=True, exist_ok=True)
+    (REPORT_OUT / "report.md").write_text("\n".join(T) + "\n", encoding="utf-8")
+
+
 # ── self-test ─────────────────────────────────────────────────────────────────
 
 def selftest():
@@ -237,6 +399,52 @@ def selftest():
     assert seen_[0]["desc_b1"]["variant"] == VARIANT and seen_[0]["desc_b1"]["oracle"] == KIND[VARIANT] and "b1g" in seen_[0], "label"
     assert H.write_json is orig and H.settings is hold, "put back"
     assert os.environ["B1G_VARIANT"] == VARIANT, "the chain's step processes inherit the variant"
+    # the report: as_variant sets zb1h's globals to the other variant's and puts them back; the pairs, the calls, the hop split and the markdown on fake reads
+    here = (H.CARVE, H.OUT, H.CARVES)
+    other = "q" if VARIANT == "c" else "c"
+    with as_variant(other):
+        assert H.CARVE == f"b1{other}" and H.OUT == ROOT / "outputs" / f"b1{other}" and H.CARVES == ("b1t", "b1w", f"b1{other}")
+        assert H.read_path(L.GNN, "scr-ml1-zg6r-s0-hp", f"b1{other}", "musique") == ROOT / "outputs" / f"b1{other}" / "fits/h" / "scr-ml1-zg6r-s0-hp" / f"reads/musique__b1{other}.npz"
+    assert (H.CARVE, H.OUT, H.CARVES) == here, "put back"
+    rs = np.random.RandomState(7)
+    nq = 90
+    base = rs.rand(nq) * 0.5
+    fake_means = {}
+    for arm in MODELS:
+        for which in ("in_domain", "zero_shot"):
+            fake_means[(arm, "b1t", which)] = base
+            fake_means[(arm, "b1w", which)] = base + 0.02 + rs.randn(nq) * 0.03
+            fake_means[(arm, "b1c", which)] = fake_means[(arm, "b1w", which)] + 0.10 + rs.randn(nq) * 0.03
+            fake_means[(arm, "b1q", which)] = fake_means[(arm, "b1c", which)] + 0.05 + rs.randn(nq) * 0.03
+    pr, cl = pairs_g(fake_means, "in_domain")
+    assert set(pr) == {f"{k} {a}" for a in MODELS for k, _x, _y in PAIRS_G} and set(cl) == set(MODELS)
+    for a in MODELS:
+        assert cl[a]["b1c-b1w"] == "UP" and cl[a]["b1q-b1c"] == "UP" and cl[a]["b1c-b1t"] == "UP", cl[a]
+        assert abs(pr[f"b1q-b1t {a}"]["R@5"] - pr[f"b1q-b1c {a}"]["R@5"] - pr[f"b1c-b1w {a}"]["R@5"] - pr[f"b1w-b1t {a}"]["R@5"]) < 4e-4, "ladder"
+    kinds = ["2hop"] * 50 + ["3hop1"] * 25 + ["4hop2"] * 15
+    hops = np.asarray([hop_of(k) for k in kinds])
+    assert [int((hops == h).sum()) for h in HOPS] == [50, 25, 15], "hop groups"
+    pr2, cl2 = pairs_g(fake_means, "in_domain", hops == "4hop")
+    assert set(cl2) == set(MODELS) and pr2[f"b1c-b1w {GNN}"]["R@5"] != pr[f"b1c-b1w {GNN}"]["R@5"], "over the 4-hop questions only"
+    assert pairs_g({k: v for k, v in fake_means.items() if k[1] != "b1q"}, "in_domain") == ({}, {}), "no b1q, no pairs"
+    assert agree(["UP", "UP"]) == "UP" and agree(["UP", "FLAT"]) == "MIXED" and agree(["UP", None]) == "INCOMPLETE" and agree([]) == "INCOMPLETE"
+    cell = {"R@5": 0.5, "R5_ci": [0.4, 0.6]}
+    rec = {"missing": [], "settings": {"musique": {
+        "in_domain": {f"{a}/{c}": cell for a in MODELS for c in ("b1t", "b1w", "b1c", "b1q")}, "zero_shot": {},
+        "paired": pr, "paired_zero_shot": {}, "by_hops": {h: {"questions": 5, "paired": pr, "calls": cl} for h in HOPS},
+        "call": {k: "UP" for k, _x, _y in PAIRS_G},
+        "reference_b1o": {"source": "outputs/b1l/report.json", "sha256": "0" * 64, "in_domain": {a: cell for a in MODELS}, "zero_shot": {a: None for a in MODELS}},
+        "links": {v: {"oracle_pairs": 1, "oracle_in_w2s": 0, "oracle_new": 1, "union_pairs": 2, "directed_edges_file": 4} for v in "cq"}}}}
+    import tempfile
+    global REPORT_OUT
+    keep_out = REPORT_OUT
+    try:
+        REPORT_OUT = Path(tempfile.mkdtemp())
+        write_md(rec)
+        md = (REPORT_OUT / "report.md").read_text(encoding="utf-8")
+    finally:
+        REPORT_OUT = keep_out
+    assert "| zg6r | 50.0 (40.0-60.0)" in md and "## By hop depth" in md and "## Reference: B1L's b1o" in md and "ceiling" in md and "no threshold" in md, md[:400]
     print(f"zb1g self-test: OK ({CARVE})")
     return 0
 
@@ -288,6 +496,8 @@ def main(argv=None):
         return H.read_gnn(a.name, a.tag)
     if a.cmd == "read-mlp":
         return H.read_mlp(a.name, a.tag)
+    if a.cmd == "report":
+        return report()
     if a.cmd == "look-dev":
         return H.look_dev(a.dataset, a.root, a.questions)
     raise SystemExit(__doc__)
