@@ -3,7 +3,7 @@
     python outputs/host_ops/sworld.py run --mode train -- python outputs/mp_unified/zswpt.py train --name scr-ml1-zspk-s0
 
 One fit trained with S in the slot (the S-world's outputs/pko is arm SNKF) and not read there: the read on the record's s1eval carves is replaced by a
-no-op, because the S-world's roots hold the five training carves only; Part C reads the fit afterwards, in read mode, on the arms' roots (zswp.py, zidpb.py).
+no-op (a stand-in read stamp on zspk and zg6r, which start the fits behind them), because the S-world's roots hold the five training carves only; Part C reads the fit afterwards, in read mode, on the arms' roots (zswp.py, zidpb.py).
 This file imports neither zabl nor zswpc: a zrckpn fit runs in zltm's environment (6 BLAS / OpenMP / MKL threads, the GPU hidden), set before numpy or
 torch loads, and zabl would put the PKO processes' 2 threads into the environment at import.
 """
@@ -66,6 +66,31 @@ def noop_read(_name, _env):
     return 0
 
 
+def standin_read(name, env):
+    """zspk and zg6r are the starts of the fits behind them, and zml1s.load_encoder takes a start only when ML1's read stamp is on its read.json.
+    A train-mode fit is not read here (Part C reads it later, in read mode), so the stamp goes on a stand-in read.json that says so: it holds no read."""
+    import zml1s as M1
+    fd = M1.WQ.fit_dir(name)
+    M1.WQ.write_json(fd / "read.json", {"swpc_standin": True, "note": "no read: a train-mode fit of SWP part C; the stamp lets the next fit start from it"})
+    M1.stamp(name, env, "read")
+    return 0
+
+
+def stamp_start(name):
+    """The stand-in stamp on a zspk or zg6r fit that trained without it (the first Part C fits ran with noop_read)."""
+    in_world()
+    if fit_kind(name) not in ("zspk", "zg6r"):
+        raise SystemExit(f"SWPT: {name} is not the start of another fit")
+    import zml1s as M1
+    fd = Path(os.path.realpath(M1.WQ.fit_dir(name)))
+    if not str(fd).startswith(os.path.realpath(ROOT) + os.sep):
+        raise SystemExit(f"SWPT: {name}'s fit folder {fd} is outside the S-world")
+    if not (M1.stamped(name, "screen") and (fd / "train.json").is_file() and (fd / "models.pt").is_file()):
+        raise SystemExit(f"SWPT: {name} is not a trained and stamped fit")
+    log(f"stand-in read stamp on {name}")
+    return standin_read(name, M1.device_env())
+
+
 def train(name):
     """zml1s.fit with its read replaced by a no-op, inside the model's own context (zgnx.on_gnx, zltm.on_ltm), after the checks of the S-world and
     of the columns of the split's training carves."""
@@ -79,7 +104,7 @@ def train(name):
         raise SystemExit(f"SWPT: {name}'s fit folder {fd} is outside the S-world")
     log(f"train {name} ({kind}, {split}) in {ROOT}")
     if kind in ("zspk", "zg6r"):
-        with WQ.patch(M1, read=noop_read):
+        with WQ.patch(M1, read=standin_read):
             return M1.fit(name)
     import ltmcols as LTMC
     miss = [f"{ds}/{c}" for ds, c in LTMC.train_carves(split)
@@ -115,7 +140,7 @@ def selftest():
     try:
         for var in ("SWORLD", "SWORLD_MODE"):
             os.environ.pop(var, None)
-        for f in (in_world, lambda: train("scr-ml1-zspk-s0")):         # the record's tree never trains a Part C fit
+        for f in (in_world, lambda: train("scr-ml1-zspk-s0"), lambda: stamp_start("scr-ml1-zspk-s0")):         # the record's tree never trains a Part C fit
             try:
                 f()
                 raise AssertionError("must refuse outside the S-world")
@@ -149,6 +174,8 @@ def main(argv=None):
         return selftest()
     if len(a) == 3 and a[0] == "train" and a[1] == "--name":
         return train(a[2])
+    if len(a) == 3 and a[0] == "stamp" and a[1] == "--name":
+        return stamp_start(a[2])
     raise SystemExit(__doc__)
 
 
