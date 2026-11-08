@@ -164,19 +164,25 @@ It does not test an upper bound for a multi-hop graph: the LLM edges are extract
 **is** drawn between the chain's passages lift the models, and by how much? That bounds what any better multi-hop graph can give; it is a diagnostic and never a method
 (the edges are built from the gold labels).
 
-**Design (the default, chosen now).** Two oracle link sets, each in the structural slot in place of S / R, N and K kept as in every other cell:
-- **ORC (chain):** an edge, both directions, between the supporting paragraphs of consecutive hops of a question, from MuSiQue's own `question_decomposition` (hop i to hop i+1);
-- **ORA (all gold pairs):** an edge between every two supporting paragraphs of a question (a superset of ORC; the looser bound).
-ORC is the strict multi-hop graph, ORA the generous one; both are built the same way, so ORA costs one more carve. The pairs are the 1,000-question B1 setting's (HippoRAG 2's MuSiQue
-questions). A cell holds only ORC (or only ORA) in the slot, nothing of S or R, so it compares with b1t (empty), b1w (R), b1 (S) and b1o (LLM) on the same questions.
+**Design (amended 8 Nov 06:00, before anything is built).** The oracle pairs are built by `oraclepairs.py` (laptop-tested on the real files) from the 1,000 questions' gold
+supporting paragraphs and MuSiQue's own `question_decomposition`; a hop's paragraph is matched to B1a's node by (title, text), and the hop nodes of every question equal the golds B1a filed
+(1,000 of 1,000, checked by the build):
+- **ORC (chain):** an edge between a sub-question's paragraph and the paragraph of each earlier sub-question its text refers to ("#1", "#2": the answers it depends on). A sub-question
+  that refers to none is a branch root (3hop2, 4hop2, 4hop3) and gets no edge; every question's hops form one connected tree (n−1 edges: 2hop 1, 3hop 2, 4hop 3). **1,090 distinct pairs.**
+- **ORA (all gold pairs):** an edge between every two supporting paragraphs of a question (ORC is a subset). **1,750 distinct pairs.**
+**The cells add the oracle to the rule graph instead of replacing it:** **b1c = W2_S (R) pairs ∪ ORC** and **b1q = R ∪ ORA**, N and K as in b1w, the oracle entries untyped (NULL) as b1o's.
+Reason: oracle edges join gold passages only, so a graph made of them alone would let a node's degree reveal that it is gold; on top of R every node keeps edges, and the cell
+asks the question that matters, "what do the right chain edges add to what the rules already find" (b1c − b1w, b1q − b1w, b1q − b1c), beside b1t, b1o. The lift is a **ceiling** on
+what a better graph could give these models, not an estimate of any buildable one: the pairs use the labels, and a model that reads "linked to a high-ranked candidate" is helped by them
+by construction. The oracle-alone cell (no R) is not built unless asked.
 
 **How (B1L's machinery, `zb1l.py`, not edited).** A new stage `zb1g.py` (same shape as zb1l: `bench`, `settings`, `chain`, `gate`, `fork`, reads, `report`) with the pair file
-replaced by the oracle pairs: carves **b1g** (ORC) and **b1a** (ORA) on `outputs/b1g/`. Reads: the fits of record (`zg6r`, `zrckpn`: R-trained) and GNX, in-domain (WQ-hotpotqa fits) with the
-held-out read beside, exactly B1L's report (b1g/b1a minus b1t, b1w, b1o, paired by question, calls by the interval). Part C's S-trained pair is read on the same carves once Part C is built.
+replaced by the oracle pairs added to b1w's: carves **b1c** (R ∪ ORC) and **b1q** (R ∪ ORA) (named not to clash with B1a, B1P, B1H); folders `outputs/b1c/`, `outputs/b1q/`. Reads: the fits of record (`zg6r`, `zrckpn`: R-trained) and GNX, in-domain (WQ-hotpotqa fits) with the
+held-out read beside, exactly B1L's report (b1c / b1q minus b1t, b1w, b1o, and b1q − b1c, paired by question, calls by the interval). Part C's S-trained pair is read on the same carves once Part C is built.
 
 **Reading it.** The oracle lifts a lot over b1w and b1o: a better multi-hop graph can help and our rules are the limit on MuSiQue. It lifts about as little: the limit is the first stage
-and the hop depth, not the graph. Either way the call is by the interval, no threshold; ORA ≥ ORC by construction (more edges), ORC is the one to quote as "a multi-hop graph".
-**Not queued yet:** the pair builder (the decomposition of the 1,000 questions is read from the dataset file on the host) and the two chains (two full pool chains each, as B1L's note) wait
+and the hop depth, not the graph. Either way the call is by the interval, no threshold; ORA ⊇ ORC by construction (more edges); ORC is the one to quote as "the chain edges", always as a ceiling.
+**Not queued yet:** the stage `zb1g.py` (the pairs come from `oraclepairs.py`, which reads B1a's raw MuSiQue files, `outputs/bench/hipporag2/raw/`) and the two chains (two full pool chains each, as B1L's note) wait
 for Part C's builds to finish so that they do not compete for the 26 cpus; the builder's selftest comes first.
 
 ## 6. What the paper's wording must carry (for the paper session; this stage edits nothing under paper/)
