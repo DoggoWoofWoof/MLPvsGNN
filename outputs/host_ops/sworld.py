@@ -39,6 +39,15 @@ PKO_TARGET = "outputs/abl/SNKF"
 READ_TARGET = "outputs/pko"                                           # read mode: the record's own PKO base (the S-trained fits are read on the record's roots)
 MODE_FILE = "sworld_mode.txt"                                         # "train" or "read": what outputs/pko points to
 VOLATILE = ("hostfeed_items.txt", "hostfeed2.py")                     # edited while the host runs; no fit imports them
+
+
+def tracked(d, p):
+    """Whether the file p of outputs/<d> is code the S-world copies and pins. In host_ops only the .py files are code: its json/md/txt files are the
+    feeder's, the watchdog's and the cleaner's live state (hostfeed_state.json, watchdog_state.json, host_catalogue.*, disk_*.json ...), rewritten while
+    the host runs, so a manifest on them would fail `verify` at once."""
+    if d == "host_ops" and (p.name in VOLATILE or p.suffix != ".py"):
+        return False
+    return p.suffix in (".py", ".json", ".md", ".txt", ".toml") and p.stat().st_size < 4_000_000
 EXTRA_LINKS = {"pko_rec": "outputs/pko"}                              # the record's own PKO base, for the reads on the record's roots (REC)
 MANIFEST = "sworld_manifest.json"
 
@@ -93,9 +102,7 @@ def code_files(root, world=False):
     for d in CODE_OUT:
         base = Path(root) / "outputs" / d
         for p in sorted(base.iterdir()):
-            if p.is_file() and p.suffix in (".py", ".json", ".md", ".txt", ".toml") and p.stat().st_size < 4_000_000:
-                if d == "host_ops" and p.name in VOLATILE:
-                    continue                                          # the record's queue and the feeder's own source are not code a fit runs
+            if p.is_file() and tracked(d, p):
                 out[p.relative_to(root).as_posix()] = sha(p)
     return out
 
@@ -116,7 +123,7 @@ def make(world=WORLD, root=ROOT):
         for p in (root / "outputs" / d).iterdir():
             tgt = wd / p.name
             if p.is_file():
-                if p.suffix in (".py", ".json", ".md", ".txt", ".toml") and p.stat().st_size < 4_000_000 and p.name not in VOLATILE:
+                if tracked(d, p):
                     shutil.copy2(p, tgt)
             elif p.is_dir() and p.name != "__pycache__":
                 if junction(tgt, p):
@@ -229,7 +236,13 @@ def selftest():
         (root / "outputs/mp_unified/look").mkdir()
         (root / "outputs/mp_unified/look/big.npz").write_text("big", encoding="utf-8")
         (root / "pyproject.toml").write_text("p", encoding="utf-8")
+        (root / "outputs/host_ops/hostfeed_state.json").write_text("1", encoding="utf-8")                  # the feeder's live state: never tracked
+        (root / "outputs/host_ops/hostfeed_items.txt").write_text("q", encoding="utf-8")
         make(world, root)
+        assert not (world / "outputs/host_ops/hostfeed_state.json").exists() and not (world / "outputs/host_ops/hostfeed_items.txt").exists()
+        (root / "outputs/host_ops/hostfeed_state.json").write_text("2", encoding="utf-8")
+        verify(world, root, quiet=True)                                           # a state file rewritten while the host runs does not fail verify
+        assert "outputs/host_ops/h.py" in code_files(root) and "outputs/host_ops/hostfeed_state.json" not in code_files(root)
         assert is_link(world / "outputs/other") and is_link(world / "data") and is_link(world / "outputs/mp_unified/look")
         assert is_link(world / "outputs/pko") and os.path.realpath(world / "outputs/pko") == os.path.realpath(root / "outputs/abl/SNKF")
         assert is_link(world / "outputs/pko_rec") and os.path.realpath(world / "outputs/pko_rec") == os.path.realpath(root / "outputs/pko")
