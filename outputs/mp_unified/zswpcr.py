@@ -53,9 +53,10 @@ def split_of(fit):
 
 
 def in_domain_splits(ds):
-    """zabl.in_domain_splits: MuSiQue trains on WQ-musique, 2Wiki and HotpotQA on WQ-hotpotqa, SQuAD and WebQSP on both, MetaQA on neither."""
-    return {"musique": ("WQ-musique",), "2wiki": ("WQ-hotpotqa",), "hotpotqa": ("WQ-hotpotqa",), "squad": SPLITS,
-            "webqsp": SPLITS, "metaqa": ()}[ds]
+    """zabl.in_domain_splits (checked in the selftest): a WQ split is in-domain for the datasets its training set holds. WQ-hotpotqa trains on
+    musique (s1fit), 2wiki, squad, webqsp; WQ-musique trains on hotpotqa, 2wiki, squad, webqsp. So MuSiQue: WQ-hotpotqa; HotpotQA: WQ-musique;
+    2Wiki, SQuAD, WebQSP: both; MetaQA: neither."""
+    return {"musique": ("WQ-hotpotqa",), "2wiki": SPLITS, "hotpotqa": ("WQ-musique",), "squad": SPLITS, "webqsp": SPLITS, "metaqa": ()}[ds]
 
 
 def regimes(ds):
@@ -76,6 +77,8 @@ def read_file(world, arm, carve, fit, ds):
     """The local path of one read. S-trained: outputs/swpc (fetched from the S-world). R-trained: Part A's, B1H's, B1M's, B1P's or Part B's own."""
     if world == "S-trained":
         return OUT / "fits" / arm / fit / "reads" / f"{ds}__{carve}.npz"
+    if world == "B1L-ref":                                      # B1L (568bf08): zrckpn of record on the LLM-built P edges (carve b1o)
+        return ROOT / "outputs" / "b1l" / "fits" / "h" / fit / "reads" / f"{ds}__{carve}.npz"
     if arm in ("B1", "B1W", "B1T"):
         import zidpb as IB
         return IB.read_path(GNX if model_of(fit) == GNX else MLP, fit, carve, ds)
@@ -123,7 +126,24 @@ def point(c):
 
 
 def cmp(Z, a, b):
-    return Z.compare(a, b)
+    """b minus a on the questions with a gold, over the fits' mean: point, 95% interval (paired bootstrap over the questions, each resample
+    the mean of its own question draw), the call, in how many fits b is below a. zabl.compare is NOT used: its bootstrap line averages
+    every resample of a chunk of 100 into one number, so its 2,000 resamples are 20 values and its interval is about 10 times too
+    narrow (found 8 Nov 18:45: musique, GNX, b1w - b1: zabl.compare gives +1.9 (+1.85, +1.93), the per-resample mean gives
+    +1.9 (+1.03, +2.79))."""
+    import p3c_claim1 as P3
+    ok = a["gt"] > 0
+    if not np.array_equal(a["ids"], b["ids"]):
+        raise SystemExit("SWPC: two arms' questions differ")
+    ma, mb = np.mean(np.stack(a["per_fit"]), 0)[ok], np.mean(np.stack(b["per_fit"]), 0)[ok]
+    d = mb - ma
+    boots = np.concatenate([d[idx].mean(1) for idx in P3.resamples(d.size, BOOT_SEED, Z.BOOT)])
+    assert boots.size == Z.BOOT, boots.size
+    lo, hi = np.quantile(boots, [0.025, 0.975])
+    call = "BELOW" if hi < 0 else "ABOVE" if lo > 0 else "LEVEL"
+    below = sum(int(np.mean((fb - fa)[ok]) < 0) for fa, fb in zip(a["per_fit"], b["per_fit"]))
+    return {"a": float(ma.mean()), "b": float(mb.mean()), "diff": float(d.mean()), "ci": [float(lo), float(hi)], "call": call,
+            "fits_below": below, "fits": len(a["per_fit"]), "questions": int(ok.sum())}
 
 
 def mean_vec(c):
@@ -135,7 +155,8 @@ def diff_of_diffs(Z, g1, m1, g2, m2):
     """(g2 - m2) - (g1 - m1) over the questions with a gold, the same paired bootstrap as Z.compare."""
     import p3c_claim1 as P3
     d = (mean_vec(g2) - mean_vec(m2)) - (mean_vec(g1) - mean_vec(m1))
-    boots = np.concatenate([d[idx].mean(keepdims=True) for idx in P3.resamples(d.size, BOOT_SEED, Z.BOOT)])
+    boots = np.concatenate([d[idx].mean(1) for idx in P3.resamples(d.size, BOOT_SEED, Z.BOOT)])
+    assert boots.size == Z.BOOT, boots.size
     lo, hi = np.quantile(boots, [0.025, 0.975])
     call = "BELOW" if hi < 0 else "ABOVE" if lo > 0 else "LEVEL"
     return {"diff": float(d.mean()), "ci": [float(lo), float(hi)], "call": call, "questions": int(d.size)}
@@ -180,6 +201,22 @@ def build(get, Z):
                         e["train_effect"][f"{slot}/{model}"] = cmp(Z, cells[ka], cells[kb])
             d[regime] = e
         rec["datasets"][ds] = d
+    rec["b1l_reference"] = {}
+    for ds in ("musique", "2wiki"):
+        for regime in regimes(ds):
+            cells = {}
+            for tag, (world, arm, carve) in {"b1t": ("R-trained", "B1T", "b1t"), "b1w": ("R-trained", "B1W", "b1w"),
+                                             "b1": ("R-trained", "B1", "b1"), "b1o": ("B1L-ref", "b1o", "b1o")}.items():
+                c = get(world, arm, carve, ds, MLP, regime)
+                if c is not None:
+                    cells[tag] = c
+            if "b1o" not in cells:
+                continue
+            e = {"R@5": {k: round(point(c), 4) for k, c in cells.items()}, "steps": {}}
+            for a_ in ("b1t", "b1w", "b1"):
+                if a_ in cells:
+                    e["steps"][f"b1o - {a_}"] = cmp(Z, cells[a_], cells["b1o"])
+            rec["b1l_reference"][f"{ds}/{regime}"] = e
     return rec
 
 
@@ -241,6 +278,17 @@ def write_md(rec, path):
                 g, gc = e["gap"], e["gap_change"]
                 L.append(f"| {ds} | {regime} | {world} | " + " | ".join(_d(g.get(f"{world}/{s}"), "zrckpn", "GNX") for s in ("S", "R", "-"))
                          + f" | {_d(gc.get(f'{world}/R vs S'), 'S slot', 'R slot')} | {_d(gc.get(f'{world}/S vs -'), 'none', 'S slot')} |")
+    if rec.get("b1l_reference"):
+        L += ["", "## Reference only: B1L's LLM-built P edges (carve b1o) beside the slots, zrckpn trained with R in the slot, seed 0", "",
+              "B1L (568bf08) read the models of record on these edges; GNX was not read on them, so there is no S-trained or GNX cell. The b1o entries "
+              "are NULL-heavy (most have no W2_S type) while the fits were trained on W2_S types, so b1o is a lower bound for an LLM-built graph. "
+              "This block says nothing about which graph is better.", "",
+              "| dataset | regime | b1t | b1w (R) | b1 (S) | b1o (LLM edges) | b1o vs none (b1o - b1t) | b1o vs R (b1o - b1w) | b1o vs S (b1o - b1) |", "|---|---|---:|---:|---:|---:|---|---|---|"]
+        for k, e in rec["b1l_reference"].items():
+            ds, regime = k.split("/")
+            st = e["steps"]
+            L.append(f"| {ds} | {regime} | " + " | ".join("--" if t_ not in e["R@5"] else f"{100 * e['R@5'][t_]:.1f}" for t_ in ("b1t", "b1w", "b1", "b1o"))
+                     + f" | {_d(st.get('b1o - b1t'), 'b1t', 'b1o')} | {_d(st.get('b1o - b1w'), 'b1w', 'b1o')} | {_d(st.get('b1o - b1'), 'b1', 'b1o')} |")
     if rec["missing"]:
         L += ["", f"Missing cells: {len(rec['missing'])}"] + [f"- {m}" for m in rec["missing"][:40]]
     Path(path).write_text("\n".join(L) + "\n", encoding="utf-8")
@@ -266,8 +314,11 @@ def selftest():
     import zabl as Z
     assert len(PAIR) == 4 and set(map(model_of, PAIR)) == set(MODELS) and [split_of(f) for f in PAIR].count("WQ-hotpotqa") == 2
     assert regimes("metaqa") == ["held-out"] and regimes("musique") == ["in-domain", "held-out"] and regimes("squad") == ["in-domain"]
-    assert fits_of(GNX, "musique", "in-domain") == ["scr-gnx-nx-s0"] and fits_of(MLP, "2wiki", "in-domain") == ["scr-ltm-zrckpn-s0-hp"]
-    assert len(fits_of(GNX, "squad", "in-domain")) == 2 and len(fits_of(MLP, "metaqa", "held-out")) == 2
+    assert regimes("2wiki") == ["in-domain"]
+    assert fits_of(GNX, "musique", "in-domain") == ["scr-gnx-nx-s0-hp"] and fits_of(MLP, "hotpotqa", "in-domain") == ["scr-ltm-zrckpn-s0"]
+    assert len(fits_of(GNX, "squad", "in-domain")) == 2 and len(fits_of(MLP, "metaqa", "held-out")) == 2 and len(fits_of(MLP, "2wiki", "in-domain")) == 2
+    for ds in DATASETS:
+        assert set(in_domain_splits(ds)) == set(Z.in_domain_splits(ds)), (ds, in_domain_splits(ds), Z.in_domain_splits(ds))
     for ds, m in SLOT_ARM.items():
         assert set(m) == {"S", "R", "-"} and len({a for a, _c in m.values()}) == 3, ds
     n = 400
@@ -277,7 +328,7 @@ def selftest():
     base = rng.random(n)
 
     def fake(w, a, c, ds, m, r):
-        shift = {"B1": 0.10, "B1W": 0.05, "B1T": 0.0, "SNK": 0.1, "REC": 0.05, "RK": 0.05, "NK": 0.0}[a] + (0.02 if w == "S-trained" else 0.0)
+        shift = {"B1": 0.10, "B1W": 0.05, "B1T": 0.0, "SNK": 0.1, "REC": 0.05, "RK": 0.05, "NK": 0.0, "b1o": 0.03}[a] + (0.02 if w == "S-trained" else 0.0)
         shift += 0.03 if m == GNX else 0.0
         x = np.clip(base + shift + rng.normal(0, 0.05, n), 0, 1)
         return {"ids": ids, "gt": gt, "per_fit": [x] * len(fits_of(m, ds, r)), "sha256": ["x"], "fits": fits_of(m, ds, r)}
@@ -290,7 +341,8 @@ def selftest():
     with tempfile.TemporaryDirectory() as t:
         write_md(rec, Path(t) / "r.md")
         txt = (Path(t) / "r.md").read_text(encoding="utf-8")
-    assert "R below S" in txt and "S-trained - R-trained" in txt and "metaqa" in txt
+    assert "R below S" in txt and "S-trained - R-trained" in txt and "metaqa" in txt and "Reference only" in txt
+    assert set(rec["b1l_reference"]) == {"musique/in-domain", "musique/held-out", "2wiki/in-domain"}
     print("selftest OK")
     return 0
 
