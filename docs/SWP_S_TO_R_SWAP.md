@@ -176,6 +176,12 @@ asks the question that matters, "what do the right chain edges add to what the r
 what a better graph could give these models, not an estimate of any buildable one: the pairs use the labels, and a model that reads "linked to a high-ranked candidate" is helped by them
 by construction. The oracle-alone cell (no R) is not built unless asked.
 
+**Measured before any model (8 Nov 05:45, `oraclepairs.py coverage`, a count over the filed graph files of B1's MuSiQue setting, 11,656 passages, 1,000 questions).** Of the 1,090 chain
+pairs (ORC), the graph already links: S (b1, title mentions) 294 (27.0%), R (b1w, W2_S) 309 (28.3%), N (NER) 629 (57.7%), K (kNN) 248 (22.8%); S+R+N+K together 764 (70.1%), R+N+K 762
+(69.9%), S+N+K 758 (69.5%). Of the 1,750 all-gold pairs (ORA): S 17.0%, R 17.9%, N 38.0%, K 14.6%, union 46.1%. Each graph holds 26-75 thousand pairs, of which under 1% are chain pairs
+(R 0.75%). So the rule links (and the dataset's own title-mention links) hold about a quarter of the chain's edges, NER holds more than half, and 30% of the chain's edges are in no family;
+the cells b1c / b1q add the 781 / 1,437 pairs R does not hold. This is a statement about the graphs, not about a model: it does not say how much a model gains from an edge it is given.
+
 **How (B1L's machinery, `zb1l.py`, not edited).** A new stage `zb1g.py` (same shape as zb1l: `bench`, `settings`, `chain`, `gate`, `fork`, reads, `report`) with the pair file
 replaced by the oracle pairs added to b1w's: carves **b1c** (R ∪ ORC) and **b1q** (R ∪ ORA) (named not to clash with B1a, B1P, B1H); folders `outputs/b1c/`, `outputs/b1q/`. Reads: the fits of record (`zg6r`, `zrckpn`: R-trained) and GNX, in-domain (WQ-hotpotqa fits) with the
 held-out read beside, exactly B1L's report (b1c / b1q minus b1t, b1w, b1o, and b1q − b1c, paired by question, calls by the interval). Part C's S-trained pair is read on the same carves once Part C is built.

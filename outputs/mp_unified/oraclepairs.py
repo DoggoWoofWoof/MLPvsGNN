@@ -10,6 +10,7 @@ A hop's paragraph is matched to the setting's node by (title, text) of HippoRAG 
 set of a question's hop nodes must equal the golds B1a filed in queries.json, for all 1,000 questions, or the build stops.
 
     python outputs/mp_unified/oraclepairs.py check          # the real files: the match, the pair counts, per question kind
+    python outputs/mp_unified/oraclepairs.py coverage       # how many of the oracle pairs each family (S, R, N, K) already links
     python outputs/mp_unified/oraclepairs.py selftest
 """
 import json
@@ -114,6 +115,35 @@ def check(name="musique"):
     return 0
 
 
+GRAPHS = (("S (b1, title mentions)", "hipporag2", "graph_structural.npz"), ("R (b1w, W2_S rule)", "hipporag2_w", "graph_structural.npz"),
+          ("N (NER)", "hipporag2", "graph_ner.npz"), ("K (kNN)", "hipporag2", "graph_knn.npz"))
+
+
+def undirected(path):
+    import numpy as np
+    z = np.load(path)
+    return {(int(a), int(b)) if a < b else (int(b), int(a)) for a, b in zip(z["src"], z["dst"]) if a != b}
+
+
+def coverage(name="musique", bench=BENCH):
+    """For each family's graph on the setting (and unions): how many of the oracle pairs it already links (ORC, ORA) and which share of its own pairs are
+    ORC pairs. A descriptive count of the filed graph files; no model."""
+    raw, corpus, nodes, queries = load(name, bench)
+    pairs, _rows, _meta = build(raw, corpus, nodes, queries)
+    orc, ora = set(pairs["ORC"]), set(pairs["ORA"])
+    base = Path(bench).parent
+    E = {k: undirected(base / d / name / f) for k, d, f in GRAPHS}
+    sets = list(E.items()) + [("S+R+N+K", set().union(*E.values())),
+                              ("R+N+K (no S)", E[GRAPHS[1][0]] | E[GRAPHS[2][0]] | E[GRAPHS[3][0]]),
+                              ("S+N+K (no R)", E[GRAPHS[0][0]] | E[GRAPHS[2][0]] | E[GRAPHS[3][0]])]
+    out = {"oracle_pairs": {"ORC": len(orc), "ORA": len(ora)}, "graphs": {}}
+    for k, e in sets:
+        out["graphs"][k] = {"pairs": len(e), "ORC_linked": len(orc & e), "ORA_linked": len(ora & e),
+                            "ORC_share": round(len(orc & e) / len(orc), 4), "ORA_share": round(len(ora & e) / len(ora), 4),
+                            "ORC_precision": round(len(orc & e) / len(e), 5)}
+    return out
+
+
 def selftest():
     corpus = [{"title": f"T{i}", "text": f"x{i}"} for i in range(8)]
     nodes = [{"title": c["title"]} for c in corpus]
@@ -161,4 +191,11 @@ if __name__ == "__main__":
         raise SystemExit(selftest())
     if cmd == "check":
         raise SystemExit(check())
+    if cmd == "coverage":
+        c = coverage()
+        print(f"oracle pairs: ORC {c['oracle_pairs']['ORC']}, ORA {c['oracle_pairs']['ORA']}")
+        for k, g in c["graphs"].items():
+            print(f"  {k:26s} {g['pairs']:7d} pairs  ORC linked {g['ORC_linked']:4d} ({100 * g['ORC_share']:4.1f}%)  ORA linked {g['ORA_linked']:4d} "
+                  f"({100 * g['ORA_share']:4.1f}%)  ORC share of its pairs {100 * g['ORC_precision']:.3f}%")
+        raise SystemExit(0)
     raise SystemExit(__doc__)
