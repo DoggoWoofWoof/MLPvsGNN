@@ -39,6 +39,7 @@ PKO_TARGET = "outputs/abl/SNKF"
 READ_TARGET = "outputs/pko"                                           # read mode: the record's own PKO base (the S-trained fits are read on the record's roots)
 MODE_FILE = "sworld_mode.txt"                                         # "train" or "read": what outputs/pko points to
 VOLATILE = ("hostfeed_items.txt", "hostfeed2.py")                     # edited while the host runs; no fit imports them
+PROSE = "docs/"                                                      # copied by `make`, not pinned by `verify`: the stage doc is edited while the host runs and no fit reads it
 
 
 def tracked(d, p):
@@ -161,7 +162,8 @@ def make(world=WORLD, root=ROOT):
 def verify(world=WORLD, root=ROOT, quiet=False):
     """The S-world's copied code equals the record's: same files, same shas (the manifest is rewritten by `make` only)."""
     world, root = Path(world), Path(root)
-    man = json.loads((world / MANIFEST).read_text(encoding="utf-8"))["files"]
+    allman = json.loads((world / MANIFEST).read_text(encoding="utf-8"))["files"]
+    man = {r: w for r, w in allman.items() if not r.startswith(PROSE)}
     bad = []
     for rel, want in man.items():
         a, b = root / rel, world / rel
@@ -169,7 +171,7 @@ def verify(world=WORLD, root=ROOT, quiet=False):
             bad.append(rel)
     if bad:
         raise SystemExit(f"sworld: {len(bad)} files differ between the record and the S-world, e.g. {bad[:4]} (python outputs/host_ops/sworld.py make)")
-    new = sorted(set(code_files(root)) - set(man))                # a file added to the record after `make` is not run by the S-world: a note, not a failure
+    new = sorted(set(code_files(root)) - set(allman))             # a file added to the record after `make` is not run by the S-world: a note, not a failure
     if new and not quiet:
         print(f"sworld: {len(new)} files are new in the record since make (not in the S-world), e.g. {new[:4]}")
     if not quiet:
@@ -251,6 +253,9 @@ def selftest():
         assert not (world / "outputs/screen/s.txt").exists() and (world / "outputs/dep/v.json").exists()
         assert (world / "outputs/mp_unified/m.py").is_file() and (world / "src/a.py").is_file()
         verify(world, root, quiet=True)
+        (root / "docs/c.md").write_text("prose edited while the host runs", encoding="utf-8")
+        verify(world, root, quiet=True)                                           # the stage doc is edited while the host runs: not pinned
+        (root / "docs/c.md").write_text("x", encoding="utf-8")
         (root / "src/a.py").write_text("changed", encoding="utf-8")
         try:
             verify(world, root, quiet=True)
