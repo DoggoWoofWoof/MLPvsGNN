@@ -213,6 +213,33 @@ edges is gold, and a model that reads "linked to a high-ranked candidate" is hel
 degree gain on the golds, no gold-gold connection). If the decoy lift is near zero the +11 is the connection; if it is large, most of it is the degree cue. Proposed as Part D2, same
 machinery (`zb1g.py` with a third kind), about 20 rows; not queued until built and declared here.
 
+### 5d. Part D2 declared 8 Nov 14:54 (before any control read is filed): the two controls for the oracle edges, b1d (decoys) and b1e (swapped chains)
+
+**Question.** Part D (5c) lifted both models by about 11 points when the chain's edges were added to R. Two things come with those edges besides the connection between the right
+passages: every node they touch is gold for some question, so a gold node gains degree, and a model that reads "linked to a high-ranked candidate" can use that. D2 builds two graphs
+from the chain edges with the labels but without the right connection and reads the same models on them. It is a diagnostic, never a method.
+
+**The controls (built by `oraclepairs.py`, seed 0, both seeded and rebuilt equal; ORC and ORA unchanged, sha16 `0457f765…` and `e28c564a…`, 1,090 and 1,750 pairs).**
+- **OXC, the degree control (carve b1d = R ∪ OXC).** Every node ORC touches (1,456 golds) keeps exactly its ORC degree, but each of its pairs goes to a node drawn uniformly (seed 0) from the corpus
+  nodes that are gold for no question of the 1,000: **2,180 pairs**, each with one gold end and one non-gold end, 1,968 distinct decoy nodes (at most 3 pairs each); no pair joins two golds. 2 of
+  the 2,180 are already in W2_S. sha16 `db7702e0…`. If the lift of b1d over b1w is near zero, the +11 of b1c is not a degree gain on the golds; if it is large, it is.
+- **OXG, the connection control (carve b1e = R ∪ OXG).** ORC's 1,090 pairs with their far ends exchanged between questions: every node keeps its ORC degree and the pair count stays
+  1,090, but each new pair joins gold paragraphs of two different questions and is in neither ORC nor ORA (overlap 0 and 0); 1 of 1,090 is already in W2_S. sha16 `33bd08c5…`. It keeps
+  everything the chain edges have except the right partner: gold nodes with the same degree and gold-to-gold links. If b1e lifts as much as b1c, the lift is "gold nodes linked to
+  gold nodes", not the chain; if it lifts less, the right partner is what the models use.
+Neither control is a buildable graph (both use the labels), and neither is quoted as an estimate of one.
+
+**Cells and calls.** Same machinery as Part D: `zb1g.py --variant d|e` (selftest OK for c, q, d, e; `bench` built `outputs/b1d/` and `outputs/b1e/`, 87,214 and 85,036 directed structural
+edges against b1w's 82,858), the same 20-row pattern as `b1gc-*` / `b1gq-*` per carve (`b1gd-*`, `b1ge-*`, 40 rows in all: selftest, settings, fork, chain, gate, lists, columns for both splits, and the twelve reads of
+the models of record `zg6r`, `zrckpn`, seeds 0-2 on both splits), queued in the file right after Part D's block. In-domain = the mean over the WQ-hotpotqa fits, as in 5c, with the held-out read beside; paired by question, 95% bootstrap (2,000
+resamples, seed 0), calls UP / DOWN / FLAT by the interval, no threshold. The pairs `zb1g.py report-d2` files (to `outputs/b1g2/`): b1c-b1w (as 5c), **b1d-b1w, b1e-b1w, b1c-b1d, b1c-b1e,
+b1d-b1e**, overall, by hop depth (2/3/4) and held-out. Nothing is tuned and no fit is trained.
+
+**Reading it (branches fixed now).** (i) b1d-b1w FLAT and b1e-b1w FLAT or below b1c: the lift is the connection between the right passages. (ii) b1d-b1w UP: part of the lift is a degree gain on
+the golds, and the share is read from b1c-b1d, always as a difference in points, never as a ratio. (iii) b1e-b1w UP with b1c-b1e FLAT: the lift is gold-to-gold linking, not the chain.
+(iv) b1c-b1d and b1c-b1e both UP with the controls UP too: both parts exist, said so with the points. Whatever comes out, the oracle numbers stay a ceiling for the paper. The 40 rows are
+the "about 20 rows" of 5c, per carve.
+
 ## 6. What the paper's wording must carry (for the paper session; this stage edits nothing under paper/)
 
 - Name the direction of every swap (trained on which family, read with which).

@@ -14,6 +14,7 @@ set of a question's hop nodes must equal the golds B1a filed in queries.json, fo
     python outputs/mp_unified/oraclepairs.py selftest
 """
 import json
+import random
 import re
 import sys
 from pathlib import Path
@@ -21,7 +22,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 BENCH = ROOT / "outputs" / "bench" / "hipporag2"
-KINDS = ("ORC", "ORA")
+KINDS = ("ORC", "ORA", "OXC", "OXG")
+CONTROL_SEED = 0
 REF_RE = re.compile(r"#(\d+)")
 
 
@@ -65,8 +67,58 @@ def connected(n, deps):
     return len(seen) == n
 
 
+def decoys(orc, golds, n, seed=CONTROL_SEED):
+    """OXC, the degree control (Part D2): every node ORC touches keeps exactly its ORC degree, but each of its pairs goes to a node that is gold for no
+    question, drawn uniformly (seeded). A gold-gold pair never arises, so the only thing left of ORC is that the gold paragraphs gain edges."""
+    deg = {}
+    for a, b in orc:
+        deg[a] = deg.get(a, 0) + 1
+        deg[b] = deg.get(b, 0) + 1
+    pool = [i for i in range(n) if i not in golds]
+    if not pool:
+        raise SystemExit("oracle pairs: every node is gold for some question, so there is no decoy to draw")
+    rng = random.Random(seed)
+    out = set()
+    for g in sorted(deg):
+        k = 0
+        while k < deg[g]:
+            d = pool[rng.randrange(len(pool))]
+            p = (g, d) if g < d else (d, g)
+            if p not in out:
+                out.add(p)
+                k += 1
+    return out
+
+
+def swapped(items, orc, ora, seed=CONTROL_SEED):
+    """OXG, the connection control (Part D2): ORC's pairs with their far ends exchanged between questions. items = [(a, b, question index)], one per distinct ORC
+    pair. Every node keeps its ORC degree and the pair count stays, but each new pair joins gold paragraphs of two different questions and is no ORA pair
+    (so none of a question's own supporting paragraphs are linked by it). Stops if no such exchange is found."""
+    rng = random.Random(seed)
+    n = len(items)
+    ends = [(a, b) if rng.random() < 0.5 else (b, a) for a, b, _q in items]          # (x, y): x stays, y moves to another pair's x
+    qs = [q for _a, _b, q in items]
+    perm = list(range(n))
+    rng.shuffle(perm)
+    for _sweep in range(5000):
+        seen, bad = set(), []
+        for i in range(n):
+            x, y = ends[i][0], ends[perm[i]][1]
+            p = (x, y) if x < y else (y, x)
+            if qs[perm[i]] == qs[i] or x == y or p in ora or p in orc or p in seen:
+                bad.append(i)
+            seen.add(p)
+        if not bad:
+            return {(min(ends[i][0], ends[perm[i]][1]), max(ends[i][0], ends[perm[i]][1])) for i in range(n)}
+        for i in bad:
+            j = rng.randrange(n)
+            perm[i], perm[j] = perm[j], perm[i]
+    raise SystemExit("oracle pairs: no cross-question exchange of ORC's pair ends was found")
+
+
 def build(raw, corpus, nodes, queries):
-    """{kind: sorted (a < b) pairs over node positions}, per-question rows and the counts; stops unless the hop nodes equal B1a's golds."""
+    """{kind: sorted (a < b) pairs over node positions}, per-question rows and the counts; stops unless the hop nodes equal B1a's golds.
+    ORC and ORA are the oracle; OXC and OXG are the two controls built from them (decoys, swapped, above): not oracle, built after the loop."""
     if len(corpus) != len(nodes) or any(corpus[i]["title"] != nodes[i]["title"] for i in range(len(nodes))):
         raise SystemExit("oracle pairs: the corpus file is not B1a's node order")
     by_text = {}
@@ -76,6 +128,7 @@ def build(raw, corpus, nodes, queries):
         raise SystemExit(f"oracle pairs: {len(raw)} questions in the raw file, {len(queries)} in B1a's")
     pairs = {k: set() for k in KINDS}
     rows, no_ref = [], 0
+    golds, items = set(), []
     for q, g in zip(raw, queries):
         if str(q["id"]) != str(g["id"]):
             raise SystemExit(f"oracle pairs: question order differs at {q['id']} / {g['id']}")
@@ -88,9 +141,13 @@ def build(raw, corpus, nodes, queries):
         chain = {tuple(sorted((pos[j], pos[i]))) for j, i in deps if pos[j] != pos[i]}
         allp = {(a, b) for a in set(pos) for b in set(pos) if a < b}
         assert chain <= allp
+        golds |= set(pos)
+        items += [(a, b, len(rows)) for a, b in sorted(chain) if (a, b) not in pairs["ORC"]]
         pairs["ORC"] |= chain
         pairs["ORA"] |= allp
         rows.append({"id": q["id"], "kind": g["kind"], "hops": len(pos), "orc": len(chain), "ora": len(allp)})
+    pairs["OXC"] = decoys(pairs["ORC"], golds, len(nodes))
+    pairs["OXG"] = swapped(items, pairs["ORC"], pairs["ORA"]) if items else set()
     out = {k: sorted(v) for k, v in pairs.items()}
     return out, rows, {"questions": len(rows), "hops_without_reference": no_ref, "pairs": {k: len(v) for k, v in out.items()}}
 
@@ -145,11 +202,11 @@ def coverage(name="musique", bench=BENCH):
 
 
 def selftest():
-    corpus = [{"title": f"T{i}", "text": f"x{i}"} for i in range(8)]
+    corpus = [{"title": f"T{i}", "text": f"x{i}"} for i in range(16)]
     nodes = [{"title": c["title"]} for c in corpus]
 
     def q(id_, subs, golds):
-        para = [{"idx": str(i), "title": corpus[i]["title"], "paragraph_text": corpus[i]["text"]} for i in range(8)]
+        para = [{"idx": str(i), "title": corpus[i]["title"], "paragraph_text": corpus[i]["text"]} for i in range(len(corpus))]
         return ({"id": id_, "paragraphs": para,
                  "question_decomposition": [{"question": s, "paragraph_support_idx": p} for s, p in subs]},
                 {"id": id_, "golds": golds, "kind": f"{len(subs)}hop"})
@@ -163,6 +220,18 @@ def selftest():
     assert set(out["ORC"]) <= set(out["ORA"])
     assert out["ORA"] == sorted({(1, 2), (3, 4), (3, 5), (4, 5), (1, 6), (1, 7), (6, 7)}), out["ORA"]
     assert meta["hops_without_reference"] == 2 and [r["orc"] for r in rows] == [1, 2, 2, 0] and [r["ora"] for r in rows] == [1, 3, 3, 0]
+    # the controls (Part D2): OXC gives every node ORC touches its ORC degree with non-gold far ends only; OXG keeps every node's degree and joins different questions
+    from collections import Counter
+    golds_ = {0, 1, 2, 3, 4, 5, 6, 7}
+    orc_, ora_ = set(out["ORC"]), set(out["ORA"])
+    deg_ = Counter(x for pr in orc_ for x in pr)
+    oxc_, oxg_ = set(out["OXC"]), set(out["OXG"])
+    assert all(sum(x in golds_ for x in pr) == 1 for pr in oxc_), "a decoy pair has exactly one gold end"
+    assert Counter(x for pr in oxc_ for x in pr if x in golds_) == deg_, "every gold keeps its ORC degree under OXC"
+    assert len(oxg_) == len(orc_) and Counter(x for pr in oxg_ for x in pr) == deg_, "OXG keeps every node's degree and the pair count"
+    assert not (oxg_ & ora_) and not (oxc_ & ora_), "no control pair is an oracle pair"
+    out2, _r2, _m2 = build([a, b, c, d], corpus, nodes, [ga, gb, gc, gd])
+    assert out2 == out, "the controls are seeded: the same build gives the same pairs"
     lone, glone = q("e", [("who", 1), ("when", 2)], [1, 2])                                             # two roots, not joined: the build stops
     try:
         build([lone], corpus, nodes, [glone])

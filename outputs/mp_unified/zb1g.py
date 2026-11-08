@@ -6,7 +6,12 @@ of oraclepairs.py (the oracle entries are untyped, as b1o's):
     b1c   W2_S pairs + ORC (a question's dependency tree between its supporting paragraphs; 1,090 pairs)
     b1q   W2_S pairs + ORA (every two supporting paragraphs of a question; 1,750 pairs)
 
-The carve is chosen by --variant c|q (or B1G_VARIANT, which the chain's step processes inherit).
+Part D2 (the controls that separate the connection from a degree cue; docs/SWP_S_TO_R_SWAP.md section 5d) adds two more carves of the same shape:
+
+    b1d   W2_S pairs + OXC (every gold paragraph keeps its ORC degree, but each pair goes to a node that is gold for no question; 2,180 pairs)
+    b1e   W2_S pairs + OXG (ORC's pairs with their far ends exchanged between questions; every node keeps its ORC degree; 1,090 pairs)
+
+The carve is chosen by --variant c|q|d|e (or B1G_VARIANT, which the chain's step processes inherit).
 
     python outputs/mp_unified/zb1g.py --variant c bench --dataset musique        # the laptop: the setting's folder
     python outputs/mp_unified/zb1g.py --variant c settings [--host]              # zb1h's: the CSR, its entry types, the checks
@@ -14,6 +19,7 @@ The carve is chosen by --variant c|q (or B1G_VARIANT, which the chain's step pro
     python outputs/mp_unified/zb1g.py --variant c gate --tag musique --host
     python outputs/mp_unified/zb1g.py --variant c fork | lists | cols | read-gnn | read-mlp ...    # zb1h's, on B1G's roots
     python outputs/mp_unified/zb1g.py report                                     # the laptop: b1c / b1q against b1t, b1w (paired by question), B1L's b1o beside
+    python outputs/mp_unified/zb1g.py report-d2                                  # the laptop: b1d / b1e (the controls) against b1w and b1c
     python outputs/mp_unified/zb1g.py selftest
 """
 import os
@@ -26,11 +32,11 @@ if str(HERE) not in sys.path:
 
 
 def _variant():
-    """--variant c|q from the command line (read before anything else, so the constants below are the variant's) or B1G_VARIANT."""
+    """--variant c|q|d|e from the command line (read before anything else, so the constants below are the variant's) or B1G_VARIANT."""
     a = sys.argv[1:]
     v = a[a.index("--variant") + 1] if "--variant" in a and a.index("--variant") + 1 < len(a) else os.environ.get("B1G_VARIANT", "c")
-    if v not in ("c", "q"):
-        raise SystemExit("B1G: --variant is c or q")
+    if v not in ("c", "q", "d", "e"):
+        raise SystemExit("B1G: --variant is c, q, d or e")
     os.environ["B1G_VARIANT"] = v                              # the chain's step processes inherit it
     return v
 
@@ -55,7 +61,7 @@ H = L.H
 ROOT = H.ROOT
 DECLARED = "docs/SWP_S_TO_R_SWAP.md"
 STAGE = "B1G"
-KIND = {"c": "ORC", "q": "ORA"}
+KIND = {"c": "ORC", "q": "ORA", "d": "OXC", "e": "OXG"}
 CARVE = f"b1{VARIANT}"                                        # b1c / b1q
 OUT = ROOT / "outputs" / CARVE
 LTM_OUT = OUT / "ltm"
@@ -228,18 +234,20 @@ def hop_of(kind):
     return f"{str(kind)[0]}hop"
 
 
-def pairs_g(means, which, hop_mask=None):
-    """paired['b1c-b1w M'] = {R@5, ci} for every pair of PAIRS_G; calls[M] = {pair: UP | DOWN | FLAT}; over the questions in hop_mask if given."""
+def pairs_g(means, which, hop_mask=None, cell=None, pairs=None):
+    """paired['b1c-b1w M'] = {R@5, ci} for every pair of PAIRS_G; calls[M] = {pair: UP | DOWN | FLAT}; over the questions in hop_mask if given.
+    cell / pairs: the cells and pairs of another table (Part D2's), default B1G's."""
+    cell, pairs = cell or CELL, pairs or PAIRS_G
     paired, calls = {}, {}
     for arm in MODELS:
-        d = {k: means.get((arm, c, which)) for k, c in CELL.items()}
+        d = {k: means.get((arm, c, which)) for k, c in cell.items()}
         if any(x is None for x in d.values()):
             continue
         if hop_mask is not None:
             d = {k: x[hop_mask] for k, x in d.items()}
-        for key, a_, b_ in PAIRS_G:
+        for key, a_, b_ in pairs:
             paired[f"{key} {arm}"] = H.ci_of(d[a_] - d[b_])
-        calls[arm] = {key: L.word(paired[f"{key} {arm}"]["ci"], *STEP) for key, _a, _b in PAIRS_G}
+        calls[arm] = {key: L.word(paired[f"{key} {arm}"]["ci"], *STEP) for key, _a, _b in pairs}
     return paired, calls
 
 
@@ -354,6 +362,106 @@ def write_md(rec):
     (REPORT_OUT / "report.md").write_text("\n".join(T) + "\n", encoding="utf-8")
 
 
+# ── Part D2 (the laptop): the controls b1d and b1e against b1w and b1c, paired by question ──
+
+CELL_D2 = {"w": "b1w", "c": "b1c", "d": "b1d", "e": "b1e"}
+PAIRS_D2 = (("b1c-b1w", "c", "w"), ("b1d-b1w", "d", "w"), ("b1e-b1w", "e", "w"), ("b1c-b1d", "c", "d"), ("b1c-b1e", "c", "e"), ("b1d-b1e", "d", "e"))
+CTRL_KIND = {"d": "R + OXC (degree control: every gold paragraph keeps its ORC degree, each pair goes to a node that is gold for no question)",
+             "e": "R + OXG (connection control: ORC's pairs with their far ends exchanged between questions, every node keeps its ORC degree)"}
+REPORT_D2 = ROOT / "outputs" / "b1g2"
+
+
+def report_d2():
+    import b1b as BB
+    rec = {"declared_in": DECLARED, "stage": "B1G-D2", "candidate": BB.CAND, "boot": {"resamples": BB.BOOT, "seed": BB.SEED},
+           "in_domain": {k: list(x) for k, x in H.IN_DOMAIN.items()}, "missing": [], "kinds": {"c": GRAPH_KIND["c"], **CTRL_KIND}}
+    ds = "musique"
+    qs = H.read_json(ROOT / "outputs" / "bench" / "hipporag2" / ds / "queries.json")
+    ids, gc = [str(q["id"]) for q in qs], [len(q["golds"]) for q in qs]
+    hops = np.asarray([hop_of(q["kind"]) for q in qs])
+    means, blocks = {}, {}
+    for v in "cde":
+        if not (consts_of(v)["B1A"] / ds / "build.json").exists():
+            raise SystemExit(f"B1G report-d2: {consts_of(v)['B1A'] / ds} is not built")
+        with as_variant(v):
+            perq, shas = H.read_set(ds, ids, gc, rec["missing"])
+            blk, mean = H.reads_block(ds, perq, shas)
+        blocks[v] = blk
+        for k, x in mean.items():
+            if k[1] in ("b1t", "b1w") and k in means:
+                assert np.array_equal(means[k], x), f"B1G: {k} differs between the variants' reads of the shared carves"
+            means[k] = x
+    s = {"questions": len(ids), "hops": {h: int((hops == h).sum()) for h in HOPS}, "graph": {"c": GRAPH_KIND["c"], **CTRL_KIND},
+         "in_domain": {}, "zero_shot": {}, "fits": {v: blocks[v]["fits"] for v in "cde"}}
+    for which, pk, ck in (("in_domain", "paired", "calls"), ("zero_shot", "paired_zero_shot", "calls_zero_shot")):
+        for v in "cde":
+            for k, x in blocks[v][which].items():
+                if k.split("/")[-1] in ("b1w", f"b1{v}"):
+                    s[which][k] = x
+        s[pk], s[ck] = pairs_g(means, which, None, CELL_D2, PAIRS_D2)
+    s["by_hops"] = {}
+    for h in HOPS:
+        m = hops == h
+        pr, cl = pairs_g(means, "in_domain", m, CELL_D2, PAIRS_D2)
+        s["by_hops"][h] = {"questions": int(m.sum()), "paired": pr, "calls": cl}
+    s["call"] = {key: agree([s["calls"].get(a, {}).get(key) for a in MODELS]) for key, _a, _b in PAIRS_D2}
+    s["links"] = {v: H.read_json(consts_of(v)["B1A"] / ds / "build.json")["b1g"] for v in "cde"}
+    rec["settings"] = {ds: s}
+    rec["zb1g_sha256"] = H.sha_src(__file__)
+    rec["zb1h_sha256"] = H.sha_src(H.__file__)
+    rec["utc"] = H.utc()
+    H.write_json(REPORT_D2 / "report.json", rec)
+    H.write_json(REPORT_D2 / "calls.json", {"declared_in": DECLARED, "call": s["call"], "calls": s["calls"], "calls_zero_shot": s["calls_zero_shot"],
+                                            "by_hops": {h: x["calls"] for h, x in s["by_hops"].items()}})
+    write_md_d2(rec)
+    log(f"report-d2: {H.rel(REPORT_D2 / 'report.md')}; missing {len(rec['missing'])}; call {s['call']}")
+    return 0
+
+
+def write_md_d2(rec):
+    def lv(c):
+        return f"{100 * c['R@5']:.1f} ({100 * c['R5_ci'][0]:.1f}-{100 * c['R5_ci'][1]:.1f})" if c else "--"
+
+    def df(c):
+        return f"{100 * c['R@5']:+.1f} ({100 * c['ci'][0]:+.1f}, {100 * c['ci'][1]:+.1f})" if c else "--"
+
+    s = rec["settings"]["musique"]
+    T = [f"# B1G Part D2 report: the controls for the oracle edges (declared in {DECLARED}, section 5d)", "",
+         "R@5 x100 on HippoRAG 2's MuSiQue setting (1,000 questions), no new fit; the models of record (zg6r, zrckpn) read on the rule's W2_S pairs (b1w), on those plus the oracle "
+         f"chain edges (b1c: {GRAPH_KIND['c']}), and on two controls built from ORC with the labels but without the right connection: **b1d** ({CTRL_KIND['d']}) and **b1e** "
+         f"({CTRL_KIND['e']}). If a control lifts as much as b1c, the oracle's lift is not the chain's connection. The oracle and the controls use the labels: ceilings and "
+         "diagnostics, never a method and never an estimate of a graph anyone can build. In-domain = the mean over the fits that trained on MuSiQue's partner split; 95% bootstrap "
+         "intervals over the questions (2,000 resamples, seed 0); calls by the interval (UP / DOWN / FLAT), no threshold.", ""]
+    for which, title, key in (("in_domain", "In-domain", "paired"), ("zero_shot", "Held-out (fits that did not train on MuSiQue)", "paired_zero_shot")):
+        T += [f"## {title}", "", "| model | b1w | b1c | b1d | b1e | b1c - b1w | b1d - b1w | b1e - b1w | b1c - b1d | b1c - b1e |", "|---|---:|---:|---:|---:|---|---|---|---|---|"]
+        for arm in MODELS:
+            ld = {c: s[which].get(f"{arm}/{c}") for c in ("b1w", "b1c", "b1d", "b1e")}
+            if not any(ld.values()):
+                continue
+            pr = {k: s[key].get(f"{k} {arm}") for k, _a, _b in PAIRS_D2}
+            T.append(f"| {arm} | {lv(ld['b1w'])} | {lv(ld['b1c'])} | {lv(ld['b1d'])} | {lv(ld['b1e'])} | {df(pr['b1c-b1w'])} | {df(pr['b1d-b1w'])} | {df(pr['b1e-b1w'])} | "
+                     f"{df(pr['b1c-b1d'])} | {df(pr['b1c-b1e'])} |")
+        T.append("")
+    T += ["## By hop depth (in-domain, paired by question)", "", "| hops | questions | model | b1c - b1w | b1d - b1w | b1e - b1w | b1c - b1d | b1c - b1e |", "|---|---:|---|---|---|---|---|---|"]
+    for h in HOPS:
+        x = s["by_hops"][h]
+        for arm in MODELS:
+            pr = x["paired"]
+            if not x["calls"].get(arm):
+                continue
+            T.append(f"| {h} | {x['questions']} | {arm} | " + " | ".join(df(pr[f"{k} {arm}"]) for k in ("b1c-b1w", "b1d-b1w", "b1e-b1w", "b1c-b1d", "b1c-b1e")) + " |")
+    T += ["", "## The call (in-domain, both models)", "", "| pair | call |", "|---|---|"]
+    for key, _a, _b in PAIRS_D2:
+        T.append(f"| {key} | {s['call'][key]} |")
+    T += ["", "## The control pairs", "", "| carve | pairs | already in W2_S | new | union pairs | directed edges in the file |", "|---|---:|---:|---:|---:|---:|"]
+    for v in "cde":
+        k = s["links"][v]
+        T.append(f"| b1{v} | {k['oracle_pairs']} | {k['oracle_in_w2s']} | {k['oracle_new']} | {k['union_pairs']} | {k['directed_edges_file']} |")
+    T += ["", f"Missing reads: {len(rec['missing'])}."]
+    REPORT_D2.mkdir(parents=True, exist_ok=True)
+    (REPORT_D2 / "report.md").write_text("\n".join(T) + "\n", encoding="utf-8")
+
+
 # ── self-test ─────────────────────────────────────────────────────────────────
 
 def selftest():
@@ -445,6 +553,35 @@ def selftest():
     finally:
         REPORT_OUT = keep_out
     assert "| zg6r | 50.0 (40.0-60.0)" in md and "## By hop depth" in md and "## Reference: B1L's b1o" in md and "ceiling" in md and "no threshold" in md, md[:400]
+    # Part D2 (d2 selftest): the variants d / e name the controls' kinds; the controls' pairs and calls are the cells of CELL_D2 against b1w and b1c
+    assert KIND["d"] == "OXC" and KIND["e"] == "OXG" and set(KIND) == {"c", "q", "d", "e"}
+    fake2 = {}
+    for arm in MODELS:
+        for which in ("in_domain", "zero_shot"):
+            fake2[(arm, "b1w", which)] = base
+            fake2[(arm, "b1c", which)] = base + 0.10 + rs.randn(nq) * 0.03
+            fake2[(arm, "b1d", which)] = base + rs.randn(nq) * 0.03                      # a control that lifts nothing
+            fake2[(arm, "b1e", which)] = base + 0.10 + rs.randn(nq) * 0.03               # a control that lifts as much as the oracle
+    p2, c2 = pairs_g(fake2, "in_domain", None, CELL_D2, PAIRS_D2)
+    assert set(p2) == {f"{k} {a}" for a in MODELS for k, _x, _y in PAIRS_D2} and set(c2) == set(MODELS)
+    for a in MODELS:
+        assert c2[a]["b1c-b1w"] == "UP" and c2[a]["b1d-b1w"] == "FLAT" and c2[a]["b1e-b1w"] == "UP" and c2[a]["b1c-b1d"] == "UP" and c2[a]["b1c-b1e"] == "FLAT", c2[a]
+    assert pairs_g({k: v for k, v in fake2.items() if k[1] != "b1e"}, "in_domain", None, CELL_D2, PAIRS_D2) == ({}, {}), "no b1e, no pairs"
+    cell2 = {"R@5": 0.5, "R5_ci": [0.4, 0.6]}
+    rec2 = {"missing": [], "settings": {"musique": {
+        "in_domain": {f"{a}/{c}": cell2 for a in MODELS for c in ("b1w", "b1c", "b1d", "b1e")}, "zero_shot": {},
+        "paired": p2, "paired_zero_shot": {}, "by_hops": {h: {"questions": 5, "paired": p2, "calls": c2} for h in HOPS},
+        "call": {k: "UP" for k, _x, _y in PAIRS_D2},
+        "links": {v: {"oracle_pairs": 1, "oracle_in_w2s": 0, "oracle_new": 1, "union_pairs": 2, "directed_edges_file": 4} for v in "cde"}}}}
+    global REPORT_D2
+    keep_d2 = REPORT_D2
+    try:
+        REPORT_D2 = Path(tempfile.mkdtemp())
+        write_md_d2(rec2)
+        md2 = (REPORT_D2 / "report.md").read_text(encoding="utf-8")
+    finally:
+        REPORT_D2 = keep_d2
+    assert "| zg6r | 50.0 (40.0-60.0)" in md2 and "## By hop depth" in md2 and "b1c - b1e" in md2 and "no threshold" in md2 and "degree control" in md2, md2[:400]
     print(f"zb1g self-test: OK ({CARVE})")
     return 0
 
@@ -498,6 +635,8 @@ def main(argv=None):
         return H.read_mlp(a.name, a.tag)
     if a.cmd == "report":
         return report()
+    if a.cmd == "report-d2":
+        return report_d2()
     if a.cmd == "look-dev":
         return H.look_dev(a.dataset, a.root, a.questions)
     raise SystemExit(__doc__)
