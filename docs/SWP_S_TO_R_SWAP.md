@@ -240,6 +240,27 @@ the golds, and the share is read from b1c-b1d, always as a difference in points,
 (iv) b1c-b1d and b1c-b1e both UP with the controls UP too: both parts exist, said so with the points. Whatever comes out, the oracle numbers stay a ceiling for the paper. The 40 rows are
 the "about 20 rows" of 5c, per carve.
 
+### 5e. Part D2 filed (8 Nov 17:00 IST; `outputs/b1g2/report.{md,json}`, `calls.json`): neither control lifts; the +11 of the oracle chain edges is the right connection, not a degree cue
+
+All 40 rows `b1gd-*` / `b1ge-*` finished rc 0 on the host; the 24 read files were fetched (`rx fetch --glob`) and `zb1g.py report-d2` ran on the laptop (missing reads 0). In-domain R@5 x100 on
+MuSiQue's 1,000 questions, the models of record, no new fit, paired by question (95% bootstrap, calls by the interval):
+
+| model | b1w (R) | b1c (R + ORC) | b1d (R + OXC, decoys) | b1e (R + OXG, swapped) | b1d - b1w | b1e - b1w | b1c - b1d | b1c - b1e |
+|---|---:|---:|---:|---:|---|---|---|---|
+| zg6r | 69.0 | 79.6 | 67.5 | 67.2 | -1.5 (-2.0, -0.9) | -1.7 (-2.2, -1.2) | +12.1 (+11.0, +13.3) | +12.4 (+11.3, +13.5) |
+| zrckpn | 67.4 | 78.2 | 66.4 | 66.4 | -1.0 (-1.5, -0.5) | -1.0 (-1.5, -0.5) | +11.8 (+10.7, +12.9) | +11.8 (+10.7, +13.0) |
+
+Calls (both models): b1c-b1w UP, **b1d-b1w DOWN, b1e-b1w DOWN**, b1c-b1d UP, b1c-b1e UP, b1d-b1e FLAT. The fits that did not train on MuSiQue: b1c - b1w +16.3 / +15.2 (zg6r / zrckpn),
+b1d - b1w -0.3 (-1.0, +0.4) / +0.0 (-0.7, +0.7), b1e - b1w -0.9 (-1.6, -0.3) / +0.3 (-0.4, +0.9). By hop depth the controls' point estimates sit below b1w at every depth, with intervals clear of 0 on 3-hop and 4-hop (on 2-hop they touch 0)
+(b1d - b1w -1.9 / -1.2 and -2.7 / -1.8; b1e - b1w -2.5 / -1.3 and -2.3 / -2.0), and b1c - b1d, b1c - b1e are UP at every depth.
+
+**Reading it (declared branch (i), with one deviation).** Giving the golds the same extra degree (b1d) or linking golds to golds of other questions (b1e) does not lift either model: the +11
+points of the oracle chain edges (5c) come from the edge joining the right passages of the question, not from a node's degree gain, from "linked to a gold" or from any extra edges. The
+deviation from the wording of branch (i): I wrote the controls would be FLAT; in-domain they are **DOWN by 1.0 to 1.7 points** (the interval excludes 0), held-out about 0, so wrong-partner
+edges cost a little in-domain and the models are not fooled by them. Nothing here says a buildable graph reaches the +11: the oracle is still a ceiling that uses the labels, and the controls
+are not graphs anyone can build either. The share of the oracle's lift that a degree cue explains is therefore about zero in points (b1d - b1w <= 0); it is not quoted as a ratio.
+The S-trained pair is not read on b1c / b1d / b1e (Part C, still building); GNX is not read on them.
+
 ## 6. What the paper's wording must carry (for the paper session; this stage edits nothing under paper/)
 
 - Name the direction of every swap (trained on which family, read with which).

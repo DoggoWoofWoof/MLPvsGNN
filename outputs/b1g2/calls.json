@@ -1,0 +1,103 @@
+{
+ "declared_in": "docs/SWP_S_TO_R_SWAP.md",
+ "call": {
+  "b1c-b1w": "UP",
+  "b1d-b1w": "DOWN",
+  "b1e-b1w": "DOWN",
+  "b1c-b1d": "UP",
+  "b1c-b1e": "UP",
+  "b1d-b1e": "FLAT"
+ },
+ "calls": {
+  "zg6r": {
+   "b1c-b1w": "UP",
+   "b1d-b1w": "DOWN",
+   "b1e-b1w": "DOWN",
+   "b1c-b1d": "UP",
+   "b1c-b1e": "UP",
+   "b1d-b1e": "FLAT"
+  },
+  "zrckpn": {
+   "b1c-b1w": "UP",
+   "b1d-b1w": "DOWN",
+   "b1e-b1w": "DOWN",
+   "b1c-b1d": "UP",
+   "b1c-b1e": "UP",
+   "b1d-b1e": "FLAT"
+  }
+ },
+ "calls_zero_shot": {
+  "zg6r": {
+   "b1c-b1w": "UP",
+   "b1d-b1w": "FLAT",
+   "b1e-b1w": "DOWN",
+   "b1c-b1d": "UP",
+   "b1c-b1e": "UP",
+   "b1d-b1e": "UP"
+  },
+  "zrckpn": {
+   "b1c-b1w": "UP",
+   "b1d-b1w": "FLAT",
+   "b1e-b1w": "FLAT",
+   "b1c-b1d": "UP",
+   "b1c-b1e": "UP",
+   "b1d-b1e": "FLAT"
+  }
+ },
+ "by_hops": {
+  "2hop": {
+   "zg6r": {
+    "b1c-b1w": "UP",
+    "b1d-b1w": "FLAT",
+    "b1e-b1w": "DOWN",
+    "b1c-b1d": "UP",
+    "b1c-b1e": "UP",
+    "b1d-b1e": "FLAT"
+   },
+   "zrckpn": {
+    "b1c-b1w": "UP",
+    "b1d-b1w": "FLAT",
+    "b1e-b1w": "FLAT",
+    "b1c-b1d": "UP",
+    "b1c-b1e": "UP",
+    "b1d-b1e": "FLAT"
+   }
+  },
+  "3hop": {
+   "zg6r": {
+    "b1c-b1w": "UP",
+    "b1d-b1w": "DOWN",
+    "b1e-b1w": "DOWN",
+    "b1c-b1d": "UP",
+    "b1c-b1e": "UP",
+    "b1d-b1e": "FLAT"
+   },
+   "zrckpn": {
+    "b1c-b1w": "UP",
+    "b1d-b1w": "DOWN",
+    "b1e-b1w": "DOWN",
+    "b1c-b1d": "UP",
+    "b1c-b1e": "UP",
+    "b1d-b1e": "FLAT"
+   }
+  },
+  "4hop": {
+   "zg6r": {
+    "b1c-b1w": "UP",
+    "b1d-b1w": "DOWN",
+    "b1e-b1w": "DOWN",
+    "b1c-b1d": "UP",
+    "b1c-b1e": "UP",
+    "b1d-b1e": "FLAT"
+   },
+   "zrckpn": {
+    "b1c-b1w": "UP",
+    "b1d-b1w": "DOWN",
+    "b1e-b1w": "DOWN",
+    "b1c-b1d": "UP",
+    "b1c-b1e": "UP",
+    "b1d-b1e": "FLAT"
+   }
+  }
+ }
+}
