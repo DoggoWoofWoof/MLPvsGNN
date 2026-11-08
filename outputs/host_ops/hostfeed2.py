@@ -449,7 +449,10 @@ def overview():
     # it still holds what it asked for.
     now_ = d.get("now") or time.time()
     act_ids = {x.get("id") for x in act}
-    unres = [{"project": PROJECT, "id": j["id"], "req": j["req"], "unreserved": True} for j in jobs
+    # (27 Oct 22:20) with its job dir, so job_vram finds its processes by the pid in its heartbeat; without it their
+    # memory counted as outside mpr while overfull also counted the job at its peak, and two runs were shed for it
+    unres = [{"project": PROJECT, "id": j["id"], "req": j["req"], "unreserved": True,
+              "jd": str(Path(HOME, "projects", PROJECT, "jobs", j["id"]))} for j in jobs
              if j.get("id") not in act_ids and j.get("req") and alive(j, now_)]
     if unres:
         act = act + unres
@@ -564,6 +567,8 @@ def overfull(ov, M, jv, own_run):
     if jv is None or not own_run:
         return None
     per_job, rest = jv
+    if any(x.get("id") not in per_job for x in own_run):
+        return None      # (27 Oct 22:20) a run of ours whose processes cannot be told apart may sit in rest: no shed
     ids = {x.get("id") for x in ov["mine"]}
     outside = rest + sum(v for i, v in per_job.items() if i not in ids)
     ours = 0.0
@@ -645,7 +650,7 @@ def submit(it, mem):
             "env_vars": {str(k): str(v) for k, v in (d.get("env_vars") or {}).items()}, "cwd": d.get("cwd") or ".",
             "timeout_s": d.get("timeout_s"), "wsl_distro": d.get("wsl_distro"), "display": " ".join(argv),
             "code": {"via": "hostfeed2", "feeder_job": os.environ.get("RX_JOB_ID"),
-                     "inputs_sha256": {x: sha(WS / x) for x in it["inputs"]}},
+                     "inputs_sha256": {x: (sha(WS / x) if (WS / x).is_file() else "directory") for x in it["inputs"]}},
             "submitted_from": socket.gethostname(), "_fetch": False, "created": time.time()}
     if a.dry:
         log("DRY", spec["id"], spec["env"], spec["cpus"], spec["mem_gb"], spec["gpus"], spec["display"][:160])
