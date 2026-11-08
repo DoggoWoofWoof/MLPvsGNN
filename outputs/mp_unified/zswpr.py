@@ -16,6 +16,8 @@ import os
 import sys
 
 import zswp as S                                              # noqa: E402  (a zrckpn read's thread environment is set there, from sys.argv)
+import zb1h as H                                              # noqa: E402  (B1H's roots, gates and carve b1; read only)
+import zb1m as B1M                                            # noqa: E402  (B1M's roots and gate for the carves b1w and b1t; read only)
 
 STAGE = "SWP-C"
 ROOT = S.ROOT
@@ -24,6 +26,12 @@ S.GNX_FITS = tuple(f for f in S.GNX_FITS if f in PAIR)
 S.MLP_FITS = tuple(f for f in S.MLP_FITS if f in PAIR)
 S.ALL_FITS = S.GNX_FITS + S.MLP_FITS
 S.STAGE = STAGE
+# the carves of 2Wiki, HotpotQA and MuSiQue that Parts A, B1H, B1M and B1P read: b1 (S in the slot), b1w (R), b1t (empty), 1,000 questions each.
+# They are read by the same engine as Part B's arms, with the carve, the roots, the gate and the columns folder of the record's own reads of them.
+SPEC = {"B1": ("b1", H.OUT), "B1W": ("b1w", B1M.B1P), "B1T": ("b1t", B1M.B1P)}
+SPEC_DS = ("musique", "2wiki", "hotpotqa")
+S.ARMS = tuple(S.ARMS) + tuple(SPEC)
+S.DATASETS = tuple(S.DATASETS) + SPEC_DS
 assert (len(S.GNX_FITS), len(S.MLP_FITS), len(S.ALL_FITS)) == (2, 2, 4) and set(S.ALL_FITS) == set(PAIR), S.ALL_FITS
 
 
@@ -49,8 +57,23 @@ S.cols_out = cols_out
 
 
 def root_of(arm):
-    """An arm's roots: ABL's folder; REC: the record's PKO base (outputs/pko_rec, a junction that is there in either mode)."""
+    """An arm's roots: ABL's folder; REC: the record's PKO base (outputs/pko_rec, a junction that is there in either mode); b1, b1w, b1t:
+    B1H's and B1P's folders."""
+    if arm in SPEC:
+        return SPEC[arm][1]
     return ROOT / "outputs" / "pko_rec" if arm == S.REC else S.Z.arm_dir(arm)
+
+
+def carve_of(arm):
+    return SPEC[arm][0] if arm in SPEC else S.EVAL
+
+
+def spec_roots(arm, ds):
+    """ML1's roots and gate for a b1 carve, as B1H (b1) and B1P / B1M (b1w, b1t) read them."""
+    if arm == "B1":
+        tag = next(t for t, dss in H.TAGS.items() if ds in dss)
+        return {**S.M1.ROOTS, **H.read_roots()}, H.rel(H.gate_path(tag))
+    return {**S.M1.ROOTS, **B1M.READ_ROOTS}, B1M.GATE
 
 
 def lists(arm, ds, host=False):
@@ -60,7 +83,7 @@ def lists(arm, ds, host=False):
     if host:
         import lean_host as LH
         LH.substitute()
-    LTMC.lists(ds, S.EVAL, root=root_of(arm), out=cols_out(arm))
+    LTMC.lists(ds, carve_of(arm), root=root_of(arm), out=cols_out(arm))
     return 0
 
 
@@ -72,6 +95,12 @@ def cols(arm, split, ds, host=False):
     if host:
         import lean_host as LH
         LH.substitute()
+    if arm in SPEC:
+        if ds not in SPEC_DS:
+            raise SystemExit(f"SWPR: {arm} is read on {', '.join(SPEC_DS)}")
+        with B1M.on_b1_cols(ds, carve_of(arm)):                # col_carves names the carve; load_folds reads LTMC.OUT, the S-world's own fold fits
+            LTMC.cols(split, ds, carve_of(arm), root=root_of(arm), out=cols_out(arm), host=host)
+        return 0
     with S.on_cols():
         LTMC.cols(split, ds, S.EVAL, root=root_of(arm), out=cols_out(arm), host=host)
     return 0
@@ -83,8 +112,19 @@ def fork(arm):
 
 
 def read(arm, fit, ds):
+    """zswp.read with the carve, roots, gate and columns of a b1 arm swapped in for the length of the call (and S.REC set to the arm, so
+    that the arm's typed links are not asked of ABL's folder, which a b1 carve has none of); restored after."""
     in_world("read")
-    return S.read(arm, fit, ds)
+    if arm not in SPEC:
+        return S.read(arm, fit, ds)
+    if ds not in SPEC_DS:
+        raise SystemExit(f"SWPR: {arm} is read on {', '.join(SPEC_DS)}")
+    saved = (S.EVAL, S.roots_gate, S.REC)
+    S.EVAL, S.roots_gate, S.REC = carve_of(arm), (lambda _a: spec_roots(arm, ds)), arm
+    try:
+        return S.read(arm, fit, ds)
+    finally:
+        S.EVAL, S.roots_gate, S.REC = saved
 
 
 def selftest():
@@ -93,6 +133,10 @@ def selftest():
     assert [S.fit_split(f) for f in S.ALL_FITS] == [S.SPLITS[0], S.SPLITS[1], S.SPLITS[0], S.SPLITS[1]]
     assert S.cols_out is cols_out and cols_out("REC") == S.OUT / "ltm" / "REC" and S.OUT.name == "swp"
     assert root_of("REC") == ROOT / "outputs" / "pko_rec" and root_of("RK").name == "RK"
+    assert [carve_of(a) for a in SPEC] == ["b1", "b1w", "b1t"] and root_of("B1") == H.OUT and root_of("B1W") == root_of("B1T") == B1M.B1P
+    assert set(SPEC) <= set(S.ARMS) and set(SPEC_DS) <= set(S.DATASETS) and carve_of("NK") == "s1eval"
+    assert spec_roots("B1", "musique")[1].endswith("gate_musique.json") and spec_roots("B1", "2wiki")[1].endswith("gate.json")
+    assert spec_roots("B1W", "2wiki")[1] == B1M.GATE == spec_roots("B1T", "musique")[1] and spec_roots("B1W", "2wiki")[0]["pools"] == "outputs/b1p/pools"
     keep = dict(os.environ)
     try:
         os.environ.pop("SWORLD", None)
