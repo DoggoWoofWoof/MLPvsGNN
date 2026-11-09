@@ -5,6 +5,11 @@ Each stage's own document stays the record, and every number here is copied from
 scratch, with worked examples, read [PROJECT_STORY.md](PROJECT_STORY.md); the dated record of what was tried and why
 is [PROJECT_TIMELINE.md](PROJECT_TIMELINE.md).
 
+**8 November: the link families and the pool logic are fixed in
+[CANONICAL_LINK_AND_POOL_LAYOUT.md](CANONICAL_LINK_AND_POOL_LAYOUT.md).** S (the original structural edges, never
+removed), R (our rule links and NER store, the same rules on every dataset) and K (kNN), deduplicated S > R > K. Read
+it before any sentence that says "hyperlinks", "text links" or "rule links"; sections below use the older names.
+
 **21 October: start with [PROGRAM_2026_10_21.md](PROGRAM_2026_10_21.md).** It says what is final below the models
 (encoder, pools, links until one bounded rebuild), why the LLM-free links were not adopted (the pools lost the bridge
 golds; the models ranked better on the links), the one per-dataset choice left (the pools' base), and where the
