@@ -1,4 +1,4 @@
-# Canonical link and pool layout (8 November 2026, 02:35 IST)
+# Canonical link and pool layout (8 November 2026, 02:35 IST; amended 10 November 2026, A1)
 
 This page fixes what the link families are called, what each holds on every dataset, and how pools and graphs are
 built from them. It is the one place to check before using the words "hyperlinks", "structural", "text links" or
@@ -16,11 +16,43 @@ The user, 8 November 2026 (early hours, IST), in their words, shortened:
 - what was done so far is not continued; this page is the clarification, and the after-paper program starts from it;
 - another multi-hop dataset, named by the guide, is added.
 
+## Amendment A1 (10 November 2026, 03:46 IST): S only where the data has structure
+
+The user, 10 November 2026 (early hours, IST), in their words, shortened:
+- "S is only valid for KB datasets or graphs which already have structure";
+- for 2Wiki and HotpotQA two domains are kept: with S, and without S "using only R and K";
+- MuSiQue and SQuAD: "there is no point of having S there actually we should purely have R and K for that because there
+  is no structure";
+- "S for KB mostly cant be replaced";
+- R itself must get better, starting from MuSiQue's oracle links (docs/SWP_S_TO_R_SWAP.md, sections 5b to 5e).
+
+| dataset | domains | families |
+| --- | --- | --- |
+| 2Wiki, HotpotQA | two: with S, and without S | S + R + K (default (a) below); R + K |
+| MuSiQue, SQuAD | one | R + K. Their title-mention edges are a rule (the package's), not structure, so they are not S. |
+| MetaQA, WebQSP | one | S + R + K. S is never removed; a read without S is a diagnostic. |
+
+- **What A1 replaces.** Section 1's S entry for MuSiQue and SQuAD; "Never remove S" on 2Wiki and HotpotQA, where the
+  R + K domain is now a domain of its own (trained and read without S), not only a read-time experiment; and section
+  3's "not canonical" for the R + K records (see the note there). The rest of this page stands.
+- **Defaults (the user may change them).** (a) "With S" means S + R + K, this page's union with the S > R > K
+  deduplication, so the two domains differ by S alone. Records that put S in R's place (B1b's b1, the S slot of SWP) or
+  train on S + NER + K (the lean pair) are named as what they are, never as the with-S domain. (b) On MetaQA and WebQSP
+  the reads without S already made (SWP Parts B and C) stay diagnostics.
+- **Running stages.** SWP Parts B, C and E run as declared. Their S cells on MuSiQue and SQuAD are reads of the
+  title-mention rule, reported as diagnostics and never as a domain. Part C's S-trained fits hold those title mentions
+  in the slot for their MuSiQue and SQuAD training questions, so they are not with-S fits in this layout. A with-S fit
+  in this layout (S on 2Wiki, HotpotQA and the KBs; R on MuSiQue and SQuAD; K everywhere) is a new stage, declared
+  before it runs.
+- **Improving R** (section 6, item 3, now read as R's own improvement) is a stage declared after "go" (D19). It starts
+  from the oracle diagnosis: which chain edges R holds and which it misses, and the controls that showed the models use
+  the right connection rather than extra degree on gold passages (SWP sections 5c to 5e).
+
 ## 1. The three families
 
 | family | name in older records | what it holds | per dataset |
 | --- | --- | --- | --- |
-| **S** | `structural` | the original edges the dataset's store ships with; never rebuilt, never removed | 2Wiki, HotpotQA: the corpus's own Wikipedia hyperlinks. MuSiQue, SQuAD: title mentions (the package's rule, which U1a reproduces exactly on MuSiQue). MetaQA, WebQSP: the knowledge-base triples. |
+| **S** | `structural` | the original edges the dataset's store ships with; never rebuilt, never removed | 2Wiki, HotpotQA: the corpus's own Wikipedia hyperlinks. MuSiQue, SQuAD: title mentions (the package's rule, which U1a reproduces exactly on MuSiQue); **since A1 not S: these two datasets are R + K only**. MetaQA, WebQSP: the knowledge-base triples. |
 | **R** | W2_S rule links (U2b) plus the `ner` store | edges built by our LLM-free rules, the same rules on every dataset, as ONE family | a passage links to the passages whose titles or aliases it mentions (W2_S), plus the NER store. On the KBs the rule runs on an entity's name and its KB neighbours' names (ABL-U). |
 | **K** | `knn` | the 3 nearest neighbours by cosine of the frozen encoder's vectors, one row per unordered pair | the same on every dataset |
 
@@ -33,7 +65,8 @@ The user, 8 November 2026 (early hours, IST), in their words, shortened:
   the dropped copies) are fixed in the stage that implements it. The ablation's modules (`zabl*.py`) have no such step
   today; they keep each family as built.
 - **Never remove S.** A pool or graph is S plus R plus K, and an arm without S is a read-time experiment (section 4),
-  never a model of record or a headline.
+  never a model of record or a headline. **A1 (10 Nov):** this holds on MetaQA and WebQSP; on 2Wiki and HotpotQA the
+  R + K domain stands beside S + R + K as a domain of its own; MuSiQue and SQuAD have no S.
 - **One construction for all six datasets.** No family is chosen, dropped or rebuilt for one dataset. The three
   per-dataset choices still in the pipeline (pool sizes, SQuAD's question links, the two-name list of typed KBs) are
   listed in PROJECT_STORY section 5.6 and stay open items, not precedents.
@@ -61,6 +94,9 @@ The user, 8 November 2026 (early hours, IST), in their words, shortened:
 | ML1 refits zg6r, zrckp; B1P reads; the WWW draft v4's headline rows | R + K on the passage datasets, **S removed** (PKO pools) | not canonical: S is missing. Three seeds. |
 | ABL arm SRK | S + R + K | the canonical layout; its reads are carry-over reads of the ML1 fits, no refit |
 | ABL arms S, SR, SK, R, RK, K, 0 | subsets | read-time experiments, never fitted on their pools |
+
+**A1 (10 Nov).** The R + K records (the ML1 refits and the B1P reads) are the R + K domain on 2Wiki and HotpotQA,
+and on MuSiQue and SQuAD they hold A1's families (without section 1's deduplication).
 
 ## 4. Read-time against trained
 
