@@ -37,6 +37,13 @@ BASES = "swpe-NKF-bases"
 RUN = "python outputs/host_ops/pylib_run.py outputs/mp_unified/zabl.py"
 
 
+def ablreads(rows, arm, ds):
+    """ABL's own read rows of one arm on one dataset (zabl.py read --arm A --name FIT --datasets D): zabl.prune removes a look and cache only
+    when these reads are filed, so a cell without them is never pruned (its prune row ends rc 1)."""
+    pat = re.compile(rf"zabl\.py read --arm {re.escape(arm)} --name \S+ --datasets {re.escape(ds)}(?:\s|$)")
+    return [f for f in rows if pat.search(f[7])]
+
+
 def zabl_rows(rows, verb, arm, ds):
     """The queue's zabl.py rows of one verb (chain, gate, prune) for one arm and one dataset alone, in file order."""
     flag = "--dataset" if verb == "chain" else "--datasets"
@@ -142,6 +149,8 @@ def rebuilds(out, rows, collect_c):
         chain = zabl_rows(rows, "chain", arm, ds)[-1]
         gates = zabl_rows(rows, "gate", arm, ds)
         prunes = zabl_rows(rows, "prune", arm, ds)
+        if not ablreads(rows, arm, ds):                           # zabl.prune needs ABL's own reads of the arm: without them it removes
+            prunes = []                                           # nothing and ends rc 1, and a failed row drops what waits on it
         lanes = re.search(r"--lanes (\d+)", chain[7])
         build, gate = f"swpe-build-{arm}-{ds}", f"swpe-gate-{arm}-{ds}"
         g = gates[-1] if gates else None
@@ -263,9 +272,13 @@ def selftest():
         "line|x||swpc7-build-SNK-squad|8|38|outputs/mp_unified/zabl.py|python outputs/host_ops/pylib_run.py outputs/mp_unified/zabl.py chain --arm SNK --dataset squad --lanes 4 --host",
         "line|x|swpc7-build-SNK-squad|swpc7-gate-SNK-squad|2|8|outputs/mp_unified/zabl.py|python outputs/host_ops/pylib_run.py outputs/mp_unified/zabl.py gate --arm SNK --datasets squad --host",
         "line|x|abl-x|swp6-SNK-prune-squad|1|2|outputs/mp_unified/zabl.py|python outputs/host_ops/pylib_run.py outputs/mp_unified/zabl.py prune --arm SNK --datasets squad",
+        "line|x||swp-SNK-read-squad-zg6r-s0|1|6|outputs/mp_unified/zabl.py|python outputs/host_ops/pylib_run.py outputs/mp_unified/zabl.py read --arm SNK --name scr-ml1-zg6r-s0 --datasets squad",
+        "line|x||swp3-NK-squad|12|42|outputs/mp_unified/zabl.py|python outputs/host_ops/pylib_run.py outputs/mp_unified/zabl.py chain --arm NK --dataset squad --lanes 6 --host",
+        "line|x|swp3-NK-squad|swp5-NK-squad-prune|1|2|outputs/mp_unified/zabl.py|python outputs/host_ops/pylib_run.py outputs/mp_unified/zabl.py prune --arm NK --datasets squad",
+        "line|x|swpc-world-make|swpc5-NK-squad-lists|2|9|outputs/host_ops/sworld.py|python outputs/host_ops/sworld.py run --mode train -- python outputs/mp_unified/zswpr.py lists --arm NK --dataset squad --host",
         "line|x||abl-SNK-squadx|8|38|outputs/mp_unified/zabl.py|python outputs/host_ops/pylib_run.py outputs/mp_unified/zabl.py chain --arm SNK --dataset squadx --host",
         "line|x|swpc-world-make,swpc7-gate-SNK-squad|swpc7-SNK-squad-lists-r2|2|9|outputs/host_ops/sworld.py|python outputs/host_ops/sworld.py run --mode train -- python outputs/mp_unified/zswpr.py lists --arm SNK --dataset squad --host",
-        "line|x|swpc3-fit-zg6r-s0-r4,swpc7-SNK-squad-lists-r2|swpc5-mode-read-r2|1|2|outputs/host_ops/sworld.py|python outputs/host_ops/sworld.py mode read",
+        "line|x|swpc3-fit-zg6r-s0-r4,swpc7-SNK-squad-lists-r2,swpc5-NK-squad-lists|swpc5-mode-read-r2|1|2|outputs/host_ops/sworld.py|python outputs/host_ops/sworld.py mode read",
         "line|x|swpc3-fit-zg6r-s0-r4,swpc5-mode-read-r2,swpc7-gate-SNK-squad,abl2-other|swpc5-rd-SNK-squad-gnx-s0-r2|1.1|6|outputs/host_ops/sworld.py|python outputs/host_ops/sworld.py run --mode read -- python outputs/mp_unified/zswpr.py read --arm SNK --name scr-gnx-nx-s0 --dataset squad|gpu:0.29",
         "line|x|swpc5-rd-SNK-squad-gnx-s0-r2|swpc8-collect|1|2|outputs/host_ops/swpc_collect.py|python outputs/host_ops/swpc_collect.py",
         "line|x||abl2-other|1|1|x.py|python x.py",
@@ -276,12 +289,14 @@ def selftest():
     by = {r.split("|")[3]: r.split("|") for r in out}
     assert set(by) == {"swpe-NKF-bases", "swpe-NKF-squad", "swpe-world-make", "swpe-fit-zspk-s0", "swpe-fit-zg6r-s0", "swpe-rd-SNK-squad-gnx-s0",
                        "swpe-collect", "swpe-fit-zspk-s0-hp", "swpe-fit-zg6r-s0-hp", "swpe-SNK-squad-lists", "swpe-mode-read",
-                       "swpe-build-SNK-squad", "swpe-gate-SNK-squad"}, sorted(by)
+                       "swpe-build-SNK-squad", "swpe-gate-SNK-squad", "swpe-NK-squad-lists", "swpe-build-NK-squad", "swpe-gate-NK-squad"}, sorted(by)
     assert "--frac 0.84" in by["swpe-fit-zg6r-s0"][7] and by["swpe-fit-zg6r-s0"][8] == "gpu:0.85"      # the last retry, not the last line
     assert by["swpe-fit-zg6r-s0"][2] == "swpe-fit-zspk-s0"                                               # the stamp dependency becomes its fit's
     assert by["swpe-fit-zg6r-s0-hp"][2] == "swpe-fit-zspk-s0-hp"                                         # a row that waited on the stamp alone
     assert by["swpe-NKF-squad"][2] == "swpe-NKF-bases"                                                    # the chain waits on the bases copy
     assert by["swpe-build-SNK-squad"][2] == "swpc8-collect,swp6-SNK-prune-squad"                         # after Part C and after the prune
+    assert by["swpe-build-NK-squad"][2] == "swpc8-collect"                       # NK has no ABL reads: its prune ends rc 1, never waited on
+    assert by["swpe-NK-squad-lists"][2] == "swpe-world-make,swpe-gate-NK-squad"
     assert "zabl.py chain --arm SNK --dataset squad --lanes 4 --host" in by["swpe-build-SNK-squad"][7] and by["swpe-build-SNK-squad"][4:6] == ["8", "38"]
     assert by["swpe-gate-SNK-squad"][2] == "swpe-build-SNK-squad" and by["swpe-gate-SNK-squad"][4:6] == ["2", "8"]
     assert by["swpe-SNK-squad-lists"][2] == "swpe-world-make,swpe-gate-SNK-squad"                        # old gate replaced by the rebuild's
@@ -293,6 +308,7 @@ def selftest():
     names = [r.split("|")[3] for r in out]
     assert names.index("swpe-NKF-bases") < names.index("swpe-NKF-squad") < names.index("swpe-world-make")
     assert names.index("swpe-build-SNK-squad") < names.index("swpe-gate-SNK-squad") < names.index("swpe-SNK-squad-lists")
+    assert names.index("swpe-build-NK-squad") < names.index("swpe-gate-NK-squad") < names.index("swpe-NK-squad-lists")
     base = [r.split("|") for r in out]                            # the checks stop a train row after the flip, a read row before it, a cycle
     for (name, dep), why in ((("swpe-fit-zg6r-s0-hp", "swpe-mode-read"), "trains after the flip"),
                              (("swpe-rd-SNK-squad-gnx-s0", ""), "reads without waiting"),

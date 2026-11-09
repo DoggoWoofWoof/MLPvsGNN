@@ -311,8 +311,9 @@ so GNX still passes messages over N + K. On MuSiQue and SQuAD S is a title-menti
 fits; 179 rows (42 on the GPU), generated from Part C's last working rows by `outputs/host_ops/swpe_rows.py` (names `swpe-*`). The six read
 cells that zabl.py builds and prunes (SNK on SQuAD, NK on SQuAD, MetaQA and WebQSP, RK on MetaQA and WebQSP) lose their look and cache to their prune
 rows once their own reads are filed (SNK/squad and RK/metaqa were rebuilt for Part C on 8 Nov); each gets a resume of zabl's chain and its gate
-(`swpe-build-*`, `swpe-gate-*`: seconds when nothing was pruned) after Part C's collect row and after the cell's prune row, and Part E's lists, columns
-and reads of the cell wait on that gate.
+(`swpe-build-*`, `swpe-gate-*`: seconds when nothing was pruned) after Part C's collect row and, for RK and SNK, after the cell's prune row; NK's
+prune rows end rc 1 without removing anything (`zabl.prune` needs ABL's own reads of the arm, which NK does not have), so NK's rebuild waits on Part
+C's collect alone. Part E's lists, columns and reads of the cell wait on that gate.
 
 **Guards.** As Part C: the N-world is read-only toward the record and the S-world; a fit named like a record fit exists only inside it; every Part E step
 refuses outside the N-world or in the wrong mode; no row names a directory as an input (the 8 Nov feeder crash). No Part E number goes into the paper before
