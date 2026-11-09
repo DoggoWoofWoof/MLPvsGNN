@@ -261,6 +261,57 @@ edges cost a little in-domain and the models are not fooled by them. Nothing her
 are not graphs anyone can build either. The share of the oracle's lift that a degree cue explains is therefore about zero in points (b1d - b1w <= 0); it is not quoted as a ratio.
 The S-trained pair is not read on b1c / b1d / b1e (Part C, still building); GNX is not read on them.
 
+### 5f. Part E declared 9 Nov 11:06 IST (before any Part E number): the pair trained with the slot EMPTY, read with nothing, R and S
+
+The user, 9 Nov: "there is a difference between training without the link itself and with the original link, when we swap we are seeing how much it can transfer
+without the exact data which is like generalization, but if we dont train itself with that slot the model wont know what to do with it so how does it answer our
+question", then "if it comes back run your experiments".
+
+**Question.** Every empty-slot cell so far (b1t; Part B's NK) reads a fit that was trained with R or S in the slot: it is a removal cost at read time, a transfer
+measure, not what a model trained without the slot reaches. Part E trains the same-input pair with the slot empty (N + K only) and reads it with nothing, R and S in
+the slot. The diagonal (each model trained and read with the same slot: R-trained/R = the record, S-trained/S = Part C, N-trained/empty = Part E) answers the
+guide's point 4: what the links add when the model is trained to use them.
+
+**What runs (seed 0 on both WQ splits, as Part C; Part C's steps with NKF in place of SNKF and a third tree, the N-world, in place of the S-world; no record or
+Part C module is edited).**
+1. Arm **NKF** (`outputs/mp_unified/zswpe.py`, on ABL's chain, not edited): the five training carves (squad, hotpotqa, 2wiki: `fit`; musique: `s1fit`; webqsp:
+   `fit`) built with the slot empty and N and K in (ABL's NK arm, `("", 1, 1)`), under `outputs/abl/NKF`; its gate over the five.
+2. The **N-world** (`outputs/host_ops/nworld.py`): `sworld.py`'s make / verify / mode / run on a sibling tree `../nworld` whose `outputs/pko` is NKF in train mode
+   and the record's PKO base in read mode. `sworld.py` is not edited (the S-world pins it); runs carry `NWORLD=1`, and the Part E modules refuse any other tree.
+3. LTM on NKF (`ltmcols.py lists / fit / cols`, not edited) in the N-world: the NK-trained scorer's fold fits and the columns of the training carves.
+4. The fits (`zswpe_t.py`: `zswpt.py`'s train-only step with the N-world's checks): zspk (seed 0), zg6r (from that zspk), GNX (zg6r + the columns of step 3),
+   zrckpn (CPU, the columns of step 3), both splits; GPU shares as Part C's final rows.
+5. The reads (`zswpe_r.py`: `zswpr.py`'s engine with the N-world's checks) of the four N-trained fits (GNX and zrckpn, both splits) on Part C's slots:
+   MuSiQue, 2Wiki, HotpotQA on b1t / b1w / b1; SQuAD on NK / REC / SNK; MetaQA and WebQSP on NK / RK / REC. The columns of every read carve come from the
+   N-trained scorer of the fit's split. `swpe_collect.py` copies the reads to `outputs/swpe/fits`.
+
+**Report** (`zswpe_rep.py`, laptop, after the reads; Part C's corrected per-resample bootstrap, 2,000 resamples, never `zabl.compare`): per dataset, regime
+(in-domain / held out) and model, R@5 in each slot for the three training worlds (N-trained: Part E; R-trained: Parts A and B; S-trained: Part C), and the paired
+intervals of:
+- (a) **the diagonal steps**: R-trained read with R minus N-trained read empty, and S-trained read with S minus N-trained read empty (what a slot adds when the
+  model trains with it);
+- (b) **the training effect at the empty slot**: N-trained minus R-trained, both read empty (how far the read-time removal is from training without the slot);
+- (c) **message passing**: GNX minus zrckpn in every N-trained cell, and the gap change between the diagonal cells (R-trained/R against N-trained/empty);
+- (d) beside, no claim: the N-trained fits read with R and with S (transfer to a family the fit never trained with).
+A step gets a call by its interval (above / level / below), with the direction of the subtraction named; no threshold, no adoption call; no ratio without its
+interval. If Part C has not filed when Part E's reads are in, the report carries the R-trained and N-trained worlds and lists the S-trained cells as missing.
+
+**What it can and cannot show.** It shows how much of each model's recall depends on the slot when training matches the input. It cannot show a seed spread (one
+fit per split; the intervals are over questions). "Without links" means without the structural slot only: N (rule NER links) and K (kNN) stay in every cell,
+so GNX still passes messages over N + K. On MuSiQue and SQuAD S is a title-mention rule, so S against R there is rule against rule.
+
+**Order and cost.** Part C's remaining rows go first (the S-world's GPU fits and its 72 reads). NKF's five chains run on the CPU beside them (SNKF took about
+1 h per carve and about 10 h for MuSiQue, the critical path), then about 10 h of GPU (zspk, zg6r and GNX on both splits, then the reads) and the two zrckpn CPU
+fits; 179 rows (42 on the GPU), generated from Part C's last working rows by `outputs/host_ops/swpe_rows.py` (names `swpe-*`). The six read
+cells that zabl.py builds and prunes (SNK on SQuAD, NK on SQuAD, MetaQA and WebQSP, RK on MetaQA and WebQSP) lose their look and cache to their prune
+rows once their own reads are filed (SNK/squad and RK/metaqa were rebuilt for Part C on 8 Nov); each gets a resume of zabl's chain and its gate
+(`swpe-build-*`, `swpe-gate-*`: seconds when nothing was pruned) after Part C's collect row and after the cell's prune row, and Part E's lists, columns
+and reads of the cell wait on that gate.
+
+**Guards.** As Part C: the N-world is read-only toward the record and the S-world; a fit named like a record fit exists only inside it; every Part E step
+refuses outside the N-world or in the wrong mode; no row names a directory as an input (the 8 Nov feeder crash). No Part E number goes into the paper before
+this section records the filed report; section 6 applies to every Part E sentence.
+
 ## 6. What the paper's wording must carry (for the paper session; this stage edits nothing under paper/)
 
 - Name the direction of every swap (trained on which family, read with which).
