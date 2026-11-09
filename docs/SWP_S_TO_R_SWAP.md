@@ -112,6 +112,12 @@ S minus empty with paired 95% intervals (ABL's `compare`, 2,000 resamples of the
 listed as missing, not filled. The direction is named in every row: the fits of record were trained with S in the slot on the KB datasets and R in the
 slot on SQuAD, so the other slot is a swap at read time (S -> R on the KBs; R -> S on SQuAD).
 
+**Amendment (9 Nov 11:28 IST, before Part B is filed): the intervals.** ABL's `compare` averages each chunk of 100 bootstrap resamples into one
+number, so its 2,000 resamples are 20 values and its intervals are about 10 times too narrow (found 8 Nov 18:45 on Part C's reads). Part B's
+intervals and calls come from `zswpbr.py report` (`outputs/swp/report_pb.{json,md}`): zswp's report with Part C's per-resample comparison
+(`zswpcr.cmp`, the same seed and resamples), swapped in-process because the S-world and the N-world pin zswp.py and zabl.py until their reads
+end. zswp's own `report.md` keeps the narrow intervals and is not quoted.
+
 **No threshold, no adoption call.** The NK builds (the empty slot, rows `swp3-*`, same twelve reads per cell) sit behind the RK WebQSP rows on purpose, so they cannot starve that build. ABL's doc records the arms as its amendment A5. SQuAD's S is the title-mention rule, so
 there too the comparison is rule against rule.
 
