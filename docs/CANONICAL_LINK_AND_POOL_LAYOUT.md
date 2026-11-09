@@ -28,14 +28,15 @@ The user, 10 November 2026 (early hours, IST), in their words, shortened:
 
 | dataset | domains | families |
 | --- | --- | --- |
-| 2Wiki, HotpotQA | two: with S, and without S | S + R + K (default (a) below); R + K |
+| 2Wiki, HotpotQA | two: with S, and without S | S + R + K ((a) below); R + K |
 | MuSiQue, SQuAD | one | R + K. Their title-mention edges are a rule (the package's), not structure, so they are not S. |
 | MetaQA, WebQSP | one | S + R + K. S is never removed; a read without S is a diagnostic. |
 
 - **What A1 replaces.** Section 1's S entry for MuSiQue and SQuAD; "Never remove S" on 2Wiki and HotpotQA, where the
   R + K domain is now a domain of its own (trained and read without S), not only a read-time experiment; and section
   3's "not canonical" for the R + K records (see the note there). The rest of this page stands.
-- **Defaults (the user may change them).** (a) "With S" means S + R + K, this page's union with the S > R > K
+- **Settled by the user** (10 Nov, after A1: "S>R>K for KB and R>K for text graphs, and if we add original hyperlinks
+  what would be our result"). (a) "With S" means S + R + K, this page's union with the S > R > K
   deduplication, so the two domains differ by S alone. Records that put S in R's place (B1b's b1, the S slot of SWP) or
   train on S + NER + K (the lean pair) are named as what they are, never as the with-S domain. (b) On MetaQA and WebQSP
   the reads without S already made (SWP Parts B and C) stay diagnostics.
