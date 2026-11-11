@@ -104,3 +104,49 @@ the record. Part B's rows queue after Part A's reads. The report (`zap2.py repor
   plumbing, the 92 rows equal to B1M's filed rows, and the report's files. Nothing there is a result; the fixture folders were removed.
 - No laptop pass of `settings`, pools or look (B1L's practice: they run on the host; the laptop keeps 24 GB of disk free). `selftest` and `settings` are the block's
   first host items and the chain waits for `settings`. A failing item is fixed, and the fix is disclosed here with its commit, before any read number.
+
+## 9. Part A results (filed 12 November; `outputs/ap2/report.json`, `report.md`, `calls.json`; `zap2.py` as committed in c4dc27c)
+
+**The run.** All 56 Part A rows finished rc 0 on the host (per setting: the chain, PKO's gate, the lists, both column sets and 12 reads, zg6r and zrckpn
+with the six fits each); no gate stopped it (G1 to G5 passed before any read; G6: the 92 rows recomputed from B1P's and B1M's reads equal B1M's filed rows). The
+report ran on the laptop at 02:32 IST on 12 November on the fetched read files (36 of 36; `Missing reads: 0`); its script sha256 (`8ecb6d86...`) equals the
+committed `zap2.py`'s, and the three `build.json` files on the host equal the laptop's byte for byte. Everything below is in `report.md` (R@5 x100, 1,000
+questions per setting, 95% bootstrap intervals over the questions). It is a read-time shift (section 5): the models were fitted on spaCy's NER store.
+
+**In-domain** (the mean over the fits that trained on the setting's partner split; b1n - b1w in points with `b1n - b1w`'s interval from `b1b.boot_ci`):
+
+| setting | model | b1t | b1w | b1n | b1n - b1w [95%] | word |
+| --- | --- | ---: | ---: | ---: | --- | --- |
+| 2wiki | zg6r | 78.1 (76.7-79.5) | 94.9 (94.1-95.7) | 94.7 (93.9-95.5) | -0.25 [-0.51, -0.00] | SAME (a boundary call, below) |
+| 2wiki | zrckpn | 77.0 (75.6-78.4) | 94.1 (93.2-94.9) | 94.0 (93.2-94.8) | -0.08 [-0.36, +0.18] | SAME |
+| hotpotqa | zg6r | 91.1 (90.0-92.3) | 94.3 (93.3-95.3) | 94.3 (93.3-95.4) | +0.03 [-0.20, +0.28] | SAME |
+| hotpotqa | zrckpn | 90.4 (89.2-91.6) | 93.4 (92.4-94.5) | 93.5 (92.4-94.5) | +0.05 [-0.13, +0.23] | SAME |
+| musique | zg6r | 66.0 (64.3-67.7) | 69.0 (67.2-70.7) | 68.7 (67.0-70.4) | -0.26 [-0.74, +0.23] | SAME |
+| musique | zrckpn | 64.5 (62.8-66.1) | 67.4 (65.7-69.2) | 67.2 (65.5-68.9) | -0.24 [-0.67, +0.18] | SAME |
+
+Against b1t both carves are UP in all six cells by nearly the same amount (b1n - b1t, zg6r and zrckpn: 2Wiki +16.6 and +17.0, HotpotQA +3.2 and +3.1, MuSiQue +2.7
+and +2.7; b1w - b1t: +16.8 and +17.1, +3.1 and +3.0, +3.0 and +2.9; every interval is above 0). Each setting's call is SAME (both models SAME), so
+**the verdict, Part A, is REPLACE**: no setting's call is LESS or MIXED (section 4). SAME means only that the interval holds 0, not an equivalence: at read time the rule-built slot
+gives up between 0.08 and 0.26 points on 2Wiki and MuSiQue in all four cells and nothing on HotpotQA (+0.03 and +0.05).
+
+**The boundary (post hoc: `outputs/ap2/boundary_check.py` and `boundary_check.json`, run after the report; not part of the declared rule).** One word is a boundary
+call, zg6r on 2Wiki (-0.25 [-0.51, -0.00]). Its interval's top end is -0.00004 before `b1b.boot_ci` rounds it to four decimals and -0.0 after, and `-0.0 < 0` is false
+in the pinned code, so the filed word is SAME. The same resampling (2,000 resamples) for bootstrap seeds 0 to 19 gives LESS in 14 of the 20 at the filed rounding (SAME in 6,
+seed 0 among them) and in 20 of 20 before the rounding. The other five cells are SAME in all 20 seeds, rounded or not, with top ends from +0.18 to +0.28 points. Read
+the unrounded way, 2Wiki's call would be MIXED (zg6r LESS, zrckpn SAME) and the verdict HOLD. The filed verdict is the pinned code's, REPLACE; the reading to carry is that the
+rule-built slot costs the GNN about a quarter of a point on 2Wiki at read time and nothing measurable on the other five cells.
+
+**Reported, not deciding.** Held-out (b1n - b1w, points): HotpotQA zg6r -0.0 [-0.3, +0.3] and zrckpn -0.2 [-0.5, +0.1], MuSiQue zg6r +0.3 [-0.0, +0.7] (all SAME) and
+MuSiQue zrckpn +0.4 [+0.0, +0.7] (GREATER). zg6r - zrckpn at b1n: the GNN is above in-domain on all three settings (+0.7, +0.9, +1.5) and held-out on HotpotQA (+0.8); the MLP is
+above held-out on MuSiQue (-1.1 [-2.0, -0.1]). MuSiQue by hop depth (in-domain, 518, 316 and 166 questions for 2, 3 and 4 hops): b1n - b1w lies between -0.8 and +0.5, and the
+only interval that excludes 0 is the MLP's on 3-hop questions (-0.8 [-1.5, -0.1]). The NER files: F0T holds 42,247 pairs on 2Wiki (spaCy's family in b1w: 36,147), 86,518 on
+HotpotQA (68,698) and 98,845 on MuSiQue (75,002), with weight maxima 8.29, 7.68 and 12.15.
+
+**What it decides.** REPLACE says the rule-built NER slot (F0T) may stand in the place of spaCy's in the read path of the after-paper program; AP3 builds on b1n. It
+decides nothing about a model, a pool, a column of record or the paper: b1w's rows remain the record. The dev-read disclosure of section 5 stands (MuSiQue is a dev read
+of the form; 2Wiki and HotpotQA are its held-out check, both SAME). **D78 stays open** (a refit with a rule-built NER slot in the training carves: the fit would see F0T, which
+a read-time shift cannot show). **Part B** (b1x, MuSiQue, descriptive, no verdict) is still running (its chain started at 02:08 IST); it is filed as
+section 10 from a second run of the same report script on the same reads, so Part A's rows do not change.
+
+**Files.** `outputs/ap2/report.json`, `report.md` and `calls.json` (written by `zap2.py report`), `boundary_check.py` and `boundary_check.json` (post hoc). The read files stay
+on the host under `outputs/b1n/fits/h/` (36 fetched to the laptop, not committed).

@@ -1,0 +1,988 @@
+{
+ "declared_in": "docs/AP2_RULE_NER_SLOT_ON_B1.md",
+ "note": "post hoc, after AP2's report; decides nothing",
+ "bootstrap_seeds": 20,
+ "resamples": 2000,
+ "cells": {
+  "2wiki/zg6r": {
+   "mean_diff": -0.0025,
+   "seed0_ci_unrounded": [
+    -0.005083333333333333,
+    -4.166666666666685e-05
+   ],
+   "seed0_ci_filed": [
+    -0.0051,
+    -0.0
+   ],
+   "words_over_seeds_filed_rounding": {
+    "GREATER": 0,
+    "SAME": 6,
+    "LESS": 14
+   },
+   "words_over_seeds_unrounded": {
+    "GREATER": 0,
+    "SAME": 0,
+    "LESS": 20
+   },
+   "per_seed": [
+    {
+     "seed": 0,
+     "lo": -0.005083333333333333,
+     "hi": -4.166666666666685e-05,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "LESS"
+    },
+    {
+     "seed": 1,
+     "lo": -0.005001041666666666,
+     "hi": -0.00016562500000000534,
+     "word_filed_rounding": "LESS",
+     "word_unrounded": "LESS"
+    },
+    {
+     "seed": 2,
+     "lo": -0.005125,
+     "hi": -0.00012500000000000033,
+     "word_filed_rounding": "LESS",
+     "word_unrounded": "LESS"
+    },
+    {
+     "seed": 3,
+     "lo": -0.005167708333333332,
+     "hi": -0.00016666666666666663,
+     "word_filed_rounding": "LESS",
+     "word_unrounded": "LESS"
+    },
+    {
+     "seed": 4,
+     "lo": -0.005125,
+     "hi": -0.0001249999999999999,
+     "word_filed_rounding": "LESS",
+     "word_unrounded": "LESS"
+    },
+    {
+     "seed": 5,
+     "lo": -0.005125,
+     "hi": -1.0824674490096791e-19,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "LESS"
+    },
+    {
+     "seed": 6,
+     "lo": -0.005083333333333333,
+     "hi": -0.00016666666666666685,
+     "word_filed_rounding": "LESS",
+     "word_unrounded": "LESS"
+    },
+    {
+     "seed": 7,
+     "lo": -0.005083333333333334,
+     "hi": -4.1666666666666516e-05,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "LESS"
+    },
+    {
+     "seed": 8,
+     "lo": -0.005167708333333333,
+     "hi": -8.229166666667164e-05,
+     "word_filed_rounding": "LESS",
+     "word_unrounded": "LESS"
+    },
+    {
+     "seed": 9,
+     "lo": -0.005166666666666666,
+     "hi": -4.166666666666685e-05,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "LESS"
+    },
+    {
+     "seed": 10,
+     "lo": -0.005251041666666667,
+     "hi": -0.00016666666666666663,
+     "word_filed_rounding": "LESS",
+     "word_unrounded": "LESS"
+    },
+    {
+     "seed": 11,
+     "lo": -0.004959374999999999,
+     "hi": -8.229166666667185e-05,
+     "word_filed_rounding": "LESS",
+     "word_unrounded": "LESS"
+    },
+    {
+     "seed": 12,
+     "lo": -0.005041666666666666,
+     "hi": -0.00016666666666666663,
+     "word_filed_rounding": "LESS",
+     "word_unrounded": "LESS"
+    },
+    {
+     "seed": 13,
+     "lo": -0.005208333333333333,
+     "hi": -8.333333333333326e-05,
+     "word_filed_rounding": "LESS",
+     "word_unrounded": "LESS"
+    },
+    {
+     "seed": 14,
+     "lo": -0.005083333333333332,
+     "hi": -0.00012395833333333847,
+     "word_filed_rounding": "LESS",
+     "word_unrounded": "LESS"
+    },
+    {
+     "seed": 15,
+     "lo": -0.005042708333333334,
+     "hi": -4.062500000000554e-05,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "LESS"
+    },
+    {
+     "seed": 16,
+     "lo": -0.005125,
+     "hi": -0.00012500000000000033,
+     "word_filed_rounding": "LESS",
+     "word_unrounded": "LESS"
+    },
+    {
+     "seed": 17,
+     "lo": -0.005042708333333332,
+     "hi": -4.1666666666666516e-05,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "LESS"
+    },
+    {
+     "seed": 18,
+     "lo": -0.005126041666666667,
+     "hi": -0.0002499999999999997,
+     "word_filed_rounding": "LESS",
+     "word_unrounded": "LESS"
+    },
+    {
+     "seed": 19,
+     "lo": -0.004958333333333334,
+     "hi": -8.333333333333292e-05,
+     "word_filed_rounding": "LESS",
+     "word_unrounded": "LESS"
+    }
+   ]
+  },
+  "2wiki/zrckpn": {
+   "mean_diff": -0.0007916666666666664,
+   "seed0_ci_unrounded": [
+    -0.0036260416666666667,
+    0.0018333333333333333
+   ],
+   "seed0_ci_filed": [
+    -0.0036,
+    0.0018
+   ],
+   "words_over_seeds_filed_rounding": {
+    "GREATER": 0,
+    "SAME": 20,
+    "LESS": 0
+   },
+   "words_over_seeds_unrounded": {
+    "GREATER": 0,
+    "SAME": 20,
+    "LESS": 0
+   },
+   "per_seed": [
+    {
+     "seed": 0,
+     "lo": -0.0036260416666666667,
+     "hi": 0.0018333333333333333,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 1,
+     "lo": -0.003583333333333333,
+     "hi": 0.0018343749999999949,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 2,
+     "lo": -0.0035427083333333335,
+     "hi": 0.001875,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 3,
+     "lo": -0.003834375,
+     "hi": 0.001833333333333334,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 4,
+     "lo": -0.003541666666666666,
+     "hi": 0.0018760416666666608,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 5,
+     "lo": -0.003625,
+     "hi": 0.001833333333333333,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 6,
+     "lo": -0.0035843749999999995,
+     "hi": 0.00175,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 7,
+     "lo": -0.003541666666666666,
+     "hi": 0.001875,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 8,
+     "lo": -0.00375,
+     "hi": 0.0019166666666666666,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 9,
+     "lo": -0.0036249999999999998,
+     "hi": 0.0017510416666666614,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 10,
+     "lo": -0.003584375,
+     "hi": 0.0018333333333333333,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 11,
+     "lo": -0.003625,
+     "hi": 0.0018749999999999995,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 12,
+     "lo": -0.0035010416666666675,
+     "hi": 0.0018760416666666613,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 13,
+     "lo": -0.003625,
+     "hi": 0.0019177083333333286,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 14,
+     "lo": -0.0036249999999999998,
+     "hi": 0.0019583333333333336,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 15,
+     "lo": -0.0037083333333333334,
+     "hi": 0.001916666666666667,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 16,
+     "lo": -0.003583333333333333,
+     "hi": 0.001833333333333333,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 17,
+     "lo": -0.0035,
+     "hi": 0.0017916666666666669,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 18,
+     "lo": -0.003625,
+     "hi": 0.0017093749999999943,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 19,
+     "lo": -0.003583333333333333,
+     "hi": 0.0017916666666666673,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    }
+   ]
+  },
+  "hotpotqa/zg6r": {
+   "mean_diff": 0.0003333333333333334,
+   "seed0_ci_unrounded": [
+    -0.002,
+    0.0028333333333333335
+   ],
+   "seed0_ci_filed": [
+    -0.002,
+    0.0028
+   ],
+   "words_over_seeds_filed_rounding": {
+    "GREATER": 0,
+    "SAME": 20,
+    "LESS": 0
+   },
+   "words_over_seeds_unrounded": {
+    "GREATER": 0,
+    "SAME": 20,
+    "LESS": 0
+   },
+   "per_seed": [
+    {
+     "seed": 0,
+     "lo": -0.002,
+     "hi": 0.0028333333333333335,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 1,
+     "lo": -0.0018333333333333333,
+     "hi": 0.002666666666666667,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 2,
+     "lo": -0.002,
+     "hi": 0.002666666666666667,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 3,
+     "lo": -0.0019999999999999996,
+     "hi": 0.0028333333333333335,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 4,
+     "lo": -0.0019999999999999996,
+     "hi": 0.002666666666666667,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 5,
+     "lo": -0.0018375000000000004,
+     "hi": 0.002666666666666667,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 6,
+     "lo": -0.0019999999999999996,
+     "hi": 0.002666666666666666,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 7,
+     "lo": -0.0019999999999999996,
+     "hi": 0.002833333333333333,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 8,
+     "lo": -0.0018375000000000002,
+     "hi": 0.002666666666666667,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 9,
+     "lo": -0.0019999999999999996,
+     "hi": 0.002833333333333334,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 10,
+     "lo": -0.002,
+     "hi": 0.0028333333333333335,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 11,
+     "lo": -0.002,
+     "hi": 0.002833333333333334,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 12,
+     "lo": -0.0019999999999999996,
+     "hi": 0.002833333333333333,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 13,
+     "lo": -0.0019999999999999996,
+     "hi": 0.002666666666666667,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 14,
+     "lo": -0.002,
+     "hi": 0.002670833333333311,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 15,
+     "lo": -0.0018333333333333335,
+     "hi": 0.0028333333333333335,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 16,
+     "lo": -0.002,
+     "hi": 0.002666666666666667,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 17,
+     "lo": -0.0019999999999999996,
+     "hi": 0.0026708333333333115,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 18,
+     "lo": -0.0019999999999999996,
+     "hi": 0.0026708333333333115,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 19,
+     "lo": -0.0019999999999999996,
+     "hi": 0.002666666666666667,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    }
+   ]
+  },
+  "hotpotqa/zrckpn": {
+   "mean_diff": 0.0004999999999999999,
+   "seed0_ci_unrounded": [
+    -0.0013333333333333335,
+    0.0023333333333333335
+   ],
+   "seed0_ci_filed": [
+    -0.0013,
+    0.0023
+   ],
+   "words_over_seeds_filed_rounding": {
+    "GREATER": 0,
+    "SAME": 20,
+    "LESS": 0
+   },
+   "words_over_seeds_unrounded": {
+    "GREATER": 0,
+    "SAME": 20,
+    "LESS": 0
+   },
+   "per_seed": [
+    {
+     "seed": 0,
+     "lo": -0.0013333333333333335,
+     "hi": 0.0023333333333333335,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 1,
+     "lo": -0.0011666666666666674,
+     "hi": 0.0024999999999999996,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 2,
+     "lo": -0.0013333333333333337,
+     "hi": 0.0024999999999999996,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 3,
+     "lo": -0.0013333333333333337,
+     "hi": 0.0025,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 4,
+     "lo": -0.001333333333333334,
+     "hi": 0.002666666666666666,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 5,
+     "lo": -0.0013333333333333335,
+     "hi": 0.0023333333333333335,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 6,
+     "lo": -0.0011708333333333338,
+     "hi": 0.0024999999999999996,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 7,
+     "lo": -0.0011666666666666674,
+     "hi": 0.0024999999999999996,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 8,
+     "lo": -0.0013333333333333335,
+     "hi": 0.0025,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 9,
+     "lo": -0.0015,
+     "hi": 0.0023333333333333335,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 10,
+     "lo": -0.0013333333333333335,
+     "hi": 0.0024999999999999996,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 11,
+     "lo": -0.001333333333333333,
+     "hi": 0.0023333333333333335,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 12,
+     "lo": -0.001333333333333333,
+     "hi": 0.0025,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 13,
+     "lo": -0.0013333333333333335,
+     "hi": 0.002499999999999999,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 14,
+     "lo": -0.0013333333333333333,
+     "hi": 0.0023333333333333335,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 15,
+     "lo": -0.0013333333333333335,
+     "hi": 0.0025,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 16,
+     "lo": -0.0013333333333333335,
+     "hi": 0.002333333333333334,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 17,
+     "lo": -0.0013333333333333335,
+     "hi": 0.0025,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 18,
+     "lo": -0.0013333333333333335,
+     "hi": 0.0023333333333333335,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 19,
+     "lo": -0.0013333333333333337,
+     "hi": 0.0024999999999999996,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    }
+   ]
+  },
+  "musique/zg6r": {
+   "mean_diff": -0.0026111111111111114,
+   "seed0_ci_unrounded": [
+    -0.007417361111111112,
+    0.0023055555555555555
+   ],
+   "seed0_ci_filed": [
+    -0.0074,
+    0.0023
+   ],
+   "words_over_seeds_filed_rounding": {
+    "GREATER": 0,
+    "SAME": 20,
+    "LESS": 0
+   },
+   "words_over_seeds_unrounded": {
+    "GREATER": 0,
+    "SAME": 20,
+    "LESS": 0
+   },
+   "per_seed": [
+    {
+     "seed": 0,
+     "lo": -0.007417361111111112,
+     "hi": 0.0023055555555555555,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 1,
+     "lo": -0.007529166666666666,
+     "hi": 0.0021118055555555525,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 2,
+     "lo": -0.007389583333333334,
+     "hi": 0.00225,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 3,
+     "lo": -0.007389583333333334,
+     "hi": 0.002056249999999997,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 4,
+     "lo": -0.007390277777777778,
+     "hi": 0.002306249999999997,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 5,
+     "lo": -0.007639583333333334,
+     "hi": 0.0025555555555555544,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 6,
+     "lo": -0.007666666666666666,
+     "hi": 0.002361805555555553,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 7,
+     "lo": -0.007417361111111112,
+     "hi": 0.002306249999999997,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 8,
+     "lo": -0.0075,
+     "hi": 0.0022229166666666634,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 9,
+     "lo": -0.007694444444444443,
+     "hi": 0.002418055555555548,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 10,
+     "lo": -0.007361805555555556,
+     "hi": 0.002305555555555556,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 11,
+     "lo": -0.007556250000000001,
+     "hi": 0.002140277777777771,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 12,
+     "lo": -0.007417361111111112,
+     "hi": 0.0021951388888888854,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 13,
+     "lo": -0.007667361111111111,
+     "hi": 0.0021958333333333257,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 14,
+     "lo": -0.007611111111111111,
+     "hi": 0.0024180555555555487,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 15,
+     "lo": -0.007611111111111111,
+     "hi": 0.0021666666666666674,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 16,
+     "lo": -0.0075,
+     "hi": 0.0021944444444444446,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 17,
+     "lo": -0.0075277777777777765,
+     "hi": 0.002250694444444442,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 18,
+     "lo": -0.007529166666666667,
+     "hi": 0.00225,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 19,
+     "lo": -0.007556944444444445,
+     "hi": 0.0022791666666666602,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    }
+   ]
+  },
+  "musique/zrckpn": {
+   "mean_diff": -0.0023888888888888883,
+   "seed0_ci_unrounded": [
+    -0.006694444444444443,
+    0.0017500000000000018
+   ],
+   "seed0_ci_filed": [
+    -0.0067,
+    0.0018
+   ],
+   "words_over_seeds_filed_rounding": {
+    "GREATER": 0,
+    "SAME": 20,
+    "LESS": 0
+   },
+   "words_over_seeds_unrounded": {
+    "GREATER": 0,
+    "SAME": 20,
+    "LESS": 0
+   },
+   "per_seed": [
+    {
+     "seed": 0,
+     "lo": -0.006694444444444443,
+     "hi": 0.0017500000000000018,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 1,
+     "lo": -0.0068340277777777765,
+     "hi": 0.0017506944444444419,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 2,
+     "lo": -0.006528472222222222,
+     "hi": 0.0018611111111111118,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 3,
+     "lo": -0.006499999999999999,
+     "hi": 0.0019166666666666674,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 4,
+     "lo": -0.006416666666666666,
+     "hi": 0.0016111111111111116,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 5,
+     "lo": -0.0068340277777777765,
+     "hi": 0.0018333333333333329,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 6,
+     "lo": -0.006668055555555555,
+     "hi": 0.0019722222222222224,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 7,
+     "lo": -0.0067222222222222214,
+     "hi": 0.0017513888888888822,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 8,
+     "lo": -0.00647361111111111,
+     "hi": 0.001666666666666667,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 9,
+     "lo": -0.006805555555555555,
+     "hi": 0.001806944444444438,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 10,
+     "lo": -0.006583333333333334,
+     "hi": 0.0018055555555555566,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 11,
+     "lo": -0.006750694444444445,
+     "hi": 0.0016395833333333301,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 12,
+     "lo": -0.006528472222222222,
+     "hi": 0.0018055555555555566,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 13,
+     "lo": -0.006527777777777777,
+     "hi": 0.0018069444444444372,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 14,
+     "lo": -0.006666666666666666,
+     "hi": 0.0016958333333333272,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 15,
+     "lo": -0.006528472222222221,
+     "hi": 0.0019187499999999886,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 16,
+     "lo": -0.006556249999999999,
+     "hi": 0.001750694444444441,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 17,
+     "lo": -0.0063618055555555554,
+     "hi": 0.001611111111111112,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 18,
+     "lo": -0.006555555555555556,
+     "hi": 0.002,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    },
+    {
+     "seed": 19,
+     "lo": -0.0065277777777777764,
+     "hi": 0.002000000000000001,
+     "word_filed_rounding": "SAME",
+     "word_unrounded": "SAME"
+    }
+   ]
+  }
+ },
+ "zap2_sha256": "8ecb6d8693bc09ea1e3b301edbe8b1b770954ebf14454d3651fd95a9511b68e3",
+ "utc": "2026-11-11T21:06:10Z"
+}

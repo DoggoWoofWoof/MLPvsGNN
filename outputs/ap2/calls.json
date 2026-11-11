@@ -1,0 +1,79 @@
+{
+ "declared_in": "docs/AP2_RULE_NER_SLOT_ON_B1.md",
+ "verdict": "REPLACE",
+ "call": {
+  "2wiki": "SAME",
+  "hotpotqa": "SAME",
+  "musique": "SAME"
+ },
+ "calls_vs_b1w": {
+  "2wiki": {
+   "in_domain": {
+    "zg6r": {
+     "b1n-b1w": "SAME",
+     "b1n-b1t": "UP",
+     "b1w-b1t": "UP"
+    },
+    "zrckpn": {
+     "b1n-b1w": "SAME",
+     "b1n-b1t": "UP",
+     "b1w-b1t": "UP"
+    }
+   },
+   "zero_shot": {}
+  },
+  "hotpotqa": {
+   "in_domain": {
+    "zg6r": {
+     "b1n-b1w": "SAME",
+     "b1n-b1t": "UP",
+     "b1w-b1t": "UP"
+    },
+    "zrckpn": {
+     "b1n-b1w": "SAME",
+     "b1n-b1t": "UP",
+     "b1w-b1t": "UP"
+    }
+   },
+   "zero_shot": {
+    "zg6r": {
+     "b1n-b1w": "SAME",
+     "b1n-b1t": "UP",
+     "b1w-b1t": "UP"
+    },
+    "zrckpn": {
+     "b1n-b1w": "SAME",
+     "b1n-b1t": "UP",
+     "b1w-b1t": "UP"
+    }
+   }
+  },
+  "musique": {
+   "in_domain": {
+    "zg6r": {
+     "b1n-b1w": "SAME",
+     "b1n-b1t": "UP",
+     "b1w-b1t": "UP"
+    },
+    "zrckpn": {
+     "b1n-b1w": "SAME",
+     "b1n-b1t": "UP",
+     "b1w-b1t": "UP"
+    }
+   },
+   "zero_shot": {
+    "zg6r": {
+     "b1n-b1w": "SAME",
+     "b1n-b1t": "FLAT",
+     "b1w-b1t": "FLAT"
+    },
+    "zrckpn": {
+     "b1n-b1w": "GREATER",
+     "b1n-b1t": "UP",
+     "b1w-b1t": "UP"
+    }
+   }
+  }
+ },
+ "partB": {}
+}
