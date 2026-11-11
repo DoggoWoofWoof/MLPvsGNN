@@ -281,3 +281,29 @@ cells of that swap, so `zabl.py` gains `ARM_SWP = {"SNK": ("S", 1, 1), "NK": (""
 is the third cell). `ARM_ALL = {**ARM, **ARM_SWP}` is what `applies`, `dropped`, `on_arm`, `items` and the `--arm` choices read; ABL's grid, its report and
 its self-test are unchanged and the self-test now also asserts the two arms. Their builds and reads are the SWP stage's (`swp-*`, `swp3-*` rows), not ABL's grid;
 RK on MetaQA and WebQSP is ABL's own row, moved ahead in the host queue. No ABL number depends on the change.
+
+## 13. Closed without a number (11 Nov 2026, about 21:50 IST)
+
+**The user's rulings.** 11 Nov, about 03:39 IST: ABL is "just for completion" (its 144 unsent rows were parked behind
+`hold-abl-parked-11nov`). 11 Nov, evening: "remove the stuff we do not need anymore", and "for any future ablations we
+just remove edge families and reuse stuff as much as possible". The second is amendment A2 of
+[CANONICAL_LINK_AND_POOL_LAYOUT.md](CANONICAL_LINK_AND_POOL_LAYOUT.md): the pools stay as built under the record's
+rule, and an ablation removes edge families from the built graph instead of building each arm's own pools, caches and
+looks as sections 2 and 3 do.
+
+**What closes.** ABL files no number and no report; no paper or SWP number uses one. Its grid is not run further.
+
+**The host queue.** The 145 parked rows (the 144 of 03:39 and `abl6-RK-prune-webqsp`, parked at 04:58) were removed on
+11 Nov, about 21:45 IST, together with J5S's 37 held rows (docs/J5S_J5_SEEDS.md section 9). One held row,
+`keep-reuse-11nov`, never runs and names the pools-of-record builds so that the auto clean-up keeps them.
+
+**The builds.**
+- Listed for a host delete (`outputs/host_cleanup/host_cleanup17.py`; the user runs `--delete`): the arrays of the
+  five arms no other stage read, SR, SK, S, K and 0 (5,390 files, 53.56 GB; the dry run of 11 Nov 21:46 found all of
+  them unchanged).
+- Kept: SRK (the with-S domain's build under the record's rule, the canonical layout's section 5), RK, NK and SNK
+  (SWP Parts B, C and E read them), SNKF and NKF (SWP's training carves), the slot graphs G, GO and GK, `u` (the rule
+  on the knowledge bases, section 8), `outputs/abl/fits` and every record.
+
+**For a later ablation.** Start from A2: the stage names the families it removes, the built files it reuses (by
+sha256) and the files it recomputes, before it runs.

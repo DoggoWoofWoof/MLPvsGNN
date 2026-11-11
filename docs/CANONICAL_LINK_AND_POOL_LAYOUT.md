@@ -1,4 +1,4 @@
-# Canonical link and pool layout (8 November 2026, 02:35 IST; amended 10 November 2026, A1)
+# Canonical link and pool layout (8 November 2026, 02:35 IST; amended 10 November 2026, A1, and 11 November 2026, A2)
 
 This page fixes what the link families are called, what each holds on every dataset, and how pools and graphs are
 built from them. It is the one place to check before using the words "hyperlinks", "structural", "text links" or
@@ -48,6 +48,32 @@ The user, 10 November 2026 (early hours, IST), in their words, shortened:
 - **Improving R** (section 6, item 3, now read as R's own improvement) is a stage declared after "go" (D19). It starts
   from the oracle diagnosis: which chain edges R holds and which it misses, and the controls that showed the models use
   the right connection rather than extra degree on gold passages (SWP sections 5c to 5e).
+
+## Amendment A2 (11 November 2026, about 21:50 IST): the pools are the standard; ablations remove edge families
+
+The user, 11 November 2026 (evening, IST), in their words: "the way we are calculating we should have it fixed as of
+now, bar the rest of the implied work, so make sure we follow that standard unless we superseed and for any future
+ablations we just remove edge families and reuse stuff as much as possible".
+
+- **The pool standard.** Pools are computed as they are now: PKO's pick O rule, `own/kind_t/kt_cos:ada_f16_k0@0.85`
+  (docs/PKO_PICK_O_POOLS_UNDER_WQ.md section 2: U2s's carried walk, kind_t, the kt_cos order, ADA's budget at f = 16
+  and k0 = 0, P1h's cut at 0.85), on each domain's graph as A1 lists it. The pools of record built with it stay as
+  built: PKO's (`outputs/pko/pools`, the R + K domain's training and s1eval pools), B1P's on B1 (`outputs/b1p/pools`)
+  and ABL's SRK build (`outputs/abl/SRK`, the same rule on S + R + K).
+- **What changes the standard.** Only a later ruling of the user's that names this amendment. The implied work stays
+  open as declared stages: section 6's items 1 (S + R + K pools at fewer rows), 2 (the rule-based NER store inside R),
+  4 (deduplication) and 5 (the refit), and U2z's E_ROW pools (stage B1, 00a0db8; their refit is the user's call).
+  Until one of them is adopted, it supersedes nothing.
+- **Ablations from now on.** An ablation removes one or more edge families (S, R, K, or R's NER store) from its
+  domain's built graph and reuses everything else: the pools, caches, looks, orders and fits stay as built and are
+  checked by sha256, never rebuilt per arm. Only what reads the removed edges is recomputed (the graph the model reads,
+  and any input computed from walks on those edges), and the stage names each such file before it runs. Section 4
+  still holds: a read-time removal is a shift, and an arm trained without a family is fitted on the same fixed pools.
+- **What this retires.** ABL's per-arm pool builds (each arm's own pools, caches and looks under the record's rule)
+  are the pattern this replaces. ABL closes without a number (docs/ABL_LINK_FAMILY_ABLATION.md section 13). Its parked
+  rows left the host queue on 11 Nov; the five arms no other stage read (SR, SK, S, K, 0) are listed for a host
+  delete; SRK, the arms SWP read (RK, NK, SNK), SWP's training carves (SNKF, NKF), the slot graphs, `u` and every fit
+  stay.
 
 ## 1. The three families
 
