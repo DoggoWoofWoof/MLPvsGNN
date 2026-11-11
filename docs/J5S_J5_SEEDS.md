@@ -191,3 +191,87 @@ Systems only. No fit, read, control, report or record rule of sections 2-6 chang
 - **Record.** If every step passes, J5S runs as declared in sections 2-6 and its report is filed as sections 5 and 6
   say. If any step refuses, the stage stops there and the refusal is filed in a section 11; no three-seed number is
   quoted from a partly restored tree.
+
+## 11. Outcome, 12 Nov: three seeds filed
+
+Records: `outputs/j5s/report.json` and `report.md`, written by `j5s.py report` on the host at 02:12 IST on 12 Nov (its
+script sha256 `ebafa0e9...` equals the committed file's; `missing` is empty). Every number below is in `report.md`.
+
+- **What ran.** Amendment A1's restore passed (section 10: the eight look-checks returned rc 0, `j5r-verify` rc 0 at
+  01:05). The six fits (zrc and zsp at seeds 1 and 2, and the two seed-0 controls) ran from 01:06 and ended rc 0 after
+  56 to 58 minutes each (the three zrc fits on the card at share 0.28, the three zsp fits on 6 CPUs); the six forks, the
+  24 reads still to run (the two seed-0 b1w reads ran on 11 Nov, section 9; zrc 13 to 17 s each, zsp 49 s to 1 min
+  18 s) and the report (9 s) followed, all rc 0, by 02:12.
+- **Controls** (filed whatever they show; both arms give the same result):
+
+  | control | zrc | zsp |
+  |---|---|---|
+  | C1, the seed-0 control fit against the filed fit (9 states, tensor by tensor) | REPRODUCED: no state or field differs, 8 epochs and the same steps in both, largest absolute loss difference 0.0 | REPRODUCED, the same |
+  | C2, the seed-0 re-reads against the filed reads | 12 of 12 EQUAL | 12 of 12 EQUAL |
+  | C3, the controls' b1 reads against the filed b1 reads | 3 of 3 EQUAL | 3 of 3 EQUAL |
+
+  At a fixed seed the fit reproduces bit for bit, so the seed-0 column below is the filed fit's own read.
+- **Rows** (R@5 x 100, candidate p@swa, 1,000 questions per setting; each question's R@5 averaged over seeds 0, 1 and 2;
+  B1b's 95% bootstrap interval over the questions, 2,000 resamples, seed 0; spread = highest minus lowest seed):
+
+  | setting | carve | arm | s0 | s1 | s2 | three-seed mean [95% CI] | spread |
+  |---|---|---|---:|---:|---:|---|---:|
+  | musique | b1 | zrc | 66.1 | 66.1 | 66.6 | 66.3 [64.5, 68.0] | 0.5 |
+  | musique | b1 | zsp | 66.3 | 65.5 | 66.9 | 66.2 [64.5, 68.0] | 1.3 |
+  | musique | b1w | zrc | 65.3 | 65.1 | 66.2 | 65.5 [63.9, 67.2] | 1.1 |
+  | musique | b1w | zsp | 65.7 | 65.6 | 65.7 | 65.7 [63.9, 67.5] | 0.1 |
+  | musique | b1t | zrc | 63.4 | 62.8 | 64.1 | 63.4 [61.7, 65.2] | 1.3 |
+  | musique | b1t | zsp | 62.9 | 63.1 | 63.7 | 63.2 [61.6, 65.0] | 0.8 |
+  | musique | b1u | zrc | 66.1 | 66.1 | 66.6 | 66.3 [64.5, 68.0] | 0.5 |
+  | musique | b1u | zsp | 66.3 | 65.5 | 66.9 | 66.2 [64.5, 68.0] | 1.3 |
+  | 2wiki | b1 | zrc | 96.4 | 96.4 | 96.0 | 96.3 [95.6, 96.9] | 0.3 |
+  | 2wiki | b1 | zsp | 97.2 | 97.0 | 97.5 | 97.2 [96.5, 97.8] | 0.5 |
+  | 2wiki | b1w | zrc | 94.2 | 93.9 | 93.6 | 93.9 [93.0, 94.7] | 0.6 |
+  | 2wiki | b1w | zsp | 95.2 | 94.8 | 95.6 | 95.2 [94.4, 96.0] | 0.8 |
+  | 2wiki | b1t | zrc | 75.6 | 75.8 | 76.0 | 75.8 [74.3, 77.3] | 0.4 |
+  | 2wiki | b1t | zsp | 77.3 | 77.3 | 77.9 | 77.5 [76.0, 79.0] | 0.6 |
+  | 2wiki | b1u | zrc | 95.3 | 95.3 | 95.0 | 95.2 [94.4, 96.0] | 0.4 |
+  | 2wiki | b1u | zsp | 95.9 | 96.0 | 96.2 | 96.0 [95.3, 96.7] | 0.4 |
+  | hotpotqa | b1 | zrc | 98.2 | 98.0 | 97.9 | 98.0 [97.4, 98.6] | 0.2 |
+  | hotpotqa | b1 | zsp | 98.2 | 97.9 | 98.1 | 98.1 [97.4, 98.7] | 0.4 |
+  | hotpotqa | b1w | zrc | 94.8 | 94.3 | 94.2 | 94.5 [93.5, 95.4] | 0.5 |
+  | hotpotqa | b1w | zsp | 94.3 | 94.3 | 94.7 | 94.4 [93.5, 95.4] | 0.4 |
+  | hotpotqa | b1t | zrc | 88.7 | 88.4 | 88.7 | 88.6 [87.4, 89.9] | 0.2 |
+  | hotpotqa | b1t | zsp | 90.0 | 89.5 | 90.0 | 89.8 [88.6, 91.1] | 0.4 |
+  | hotpotqa | b1u | zrc | 94.8 | 94.5 | 94.5 | 94.6 [93.6, 95.6] | 0.3 |
+  | hotpotqa | b1u | zsp | 95.0 | 94.7 | 94.8 | 94.8 [93.9, 95.8] | 0.3 |
+
+  The largest spread is 1.3 points on MuSiQue, 0.8 on 2Wiki and 0.5 on HotpotQA. MuSiQue's b1 and b1u are the same
+  links (the two carves' file sha256 lists are equal), so their rows are equal.
+- **Calls** (B1b's rule: ABOVE when the interval's low end is above the reference, BELOW when its high end is below, AT
+  otherwise; re-derived here from each row's interval and the published values, with no difference to the report).
+  - Against HippoRAG 2 no row changes its call between seed 0 and the three seeds. MuSiQue: BELOW on all eight rows.
+    2Wiki: ABOVE on b1, b1w and b1u, BELOW on b1t, both arms. HotpotQA: ABOVE on b1, BELOW on b1w, b1t and b1u, both
+    arms.
+  - Against the nine published rows, three of the 24 rows change a call, all on HotpotQA:
+
+    | row | published row | at seed 0 | at three seeds |
+    |---|---|---|---|
+    | b1 zrc and b1 zsp | PropRAG (97.4) | ABOVE | AT |
+    | b1 zrc and b1 zsp | BridgeRAG (98.75) | AT | BELOW |
+    | b1w zrc | HGRAG (95.5) | AT | BELOW |
+
+    No other call changes on any setting, carve or arm.
+- **Paired differences** (three-seed means, per question; the full list is in `report.md`):
+
+  | setting | b1 - b1w, zrc | b1 - b1w, zsp | b1w - b1t, zrc | b1w - b1t, zsp | zsp - zrc on b1 |
+  |---|---|---|---|---|---|
+  | musique | +0.7 [+0.1, +1.3] | +0.6 [-0.1, +1.3] | +2.1 [+1.3, +2.9] | +2.4 [+1.5, +3.4] | -0.0 [-0.6, +0.6] |
+  | 2wiki | +2.4 [+1.6, +3.2] | +2.0 [+1.2, +2.8] | +18.1 [+16.8, +19.4] | +17.7 [+16.3, +19.1] | +0.9 [+0.7, +1.2] |
+  | hotpotqa | +3.5 [+2.7, +4.3] | +3.6 [+2.9, +4.4] | +5.9 [+4.8, +6.9] | +4.6 [+3.6, +5.5] | +0.1 [-0.2, +0.4] |
+
+  B1F's share of the hyperlink gain held by the rule links, (b1w - b1t) / (b1 - b1t), zrc and zsp: MuSiQue 0.75 and
+  0.814, 2Wiki 0.884 and 0.898, HotpotQA 0.623 and 0.559.
+- **Record rule (section 6), in force from this commit.** Every J5 row on B1's three settings is quoted as its
+  three-seed mean with its interval and seed 0's value beside it. The three changes above are named with their
+  direction; PropRAG's ABOVE on HotpotQA's b1 (zrc and zsp) held at seed 0 only and is no longer quoted as holding.
+  This stage decides nothing about models: it adopts or drops no fit.
+- **Files.** `outputs/j5s/report.json` and `report.md` are committed. The fits, forks and reads stay on the host under
+  `outputs/j5s/` (`train/`, `fits/`), the restore's records under `outputs/j5s/restore/` and its side roots under
+  `outputs/j5s/rebuild/`. The held keep row `keep-j5s-11nov` (section 10) is released with this filing: removed from the
+  queue, so the auto-cleanup treats the eight look folders and the caches again as it treats any cold regen files.

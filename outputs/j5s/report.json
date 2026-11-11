@@ -1,0 +1,1744 @@
+{
+ "declared_in": "docs/J5S_J5_SEEDS.md",
+ "candidate": "p@swa",
+ "boot": {
+  "resamples": 2000,
+  "seed": 0
+ },
+ "hipporag2": {
+  "musique": 0.747,
+  "2wiki": 0.904,
+  "hotpotqa": 0.963
+ },
+ "published": {
+  "HippoRAG 2": {
+   "peer_reviewed": true,
+   "R@5": {
+    "2wiki": 90.4,
+    "hotpotqa": 96.3,
+    "musique": 74.7
+   }
+  },
+  "G-reasoner": {
+   "peer_reviewed": true,
+   "R@5": {
+    "2wiki": 98.2,
+    "hotpotqa": null,
+    "musique": 74.9
+   }
+  },
+  "PROPEX-RAG": {
+   "peer_reviewed": true,
+   "R@5": {
+    "2wiki": 98.1,
+    "hotpotqa": 97.1,
+    "musique": null
+   }
+  },
+  "CoopRAG": {
+   "peer_reviewed": true,
+   "R@5": {
+    "2wiki": 97.2,
+    "hotpotqa": 96.6,
+    "musique": 75.7
+   }
+  },
+  "PropRAG": {
+   "peer_reviewed": true,
+   "R@5": {
+    "2wiki": 94.1,
+    "hotpotqa": 97.4,
+    "musique": 78.3
+   }
+  },
+  "HGRAG": {
+   "peer_reviewed": true,
+   "R@5": {
+    "2wiki": 93.0,
+    "hotpotqa": 95.5,
+    "musique": 74.1
+   }
+  },
+  "EviReform": {
+   "peer_reviewed": false,
+   "R@5": {
+    "2wiki": 98.45,
+    "hotpotqa": 97.3,
+    "musique": 78.93
+   }
+  },
+  "BridgeRAG": {
+   "peer_reviewed": false,
+   "R@5": {
+    "2wiki": 95.27,
+    "hotpotqa": 98.75,
+    "musique": null
+   }
+  },
+  "SAG2": {
+   "peer_reviewed": false,
+   "R@5": {
+    "2wiki": 97.35,
+    "hotpotqa": 98.45,
+    "musique": 80.68
+   }
+  }
+ },
+ "controls": {
+  "zrc": {
+   "C1": {
+    "filed_models_sha256": "38ad128de6f9a6e41f8871e1f8d9fe94cae6d9400f7b5f23420e0364e9971127",
+    "call": "REPRODUCED",
+    "states_compared": 9,
+    "differing_states": [],
+    "differing_fields": [],
+    "names": [
+     "J5-s0c",
+     "J5"
+    ],
+    "models_sha256": "1b6ef1fe6798a674c8387dbc35a487bbb9d77da59bffad4b31bf946a8ae3160f",
+    "curve": {
+     "epochs": [
+      8,
+      8
+     ],
+     "same_steps": true,
+     "max_abs_loss_delta": 0.0
+    }
+   },
+   "C2": {
+    "b1 musique": "EQUAL",
+    "b1w musique": "EQUAL",
+    "b1t musique": "EQUAL",
+    "b1u musique": "EQUAL",
+    "b1 2wiki": "EQUAL",
+    "b1w 2wiki": "EQUAL",
+    "b1t 2wiki": "EQUAL",
+    "b1u 2wiki": "EQUAL",
+    "b1 hotpotqa": "EQUAL",
+    "b1w hotpotqa": "EQUAL",
+    "b1t hotpotqa": "EQUAL",
+    "b1u hotpotqa": "EQUAL"
+   },
+   "C3": {
+    "musique": "EQUAL",
+    "2wiki": "EQUAL",
+    "hotpotqa": "EQUAL"
+   }
+  },
+  "zsp": {
+   "C1": {
+    "filed_models_sha256": "966796eaf22e4d086c7c5a8a08df316e12265c13541a0942ce59541c1e0ca2fa",
+    "call": "REPRODUCED",
+    "states_compared": 9,
+    "differing_states": [],
+    "differing_fields": [],
+    "names": [
+     "J5-s0c",
+     "J5"
+    ],
+    "models_sha256": "6420c8c128f1786a4f46bb26792eaf08e472c086eaaf10edaf8b637847adb3fd",
+    "curve": {
+     "epochs": [
+      8,
+      8
+     ],
+     "same_steps": true,
+     "max_abs_loss_delta": 0.0
+    }
+   },
+   "C2": {
+    "b1 musique": "EQUAL",
+    "b1w musique": "EQUAL",
+    "b1t musique": "EQUAL",
+    "b1u musique": "EQUAL",
+    "b1 2wiki": "EQUAL",
+    "b1w 2wiki": "EQUAL",
+    "b1t 2wiki": "EQUAL",
+    "b1u 2wiki": "EQUAL",
+    "b1 hotpotqa": "EQUAL",
+    "b1w hotpotqa": "EQUAL",
+    "b1t hotpotqa": "EQUAL",
+    "b1u hotpotqa": "EQUAL"
+   },
+   "C3": {
+    "musique": "EQUAL",
+    "2wiki": "EQUAL",
+    "hotpotqa": "EQUAL"
+   }
+  }
+ },
+ "settings": {
+  "musique": {
+   "questions": 1000,
+   "carves": {
+    "b1": {
+     "zrc": {
+      "R@5": 0.6626,
+      "R5_ci": [
+       0.6454,
+       0.6796
+      ],
+      "FC@5": 0.356,
+      "hit@1": 0.7787,
+      "seeds_R@5": [
+       0.6612,
+       0.6609,
+       0.6657
+      ],
+      "seed_spread": 0.0048,
+      "seed0_R5_ci": [
+       0.643,
+       0.6787
+      ],
+      "rrf_R@5": 0.5643,
+      "vs_hipporag2": "BELOW",
+      "seed0_vs_hipporag2": "BELOW",
+      "vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "49c2d9adc358a1f2c51ad75299af13d01916d09f9bf668b0db06ad3b8f0d9de4",
+       "b11209fb4fc6112ce92888a61daecb231b4820def515defc64a52c611ecdb6c1",
+       "d4fd7900f7a64300f0c456d625c07c2688894f2acd116bc2995e2920ecf03008"
+      ],
+      "changed": {}
+     },
+     "zsp": {
+      "R@5": 0.6624,
+      "R5_ci": [
+       0.6452,
+       0.6801
+      ],
+      "FC@5": 0.3627,
+      "hit@1": 0.767,
+      "seeds_R@5": [
+       0.6628,
+       0.6555,
+       0.6688
+      ],
+      "seed_spread": 0.0133,
+      "seed0_R5_ci": [
+       0.6451,
+       0.6808
+      ],
+      "rrf_R@5": 0.5643,
+      "vs_hipporag2": "BELOW",
+      "seed0_vs_hipporag2": "BELOW",
+      "vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "f4b8f3a57948344ebdd394e2047ec36d1fa12bfd36d6f18b9db48fed00ce469d",
+       "f74391ac4fb37c7c0fbd1cc8003ce398788f0a89b91cf65dee9cb84571340be9",
+       "2da91155f90380587c9d4ef82629ff303bed030fd16f53891c3f1c6b206a08b9"
+      ],
+      "changed": {}
+     }
+    },
+    "b1w": {
+     "zrc": {
+      "R@5": 0.6555,
+      "R5_ci": [
+       0.6387,
+       0.6724
+      ],
+      "FC@5": 0.3457,
+      "hit@1": 0.785,
+      "seeds_R@5": [
+       0.6534,
+       0.651,
+       0.662
+      ],
+      "seed_spread": 0.011,
+      "seed0_R5_ci": [
+       0.6354,
+       0.6711
+      ],
+      "rrf_R@5": 0.5643,
+      "vs_hipporag2": "BELOW",
+      "seed0_vs_hipporag2": "BELOW",
+      "vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "2671c70d329a86680b8f24f241fdb4d039cb203846c70838b09869dda83af6e0",
+       "6ab7001e845fa0e7eb6707b01997e64485cbbeafcb6190bbf8ef05ba72502c47",
+       "9b1204d6ab04cac3690ac42a6e7d44c0a8e1a85b3eb5f87e1034f738b11d8c99"
+      ],
+      "changed": {}
+     },
+     "zsp": {
+      "R@5": 0.6568,
+      "R5_ci": [
+       0.6392,
+       0.675
+      ],
+      "FC@5": 0.3527,
+      "hit@1": 0.7733,
+      "seeds_R@5": [
+       0.6568,
+       0.6562,
+       0.6574
+      ],
+      "seed_spread": 0.0012,
+      "seed0_R5_ci": [
+       0.6388,
+       0.6748
+      ],
+      "rrf_R@5": 0.5643,
+      "vs_hipporag2": "BELOW",
+      "seed0_vs_hipporag2": "BELOW",
+      "vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "425b4216cdfaebbe7873c476de207e71257d5003bf72ce790136eb77704bc267",
+       "df4f8b22e7ce5f9d67ee026434a6e38b45f1fb60bf2594736effce8781e9d6b2",
+       "dc98ed3412c14b236655adad670be561eb4d7b02ec4f03569597d54801aefffa"
+      ],
+      "changed": {}
+     }
+    },
+    "b1t": {
+     "zrc": {
+      "R@5": 0.6342,
+      "R5_ci": [
+       0.6172,
+       0.6516
+      ],
+      "FC@5": 0.3097,
+      "hit@1": 0.7707,
+      "seeds_R@5": [
+       0.634,
+       0.6276,
+       0.641
+      ],
+      "seed_spread": 0.0134,
+      "seed0_R5_ci": [
+       0.6172,
+       0.6516
+      ],
+      "rrf_R@5": 0.5643,
+      "vs_hipporag2": "BELOW",
+      "seed0_vs_hipporag2": "BELOW",
+      "vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "67b4653b5ce92d022b53692a6c4ed047b0daae063c92f6b235ad30d5c4db2c0c",
+       "ed98af9454c9b5bdbac58389db4d5cc237b9a382f9d954bfa5c594e1bbbffbb7",
+       "94797f0e1f4bfb6499e0d17a94a81a61d917364e953bc7c22c1cdfaee04c2d1b"
+      ],
+      "changed": {}
+     },
+     "zsp": {
+      "R@5": 0.6325,
+      "R5_ci": [
+       0.6162,
+       0.6498
+      ],
+      "FC@5": 0.309,
+      "hit@1": 0.7657,
+      "seeds_R@5": [
+       0.6294,
+       0.6307,
+       0.6374
+      ],
+      "seed_spread": 0.008,
+      "seed0_R5_ci": [
+       0.6124,
+       0.6475
+      ],
+      "rrf_R@5": 0.5643,
+      "vs_hipporag2": "BELOW",
+      "seed0_vs_hipporag2": "BELOW",
+      "vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "fa675c731ccd689dff18d77eb6e5053257a2057110fe8e20ea3131f3d900d2b1",
+       "4556abe2f1fbfbc68771a6a14322e5705ad8d622a528193656a18016b80ea501",
+       "1c7b4cc2a9c1b4520461a3398271d61941de6399a5883c00944ccb636242b99e"
+      ],
+      "changed": {}
+     }
+    },
+    "b1u": {
+     "zrc": {
+      "R@5": 0.6626,
+      "R5_ci": [
+       0.6454,
+       0.6796
+      ],
+      "FC@5": 0.356,
+      "hit@1": 0.7787,
+      "seeds_R@5": [
+       0.6612,
+       0.6609,
+       0.6657
+      ],
+      "seed_spread": 0.0048,
+      "seed0_R5_ci": [
+       0.643,
+       0.6787
+      ],
+      "rrf_R@5": 0.5643,
+      "vs_hipporag2": "BELOW",
+      "seed0_vs_hipporag2": "BELOW",
+      "vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "49c2d9adc358a1f2c51ad75299af13d01916d09f9bf668b0db06ad3b8f0d9de4",
+       "b11209fb4fc6112ce92888a61daecb231b4820def515defc64a52c611ecdb6c1",
+       "d4fd7900f7a64300f0c456d625c07c2688894f2acd116bc2995e2920ecf03008"
+      ],
+      "changed": {}
+     },
+     "zsp": {
+      "R@5": 0.6624,
+      "R5_ci": [
+       0.6452,
+       0.6801
+      ],
+      "FC@5": 0.3627,
+      "hit@1": 0.767,
+      "seeds_R@5": [
+       0.6628,
+       0.6555,
+       0.6688
+      ],
+      "seed_spread": 0.0133,
+      "seed0_R5_ci": [
+       0.6451,
+       0.6808
+      ],
+      "rrf_R@5": 0.5643,
+      "vs_hipporag2": "BELOW",
+      "seed0_vs_hipporag2": "BELOW",
+      "vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "f4b8f3a57948344ebdd394e2047ec36d1fa12bfd36d6f18b9db48fed00ce469d",
+       "f74391ac4fb37c7c0fbd1cc8003ce398788f0a89b91cf65dee9cb84571340be9",
+       "2da91155f90380587c9d4ef82629ff303bed030fd16f53891c3f1c6b206a08b9"
+      ],
+      "changed": {}
+     }
+    }
+   },
+   "paired": {
+    "b1-b1t zrc": {
+     "R@5": 0.0284,
+     "ci": [
+      0.0192,
+      0.0371
+     ]
+    },
+    "b1-b1t zsp": {
+     "R@5": 0.0299,
+     "ci": [
+      0.0196,
+      0.0399
+     ]
+    },
+    "b1w-b1t zrc": {
+     "R@5": 0.0213,
+     "ci": [
+      0.0131,
+      0.0293
+     ]
+    },
+    "b1w-b1t zsp": {
+     "R@5": 0.0243,
+     "ci": [
+      0.0147,
+      0.0337
+     ]
+    },
+    "b1u-b1t zrc": {
+     "R@5": 0.0284,
+     "ci": [
+      0.0192,
+      0.0371
+     ]
+    },
+    "b1u-b1t zsp": {
+     "R@5": 0.0299,
+     "ci": [
+      0.0196,
+      0.0399
+     ]
+    },
+    "b1-b1w zrc": {
+     "R@5": 0.0071,
+     "ci": [
+      0.0013,
+      0.0128
+     ]
+    },
+    "b1-b1w zsp": {
+     "R@5": 0.0056,
+     "ci": [
+      -0.0013,
+      0.0127
+     ]
+    },
+    "b1w-b1u zrc": {
+     "R@5": -0.0071,
+     "ci": [
+      -0.0128,
+      -0.0013
+     ]
+    },
+    "b1w-b1u zsp": {
+     "R@5": -0.0056,
+     "ci": [
+      -0.0127,
+      0.0013
+     ]
+    }
+   },
+   "share_of_hyperlink_gain": {
+    "zrc": {
+     "b1u": 1.0,
+     "b1w": 0.75
+    },
+    "zsp": {
+     "b1u": 1.0,
+     "b1w": 0.814
+    }
+   },
+   "arms_paired": {
+    "b1": {
+     "R@5": -0.0002,
+     "ci": [
+      -0.0062,
+      0.0059
+     ]
+    },
+    "b1w": {
+     "R@5": 0.0014,
+     "ci": [
+      -0.0046,
+      0.007
+     ]
+    },
+    "b1t": {
+     "R@5": -0.0017,
+     "ci": [
+      -0.007,
+      0.0034
+     ]
+    },
+    "b1u": {
+     "R@5": -0.0002,
+     "ci": [
+      -0.0062,
+      0.0059
+     ]
+    }
+   },
+   "mlp_share_of_prop_gain_b1": 1.002,
+   "best_published": {
+    "any": {
+     "R@5": 80.68,
+     "row": "SAG2"
+    },
+    "peer_reviewed": {
+     "R@5": 78.3,
+     "row": "PropRAG"
+    }
+   }
+  },
+  "2wiki": {
+   "questions": 1000,
+   "carves": {
+    "b1": {
+     "zrc": {
+      "R@5": 0.9626,
+      "R5_ci": [
+       0.9558,
+       0.9692
+      ],
+      "FC@5": 0.8953,
+      "hit@1": 0.972,
+      "seeds_R@5": [
+       0.9637,
+       0.9635,
+       0.9605
+      ],
+      "seed_spread": 0.0032,
+      "seed0_R5_ci": [
+       0.9567,
+       0.9705
+      ],
+      "rrf_R@5": 0.7123,
+      "vs_hipporag2": "ABOVE",
+      "seed0_vs_hipporag2": "ABOVE",
+      "vs_published": {
+       "HippoRAG 2": "ABOVE",
+       "G-reasoner": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "ABOVE",
+       "HGRAG": "ABOVE",
+       "EviReform": "BELOW",
+       "BridgeRAG": "ABOVE",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "ABOVE",
+       "G-reasoner": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "ABOVE",
+       "HGRAG": "ABOVE",
+       "EviReform": "BELOW",
+       "BridgeRAG": "ABOVE",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "d4cf9c93994d038f2a742c6ae1f8c175e36cfd83d5090bddfaf0c499c95ed6c0",
+       "30373867a570ae5a5b7dfe85b297b2fc89523b37cceb881a350fbde6da086c22",
+       "f138884f6b037bc664f34ed7108285e39be56771eb757b0d04d815aa95f2fd37"
+      ],
+      "changed": {}
+     },
+     "zsp": {
+      "R@5": 0.9721,
+      "R5_ci": [
+       0.9655,
+       0.9779
+      ],
+      "FC@5": 0.9273,
+      "hit@1": 0.9757,
+      "seeds_R@5": [
+       0.9715,
+       0.9698,
+       0.975
+      ],
+      "seed_spread": 0.0052,
+      "seed0_R5_ci": [
+       0.9645,
+       0.9778
+      ],
+      "rrf_R@5": 0.7123,
+      "vs_hipporag2": "ABOVE",
+      "seed0_vs_hipporag2": "ABOVE",
+      "vs_published": {
+       "HippoRAG 2": "ABOVE",
+       "G-reasoner": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "AT",
+       "PropRAG": "ABOVE",
+       "HGRAG": "ABOVE",
+       "EviReform": "BELOW",
+       "BridgeRAG": "ABOVE",
+       "SAG2": "AT"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "ABOVE",
+       "G-reasoner": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "AT",
+       "PropRAG": "ABOVE",
+       "HGRAG": "ABOVE",
+       "EviReform": "BELOW",
+       "BridgeRAG": "ABOVE",
+       "SAG2": "AT"
+      },
+      "files_sha256": [
+       "6587f80a71e4fd9cba09641845d58e658ea8156fbeea2bf5574a3eff852b1cea",
+       "bec0fa9f28a27fdcbdba346e7c269fce241a258c4dc047c0a93bc364858afcb7",
+       "8c489d88f6ba7d287a88f49b64bb7da3013556b39aea32d1c6bb987319427087"
+      ],
+      "changed": {}
+     }
+    },
+    "b1w": {
+     "zrc": {
+      "R@5": 0.9389,
+      "R5_ci": [
+       0.9302,
+       0.9472
+      ],
+      "FC@5": 0.8267,
+      "hit@1": 0.9717,
+      "seeds_R@5": [
+       0.9417,
+       0.9393,
+       0.9357
+      ],
+      "seed_spread": 0.006,
+      "seed0_R5_ci": [
+       0.933,
+       0.9505
+      ],
+      "rrf_R@5": 0.7123,
+      "vs_hipporag2": "ABOVE",
+      "seed0_vs_hipporag2": "ABOVE",
+      "vs_published": {
+       "HippoRAG 2": "ABOVE",
+       "G-reasoner": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "AT",
+       "HGRAG": "ABOVE",
+       "EviReform": "BELOW",
+       "BridgeRAG": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "ABOVE",
+       "G-reasoner": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "AT",
+       "HGRAG": "ABOVE",
+       "EviReform": "BELOW",
+       "BridgeRAG": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "6b112517bdd0876fa66331257f57c8111d3034d3f2159255c6e2ca3fd95dc659",
+       "ebdd730355b22d605254dae76a25283c999a96cb46628dd71ff6c13d4eaea756",
+       "5f26b834363f2b95011225950ea37cdf2c0e7089958eedcc78bc339db7ee898b"
+      ],
+      "changed": {}
+     },
+     "zsp": {
+      "R@5": 0.952,
+      "R5_ci": [
+       0.9437,
+       0.9595
+      ],
+      "FC@5": 0.8727,
+      "hit@1": 0.9717,
+      "seeds_R@5": [
+       0.9523,
+       0.948,
+       0.9557
+      ],
+      "seed_spread": 0.0077,
+      "seed0_R5_ci": [
+       0.9433,
+       0.9605
+      ],
+      "rrf_R@5": 0.7123,
+      "vs_hipporag2": "ABOVE",
+      "seed0_vs_hipporag2": "ABOVE",
+      "vs_published": {
+       "HippoRAG 2": "ABOVE",
+       "G-reasoner": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "ABOVE",
+       "HGRAG": "ABOVE",
+       "EviReform": "BELOW",
+       "BridgeRAG": "AT",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "ABOVE",
+       "G-reasoner": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "ABOVE",
+       "HGRAG": "ABOVE",
+       "EviReform": "BELOW",
+       "BridgeRAG": "AT",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "48aec7d6b8444c14c2fca900c91fae593ab10b4c5466bd5a9c971caa3d1ca24a",
+       "f0cc7c5ddad05a905dc074757e569b2a23952b2297d363e2a0a6c9e46f96686d",
+       "1b2cdabf8f2109d185f7a00b4bf2fe4108452ee3432abd5ac3ad051b09bb5ab7"
+      ],
+      "changed": {}
+     }
+    },
+    "b1t": {
+     "zrc": {
+      "R@5": 0.7579,
+      "R5_ci": [
+       0.7431,
+       0.7728
+      ],
+      "FC@5": 0.4953,
+      "hit@1": 0.973,
+      "seeds_R@5": [
+       0.7558,
+       0.7578,
+       0.7602
+      ],
+      "seed_spread": 0.0044,
+      "seed0_R5_ci": [
+       0.7405,
+       0.7715
+      ],
+      "rrf_R@5": 0.7123,
+      "vs_hipporag2": "BELOW",
+      "seed0_vs_hipporag2": "BELOW",
+      "vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "BridgeRAG": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "BridgeRAG": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "af5dac5807774245eaba5bf9a636cf5b486a627edbe0c86ff3573f1485edfcd9",
+       "27a1e232bf05251a998f340c3572ca13136102e6213cb42b1e324abb5f64ab3c",
+       "4ff0090bec43e5ec096156b313b8eeb29ddf1e05722fd01920be24c045508cd6"
+      ],
+      "changed": {}
+     },
+     "zsp": {
+      "R@5": 0.7751,
+      "R5_ci": [
+       0.7599,
+       0.7895
+      ],
+      "FC@5": 0.5203,
+      "hit@1": 0.9733,
+      "seeds_R@5": [
+       0.7735,
+       0.773,
+       0.7788
+      ],
+      "seed_spread": 0.0058,
+      "seed0_R5_ci": [
+       0.758,
+       0.7883
+      ],
+      "rrf_R@5": 0.7123,
+      "vs_hipporag2": "BELOW",
+      "seed0_vs_hipporag2": "BELOW",
+      "vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "BridgeRAG": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "BELOW",
+       "G-reasoner": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "BridgeRAG": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "5f3dca25e01b1538c674b2a178a9d1d9d23409b9ada9c8072b87c5093251cb1c",
+       "b5641e68a51e2351633ddddef896022a8fe5ad1e356cb1033cd70af88e151092",
+       "e9aa7c4121f91998deaf8cb86f6956c39299b397b2e395ba6bfdfc16308b3093"
+      ],
+      "changed": {}
+     }
+    },
+    "b1u": {
+     "zrc": {
+      "R@5": 0.952,
+      "R5_ci": [
+       0.9442,
+       0.9598
+      ],
+      "FC@5": 0.8657,
+      "hit@1": 0.9723,
+      "seeds_R@5": [
+       0.9533,
+       0.953,
+       0.9497
+      ],
+      "seed_spread": 0.0036,
+      "seed0_R5_ci": [
+       0.9453,
+       0.961
+      ],
+      "rrf_R@5": 0.7123,
+      "vs_hipporag2": "ABOVE",
+      "seed0_vs_hipporag2": "ABOVE",
+      "vs_published": {
+       "HippoRAG 2": "ABOVE",
+       "G-reasoner": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "ABOVE",
+       "HGRAG": "ABOVE",
+       "EviReform": "BELOW",
+       "BridgeRAG": "AT",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "ABOVE",
+       "G-reasoner": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "ABOVE",
+       "HGRAG": "ABOVE",
+       "EviReform": "BELOW",
+       "BridgeRAG": "AT",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "c970aa10996bcd9c62010632c83c22550bf79b7f4c8732dd4a483d6a3b246d48",
+       "6db22c9149487c10d2521f72682381e4703f3112f3941e2b2df4ff5a6ac1968e",
+       "87e04ce3813ee1c8f2146ac2d599a7d8c97323f2dba4668c748238139b6f484a"
+      ],
+      "changed": {}
+     },
+     "zsp": {
+      "R@5": 0.9601,
+      "R5_ci": [
+       0.9526,
+       0.9673
+      ],
+      "FC@5": 0.894,
+      "hit@1": 0.974,
+      "seeds_R@5": [
+       0.9585,
+       0.9597,
+       0.962
+      ],
+      "seed_spread": 0.0035,
+      "seed0_R5_ci": [
+       0.951,
+       0.9663
+      ],
+      "rrf_R@5": 0.7123,
+      "vs_hipporag2": "ABOVE",
+      "seed0_vs_hipporag2": "ABOVE",
+      "vs_published": {
+       "HippoRAG 2": "ABOVE",
+       "G-reasoner": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "ABOVE",
+       "HGRAG": "ABOVE",
+       "EviReform": "BELOW",
+       "BridgeRAG": "AT",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "ABOVE",
+       "G-reasoner": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "ABOVE",
+       "HGRAG": "ABOVE",
+       "EviReform": "BELOW",
+       "BridgeRAG": "AT",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "bb074e0f1bc84e06f1ff2d730c0b099b73f71be137fa75b17e05032955f7a7b4",
+       "85c78cfe328cc2ec35e5e3a192c81dea947680e994a667ca8a8d5a185b605032",
+       "09036ee1ad57accaf7448c6b0510e70f65049a542fedb46fb9885de697beb6be"
+      ],
+      "changed": {}
+     }
+    }
+   },
+   "paired": {
+    "b1-b1t zrc": {
+     "R@5": 0.2047,
+     "ci": [
+      0.1908,
+      0.2189
+     ]
+    },
+    "b1-b1t zsp": {
+     "R@5": 0.197,
+     "ci": [
+      0.1827,
+      0.2111
+     ]
+    },
+    "b1w-b1t zrc": {
+     "R@5": 0.181,
+     "ci": [
+      0.1679,
+      0.1943
+     ]
+    },
+    "b1w-b1t zsp": {
+     "R@5": 0.1769,
+     "ci": [
+      0.1631,
+      0.1906
+     ]
+    },
+    "b1u-b1t zrc": {
+     "R@5": 0.1941,
+     "ci": [
+      0.1802,
+      0.2083
+     ]
+    },
+    "b1u-b1t zsp": {
+     "R@5": 0.185,
+     "ci": [
+      0.171,
+      0.1997
+     ]
+    },
+    "b1-b1w zrc": {
+     "R@5": 0.0237,
+     "ci": [
+      0.0158,
+      0.0316
+     ]
+    },
+    "b1-b1w zsp": {
+     "R@5": 0.0201,
+     "ci": [
+      0.0125,
+      0.028
+     ]
+    },
+    "b1w-b1u zrc": {
+     "R@5": -0.0131,
+     "ci": [
+      -0.017,
+      -0.0095
+     ]
+    },
+    "b1w-b1u zsp": {
+     "R@5": -0.0081,
+     "ci": [
+      -0.0113,
+      -0.0051
+     ]
+    }
+   },
+   "share_of_hyperlink_gain": {
+    "zrc": {
+     "b1u": 0.948,
+     "b1w": 0.884
+    },
+    "zsp": {
+     "b1u": 0.939,
+     "b1w": 0.898
+    }
+   },
+   "arms_paired": {
+    "b1": {
+     "R@5": 0.0095,
+     "ci": [
+      0.0067,
+      0.0123
+     ]
+    },
+    "b1w": {
+     "R@5": 0.0131,
+     "ci": [
+      0.0095,
+      0.0168
+     ]
+    },
+    "b1t": {
+     "R@5": 0.0172,
+     "ci": [
+      0.0124,
+      0.022
+     ]
+    },
+    "b1u": {
+     "R@5": 0.0081,
+     "ci": [
+      0.0055,
+      0.0112
+     ]
+    }
+   },
+   "mlp_share_of_prop_gain_b1": 0.963,
+   "best_published": {
+    "any": {
+     "R@5": 98.45,
+     "row": "EviReform"
+    },
+    "peer_reviewed": {
+     "R@5": 98.2,
+     "row": "G-reasoner"
+    }
+   }
+  },
+  "hotpotqa": {
+   "questions": 1000,
+   "carves": {
+    "b1": {
+     "zrc": {
+      "R@5": 0.98,
+      "R5_ci": [
+       0.9735,
+       0.986
+      ],
+      "FC@5": 0.9643,
+      "hit@1": 0.9093,
+      "seeds_R@5": [
+       0.9815,
+       0.9795,
+       0.979
+      ],
+      "seed_spread": 0.0025,
+      "seed0_R5_ci": [
+       0.975,
+       0.9875
+      ],
+      "rrf_R@5": 0.8505,
+      "vs_hipporag2": "ABOVE",
+      "seed0_vs_hipporag2": "ABOVE",
+      "vs_published": {
+       "HippoRAG 2": "ABOVE",
+       "PROPEX-RAG": "ABOVE",
+       "CoopRAG": "ABOVE",
+       "PropRAG": "AT",
+       "HGRAG": "ABOVE",
+       "EviReform": "ABOVE",
+       "BridgeRAG": "BELOW",
+       "SAG2": "AT"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "ABOVE",
+       "PROPEX-RAG": "ABOVE",
+       "CoopRAG": "ABOVE",
+       "PropRAG": "ABOVE",
+       "HGRAG": "ABOVE",
+       "EviReform": "ABOVE",
+       "BridgeRAG": "AT",
+       "SAG2": "AT"
+      },
+      "files_sha256": [
+       "4d10d8520d3e4c5bc9dfd23cf792eb8d4a82b7150a23cbd2dc872901256e1746",
+       "b59c8f83e767748be7938a3e6300f474076a3c03c6336c0b3520bae1dd69d7c4",
+       "40d3bdfa8ff311cce2504d591d0b59b30ea798a2d494dc0bc844b5dac75d1599"
+      ],
+      "changed": {
+       "PropRAG": "ABOVE -> AT",
+       "BridgeRAG": "AT -> BELOW"
+      }
+     },
+     "zsp": {
+      "R@5": 0.9807,
+      "R5_ci": [
+       0.9738,
+       0.9867
+      ],
+      "FC@5": 0.9673,
+      "hit@1": 0.9113,
+      "seeds_R@5": [
+       0.9825,
+       0.9785,
+       0.981
+      ],
+      "seed_spread": 0.004,
+      "seed0_R5_ci": [
+       0.976,
+       0.9885
+      ],
+      "rrf_R@5": 0.8505,
+      "vs_hipporag2": "ABOVE",
+      "seed0_vs_hipporag2": "ABOVE",
+      "vs_published": {
+       "HippoRAG 2": "ABOVE",
+       "PROPEX-RAG": "ABOVE",
+       "CoopRAG": "ABOVE",
+       "PropRAG": "AT",
+       "HGRAG": "ABOVE",
+       "EviReform": "ABOVE",
+       "BridgeRAG": "BELOW",
+       "SAG2": "AT"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "ABOVE",
+       "PROPEX-RAG": "ABOVE",
+       "CoopRAG": "ABOVE",
+       "PropRAG": "ABOVE",
+       "HGRAG": "ABOVE",
+       "EviReform": "ABOVE",
+       "BridgeRAG": "AT",
+       "SAG2": "AT"
+      },
+      "files_sha256": [
+       "c424e14e39beb0cea8109c8b5da2732cf45f301b866f5c2d6b1911d52ebc2efe",
+       "4b110054a9b8449d16716980f1aa0f9243ed948bbc06605faeb82f5297a9eb13",
+       "7e66185825234775201e7aef263b724484ce9692790914a170553c776a23d6c8"
+      ],
+      "changed": {
+       "PropRAG": "ABOVE -> AT",
+       "BridgeRAG": "AT -> BELOW"
+      }
+     }
+    },
+    "b1w": {
+     "zrc": {
+      "R@5": 0.9447,
+      "R5_ci": [
+       0.935,
+       0.954
+      ],
+      "FC@5": 0.894,
+      "hit@1": 0.9047,
+      "seeds_R@5": [
+       0.948,
+       0.9435,
+       0.9425
+      ],
+      "seed_spread": 0.0055,
+      "seed0_R5_ci": [
+       0.938,
+       0.9575
+      ],
+      "rrf_R@5": 0.8505,
+      "vs_hipporag2": "BELOW",
+      "seed0_vs_hipporag2": "BELOW",
+      "vs_published": {
+       "HippoRAG 2": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "BridgeRAG": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "AT",
+       "EviReform": "BELOW",
+       "BridgeRAG": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "136a4571f7d68f80fc9eeb78f769e413fb8b785112d1d3eda646864db4215fcd",
+       "9c9822fb2cf183f889d5ca701714ba4df2e1b42ad6e9d6b58c053143b79100fe",
+       "c0e51e25211d3c70684c9a01fa684028363337a9360be002a595690202be216f"
+      ],
+      "changed": {
+       "HGRAG": "AT -> BELOW"
+      }
+     },
+     "zsp": {
+      "R@5": 0.9443,
+      "R5_ci": [
+       0.9345,
+       0.954
+      ],
+      "FC@5": 0.8943,
+      "hit@1": 0.899,
+      "seeds_R@5": [
+       0.9435,
+       0.943,
+       0.9465
+      ],
+      "seed_spread": 0.0035,
+      "seed0_R5_ci": [
+       0.9335,
+       0.9535
+      ],
+      "rrf_R@5": 0.8505,
+      "vs_hipporag2": "BELOW",
+      "seed0_vs_hipporag2": "BELOW",
+      "vs_published": {
+       "HippoRAG 2": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "BridgeRAG": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "BridgeRAG": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "fc50d8021de198e2c805e9f5733dc695ef5ca3c490bdde2f7c4ee6bc02c9e976",
+       "41ccec799d2896015c86118797d8480ddf1401306632377438f1adb121e270d3",
+       "644167457038eb872c01bfab66e1468b2cfa32a73fc23d82743aa33dee136436"
+      ],
+      "changed": {}
+     }
+    },
+    "b1t": {
+     "zrc": {
+      "R@5": 0.8862,
+      "R5_ci": [
+       0.874,
+       0.899
+      ],
+      "FC@5": 0.778,
+      "hit@1": 0.9067,
+      "seeds_R@5": [
+       0.887,
+       0.8845,
+       0.887
+      ],
+      "seed_spread": 0.0025,
+      "seed0_R5_ci": [
+       0.8745,
+       0.9005
+      ],
+      "rrf_R@5": 0.8505,
+      "vs_hipporag2": "BELOW",
+      "seed0_vs_hipporag2": "BELOW",
+      "vs_published": {
+       "HippoRAG 2": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "BridgeRAG": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "BridgeRAG": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "064eb7410fd3ad8e63d56b944a280209c0056530efbb39652926fcb53c3efd59",
+       "7fa9960dc9877c3908c9c93587bdde3ba7bc2e495267ba8adeeaf7fb9b8c1023",
+       "f927e107395e2ca1aa761100b96d123cccc1a297fbd8aab9f91be072a82a68d5"
+      ],
+      "changed": {}
+     },
+     "zsp": {
+      "R@5": 0.8983,
+      "R5_ci": [
+       0.8865,
+       0.9107
+      ],
+      "FC@5": 0.8027,
+      "hit@1": 0.9027,
+      "seeds_R@5": [
+       0.9,
+       0.8955,
+       0.8995
+      ],
+      "seed_spread": 0.0045,
+      "seed0_R5_ci": [
+       0.888,
+       0.9125
+      ],
+      "rrf_R@5": 0.8505,
+      "vs_hipporag2": "BELOW",
+      "seed0_vs_hipporag2": "BELOW",
+      "vs_published": {
+       "HippoRAG 2": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "BridgeRAG": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "BELOW",
+       "EviReform": "BELOW",
+       "BridgeRAG": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "e333b293ff51565007a7579fff68c8619c76b078c641920149b72515ad82518d",
+       "dfba2475250ae9f4bb0ca1b28e0a6a1fa1400dac1ac7f51a298fe9c3429bf36e",
+       "6d4d56c886608e7912d683b75ec236ec7206f5c62ca78d9a4279c253a4ea7f70"
+      ],
+      "changed": {}
+     }
+    },
+    "b1u": {
+     "zrc": {
+      "R@5": 0.9462,
+      "R5_ci": [
+       0.9363,
+       0.956
+      ],
+      "FC@5": 0.898,
+      "hit@1": 0.905,
+      "seeds_R@5": [
+       0.948,
+       0.945,
+       0.9455
+      ],
+      "seed_spread": 0.003,
+      "seed0_R5_ci": [
+       0.938,
+       0.958
+      ],
+      "rrf_R@5": 0.8505,
+      "vs_hipporag2": "BELOW",
+      "seed0_vs_hipporag2": "BELOW",
+      "vs_published": {
+       "HippoRAG 2": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "AT",
+       "EviReform": "BELOW",
+       "BridgeRAG": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "AT",
+       "EviReform": "BELOW",
+       "BridgeRAG": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "6ecad7906c9797c050734a297ff3a842f2756d8207977c3c727de750a1d16013",
+       "1a7ccc630269bd37aa5a79cc48cab428d2e696727cea25dc88a412ec2dfea1bf",
+       "34038607b6010e3e510599d597264863b7d69bab3e0447140ab68adce0c31316"
+      ],
+      "changed": {}
+     },
+     "zsp": {
+      "R@5": 0.9482,
+      "R5_ci": [
+       0.9387,
+       0.9575
+      ],
+      "FC@5": 0.9023,
+      "hit@1": 0.894,
+      "seeds_R@5": [
+       0.9495,
+       0.9465,
+       0.9485
+      ],
+      "seed_spread": 0.003,
+      "seed0_R5_ci": [
+       0.94,
+       0.9595
+      ],
+      "rrf_R@5": 0.8505,
+      "vs_hipporag2": "BELOW",
+      "seed0_vs_hipporag2": "BELOW",
+      "vs_published": {
+       "HippoRAG 2": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "AT",
+       "EviReform": "BELOW",
+       "BridgeRAG": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "seed0_vs_published": {
+       "HippoRAG 2": "BELOW",
+       "PROPEX-RAG": "BELOW",
+       "CoopRAG": "BELOW",
+       "PropRAG": "BELOW",
+       "HGRAG": "AT",
+       "EviReform": "BELOW",
+       "BridgeRAG": "BELOW",
+       "SAG2": "BELOW"
+      },
+      "files_sha256": [
+       "4564ec3709fe0f886a43dc7fb48516da7efe00b68c97b2adf64042399bd271d1",
+       "19b273715cabae634e3f52309acad9c6e01c3a634dfb32b732a50e065ae076ed",
+       "5e0e3c7ff8cda02f59400767f3f6a18b76c684cbd84a2ed9a85fa9a9bbe96b7e"
+      ],
+      "changed": {}
+     }
+    }
+   },
+   "paired": {
+    "b1-b1t zrc": {
+     "R@5": 0.0938,
+     "ci": [
+      0.0818,
+      0.1052
+     ]
+    },
+    "b1-b1t zsp": {
+     "R@5": 0.0823,
+     "ci": [
+      0.0707,
+      0.0933
+     ]
+    },
+    "b1w-b1t zrc": {
+     "R@5": 0.0585,
+     "ci": [
+      0.0483,
+      0.0687
+     ]
+    },
+    "b1w-b1t zsp": {
+     "R@5": 0.046,
+     "ci": [
+      0.0363,
+      0.0552
+     ]
+    },
+    "b1u-b1t zrc": {
+     "R@5": 0.06,
+     "ci": [
+      0.0498,
+      0.0703
+     ]
+    },
+    "b1u-b1t zsp": {
+     "R@5": 0.0498,
+     "ci": [
+      0.0402,
+      0.0593
+     ]
+    },
+    "b1-b1w zrc": {
+     "R@5": 0.0353,
+     "ci": [
+      0.0272,
+      0.0433
+     ]
+    },
+    "b1-b1w zsp": {
+     "R@5": 0.0363,
+     "ci": [
+      0.0287,
+      0.0443
+     ]
+    },
+    "b1w-b1u zrc": {
+     "R@5": -0.0015,
+     "ci": [
+      -0.0057,
+      0.0028
+     ]
+    },
+    "b1w-b1u zsp": {
+     "R@5": -0.0038,
+     "ci": [
+      -0.0082,
+      0.0002
+     ]
+    }
+   },
+   "share_of_hyperlink_gain": {
+    "zrc": {
+     "b1u": 0.639,
+     "b1w": 0.623
+    },
+    "zsp": {
+     "b1u": 0.605,
+     "b1w": 0.559
+    }
+   },
+   "arms_paired": {
+    "b1": {
+     "R@5": 0.0007,
+     "ci": [
+      -0.0022,
+      0.0035
+     ]
+    },
+    "b1w": {
+     "R@5": -0.0003,
+     "ci": [
+      -0.0037,
+      0.0028
+     ]
+    },
+    "b1t": {
+     "R@5": 0.0122,
+     "ci": [
+      0.0073,
+      0.0175
+     ]
+    },
+    "b1u": {
+     "R@5": 0.002,
+     "ci": [
+      -0.0013,
+      0.0052
+     ]
+    }
+   },
+   "mlp_share_of_prop_gain_b1": 0.995,
+   "best_published": {
+    "any": {
+     "R@5": 98.75,
+     "row": "BridgeRAG"
+    },
+    "peer_reviewed": {
+     "R@5": 97.4,
+     "row": "PropRAG"
+    }
+   }
+  }
+ },
+ "missing": [],
+ "script_sha256": "ebafa0e96cebc41f51a98bf4c4d5b3ef05836264a460e6008f7c1ed676709efc",
+ "utc": "2026-11-11T20:42:02Z"
+}
