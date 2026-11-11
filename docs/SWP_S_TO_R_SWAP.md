@@ -335,6 +335,46 @@ this section records the filed report; section 6 applies to every Part E sentenc
   links feed through the other parts (chain match, KT, the other blocks and, for GNX, message passing) still does. (a) and (b) read the N-trained fits with the
   slot empty, where the two blocks are constant anyway.
 
+### 5g. Part C filed (11 Nov 06:33 IST; `outputs/swpc/report.{md,json}`, 79faec1): from either training family, R is level with S on 2Wiki and in-domain MuSiQue, below S on HotpotQA and far below S on the KBs
+
+All of Part C's reads and `swpc8-collect-r2` ended rc 0 on the host (collect 11 Nov 05:44 IST). The 72 S-trained reads were fetched from `outputs/swpc/fits` (`rx fetch --glob`)
+and read beside the 72 reads of the fits of record (Parts A and B, B1H, B1M) by `zswpcr.py report` on the laptop: missing 0, 2,000 resamples, each the mean of its own
+question draw (not `zabl.compare`; see section 4's amendment of 9 Nov). R@5 in points, seed 0, one fit per model and split, calls by the 95% interval over the questions.
+"S-trained" = S in the slot of every training carve (SNKF). "R-trained" = the fits of record: R in the slot of the passage datasets' training carves (U2c); WebQSP's
+training carve holds S in both families, so on WebQSP the two families differ only in the other carves. The swap read with each family's in-domain fits (MetaQA: held out):
+
+| dataset | model | S-trained: S / R / none | R - S | R-trained: S / R / none | R - S |
+|---|---|---|---|---|---|
+| MuSiQue | GNX | 69.3 / 69.0 / 66.3 | -0.3 (-1.1, +0.4) level | 69.3 / 69.5 / 66.8 | +0.2 (-0.5, +0.8) level |
+| MuSiQue | zrckpn | 67.3 / 67.6 / 63.9 | +0.4 (-0.3, +1.1) level | 67.4 / 67.8 / 64.6 | +0.4 (-0.4, +1.1) level |
+| 2Wiki | GNX | 95.7 / 95.2 / 77.9 | -0.4 (-1.1, +0.3) level | 95.3 / 95.0 / 77.5 | -0.3 (-1.0, +0.4) level |
+| 2Wiki | zrckpn | 94.7 / 94.3 / 77.1 | -0.4 (-1.1, +0.3) level | 94.4 / 94.2 / 77.4 | -0.2 (-0.9, +0.5) level |
+| HotpotQA | GNX | 96.9 / 94.0 / 89.8 | -2.9 (-3.7, -2.1) R below S | 96.9 / 94.2 / 91.1 | -2.6 (-3.5, -1.9) R below S |
+| HotpotQA | zrckpn | 96.3 / 93.5 / 90.0 | -2.9 (-3.7, -2.1) R below S | 95.7 / 93.5 / 90.3 | -2.2 (-2.9, -1.5) R below S |
+| SQuAD | GNX | 91.1 / 91.1 / 91.2 | -0.0 (-0.2, +0.1) level | 91.0 / 91.5 / 91.0 | +0.5 (+0.3, +0.7) R above S |
+| SQuAD | zrckpn | 91.2 / 91.1 / 91.3 | -0.1 (-0.2, +0.1) level | 91.1 / 91.3 / 91.3 | +0.3 (+0.1, +0.4) R above S |
+| MetaQA (held out) | GNX | 35.6 / 2.3 / 0.5 | -33.3 (-34.1, -32.5) R below S | 37.5 / 9.7 / 0.6 | -27.8 (-28.5, -27.1) R below S |
+| MetaQA (held out) | zrckpn | 38.0 / 1.1 / 0.7 | -36.8 (-37.7, -36.1) R below S | 39.0 / 1.3 / 0.7 | -37.7 (-38.5, -36.9) R below S |
+| WebQSP | GNX | 66.6 / 11.4 / 8.3 | -55.2 (-57.3, -53.0) R below S | 66.4 / 10.6 / 7.8 | -55.7 (-57.8, -53.5) R below S |
+| WebQSP | zrckpn | 64.9 / 10.4 / 7.8 | -54.4 (-56.6, -52.1) R below S | 64.6 / 10.6 / 8.2 | -54.0 (-56.2, -51.7) R below S |
+
+**Reading it.**
+- The swap, from either training family. Every in-domain R - S call has the same direction in both families except SQuAD (level when S-trained; R above S by 0.3-0.5
+  when R-trained, rule against rule). So the R-trained fits of Parts A and B are not what made R level with S on 2Wiki and in-domain MuSiQue: fits trained with S in
+  the slot, read with R, are level with S there too (-0.4 to +0.4). On HotpotQA R stays below S whichever family trained the fits (in-domain -2.9 / -2.9 S-trained,
+  -2.6 / -2.2 R-trained; held out -2.1 / -2.1 and -1.8 / -1.2). On the KBs R does not stand in for S from either family (R@5 1.1 to 11.4 against 35.6 to 66.6).
+  MuSiQue held out: R above S by +1.9 for S-trained zrckpn and for R-trained GNX, level for the other two.
+- The training family at a fixed read slot (the report's second table, S-trained minus R-trained) is level in 32 of its 48 cells. The cells 1 point or more away from 0:
+  MuSiQue held out (GNX read with R -1.3; zrckpn read with R +2.0, with nothing +2.2), HotpotQA in-domain GNX read with nothing -1.3, MetaQA read with S
+  (GNX -1.8, zrckpn -1.0) and MetaQA GNX read with R (-7.4).
+- Message passing on the same inputs (GNX - zrckpn, the report's third table): in-domain GNX is above zrckpn in all 6 MuSiQue cells (both families, every slot,
+  +1.4 to +2.4) and in 5 of 6 on 2Wiki (+0.8 to +1.0; the R-trained empty slot is level), above in 3 of 6 on HotpotQA and on WebQSP (level in the rest), level in 5 of 6
+  on SQuAD (R-trained empty slot -0.3); held out it is mostly level (MuSiQue 4 of 6, HotpotQA 5 of 6), and on MetaQA GNX is below zrckpn with S or nothing in the
+  slot and above it with R. The change of the gap between slots (R vs S, S vs none, R vs none) is level in 33 of the 48 cells of `report.json`.
+- Not shown: a seed spread (seed 0, one fit per model and split; the intervals are over questions). On MuSiQue and SQuAD S is itself a title-mention rule, so the
+  swap there is rule against rule. The S-trained pair is not read on Part D's carves (b1c, b1d, b1e). The report's reference block (B1L's LLM edges, b1o, zrckpn
+  R-trained only) is unchanged and says nothing about which graph is better.
+
 ## 6. What the paper's wording must carry (for the paper session; this stage edits nothing under paper/)
 
 - Name the direction of every swap (trained on which family, read with which).
