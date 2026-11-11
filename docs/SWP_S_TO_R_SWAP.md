@@ -319,7 +319,7 @@ C's collect alone. Part E's lists, columns and reads of the cell wait on that ga
 refuses outside the N-world or in the wrong mode; no row names a directory as an input (the 8 Nov feeder crash). No Part E number goes into the paper before
 this section records the filed report; section 6 applies to every Part E sentence.
 
-**Amendment A2 (11 Nov 06:25 IST, before any Part E number): the start encoder of the slot-empty build.**
+**Amendment A2 (11 Nov 06:19 IST, before any Part E number): the start encoder of the slot-empty build.**
 - What failed: both zg6r fits stopped at their start on 11 Nov 05:44-05:56. Each ran twice and ended rc 1 in 3 s; nothing trained. The feeder dropped the 89 rows
   behind them: both GNX fits, the flip, the seven forks, the 72 reads, the SNK/squad and RK/metaqa lists and columns, and swpe-collect.
 - Why: `zml1s.load_encoder` takes ML1's zspk start only when its encoder holds `zg6rw.ENC_ELEMENTS` = 224,737 numbers, the base build's block encoder at

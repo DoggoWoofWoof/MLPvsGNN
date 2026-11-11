@@ -68,9 +68,12 @@ def install():
 
 
 def check():
-    """Read only, in the N-world in train mode: both splits' zspk starts through the slot-empty load, in zml1s's train contexts."""
+    """Read only, in the N-world in train mode: both splits' zspk starts through the slot-empty load, in zml1s's train contexts. The arm is
+    imported first, outside them, as zml1s.run_arm and zgnx.import_g do: zg6rw's import builds zwqk's roots from zwq's own, and zwqk refuses
+    ML1's patched roots."""
     E.in_world()
     M1, _MS = install()
+    M1.import_arm("zg6r")
     for split in T.SPLITS:
         with M1.on_ml1(), M1.WQ.on_wq():
             enc, info = M1.load_encoder(split)
