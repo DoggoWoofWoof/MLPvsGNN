@@ -247,3 +247,11 @@ Nothing here decides a model, a pool or a column of record.
 setting) run on the host, and the report is filed as section 12. 2Wiki has no carve and no Part B.
 
 Files: `outputs/ap3/ladder.json` and `ladder.md` (committed); `outputs/ap3/<setting>/k1.npz` (not committed, rebuildable; sha256 8a3a6eef, a3d1cec4, 0beb2902 for 2Wiki, HotpotQA, MuSiQue).
+
+**Part B set up (12 November, 03:45 to 03:54 IST), before any read.** `zap3.py bench --dataset D` built the two carve folders (`outputs/b1y/bench/hipporag2_y/hotpotqa/` at cap 3: R's 4,315 pairs plus 357 =
+4,672 pairs, 9,344 directed edges; `.../musique/` at cap 25: 41,429 plus 1,864 = 43,293 pairs, 86,586 directed edges), 1 s per setting, with gates G1, G2, G3, G3b, G4 and G2b held (each a hard stop); the
+structural file and `build.json` are the only files that differ from b1n's. 38 `ap3y-` rows were queued behind AP2's (the self-test, the fork, and per setting the settings record, the chain, PKO's gate, the lists check, two
+column sets and 12 reads); the chains reserve AP2's measured peaks on b1n (hotpotqa 4.76 GB, musique 6.56 GB, from the host's job records) plus about 15%: 5.5 and 7.5 GB. The queue (sha256 30fd07e0) and `zap3.py`
+(91f81139) are equal on the host. A fixture run of `zap3.py report` on the laptop (b1y's reads copies of b1n's real reads, stub settings records, the fixture folders removed afterwards) passed before any read: rc 0, no read
+missing, every b1y - b1n difference exactly 0 (SAME, verdict NO_GAIN by construction), 64 rows recomputed from B1P's and B1M's reads equal to B1M's; nothing in it is a result. The report's b1n level column reads "--"
+(b1n's levels are AP2's, section 9 of its document); the difference columns decide.
