@@ -130,3 +130,64 @@ longer quoted as holding. This stage decides nothing about models: it adopts or 
   2. Rebuild the missing arrays with each record's settings (blas_threads 2).
   3. Check every rebuilt array's sha256 against the copied record, and refuse on any mismatch.
   4. Release the hold.
+
+## 10. Amendment A1, 11 Nov 23:35 (declared before any look, cache or fit runs): restoring the removed looks and caches
+
+Systems only. No fit, read, control, report or record rule of sections 2-6 changes, and this section holds no result.
+
+- **What section 9 missed.** The cache arrays are built from the look chunks
+  (`outputs/mp_unified/look/<dataset>/<carve>/chunks/`), and the auto-cleanup removed those chunks as well, again keeping
+  every record. Eight looks lost chunks, about 1,200 in all: the fit carves of metaqa, squad, musique (s1fit), hotpotqa
+  and 2wiki, and MuSiQue's b1, b1t and b1u. Rebuilding the arrays alone cannot work. The other carves J5S loads (b1w,
+  and the b1, b1t and b1u of 2wiki and hotpotqa) still hold their chunks.
+- **Rule.** Each file is rebuilt by its own committed script with its original command and settings, and goes back only
+  where its sha256 is the one a record lists. A file that exists is never touched. Section 9's four steps hold: step 1 is
+  `backup`, step 2 the rows below, step 3 the look-checks and installs, step 4 the verify gate.
+- **Script.** `outputs/mp_unified/j5s_restore.py`, committed with this section; its self-test passes on toy trees and it
+  has read no record. It imports the helpers of N2's restore (`scripts/p1c2_cache_restore.py`, not edited).
+  1. `backup`: before anything runs, a copy of every look json that a look rewrites (record*.json, b1*.json, ids.json,
+     info.json of the eight looks) and of every part's record.json in the four caches, for the carves J5S loads, in
+     `outputs/j5s/restore/backup/`, with their sha256s in backup.json. A backup that exists must hold the same bytes.
+  2. The eight looks run again with their original commands, in place (24 shards: musique s1fit 6, metaqa 6, and 2 each
+     for the others). A look skips every chunk that exists and writes the missing ones, and rewrites its shard's records.
+  3. `look-check`, once a carve's shards are done: each rewritten json against its backup. ids.json and info.json byte
+     for byte; each record on every key, at any depth, except seconds, utc, peak_rss_bytes and placement. A code sha that
+     differs (a look script, the copied look_score_kb, B1a's script, u1a's script) is reported, not refused. Every chunk
+     the records list must be on disk. If all of that holds, the backup's bytes go back over the rewritten files, so
+     every cache record that names a look record's sha256 holds as filed. Anything else refuses (exit 2) and nothing is
+     put back.
+  4. `cache`: step 1's arrays by `lean_cache.py` (two BLAS threads, as the records), each part with its own split, bases
+     and the default look root, into `outputs/j5s/rebuild/step1`; a carve's parts run side by side, one row each, and the
+     carve's own row builds any part still missing and gives the carve's verdict. `chains`: rmatch and zrc (metaqa/fit)
+     and zlink (eight carves) by the call each CLI makes for `build --host`, with only out_root changed to the rebuild
+     root, after the carve's look is checked and its step-1 cache is whole (zrc also waits for rmatch).
+  5. `install`: for each part, the rebuilt record must equal the original on every key except seconds, utc, placement,
+     peak_rss_bytes, row_gather_s and the arrays' sha256s; a code sha that differs is reported, not refused. Each missing
+     array goes back, as a hard link or else a copy renamed into place, where the rebuilt file's sha256 is the one the
+     record lists. Then the carve is hashed against its records.
+  6. `verify`: every array of every carve J5S loads, hashed against its record; step 1's two bases; the eight
+     look-checks. WHOLE or NOT_WHOLE; exit 1 unless WHOLE.
+- **What is checked, and what is not.** The look records list no chunk sha256s, so a rebuilt chunk is checked only through
+  the arrays built from it, each against its record. An array that does not reproduce is never installed. It stops its
+  carve, `verify` stays NOT_WHOLE, and no J5S row runs. A changed code sha is not a reason to refuse by itself; the
+  arrays decide.
+- **Rows.** 72, named `j5r-*`: `j5r-backup`; `j5r-look-<carve>-<i>` (24); `j5r-lookchk-<carve>` (8);
+  `j5r-cache-<carve>`, with `-p<i>` rows for metaqa/fit (8 parts) and musique/s1fit (6) (28); `j5r-rm-metaqa_fit`,
+  `j5r-zrc-metaqa_fit`; `j5r-zl-<carve>` (8); `j5r-verify`. Resources: looks 1.4 CPUs as their original rows, memory
+  from the records' peaks plus about 0.5 GB (6.7-8.6 GB); caches 1.5 CPUs and 1.4-4.8 GB; chains 1 CPU and 2-4 GB as
+  their original rows. Commands, inputs and resources are in the script (`python outputs/mp_unified/j5s_restore.py rows`).
+- **J5S rows.** The 37 held rows are queued again under new names, `j5s2-*` (the feeder never sends a name twice). Each
+  command, input, resource and order is the declared row's; the only changes are the name and the hold: `j5r-verify` in
+  place of `hold-j5s-caches`. The five rows that ran (`j5s-selftest`, the two seed-0 forks and the two b1w reads) keep
+  their names, and the rows that depend on them keep those names.
+- **Keep row.** `keep-j5s-11nov`, held, names the eight look folders, the step-1 and zlink folders of the 17 carves,
+  `outputs/rmatch/cache/metaqa/fit/`, `outputs/zrc/cache/metaqa/fit/` and `outputs/j5s/`, so that the auto-cleanup cannot
+  remove them again before the J5S rows finish. It is released when J5S is filed.
+- **Disk and time.** About 23 GB of new files by estimate against about 81 GB free at the last check (floor 30 GB); the
+  free disk is read on the host again before release. The longest look shard in the records is 3,938 s (musique s1fit),
+  a step-1 part takes about 8 minutes, zlink about 3. With the J5S fits (72-82 min) and reads after them, about 4 hours.
+- **Files.** `outputs/j5s/restore/` (backup/, backup.json, `look_<carve>.json`, `install_<kind>_<carve>[_p<i>].json`,
+  verify.json) and `outputs/j5s/rebuild/` (the side roots).
+- **Record.** If every step passes, J5S runs as declared in sections 2-6 and its report is filed as sections 5 and 6
+  say. If any step refuses, the stage stops there and the refusal is filed in a section 11; no three-seed number is
+  quoted from a partly restored tree.
