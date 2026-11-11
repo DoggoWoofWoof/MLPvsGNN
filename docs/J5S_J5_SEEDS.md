@@ -97,3 +97,36 @@ longer quoted as holding. This stage decides nothing about models: it adopts or 
 - `outputs/j5s/report.json` and `report.md`.
 - Feeder rows `j5s-*`. A `j5s-selftest` row gates the block; it checks the real queue's template rows, the filed reads
   and the filed fits' sha256.
+
+## 9. Outcome, 11 Nov: stopped at seed 0's b1w reads
+
+- **What ran.** The 42 rows were queued at 20:51. The self-test passed on the host, and both seed-0 forks copied the
+  filed fits with their filed sha256. The seed-0 reads on b1w ran for both arms.
+- **C2 on b1w.** All six seed-0 re-reads equal the filed B1F reads: the same 11 arrays each, with the same dtype, shape
+  and values (`outputs/j5s/c2_b1w.json`). The file sha256s differ only through the time stamps inside the zip files.
+- **What stopped.** All six fits (seeds 1 and 2, and both controls) stopped after 3-7 s with FileNotFoundError on
+  `outputs/step1/cache/metaqa/fit/part_0of8/xc.npy`. The seed-0 reads on b1, b1t and b1u stopped the same way after
+  2 s. C1, C3 and the other six C2 comparisons were not reached.
+- **Cause.** The host's auto-cleanup removes cache arrays it can rebuild and keeps each part's record.json. Section 3
+  compared records and read files, not the arrays the records list. A read-only count on the host after the failures
+  found these arrays missing:
+
+  | Used by | Cache | Arrays missing | GB |
+  |---|---|---|---|
+  | fits | step1 | 252 of 289 | 6.19 |
+  | fits | rmatch | 32 of 56 (metaqa/fit) | 0.50 |
+  | fits | zrc | 32 of 56 (metaqa/fit) | 0.50 |
+  | fits | zlink | 51 of 68 | 1.97 |
+  | reads | step1 | 93 of 204 (b1, b1t, b1u; b1w complete) | 1.06 |
+  | reads | zlink | 9 of 48 (MuSiQue b1, b1t, b1u) | 0.38 |
+
+  That is about 10.6 GB in all.
+- **Not rebuilt.** A rebuild would take the host's free disk from 39.3 GB to below its 30 GB floor, and would add
+  hours of builds whose arrays have not yet been checked against the records. The other 37 rows are held behind
+  `hold-j5s-caches`.
+- **Record.** No three-seed number exists. Every J5 row stays quoted from its one seed-0 fit, as before this stage.
+- **To resume.**
+  1. Copy every record.json first.
+  2. Rebuild the missing arrays with each record's settings (blas_threads 2).
+  3. Check every rebuilt array's sha256 against the copied record, and refuse on any mismatch.
+  4. Release the hold.

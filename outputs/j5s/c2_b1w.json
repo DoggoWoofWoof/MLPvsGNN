@@ -1,0 +1,60 @@
+{
+ "what": "C2 on b1w only: J5S seed-0 re-reads (host: outputs/j5s/fits/b1w/<arm>/J5-s0/reads/<ds>__b1w.npz, fetched) against the filed B1F reads (outputs/b1f/fits/w/<arm>/J5/reads/<ds>__b1w.npz): same key set, and per array the same dtype, shape and values (numpy array_equal). File sha256s differ only through the time stamps inside the zip files.",
+ "made": "11 Nov 2026, one-off laptop comparison; docs/J5S_J5_SEEDS.md section 9",
+ "pairs": {
+  "zrc/musique": {
+   "call": "EQUAL",
+   "arrays": 11,
+   "only_reread": [],
+   "only_filed": [],
+   "differing": [],
+   "reread_sha256": "2671c70d329a86680b8f24f241fdb4d039cb203846c70838b09869dda83af6e0",
+   "filed_sha256": "2671c70d329a86680b8f24f241fdb4d039cb203846c70838b09869dda83af6e0"
+  },
+  "zrc/2wiki": {
+   "call": "EQUAL",
+   "arrays": 11,
+   "only_reread": [],
+   "only_filed": [],
+   "differing": [],
+   "reread_sha256": "6b112517bdd0876fa66331257f57c8111d3034d3f2159255c6e2ca3fd95dc659",
+   "filed_sha256": "6b112517bdd0876fa66331257f57c8111d3034d3f2159255c6e2ca3fd95dc659"
+  },
+  "zrc/hotpotqa": {
+   "call": "EQUAL",
+   "arrays": 11,
+   "only_reread": [],
+   "only_filed": [],
+   "differing": [],
+   "reread_sha256": "136a4571f7d68f80fc9eeb78f769e413fb8b785112d1d3eda646864db4215fcd",
+   "filed_sha256": "136a4571f7d68f80fc9eeb78f769e413fb8b785112d1d3eda646864db4215fcd"
+  },
+  "zsp/musique": {
+   "call": "EQUAL",
+   "arrays": 11,
+   "only_reread": [],
+   "only_filed": [],
+   "differing": [],
+   "reread_sha256": "425b4216cdfaebbe7873c476de207e71257d5003bf72ce790136eb77704bc267",
+   "filed_sha256": "425b4216cdfaebbe7873c476de207e71257d5003bf72ce790136eb77704bc267"
+  },
+  "zsp/2wiki": {
+   "call": "EQUAL",
+   "arrays": 11,
+   "only_reread": [],
+   "only_filed": [],
+   "differing": [],
+   "reread_sha256": "48aec7d6b8444c14c2fca900c91fae593ab10b4c5466bd5a9c971caa3d1ca24a",
+   "filed_sha256": "48aec7d6b8444c14c2fca900c91fae593ab10b4c5466bd5a9c971caa3d1ca24a"
+  },
+  "zsp/hotpotqa": {
+   "call": "EQUAL",
+   "arrays": 11,
+   "only_reread": [],
+   "only_filed": [],
+   "differing": [],
+   "reread_sha256": "fc50d8021de198e2c805e9f5733dc695ef5ca3c490bdde2f7c4ee6bc02c9e976",
+   "filed_sha256": "fc50d8021de198e2c805e9f5733dc695ef5ca3c490bdde2f7c4ee6bc02c9e976"
+  }
+ }
+}
