@@ -150,3 +150,32 @@ section 10 from a second run of the same report script on the same reads, so Par
 
 **Files.** `outputs/ap2/report.json`, `report.md` and `calls.json` (written by `zap2.py report`), `boundary_check.py` and `boundary_check.json` (post hoc). The read files stay
 on the host under `outputs/b1n/fits/h/` (36 fetched to the laptop, not committed).
+
+## 10. Part B results (filed 12 November; `outputs/ap2/report.json`, `report.md` and `calls.json`, rewritten by a second run of `zap2.py report`; `zap2.py` as committed in c4dc27c)
+
+**The run.** All 20 Part B rows (b1x on MuSiQue: the chain, PKO's gate, the lists, both column sets and 12 reads, zg6r and zrckpn with the six fits each) finished rc 0
+on the host by 03:09 IST on 12 November; no gate stopped it. The second report run (laptop, 03:26 IST) read the 12 fetched b1x read files with Part A's 36
+(`Missing reads: 0`); its script sha256 equals the committed `zap2.py`'s (`8ecb6d86...`), and b1x's `build.json` on the host equals the laptop's byte for byte
+(`2833b030...`). Part A is unchanged: compared field by field with the first run's `report.json`, only `partB` and the time stamp differ (the verdict is still REPLACE;
+G6 is still the 92 rows equal to B1M's filed rows). Part B is descriptive, with no verdict (D77's default): b1x - b1w, b1x - b1n and b1x - b1t in points with their
+paired 95% intervals and the same words as Part A. It is a read-time shift (section 5).
+
+**MuSiQue, R@5 x100** (b1x = R + F3T + K; F3T holds 231,258 pairs, F0T 98,845 and spaCy's family in b1w 75,002; weight maximum 194.4):
+
+| read | model | b1w | b1n | b1x | b1x - b1w [95%] | b1x - b1n [95%] | b1x - b1t [95%] | words (b1x - b1w, b1x - b1n, b1x - b1t) |
+| --- | --- | ---: | ---: | ---: | --- | --- | --- | --- |
+| in-domain | zg6r | 69.0 (67.2-70.7) | 68.7 (67.0-70.4) | 67.2 (65.5-69.0) | -1.7 [-2.3, -1.1] | -1.5 [-2.0, -1.0] | +1.3 [+0.1, +2.5] | LESS, LESS, UP |
+| in-domain | zrckpn | 67.4 (65.7-69.2) | 67.2 (65.5-68.9) | 66.8 (65.1-68.5) | -0.7 [-1.2, -0.2] | -0.4 [-0.9, +0.0] | +2.3 [+1.1, +3.4] | LESS, SAME, UP |
+| held-out | zg6r | 60.8 (59.1-62.5) | 61.1 (59.4-62.8) | 61.2 (59.5-62.9) | +0.4 [-0.0, +1.0] | +0.1 [-0.3, +0.5] | -0.8 [-2.2, +0.5] | SAME, SAME, FLAT |
+| held-out | zrckpn | 61.8 (60.1-63.6) | 62.2 (60.5-64.0) | 62.9 (61.2-64.6) | +1.0 [+0.6, +1.5] | +0.7 [+0.3, +1.1] | +2.8 [+1.6, +4.1] | GREATER, GREATER, UP |
+
+zg6r - zrckpn at b1x, paired by question: in-domain +0.5 [-0.3, +1.3] (LEVEL; at b1w +1.5 [+0.7, +2.4], GNN_ABOVE) and held-out -1.6 [-2.5, -0.8] (MLP_ABOVE; at b1w
+-1.1 [-1.9, -0.1]).
+
+**What it says.** In-domain the deepest form gives up read-time R@5 on MuSiQue: LESS than b1w for both models (-1.7 and -0.7 points) and LESS than b1n for the GNN (-1.5),
+SAME for the MLP (-0.4, its interval's top end at +0.0); both stay UP against b1t (+1.3 and +2.3). Held-out the MLP is GREATER than b1w and b1n (+1.0 and +0.7) and the GNN
+SAME. This is consistent with AP1b's price screen, which refused the sub-span forms (and with them F3T) and carried F0T. It is one setting, a read-time shift, and a
+descriptive read: it shows nothing about F3T as a training input (only a refit, D78, would), it sets no setting call, and it changes nothing in Part A's verdict, which
+rests on F0T. **D77 is closed by this section:** the second carve was read and F3T is not carried to AP3, whose carves use F0T.
+
+**Files.** The same three report files as section 9 (now with `partB`); the 12 b1x read files stay on the host under `outputs/b1x/fits/h/` (fetched to the laptop, not committed).

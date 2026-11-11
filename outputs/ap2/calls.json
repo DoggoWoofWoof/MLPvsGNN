@@ -75,5 +75,36 @@
    }
   }
  },
- "partB": {}
+ "partB": {
+  "musique": {
+   "in_domain": {
+    "zg6r": {
+     "b1x-b1w": "LESS",
+     "b1x-b1n": "LESS",
+     "b1x-b1t": "UP",
+     "b1w-b1t": "UP"
+    },
+    "zrckpn": {
+     "b1x-b1w": "LESS",
+     "b1x-b1n": "SAME",
+     "b1x-b1t": "UP",
+     "b1w-b1t": "UP"
+    }
+   },
+   "zero_shot": {
+    "zg6r": {
+     "b1x-b1w": "SAME",
+     "b1x-b1n": "SAME",
+     "b1x-b1t": "FLAT",
+     "b1w-b1t": "FLAT"
+    },
+    "zrckpn": {
+     "b1x-b1w": "GREATER",
+     "b1x-b1n": "GREATER",
+     "b1x-b1t": "UP",
+     "b1w-b1t": "UP"
+    }
+   }
+  }
+ }
 }

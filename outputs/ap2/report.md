@@ -61,4 +61,11 @@ R@5 x100 on HippoRAG 2's settings (1,000 questions each), no new fit. The models
 | hotpotqa | F0T | 86518 | 68698 | 7.6775 |
 | musique | F0T | 98845 | 75002 | 12.1533 |
 
+## Part B: b1x (R + F3T + K), MuSiQue, descriptive, no verdict
+
+| model | b1w | b1n | b1x | b1x - b1w | b1x - b1n | word (b1x - b1w) | word (b1x - b1n) |
+|---|---:|---:|---:|---|---|---|---|
+| zg6r | 69.0 (67.2-70.7) | 68.7 (67.0-70.4) | 67.2 (65.5-69.0) | -1.7 (-2.3, -1.1) | -1.5 (-2.0, -1.0) | LESS | LESS |
+| zrckpn | 67.4 (65.7-69.2) | 67.2 (65.5-68.9) | 66.8 (65.1-68.5) | -0.7 (-1.2, -0.2) | -0.4 (-0.9, +0.0) | LESS | SAME |
+
 Missing reads: 0.
