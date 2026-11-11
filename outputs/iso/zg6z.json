@@ -1,0 +1,133 @@
+{
+ "stage": "ISO",
+ "declared_in": "docs/ISO_ZG6R_OWN_START.md",
+ "amendment": "A1 (section 10)",
+ "arm": "zg6-z: zg6 (zg6r with no typed link: G6r's parameters built and unused)",
+ "decides": "nothing (ISO section 7)",
+ "complete": true,
+ "rows": [
+  {
+   "split": "WQ-musique",
+   "dataset": "metaqa",
+   "zg6z": 0.4013,
+   "zg6r": 0.3615,
+   "zspk": 0.356,
+   "delta": 0.0398,
+   "floor": 0.0292,
+   "kept": 8.236
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "squad",
+   "zg6z": 0.913,
+   "zg6r": 0.9142,
+   "zspk": 0.9138,
+   "delta": -0.0012,
+   "floor": 0.0075,
+   "kept": null
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "musique",
+   "zg6z": 0.5075,
+   "zg6r": 0.5086,
+   "zspk": 0.4879,
+   "delta": -0.0011,
+   "floor": 0.0095,
+   "kept": 0.947
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "hotpotqa",
+   "zg6z": 0.8583,
+   "zg6r": 0.8593,
+   "zspk": 0.8444,
+   "delta": -0.001,
+   "floor": 0.0075,
+   "kept": 0.933
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "2wiki",
+   "zg6z": 0.926,
+   "zg6r": 0.9269,
+   "zspk": 0.9131,
+   "delta": -0.0009,
+   "floor": 0.0086,
+   "kept": 0.935
+  },
+  {
+   "split": "WQ-musique",
+   "dataset": "webqsp",
+   "zg6z": 0.6411,
+   "zg6r": 0.6632,
+   "zspk": 0.6403,
+   "delta": -0.0221,
+   "floor": 0.0085,
+   "kept": 0.035
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "metaqa",
+   "zg6z": 0.387,
+   "zg6r": 0.3519,
+   "zspk": 0.3172,
+   "delta": 0.0351,
+   "floor": 0.0574,
+   "kept": 2.012
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "squad",
+   "zg6z": 0.9131,
+   "zg6r": 0.9139,
+   "zspk": 0.9131,
+   "delta": -0.0008,
+   "floor": 0.0075,
+   "kept": null
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "musique",
+   "zg6z": 0.5937,
+   "zg6r": 0.5912,
+   "zspk": 0.583,
+   "delta": 0.0025,
+   "floor": 0.0114,
+   "kept": 1.305
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "hotpotqa",
+   "zg6z": 0.8024,
+   "zg6r": 0.8004,
+   "zspk": 0.8106,
+   "delta": 0.002,
+   "floor": 0.0247,
+   "kept": null
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "2wiki",
+   "zg6z": 0.9307,
+   "zg6r": 0.9296,
+   "zspk": 0.9131,
+   "delta": 0.0011,
+   "floor": 0.0075,
+   "kept": 1.067
+  },
+  {
+   "split": "WQ-hotpotqa",
+   "dataset": "webqsp",
+   "zg6z": 0.6541,
+   "zg6r": 0.6658,
+   "zspk": 0.6397,
+   "delta": -0.0117,
+   "floor": 0.0281,
+   "kept": 0.552
+  }
+ ],
+ "problems": [],
+ "zisoz_sha256": "530d6cbb60b6e1a16220b5109991709b5dc380ec1c93be7cedbe9bccb577f89a",
+ "utc": "2026-11-11T14:37:58Z"
+}

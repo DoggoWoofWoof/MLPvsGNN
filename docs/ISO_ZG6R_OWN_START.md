@@ -305,3 +305,41 @@ stack's fits points the item after the stack's last fit. `iso-zg6z-s0`, the musi
 where it shares the card with another seed-0 fit.
 
 **What does not change.** Sections 1 to 13: ISO's fits, its verdict, zg6-z's wiring, its report and what follows.
+
+## 15. Results of zg6-z, 11 November 2026: reported beside, deciding nothing
+
+**The record.** `iso-zg6z-report` made `outputs/iso/zg6z.json` and `.md` on the host at 20:07 IST on 11 November (zisoz.py sha256 530d6cbb...), after `iso-zg6z-compare`. The files here are the host's, byte for byte. The report is complete: no problems under section 10's checks.
+
+- **The fits.** `scr-iso-zg6z-s0` (WQ-musique) ran on 3 November from 06:17 IST, for 84 min.
+  - `scr-iso-zg6z-s0-hp` (WQ-hotpotqa) waited on `hold-isoz-hp-after-stack` (A4). STK's gate found IRA alone, so no stack fits were queued and no amendment ever pointed the item after them.
+  - On 11 November at 11:16 IST the card was idle, so the hold was dropped under the standing rule that the card is not left idle. The fit went behind ISB's last fit and ran from 17:22 to 20:06 IST.
+- **Its memory.** The hotpotqa-split fit's first run ran out of GPU memory at about 18:17 IST, four minutes into epoch 4, under cuda_alloc's cap of 0.72. It asked for 0.724 of the card.
+  - `retry_cmd` restarted it from epoch 0 under 0.77, as it is built to. The second run repeated the first's loss and step count at epochs 0 to 3, to four decimals, so the restart changed no result.
+  - Its peak was 18.00 GiB reserved, 0.750 of the card.
+
+| split | read | zspk s0 | zg6r s0 | zg6-z s0 | zg6-z - zg6r | zg6r's seed floor |
+|---|---|---:|---:|---:|---:|---:|
+| WQ-musique | metaqa | 0.3560 | 0.3615 | 0.4013 | +0.0398 | 0.0292 |
+| WQ-musique | squad | 0.9138 | 0.9142 | 0.9130 | -0.0012 | 0.0075 |
+| WQ-musique | musique | 0.4879 | 0.5086 | 0.5075 | -0.0011 | 0.0095 |
+| WQ-musique | hotpotqa | 0.8444 | 0.8593 | 0.8583 | -0.0010 | 0.0075 |
+| WQ-musique | 2wiki | 0.9131 | 0.9269 | 0.9260 | -0.0009 | 0.0086 |
+| WQ-musique | webqsp | 0.6403 | 0.6632 | 0.6411 | -0.0221 | 0.0085 |
+| WQ-hotpotqa | metaqa | 0.3172 | 0.3519 | 0.3870 | +0.0351 | 0.0574 |
+| WQ-hotpotqa | squad | 0.9131 | 0.9139 | 0.9131 | -0.0008 | 0.0075 |
+| WQ-hotpotqa | musique | 0.5830 | 0.5912 | 0.5937 | +0.0025 | 0.0114 |
+| WQ-hotpotqa | hotpotqa | 0.8106 | 0.8004 | 0.8024 | +0.0020 | 0.0247 |
+| WQ-hotpotqa | 2wiki | 0.9131 | 0.9296 | 0.9307 | +0.0011 | 0.0075 |
+| WQ-hotpotqa | webqsp | 0.6397 | 0.6658 | 0.6541 | -0.0117 | 0.0281 |
+
+The kept column (section 10) is in `zg6z.md`.
+
+**What it shows, at seed 0.** This is beside and decides nothing. The floors are zg6r's seed floors, for scale.
+
+- Typed links exist only on the KB carves, webqsp and metaqa. On 2wiki, hotpotqa, musique and squad, zg6-z and zg6r run the same forward pass. Their reads there differ only through the weights, which zg6-z trained without webqsp's typed links.
+- **webqsp, which both splits train on.** Under WQ-musique, zg6-z is 0.0221 below zg6r, about 2.6 times zg6r's seed floor (0.0085). Almost none of zg6r's gain over zspk remains there without the relation messages: zg6-z reads 0.6411, against 0.6632 for zg6r and 0.6403 for zspk. Under WQ-hotpotqa zg6-z is 0.0117 below, inside the floor of 0.0281.
+- **metaqa, zero-shot.** zg6-z is above zg6r under both splits: +0.0398 (floor 0.0292) and +0.0351 (floor 0.0574).
+- **The passage datasets and squad.** Every delta lies between -0.0012 and +0.0025, inside the floors. On the in-domain reads of 2wiki, hotpotqa and musique, zg6-z sits level with zg6r.
+- **Section 7's question** was how much of zg6r's gain comes from the relation messages. At seed 0 the answer is nearly all of it on webqsp under WQ-musique, and none of it on the passage datasets. On zero-shot metaqa, the model without them reads higher. These rest on one seed, so they are sizes, not calls.
+
+**What follows.** Nothing: zg6-z decides nothing (section 7). ISO's verdict stands (section 11: KEEP). Nothing reaches the frozen results. A verdict closes only the form it tested.
