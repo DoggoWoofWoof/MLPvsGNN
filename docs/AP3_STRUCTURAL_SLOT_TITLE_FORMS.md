@@ -337,7 +337,8 @@ Missing reads: 0.
 - **HotpotQA (cap 3) is GREATER on both models, in-domain and held-out.** In-domain zg6r goes from 94.3 to 95.1 (+0.8 [+0.4, +1.2]) and zrckpn from 93.5 to 94.2 (+0.8 [+0.4, +1.1]); held-out +0.6 [+0.3, +1.0]
   and +0.7 [+0.3, +1.0]. Against b1w (R with spaCy's N) the in-domain differences are +0.8 [+0.3, +1.3] and +0.8 [+0.4, +1.2], both GREATER. Part A counted the carve's reach over b1n's union at 79 new pairs and
   3 gold-pair slots (+0.3 points), so the reads move by more than that reach: 278 of the 357 added pairs were already in the union (through F0T's or the kNN file, whose files are b1n's byte for byte), and nothing
-  here separates the 79 new pairs from the move of the other 278 into the structural slot (no run for it was declared).
+  here separates the 79 new pairs from the other 278, which now also stand in the structural family (the loader builds each family's store on its own, `look_b1.setting_store`, so a pair held by two families
+  is held by both; no run to separate the two was declared).
 - **MuSiQue (cap 25) is MIXED.** In-domain zg6r is SAME (68.7 to 68.6) and zrckpn LESS (67.2 to 66.7); held-out both are SAME (+0.1 [-0.4, +0.7] and -0.1 [-0.7, +0.4]). By hop depth (descriptive): zrckpn's fall
   sits in the 316 three-hop questions (b1y - b1n -1.0 [-1.9, -0.2], LESS) and is SAME on the 518 two-hop (-0.4 [-1.1, +0.3]) and the 166 four-hop (+0.1 [-0.5, +0.9]) questions; zg6r is SAME at every depth.
   Part A found that the 897 added pairs new to the union link no chain slot, so on MuSiQue the carve adds edges without gold reach; why one model's read falls by half a point is not examined here.
