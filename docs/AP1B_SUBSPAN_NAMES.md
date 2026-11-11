@@ -102,3 +102,72 @@ a failed gate ends the run, so a report exists only when all five passed.
 - **D76.** AP2 (the models of record read on b1-style carves whose NER slot is the carried form) carries S1's pick, declared
   in its own file after this report is filed. Default yes; the alternative is CN_all whatever S1 picks. Triples and more
   per-dataset rules stay AP3 (D73).
+
+## 9. Results (filed 12 November; `outputs/ap1b/report.json`, `report.md`; `zap1b.py` as committed in 309a133)
+
+**The run.** It completed on all three settings, so none of the five gates stopped it (a failed gate ends the run with
+SystemExit; `outputs/ap1b/run.log`). Nothing below is an R@5: each figure is the share of slots whose pair is an edge of
+R + K + the form (R-world). The first column is CN_all's share; the other columns are the difference to CN_all in points,
+with the call from the paired 95% interval over 1,000 questions.
+
+| setting, slots | F0 = CN_all | F1 | F2 | F3 | F0T | F1T | F2T | F3T |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| musique CH (1,648) | 69.54% | +2.73 ABOVE | +2.91 ABOVE | +6.13 ABOVE | +1.64 ABOVE | +4.25 ABOVE | +4.49 ABOVE | +7.65 ABOVE |
+| musique GP (2,462) | 49.15% | +1.99 ABOVE | +2.15 ABOVE | +4.75 ABOVE | +1.14 ABOVE | +3.01 ABOVE | +3.21 ABOVE | +5.77 ABOVE |
+| 2wiki GP (2,175) | 46.25% | +0.09 LEVEL | +0.09 LEVEL | +0.87 ABOVE | +0.28 ABOVE | +0.32 ABOVE | +0.32 ABOVE | +0.97 ABOVE |
+| hotpotqa GP (1,000) | 79.10% | +0.40 ABOVE | +0.40 ABOVE | +1.90 ABOVE | +0.50 ABOVE | +0.80 ABOVE | +0.80 ABOVE | +2.00 ABOVE |
+| musique union pairs | 141,965 | 159,325 | 162,323 | 266,886 | 144,684 | 162,661 | 165,645 | 273,379 |
+
+The intervals are in `report.md` (MuSiQue CH: F1 +2.73 [+1.86, +3.72], F3 +6.13 [+4.85, +7.52], F0T +1.64 [+1.05, +2.24],
+F3T +7.65 [+6.31, +9.10]; 2Wiki GP: F0T +0.28 [+0.09, +0.51]; HotpotQA GP: F0T +0.50 [+0.10, +0.90]). N_sp's MuSiQue union
+holds 125,662 pairs.
+
+**S1, the walk** (each step against the carried form; price = new union pairs per chain slot added over it; N_sp's price is
+128.6):
+
+| form | against | (a) CH diff [95%] | (b) GP calls, musique / 2wiki / hotpotqa | chain slots added | (c) price | step |
+| --- | --- | --- | --- | ---: | ---: | --- |
+| F1 | F0 | +2.73 [+1.86, +3.72] ABOVE | ABOVE / LEVEL / ABOVE | 45 | 385.8 | refused by (c) |
+| F2 | F0 | +2.91 [+2.02, +3.96] ABOVE | ABOVE / LEVEL / ABOVE | 48 | 424.1 | refused by (c) |
+| F3 | F0 | +6.13 [+4.85, +7.52] ABOVE | ABOVE / ABOVE / ABOVE | 101 | 1,236.8 | refused by (c) |
+| F0T | F0 | +1.64 [+1.05, +2.24] ABOVE | ABOVE / ABOVE / ABOVE | 27 | 100.7 | carried |
+
+**Carried form: F0T**, CN_all's names plus the passage's own title (trailing parenthetical and comma tail removed) read as a
+further name of the passage. It holds 98,845 pairs (CN_all 92,847) and links 1,173 of the 1,648 chain slots (71.18%; CN_all
+69.54%, N_sp 68.26%) for 2,719 more union pairs than CN_all, which is 100.7 per added slot against N_sp's 128.6. It is ABOVE
+CN_all on GP in all three settings. Against N_sp, spaCy's family, F0T is ABOVE on MuSiQue (CH +2.91 [+1.17, +4.54]; GP
++2.23 [+0.96, +3.39]) and on HotpotQA (GP +2.10 [+1.10, +3.20]) and LEVEL on 2Wiki (GP +0.28 [+0.00, +0.57]), at 1.15, 1.12
+and 1.19 times N_sp's union pairs (144,684 against 125,662; 51,308 against 45,980; 99,315 against 83,356). So at the graph
+level a rule-built NER slot replaces spaCy's without a loss of reach on any of the three settings, and gains on two; no model
+has read it.
+
+**Q1, sub-spans: reach rises with every level, and so does the price.** Every sub-span form is ABOVE CN_all on MuSiQue (chain
+slots and GP) and none is BELOW it on 2Wiki or HotpotQA; F3 and F3T are ABOVE on all three settings (F3: +0.87 on 2Wiki,
++1.90 on HotpotQA). But a chain slot added over F0 costs 385.8 (F1), 424.1 (F2) and 1,236.8 (F3) new union pairs, 3.0, 3.3
+and 9.6 times N_sp's price; F3's one-word sub-spans alone add 107,175 form pairs over F2 on MuSiQue (104,563 union pairs) for
+53 more chain slots (1,247 against 1,194). S1's condition (c) refuses all three, as declared.
+
+**Q2, the title as a name.** The title is the cheap gain: F0T is ABOVE CN_all in all four grades and below N_sp's price. R's
+title rule (W2, kind 0, the title as written with its parenthetical) never links a mention of "Robert Abel" to the passage
+titled "Robert Abel (animator)"; the title read as a name does, through the same df cap [2, 25] (the title's key counts the
+passage itself).
+
+**Q3, what F0T leaves** (the answer read as a label, diagnostic only, not a grade). 475 chain slots stay unlinked: 148 where
+the bridge name is neither a name nor a sub-span in at least one of the two passages; 264 where it is a name or a sub-span in
+both at a df above 25 (the hubs CN_w's price refuses); 63 where it is one in both at a df of 2-25, the class the sub-span
+levels were built for; none at a df below 2.
+
+**Correction to AP1 section 11.** Its scratch read counted 67 slots whose answer label is a sub-span at a df of 2-25 and
+wrote "at most 67 more slots at the cap". The measured reach over CN_all is 45 (F1), 48 (F2) and 101 (F3) slots: a form
+links a slot through any name the two passages share, not only through the answer label's key, so the 67 is a count by the
+label and not a bound on a form's reach. F3 reaches more slots than that count, at 1,236.8 pairs per added slot.
+
+**What this decides.** The rule-built NER slot of the carried form is F0T (S1). The forms were chosen after AP1 section 11's
+scratch read, so the MuSiQue chain grade is a dev read (D75); 2Wiki and HotpotQA, where no one looked at the unlinked slots,
+show no form BELOW CN_all. Nothing about models, pools or R@5 is decided; AP2's model reads are declared after this filing.
+
+**D77 (opened by this report; the user's).** S1's price condition refuses F1, F2 and F3; F3T reaches 99 more chain slots
+than F0T (1,272 against 1,173 of 1,648) at 2.18 times N_sp's union pairs (273,379 against 125,662). The rule stays as
+declared and is not reinterpreted after the numbers. Whether the extra reach moves a model is a model question. Default:
+AP2 carries F0T (D76) and, on MuSiQue only, also reads F3T as a second, disclosed carve ("refused by S1's price"), declared
+in AP2's own file; the alternative is F0T alone.

@@ -221,3 +221,7 @@ the later passage's own title contains it ("Bill Maher" in "Real Time with Bill 
 (animator)"). So the second class is a shape gap of the run rule, not a cap gap: sub-span names could reach at most 67 more
 slots at the cap, 4.1% of the chain slots, at a price in pairs nobody has measured. That is the candidate for AP1b, which is
 declared before it runs.
+
+**Correction (12 November, from AP1b, `docs/AP1B_SUBSPAN_NAMES.md` section 9).** The "at most 67" above counts slots by the
+answer label's key. A form links a slot through any name the two passages share, and AP1b's forms reached 45 (F1), 48 (F2)
+and 101 (F3) more chain slots than CN_all, so the 67 is a count by the label, not a bound on a form's reach.
