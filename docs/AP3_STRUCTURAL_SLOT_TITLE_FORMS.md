@@ -151,3 +151,99 @@ the carve folders `outputs/b1y/bench/hipporag2_y/<setting>/` stay local until th
   and typed scouting; that was not what the scouting read found (it found that reach is not the gap and ranking is), and the bullet now says so and cites only AP1b's filed counts.
   No rule, constant or gate changed.
 - A failing step is fixed and the fix disclosed here with its commit before any number is filed.
+
+## 11. Part A filed (12 November 2026)
+
+`python -I outputs/mp_unified/zap3.py ladder` on the laptop, 03:35 to 03:38 IST on 12 November (the record's `utc` stamp is 2026-11-11T22:07:56Z), started after the declaration's commit
+(b4fd7be, 03:35:06 IST). The correction recorded at the end of section 10 was committed after the run began (e5449e7, 03:39 IST); it changed no rule, constant, gate or script, and the
+declaration and the correction were pushed before this filing. The run ended with exit 0, so every gate of the ladder column of section 3 held (each is a hard stop): G1 the
+setting-level rebuild of R's rule has Jaccard 0.9741 (2Wiki), 0.9806 (HotpotQA) and 0.9891 (MuSiQue) with the filed R (gate 0.95);
+G2 and G3 on every passage U2b's rule scans (its descriptive sources: 6,119 of 6,119 passages on 2Wiki, 9,809 of 9,811 on HotpotQA,
+11,656 of 11,656 on MuSiQue); G4 R is b1w's structural file, the node and slot counts equal build.json's and AP1b's; G5 AP1b's `levels.npz` and its F0T pair
+count equal its report's; G6 `boot_ratio` equals `zap1.boot_diff`. The record names its inputs by sha256: the script (91f81139, equal to the committed `zap3.py`'s), `zap1.py`
+(48412755), `zu2b.py` (4bfbf747) and AP1b's report (bbc5134c).
+
+**The ladder.** A rung is R plus the K1 pairs at or under the cap that R lacks. Gain = the slots the rung newly links over R, in points of the setting's basis slots, with a paired 95%
+interval over the 1,000 questions (ABOVE: the bottom of the interval is above 0); price = pairs added per slot added; the union columns count the same over b1n's union R + F0T + K
+(pairs of the rung that the union lacks, and slots they newly link). The record is `outputs/ap3/ladder.json`; the tables are `outputs/ap3/ladder.md`'s.
+
+**2Wiki** (basis GP, 2,175 slots; 6,119 passages). R's 2,030 pairs link 872 slots (40.09%), so p0 = 2.328 pairs per slot; S precision of R 0.8246, S recall 0.8438.
+K1 holds 2,481 pairs (2,281 not in R; 2,443 ambiguous surface hits dropped).
+
+| cap | pairs added | slots added | gain (points) [95%] | share linked | price | S share of added | union: pairs added | union: slots added |
+|---|---:|---:|---|---:|---:|---:|---:|---:|
+| 1 | 30 | 13 | +0.60 [+0.28, +0.94] ABOVE | 40.69 | 2.31 | 15/30 | 2 | 0 |
+| 2 | 191 | 50 | +2.30 [+1.69, +2.96] ABOVE | 42.39 | 3.82 | 72/191 | 25 | 0 |
+| 3 | 300 | 64 | +2.94 [+2.25, +3.68] ABOVE | 43.03 | 4.69 | 95/300 | 55 | 0 |
+| 4 | 396 | 69 | +3.17 [+2.45, +3.93] ABOVE | 43.26 | 5.74 | 111/396 | 90 | 0 |
+| 6 | 533 | 73 | +3.36 [+2.61, +4.12] ABOVE | 43.45 | 7.3 | 129/533 | 128 | 1 |
+| 8 | 679 | 76 | +3.49 [+2.75, +4.29] ABOVE | 43.59 | 8.93 | 134/679 | 201 | 1 |
+| 12 | 786 | 80 | +3.68 [+2.92, +4.49] ABOVE | 43.77 | 9.82 | 142/786 | 253 | 1 |
+| 16 | 829 | 80 | +3.68 [+2.92, +4.49] ABOVE | 43.77 | 10.36 | 142/829 | 279 | 1 |
+| 25 | 1005 | 81 | +3.72 [+2.97, +4.55] ABOVE | 43.82 | 12.41 | 145/1005 | 385 | 1 |
+| inf | 2281 | 82 | +3.77 [+3.00, +4.60] ABOVE | 43.86 | 27.82 | 148/2281 | 1503 | 1 |
+
+**HotpotQA** (basis GP, 1,000 slots; 9,811 passages). R's 4,315 pairs link 591 slots (59.1%), p0 = 7.301; S precision of R 0.8197, S recall 0.8039.
+K1 holds 5,450 pairs (5,244 not in R; 281 ambiguous surface hits dropped).
+
+| cap | pairs added | slots added | gain (points) [95%] | share linked | price | S share of added | union: pairs added | union: slots added |
+|---|---:|---:|---|---:|---:|---:|---:|---:|
+| 1 | 15 | 5 | +0.50 [+0.10, +1.00] ABOVE | 59.6 | 3.0 | 7/15 | 4 | 2 |
+| 2 | 215 | 43 | +4.30 [+3.10, +5.50] ABOVE | 63.4 | 5.0 | 90/215 | 45 | 3 |
+| 3 | 357 | 54 | +5.40 [+4.00, +6.70] ABOVE | 64.5 | 6.61 | 129/357 | 79 | 3 |
+| 4 | 495 | 57 | +5.70 [+4.30, +7.00] ABOVE | 64.8 | 8.68 | 158/495 | 122 | 3 |
+| 6 | 683 | 61 | +6.10 [+4.70, +7.50] ABOVE | 65.2 | 11.2 | 189/683 | 202 | 3 |
+| 8 | 895 | 64 | +6.40 [+4.90, +7.80] ABOVE | 65.5 | 13.98 | 213/895 | 297 | 3 |
+| 12 | 1311 | 69 | +6.90 [+5.40, +8.40] ABOVE | 66.0 | 19.0 | 263/1311 | 449 | 3 |
+| 16 | 1510 | 73 | +7.30 [+5.70, +8.80] ABOVE | 66.4 | 20.68 | 269/1510 | 582 | 3 |
+| 25 | 1707 | 75 | +7.50 [+5.90, +9.10] ABOVE | 66.6 | 22.76 | 274/1707 | 715 | 3 |
+| inf | 5244 | 77 | +7.70 [+6.10, +9.30] ABOVE | 66.8 | 68.1 | 283/5244 | 3937 | 4 |
+
+**MuSiQue** (basis CH, 1,648 chain slots; 11,656 passages). R's 41,429 pairs link 475 slots (28.82%), p0 = 87.219; S precision of R 0.9234, S recall 0.8933.
+K1 holds 6,426 pairs (5,844 not in R; 1,691 ambiguous surface hits dropped). On MuSiQue's GP view (2,462 slots, beside, deciding
+nothing) the same rungs add the same slots (cap 25: 54) and the gain at cap 25 is +2.19 [+1.62, +2.81] points.
+
+| cap | pairs added | slots added | gain (points) [95%] | share linked | price | S share of added | union: pairs added | union: slots added |
+|---|---:|---:|---|---:|---:|---:|---:|---:|
+| 1 | 29 | 1 | +0.06 [+0.00, +0.18] LEVEL | 28.88 | 29.0 | 0/29 | 11 | 0 |
+| 2 | 154 | 16 | +0.97 [+0.54, +1.45] ABOVE | 29.79 | 9.62 | 0/154 | 43 | 0 |
+| 3 | 272 | 24 | +1.46 [+0.91, +2.05] ABOVE | 30.28 | 11.33 | 1/272 | 88 | 0 |
+| 4 | 348 | 33 | +2.00 [+1.38, +2.68] ABOVE | 30.83 | 10.55 | 1/348 | 124 | 0 |
+| 6 | 545 | 35 | +2.12 [+1.48, +2.81] ABOVE | 30.95 | 15.57 | 1/545 | 211 | 0 |
+| 8 | 682 | 37 | +2.25 [+1.58, +2.95] ABOVE | 31.07 | 18.43 | 1/682 | 271 | 0 |
+| 12 | 951 | 45 | +2.73 [+2.02, +3.48] ABOVE | 31.55 | 21.13 | 1/951 | 418 | 0 |
+| 16 | 1300 | 50 | +3.03 [+2.22, +3.94] ABOVE | 31.86 | 26.0 | 1/1300 | 618 | 0 |
+| 25 | 1864 | 54 | +3.28 [+2.41, +4.18] ABOVE | 32.1 | 34.52 | 2/1864 | 897 | 0 |
+| inf | 5844 | 58 | +3.52 [+2.62, +4.49] ABOVE | 32.34 | 100.76 | 2/5844 | 4576 | 0 |
+
+**S1 by the pinned code** (the walk re-derived from the counts, not the rounded fields, equals the record's):
+
+- **2Wiki: no carve.** p0 = 2,030 / 872 = 2.3280. Cap 1 passes (30 pairs for 13 slots = 2.3077) and cap 2 stops the walk (191 pairs for 50 slots =
+  3.82). The deepest passing rung adds 13 slots, 0.60 points of 2,175, below the floor of 2.0.
+- **HotpotQA: cap 3.** p0 = 4,315 / 591 = 7.3012. Caps 1 to 3 pass (prices 3.00, 5.00, 6.61), cap 4 stops the walk (8.68). Cap 3 adds
+  357 pairs and 54 slots, +5.40 [+4.00, +6.70] points of 1,000 (R links 59.1%, Ry 64.5%); 129 of the 357 added pairs are S's.
+- **MuSiQue: cap 25.** p0 = 41,429 / 475 = 87.219. Caps 1 to 25 pass (prices 9.62 to 34.52), no cap stops the walk (100.76). Cap 25 adds
+  1,864 pairs and 54 chain slots, +3.28 [+2.41, +4.18] points of 1,648 (R links 28.82%, Ry 32.1%); 2 of the 1,864 added pairs are S's.
+
+**What the ladder says.**
+
+- The expectation stated before the run (section 5) held for the rungs: no rung on 2Wiki, a shallow rung on HotpotQA (cap 3), the deepest capped rung on MuSiQue (cap 25). Its effect-size part
+  (an effect of a few tenths of a point at most, NO_GAIN likely) is Part B's to test and this filing does not change it.
+- The base form's gain over R is mostly reached at low df on all three settings: HotpotQA +4.30 [+3.10, +5.50] points by cap 2 and +5.40 [+4.00, +6.70] by cap 3 against +7.70 [+6.10, +9.30] uncapped; 2Wiki +2.30 [+1.69, +2.96] by cap 2 against
+  +3.77 [+3.00, +4.60]; MuSiQue +3.28 [+2.41, +4.18] by cap 25 against +3.52 [+2.62, +4.49]. Past the carried rungs each added slot costs many more pairs (uncapped: 68.1 pairs per slot on HotpotQA,
+  100.8 on MuSiQue, 27.8 on 2Wiki).
+- 2Wiki's K1 gain over R is real at the graph level (+2.30 [+1.69, +2.96] points at cap 2) but costs 3.82 pairs per slot against R's own 2.33, and over b1n's union it adds
+  0 slots up to cap 4 and 1 at any higher rung: no carve is the declared rule's answer (price and floor), not a statement about the family's reach over R.
+- The carried rungs' pairs are mostly not S's: 129 of HotpotQA cap 3's 357 added pairs are S pairs (R's own S precision is 0.8197) and 2 of MuSiQue cap 25's 1,864 (R's 0.9234).
+- Over b1n's union (R + F0T + K) the carried rungs add little reach. HotpotQA cap 3: of its 357 pairs over R, 79 are new to the union (278 are already in F0T's or the kNN file, by
+  arithmetic) and they link 3 slots (0.3 points; the union already links 796 of the 1,000 gold pairs, 79.6%). MuSiQue cap 25: of 1,864, 897 are new
+  to the union (967 already there) and they link 0 chain slots (the union links 1,173 of 1,648, 71.18%). The ladder's gain is a gain in the structural slot over R; whether the
+  models' reads move at all, with 278 and 967 pairs changing slot and 79 and 897 entering the graph, only the reads can show.
+- Selection (section 5): each rung is graded on the gold pairs and chain slots of the questions S1 reads, so the ladder's gains describe the chosen family on the questions it was chosen on; they are not held-out.
+
+Nothing here decides a model, a pool or a column of record.
+
+**Next: Part B** (section 4) for HotpotQA (cap 3) and MuSiQue (cap 25) only: `zap3.py bench --dataset D` builds each carve folder on the laptop, then the `ap3y-` rows of section 7 (12 reads per
+setting) run on the host, and the report is filed as section 12. 2Wiki has no carve and no Part B.
+
+Files: `outputs/ap3/ladder.json` and `ladder.md` (committed); `outputs/ap3/<setting>/k1.npz` (not committed, rebuildable; sha256 8a3a6eef, a3d1cec4, 0beb2902 for 2Wiki, HotpotQA, MuSiQue).

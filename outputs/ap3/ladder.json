@@ -1,0 +1,997 @@
+{
+ "declared_in": "docs/AP3_STRUCTURAL_SLOT_TITLE_FORMS.md",
+ "stage": "AP3",
+ "part": "A",
+ "caps": [
+  1,
+  2,
+  3,
+  4,
+  6,
+  8,
+  12,
+  16,
+  25,
+  "inf"
+ ],
+ "floor_points": 2.0,
+ "basis": {
+  "2wiki": "GP",
+  "hotpotqa": "GP",
+  "musique": "CH"
+ },
+ "boot": {
+  "resamples": 2000,
+  "seed": 0
+ },
+ "jaccard_min": 0.95,
+ "settings": {
+  "2wiki": {
+   "passages": 6119,
+   "questions": 1000,
+   "basis": "GP",
+   "slots": 2175,
+   "r": {
+    "pairs": 2030,
+    "slots_linked": 872,
+    "share": 40.09,
+    "s_precision": 0.8246,
+    "s_recall": 0.8438
+   },
+   "a0_vs_r": {
+    "a0_pairs": 2084,
+    "jaccard": 0.9741,
+    "intersection": 2030
+   },
+   "k1": {
+    "pairs": 2481,
+    "pairs_not_in_r": 2281,
+    "ambiguous_dropped": {
+     "K0": 0,
+     "K1_only": 2443
+    },
+    "surfaces": 14951,
+    "descriptive_passages": 6119,
+    "passages_checked_against_zu2b": 6119,
+    "npz_sha256": "8a3a6eefd883b2b9726e9f66f6c0cbf73f4adc9e805fdd0a408b480f696c9d5b"
+   },
+   "ladder": [
+    {
+     "cap": 1,
+     "pairs_added": 30,
+     "pairs_total": 2060,
+     "slots_added": 13,
+     "slots_linked": 885,
+     "share": 40.69,
+     "gain_points": 0.598,
+     "gain_ci": [
+      0.28,
+      0.94
+     ],
+     "gain_call": "ABOVE",
+     "price": 2.31,
+     "s_added": 15
+    },
+    {
+     "cap": 2,
+     "pairs_added": 191,
+     "pairs_total": 2221,
+     "slots_added": 50,
+     "slots_linked": 922,
+     "share": 42.39,
+     "gain_points": 2.299,
+     "gain_ci": [
+      1.69,
+      2.96
+     ],
+     "gain_call": "ABOVE",
+     "price": 3.82,
+     "s_added": 72
+    },
+    {
+     "cap": 3,
+     "pairs_added": 300,
+     "pairs_total": 2330,
+     "slots_added": 64,
+     "slots_linked": 936,
+     "share": 43.03,
+     "gain_points": 2.943,
+     "gain_ci": [
+      2.25,
+      3.68
+     ],
+     "gain_call": "ABOVE",
+     "price": 4.69,
+     "s_added": 95
+    },
+    {
+     "cap": 4,
+     "pairs_added": 396,
+     "pairs_total": 2426,
+     "slots_added": 69,
+     "slots_linked": 941,
+     "share": 43.26,
+     "gain_points": 3.172,
+     "gain_ci": [
+      2.45,
+      3.93
+     ],
+     "gain_call": "ABOVE",
+     "price": 5.74,
+     "s_added": 111
+    },
+    {
+     "cap": 6,
+     "pairs_added": 533,
+     "pairs_total": 2563,
+     "slots_added": 73,
+     "slots_linked": 945,
+     "share": 43.45,
+     "gain_points": 3.356,
+     "gain_ci": [
+      2.61,
+      4.12
+     ],
+     "gain_call": "ABOVE",
+     "price": 7.3,
+     "s_added": 129
+    },
+    {
+     "cap": 8,
+     "pairs_added": 679,
+     "pairs_total": 2709,
+     "slots_added": 76,
+     "slots_linked": 948,
+     "share": 43.59,
+     "gain_points": 3.494,
+     "gain_ci": [
+      2.75,
+      4.29
+     ],
+     "gain_call": "ABOVE",
+     "price": 8.93,
+     "s_added": 134
+    },
+    {
+     "cap": 12,
+     "pairs_added": 786,
+     "pairs_total": 2816,
+     "slots_added": 80,
+     "slots_linked": 952,
+     "share": 43.77,
+     "gain_points": 3.678,
+     "gain_ci": [
+      2.92,
+      4.49
+     ],
+     "gain_call": "ABOVE",
+     "price": 9.82,
+     "s_added": 142
+    },
+    {
+     "cap": 16,
+     "pairs_added": 829,
+     "pairs_total": 2859,
+     "slots_added": 80,
+     "slots_linked": 952,
+     "share": 43.77,
+     "gain_points": 3.678,
+     "gain_ci": [
+      2.92,
+      4.49
+     ],
+     "gain_call": "ABOVE",
+     "price": 10.36,
+     "s_added": 142
+    },
+    {
+     "cap": 25,
+     "pairs_added": 1005,
+     "pairs_total": 3035,
+     "slots_added": 81,
+     "slots_linked": 953,
+     "share": 43.82,
+     "gain_points": 3.724,
+     "gain_ci": [
+      2.97,
+      4.55
+     ],
+     "gain_call": "ABOVE",
+     "price": 12.41,
+     "s_added": 145
+    },
+    {
+     "cap": "inf",
+     "pairs_added": 2281,
+     "pairs_total": 4311,
+     "slots_added": 82,
+     "slots_linked": 954,
+     "share": 43.86,
+     "gain_points": 3.77,
+     "gain_ci": [
+      3.0,
+      4.6
+     ],
+     "gain_call": "ABOVE",
+     "price": 27.82,
+     "s_added": 148
+    }
+   ],
+   "s1": {
+    "carried_cap": null,
+    "why": "the deepest rung that passes the price adds 13 slots, below 2.0 points of the setting's 2175",
+    "p0_pairs_per_slot": 2.328,
+    "floor_points": 2.0
+   },
+   "union": {
+    "pairs": 51308,
+    "slots_linked": 1012,
+    "share": 46.53,
+    "rows": [
+     {
+      "cap": 1,
+      "pairs_added": 2,
+      "slots_added": 0,
+      "gain_points": 0.0
+     },
+     {
+      "cap": 2,
+      "pairs_added": 25,
+      "slots_added": 0,
+      "gain_points": 0.0
+     },
+     {
+      "cap": 3,
+      "pairs_added": 55,
+      "slots_added": 0,
+      "gain_points": 0.0
+     },
+     {
+      "cap": 4,
+      "pairs_added": 90,
+      "slots_added": 0,
+      "gain_points": 0.0
+     },
+     {
+      "cap": 6,
+      "pairs_added": 128,
+      "slots_added": 1,
+      "gain_points": 0.046
+     },
+     {
+      "cap": 8,
+      "pairs_added": 201,
+      "slots_added": 1,
+      "gain_points": 0.046
+     },
+     {
+      "cap": 12,
+      "pairs_added": 253,
+      "slots_added": 1,
+      "gain_points": 0.046
+     },
+     {
+      "cap": 16,
+      "pairs_added": 279,
+      "slots_added": 1,
+      "gain_points": 0.046
+     },
+     {
+      "cap": 25,
+      "pairs_added": 385,
+      "slots_added": 1,
+      "gain_points": 0.046
+     },
+     {
+      "cap": "inf",
+      "pairs_added": 1503,
+      "slots_added": 1,
+      "gain_points": 0.046
+     }
+    ]
+   }
+  },
+  "hotpotqa": {
+   "passages": 9811,
+   "questions": 1000,
+   "basis": "GP",
+   "slots": 1000,
+   "r": {
+    "pairs": 4315,
+    "slots_linked": 591,
+    "share": 59.1,
+    "s_precision": 0.8197,
+    "s_recall": 0.8039
+   },
+   "a0_vs_r": {
+    "a0_pairs": 4356,
+    "jaccard": 0.9806,
+    "intersection": 4293
+   },
+   "k1": {
+    "pairs": 5450,
+    "pairs_not_in_r": 5244,
+    "ambiguous_dropped": {
+     "K0": 0,
+     "K1_only": 281
+    },
+    "surfaces": 23856,
+    "descriptive_passages": 9809,
+    "passages_checked_against_zu2b": 9809,
+    "npz_sha256": "a3d1cec4c6cbddafe64bbc4e1558e83dd8c99de478b14d21772cc78aa0c2e17b"
+   },
+   "ladder": [
+    {
+     "cap": 1,
+     "pairs_added": 15,
+     "pairs_total": 4330,
+     "slots_added": 5,
+     "slots_linked": 596,
+     "share": 59.6,
+     "gain_points": 0.5,
+     "gain_ci": [
+      0.1,
+      1.0
+     ],
+     "gain_call": "ABOVE",
+     "price": 3.0,
+     "s_added": 7
+    },
+    {
+     "cap": 2,
+     "pairs_added": 215,
+     "pairs_total": 4530,
+     "slots_added": 43,
+     "slots_linked": 634,
+     "share": 63.4,
+     "gain_points": 4.3,
+     "gain_ci": [
+      3.1,
+      5.5
+     ],
+     "gain_call": "ABOVE",
+     "price": 5.0,
+     "s_added": 90
+    },
+    {
+     "cap": 3,
+     "pairs_added": 357,
+     "pairs_total": 4672,
+     "slots_added": 54,
+     "slots_linked": 645,
+     "share": 64.5,
+     "gain_points": 5.4,
+     "gain_ci": [
+      4.0,
+      6.7
+     ],
+     "gain_call": "ABOVE",
+     "price": 6.61,
+     "s_added": 129
+    },
+    {
+     "cap": 4,
+     "pairs_added": 495,
+     "pairs_total": 4810,
+     "slots_added": 57,
+     "slots_linked": 648,
+     "share": 64.8,
+     "gain_points": 5.7,
+     "gain_ci": [
+      4.3,
+      7.0
+     ],
+     "gain_call": "ABOVE",
+     "price": 8.68,
+     "s_added": 158
+    },
+    {
+     "cap": 6,
+     "pairs_added": 683,
+     "pairs_total": 4998,
+     "slots_added": 61,
+     "slots_linked": 652,
+     "share": 65.2,
+     "gain_points": 6.1,
+     "gain_ci": [
+      4.7,
+      7.5
+     ],
+     "gain_call": "ABOVE",
+     "price": 11.2,
+     "s_added": 189
+    },
+    {
+     "cap": 8,
+     "pairs_added": 895,
+     "pairs_total": 5210,
+     "slots_added": 64,
+     "slots_linked": 655,
+     "share": 65.5,
+     "gain_points": 6.4,
+     "gain_ci": [
+      4.9,
+      7.8
+     ],
+     "gain_call": "ABOVE",
+     "price": 13.98,
+     "s_added": 213
+    },
+    {
+     "cap": 12,
+     "pairs_added": 1311,
+     "pairs_total": 5626,
+     "slots_added": 69,
+     "slots_linked": 660,
+     "share": 66.0,
+     "gain_points": 6.9,
+     "gain_ci": [
+      5.4,
+      8.4
+     ],
+     "gain_call": "ABOVE",
+     "price": 19.0,
+     "s_added": 263
+    },
+    {
+     "cap": 16,
+     "pairs_added": 1510,
+     "pairs_total": 5825,
+     "slots_added": 73,
+     "slots_linked": 664,
+     "share": 66.4,
+     "gain_points": 7.3,
+     "gain_ci": [
+      5.7,
+      8.8
+     ],
+     "gain_call": "ABOVE",
+     "price": 20.68,
+     "s_added": 269
+    },
+    {
+     "cap": 25,
+     "pairs_added": 1707,
+     "pairs_total": 6022,
+     "slots_added": 75,
+     "slots_linked": 666,
+     "share": 66.6,
+     "gain_points": 7.5,
+     "gain_ci": [
+      5.9,
+      9.1
+     ],
+     "gain_call": "ABOVE",
+     "price": 22.76,
+     "s_added": 274
+    },
+    {
+     "cap": "inf",
+     "pairs_added": 5244,
+     "pairs_total": 9559,
+     "slots_added": 77,
+     "slots_linked": 668,
+     "share": 66.8,
+     "gain_points": 7.7,
+     "gain_ci": [
+      6.1,
+      9.3
+     ],
+     "gain_call": "ABOVE",
+     "price": 68.1,
+     "s_added": 283
+    }
+   ],
+   "s1": {
+    "carried_cap": 3,
+    "why": "carried",
+    "p0_pairs_per_slot": 7.301,
+    "floor_points": 2.0
+   },
+   "union": {
+    "pairs": 99315,
+    "slots_linked": 796,
+    "share": 79.6,
+    "rows": [
+     {
+      "cap": 1,
+      "pairs_added": 4,
+      "slots_added": 2,
+      "gain_points": 0.2
+     },
+     {
+      "cap": 2,
+      "pairs_added": 45,
+      "slots_added": 3,
+      "gain_points": 0.3
+     },
+     {
+      "cap": 3,
+      "pairs_added": 79,
+      "slots_added": 3,
+      "gain_points": 0.3
+     },
+     {
+      "cap": 4,
+      "pairs_added": 122,
+      "slots_added": 3,
+      "gain_points": 0.3
+     },
+     {
+      "cap": 6,
+      "pairs_added": 202,
+      "slots_added": 3,
+      "gain_points": 0.3
+     },
+     {
+      "cap": 8,
+      "pairs_added": 297,
+      "slots_added": 3,
+      "gain_points": 0.3
+     },
+     {
+      "cap": 12,
+      "pairs_added": 449,
+      "slots_added": 3,
+      "gain_points": 0.3
+     },
+     {
+      "cap": 16,
+      "pairs_added": 582,
+      "slots_added": 3,
+      "gain_points": 0.3
+     },
+     {
+      "cap": 25,
+      "pairs_added": 715,
+      "slots_added": 3,
+      "gain_points": 0.3
+     },
+     {
+      "cap": "inf",
+      "pairs_added": 3937,
+      "slots_added": 4,
+      "gain_points": 0.4
+     }
+    ]
+   }
+  },
+  "musique": {
+   "passages": 11656,
+   "questions": 1000,
+   "basis": "CH",
+   "slots": 1648,
+   "r": {
+    "pairs": 41429,
+    "slots_linked": 475,
+    "share": 28.82,
+    "s_precision": 0.9234,
+    "s_recall": 0.8933
+   },
+   "a0_vs_r": {
+    "a0_pairs": 41080,
+    "jaccard": 0.9891,
+    "intersection": 41029
+   },
+   "k1": {
+    "pairs": 6426,
+    "pairs_not_in_r": 5844,
+    "ambiguous_dropped": {
+     "K0": 0,
+     "K1_only": 1691
+    },
+    "surfaces": 23583,
+    "descriptive_passages": 11656,
+    "passages_checked_against_zu2b": 11656,
+    "npz_sha256": "0beb2902275286388ed49bbf354e86fa0cd2913f1ca10fb19a0fce26f6bfbb00"
+   },
+   "ladder": [
+    {
+     "cap": 1,
+     "pairs_added": 29,
+     "pairs_total": 41458,
+     "slots_added": 1,
+     "slots_linked": 476,
+     "share": 28.88,
+     "gain_points": 0.061,
+     "gain_ci": [
+      0.0,
+      0.18
+     ],
+     "gain_call": "LEVEL",
+     "price": 29.0,
+     "s_added": 0
+    },
+    {
+     "cap": 2,
+     "pairs_added": 154,
+     "pairs_total": 41583,
+     "slots_added": 16,
+     "slots_linked": 491,
+     "share": 29.79,
+     "gain_points": 0.971,
+     "gain_ci": [
+      0.54,
+      1.45
+     ],
+     "gain_call": "ABOVE",
+     "price": 9.62,
+     "s_added": 0
+    },
+    {
+     "cap": 3,
+     "pairs_added": 272,
+     "pairs_total": 41701,
+     "slots_added": 24,
+     "slots_linked": 499,
+     "share": 30.28,
+     "gain_points": 1.456,
+     "gain_ci": [
+      0.91,
+      2.05
+     ],
+     "gain_call": "ABOVE",
+     "price": 11.33,
+     "s_added": 1
+    },
+    {
+     "cap": 4,
+     "pairs_added": 348,
+     "pairs_total": 41777,
+     "slots_added": 33,
+     "slots_linked": 508,
+     "share": 30.83,
+     "gain_points": 2.002,
+     "gain_ci": [
+      1.38,
+      2.68
+     ],
+     "gain_call": "ABOVE",
+     "price": 10.55,
+     "s_added": 1
+    },
+    {
+     "cap": 6,
+     "pairs_added": 545,
+     "pairs_total": 41974,
+     "slots_added": 35,
+     "slots_linked": 510,
+     "share": 30.95,
+     "gain_points": 2.124,
+     "gain_ci": [
+      1.48,
+      2.81
+     ],
+     "gain_call": "ABOVE",
+     "price": 15.57,
+     "s_added": 1
+    },
+    {
+     "cap": 8,
+     "pairs_added": 682,
+     "pairs_total": 42111,
+     "slots_added": 37,
+     "slots_linked": 512,
+     "share": 31.07,
+     "gain_points": 2.245,
+     "gain_ci": [
+      1.58,
+      2.95
+     ],
+     "gain_call": "ABOVE",
+     "price": 18.43,
+     "s_added": 1
+    },
+    {
+     "cap": 12,
+     "pairs_added": 951,
+     "pairs_total": 42380,
+     "slots_added": 45,
+     "slots_linked": 520,
+     "share": 31.55,
+     "gain_points": 2.731,
+     "gain_ci": [
+      2.02,
+      3.48
+     ],
+     "gain_call": "ABOVE",
+     "price": 21.13,
+     "s_added": 1
+    },
+    {
+     "cap": 16,
+     "pairs_added": 1300,
+     "pairs_total": 42729,
+     "slots_added": 50,
+     "slots_linked": 525,
+     "share": 31.86,
+     "gain_points": 3.034,
+     "gain_ci": [
+      2.22,
+      3.94
+     ],
+     "gain_call": "ABOVE",
+     "price": 26.0,
+     "s_added": 1
+    },
+    {
+     "cap": 25,
+     "pairs_added": 1864,
+     "pairs_total": 43293,
+     "slots_added": 54,
+     "slots_linked": 529,
+     "share": 32.1,
+     "gain_points": 3.277,
+     "gain_ci": [
+      2.41,
+      4.18
+     ],
+     "gain_call": "ABOVE",
+     "price": 34.52,
+     "s_added": 2
+    },
+    {
+     "cap": "inf",
+     "pairs_added": 5844,
+     "pairs_total": 47273,
+     "slots_added": 58,
+     "slots_linked": 533,
+     "share": 32.34,
+     "gain_points": 3.519,
+     "gain_ci": [
+      2.62,
+      4.49
+     ],
+     "gain_call": "ABOVE",
+     "price": 100.76,
+     "s_added": 2
+    }
+   ],
+   "ladder_gp": [
+    {
+     "cap": 1,
+     "pairs_added": 29,
+     "pairs_total": 41458,
+     "slots_added": 1,
+     "slots_linked": 480,
+     "share": 19.5,
+     "gain_points": 0.041,
+     "gain_ci": [
+      0.0,
+      0.12
+     ],
+     "gain_call": "LEVEL",
+     "price": 29.0,
+     "s_added": 0
+    },
+    {
+     "cap": 2,
+     "pairs_added": 154,
+     "pairs_total": 41583,
+     "slots_added": 16,
+     "slots_linked": 495,
+     "share": 20.11,
+     "gain_points": 0.65,
+     "gain_ci": [
+      0.36,
+      0.97
+     ],
+     "gain_call": "ABOVE",
+     "price": 9.62,
+     "s_added": 0
+    },
+    {
+     "cap": 3,
+     "pairs_added": 272,
+     "pairs_total": 41701,
+     "slots_added": 24,
+     "slots_linked": 503,
+     "share": 20.43,
+     "gain_points": 0.975,
+     "gain_ci": [
+      0.61,
+      1.37
+     ],
+     "gain_call": "ABOVE",
+     "price": 11.33,
+     "s_added": 1
+    },
+    {
+     "cap": 4,
+     "pairs_added": 348,
+     "pairs_total": 41777,
+     "slots_added": 33,
+     "slots_linked": 512,
+     "share": 20.8,
+     "gain_points": 1.34,
+     "gain_ci": [
+      0.93,
+      1.79
+     ],
+     "gain_call": "ABOVE",
+     "price": 10.55,
+     "s_added": 1
+    },
+    {
+     "cap": 6,
+     "pairs_added": 545,
+     "pairs_total": 41974,
+     "slots_added": 35,
+     "slots_linked": 514,
+     "share": 20.88,
+     "gain_points": 1.422,
+     "gain_ci": [
+      1.0,
+      1.87
+     ],
+     "gain_call": "ABOVE",
+     "price": 15.57,
+     "s_added": 1
+    },
+    {
+     "cap": 8,
+     "pairs_added": 682,
+     "pairs_total": 42111,
+     "slots_added": 37,
+     "slots_linked": 516,
+     "share": 20.96,
+     "gain_points": 1.503,
+     "gain_ci": [
+      1.07,
+      1.99
+     ],
+     "gain_call": "ABOVE",
+     "price": 18.43,
+     "s_added": 1
+    },
+    {
+     "cap": 12,
+     "pairs_added": 951,
+     "pairs_total": 42380,
+     "slots_added": 45,
+     "slots_linked": 524,
+     "share": 21.28,
+     "gain_points": 1.828,
+     "gain_ci": [
+      1.35,
+      2.34
+     ],
+     "gain_call": "ABOVE",
+     "price": 21.13,
+     "s_added": 1
+    },
+    {
+     "cap": 16,
+     "pairs_added": 1300,
+     "pairs_total": 42729,
+     "slots_added": 50,
+     "slots_linked": 529,
+     "share": 21.49,
+     "gain_points": 2.031,
+     "gain_ci": [
+      1.49,
+      2.63
+     ],
+     "gain_call": "ABOVE",
+     "price": 26.0,
+     "s_added": 1
+    },
+    {
+     "cap": 25,
+     "pairs_added": 1864,
+     "pairs_total": 43293,
+     "slots_added": 54,
+     "slots_linked": 533,
+     "share": 21.65,
+     "gain_points": 2.193,
+     "gain_ci": [
+      1.62,
+      2.81
+     ],
+     "gain_call": "ABOVE",
+     "price": 34.52,
+     "s_added": 2
+    },
+    {
+     "cap": "inf",
+     "pairs_added": 5844,
+     "pairs_total": 47273,
+     "slots_added": 58,
+     "slots_linked": 537,
+     "share": 21.81,
+     "gain_points": 2.356,
+     "gain_ci": [
+      1.76,
+      3.0
+     ],
+     "gain_call": "ABOVE",
+     "price": 100.76,
+     "s_added": 2
+    }
+   ],
+   "s1": {
+    "carried_cap": 25,
+    "why": "carried",
+    "p0_pairs_per_slot": 87.219,
+    "floor_points": 2.0
+   },
+   "union": {
+    "pairs": 144684,
+    "slots_linked": 1173,
+    "share": 71.18,
+    "rows": [
+     {
+      "cap": 1,
+      "pairs_added": 11,
+      "slots_added": 0,
+      "gain_points": 0.0
+     },
+     {
+      "cap": 2,
+      "pairs_added": 43,
+      "slots_added": 0,
+      "gain_points": 0.0
+     },
+     {
+      "cap": 3,
+      "pairs_added": 88,
+      "slots_added": 0,
+      "gain_points": 0.0
+     },
+     {
+      "cap": 4,
+      "pairs_added": 124,
+      "slots_added": 0,
+      "gain_points": 0.0
+     },
+     {
+      "cap": 6,
+      "pairs_added": 211,
+      "slots_added": 0,
+      "gain_points": 0.0
+     },
+     {
+      "cap": 8,
+      "pairs_added": 271,
+      "slots_added": 0,
+      "gain_points": 0.0
+     },
+     {
+      "cap": 12,
+      "pairs_added": 418,
+      "slots_added": 0,
+      "gain_points": 0.0
+     },
+     {
+      "cap": 16,
+      "pairs_added": 618,
+      "slots_added": 0,
+      "gain_points": 0.0
+     },
+     {
+      "cap": 25,
+      "pairs_added": 897,
+      "slots_added": 0,
+      "gain_points": 0.0
+     },
+     {
+      "cap": "inf",
+      "pairs_added": 4576,
+      "slots_added": 0,
+      "gain_points": 0.0
+     }
+    ]
+   }
+  }
+ },
+ "carried": {
+  "2wiki": null,
+  "hotpotqa": 3,
+  "musique": 25
+ },
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zu2b_sha256": "4bfbf7479a72cfb80ccc7070dfa98f4825e57bf40422d858ce5eb95f22ac90e4",
+ "script_sha256": "91f811395e7f20d69f907483575a81039b60c6ce3cb9bf87de55cbc1c9bd2f90",
+ "ap1b_report_sha256": "bbc5134c1cda722439103424700748c3908226011b073692b544723dae309088",
+ "utc": "2026-11-11T22:07:56Z"
+}
