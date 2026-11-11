@@ -264,6 +264,26 @@ def marginal_price(rows, kind, f, g):
     return round((rows[f]["ner_new_edges"] - rows[g]["ner_new_edges"]) / add, 1) if add > 0 else None
 
 
+def weight_curve(slots, fam, forms_w, fracs=(0.1, 0.2, 0.3, 0.5, 0.7, 1.0)):
+    """Amendment A1 (ii), descriptive: in the R-world, the NER pairs of a form ordered by weight (descending; ties by the pair), the top fraction f of them
+    kept, and the union with R and K: its pairs and the share of each slot kind it links. forms_w = {form: (a, b, weight)} with a < b."""
+    base = fam["R"] | fam["K"]
+    out = {}
+    for form, (a, b, w) in forms_w.items():
+        order = np.lexsort((b, a, -np.asarray(w, float)))
+        a, b, w = np.asarray(a)[order], np.asarray(b)[order], np.asarray(w, float)[order]
+        out[form] = {}
+        for f in fracs:
+            m = int(np.ceil(f * a.size))
+            u = base | pair_set(a[:m], b[:m])
+            row = {"ner_pairs": m, "min_weight": round(float(w[m - 1]), 5) if m else None, "pairs": len(u)}
+            for kind, sl in slots.items():
+                if kind in ("CH", "GP"):
+                    row[kind] = pct(covered(sl, u).mean())
+            out[form][str(f)] = row
+    return out
+
+
 # ── Part B: MuSiQue's chains, the bridge name ───────────────────────────────
 
 
@@ -322,6 +342,10 @@ def run_setting(d):
     nq = len(queries)
     gp = gold_slots(queries)
     slots = {"GP": gp}
+    for k in sorted({q["kind"] for q in queries}):                       # amendment A1 (i): the GP slots by question kind, descriptive
+        sl = [s for s in gp if queries[s[0]]["kind"] == k]
+        if sl:
+            slots["GPk:" + k] = sl
     info = {"nodes": n, "questions": nq, "gp_slots": len(gp)}
     ch, chinfo = (None, None)
     if d == "musique":
@@ -350,6 +374,11 @@ def run_setting(d):
     info["spacy_graph"] = {"N_sp_pairs": len(fam["N_sp"]), "S_pairs": len(fam["S"]), "R_pairs": len(fam["R"]), "K_pairs": len(fam["K"])}
     a_tab, cov = part_a(slots, nq, fam, rules, {"n": n})
     res = {"info": info, "partA": a_tab}
+    z = np.load(BENCH / d / "graph_ner.npz")
+    nsp = (np.minimum(z["src"], z["dst"]).astype(np.int64), np.maximum(z["src"], z["dst"]).astype(np.int64), z["weight"].astype(np.float64))
+    if len(set(zip(nsp[0].tolist(), nsp[1].tolist()))) != nsp[0].size or pair_set(nsp[0], nsp[1]) != fam["N_sp"]:
+        raise SystemExit(f"{d}: graph_ner.npz is not one row per pair")
+    res["curve"] = weight_curve(slots, fam, {"N_sp": nsp, "CN_all": rules["CN_all"]})
     res["price"] = {w: {kind: per_edge_price(a_tab[w], kind) for kind in slots} for w in a_tab}
     res["marginal_price"] = {w: {kind: {"CN_all_over_none": marginal_price(a_tab[w], kind, "CN_all", "none"),
                                         "CN_w_over_CN_all": marginal_price(a_tab[w], kind, "CN_w", "CN_all"),
@@ -411,6 +440,22 @@ def render(res):
                 for f in ("CN_u", "CN_wu", "CN_w"):
                     v = rows[f][k]["vs_CN_all"]
                     L.append(f"- {f} minus CN_all, {k}: {v['diff']:+.2f} [{v['lo']:+.2f}, {v['hi']:+.2f}] {v['call']}")
+            L.append("")
+        kk = [k for k in r["partA"]["R"]["none"] if k.startswith("GPk:")]
+        if len(kk) > 1:
+            L += [f"### {d}, by question kind (R-world; descriptive, amendment A1): linked/slots, share, call against N_sp", "",
+                  "| NER form | " + " | ".join(k[4:] for k in kk) + " |", "|---|" + "---:|" * len(kk)]
+            for f, x in r["partA"]["R"].items():
+                L.append(f"| {f} | " + " | ".join(f"{x[k]['linked']}/{x[k]['slots']} {x[k]['share']:.1f}% {x[k]['vs_N_sp']['call']}" for k in kk) + " |")
+            L.append("")
+        if "curve" in r:
+            L += [f"### {d}, reach against NER pairs kept (R-world; the form's pairs by weight, top fraction f; descriptive, amendment A1)", "",
+                  "| form | f | NER pairs | min weight | union pairs | " + " | ".join(k for k in ("CH", "GP") if k in r["curve"]["N_sp"]["1.0"]) + " |",
+                  "|---|---:|---:|---:|---:|" + "---:|" * len([k for k in ("CH", "GP") if k in r["curve"]["N_sp"]["1.0"]])]
+            for form, rows_c in r["curve"].items():
+                for f, x in rows_c.items():
+                    L.append(f"| {form} | {f} | {x['ner_pairs']} | {x['min_weight']} | {x['pairs']} | " +
+                             " | ".join(f"{x[k]:.2f}%" for k in ("CH", "GP") if k in x) + " |")
             L.append("")
         if "partB" in r:
             b = r["partB"]
@@ -487,6 +532,15 @@ def selftest():
     d, lo, hi = boot_diff(half, np.zeros(50, bool), qi, 50)
     assert abs(d - 0.5) < 1e-12 and lo < 0.5 < hi and call(lo, hi) == "ABOVE"
     assert boot_diff(half, ~half, qi, 50) == boot_diff(half, ~half, qi, 50), "the bootstrap is seeded"
+    # the weight curve on a toy: pairs ordered by weight, the top fraction kept, the union with R and K
+    toy_fam = {"R": {(0, 1)}, "K": {(2, 3)}}
+    toy_slots = {"GP": [(0, 0, 1), (1, 4, 5), (2, 6, 7), (3, 8, 9)]}
+    tw = {"X": (np.array([4, 6, 8, 5]), np.array([5, 7, 9, 6]), np.array([0.9, 0.5, 0.1, 0.5]))}
+    cu = weight_curve(toy_slots, toy_fam, tw, fracs=(0.25, 0.5, 0.75, 1.0))["X"]
+    assert cu["0.25"]["ner_pairs"] == 1 and cu["0.25"]["GP"] == 50.0, cu            # R links slot 0, the top pair (4, 5) links slot 1
+    assert cu["0.5"]["ner_pairs"] == 2 and cu["0.5"]["GP"] == 50.0, cu              # the weight tie 0.5 goes to the lower pair (5, 6), which is no slot
+    assert cu["0.75"]["ner_pairs"] == 3 and cu["0.75"]["GP"] == 75.0, cu            # slot 2's pair (6, 7) comes third
+    assert cu["1.0"]["ner_pairs"] == 4 and cu["1.0"]["GP"] == 100.0 and cu["1.0"]["min_weight"] == 0.1, cu  # all four slots: (8, 9), the lowest weight, comes last
     # gold slots
     gs = gold_slots([{"golds": [3, 1, 2]}, {"golds": [5]}, {"golds": [7, 7, 9]}])
     assert gs == [(0, 1, 2), (0, 1, 3), (0, 2, 3), (2, 7, 9)], gs

@@ -123,3 +123,24 @@ are not filed numbers.
 - **D73.** "Triplets" (typed subject-relation-object edges from text without a parser; today's P2c triples use spaCy's
   parser) and more per-dataset rules (SQuAD's question links, the two-name list of typed KBs) are AP3, declared after AP2.
   Default: not before AP2's declaration.
+
+## 10. Amendment A1 (12 November, after the first run's tables were read; declared before the second run)
+
+The first run (fc73b37's script) passed all five gates; its tables are the report's main tables and the second run must
+reproduce them unchanged (checked against the first run's `report.json`). The second run adds:
+
+- **(i) GP by question kind**, from the `kind` field of B1a's queries (2Wiki: compositional, comparison,
+  bridge_comparison, inference; HotpotQA: bridge, comparison; MuSiQue: 2hop, 3hop1, ...). The two gold passages of a
+  comparison question need no link between them, so the question "does the graph link the pair" belongs to the kinds that
+  chain. Descriptive; changes no call and no rule of section 7.
+- **(ii) Reach against NER pairs kept**, R-world: N_sp's and CN_all's pairs ordered by weight (descending, ties by pair),
+  the top fraction f in {0.1, 0.2, 0.3, 0.5, 0.7, 1.0} kept, unioned with R and K: the union's pairs and its share of GP and
+  CH. Descriptive (is every NER pair needed; the 2 Nov "cut useless NER rules later" item); changes no call.
+- **(iii) A correction to section 1.** The scratch reads matched each slot's two passages by title, which counts a bridge
+  name found in any passage of a repeated title; the filed Part B matches by node, and its figures replace the scratch's
+  bridge-in-both counts (1,185 and 317 there).
+- **(iv) How R1 and R2 are read together.** R1 as written carries the candidate with the most GP slots, which the first run
+  shows can be CN_w (3,014 against CN_all's 3,007 slots over the three settings), while R2 refuses CN_w its own read
+  (marginal price 1,356.5 pairs per slot against N_sp's 128.6 on MuSiQue's CH). Written down after seeing that: the two are
+  read as "R2 limits what R1 may carry", so a form R2 refuses is not carried. This is open as **D74** (default CN_all; the
+  alternative is CN_w, R1 read alone: 7 more GP slots for 6.7k more NER pairs).
