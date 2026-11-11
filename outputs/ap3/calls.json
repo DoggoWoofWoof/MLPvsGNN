@@ -1,0 +1,75 @@
+{
+ "declared_in": "docs/AP3_STRUCTURAL_SLOT_TITLE_FORMS.md",
+ "verdict": "HOLD",
+ "carried": {
+  "2wiki": null,
+  "hotpotqa": 3,
+  "musique": 25
+ },
+ "call": {
+  "hotpotqa": "GREATER",
+  "musique": "MIXED"
+ },
+ "calls_vs_b1n": {
+  "hotpotqa": {
+   "in_domain": {
+    "zg6r": {
+     "b1y-b1n": "GREATER",
+     "b1y-b1w": "GREATER",
+     "b1y-b1t": "UP",
+     "b1n-b1t": "UP"
+    },
+    "zrckpn": {
+     "b1y-b1n": "GREATER",
+     "b1y-b1w": "GREATER",
+     "b1y-b1t": "UP",
+     "b1n-b1t": "UP"
+    }
+   },
+   "zero_shot": {
+    "zg6r": {
+     "b1y-b1n": "GREATER",
+     "b1y-b1w": "GREATER",
+     "b1y-b1t": "UP",
+     "b1n-b1t": "UP"
+    },
+    "zrckpn": {
+     "b1y-b1n": "GREATER",
+     "b1y-b1w": "GREATER",
+     "b1y-b1t": "UP",
+     "b1n-b1t": "UP"
+    }
+   }
+  },
+  "musique": {
+   "in_domain": {
+    "zg6r": {
+     "b1y-b1n": "SAME",
+     "b1y-b1w": "SAME",
+     "b1y-b1t": "UP",
+     "b1n-b1t": "UP"
+    },
+    "zrckpn": {
+     "b1y-b1n": "LESS",
+     "b1y-b1w": "LESS",
+     "b1y-b1t": "UP",
+     "b1n-b1t": "UP"
+    }
+   },
+   "zero_shot": {
+    "zg6r": {
+     "b1y-b1n": "SAME",
+     "b1y-b1w": "SAME",
+     "b1y-b1t": "FLAT",
+     "b1n-b1t": "FLAT"
+    },
+    "zrckpn": {
+     "b1y-b1n": "SAME",
+     "b1y-b1w": "SAME",
+     "b1y-b1t": "UP",
+     "b1n-b1t": "UP"
+    }
+   }
+  }
+ }
+}

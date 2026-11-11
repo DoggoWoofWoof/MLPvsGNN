@@ -133,6 +133,7 @@ the carve folders `outputs/b1y/bench/hipporag2_y/<setting>/` stay local until th
 - **D79:** a refit whose training carves hold Ry (or any new structural family) is not part of AP3. Default: not now, after Part B and with D78.
 - **D80:** a later stage (AP4) on query-side typed rules and a triple family, starting with a scouting stage with its own declaration. Default: yes after AP3's Part A is filed, as a scouting stage only.
 - **D81:** a ceiling carve with S in the structural slot beside F0T. Default: no (section 6).
+- **D82** (added when Part B was filed, section 12): use Ry at cap 3 for HotpotQA alone in the after-paper read path, against the declared verdict (HOLD). Default: no.
 
 ## 10. Development log (disclosed before any AP3 number)
 
@@ -255,3 +256,110 @@ column sets and 12 reads); the chains reserve AP2's measured peaks on b1n (hotpo
 (91f81139) are equal on the host. A fixture run of `zap3.py report` on the laptop (b1y's reads copies of b1n's real reads, stub settings records, the fixture folders removed afterwards) passed before any read: rc 0, no read
 missing, every b1y - b1n difference exactly 0 (SAME, verdict NO_GAIN by construction), 64 rows recomputed from B1P's and B1M's reads equal to B1M's; nothing in it is a result. The report's b1n level column reads "--"
 (b1n's levels are AP2's, section 9 of its document); the difference columns decide.
+
+## 12. Part B filed (12 November 2026)
+
+**The run.** The 38 `ap3y-` rows queued behind AP2's at 03:50 IST (section 7; queue sha256 30fd07e0) all finished rc 0 on the host, all 38 done by 04:37 IST on 12 November. The chains' measured peaks (the host's job
+records) were 4.99 GB for HotpotQA (4 min 33 s, 71 output files; 5.5 GB reserved; AP2's b1n chain peaked at 4.76) and 6.59 GB for MuSiQue (26 min 50 s, 379 output files; 7.5 GB reserved; b1n's chain peaked
+at 6.56); the job record of MuSiQue's chain lists one leftover process, as that of AP2's b1n chain does. The 24 read files and the two settings records were fetched to the laptop (HotpotQA's at 04:09 IST,
+MuSiQue's at 04:38 to 04:39); four of them (three reads and a settings record) were compared with the host's by sha256 and are equal.
+
+`python -I outputs/mp_unified/zap3.py report` ran on the laptop from 04:39:29 to 04:39:37 IST (the record's `utc` stamp is 2026-11-11T23:09:37Z), after every rule, constant and gate of this stage had been committed
+and pushed (b4fd7be, e5449e7, ec19758, 771abf6) and after the last read file arrived. It ended with exit 0 and "Missing reads: 0"; G6 held (64 rows recomputed from B1P's and B1M's reads equal B1M's filed rows). The
+record names its inputs by sha256: the script (91f81139, equal to the committed `zap3.py`'s), `zb1h.py` (33b0e495), B1P's and B1M's records (76f76cf0, b523126c), AP2's report (93a0f089) and the ladder (a1d2f99f);
+each read file's sha256 is in `report.json`. Three further checks ran on the laptop before this section was written (a scratch script, not filed): each carve's pair counts equal the ladder's rung; each setting's
+call recomputed by `zb1l.stage_call` from the two models' words, and the verdict recomputed by `zap3.verdict` from the two calls, equal the record's; and b1y's level minus b1n's level (AP2's, section 9 of its
+document) equals the paired difference within 0.03 points on all 8 pairs (two settings, two splits, two models).
+
+Levels are R@5 in points (means over the three seeds' fits, with the 95% interval over the 1,000 questions); differences are paired by question with their 95% intervals (2,000 resamples, seed 0); the words are
+section 4's. b1n's levels are AP2's, filled into these copies of the report's tables (the committed `report.md` prints "--" in that column, as the fixture run did; the difference columns decide).
+In-domain = the fits whose training split is the setting's partner; held-out = the others.
+
+### In-domain
+
+| setting | model | b1t | b1w | b1n | b1y | b1y - b1n | b1y - b1w | b1y - b1t | word (b1y - b1n) |
+|---|---|---:|---:|---:|---:|---|---|---|---|
+| hotpotqa | zg6r | 91.1 (90.0-92.3) | 94.3 (93.3-95.3) | 94.3 (93.3-95.4) | 95.1 (94.1-96.0) | +0.8 (+0.4, +1.2) | +0.8 (+0.3, +1.3) | +4.0 (+3.1, +4.8) | GREATER |
+| hotpotqa | zrckpn | 90.4 (89.2-91.6) | 93.4 (92.4-94.5) | 93.5 (92.4-94.5) | 94.2 (93.2-95.2) | +0.8 (+0.4, +1.1) | +0.8 (+0.4, +1.2) | +3.9 (+3.0, +4.8) | GREATER |
+| musique | zg6r | 66.0 (64.3-67.7) | 69.0 (67.2-70.7) | 68.7 (67.0-70.4) | 68.6 (66.9-70.3) | -0.1 (-0.5, +0.3) | -0.4 (-0.9, +0.2) | +2.6 (+1.5, +3.8) | SAME |
+| musique | zrckpn | 64.5 (62.8-66.1) | 67.4 (65.7-69.2) | 67.2 (65.5-68.9) | 66.7 (65.0-68.4) | -0.5 (-1.0, -0.1) | -0.7 (-1.3, -0.2) | +2.2 (+1.0, +3.3) | LESS |
+
+### Held-out
+
+| setting | model | b1t | b1w | b1n | b1y | b1y - b1n | b1y - b1w | b1y - b1t | word (b1y - b1n) |
+|---|---|---:|---:|---:|---:|---|---|---|---|
+| hotpotqa | zg6r | 89.4 (88.2-90.6) | 92.9 (91.9-94.0) | 92.9 (91.8-94.0) | 93.5 (92.5-94.5) | +0.6 (+0.3, +1.0) | +0.6 (+0.1, +1.0) | +4.1 (+3.2, +5.0) | GREATER |
+| hotpotqa | zrckpn | 88.6 (87.4-89.9) | 92.2 (91.2-93.4) | 92.1 (91.0-93.2) | 92.7 (91.6-93.8) | +0.7 (+0.3, +1.0) | +0.5 (+0.1, +0.9) | +4.1 (+3.2, +5.0) | GREATER |
+| musique | zg6r | 62.1 (60.4-63.7) | 60.8 (59.1-62.5) | 61.1 (59.4-62.8) | 61.2 (59.5-62.9) | +0.1 (-0.4, +0.7) | +0.4 (-0.2, +1.1) | -0.8 (-2.2, +0.5) | SAME |
+| musique | zrckpn | 60.0 (58.4-61.7) | 61.8 (60.1-63.6) | 62.2 (60.5-64.0) | 62.0 (60.3-63.7) | -0.1 (-0.7, +0.4) | +0.2 (-0.4, +0.8) | +2.0 (+0.7, +3.3) | SAME |
+
+### The setting's call (in-domain, both models)
+
+| setting | call |
+|---|---|
+| hotpotqa | GREATER |
+| musique | MIXED |
+
+### zg6r - zrckpn at b1y, paired by question
+
+| setting | read | zg6r - zrckpn (CI) | label |
+|---|---|---|---|
+| hotpotqa | in-domain | +0.9 (+0.4, +1.3) | GNN_ABOVE |
+| hotpotqa | zero-shot | +0.7 (+0.2, +1.3) | GNN_ABOVE |
+| musique | in-domain | +1.9 (+1.1, +2.8) | GNN_ABOVE |
+| musique | zero-shot | -0.8 (-1.7, +0.1) | LEVEL |
+
+### MuSiQue by hop depth (in-domain, paired by question, descriptive)
+
+| hops | questions | model | b1y - b1n |
+|---|---:|---|---|
+| 2hop | 518 | zg6r | +0.1 (-0.6, +0.8) |
+| 2hop | 518 | zrckpn | -0.4 (-1.1, +0.3) |
+| 3hop | 316 | zg6r | -0.6 (-1.2, +0.1) |
+| 3hop | 316 | zrckpn | -1.0 (-1.9, -0.2) |
+| 4hop | 166 | zg6r | +0.3 (-0.4, +1.1) |
+| 4hop | 166 | zrckpn | +0.1 (-0.5, +0.9) |
+
+### The structural files
+
+| setting | df cap | R pairs | pairs added | pairs in the carve |
+|---|---|---:|---:|---:|
+| hotpotqa | 3 | 4315 | 357 | 4672 |
+| musique | 25 | 41429 | 1864 | 43293 |
+
+Missing reads: 0.
+
+**What Part B says.**
+
+- **The verdict is HOLD**, by section 4's rule: HotpotQA's call is GREATER and MuSiQue's is MIXED (one model is LESS and the other is not). HOLD keeps R in the structural slot of the after-paper read path on both
+  settings and names what fell: zrckpn on MuSiQue in-domain, b1y - b1n -0.5 [-1.0, -0.1] (LESS; the top of the interval is 0.1 points below zero, a thin margin), with b1y - b1w -0.7 [-1.3, -0.2]; zg6r on the
+  same reads is SAME (-0.1 [-0.5, +0.3]).
+- **HotpotQA (cap 3) is GREATER on both models, in-domain and held-out.** In-domain zg6r goes from 94.3 to 95.1 (+0.8 [+0.4, +1.2]) and zrckpn from 93.5 to 94.2 (+0.8 [+0.4, +1.1]); held-out +0.6 [+0.3, +1.0]
+  and +0.7 [+0.3, +1.0]. Against b1w (R with spaCy's N) the in-domain differences are +0.8 [+0.3, +1.3] and +0.8 [+0.4, +1.2], both GREATER. Part A counted the carve's reach over b1n's union at 79 new pairs and
+  3 gold-pair slots (+0.3 points), so the reads move by more than that reach: 278 of the 357 added pairs were already in the union (through F0T's or the kNN file, whose files are b1n's byte for byte), and nothing
+  here separates the 79 new pairs from the move of the other 278 into the structural slot (no run for it was declared).
+- **MuSiQue (cap 25) is MIXED.** In-domain zg6r is SAME (68.7 to 68.6) and zrckpn LESS (67.2 to 66.7); held-out both are SAME (+0.1 [-0.4, +0.7] and -0.1 [-0.7, +0.4]). By hop depth (descriptive): zrckpn's fall
+  sits in the 316 three-hop questions (b1y - b1n -1.0 [-1.9, -0.2], LESS) and is SAME on the 518 two-hop (-0.4 [-1.1, +0.3]) and the 166 four-hop (+0.1 [-0.5, +0.9]) questions; zg6r is SAME at every depth.
+  Part A found that the 897 added pairs new to the union link no chain slot, so on MuSiQue the carve adds edges without gold reach; why one model's read falls by half a point is not examined here.
+- **The expectation of section 5 did not hold.** It said an effect of a few tenths of a point at most and NO_GAIN likely; found: HOLD, with +0.8 points on both models on HotpotQA and -0.5 on one model on MuSiQue.
+  What held is the placement of the rungs (Part A: none on 2Wiki, a shallow one on HotpotQA, the deepest capped one on MuSiQue).
+- **The gap GNN - MLP at b1y** (reported): HotpotQA +0.9 [+0.4, +1.3] in-domain and +0.7 [+0.2, +1.3] held-out (GNN_ABOVE both; at b1n +0.9 and +0.8); MuSiQue +1.9 [+1.1, +2.8] in-domain (GNN_ABOVE; at b1n +1.5)
+  and -0.8 [-1.7, +0.1] held-out (LEVEL; at b1n -1.1 [-2.0, -0.1], MLP_ABOVE). Of the four labels only MuSiQue's held-out one changes.
+
+**What it can and cannot show** (section 5 applies in full).
+
+- A read-time shift: the models were fitted with R in the structural slot, so the HotpotQA gain and the MuSiQue fall say what these fitted models do when the slot holds Ry; neither says how a model fitted on Ry
+  would read (D79).
+- Selection: S1 chose each rung on the gold pairs of the same 1,000 questions the reads grade, so the HotpotQA word carries that selection (one cap out of ten, inside a family fixed in advance); B1's settings hold
+  no other questions to read on.
+- One setting carries the GREATER (HotpotQA), and MuSiQue's LESS rests on one model's in-domain read with a thin margin (its held-out reads and the GNN's reads are SAME).
+
+**What it decides.** The declared verdict, HOLD: Ry is not carried into the read path, and b1w's rows remain the record; no number of the paper, no model, pool or column of record changes. HotpotQA's GREATER is
+filed as a finding of this form (a read-time substitution of R by Ry at S1's caps), not as an adoption.
+
+**Open after Part B** (the user's; my default first): **D79** (a refit with Ry in the training carves; default: not now, with D78) is where HotpotQA's carve (cap 3) would be the first candidate. **D82** (added with
+this filing): use Ry at cap 3 for HotpotQA alone in the read path, against the declared verdict. Default: no, since the verdict rule is declared and a per-setting adoption would be a rule made after the numbers, on
+the questions the rung was chosen on. D80 and D81 are unchanged.
+
+Files: `outputs/ap3/report.json`, `report.md` and `calls.json` (committed); the 24 read files (`outputs/b1y/fits/h/<fit>/reads/<setting>__b1y.npz`) and the two settings records (`outputs/b1y/settings/`) are
+the host's files fetched and stay local; the carve folders are rebuilt by `zap3.py bench`.
