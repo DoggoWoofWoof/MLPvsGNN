@@ -319,6 +319,22 @@ C's collect alone. Part E's lists, columns and reads of the cell wait on that ga
 refuses outside the N-world or in the wrong mode; no row names a directory as an input (the 8 Nov feeder crash). No Part E number goes into the paper before
 this section records the filed report; section 6 applies to every Part E sentence.
 
+**Amendment A2 (11 Nov 06:25 IST, before any Part E number): the start encoder of the slot-empty build.**
+- What failed: both zg6r fits stopped at their start on 11 Nov 05:44-05:56. Each ran twice and ended rc 1 in 3 s; nothing trained. The feeder dropped the 89 rows
+  behind them: both GNX fits, the flip, the seven forks, the 72 reads, the SNK/squad and RK/metaqa lists and columns, and swpe-collect.
+- Why: `zml1s.load_encoder` takes ML1's zspk start only when its encoder holds `zg6rw.ENC_ELEMENTS` = 224,737 numbers, the base build's block encoder at
+  hidden 128. Part E's zspk fits recorded the blocks `DISTS` and `depth_STRUCT` as dead (`lean_gpu.dead_blocks` leaves out every block whose values do not vary
+  over the training rows, and the slot's two blocks are constant when the slot is empty). Their input set has 7 blocks, not 9, and the start's `l1.weight` is
+  (128, 243), not (128, 309): 66 columns fewer, 216,289 numbers. Every other encoder tensor has the base shape. This holds on both splits; the fits'
+  `models.pt` were read on the host. GNX, under ISO's KEEP, loads the same start through `ml1start.LOAD`.
+- Fix: the zg6r and GNX fits run through `outputs/mp_unified/zswpe_tn.py` (new). It is `zswpe_t.py` unchanged, except that each start load takes 216,289 for
+  the call and requires `l1.weight` (128, 243). `zg6r.copy_encoder` still checks every name and shape of the start against the model it builds. No record,
+  Part C or Part E module is edited. The N-world is made again so that it holds the new file. The failed fits and the dropped rows are requeued as -r2 / -r3
+  copies.
+- Reading (c) and (d): a fit that left the two blocks out has no input weights for them. With R or S in the slot, those two blocks do not enter it; what the read's
+  links feed through the other parts (chain match, KT, the other blocks and, for GNX, message passing) still does. (a) and (b) read the N-trained fits with the
+  slot empty, where the two blocks are constant anyway.
+
 ## 6. What the paper's wording must carry (for the paper session; this stage edits nothing under paper/)
 
 - Name the direction of every swap (trained on which family, read with which).
