@@ -144,3 +144,80 @@ reproduce them unchanged (checked against the first run's `report.json`). The se
   (marginal price 1,356.5 pairs per slot against N_sp's 128.6 on MuSiQue's CH). Written down after seeing that: the two are
   read as "R2 limits what R1 may carry", so a form R2 refuses is not carried. This is open as **D74** (default CN_all; the
   alternative is CN_w, R1 read alone: 7 more GP slots for 6.7k more NER pairs).
+
+## 11. Results (filed 12 November; `outputs/ap1/report.json`, `report.md`; the second run, `zap1.py` as of ad1bfed)
+
+**The run.** It completed on all three settings, so none of the five gates stopped it (a failed gate ends the run with
+SystemExit; `outputs/ap1/run2.log` shows each setting done and the report written). Against the first run's `report.json`
+every value of the tables, prices and Part C (GP, CH) the first run filed is identical in the second; the script's sha256
+and the seconds differ, and the by-kind tables and the weight curve are new. Nothing below is an R@5: each figure is the
+share of slots whose pair is an edge of the union.
+
+**Q1, spaCy out: U2r's CN_all replaces spaCy's family at the graph level; CN_u does not.** R-world (R + K + the NER form),
+GP share of the form and its difference to N_sp (95% interval, paired over 1,000 questions):
+
+| setting | N_sp | CN_u | CN_all | CN_w |
+| --- | ---: | ---: | ---: | ---: |
+| musique GP | 48.05% | -3.25 [-4.51, -2.07] BELOW | +1.10 [-0.08, +2.22] LEVEL | +1.34 [+0.16, +2.45] ABOVE |
+| musique CH (chain slots) | 68.26% | -5.10 [-6.76, -3.43] BELOW | +1.27 [-0.36, +2.84] LEVEL | +1.52 [-0.12, +3.10] LEVEL |
+| 2wiki GP | 46.25% | -1.38 [-1.93, -0.86] BELOW | +0.00 [-0.18, +0.19] LEVEL | +0.00 [-0.18, +0.19] LEVEL |
+| hotpotqa GP | 77.50% | -0.10 [-1.10, +0.90] LEVEL | +1.60 [+0.70, +2.60] ABOVE | +1.70 [+0.80, +2.70] ABOVE |
+
+Pairs: the NER family alone holds 75,002 (N_sp), 92,847 (CN_all) and 99,554 (CN_w) pairs on MuSiQue; 36,147, 41,593 and
+43,254 on 2Wiki; 68,698, 85,369 and 90,411 on HotpotQA. CN_all's union with R and K has 1.13, 1.11 and 1.18 times the pairs
+of N_sp's. On MuSiQue's chain slots the NER slot adds 128.6 (N_sp), 155.5 (CN_all) and 165.0 (CN_w) new pairs per slot
+linked over the union without it. In the S-world (S + K + the form) the calls are the same except on HotpotQA, where CN_all
+(+0.40 [+0.00, +0.90]) and CN_w (+0.50 [+0.00, +1.00]) are LEVEL, not ABOVE.
+
+**R1:** CN_all and CN_w are candidates (CN_u and CN_wu are BELOW on MuSiQue and 2Wiki); summed over the three settings CN_w
+links 3,014 GP slots and CN_all 3,007. **R2:** CN_w minus CN_all on MuSiQue's CH is +0.24 [+0.06, +0.49] ABOVE (1,150 against
+1,146 slots: 4 slots) at a marginal price of 1,356.5 pairs per slot against N_sp's 128.6, so R2 refuses CN_w its own read.
+**Read together (section 10 (iv)), the form AP2 carries is CN_all**, the NER slot of U2r's N2 (IS + CN_all); CN_u, the
+untitled names only (N1 = IS + CN_u), is the one that falls BELOW. D74 stays open (default CN_all).
+
+**Q2, the MuSiQue reach.** By node (Part B, the answer read as a label, diagnostic only) the rule finds the bridge name in
+both passages in 1,133 of the 1,648 chain slots (68.75%), in one passage in 398 and in neither in 117; at df at most 100 the
+count is 1,106. The unions link 1,125 (R + N_sp + K), 1,146 (R + CN_all + K) and 1,150 (R + CN_w + K) slots, 68.3%, 69.5% and
+69.8%. Of the 523 slots R + N_sp + K misses, the bridge name is in both passages in 304 (df 2-25: 82; 26-50: 112; 51-100:
+84; above 100: 26) and not in both in 219. So a shared-name rule alone is capped at 1,133 slots, and CN_w's hub names add 4
+slots over CN_all for 5,426 more union pairs: the df cap is not what limits the reach.
+
+By question kind (R-world, descriptive): 2Wiki's compositional pairs are 96.1% linked by R + K alone and 98.8% with N_sp or
+CN_all, its inference pairs 96.3% and 100.0%; its comparison pairs 4.9% and 6.6% (the two gold passages of a comparison
+question need no link, A1 (i)) and its bridge_comparison pairs 31.4% and 33.6%. HotpotQA's bridge pairs are 88.0% linked
+without a NER family, 92.8% with N_sp and 94.3% with CN_all (ABOVE). On MuSiQue CN_all is LEVEL with N_sp in four kinds and
+ABOVE in two (4hop1 43.1% against 39.7%; 4hop3 35.0% against 30.1%); CN_u is BELOW in three (3hop1, 3hop2, 4hop2) and ABOVE
+in one (4hop3).
+
+**Reach against pairs kept (R-world, descriptive).** MuSiQue CH: the union without a NER family links 38.96%; with the top
+10% of N_sp's pairs by weight (7,501 pairs, weight at least 1/3) 43.81%, with half 57.28%, with all 68.26%; every band of
+weights adds reach, so weight pruning is not free on MuSiQue. 2Wiki GP: 43.95% with none, 45.20% with the top 10%, 46.25%
+with all, so the lower 90% of N_sp's pairs add 1.05 points. HotpotQA GP: 73.00% with none, 74.40% at 10%, 76.50% at half,
+77.50% with all. CN_all's curve lies above N_sp's at every fraction of its own pairs on MuSiQue and HotpotQA (on 2Wiki the
+two stay within 0.14 points); CN_all has 1.24, 1.15 and 1.24 times N_sp's pairs, so the comparison is at equal fractions, not
+at equal pair counts.
+
+**Q3, what is lost (Part C, CN_w against N_sp, R-world; read, not graded).** Slots N_sp's union links and CN_w's does not
+(loss), and the reverse (gain): MuSiQue GP 78 and 111, CH 71 and 96; 2Wiki GP 2 and 2; HotpotQA GP 3 and 20. Of MuSiQue's 78
+GP loss slots 42 have a rule name the two passages share at some df and 36 have none. Where a name is shared it is a demonym,
+a month, or a place or event name that many passages mention (italian, american; march, july, october; china, indonesia,
+vietnam; world series, super bowl, warner bros, academy awards): the kind of pair the weight threshold refuses. The 36 with no
+shared name are pairs spaCy's family links through a span the capitalized-run rule does not hold as such (one of them,
+Jessie Woodrow Wilson Sayre with Treaty of Versailles, is the "Woodrow Wilson" case below). R3's reading: the loss is partly
+a naming problem, of the run rule's shape, not of the cap.
+
+**What this leaves (a scratch read after the report; not filed, decides nothing).** Of the 502 chain slots R + CN_all + K does
+not link (1,648 - 1,146), read with the answer as a label (three scratch scripts, not in the repository; a key's df counts the
+passages where it is a name or a proper sub-span of one): in 223 the bridge name is a name in both passages at a df above 25
+(Mississippi River 28, South Carolina 53, NBC 61, New Zealand 62, Senate 70: the hubs CN_w's price refuses); in 163 the string
+is neither a name nor a sub-span of a name in at least one of the two passages; in 116 it is a name in one passage and a
+proper sub-span of a longer capitalized run in the other, or a sub-span in both: 67 of them with the sub-span key's df in 2-25
+and 49 above 25. There the run rule takes a neighbouring word into the run: "Chief Justice of Delta State" against "women of
+Delta State", "St Andrew's Birmingham City" against "Birmingham City", "King of Aragon" against "Zaragoza, Aragon, Spain",
+"Woodrow Wilson" inside longer runs in both passages of Jessie Woodrow Wilson Sayre and Treaty of Versailles. A period or a
+comma also splits a run ("U.S. Navy" against "United States Navy SEALs"; the label "Texas," carries its comma). In 16 of the
+54 slots where the answer is in the earlier passage and nothing (32) or one word (22) of it is in the later passage's text,
+the later passage's own title contains it ("Bill Maher" in "Real Time with Bill Maher"; "Robert Abel" in "Robert Abel
+(animator)"). So the second class is a shape gap of the run rule, not a cap gap: sub-span names could reach at most 67 more
+slots at the cap, 4.1% of the chain slots, at a price in pairs nobody has measured. That is the candidate for AP1b, which is
+declared before it runs.

@@ -1,0 +1,5053 @@
+{
+ "declared_in": "docs/AP1_RULE_NAMES_AND_MUSIQUE_REACH.md",
+ "script_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zu2r_script_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a",
+ "boot": 2000,
+ "seed": 0,
+ "cap": 25,
+ "unit_weight": 0.04,
+ "settings": {
+  "musique": {
+   "info": {
+    "nodes": 11656,
+    "questions": 1000,
+    "gp_slots": 2462,
+    "chain": {
+     "slots": 1648,
+     "distinct_pairs": 1090,
+     "ora_pairs": 1750
+    },
+    "names": {
+     "distinct": 57404,
+     "mentions": 108176,
+     "titled": 5103,
+     "df_2_25": 9361,
+     "df_over_25": 281
+    },
+    "spacy_graph": {
+     "N_sp_pairs": 75002,
+     "S_pairs": 42823,
+     "R_pairs": 41429,
+     "K_pairs": 25722
+    }
+   },
+   "partA": {
+    "R": {
+     "none": {
+      "edges": 63569,
+      "mean_degree": 10.908,
+      "ner_edges": 0,
+      "ner_new_edges": 0,
+      "GP": {
+       "slots": 2462,
+       "linked": 658,
+       "share": 26.73,
+       "vs_N_sp": {
+        "diff": -21.32,
+        "lo": -23.03,
+        "hi": -19.74,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -22.42,
+        "lo": -24.08,
+        "hi": -20.81,
+        "call": "BELOW"
+       }
+      },
+      "GPk:2hop": {
+       "slots": 518,
+       "linked": 269,
+       "share": 51.93,
+       "vs_N_sp": {
+        "diff": -27.99,
+        "lo": -31.93,
+        "hi": -24.19,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -30.31,
+        "lo": -34.24,
+        "hi": -26.41,
+        "call": "BELOW"
+       }
+      },
+      "GPk:3hop1": {
+       "slots": 729,
+       "linked": 148,
+       "share": 20.3,
+       "vs_N_sp": {
+        "diff": -20.44,
+        "lo": -23.39,
+        "hi": -17.6,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -19.75,
+        "lo": -22.81,
+        "hi": -16.59,
+        "call": "BELOW"
+       }
+      },
+      "GPk:3hop2": {
+       "slots": 219,
+       "linked": 37,
+       "share": 16.89,
+       "vs_N_sp": {
+        "diff": -26.94,
+        "lo": -32.14,
+        "hi": -21.65,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -22.37,
+        "lo": -28.4,
+        "hi": -16.41,
+        "call": "BELOW"
+       }
+      },
+      "GPk:4hop1": {
+       "slots": 648,
+       "linked": 152,
+       "share": 23.46,
+       "vs_N_sp": {
+        "diff": -16.2,
+        "lo": -19.39,
+        "hi": -13.43,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -19.6,
+        "lo": -22.7,
+        "hi": -16.67,
+        "call": "BELOW"
+       }
+      },
+      "GPk:4hop2": {
+       "slots": 162,
+       "linked": 19,
+       "share": 11.73,
+       "vs_N_sp": {
+        "diff": -27.16,
+        "lo": -32.64,
+        "hi": -22.04,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -26.54,
+        "lo": -32.18,
+        "hi": -21.29,
+        "call": "BELOW"
+       }
+      },
+      "GPk:4hop3": {
+       "slots": 186,
+       "linked": 33,
+       "share": 17.74,
+       "vs_N_sp": {
+        "diff": -12.37,
+        "lo": -15.94,
+        "hi": -9.01,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -17.2,
+        "lo": -22.4,
+        "hi": -12.28,
+        "call": "BELOW"
+       }
+      },
+      "CH": {
+       "slots": 1648,
+       "linked": 642,
+       "share": 38.96,
+       "vs_N_sp": {
+        "diff": -29.31,
+        "lo": -31.55,
+        "hi": -27.15,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -30.58,
+        "lo": -32.93,
+        "hi": -28.38,
+        "call": "BELOW"
+       }
+      },
+      "edge_ratio_to_ref": 0.5059
+     },
+     "N_sp": {
+      "edges": 125662,
+      "mean_degree": 21.562,
+      "ner_edges": 75002,
+      "ner_new_edges": 62093,
+      "GP": {
+       "slots": 2462,
+       "linked": 1183,
+       "share": 48.05,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -1.1,
+        "lo": -2.22,
+        "hi": 0.08,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:2hop": {
+       "slots": 518,
+       "linked": 414,
+       "share": 79.92,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -2.32,
+        "lo": -4.71,
+        "hi": 0.0,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:3hop1": {
+       "slots": 729,
+       "linked": 297,
+       "share": 40.74,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.69,
+        "lo": -1.81,
+        "hi": 3.08,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:3hop2": {
+       "slots": 219,
+       "linked": 96,
+       "share": 43.84,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 4.57,
+        "lo": -1.06,
+        "hi": 10.39,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:4hop1": {
+       "slots": 648,
+       "linked": 257,
+       "share": 39.66,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -3.4,
+        "lo": -5.14,
+        "hi": -1.79,
+        "call": "BELOW"
+       }
+      },
+      "GPk:4hop2": {
+       "slots": 162,
+       "linked": 63,
+       "share": 38.89,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.62,
+        "lo": 0.0,
+        "hi": 2.08,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:4hop3": {
+       "slots": 186,
+       "linked": 56,
+       "share": 30.11,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -4.84,
+        "lo": -7.74,
+        "hi": -2.22,
+        "call": "BELOW"
+       }
+      },
+      "CH": {
+       "slots": 1648,
+       "linked": 1125,
+       "share": 68.26,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -1.27,
+        "lo": -2.84,
+        "hi": 0.36,
+        "call": "LEVEL"
+       }
+      },
+      "edge_ratio_to_ref": 1.0
+     },
+     "CN_u": {
+      "edges": 131237,
+      "mean_degree": 22.518,
+      "ner_edges": 77961,
+      "ner_new_edges": 67668,
+      "GP": {
+       "slots": 2462,
+       "linked": 1103,
+       "share": 44.8,
+       "vs_N_sp": {
+        "diff": -3.25,
+        "lo": -4.51,
+        "hi": -2.07,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -4.35,
+        "lo": -5.14,
+        "hi": -3.58,
+        "call": "BELOW"
+       },
+       "added_over_none": 445
+      },
+      "GPk:2hop": {
+       "slots": 518,
+       "linked": 407,
+       "share": 78.57,
+       "vs_N_sp": {
+        "diff": -1.35,
+        "lo": -4.09,
+        "hi": 1.38,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -3.67,
+        "lo": -5.39,
+        "hi": -2.12,
+        "call": "BELOW"
+       },
+       "added_over_none": 138
+      },
+      "GPk:3hop1": {
+       "slots": 729,
+       "linked": 259,
+       "share": 35.53,
+       "vs_N_sp": {
+        "diff": -5.21,
+        "lo": -7.2,
+        "hi": -3.26,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -4.53,
+        "lo": -6.17,
+        "hi": -3.01,
+        "call": "BELOW"
+       },
+       "added_over_none": 111
+      },
+      "GPk:3hop2": {
+       "slots": 219,
+       "linked": 71,
+       "share": 32.42,
+       "vs_N_sp": {
+        "diff": -11.42,
+        "lo": -17.7,
+        "hi": -5.28,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -6.85,
+        "lo": -10.15,
+        "hi": -3.9,
+        "call": "BELOW"
+       },
+       "added_over_none": 34
+      },
+      "GPk:4hop1": {
+       "slots": 648,
+       "linked": 254,
+       "share": 39.2,
+       "vs_N_sp": {
+        "diff": -0.46,
+        "lo": -2.42,
+        "hi": 1.54,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -3.86,
+        "lo": -5.21,
+        "hi": -2.52,
+        "call": "BELOW"
+       },
+       "added_over_none": 102
+      },
+      "GPk:4hop2": {
+       "slots": 162,
+       "linked": 49,
+       "share": 30.25,
+       "vs_N_sp": {
+        "diff": -8.64,
+        "lo": -12.5,
+        "hi": -5.07,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -8.02,
+        "lo": -11.9,
+        "hi": -4.49,
+        "call": "BELOW"
+       },
+       "added_over_none": 30
+      },
+      "GPk:4hop3": {
+       "slots": 186,
+       "linked": 63,
+       "share": 33.87,
+       "vs_N_sp": {
+        "diff": 3.76,
+        "lo": 0.42,
+        "hi": 7.07,
+        "call": "ABOVE"
+       },
+       "vs_CN_all": {
+        "diff": -1.08,
+        "lo": -2.78,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 30
+      },
+      "CH": {
+       "slots": 1648,
+       "linked": 1041,
+       "share": 63.17,
+       "vs_N_sp": {
+        "diff": -5.1,
+        "lo": -6.76,
+        "hi": -3.43,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -6.37,
+        "lo": -7.53,
+        "hi": -5.23,
+        "call": "BELOW"
+       },
+       "added_over_none": 399
+      },
+      "edge_ratio_to_ref": 1.0444
+     },
+     "CN_all": {
+      "edges": 141965,
+      "mean_degree": 24.359,
+      "ner_edges": 92847,
+      "ner_new_edges": 78396,
+      "GP": {
+       "slots": 2462,
+       "linked": 1210,
+       "share": 49.15,
+       "vs_N_sp": {
+        "diff": 1.1,
+        "lo": -0.08,
+        "hi": 2.22,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 552
+      },
+      "GPk:2hop": {
+       "slots": 518,
+       "linked": 426,
+       "share": 82.24,
+       "vs_N_sp": {
+        "diff": 2.32,
+        "lo": 0.0,
+        "hi": 4.71,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 157
+      },
+      "GPk:3hop1": {
+       "slots": 729,
+       "linked": 292,
+       "share": 40.05,
+       "vs_N_sp": {
+        "diff": -0.69,
+        "lo": -3.08,
+        "hi": 1.81,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 144
+      },
+      "GPk:3hop2": {
+       "slots": 219,
+       "linked": 86,
+       "share": 39.27,
+       "vs_N_sp": {
+        "diff": -4.57,
+        "lo": -10.39,
+        "hi": 1.06,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 49
+      },
+      "GPk:4hop1": {
+       "slots": 648,
+       "linked": 279,
+       "share": 43.06,
+       "vs_N_sp": {
+        "diff": 3.4,
+        "lo": 1.79,
+        "hi": 5.14,
+        "call": "ABOVE"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 127
+      },
+      "GPk:4hop2": {
+       "slots": 162,
+       "linked": 62,
+       "share": 38.27,
+       "vs_N_sp": {
+        "diff": -0.62,
+        "lo": -2.08,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 43
+      },
+      "GPk:4hop3": {
+       "slots": 186,
+       "linked": 65,
+       "share": 34.95,
+       "vs_N_sp": {
+        "diff": 4.84,
+        "lo": 2.22,
+        "hi": 7.74,
+        "call": "ABOVE"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 32
+      },
+      "CH": {
+       "slots": 1648,
+       "linked": 1146,
+       "share": 69.54,
+       "vs_N_sp": {
+        "diff": 1.27,
+        "lo": -0.36,
+        "hi": 2.84,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 504
+      },
+      "edge_ratio_to_ref": 1.1297
+     },
+     "CN_wu": {
+      "edges": 134008,
+      "mean_degree": 22.994,
+      "ner_edges": 81078,
+      "ner_new_edges": 70439,
+      "GP": {
+       "slots": 2462,
+       "linked": 1108,
+       "share": 45.0,
+       "vs_N_sp": {
+        "diff": -3.05,
+        "lo": -4.31,
+        "hi": -1.89,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -4.14,
+        "lo": -4.95,
+        "hi": -3.36,
+        "call": "BELOW"
+       },
+       "added_over_none": 450
+      },
+      "GPk:2hop": {
+       "slots": 518,
+       "linked": 407,
+       "share": 78.57,
+       "vs_N_sp": {
+        "diff": -1.35,
+        "lo": -4.09,
+        "hi": 1.38,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -3.67,
+        "lo": -5.39,
+        "hi": -2.12,
+        "call": "BELOW"
+       },
+       "added_over_none": 138
+      },
+      "GPk:3hop1": {
+       "slots": 729,
+       "linked": 261,
+       "share": 35.8,
+       "vs_N_sp": {
+        "diff": -4.94,
+        "lo": -6.89,
+        "hi": -2.98,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -4.25,
+        "lo": -5.93,
+        "hi": -2.66,
+        "call": "BELOW"
+       },
+       "added_over_none": 113
+      },
+      "GPk:3hop2": {
+       "slots": 219,
+       "linked": 74,
+       "share": 33.79,
+       "vs_N_sp": {
+        "diff": -10.05,
+        "lo": -16.67,
+        "hi": -3.45,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -5.48,
+        "lo": -9.23,
+        "hi": -1.96,
+        "call": "BELOW"
+       },
+       "added_over_none": 37
+      },
+      "GPk:4hop1": {
+       "slots": 648,
+       "linked": 254,
+       "share": 39.2,
+       "vs_N_sp": {
+        "diff": -0.46,
+        "lo": -2.42,
+        "hi": 1.54,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -3.86,
+        "lo": -5.21,
+        "hi": -2.52,
+        "call": "BELOW"
+       },
+       "added_over_none": 102
+      },
+      "GPk:4hop2": {
+       "slots": 162,
+       "linked": 49,
+       "share": 30.25,
+       "vs_N_sp": {
+        "diff": -8.64,
+        "lo": -12.5,
+        "hi": -5.07,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -8.02,
+        "lo": -11.9,
+        "hi": -4.49,
+        "call": "BELOW"
+       },
+       "added_over_none": 30
+      },
+      "GPk:4hop3": {
+       "slots": 186,
+       "linked": 63,
+       "share": 33.87,
+       "vs_N_sp": {
+        "diff": 3.76,
+        "lo": 0.42,
+        "hi": 7.07,
+        "call": "ABOVE"
+       },
+       "vs_CN_all": {
+        "diff": -1.08,
+        "lo": -2.78,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 30
+      },
+      "CH": {
+       "slots": 1648,
+       "linked": 1044,
+       "share": 63.35,
+       "vs_N_sp": {
+        "diff": -4.92,
+        "lo": -6.58,
+        "hi": -3.25,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -6.19,
+        "lo": -7.37,
+        "hi": -5.04,
+        "call": "BELOW"
+       },
+       "added_over_none": 402
+      },
+      "edge_ratio_to_ref": 1.0664
+     },
+     "CN_w": {
+      "edges": 147391,
+      "mean_degree": 25.29,
+      "ner_edges": 99554,
+      "ner_new_edges": 83822,
+      "GP": {
+       "slots": 2462,
+       "linked": 1216,
+       "share": 49.39,
+       "vs_N_sp": {
+        "diff": 1.34,
+        "lo": 0.16,
+        "hi": 2.45,
+        "call": "ABOVE"
+       },
+       "vs_CN_all": {
+        "diff": 0.24,
+        "lo": 0.08,
+        "hi": 0.45,
+        "call": "ABOVE"
+       },
+       "added_over_none": 558
+      },
+      "GPk:2hop": {
+       "slots": 518,
+       "linked": 426,
+       "share": 82.24,
+       "vs_N_sp": {
+        "diff": 2.32,
+        "lo": 0.0,
+        "hi": 4.71,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 157
+      },
+      "GPk:3hop1": {
+       "slots": 729,
+       "linked": 295,
+       "share": 40.47,
+       "vs_N_sp": {
+        "diff": -0.27,
+        "lo": -2.65,
+        "hi": 2.15,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.41,
+        "lo": 0.0,
+        "hi": 0.96,
+        "call": "LEVEL"
+       },
+       "added_over_none": 147
+      },
+      "GPk:3hop2": {
+       "slots": 219,
+       "linked": 89,
+       "share": 40.64,
+       "vs_N_sp": {
+        "diff": -3.2,
+        "lo": -9.33,
+        "hi": 2.75,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 1.37,
+        "lo": 0.0,
+        "hi": 3.11,
+        "call": "LEVEL"
+       },
+       "added_over_none": 52
+      },
+      "GPk:4hop1": {
+       "slots": 648,
+       "linked": 279,
+       "share": 43.06,
+       "vs_N_sp": {
+        "diff": 3.4,
+        "lo": 1.79,
+        "hi": 5.14,
+        "call": "ABOVE"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 127
+      },
+      "GPk:4hop2": {
+       "slots": 162,
+       "linked": 62,
+       "share": 38.27,
+       "vs_N_sp": {
+        "diff": -0.62,
+        "lo": -2.08,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 43
+      },
+      "GPk:4hop3": {
+       "slots": 186,
+       "linked": 65,
+       "share": 34.95,
+       "vs_N_sp": {
+        "diff": 4.84,
+        "lo": 2.22,
+        "hi": 7.74,
+        "call": "ABOVE"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 32
+      },
+      "CH": {
+       "slots": 1648,
+       "linked": 1150,
+       "share": 69.78,
+       "vs_N_sp": {
+        "diff": 1.52,
+        "lo": -0.12,
+        "hi": 3.1,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.24,
+        "lo": 0.06,
+        "hi": 0.49,
+        "call": "ABOVE"
+       },
+       "added_over_none": 508
+      },
+      "edge_ratio_to_ref": 1.1729
+     }
+    },
+    "S": {
+     "none": {
+      "edges": 65657,
+      "mean_degree": 11.266,
+      "ner_edges": 0,
+      "ner_new_edges": 0,
+      "GP": {
+       "slots": 2462,
+       "linked": 630,
+       "share": 25.59,
+       "vs_N_sp": {
+        "diff": -22.26,
+        "lo": -23.99,
+        "hi": -20.68,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -23.23,
+        "lo": -24.95,
+        "hi": -21.64,
+        "call": "BELOW"
+       }
+      },
+      "GPk:2hop": {
+       "slots": 518,
+       "linked": 260,
+       "share": 50.19,
+       "vs_N_sp": {
+        "diff": -29.15,
+        "lo": -33.02,
+        "hi": -25.3,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -31.08,
+        "lo": -35.02,
+        "hi": -27.16,
+        "call": "BELOW"
+       }
+      },
+      "GPk:3hop1": {
+       "slots": 729,
+       "linked": 136,
+       "share": 18.66,
+       "vs_N_sp": {
+        "diff": -21.95,
+        "lo": -24.82,
+        "hi": -19.08,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -21.12,
+        "lo": -24.11,
+        "hi": -18.1,
+        "call": "BELOW"
+       }
+      },
+      "GPk:3hop2": {
+       "slots": 219,
+       "linked": 37,
+       "share": 16.89,
+       "vs_N_sp": {
+        "diff": -26.94,
+        "lo": -32.14,
+        "hi": -21.65,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -22.37,
+        "lo": -28.4,
+        "hi": -16.41,
+        "call": "BELOW"
+       }
+      },
+      "GPk:4hop1": {
+       "slots": 648,
+       "linked": 151,
+       "share": 23.3,
+       "vs_N_sp": {
+        "diff": -16.2,
+        "lo": -19.39,
+        "hi": -13.43,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -19.6,
+        "lo": -22.7,
+        "hi": -16.67,
+        "call": "BELOW"
+       }
+      },
+      "GPk:4hop2": {
+       "slots": 162,
+       "linked": 14,
+       "share": 8.64,
+       "vs_N_sp": {
+        "diff": -30.25,
+        "lo": -35.34,
+        "hi": -25.4,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -29.63,
+        "lo": -34.44,
+        "hi": -25.25,
+        "call": "BELOW"
+       }
+      },
+      "GPk:4hop3": {
+       "slots": 186,
+       "linked": 32,
+       "share": 17.2,
+       "vs_N_sp": {
+        "diff": -12.9,
+        "lo": -16.67,
+        "hi": -9.31,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -17.74,
+        "lo": -23.04,
+        "hi": -12.7,
+        "call": "BELOW"
+       }
+      },
+      "CH": {
+       "slots": 1648,
+       "linked": 614,
+       "share": 37.26,
+       "vs_N_sp": {
+        "diff": -30.7,
+        "lo": -32.91,
+        "hi": -28.52,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -31.8,
+        "lo": -34.06,
+        "hi": -29.64,
+        "call": "BELOW"
+       }
+      },
+      "edge_ratio_to_ref": 0.5107
+     },
+     "N_sp": {
+      "edges": 128551,
+      "mean_degree": 22.057,
+      "ner_edges": 75002,
+      "ner_new_edges": 62894,
+      "GP": {
+       "slots": 2462,
+       "linked": 1178,
+       "share": 47.85,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -0.97,
+        "lo": -2.09,
+        "hi": 0.24,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:2hop": {
+       "slots": 518,
+       "linked": 411,
+       "share": 79.34,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -1.93,
+        "lo": -4.21,
+        "hi": 0.39,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:3hop1": {
+       "slots": 729,
+       "linked": 296,
+       "share": 40.6,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.82,
+        "lo": -1.75,
+        "hi": 3.25,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:3hop2": {
+       "slots": 219,
+       "linked": 96,
+       "share": 43.84,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 4.57,
+        "lo": -1.06,
+        "hi": 10.39,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:4hop1": {
+       "slots": 648,
+       "linked": 256,
+       "share": 39.51,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -3.4,
+        "lo": -5.14,
+        "hi": -1.79,
+        "call": "BELOW"
+       }
+      },
+      "GPk:4hop2": {
+       "slots": 162,
+       "linked": 63,
+       "share": 38.89,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.62,
+        "lo": 0.0,
+        "hi": 2.08,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:4hop3": {
+       "slots": 186,
+       "linked": 56,
+       "share": 30.11,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -4.84,
+        "lo": -7.74,
+        "hi": -2.22,
+        "call": "BELOW"
+       }
+      },
+      "CH": {
+       "slots": 1648,
+       "linked": 1120,
+       "share": 67.96,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -1.09,
+        "lo": -2.68,
+        "hi": 0.54,
+        "call": "LEVEL"
+       }
+      },
+      "edge_ratio_to_ref": 1.0
+     },
+     "CN_u": {
+      "edges": 134153,
+      "mean_degree": 23.019,
+      "ner_edges": 77961,
+      "ner_new_edges": 68496,
+      "GP": {
+       "slots": 2462,
+       "linked": 1095,
+       "share": 44.48,
+       "vs_N_sp": {
+        "diff": -3.37,
+        "lo": -4.62,
+        "hi": -2.19,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -4.35,
+        "lo": -5.14,
+        "hi": -3.58,
+        "call": "BELOW"
+       },
+       "added_over_none": 465
+      },
+      "GPk:2hop": {
+       "slots": 518,
+       "linked": 402,
+       "share": 77.61,
+       "vs_N_sp": {
+        "diff": -1.74,
+        "lo": -4.4,
+        "hi": 0.8,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -3.67,
+        "lo": -5.39,
+        "hi": -2.12,
+        "call": "BELOW"
+       },
+       "added_over_none": 142
+      },
+      "GPk:3hop1": {
+       "slots": 729,
+       "linked": 257,
+       "share": 35.25,
+       "vs_N_sp": {
+        "diff": -5.35,
+        "lo": -7.38,
+        "hi": -3.42,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -4.53,
+        "lo": -6.17,
+        "hi": -3.01,
+        "call": "BELOW"
+       },
+       "added_over_none": 121
+      },
+      "GPk:3hop2": {
+       "slots": 219,
+       "linked": 71,
+       "share": 32.42,
+       "vs_N_sp": {
+        "diff": -11.42,
+        "lo": -17.7,
+        "hi": -5.28,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -6.85,
+        "lo": -10.15,
+        "hi": -3.9,
+        "call": "BELOW"
+       },
+       "added_over_none": 34
+      },
+      "GPk:4hop1": {
+       "slots": 648,
+       "linked": 253,
+       "share": 39.04,
+       "vs_N_sp": {
+        "diff": -0.46,
+        "lo": -2.42,
+        "hi": 1.54,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -3.86,
+        "lo": -5.21,
+        "hi": -2.52,
+        "call": "BELOW"
+       },
+       "added_over_none": 102
+      },
+      "GPk:4hop2": {
+       "slots": 162,
+       "linked": 49,
+       "share": 30.25,
+       "vs_N_sp": {
+        "diff": -8.64,
+        "lo": -12.5,
+        "hi": -5.07,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -8.02,
+        "lo": -11.9,
+        "hi": -4.49,
+        "call": "BELOW"
+       },
+       "added_over_none": 35
+      },
+      "GPk:4hop3": {
+       "slots": 186,
+       "linked": 63,
+       "share": 33.87,
+       "vs_N_sp": {
+        "diff": 3.76,
+        "lo": 0.42,
+        "hi": 7.07,
+        "call": "ABOVE"
+       },
+       "vs_CN_all": {
+        "diff": -1.08,
+        "lo": -2.78,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 31
+      },
+      "CH": {
+       "slots": 1648,
+       "linked": 1033,
+       "share": 62.68,
+       "vs_N_sp": {
+        "diff": -5.28,
+        "lo": -6.96,
+        "hi": -3.62,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -6.37,
+        "lo": -7.53,
+        "hi": -5.23,
+        "call": "BELOW"
+       },
+       "added_over_none": 419
+      },
+      "edge_ratio_to_ref": 1.0436
+     },
+     "CN_all": {
+      "edges": 144909,
+      "mean_degree": 24.864,
+      "ner_edges": 92847,
+      "ner_new_edges": 79252,
+      "GP": {
+       "slots": 2462,
+       "linked": 1202,
+       "share": 48.82,
+       "vs_N_sp": {
+        "diff": 0.97,
+        "lo": -0.24,
+        "hi": 2.09,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 572
+      },
+      "GPk:2hop": {
+       "slots": 518,
+       "linked": 421,
+       "share": 81.27,
+       "vs_N_sp": {
+        "diff": 1.93,
+        "lo": -0.39,
+        "hi": 4.21,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 161
+      },
+      "GPk:3hop1": {
+       "slots": 729,
+       "linked": 290,
+       "share": 39.78,
+       "vs_N_sp": {
+        "diff": -0.82,
+        "lo": -3.25,
+        "hi": 1.75,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 154
+      },
+      "GPk:3hop2": {
+       "slots": 219,
+       "linked": 86,
+       "share": 39.27,
+       "vs_N_sp": {
+        "diff": -4.57,
+        "lo": -10.39,
+        "hi": 1.06,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 49
+      },
+      "GPk:4hop1": {
+       "slots": 648,
+       "linked": 278,
+       "share": 42.9,
+       "vs_N_sp": {
+        "diff": 3.4,
+        "lo": 1.79,
+        "hi": 5.14,
+        "call": "ABOVE"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 127
+      },
+      "GPk:4hop2": {
+       "slots": 162,
+       "linked": 62,
+       "share": 38.27,
+       "vs_N_sp": {
+        "diff": -0.62,
+        "lo": -2.08,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 48
+      },
+      "GPk:4hop3": {
+       "slots": 186,
+       "linked": 65,
+       "share": 34.95,
+       "vs_N_sp": {
+        "diff": 4.84,
+        "lo": 2.22,
+        "hi": 7.74,
+        "call": "ABOVE"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 33
+      },
+      "CH": {
+       "slots": 1648,
+       "linked": 1138,
+       "share": 69.05,
+       "vs_N_sp": {
+        "diff": 1.09,
+        "lo": -0.54,
+        "hi": 2.68,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 524
+      },
+      "edge_ratio_to_ref": 1.1272
+     },
+     "CN_wu": {
+      "edges": 136935,
+      "mean_degree": 23.496,
+      "ner_edges": 81078,
+      "ner_new_edges": 71278,
+      "GP": {
+       "slots": 2462,
+       "linked": 1100,
+       "share": 44.68,
+       "vs_N_sp": {
+        "diff": -3.17,
+        "lo": -4.43,
+        "hi": -2.01,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -4.14,
+        "lo": -4.95,
+        "hi": -3.36,
+        "call": "BELOW"
+       },
+       "added_over_none": 470
+      },
+      "GPk:2hop": {
+       "slots": 518,
+       "linked": 402,
+       "share": 77.61,
+       "vs_N_sp": {
+        "diff": -1.74,
+        "lo": -4.4,
+        "hi": 0.8,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -3.67,
+        "lo": -5.39,
+        "hi": -2.12,
+        "call": "BELOW"
+       },
+       "added_over_none": 142
+      },
+      "GPk:3hop1": {
+       "slots": 729,
+       "linked": 259,
+       "share": 35.53,
+       "vs_N_sp": {
+        "diff": -5.08,
+        "lo": -7.09,
+        "hi": -3.1,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -4.25,
+        "lo": -5.93,
+        "hi": -2.66,
+        "call": "BELOW"
+       },
+       "added_over_none": 123
+      },
+      "GPk:3hop2": {
+       "slots": 219,
+       "linked": 74,
+       "share": 33.79,
+       "vs_N_sp": {
+        "diff": -10.05,
+        "lo": -16.67,
+        "hi": -3.45,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -5.48,
+        "lo": -9.23,
+        "hi": -1.96,
+        "call": "BELOW"
+       },
+       "added_over_none": 37
+      },
+      "GPk:4hop1": {
+       "slots": 648,
+       "linked": 253,
+       "share": 39.04,
+       "vs_N_sp": {
+        "diff": -0.46,
+        "lo": -2.42,
+        "hi": 1.54,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -3.86,
+        "lo": -5.21,
+        "hi": -2.52,
+        "call": "BELOW"
+       },
+       "added_over_none": 102
+      },
+      "GPk:4hop2": {
+       "slots": 162,
+       "linked": 49,
+       "share": 30.25,
+       "vs_N_sp": {
+        "diff": -8.64,
+        "lo": -12.5,
+        "hi": -5.07,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -8.02,
+        "lo": -11.9,
+        "hi": -4.49,
+        "call": "BELOW"
+       },
+       "added_over_none": 35
+      },
+      "GPk:4hop3": {
+       "slots": 186,
+       "linked": 63,
+       "share": 33.87,
+       "vs_N_sp": {
+        "diff": 3.76,
+        "lo": 0.42,
+        "hi": 7.07,
+        "call": "ABOVE"
+       },
+       "vs_CN_all": {
+        "diff": -1.08,
+        "lo": -2.78,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 31
+      },
+      "CH": {
+       "slots": 1648,
+       "linked": 1036,
+       "share": 62.86,
+       "vs_N_sp": {
+        "diff": -5.1,
+        "lo": -6.8,
+        "hi": -3.44,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -6.19,
+        "lo": -7.37,
+        "hi": -5.04,
+        "call": "BELOW"
+       },
+       "added_over_none": 422
+      },
+      "edge_ratio_to_ref": 1.0652
+     },
+     "CN_w": {
+      "edges": 150343,
+      "mean_degree": 25.797,
+      "ner_edges": 99554,
+      "ner_new_edges": 84686,
+      "GP": {
+       "slots": 2462,
+       "linked": 1208,
+       "share": 49.07,
+       "vs_N_sp": {
+        "diff": 1.22,
+        "lo": 0.04,
+        "hi": 2.32,
+        "call": "ABOVE"
+       },
+       "vs_CN_all": {
+        "diff": 0.24,
+        "lo": 0.08,
+        "hi": 0.45,
+        "call": "ABOVE"
+       },
+       "added_over_none": 578
+      },
+      "GPk:2hop": {
+       "slots": 518,
+       "linked": 421,
+       "share": 81.27,
+       "vs_N_sp": {
+        "diff": 1.93,
+        "lo": -0.39,
+        "hi": 4.21,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 161
+      },
+      "GPk:3hop1": {
+       "slots": 729,
+       "linked": 293,
+       "share": 40.19,
+       "vs_N_sp": {
+        "diff": -0.41,
+        "lo": -2.89,
+        "hi": 2.04,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.41,
+        "lo": 0.0,
+        "hi": 0.96,
+        "call": "LEVEL"
+       },
+       "added_over_none": 157
+      },
+      "GPk:3hop2": {
+       "slots": 219,
+       "linked": 89,
+       "share": 40.64,
+       "vs_N_sp": {
+        "diff": -3.2,
+        "lo": -9.33,
+        "hi": 2.75,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 1.37,
+        "lo": 0.0,
+        "hi": 3.11,
+        "call": "LEVEL"
+       },
+       "added_over_none": 52
+      },
+      "GPk:4hop1": {
+       "slots": 648,
+       "linked": 278,
+       "share": 42.9,
+       "vs_N_sp": {
+        "diff": 3.4,
+        "lo": 1.79,
+        "hi": 5.14,
+        "call": "ABOVE"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 127
+      },
+      "GPk:4hop2": {
+       "slots": 162,
+       "linked": 62,
+       "share": 38.27,
+       "vs_N_sp": {
+        "diff": -0.62,
+        "lo": -2.08,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 48
+      },
+      "GPk:4hop3": {
+       "slots": 186,
+       "linked": 65,
+       "share": 34.95,
+       "vs_N_sp": {
+        "diff": 4.84,
+        "lo": 2.22,
+        "hi": 7.74,
+        "call": "ABOVE"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 33
+      },
+      "CH": {
+       "slots": 1648,
+       "linked": 1142,
+       "share": 69.3,
+       "vs_N_sp": {
+        "diff": 1.33,
+        "lo": -0.31,
+        "hi": 2.88,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.24,
+        "lo": 0.06,
+        "hi": 0.49,
+        "call": "ABOVE"
+       },
+       "added_over_none": 528
+      },
+      "edge_ratio_to_ref": 1.1695
+     }
+    }
+   },
+   "curve": {
+    "N_sp": {
+     "0.1": {
+      "ner_pairs": 7501,
+      "min_weight": 0.33333,
+      "pairs": 68186,
+      "GP": 30.1,
+      "CH": 43.81
+     },
+     "0.2": {
+      "ner_pairs": 15001,
+      "min_weight": 0.2,
+      "pairs": 73876,
+      "GP": 33.47,
+      "CH": 48.85
+     },
+     "0.3": {
+      "ner_pairs": 22501,
+      "min_weight": 0.14286,
+      "pairs": 79948,
+      "GP": 35.46,
+      "CH": 51.64
+     },
+     "0.5": {
+      "ner_pairs": 37501,
+      "min_weight": 0.08333,
+      "pairs": 92659,
+      "GP": 39.6,
+      "CH": 57.28
+     },
+     "0.7": {
+      "ner_pairs": 52502,
+      "min_weight": 0.05882,
+      "pairs": 105562,
+      "GP": 42.65,
+      "CH": 60.92
+     },
+     "1.0": {
+      "ner_pairs": 75002,
+      "min_weight": 0.04,
+      "pairs": 125662,
+      "GP": 48.05,
+      "CH": 68.26
+     }
+    },
+    "CN_all": {
+     "0.1": {
+      "ner_pairs": 9285,
+      "min_weight": 0.33333,
+      "pairs": 69364,
+      "GP": 32.09,
+      "CH": 46.78
+     },
+     "0.2": {
+      "ner_pairs": 18570,
+      "min_weight": 0.2,
+      "pairs": 76608,
+      "GP": 34.61,
+      "CH": 50.49
+     },
+     "0.3": {
+      "ner_pairs": 27855,
+      "min_weight": 0.125,
+      "pairs": 84170,
+      "GP": 36.8,
+      "CH": 53.7
+     },
+     "0.5": {
+      "ner_pairs": 46424,
+      "min_weight": 0.07692,
+      "pairs": 100246,
+      "GP": 40.74,
+      "CH": 58.8
+     },
+     "0.7": {
+      "ner_pairs": 64993,
+      "min_weight": 0.05556,
+      "pairs": 116605,
+      "GP": 43.87,
+      "CH": 62.99
+     },
+     "1.0": {
+      "ner_pairs": 92847,
+      "min_weight": 0.04,
+      "pairs": 141965,
+      "GP": 49.15,
+      "CH": 69.54
+     }
+    }
+   },
+   "price": {
+    "R": {
+     "GP": {
+      "N_sp": 118.3,
+      "CN_u": 152.1,
+      "CN_all": 142.0,
+      "CN_wu": 156.5,
+      "CN_w": 150.2
+     },
+     "GPk:2hop": {
+      "N_sp": 428.2,
+      "CN_u": 490.3,
+      "CN_all": 499.3,
+      "CN_wu": 510.4,
+      "CN_w": 533.9
+     },
+     "GPk:3hop1": {
+      "N_sp": 416.7,
+      "CN_u": 609.6,
+      "CN_all": 544.4,
+      "CN_wu": 623.4,
+      "CN_w": 570.2
+     },
+     "GPk:3hop2": {
+      "N_sp": 1052.4,
+      "CN_u": 1990.2,
+      "CN_all": 1599.9,
+      "CN_wu": 1903.8,
+      "CN_w": 1612.0
+     },
+     "GPk:4hop1": {
+      "N_sp": 591.4,
+      "CN_u": 663.4,
+      "CN_all": 617.3,
+      "CN_wu": 690.6,
+      "CN_w": 660.0
+     },
+     "GPk:4hop2": {
+      "N_sp": 1411.2,
+      "CN_u": 2255.6,
+      "CN_all": 1823.2,
+      "CN_wu": 2348.0,
+      "CN_w": 1949.3
+     },
+     "GPk:4hop3": {
+      "N_sp": 2699.7,
+      "CN_u": 2255.6,
+      "CN_all": 2449.9,
+      "CN_wu": 2348.0,
+      "CN_w": 2619.4
+     },
+     "CH": {
+      "N_sp": 128.6,
+      "CN_u": 169.6,
+      "CN_all": 155.5,
+      "CN_wu": 175.2,
+      "CN_w": 165.0
+     }
+    },
+    "S": {
+     "GP": {
+      "N_sp": 114.8,
+      "CN_u": 147.3,
+      "CN_all": 138.6,
+      "CN_wu": 151.7,
+      "CN_w": 146.5
+     },
+     "GPk:2hop": {
+      "N_sp": 416.5,
+      "CN_u": 482.4,
+      "CN_all": 492.2,
+      "CN_wu": 502.0,
+      "CN_w": 526.0
+     },
+     "GPk:3hop1": {
+      "N_sp": 393.1,
+      "CN_u": 566.1,
+      "CN_all": 514.6,
+      "CN_wu": 579.5,
+      "CN_w": 539.4
+     },
+     "GPk:3hop2": {
+      "N_sp": 1066.0,
+      "CN_u": 2014.6,
+      "CN_all": 1617.4,
+      "CN_wu": 1926.4,
+      "CN_w": 1628.6
+     },
+     "GPk:4hop1": {
+      "N_sp": 599.0,
+      "CN_u": 671.5,
+      "CN_all": 624.0,
+      "CN_wu": 698.8,
+      "CN_w": 666.8
+     },
+     "GPk:4hop2": {
+      "N_sp": 1283.6,
+      "CN_u": 1957.0,
+      "CN_all": 1651.1,
+      "CN_wu": 2036.5,
+      "CN_w": 1764.3
+     },
+     "GPk:4hop3": {
+      "N_sp": 2620.6,
+      "CN_u": 2209.5,
+      "CN_all": 2401.6,
+      "CN_wu": 2299.3,
+      "CN_w": 2566.2
+     },
+     "CH": {
+      "N_sp": 124.3,
+      "CN_u": 163.5,
+      "CN_all": 151.2,
+      "CN_wu": 168.9,
+      "CN_w": 160.4
+     }
+    }
+   },
+   "marginal_price": {
+    "R": {
+     "GP": {
+      "CN_all_over_none": 142.0,
+      "CN_w_over_CN_all": 904.3,
+      "CN_wu_over_CN_u": 554.2,
+      "N_sp_over_none": 118.3
+     },
+     "GPk:2hop": {
+      "CN_all_over_none": 499.3,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": 428.2
+     },
+     "GPk:3hop1": {
+      "CN_all_over_none": 544.4,
+      "CN_w_over_CN_all": 1808.7,
+      "CN_wu_over_CN_u": 1385.5,
+      "N_sp_over_none": 416.7
+     },
+     "GPk:3hop2": {
+      "CN_all_over_none": 1599.9,
+      "CN_w_over_CN_all": 1808.7,
+      "CN_wu_over_CN_u": 923.7,
+      "N_sp_over_none": 1052.4
+     },
+     "GPk:4hop1": {
+      "CN_all_over_none": 617.3,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": 591.4
+     },
+     "GPk:4hop2": {
+      "CN_all_over_none": 1823.2,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": 1411.2
+     },
+     "GPk:4hop3": {
+      "CN_all_over_none": 2449.9,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": 2699.7
+     },
+     "CH": {
+      "CN_all_over_none": 155.5,
+      "CN_w_over_CN_all": 1356.5,
+      "CN_wu_over_CN_u": 923.7,
+      "N_sp_over_none": 128.6
+     }
+    },
+    "S": {
+     "GP": {
+      "CN_all_over_none": 138.6,
+      "CN_w_over_CN_all": 905.7,
+      "CN_wu_over_CN_u": 556.4,
+      "N_sp_over_none": 114.8
+     },
+     "GPk:2hop": {
+      "CN_all_over_none": 492.2,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": 416.5
+     },
+     "GPk:3hop1": {
+      "CN_all_over_none": 514.6,
+      "CN_w_over_CN_all": 1811.3,
+      "CN_wu_over_CN_u": 1391.0,
+      "N_sp_over_none": 393.1
+     },
+     "GPk:3hop2": {
+      "CN_all_over_none": 1617.4,
+      "CN_w_over_CN_all": 1811.3,
+      "CN_wu_over_CN_u": 927.3,
+      "N_sp_over_none": 1066.0
+     },
+     "GPk:4hop1": {
+      "CN_all_over_none": 624.0,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": 599.0
+     },
+     "GPk:4hop2": {
+      "CN_all_over_none": 1651.1,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": 1283.6
+     },
+     "GPk:4hop3": {
+      "CN_all_over_none": 2401.6,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": 2620.6
+     },
+     "CH": {
+      "CN_all_over_none": 151.2,
+      "CN_w_over_CN_all": 1358.5,
+      "CN_wu_over_CN_u": 927.3,
+      "N_sp_over_none": 124.3
+     }
+    }
+   },
+   "partB": {
+    "slots": 1648,
+    "bridge_in_both": 1133,
+    "bridge_in_one": 398,
+    "bridge_in_neither": 117,
+    "unreached_by_ref": 523,
+    "unreached_ref_bridge_in_both": 304,
+    "unreached_ref_by_band": {
+     "df 101+": 26,
+     "df 26-50": 112,
+     "df 2-25": 82,
+     "df 51-100": 84
+    },
+    "unreached_ref_and_not_both": 219,
+    "both_by_band_all": {
+     "df 2-25": 826,
+     "df 101+": 27,
+     "df 26-50": 183,
+     "df 51-100": 97
+    },
+    "linked": {
+     "ref": 1125,
+     "cn_all": 1146,
+     "cn_w": 1150
+    },
+    "bridge_in_both_by_band": {
+     "df 2-25": 826,
+     "df 101+": 27,
+     "df 26-50": 183,
+     "df 51-100": 97
+    },
+    "ceiling_any_df": 1133,
+    "ceiling_df_le_100": 1106
+   },
+   "partC": {
+    "GP": {
+     "loss": 78,
+     "gain": 111,
+     "loss_with_a_shared_rule_name": 42,
+     "examples": [
+      {
+       "a": "Governor of Vatican City",
+       "b": "St. Peter's Basilica",
+       "shared_rule_names": [
+        "italian"
+       ]
+      },
+      {
+       "a": "Jessie Woodrow Wilson Sayre",
+       "b": "Treaty of Versailles",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Bustami",
+       "b": "Indonesia–Timor Leste Commission of Truth and Friendship",
+       "shared_rule_names": [
+        "july"
+       ]
+      },
+      {
+       "a": "Guangling District",
+       "b": "Pfrang Association",
+       "shared_rule_names": [
+        "china"
+       ]
+      },
+      {
+       "a": "Middle Ages",
+       "b": "Holy Roman Emperor",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Seria, Belait",
+       "b": "The Biggest Loser Brunei: Lose It All",
+       "shared_rule_names": [
+        "march"
+       ]
+      },
+      {
+       "a": "Darren Carter",
+       "b": "Second City derby",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Jessie Woodrow Wilson Sayre",
+       "b": "Prohibition in the United States",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Qiantong, Zhejiang",
+       "b": "Hu Sanxing",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Indonesia–Timor Leste Commission of Truth and Friendship",
+       "b": "Kiwil",
+       "shared_rule_names": [
+        "indonesia"
+       ]
+      },
+      {
+       "a": "Prague underground (culture)",
+       "b": "Josip Broz Tito",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Warner Records",
+       "b": "Back of My Mind",
+       "shared_rule_names": [
+        "warner bros"
+       ]
+      }
+     ]
+    },
+    "GPk:2hop": {
+     "loss": 14,
+     "gain": 26,
+     "loss_with_a_shared_rule_name": 2,
+     "examples": [
+      {
+       "a": "Jessie Woodrow Wilson Sayre",
+       "b": "Prohibition in the United States",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Qiantong, Zhejiang",
+       "b": "Hu Sanxing",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Reresby Sitwell",
+       "b": "The Sitwells",
+       "shared_rule_names": []
+      },
+      {
+       "a": "The Mickey Mouse Club",
+       "b": "Mickey's Safari in Letterland",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Jessie Woodrow Wilson Sayre",
+       "b": "State of the Union",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Middle Ages",
+       "b": "Arthur's Seat",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Plymouth Notch Cemetery",
+       "b": "1924 United States presidential election",
+       "shared_rule_names": []
+      },
+      {
+       "a": "M. King Hubbert",
+       "b": "Royal Dutch Shell",
+       "shared_rule_names": [
+        "october"
+       ]
+      },
+      {
+       "a": "The Motorcycle Diaries (film)",
+       "b": "San Clemente, Chile",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Walker, Texas Ranger",
+       "b": "Forest Warrior",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Texian Army",
+       "b": "Sam Houston National Forest",
+       "shared_rule_names": [
+        "texas"
+       ]
+      },
+      {
+       "a": "The Code of Conduct and the Vietnam Prisoners of War",
+       "b": "2008 United States presidential election",
+       "shared_rule_names": []
+      }
+     ]
+    },
+    "GPk:3hop1": {
+     "loss": 38,
+     "gain": 36,
+     "loss_with_a_shared_rule_name": 22,
+     "examples": [
+      {
+       "a": "Governor of Vatican City",
+       "b": "St. Peter's Basilica",
+       "shared_rule_names": [
+        "italian"
+       ]
+      },
+      {
+       "a": "Jessie Woodrow Wilson Sayre",
+       "b": "Treaty of Versailles",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Bustami",
+       "b": "Indonesia–Timor Leste Commission of Truth and Friendship",
+       "shared_rule_names": [
+        "july"
+       ]
+      },
+      {
+       "a": "Seria, Belait",
+       "b": "The Biggest Loser Brunei: Lose It All",
+       "shared_rule_names": [
+        "march"
+       ]
+      },
+      {
+       "a": "Indonesia–Timor Leste Commission of Truth and Friendship",
+       "b": "Kiwil",
+       "shared_rule_names": [
+        "indonesia"
+       ]
+      },
+      {
+       "a": "Warner Records",
+       "b": "Back of My Mind",
+       "shared_rule_names": [
+        "warner bros"
+       ]
+      },
+      {
+       "a": "Warner Records",
+       "b": "Ain't Living Long Like This",
+       "shared_rule_names": [
+        "warner bros"
+       ]
+      },
+      {
+       "a": "1973 oil crisis",
+       "b": "Daihatsu Boon",
+       "shared_rule_names": [
+        "japanese"
+       ]
+      },
+      {
+       "a": "1973 oil crisis",
+       "b": "Lexus RX",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Warner Records",
+       "b": "Atomic Playboys",
+       "shared_rule_names": [
+        "u.s",
+        "warner bros"
+       ]
+      },
+      {
+       "a": "Bang Bon District",
+       "b": "Bodindecha",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Governor of Vatican City",
+       "b": "St. Peter's Basilica",
+       "shared_rule_names": [
+        "italian"
+       ]
+      }
+     ]
+    },
+    "GPk:3hop2": {
+     "loss": 22,
+     "gain": 15,
+     "loss_with_a_shared_rule_name": 15,
+     "examples": [
+      {
+       "a": "Guangling District",
+       "b": "Pfrang Association",
+       "shared_rule_names": [
+        "china"
+       ]
+      },
+      {
+       "a": "Middle Ages",
+       "b": "Holy Roman Emperor",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Darren Carter",
+       "b": "Second City derby",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Second City derby",
+       "b": "Tony Richards (footballer)",
+       "shared_rule_names": [
+        "march",
+        "may"
+       ]
+      },
+      {
+       "a": "Second City derby",
+       "b": "Matthew Webb (footballer)",
+       "shared_rule_names": [
+        "march",
+        "september"
+       ]
+      },
+      {
+       "a": "1973 oil crisis",
+       "b": "1967 Italian Grand Prix",
+       "shared_rule_names": []
+      },
+      {
+       "a": "John Phan",
+       "b": "South Central Coast",
+       "shared_rule_names": [
+        "vietnam"
+       ]
+      },
+      {
+       "a": "Second City derby",
+       "b": "Gary Rowett",
+       "shared_rule_names": [
+        "december",
+        "march",
+        "may",
+        "october"
+       ]
+      },
+      {
+       "a": "John Phan",
+       "b": "South Central Coast",
+       "shared_rule_names": [
+        "vietnam"
+       ]
+      },
+      {
+       "a": "John Phan",
+       "b": "South Central Coast",
+       "shared_rule_names": [
+        "vietnam"
+       ]
+      },
+      {
+       "a": "John Phan",
+       "b": "South Central Coast",
+       "shared_rule_names": [
+        "vietnam"
+       ]
+      },
+      {
+       "a": "Second City derby",
+       "b": "Krystian Pearce",
+       "shared_rule_names": []
+      }
+     ]
+    },
+    "GPk:4hop1": {
+     "loss": 3,
+     "gain": 25,
+     "loss_with_a_shared_rule_name": 3,
+     "examples": [
+      {
+       "a": "Major League Baseball Most Valuable Player Award",
+       "b": "Opening Day",
+       "shared_rule_names": [
+        "world series"
+       ]
+      },
+      {
+       "a": "Major League Baseball Most Valuable Player Award",
+       "b": "2017 Major League Baseball All-Star Game",
+       "shared_rule_names": [
+        "world series"
+       ]
+      },
+      {
+       "a": "List of Super Bowl halftime shows",
+       "b": "Publishers Clearing House",
+       "shared_rule_names": [
+        "super bowl"
+       ]
+      }
+     ]
+    },
+    "GPk:4hop2": {
+     "loss": 1,
+     "gain": 0,
+     "loss_with_a_shared_rule_name": 0,
+     "examples": [
+      {
+       "a": "Prague underground (culture)",
+       "b": "Josip Broz Tito",
+       "shared_rule_names": []
+      }
+     ]
+    },
+    "GPk:4hop3": {
+     "loss": 0,
+     "gain": 9,
+     "loss_with_a_shared_rule_name": 0,
+     "examples": []
+    },
+    "CH": {
+     "loss": 71,
+     "gain": 96,
+     "loss_with_a_shared_rule_name": 38,
+     "examples": [
+      {
+       "a": "Governor of Vatican City",
+       "b": "St. Peter's Basilica",
+       "shared_rule_names": [
+        "italian"
+       ]
+      },
+      {
+       "a": "Jessie Woodrow Wilson Sayre",
+       "b": "Treaty of Versailles",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Bustami",
+       "b": "Indonesia–Timor Leste Commission of Truth and Friendship",
+       "shared_rule_names": [
+        "july"
+       ]
+      },
+      {
+       "a": "Middle Ages",
+       "b": "Holy Roman Emperor",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Seria, Belait",
+       "b": "The Biggest Loser Brunei: Lose It All",
+       "shared_rule_names": [
+        "march"
+       ]
+      },
+      {
+       "a": "Darren Carter",
+       "b": "Second City derby",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Jessie Woodrow Wilson Sayre",
+       "b": "Prohibition in the United States",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Qiantong, Zhejiang",
+       "b": "Hu Sanxing",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Indonesia–Timor Leste Commission of Truth and Friendship",
+       "b": "Kiwil",
+       "shared_rule_names": [
+        "indonesia"
+       ]
+      },
+      {
+       "a": "Warner Records",
+       "b": "Back of My Mind",
+       "shared_rule_names": [
+        "warner bros"
+       ]
+      },
+      {
+       "a": "Second City derby",
+       "b": "Tony Richards (footballer)",
+       "shared_rule_names": [
+        "march",
+        "may"
+       ]
+      },
+      {
+       "a": "Warner Records",
+       "b": "Ain't Living Long Like This",
+       "shared_rule_names": [
+        "warner bros"
+       ]
+      }
+     ]
+    }
+   },
+   "rules_npz_sha256": "a322f807cdfe02169d95758bbd93350dbe5e4df2010eae2fd88b56dc2d4091bc",
+   "seconds": 14.5
+  },
+  "2wiki": {
+   "info": {
+    "nodes": 6119,
+    "questions": 1000,
+    "gp_slots": 2175,
+    "names": {
+     "distinct": 35074,
+     "mentions": 61941,
+     "titled": 3313,
+     "df_2_25": 6439,
+     "df_over_25": 107
+    },
+    "spacy_graph": {
+     "N_sp_pairs": 36147,
+     "S_pairs": 1984,
+     "R_pairs": 2030,
+     "K_pairs": 13415
+    }
+   },
+   "partA": {
+    "R": {
+     "none": {
+      "edges": 14206,
+      "mean_degree": 4.643,
+      "ner_edges": 0,
+      "ner_new_edges": 0,
+      "GP": {
+       "slots": 2175,
+       "linked": 956,
+       "share": 43.95,
+       "vs_N_sp": {
+        "diff": -2.3,
+        "lo": -2.98,
+        "hi": -1.69,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -2.3,
+        "lo": -2.97,
+        "hi": -1.66,
+        "call": "BELOW"
+       }
+      },
+      "GPk:bridge_comparison": {
+       "slots": 1410,
+       "linked": 443,
+       "share": 31.42,
+       "vs_N_sp": {
+        "diff": -2.2,
+        "lo": -3.07,
+        "hi": -1.45,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -2.2,
+        "lo": -3.08,
+        "hi": -1.44,
+        "call": "BELOW"
+       }
+      },
+      "GPk:comparison": {
+       "slots": 244,
+       "linked": 12,
+       "share": 4.92,
+       "vs_N_sp": {
+        "diff": -1.64,
+        "lo": -3.31,
+        "hi": -0.35,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -1.64,
+        "lo": -3.39,
+        "hi": -0.39,
+        "call": "BELOW"
+       }
+      },
+      "GPk:compositional": {
+       "slots": 413,
+       "linked": 397,
+       "share": 96.13,
+       "vs_N_sp": {
+        "diff": -2.66,
+        "lo": -4.46,
+        "hi": -1.23,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -2.66,
+        "lo": -4.46,
+        "hi": -1.23,
+        "call": "BELOW"
+       }
+      },
+      "GPk:inference": {
+       "slots": 108,
+       "linked": 104,
+       "share": 96.3,
+       "vs_N_sp": {
+        "diff": -3.7,
+        "lo": -7.83,
+        "hi": -0.87,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -3.7,
+        "lo": -7.83,
+        "hi": -0.87,
+        "call": "BELOW"
+       }
+      },
+      "edge_ratio_to_ref": 0.309
+     },
+     "N_sp": {
+      "edges": 45980,
+      "mean_degree": 15.029,
+      "ner_edges": 36147,
+      "ner_new_edges": 31774,
+      "GP": {
+       "slots": 2175,
+       "linked": 1006,
+       "share": 46.25,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": -0.19,
+        "hi": 0.18,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:bridge_comparison": {
+       "slots": 1410,
+       "linked": 474,
+       "share": 33.62,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": -0.2,
+        "hi": 0.21,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:comparison": {
+       "slots": 244,
+       "linked": 16,
+       "share": 6.56,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": -1.18,
+        "hi": 1.2,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:compositional": {
+       "slots": 413,
+       "linked": 408,
+       "share": 98.79,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:inference": {
+       "slots": 108,
+       "linked": 108,
+       "share": 100.0,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       }
+      },
+      "edge_ratio_to_ref": 1.0
+     },
+     "CN_u": {
+      "edges": 49689,
+      "mean_degree": 16.241,
+      "ner_edges": 39509,
+      "ner_new_edges": 35483,
+      "GP": {
+       "slots": 2175,
+       "linked": 976,
+       "share": 44.87,
+       "vs_N_sp": {
+        "diff": -1.38,
+        "lo": -1.93,
+        "hi": -0.86,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -1.38,
+        "lo": -1.92,
+        "hi": -0.88,
+        "call": "BELOW"
+       },
+       "added_over_none": 20
+      },
+      "GPk:bridge_comparison": {
+       "slots": 1410,
+       "linked": 451,
+       "share": 31.99,
+       "vs_N_sp": {
+        "diff": -1.63,
+        "lo": -2.42,
+        "hi": -0.94,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -1.63,
+        "lo": -2.38,
+        "hi": -0.97,
+        "call": "BELOW"
+       },
+       "added_over_none": 8
+      },
+      "GPk:comparison": {
+       "slots": 244,
+       "linked": 16,
+       "share": 6.56,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": -1.2,
+        "hi": 1.18,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 4
+      },
+      "GPk:compositional": {
+       "slots": 413,
+       "linked": 401,
+       "share": 97.09,
+       "vs_N_sp": {
+        "diff": -1.69,
+        "lo": -3.18,
+        "hi": -0.51,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -1.69,
+        "lo": -3.18,
+        "hi": -0.51,
+        "call": "BELOW"
+       },
+       "added_over_none": 4
+      },
+      "GPk:inference": {
+       "slots": 108,
+       "linked": 108,
+       "share": 100.0,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 4
+      },
+      "edge_ratio_to_ref": 1.0807
+     },
+     "CN_all": {
+      "edges": 50897,
+      "mean_degree": 16.636,
+      "ner_edges": 41593,
+      "ner_new_edges": 36691,
+      "GP": {
+       "slots": 2175,
+       "linked": 1006,
+       "share": 46.25,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": -0.18,
+        "hi": 0.19,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 50
+      },
+      "GPk:bridge_comparison": {
+       "slots": 1410,
+       "linked": 474,
+       "share": 33.62,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": -0.21,
+        "hi": 0.2,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 31
+      },
+      "GPk:comparison": {
+       "slots": 244,
+       "linked": 16,
+       "share": 6.56,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": -1.2,
+        "hi": 1.18,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 4
+      },
+      "GPk:compositional": {
+       "slots": 413,
+       "linked": 408,
+       "share": 98.79,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 11
+      },
+      "GPk:inference": {
+       "slots": 108,
+       "linked": 108,
+       "share": 100.0,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 4
+      },
+      "edge_ratio_to_ref": 1.1069
+     },
+     "CN_wu": {
+      "edges": 51287,
+      "mean_degree": 16.763,
+      "ner_edges": 41180,
+      "ner_new_edges": 37081,
+      "GP": {
+       "slots": 2175,
+       "linked": 976,
+       "share": 44.87,
+       "vs_N_sp": {
+        "diff": -1.38,
+        "lo": -1.93,
+        "hi": -0.86,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -1.38,
+        "lo": -1.92,
+        "hi": -0.88,
+        "call": "BELOW"
+       },
+       "added_over_none": 20
+      },
+      "GPk:bridge_comparison": {
+       "slots": 1410,
+       "linked": 451,
+       "share": 31.99,
+       "vs_N_sp": {
+        "diff": -1.63,
+        "lo": -2.42,
+        "hi": -0.94,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -1.63,
+        "lo": -2.38,
+        "hi": -0.97,
+        "call": "BELOW"
+       },
+       "added_over_none": 8
+      },
+      "GPk:comparison": {
+       "slots": 244,
+       "linked": 16,
+       "share": 6.56,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": -1.2,
+        "hi": 1.18,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 4
+      },
+      "GPk:compositional": {
+       "slots": 413,
+       "linked": 401,
+       "share": 97.09,
+       "vs_N_sp": {
+        "diff": -1.69,
+        "lo": -3.18,
+        "hi": -0.51,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -1.69,
+        "lo": -3.18,
+        "hi": -0.51,
+        "call": "BELOW"
+       },
+       "added_over_none": 4
+      },
+      "GPk:inference": {
+       "slots": 108,
+       "linked": 108,
+       "share": 100.0,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 4
+      },
+      "edge_ratio_to_ref": 1.1154
+     },
+     "CN_w": {
+      "edges": 52490,
+      "mean_degree": 17.156,
+      "ner_edges": 43254,
+      "ner_new_edges": 38284,
+      "GP": {
+       "slots": 2175,
+       "linked": 1006,
+       "share": 46.25,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": -0.18,
+        "hi": 0.19,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 50
+      },
+      "GPk:bridge_comparison": {
+       "slots": 1410,
+       "linked": 474,
+       "share": 33.62,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": -0.21,
+        "hi": 0.2,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 31
+      },
+      "GPk:comparison": {
+       "slots": 244,
+       "linked": 16,
+       "share": 6.56,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": -1.2,
+        "hi": 1.18,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 4
+      },
+      "GPk:compositional": {
+       "slots": 413,
+       "linked": 408,
+       "share": 98.79,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 11
+      },
+      "GPk:inference": {
+       "slots": 108,
+       "linked": 108,
+       "share": 100.0,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 4
+      },
+      "edge_ratio_to_ref": 1.1416
+     }
+    },
+    "S": {
+     "none": {
+      "edges": 14104,
+      "mean_degree": 4.61,
+      "ner_edges": 0,
+      "ner_new_edges": 0,
+      "GP": {
+       "slots": 2175,
+       "linked": 977,
+       "share": 44.92,
+       "vs_N_sp": {
+        "diff": -1.29,
+        "lo": -1.81,
+        "hi": -0.8,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -1.29,
+        "lo": -1.79,
+        "hi": -0.81,
+        "call": "BELOW"
+       }
+      },
+      "GPk:bridge_comparison": {
+       "slots": 1410,
+       "linked": 464,
+       "share": 32.91,
+       "vs_N_sp": {
+        "diff": -0.78,
+        "lo": -1.32,
+        "hi": -0.29,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -0.78,
+        "lo": -1.31,
+        "hi": -0.31,
+        "call": "BELOW"
+       }
+      },
+      "GPk:comparison": {
+       "slots": 244,
+       "linked": 12,
+       "share": 4.92,
+       "vs_N_sp": {
+        "diff": -1.64,
+        "lo": -3.31,
+        "hi": -0.35,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -1.64,
+        "lo": -3.39,
+        "hi": -0.39,
+        "call": "BELOW"
+       }
+      },
+      "GPk:compositional": {
+       "slots": 413,
+       "linked": 396,
+       "share": 95.88,
+       "vs_N_sp": {
+        "diff": -2.42,
+        "lo": -4.07,
+        "hi": -0.99,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -2.42,
+        "lo": -4.07,
+        "hi": -0.99,
+        "call": "BELOW"
+       }
+      },
+      "GPk:inference": {
+       "slots": 108,
+       "linked": 105,
+       "share": 97.22,
+       "vs_N_sp": {
+        "diff": -2.78,
+        "lo": -6.48,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -2.78,
+        "lo": -6.48,
+        "hi": 0.0,
+        "call": "LEVEL"
+       }
+      },
+      "edge_ratio_to_ref": 0.3075
+     },
+     "N_sp": {
+      "edges": 45861,
+      "mean_degree": 14.99,
+      "ner_edges": 36147,
+      "ner_new_edges": 31757,
+      "GP": {
+       "slots": 2175,
+       "linked": 1005,
+       "share": 46.21,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": -0.19,
+        "hi": 0.18,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:bridge_comparison": {
+       "slots": 1410,
+       "linked": 475,
+       "share": 33.69,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": -0.2,
+        "hi": 0.21,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:comparison": {
+       "slots": 244,
+       "linked": 16,
+       "share": 6.56,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": -1.18,
+        "hi": 1.2,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:compositional": {
+       "slots": 413,
+       "linked": 406,
+       "share": 98.31,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:inference": {
+       "slots": 108,
+       "linked": 108,
+       "share": 100.0,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       }
+      },
+      "edge_ratio_to_ref": 1.0
+     },
+     "CN_u": {
+      "edges": 49581,
+      "mean_degree": 16.206,
+      "ner_edges": 39509,
+      "ner_new_edges": 35477,
+      "GP": {
+       "slots": 2175,
+       "linked": 996,
+       "share": 45.79,
+       "vs_N_sp": {
+        "diff": -0.41,
+        "lo": -0.77,
+        "hi": -0.09,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -0.41,
+        "lo": -0.7,
+        "hi": -0.18,
+        "call": "BELOW"
+       },
+       "added_over_none": 19
+      },
+      "GPk:bridge_comparison": {
+       "slots": 1410,
+       "linked": 471,
+       "share": 33.4,
+       "vs_N_sp": {
+        "diff": -0.28,
+        "lo": -0.65,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -0.28,
+        "lo": -0.59,
+        "hi": -0.07,
+        "call": "BELOW"
+       },
+       "added_over_none": 7
+      },
+      "GPk:comparison": {
+       "slots": 244,
+       "linked": 16,
+       "share": 6.56,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": -1.2,
+        "hi": 1.18,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 4
+      },
+      "GPk:compositional": {
+       "slots": 413,
+       "linked": 401,
+       "share": 97.09,
+       "vs_N_sp": {
+        "diff": -1.21,
+        "lo": -2.38,
+        "hi": -0.24,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -1.21,
+        "lo": -2.38,
+        "hi": -0.24,
+        "call": "BELOW"
+       },
+       "added_over_none": 5
+      },
+      "GPk:inference": {
+       "slots": 108,
+       "linked": 108,
+       "share": 100.0,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 3
+      },
+      "edge_ratio_to_ref": 1.0811
+     },
+     "CN_all": {
+      "edges": 50817,
+      "mean_degree": 16.61,
+      "ner_edges": 41593,
+      "ner_new_edges": 36713,
+      "GP": {
+       "slots": 2175,
+       "linked": 1005,
+       "share": 46.21,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": -0.18,
+        "hi": 0.19,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 28
+      },
+      "GPk:bridge_comparison": {
+       "slots": 1410,
+       "linked": 475,
+       "share": 33.69,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": -0.21,
+        "hi": 0.2,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 11
+      },
+      "GPk:comparison": {
+       "slots": 244,
+       "linked": 16,
+       "share": 6.56,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": -1.2,
+        "hi": 1.18,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 4
+      },
+      "GPk:compositional": {
+       "slots": 413,
+       "linked": 406,
+       "share": 98.31,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 10
+      },
+      "GPk:inference": {
+       "slots": 108,
+       "linked": 108,
+       "share": 100.0,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 3
+      },
+      "edge_ratio_to_ref": 1.1081
+     },
+     "CN_wu": {
+      "edges": 51180,
+      "mean_degree": 16.728,
+      "ner_edges": 41180,
+      "ner_new_edges": 37076,
+      "GP": {
+       "slots": 2175,
+       "linked": 996,
+       "share": 45.79,
+       "vs_N_sp": {
+        "diff": -0.41,
+        "lo": -0.77,
+        "hi": -0.09,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -0.41,
+        "lo": -0.7,
+        "hi": -0.18,
+        "call": "BELOW"
+       },
+       "added_over_none": 19
+      },
+      "GPk:bridge_comparison": {
+       "slots": 1410,
+       "linked": 471,
+       "share": 33.4,
+       "vs_N_sp": {
+        "diff": -0.28,
+        "lo": -0.65,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -0.28,
+        "lo": -0.59,
+        "hi": -0.07,
+        "call": "BELOW"
+       },
+       "added_over_none": 7
+      },
+      "GPk:comparison": {
+       "slots": 244,
+       "linked": 16,
+       "share": 6.56,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": -1.2,
+        "hi": 1.18,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 4
+      },
+      "GPk:compositional": {
+       "slots": 413,
+       "linked": 401,
+       "share": 97.09,
+       "vs_N_sp": {
+        "diff": -1.21,
+        "lo": -2.38,
+        "hi": -0.24,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -1.21,
+        "lo": -2.38,
+        "hi": -0.24,
+        "call": "BELOW"
+       },
+       "added_over_none": 5
+      },
+      "GPk:inference": {
+       "slots": 108,
+       "linked": 108,
+       "share": 100.0,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 3
+      },
+      "edge_ratio_to_ref": 1.116
+     },
+     "CN_w": {
+      "edges": 52410,
+      "mean_degree": 17.13,
+      "ner_edges": 43254,
+      "ner_new_edges": 38306,
+      "GP": {
+       "slots": 2175,
+       "linked": 1005,
+       "share": 46.21,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": -0.18,
+        "hi": 0.19,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 28
+      },
+      "GPk:bridge_comparison": {
+       "slots": 1410,
+       "linked": 475,
+       "share": 33.69,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": -0.21,
+        "hi": 0.2,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 11
+      },
+      "GPk:comparison": {
+       "slots": 244,
+       "linked": 16,
+       "share": 6.56,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": -1.2,
+        "hi": 1.18,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 4
+      },
+      "GPk:compositional": {
+       "slots": 413,
+       "linked": 406,
+       "share": 98.31,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 10
+      },
+      "GPk:inference": {
+       "slots": 108,
+       "linked": 108,
+       "share": 100.0,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 3
+      },
+      "edge_ratio_to_ref": 1.1428
+     }
+    }
+   },
+   "curve": {
+    "N_sp": {
+     "0.1": {
+      "ner_pairs": 3615,
+      "min_weight": 0.33333,
+      "pairs": 16021,
+      "GP": 45.2
+     },
+     "0.2": {
+      "ner_pairs": 7230,
+      "min_weight": 0.25,
+      "pairs": 18851,
+      "GP": 45.66
+     },
+     "0.3": {
+      "ner_pairs": 10845,
+      "min_weight": 0.16667,
+      "pairs": 21922,
+      "GP": 45.7
+     },
+     "0.5": {
+      "ner_pairs": 18074,
+      "min_weight": 0.09091,
+      "pairs": 28517,
+      "GP": 46.07
+     },
+     "0.7": {
+      "ner_pairs": 25303,
+      "min_weight": 0.05556,
+      "pairs": 35475,
+      "GP": 46.21
+     },
+     "1.0": {
+      "ner_pairs": 36147,
+      "min_weight": 0.04,
+      "pairs": 45980,
+      "GP": 46.25
+     }
+    },
+    "CN_all": {
+     "0.1": {
+      "ner_pairs": 4160,
+      "min_weight": 0.39286,
+      "pairs": 16295,
+      "GP": 45.1
+     },
+     "0.2": {
+      "ner_pairs": 8319,
+      "min_weight": 0.25,
+      "pairs": 19505,
+      "GP": 45.52
+     },
+     "0.3": {
+      "ner_pairs": 12478,
+      "min_weight": 0.16667,
+      "pairs": 23074,
+      "GP": 45.66
+     },
+     "0.5": {
+      "ner_pairs": 20797,
+      "min_weight": 0.1,
+      "pairs": 30730,
+      "GP": 46.11
+     },
+     "0.7": {
+      "ner_pairs": 29116,
+      "min_weight": 0.0625,
+      "pairs": 38783,
+      "GP": 46.16
+     },
+     "1.0": {
+      "ner_pairs": 41593,
+      "min_weight": 0.04,
+      "pairs": 50897,
+      "GP": 46.25
+     }
+    }
+   },
+   "price": {
+    "R": {
+     "GP": {
+      "N_sp": 635.5,
+      "CN_u": 1774.2,
+      "CN_all": 733.8,
+      "CN_wu": 1854.0,
+      "CN_w": 765.7
+     },
+     "GPk:bridge_comparison": {
+      "N_sp": 1025.0,
+      "CN_u": 4435.4,
+      "CN_all": 1183.6,
+      "CN_wu": 4635.1,
+      "CN_w": 1235.0
+     },
+     "GPk:comparison": {
+      "N_sp": 7943.5,
+      "CN_u": 8870.8,
+      "CN_all": 9172.8,
+      "CN_wu": 9270.2,
+      "CN_w": 9571.0
+     },
+     "GPk:compositional": {
+      "N_sp": 2888.5,
+      "CN_u": 8870.8,
+      "CN_all": 3335.5,
+      "CN_wu": 9270.2,
+      "CN_w": 3480.4
+     },
+     "GPk:inference": {
+      "N_sp": 7943.5,
+      "CN_u": 8870.8,
+      "CN_all": 9172.8,
+      "CN_wu": 9270.2,
+      "CN_w": 9571.0
+     }
+    },
+    "S": {
+     "GP": {
+      "N_sp": 1134.2,
+      "CN_u": 1867.2,
+      "CN_all": 1311.2,
+      "CN_wu": 1951.4,
+      "CN_w": 1368.1
+     },
+     "GPk:bridge_comparison": {
+      "N_sp": 2887.0,
+      "CN_u": 5068.1,
+      "CN_all": 3337.5,
+      "CN_wu": 5296.6,
+      "CN_w": 3482.4
+     },
+     "GPk:comparison": {
+      "N_sp": 7939.2,
+      "CN_u": 8869.2,
+      "CN_all": 9178.2,
+      "CN_wu": 9269.0,
+      "CN_w": 9576.5
+     },
+     "GPk:compositional": {
+      "N_sp": 3175.7,
+      "CN_u": 7095.4,
+      "CN_all": 3671.3,
+      "CN_wu": 7415.2,
+      "CN_w": 3830.6
+     },
+     "GPk:inference": {
+      "N_sp": 10585.7,
+      "CN_u": 11825.7,
+      "CN_all": 12237.7,
+      "CN_wu": 12358.7,
+      "CN_w": 12768.7
+     }
+    }
+   },
+   "marginal_price": {
+    "R": {
+     "GP": {
+      "CN_all_over_none": 733.8,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": 635.5
+     },
+     "GPk:bridge_comparison": {
+      "CN_all_over_none": 1183.6,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": 1025.0
+     },
+     "GPk:comparison": {
+      "CN_all_over_none": 9172.8,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": 7943.5
+     },
+     "GPk:compositional": {
+      "CN_all_over_none": 3335.5,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": 2888.5
+     },
+     "GPk:inference": {
+      "CN_all_over_none": 9172.8,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": 7943.5
+     }
+    },
+    "S": {
+     "GP": {
+      "CN_all_over_none": 1311.2,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": 1134.2
+     },
+     "GPk:bridge_comparison": {
+      "CN_all_over_none": 3337.5,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": 2887.0
+     },
+     "GPk:comparison": {
+      "CN_all_over_none": 9178.2,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": 7939.2
+     },
+     "GPk:compositional": {
+      "CN_all_over_none": 3671.3,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": 3175.7
+     },
+     "GPk:inference": {
+      "CN_all_over_none": 12237.7,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": 10585.7
+     }
+    }
+   },
+   "partC": {
+    "GP": {
+     "loss": 2,
+     "gain": 2,
+     "loss_with_a_shared_rule_name": 2,
+     "examples": [
+      {
+       "a": "St. Mary's School, Patiala",
+       "b": "Apeejay Education Society",
+       "shared_rule_names": [
+        "india"
+       ]
+      },
+      {
+       "a": "Michael Curtiz",
+       "b": "Ralph Nelson",
+       "shared_rule_names": [
+        "academy awards",
+        "december"
+       ]
+      }
+     ]
+    },
+    "GPk:bridge_comparison": {
+     "loss": 1,
+     "gain": 1,
+     "loss_with_a_shared_rule_name": 1,
+     "examples": [
+      {
+       "a": "Michael Curtiz",
+       "b": "Ralph Nelson",
+       "shared_rule_names": [
+        "academy awards",
+        "december"
+       ]
+      }
+     ]
+    },
+    "GPk:comparison": {
+     "loss": 1,
+     "gain": 1,
+     "loss_with_a_shared_rule_name": 1,
+     "examples": [
+      {
+       "a": "St. Mary's School, Patiala",
+       "b": "Apeejay Education Society",
+       "shared_rule_names": [
+        "india"
+       ]
+      }
+     ]
+    },
+    "GPk:compositional": {
+     "loss": 0,
+     "gain": 0,
+     "loss_with_a_shared_rule_name": 0,
+     "examples": []
+    },
+    "GPk:inference": {
+     "loss": 0,
+     "gain": 0,
+     "loss_with_a_shared_rule_name": 0,
+     "examples": []
+    }
+   },
+   "rules_npz_sha256": "f793b327c69fb82784a527272628b8ea377279d378e18e77da7e48c425603bdc",
+   "seconds": 6.8
+  },
+  "hotpotqa": {
+   "info": {
+    "nodes": 9811,
+    "questions": 1000,
+    "gp_slots": 1000,
+    "names": {
+     "distinct": 57894,
+     "mentions": 106524,
+     "titled": 5077,
+     "df_2_25": 9997,
+     "df_over_25": 206
+    },
+    "spacy_graph": {
+     "N_sp_pairs": 68698,
+     "S_pairs": 4400,
+     "R_pairs": 4315,
+     "K_pairs": 21805
+    }
+   },
+   "partA": {
+    "R": {
+     "none": {
+      "edges": 23582,
+      "mean_degree": 4.807,
+      "ner_edges": 0,
+      "ner_new_edges": 0,
+      "GP": {
+       "slots": 1000,
+       "linked": 730,
+       "share": 73.0,
+       "vs_N_sp": {
+        "diff": -4.5,
+        "lo": -5.8,
+        "hi": -3.2,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -6.1,
+        "lo": -7.6,
+        "hi": -4.7,
+        "call": "BELOW"
+       }
+      },
+      "GPk:bridge": {
+       "slots": 811,
+       "linked": 714,
+       "share": 88.04,
+       "vs_N_sp": {
+        "diff": -4.81,
+        "lo": -6.3,
+        "hi": -3.39,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -6.29,
+        "lo": -8.01,
+        "hi": -4.63,
+        "call": "BELOW"
+       }
+      },
+      "GPk:comparison": {
+       "slots": 189,
+       "linked": 16,
+       "share": 8.47,
+       "vs_N_sp": {
+        "diff": -3.17,
+        "lo": -5.83,
+        "hi": -1.03,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -5.29,
+        "lo": -8.82,
+        "hi": -2.34,
+        "call": "BELOW"
+       }
+      },
+      "edge_ratio_to_ref": 0.2829
+     },
+     "N_sp": {
+      "edges": 83356,
+      "mean_degree": 16.992,
+      "ner_edges": 68698,
+      "ner_new_edges": 59774,
+      "GP": {
+       "slots": 1000,
+       "linked": 775,
+       "share": 77.5,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -1.6,
+        "lo": -2.6,
+        "hi": -0.7,
+        "call": "BELOW"
+       }
+      },
+      "GPk:bridge": {
+       "slots": 811,
+       "linked": 753,
+       "share": 92.85,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -1.48,
+        "lo": -2.48,
+        "hi": -0.61,
+        "call": "BELOW"
+       }
+      },
+      "GPk:comparison": {
+       "slots": 189,
+       "linked": 22,
+       "share": 11.64,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -2.12,
+        "lo": -4.84,
+        "hi": 0.0,
+        "call": "LEVEL"
+       }
+      },
+      "edge_ratio_to_ref": 1.0
+     },
+     "CN_u": {
+      "edges": 91958,
+      "mean_degree": 18.746,
+      "ner_edges": 76278,
+      "ner_new_edges": 68376,
+      "GP": {
+       "slots": 1000,
+       "linked": 774,
+       "share": 77.4,
+       "vs_N_sp": {
+        "diff": -0.1,
+        "lo": -1.1,
+        "hi": 0.9,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -1.7,
+        "lo": -2.6,
+        "hi": -1.0,
+        "call": "BELOW"
+       },
+       "added_over_none": 44
+      },
+      "GPk:bridge": {
+       "slots": 811,
+       "linked": 748,
+       "share": 92.23,
+       "vs_N_sp": {
+        "diff": -0.62,
+        "lo": -1.71,
+        "hi": 0.38,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -2.1,
+        "lo": -3.2,
+        "hi": -1.23,
+        "call": "BELOW"
+       },
+       "added_over_none": 34
+      },
+      "GPk:comparison": {
+       "slots": 189,
+       "linked": 26,
+       "share": 13.76,
+       "vs_N_sp": {
+        "diff": 2.12,
+        "lo": 0.0,
+        "hi": 4.84,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 10
+      },
+      "edge_ratio_to_ref": 1.1032
+     },
+     "CN_all": {
+      "edges": 98675,
+      "mean_degree": 20.115,
+      "ner_edges": 85369,
+      "ner_new_edges": 75093,
+      "GP": {
+       "slots": 1000,
+       "linked": 791,
+       "share": 79.1,
+       "vs_N_sp": {
+        "diff": 1.6,
+        "lo": 0.7,
+        "hi": 2.6,
+        "call": "ABOVE"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 61
+      },
+      "GPk:bridge": {
+       "slots": 811,
+       "linked": 765,
+       "share": 94.33,
+       "vs_N_sp": {
+        "diff": 1.48,
+        "lo": 0.61,
+        "hi": 2.48,
+        "call": "ABOVE"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 51
+      },
+      "GPk:comparison": {
+       "slots": 189,
+       "linked": 26,
+       "share": 13.76,
+       "vs_N_sp": {
+        "diff": 2.12,
+        "lo": 0.0,
+        "hi": 4.84,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 10
+      },
+      "edge_ratio_to_ref": 1.1838
+     },
+     "CN_wu": {
+      "edges": 96539,
+      "mean_degree": 19.68,
+      "ner_edges": 81062,
+      "ner_new_edges": 72957,
+      "GP": {
+       "slots": 1000,
+       "linked": 775,
+       "share": 77.5,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": -1.0,
+        "hi": 1.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -1.6,
+        "lo": -2.5,
+        "hi": -0.8,
+        "call": "BELOW"
+       },
+       "added_over_none": 45
+      },
+      "GPk:bridge": {
+       "slots": 811,
+       "linked": 748,
+       "share": 92.23,
+       "vs_N_sp": {
+        "diff": -0.62,
+        "lo": -1.71,
+        "hi": 0.38,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -2.1,
+        "lo": -3.2,
+        "hi": -1.23,
+        "call": "BELOW"
+       },
+       "added_over_none": 34
+      },
+      "GPk:comparison": {
+       "slots": 189,
+       "linked": 27,
+       "share": 14.29,
+       "vs_N_sp": {
+        "diff": 2.65,
+        "lo": 0.0,
+        "hi": 5.48,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.53,
+        "lo": 0.0,
+        "hi": 1.68,
+        "call": "LEVEL"
+       },
+       "added_over_none": 11
+      },
+      "edge_ratio_to_ref": 1.1582
+     },
+     "CN_w": {
+      "edges": 103537,
+      "mean_degree": 21.106,
+      "ner_edges": 90411,
+      "ner_new_edges": 79955,
+      "GP": {
+       "slots": 1000,
+       "linked": 792,
+       "share": 79.2,
+       "vs_N_sp": {
+        "diff": 1.7,
+        "lo": 0.8,
+        "hi": 2.7,
+        "call": "ABOVE"
+       },
+       "vs_CN_all": {
+        "diff": 0.1,
+        "lo": 0.0,
+        "hi": 0.3,
+        "call": "LEVEL"
+       },
+       "added_over_none": 62
+      },
+      "GPk:bridge": {
+       "slots": 811,
+       "linked": 765,
+       "share": 94.33,
+       "vs_N_sp": {
+        "diff": 1.48,
+        "lo": 0.61,
+        "hi": 2.48,
+        "call": "ABOVE"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 51
+      },
+      "GPk:comparison": {
+       "slots": 189,
+       "linked": 27,
+       "share": 14.29,
+       "vs_N_sp": {
+        "diff": 2.65,
+        "lo": 0.0,
+        "hi": 5.48,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.53,
+        "lo": 0.0,
+        "hi": 1.68,
+        "call": "LEVEL"
+       },
+       "added_over_none": 11
+      },
+      "edge_ratio_to_ref": 1.2421
+     }
+    },
+    "S": {
+     "none": {
+      "edges": 23400,
+      "mean_degree": 4.77,
+      "ner_edges": 0,
+      "ner_new_edges": 0,
+      "GP": {
+       "slots": 1000,
+       "linked": 827,
+       "share": 82.7,
+       "vs_N_sp": {
+        "diff": -0.6,
+        "lo": -1.1,
+        "hi": -0.2,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -1.0,
+        "lo": -1.7,
+        "hi": -0.4,
+        "call": "BELOW"
+       }
+      },
+      "GPk:bridge": {
+       "slots": 811,
+       "linked": 811,
+       "share": 100.0,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:comparison": {
+       "slots": 189,
+       "linked": 16,
+       "share": 8.47,
+       "vs_N_sp": {
+        "diff": -3.17,
+        "lo": -5.83,
+        "hi": -1.03,
+        "call": "BELOW"
+       },
+       "vs_CN_all": {
+        "diff": -5.29,
+        "lo": -8.82,
+        "hi": -2.34,
+        "call": "BELOW"
+       }
+      },
+      "edge_ratio_to_ref": 0.2813
+     },
+     "N_sp": {
+      "edges": 83188,
+      "mean_degree": 16.958,
+      "ner_edges": 68698,
+      "ner_new_edges": 59788,
+      "GP": {
+       "slots": 1000,
+       "linked": 833,
+       "share": 83.3,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -0.4,
+        "lo": -0.9,
+        "hi": 0.0,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:bridge": {
+       "slots": 811,
+       "linked": 811,
+       "share": 100.0,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       }
+      },
+      "GPk:comparison": {
+       "slots": 189,
+       "linked": 22,
+       "share": 11.64,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": -2.12,
+        "lo": -4.84,
+        "hi": 0.0,
+        "call": "LEVEL"
+       }
+      },
+      "edge_ratio_to_ref": 1.0
+     },
+     "CN_u": {
+      "edges": 91745,
+      "mean_degree": 18.702,
+      "ner_edges": 76278,
+      "ner_new_edges": 68345,
+      "GP": {
+       "slots": 1000,
+       "linked": 837,
+       "share": 83.7,
+       "vs_N_sp": {
+        "diff": 0.4,
+        "lo": 0.0,
+        "hi": 0.9,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 10
+      },
+      "GPk:bridge": {
+       "slots": 811,
+       "linked": 811,
+       "share": 100.0,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 0
+      },
+      "GPk:comparison": {
+       "slots": 189,
+       "linked": 26,
+       "share": 13.76,
+       "vs_N_sp": {
+        "diff": 2.12,
+        "lo": 0.0,
+        "hi": 4.84,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 10
+      },
+      "edge_ratio_to_ref": 1.1029
+     },
+     "CN_all": {
+      "edges": 98540,
+      "mean_degree": 20.088,
+      "ner_edges": 85369,
+      "ner_new_edges": 75140,
+      "GP": {
+       "slots": 1000,
+       "linked": 837,
+       "share": 83.7,
+       "vs_N_sp": {
+        "diff": 0.4,
+        "lo": 0.0,
+        "hi": 0.9,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 10
+      },
+      "GPk:bridge": {
+       "slots": 811,
+       "linked": 811,
+       "share": 100.0,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 0
+      },
+      "GPk:comparison": {
+       "slots": 189,
+       "linked": 26,
+       "share": 13.76,
+       "vs_N_sp": {
+        "diff": 2.12,
+        "lo": 0.0,
+        "hi": 4.84,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 10
+      },
+      "edge_ratio_to_ref": 1.1845
+     },
+     "CN_wu": {
+      "edges": 96323,
+      "mean_degree": 19.636,
+      "ner_edges": 81062,
+      "ner_new_edges": 72923,
+      "GP": {
+       "slots": 1000,
+       "linked": 838,
+       "share": 83.8,
+       "vs_N_sp": {
+        "diff": 0.5,
+        "lo": 0.0,
+        "hi": 1.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.1,
+        "lo": 0.0,
+        "hi": 0.3,
+        "call": "LEVEL"
+       },
+       "added_over_none": 11
+      },
+      "GPk:bridge": {
+       "slots": 811,
+       "linked": 811,
+       "share": 100.0,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 0
+      },
+      "GPk:comparison": {
+       "slots": 189,
+       "linked": 27,
+       "share": 14.29,
+       "vs_N_sp": {
+        "diff": 2.65,
+        "lo": 0.0,
+        "hi": 5.48,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.53,
+        "lo": 0.0,
+        "hi": 1.68,
+        "call": "LEVEL"
+       },
+       "added_over_none": 11
+      },
+      "edge_ratio_to_ref": 1.1579
+     },
+     "CN_w": {
+      "edges": 103401,
+      "mean_degree": 21.079,
+      "ner_edges": 90411,
+      "ner_new_edges": 80001,
+      "GP": {
+       "slots": 1000,
+       "linked": 838,
+       "share": 83.8,
+       "vs_N_sp": {
+        "diff": 0.5,
+        "lo": 0.0,
+        "hi": 1.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.1,
+        "lo": 0.0,
+        "hi": 0.3,
+        "call": "LEVEL"
+       },
+       "added_over_none": 11
+      },
+      "GPk:bridge": {
+       "slots": 811,
+       "linked": 811,
+       "share": 100.0,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "added_over_none": 0
+      },
+      "GPk:comparison": {
+       "slots": 189,
+       "linked": 27,
+       "share": 14.29,
+       "vs_N_sp": {
+        "diff": 2.65,
+        "lo": 0.0,
+        "hi": 5.48,
+        "call": "LEVEL"
+       },
+       "vs_CN_all": {
+        "diff": 0.53,
+        "lo": 0.0,
+        "hi": 1.68,
+        "call": "LEVEL"
+       },
+       "added_over_none": 11
+      },
+      "edge_ratio_to_ref": 1.243
+     }
+    }
+   },
+   "curve": {
+    "N_sp": {
+     "0.1": {
+      "ner_pairs": 6870,
+      "min_weight": 0.33333,
+      "pairs": 27332,
+      "GP": 74.4
+     },
+     "0.2": {
+      "ner_pairs": 13740,
+      "min_weight": 0.21667,
+      "pairs": 32624,
+      "GP": 75.2
+     },
+     "0.3": {
+      "ner_pairs": 20610,
+      "min_weight": 0.15,
+      "pairs": 38411,
+      "GP": 75.5
+     },
+     "0.5": {
+      "ner_pairs": 34349,
+      "min_weight": 0.1,
+      "pairs": 50236,
+      "GP": 76.5
+     },
+     "0.7": {
+      "ner_pairs": 48089,
+      "min_weight": 0.0625,
+      "pairs": 63234,
+      "GP": 77.0
+     },
+     "1.0": {
+      "ner_pairs": 68698,
+      "min_weight": 0.04,
+      "pairs": 83356,
+      "GP": 77.5
+     }
+    },
+    "CN_all": {
+     "0.1": {
+      "ner_pairs": 8537,
+      "min_weight": 0.33333,
+      "pairs": 28254,
+      "GP": 75.3
+     },
+     "0.2": {
+      "ner_pairs": 17074,
+      "min_weight": 0.20202,
+      "pairs": 35004,
+      "GP": 75.9
+     },
+     "0.3": {
+      "ner_pairs": 25611,
+      "min_weight": 0.14286,
+      "pairs": 42487,
+      "GP": 76.9
+     },
+     "0.5": {
+      "ner_pairs": 42685,
+      "min_weight": 0.09091,
+      "pairs": 57453,
+      "GP": 77.6
+     },
+     "0.7": {
+      "ner_pairs": 59759,
+      "min_weight": 0.0625,
+      "pairs": 73711,
+      "GP": 78.4
+     },
+     "1.0": {
+      "ner_pairs": 85369,
+      "min_weight": 0.04,
+      "pairs": 98675,
+      "GP": 79.1
+     }
+    }
+   },
+   "price": {
+    "R": {
+     "GP": {
+      "N_sp": 1328.3,
+      "CN_u": 1554.0,
+      "CN_all": 1231.0,
+      "CN_wu": 1621.3,
+      "CN_w": 1289.6
+     },
+     "GPk:bridge": {
+      "N_sp": 1532.7,
+      "CN_u": 2011.1,
+      "CN_all": 1472.4,
+      "CN_wu": 2145.8,
+      "CN_w": 1567.7
+     },
+     "GPk:comparison": {
+      "N_sp": 9962.3,
+      "CN_u": 6837.6,
+      "CN_all": 7509.3,
+      "CN_wu": 6632.5,
+      "CN_w": 7268.6
+     }
+    },
+    "S": {
+     "GP": {
+      "N_sp": 9964.7,
+      "CN_u": 6834.5,
+      "CN_all": 7514.0,
+      "CN_wu": 6629.4,
+      "CN_w": 7272.8
+     },
+     "GPk:bridge": {
+      "N_sp": null,
+      "CN_u": null,
+      "CN_all": null,
+      "CN_wu": null,
+      "CN_w": null
+     },
+     "GPk:comparison": {
+      "N_sp": 9964.7,
+      "CN_u": 6834.5,
+      "CN_all": 7514.0,
+      "CN_wu": 6629.4,
+      "CN_w": 7272.8
+     }
+    }
+   },
+   "marginal_price": {
+    "R": {
+     "GP": {
+      "CN_all_over_none": 1231.0,
+      "CN_w_over_CN_all": 4862.0,
+      "CN_wu_over_CN_u": 4581.0,
+      "N_sp_over_none": 1328.3
+     },
+     "GPk:bridge": {
+      "CN_all_over_none": 1472.4,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": 1532.7
+     },
+     "GPk:comparison": {
+      "CN_all_over_none": 7509.3,
+      "CN_w_over_CN_all": 4862.0,
+      "CN_wu_over_CN_u": 4581.0,
+      "N_sp_over_none": 9962.3
+     }
+    },
+    "S": {
+     "GP": {
+      "CN_all_over_none": 7514.0,
+      "CN_w_over_CN_all": 4861.0,
+      "CN_wu_over_CN_u": 4578.0,
+      "N_sp_over_none": 9964.7
+     },
+     "GPk:bridge": {
+      "CN_all_over_none": null,
+      "CN_w_over_CN_all": null,
+      "CN_wu_over_CN_u": null,
+      "N_sp_over_none": null
+     },
+     "GPk:comparison": {
+      "CN_all_over_none": 7514.0,
+      "CN_w_over_CN_all": 4861.0,
+      "CN_wu_over_CN_u": 4578.0,
+      "N_sp_over_none": 9964.7
+     }
+    }
+   },
+   "partC": {
+    "GP": {
+     "loss": 3,
+     "gain": 20,
+     "loss_with_a_shared_rule_name": 1,
+     "examples": [
+      {
+       "a": "Joseph McCarthy",
+       "b": "James Gregory (actor)",
+       "shared_rule_names": [
+        "american"
+       ]
+      },
+      {
+       "a": "Gender",
+       "b": "Mary Karooro Okurut",
+       "shared_rule_names": []
+      },
+      {
+       "a": "Wire (band)",
+       "b": "Young the Giant",
+       "shared_rule_names": []
+      }
+     ]
+    },
+    "GPk:bridge": {
+     "loss": 2,
+     "gain": 14,
+     "loss_with_a_shared_rule_name": 1,
+     "examples": [
+      {
+       "a": "Joseph McCarthy",
+       "b": "James Gregory (actor)",
+       "shared_rule_names": [
+        "american"
+       ]
+      },
+      {
+       "a": "Gender",
+       "b": "Mary Karooro Okurut",
+       "shared_rule_names": []
+      }
+     ]
+    },
+    "GPk:comparison": {
+     "loss": 1,
+     "gain": 6,
+     "loss_with_a_shared_rule_name": 0,
+     "examples": [
+      {
+       "a": "Wire (band)",
+       "b": "Young the Giant",
+       "shared_rule_names": []
+      }
+     ]
+    }
+   },
+   "rules_npz_sha256": "494ceb281aa5bf2ba249c1a3374a00a657cef644d8c5865e3608fedd5a0b23de",
+   "seconds": 9.1
+  }
+ }
+}
