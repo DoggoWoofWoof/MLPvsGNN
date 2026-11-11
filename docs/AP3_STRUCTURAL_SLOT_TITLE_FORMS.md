@@ -107,8 +107,10 @@ All differences are paired by question, 95% bootstrap intervals over the 1,000 q
 
 ## 6. What AP3 does not do
 
-- **Triples, typed rules.** Not built here. A scouting read (section 10, not filed) found little reach to add (the pools already hold nearly all the gold passages), and a triple
-  family's hubs (an entity shared by many passages) fail S1's own price rule at once; what is left is ranking among reached passages, a query-side question (D80).
+- **Triples, typed rules.** Not built here. AP1b filed that F0T leaves 475 MuSiQue chain slots unlinked, 264 of them at hub names. A scouting read (section 10, not filed; its numbers
+  are not cited) found that links to hub names cost far more new pairs per added slot than N_sp's 128.6, so S1's own price rule refuses them, and that an entity layer which does reach
+  most of those slots leaves the linked partner in the top 10 of the family's own ordering for fewer than half of them: reach is not the gap, ranking among reached passages is, and that
+  is a query-side question (D80).
 - **Prefix and last-token title forms** (U2b's kinds 2 and 3): noise in the scouting read; not built.
 - **An S-in-the-structural-slot ceiling with F0T** (the b1s idea): B1H (the models of record) and J5S (the J5 fits) already read S against R with spaCy's slot, and Part B's carve answers
   the AP question with b1n as base (D81, default no).
@@ -145,4 +147,7 @@ the carve folders `outputs/b1y/bench/hipporag2_y/<setting>/` stay local until th
   build.json, bench's refusal of a setting with no carried rung, the settings label, `as_variant`, the pair, word, call and verdict code on fake reads, the markdown) and
   `zap3.py selftest-ladder` (the link rule on a toy corpus: exact-title and base-title links, the df of a surface, an ambiguous surface dropped and counted once, each pair once) pass.
   The writer was checked on the three real b1w structural files (rebuilt from R's pairs, sha equal to build.json's): the check is now gate G3b.
+- Corrected before any number was filed (the commit after the declaration's): section 6's first bullet cited "the pools already hold nearly all the gold passages" for the triple
+  and typed scouting; that was not what the scouting read found (it found that reach is not the gap and ranking is), and the bullet now says so and cites only AP1b's filed counts.
+  No rule, constant or gate changed.
 - A failing step is fixed and the fix disclosed here with its commit before any number is filed.
