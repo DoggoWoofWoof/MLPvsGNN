@@ -4,6 +4,43 @@ Use this page if the lab host (`DESKTOP-SLQMEQH`, see [GPU_HOST_HANDOVER.md](GPU
 
 Written on 2026-10-03. Systems only: none of this changes a filed number, and a new machine is a new placement (step 4).
 
+## Update, 12 November 2026: what the archives hold now
+
+The table below is as of 2026-10-03. Since then most of the old archive was deleted and new tags were written. The other rows and the steps stand as written, except where this update says otherwise, and nothing here changes a filed number.
+
+**11 November: the old archive was cut back**, on the owner's decision. Each repo got a delete commit and then a permanent delete of every stored LFS object that no kept file references, so the deleted files cannot be recovered from the hub.
+- `KK9895/mpr-host-archive` (43.89 GB became 8.61 GB): the four anchor folders (`anc-*`), `_probe` and the anchors' manifests are gone. Kept: `mirror-spared` (the 97 mirror files) and the archive tool's test tag `t0`.
+- `JGY9895/mpr-host-archive` (79.16 GB became 3.02 GB): everything under `ws/outputs` is gone except `mp_unified/qd`, `cpu_gpu_equivalence` and `gpu_task_qualification`, and so are the manifests left with no file. `ops/host_ops.tar.gz` is kept.
+- So these rows of the table no longer have their files on the hub: the anchor folders, the other outputs (tags `o-*`), the increments (`o-inc-<stamp>`), the hub half of the groups B and C row, and the builds named under `regenerable` (47.2 GB; rerun the build items, as that paragraph says).
+
+The manifests that were kept still list the files that were deleted, so `status` shows the older tags as partial:
+```bash
+python scripts/host_archive_hf.py status --repo JGY9895/mpr-host-archive --token-name mpr-archive2
+```
+For example `o-inc-20261003-2355` has 211 of its 1,218 files, and `o-mp_unified-rest` 255 of 282.
+
+**12 November: five new tags** in `JGY9895/mpr-host-archive` hold the host's fits and pools and abl/SRK's links and typed edges, which the current program reads: 11,543 files, 49.54 GB. After each upload the hub's tree was re-read and every file matched its planned size and sha256, so each tag reads VERIFIED. They hold those folders as inventoried on 11 November at 22:07 IST; files written there later are not archived.
+
+| Tag | Files | GB | Holds |
+|---|---|---|---|
+| `o-nov-fits-a` | 4,788 | 10.37 | the 60 `fits` folders under `outputs/` other than `outputs/screen/fits` |
+| `o-nov-fits-screen` | 4,735 | 12.57 | `outputs/screen/fits` |
+| `o-nov-pools-a` | 294 | 11.73 | the `pools` folders of `outputs/pko`, `outputs/u2zb` and `outputs/abl/SRK` |
+| `o-nov-pools-b` | 847 | 8.55 | the 39 other `pools` folders under `outputs/` |
+| `o-nov-srk-links` | 879 | 6.32 | `outputs/abl/SRK/links` and `outputs/abl/SRK/typed` |
+
+**The host reaches the hub again.** From 6 October a TLS-inspecting firewall on the host's network re-signed its HTTPS connections, and the host failed certificate verification against the hub, its two storage hosts, PyPI and GitHub, so uploads had to be sent from the laptop's copies (`drive --local-root`). On 12 November `outputs/host_ops/tls_probe.py`, run on the host, found all of them verifying with their public certificate chains (and again an hour later), and the host then streamed 32.3 GB of that day's upload to the hub itself, at about 10 to 44 MB/s. Nothing says it will stay that way, and host-side pip, git and a restore from the hub have not been tried since. Probe a new host before step 3 (PyPI) and step 5 (the hub):
+```bash
+python tools/rx/rx.py exec --env mpr-cpu -- python outputs/host_ops/tls_probe.py
+```
+The probe sends no request and writes nothing. On an intercepted host the network's owner has to fix it first; do not switch verification off or install a certificate to get around it.
+
+**A restore now.** The mirror part of step 5 (`mirror-spared` and the five mirror downloads) is untouched by the deletes. For the workspace tags, `host_restore.py plan` (read 2026-11-12) lists the five `o-nov-*` tags first and the seven older, partial tags after them. By its code, `run` resolves every file a tag's manifest lists before that tag's host job starts and exits on the first HTTP error, so it should stop at the first older tag, on a deleted file, and a rerun stops there again. Nothing has run it since the deletes: treat that as untested. The current program needs only the `o-nov-*` tags, and each restores on its own, for example:
+```bash
+python scripts/host_archive_hf.py drive-restore --repo JGY9895/mpr-host-archive --token-name mpr-archive2 --tag o-nov-fits-a --dest .
+```
+What the older tags still hold (the three kept folders) can be fetched the same way, with the tag whose manifest lists the folder and `--include` set to the folder's path as that manifest writes it. How long a restore takes is unmeasured: step 5's "one to three hours" is the 3 October estimate, from before the firewall and before these tags.
+
 ## What is kept where
 
 | Host content | Size (2026-10-03) | Kept in | Restored by |
