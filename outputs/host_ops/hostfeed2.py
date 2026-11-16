@@ -17,6 +17,9 @@ Everything in hostfeed.py's docstring still holds: the items format, STATE, the 
        that is larger. This lowers an over-written request as well as raising a short one.
      - else a sibling arm of the same part on the same kind of device (cs30-rga-L3 for cs30-ena-L3), or a running job
        of the same arm, has used more than the written number: the request rises to (1 + margin) x that + --pad.
+       --no-sib PREFIXES (16 Nov) turns the sibling half off for names starting with one of them: D83's rows share a
+       "part" by name only (d83-chain-f-2wiki and d83-lab-f-2wiki are a build's siblings), so every chain and LAB row
+       asked its build's 50-60 GB and sat unsent while the host idled at 43% CPU.
      - else the written (or REF) number.
 2. Paging guard (the "dec" side). Every poll reads the host's available memory and commit headroom
    (GlobalMemoryStatusEx) and the hard page-in rate (PDH \\Memory\\Pages Input/sec, the mean since the last poll).
@@ -907,7 +910,8 @@ def request(it, decl, M, margin):
     if meas:
         return max(0.5, ceil1((1 + margin) * max(meas, live) + a.pad)), "measured"
     sk = sibling(k)
-    sib = M["sib"].get((sk, it["gpu"] > 0), 0.0) if sk else 0.0
+    no_sib = tuple(p for p in (a.no_sib or "").split(",") if p)
+    sib = M["sib"].get((sk, it["gpu"] > 0), 0.0) if sk and not (no_sib and it["name"].startswith(no_sib)) else 0.0
     hi = max(sib, live)
     if hi:
         r = ceil1((1 + margin) * hi + a.pad)
@@ -1092,6 +1096,8 @@ def main(argv=None):
     ap.add_argument("--no-private", dest="private", action="store_false",
                     help="size every item by its working set (as before 6 Oct 20:10)")
     ap.add_argument("--shared-min", type=float, default=0.5)
+    ap.add_argument("--no-sib", default="",
+                    help="comma-separated name prefixes whose items skip the sibling raise (written or own measured size)")
     ap.add_argument("--no-corun", dest="corun", action="store_false",
                     help="every GPU item keeps the share written in ITEMS (as before 6 Oct 20:45)")
     ap.add_argument("--corun-frac", type=float, default=0.45, help="cuda_alloc.py --frac for a run sharing the card")
