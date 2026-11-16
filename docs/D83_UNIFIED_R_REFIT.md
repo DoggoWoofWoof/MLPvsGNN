@@ -98,9 +98,15 @@ The MLP passes no message: LAB and NEXT are fixed columns of the row and its fir
   `s1fit`; webqsp `fit`), `D83E` (the six s1eval carves), under `outputs/abl/<arm>/`, on ABL's chain (zabl.py, unedited) driven
   by zd83.py: link the pools, KT pass, look, cache, rmatch and zrc, links (labels), typed, kt, record, gate. `zd83.py build`
   runs the first part (link the pools, look, bases, cache); the rest runs as `zd83.py chain` once its code is committed.
-- **B1's read carve `b1u`:** b1n's bench folder (W2_S, F0T, K) with K deduplicated against W2_S and F0T, plus the setting's five
-  key sets (F0 = AP1b's L0, LT = L0T, K = b1w's knn before the dedup); zb1h's chain on B1P's pools (linked, not rebuilt), KT
-  recomputed, then lists and columns per split; outputs under `outputs/b1u/`.
+- **B1's read carve `b1v`** (named `b1u` until 16 Nov, before any of its files existed; `b1u` is U1a's carve, look_b1u.py and
+  `outputs/bench/hipporag2_u`, so this carve is `b1v`): b1n's bench folder (W2_S, F0T, K) with the kNN pairs that W2_S or F0T
+  hold removed (S > R > K; both are R, so F0T keeps the pairs W2_S holds), plus the setting's five key sets over package rows
+  (look_b1.setting_store's pairs: self-loops dropped), read before the dedup: R.mention = W2_S, R.name_comention = AP1b's L0,
+  R.title_comention = F0T minus L0, K.knn = B1a's kNN, S empty; zb1h's chain (unedited, its globals rebound by
+  `outputs/mp_unified/zd83b.py`, as zap2.py does for b1n) on B1P's pools of b1w (hard-linked as b1v's, not rebuilt), KT
+  recomputed on b1v's stores once G1b passed (section 8), labelled links, then LAB, lists and columns per split in the world;
+  outputs under `outputs/b1v/`. The folder and the key sets are built on the laptop (AP1b's levels files are there) and checked
+  there against b1n's build.json and AP1b's levels sha256.
 
 ## 6. Training (GPU and CPU), in a world of its own
 
@@ -138,7 +144,7 @@ runs):
 
 ## 7. Reads, and the rule (fixed now)
 
-- **Deciding:** B1's three settings on `b1u` (the D83 fits) against `b1w` (the record's fits; filed reads, by sha256), R@5 per
+- **Deciding:** B1's three settings on `b1v` (the D83 fits) against `b1w` (the record's fits; filed reads, by sha256), R@5 per
   question, the three-seed mean, for zg6r, GNX and zrckpn; in-domain (MuSiQue ← WQ-hotpotqa, HotpotQA ← WQ-musique, 2Wiki ← both)
   and held-out (MuSiQue ← WQ-musique, HotpotQA ← WQ-hotpotqa): 15 cells. Each cell: D83 minus record on the per-question
   three-seed means, the ratio estimator's paired bootstrap (2,000 resamples, seed 0), 95% interval: **ABOVE** (bottom above 0),
@@ -158,6 +164,11 @@ runs):
   for array (each record's array sha256). It proves the plumbing (pools linked, KT pass, on_arm, the labelled links build)
   changes nothing by itself. G1's rows go first; the D83F and D83E look and cache builds run beside them (they read no
   result), and no labelled link, KT pass, fit or read of D83 runs before G1 passes.
+- **G1b identity on B1** (added 16 Nov, before any b1v row runs): b1w's own folder (`outputs/bench/hipporag2_w`) through b1v's
+  plumbing (zb1h's settings and setting context, the pools linked under the b1v stem, the KT pass and merge) under
+  `outputs/b1v/g1b` gives KT rows equal, array for array, to B1P's filed KT rows of b1w, per setting
+  (`outputs/b1v/d83b_g1b.json`). It proves zb1h's context on B1P's pools changes nothing by itself. A setting's b1v KT merge
+  and chain refuse until its G1b passed; a FAIL is diagnosed before any b1v number is read.
 - **G2 inputs:** F0T's pair count equals UL1's filed count; U2r's and UL1's files equal their records' sha256; the node counts
   agree.
 - **G3 pools:** every linked pools file and its manifest equal the record's by sha256; KT rows = pool rows per question.
@@ -184,7 +195,7 @@ runs):
    (a fraction of PKO's pools pass), then the gate: about 12 h wall on 3 lanes.
 3. In the world: LTM's lists, fold fits and NEXT on D83F; LAB; zspk (2 GPU fits), zg6r (6), GNX (6) on the GPU, about 16-20 h;
    zrckpn (6) on the CPU beside them.
-4. `D83E` six s1eval chains and `b1u` three settings beside the fits (CPU), then lists, columns and reads (12 reads per setting
+4. `D83E` six s1eval chains and `b1v` three settings beside the fits (CPU), then lists, columns and reads (12 reads per setting
    per model family, as AP2's), then the report.
 
 About 2.5 to 3 days of host time in all, with the GPU busy about 20 h. ETA for the report: about 19 November 2026.
