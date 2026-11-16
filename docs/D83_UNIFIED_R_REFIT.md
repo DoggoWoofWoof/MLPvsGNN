@@ -123,6 +123,20 @@ The MLP passes no message: LAB and NEXT are fixed columns of the row and its fir
     question's pool stays the record's (A2), and the pools file is never written. Where the regime walks only the
     structural slot or no family, the filed frozen-pool check runs as before.
   - **The record.** The look's pools record carries `frozen_check`, `frozen_differ` and the regime.
+- **b1v's look on the pools of record (added 16 Nov, 19:2x IST, after the three b1v chains stopped in their look at 18:28 and
+  18:42; no number read).**
+  - **What stopped.** look_u2d checks that the graph the look opens is the one the pools manifest names. b1v's manifest is
+    B1P's b1w manifest, hard-linked (A2), so it names b1w's graph ("B1P b1w: U2b's W2_S rule cut to the setting's passages",
+    variant w). The look opens b1v's description (D83's text, variant v, its settings content sha256). The open graph (W2_S,
+    the same file and sha256) is equal.
+  - **The fix.** `zd83b.make_install` first checks that the structural CSR the pools of record were built on (B1P's
+    `settings/w/<setting>.npz`, at the sha256 its manifest names) equals b1v's settings CSR, array for array, and that the open
+    graph is the same. Only then does look_u2d's own check run, against b1v's description, and the record's description stays
+    in the look's stats (`d83_graph`). Any other difference refuses.
+  - **MuSiQue's pool check.** B1's MuSiQue setting walks the FULL regime, as MuSiQue does above. So `zd83.replace_pools_d83`
+    applies to b1v's look as it does to D83F/E: the regime's walk over D83's changed NER and kNN stores. On 2Wiki and HotpotQA
+    (STRUCT) the filed check runs unchanged.
+  - **The rest is unchanged.** Pools, KT rows and G1b are untouched.
 
 ## 6. Training (GPU and CPU), in a world of its own
 

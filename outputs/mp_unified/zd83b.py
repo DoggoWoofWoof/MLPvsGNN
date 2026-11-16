@@ -263,12 +263,59 @@ def lists_of(M, st):
         M.LB.BENCH = here
 
 
+def record_csr(rec_gd, name, load=None):
+    """The structural CSR (ip, col) the pools of record were built on: B1P's settings npz its graph_detail names, sha256 checked."""
+    p = ROOT / rec_gd["settings_npz"]
+    if rec_gd.get("setting") != name or not p.is_file() or sha_file(p) != rec_gd["settings_npz_sha256"]:
+        raise SystemExit(f"D83 b1v: the record's settings file {rec_gd.get('settings_npz')} is missing or is not the one its pools name")
+    with np.load(p) as z:
+        return z["ip"].astype(np.int64), z["col"].astype(np.int64)
+
+
+def make_install(orig_install, name, load_settings=None, load_record=None):
+    """look_u2d.install for b1v's look on the pools of record (A2; docs/D83_UNIFIED_R_REFIT.md section 5, amended 16 Nov 19:2x):
+    the pools manifest names the record's graph (B1P's b1w), the look opens b1v's. They may differ only where b1v's labels and
+    NER/kNN families differ: the structural store the pools were built on must be b1v's, array for array (same open graph, same CSR).
+    Then look_u2d's own check runs against b1v's description, and the record's stays in the look's stats."""
+    load_settings = load_settings or H.load_settings
+    load_record = load_record or record_csr
+
+    def install(build, name_, carve, filed, ent, stats):
+        if name_ != name or carve != CARVE:
+            raise SystemExit(f"D83 b1v: a look install for {name_}/{carve}")
+        rec_gd = ent["graph_detail"]
+        sj, ip_v, col_v, _em, _sc = load_settings(name)
+        mine = sj["desc_b1"]
+        if rec_gd.get("open") != mine.get("open"):
+            raise SystemExit("D83 b1v: the pools of record open another graph than b1v's")
+        ip_r, col_r = load_record(rec_gd, name)
+        if not (np.array_equal(ip_r, np.asarray(ip_v, np.int64)) and np.array_equal(col_r, np.asarray(col_v, np.int64))):
+            raise SystemExit("D83 b1v: the structural store of the pools of record is not b1v's (A2 reuses pools on an equal store only)")
+        stats["d83_graph"] = {"record_graph_detail": copy.deepcopy(rec_gd), "structural_csr_equal": True, "entries": int(np.asarray(col_v).size)}
+        return orig_install(build, name_, carve, filed, dict(ent, graph_detail=copy.deepcopy(mine)), stats)
+
+    return install
+
+
+def look_patches(M, name, P_):
+    """b1v's look: make_install's graph check, and zd83.replace_pools_d83 (the FULL regime walks D83's changed NER and kNN stores,
+    so its intermediate pool differs from the filed one by design: MuSiQue; STRUCT keeps the filed check)."""
+    import functools
+    D = zd83()
+    LU = M.LU
+    P_.set(LU, install=make_install(LU.install, name))
+    PGB = LU.PGB
+    P_.set(PGB, replace_pools=functools.partial(D.replace_pools_d83, orig=PGB.replace_pools, pool_sha=PGB.C4S.pool_sha))
+
+
 @contextlib.contextmanager
 def on_b1v(M, name, stats, look=False):
-    """zb1h.on_b1h with b1v's lists (B1a's, checked by check_lists)."""
+    """zb1h.on_b1h with b1v's lists (B1a's, checked by check_lists); with look, look_patches."""
     P_ = H.zb().Patches()
     try:
         P_.set(M.LB, load_lists=lambda st: lists_of(M, st))
+        if look:
+            look_patches(M, name, P_)
         with _ON_B1H(M, name, stats, look) as B:
             yield B
     finally:
@@ -653,6 +700,30 @@ def selftest():
             "assert ZL.FAMS == 5 and ZL.SETTINGS['families'] == 5" % str(HERE))
     r = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, cwd=str(ROOT))
     assert r.returncode == 0, r.stderr[-2000:]
+    # b1v's look install: passes b1v's description on when the record's structural CSR is b1v's, refuses otherwise
+    ip0, col0 = np.array([0, 1, 2, 2]), np.array([1, 0])
+    mine = {"graph": "D83 b1v", "setting": "x", "variant": "v", "open": {"graph": "W2_S"}}
+    rec_gd = {"graph": "B1P b1w", "setting": "x", "variant": "w", "open": {"graph": "W2_S"}, "settings_npz": "s.npz"}
+    seen = {}
+    inst = make_install(lambda b, n_, c, f, e, s: seen.update(ent=e, stats=s), "x",
+                        load_settings=lambda _n: ({"desc_b1": mine}, ip0, col0.astype(np.int32), None, None),
+                        load_record=lambda _g, _n: (ip0.copy(), col0.copy()))
+    inst("new", "x", CARVE, None, {"graph_detail": rec_gd, "questions": 3}, {})
+    assert seen["ent"]["graph_detail"] == mine and seen["ent"]["questions"] == 3
+    assert seen["stats"]["d83_graph"]["record_graph_detail"] == rec_gd and seen["stats"]["d83_graph"]["structural_csr_equal"]
+    for bad_rec, bad_gd in (((ip0, np.array([1, 1])), rec_gd), ((ip0, col0), dict(rec_gd, open={"graph": "other"}))):
+        inst = make_install(lambda *a: None, "x", load_settings=lambda _n: ({"desc_b1": mine}, ip0, col0, None, None),
+                            load_record=lambda _g, _n, r=bad_rec: r)
+        try:
+            inst("new", "x", CARVE, None, {"graph_detail": bad_gd}, {})
+            raise AssertionError("b1v's look install passed another structural store")
+        except SystemExit as e:
+            assert "D83 b1v" in str(e)
+    try:
+        make_install(lambda *a: None, "x")("new", "y", CARVE, None, {"graph_detail": rec_gd}, {})
+        raise AssertionError("b1v's look install passed another setting")
+    except SystemExit as e:
+        assert "a look install for y" in str(e)
     print("zd83b self-test: OK")
     return 0
 
