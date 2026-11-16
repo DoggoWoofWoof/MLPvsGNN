@@ -1,0 +1,186 @@
+{
+ "qwen3e06": {
+  "repo": "Qwen/Qwen3-Embedding-0.6B",
+  "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+  "seconds": 29.5,
+  "bytes": 1207470234,
+  "files": {
+   "1_Pooling/config.json": {
+    "bytes": 313,
+    "sha256": "37bf193fa101f19101bfad9c31d3eb0f786e247b7b1e5cb7f007d730eed1ddbd"
+   },
+   "config.json": {
+    "bytes": 727,
+    "sha256": "b5bf1f51fc45be473a54718cef92448d90a1be001bf9b9a44b8c7f10a19feaa9"
+   },
+   "config_sentence_transformers.json": {
+    "bytes": 215,
+    "sha256": "10667c72ddb772627bf1780cb7f86af8e2ae0032b8c243c731172064105c6961"
+   },
+   "generation_config.json": {
+    "bytes": 117,
+    "sha256": "28396d421a2108acce96383f6a7de78008f7f1b17f807958f3c14c51dbfb65fb"
+   },
+   "merges.txt": {
+    "bytes": 1671853,
+    "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+   },
+   "model.safetensors": {
+    "bytes": 1191586416,
+    "sha256": "0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd"
+   },
+   "modules.json": {
+    "bytes": 349,
+    "sha256": "84e40c8e006c9b1d6c122e02cba9b02458120b5fb0c87b746c41e0207cf642cf"
+   },
+   "tokenizer.json": {
+    "bytes": 11423705,
+    "sha256": "def76fb086971c7867b829c23a26261e38d9d74e02139253b38aeb9df8b4b50a"
+   },
+   "tokenizer_config.json": {
+    "bytes": 9706,
+    "sha256": "253153d0738ceb4c668d2eff957714dd2bea0b56de772a9fdccd96cbf517e6a0"
+   },
+   "vocab.json": {
+    "bytes": 2776833,
+    "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+   }
+  },
+  "params": 595776512,
+  "max_seq_length": 32768,
+  "query_prompt": "Instruct: Given a web search query, retrieve relevant passages that answer the query\nQuery:",
+  "prompts": {
+   "query": "Instruct: Given a web search query, retrieve relevant passages that answer the query\nQuery:",
+   "document": ""
+  },
+  "default_prompt_name": null
+ },
+ "mpnet": {
+  "repo": "sentence-transformers/all-mpnet-base-v2",
+  "revision": "e8c3b32edf5434bc2275fc9bab85f82640a19130",
+  "seconds": 12.6,
+  "bytes": 438723698,
+  "files": {
+   "1_Pooling/config.json": {
+    "bytes": 190,
+    "sha256": "a37f83ada23e7887be6b88f4998927dbeac0038af301553c7cd5461413bf1a56"
+   },
+   "config.json": {
+    "bytes": 571,
+    "sha256": "d46a3e04ded82bba22528424480697d394eeda6a27484e08c5bb2bdf5906cfa0"
+   },
+   "config_sentence_transformers.json": {
+    "bytes": 116,
+    "sha256": "061ca9d39661d6c6d6de5ba27f79a1cd5770ea247f8d46412a68a498dc5ac9f3"
+   },
+   "data_config.json": {
+    "bytes": 39265,
+    "sha256": "32edcb108fc2516b920734a862ae0692bcae1c5d45d5f8d972cb0d53434a4c54"
+   },
+   "model.safetensors": {
+    "bytes": 437971872,
+    "sha256": "78c0197b6159d92658e319bc1d72e4c73a9a03dd03815e70e555c5ef05615658"
+   },
+   "modules.json": {
+    "bytes": 349,
+    "sha256": "84e40c8e006c9b1d6c122e02cba9b02458120b5fb0c87b746c41e0207cf642cf"
+   },
+   "sentence_bert_config.json": {
+    "bytes": 53,
+    "sha256": "cabfacded9272091a06ff595a46ef027a76ddf4ac9e77d0fcf11c605748f1667"
+   },
+   "special_tokens_map.json": {
+    "bytes": 239,
+    "sha256": "9ef40e9c160511bf3f46ceb71f1471dafa1e9473d5120bb816c36b2efa75f8ba"
+   },
+   "tokenizer.json": {
+    "bytes": 466021,
+    "sha256": "b8be2c30ba5dd723a6d5ee26d013da103d5408d92ddcb23747622f9e48f1d842"
+   },
+   "tokenizer_config.json": {
+    "bytes": 363,
+    "sha256": "67f2ff7e223518e729869bb3a70f0caf8368fe549383fc11cfe2dfb42fffc268"
+   },
+   "train_script.py": {
+    "bytes": 13123,
+    "sha256": "dea86a7066caa55d0c84c343890dfd849714b6affd8b424ba12372a091578cc8"
+   },
+   "vocab.txt": {
+    "bytes": 231536,
+    "sha256": "dbd90cb94e2247bd4d4ccaecbf616d2290e66691d7d5e5bb81f063c2d0649ada"
+   }
+  },
+  "params": 109486464,
+  "max_seq_length": 384,
+  "query_prompt": "",
+  "prompts": {
+   "query": "",
+   "document": ""
+  },
+  "default_prompt_name": null
+ },
+ "mpnetqa": {
+  "repo": "sentence-transformers/multi-qa-mpnet-base-cos-v1",
+  "revision": "d51b22a1dfa8184e9258074e56e2875e50612dca",
+  "seconds": 12.3,
+  "bytes": 438710627,
+  "files": {
+   "1_Pooling/config.json": {
+    "bytes": 190,
+    "sha256": "a37f83ada23e7887be6b88f4998927dbeac0038af301553c7cd5461413bf1a56"
+   },
+   "config.json": {
+    "bytes": 571,
+    "sha256": "d46a3e04ded82bba22528424480697d394eeda6a27484e08c5bb2bdf5906cfa0"
+   },
+   "config_sentence_transformers.json": {
+    "bytes": 116,
+    "sha256": "061ca9d39661d6c6d6de5ba27f79a1cd5770ea247f8d46412a68a498dc5ac9f3"
+   },
+   "data_config.json": {
+    "bytes": 25457,
+    "sha256": "163295fe27834a12a37d9ef1a6175a6c1c530a48ee42b640149b518e0bedae62"
+   },
+   "model.safetensors": {
+    "bytes": 437971872,
+    "sha256": "7b42b8f6259f5a9b83c5d0acd7cfde8f6fa9833a2edd3f8da4a94da7a03fa037"
+   },
+   "modules.json": {
+    "bytes": 349,
+    "sha256": "84e40c8e006c9b1d6c122e02cba9b02458120b5fb0c87b746c41e0207cf642cf"
+   },
+   "sentence_bert_config.json": {
+    "bytes": 53,
+    "sha256": "ec8e29d6dcb61b611b7d3fdd2982c4524e6ad985959fa7194eacfb655a8d0d51"
+   },
+   "special_tokens_map.json": {
+    "bytes": 239,
+    "sha256": "9ef40e9c160511bf3f46ceb71f1471dafa1e9473d5120bb816c36b2efa75f8ba"
+   },
+   "tokenizer.json": {
+    "bytes": 466021,
+    "sha256": "0930eac956e241b04141ce21b990a5d818feb3be3c559357a4ef5cf261d086ce"
+   },
+   "tokenizer_config.json": {
+    "bytes": 363,
+    "sha256": "67f2ff7e223518e729869bb3a70f0caf8368fe549383fc11cfe2dfb42fffc268"
+   },
+   "train_script.py": {
+    "bytes": 13860,
+    "sha256": "0da65b3892940cf585dd5fca04a9d9499a6d0067e7f19f314b4abf4f06ec85e2"
+   },
+   "vocab.txt": {
+    "bytes": 231536,
+    "sha256": "dbd90cb94e2247bd4d4ccaecbf616d2290e66691d7d5e5bb81f063c2d0649ada"
+   }
+  },
+  "params": 109486464,
+  "max_seq_length": 512,
+  "query_prompt": "",
+  "prompts": {
+   "query": "",
+   "document": ""
+  },
+  "default_prompt_name": null
+ }
+}

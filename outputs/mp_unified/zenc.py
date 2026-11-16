@@ -55,7 +55,10 @@ READ_FIT = "scr-gnx-nx-s0"                  # the record read whose s1eval ids a
 GTE_QINSTR = "Instruct: Given a web search query, retrieve relevant passages that answer the query\nQuery: "
 ENCODERS = {
     "frozen": {"repo": "Alibaba-NLP/gte-Qwen2-1.5B-instruct", "dim": 1536, "query": {"prompt": GTE_QINSTR},
-               "trust": True, "max_seq_length": 32768, "budget": 32768},
+               "trust": True, "max_seq_length": 32768, "budget": 32768,
+               # its remote code calls DynamicCache.get_usable_length, gone from transformers 4.57; an encoder never
+               # reads a cache, so the cache is off (one forward per batch, past length 0, as before)
+               "config": {"use_cache": False}},
     "qwen3e06": {"repo": "Qwen/Qwen3-Embedding-0.6B", "dim": 1024, "query": {"prompt_name": "query"}, "budget": 49152},
     "mpnet": {"repo": "sentence-transformers/all-mpnet-base-v2", "dim": 768, "query": {}, "budget": 131072},
     "mpnetqa": {"repo": "sentence-transformers/multi-qa-mpnet-base-cos-v1", "dim": 768, "query": {}, "budget": 131072},
@@ -109,10 +112,11 @@ def manifest(root, ds, kind):
 
 
 def query_splits(man):
-    m = re.search(r"\[([^\]]*)\]", man["row_semantics"])
-    if not m:
-        stop(f"no split order in {man['row_semantics']!r}")
-    return [s.strip().strip("'\"") for s in m.group(1).split(",") if s.strip()]
+    """The split files' order: the bracketed list of quoted names in row_semantics (the text also holds query_ids.json[j])."""
+    m = [x for x in re.findall(r"\[([^\]]*)\]", man["row_semantics"]) if "'" in x or '"' in x]
+    if len(m) != 1:
+        stop(f"no single split order in {man['row_semantics']!r}")
+    return [s.strip().strip("'\"") for s in m[0].split(",") if s.strip()]
 
 
 def query_texts(root, ds, rows=None):
@@ -207,6 +211,8 @@ def load_model(enc, device, revision=None):
         kw["revision"] = revision
     if device == "cuda":
         kw["model_kwargs"] = {"torch_dtype": torch.float16}
+    if s.get("config"):
+        kw["config_kwargs"] = dict(s["config"])
     m = SentenceTransformer(s["repo"], **kw)
     if s.get("max_seq_length"):
         m.max_seq_length = s["max_seq_length"]
@@ -694,6 +700,9 @@ def cmd_report(a):
 # ── self-test ─────────────────────────────────────────────────────────────────
 
 def cmd_selftest(a):
+    rs = ("row j is the dense vector of query j == queries/query_ids.json[j] == the j-th line of the split files "
+          "['train', 'dev', 'test'] concatenated in that order")              # the package's own wording (musique)
+    assert query_splits({"row_semantics": rs}) == ["train", "dev", "test"]
     rng = np.random.default_rng(1)
     with tempfile.TemporaryDirectory() as td:
         n, dim, nq = 2500, 16, 7
