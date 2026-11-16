@@ -1,0 +1,655 @@
+{
+ "declared_in": "docs/D84_MULTIHOPRAG_LINK_ORACLE.md",
+ "revision": "71ac0d0bd1f951d2d6b70311f7d2ae404e1ffa82",
+ "files_sha256": {
+  "corpus.json": "20b61b5ab84de84a927420c5d265b7ec8d859ae49980699958a787ade9e4d28f",
+  "MultiHopRAG.json": "03cfb4926461f868684903aadc8024447bdda5bb3f6804741424cce338515bff"
+ },
+ "articles": 609,
+ "queries": 2556,
+ "kept_queries": 2255,
+ "dropped_null": 301,
+ "evidence_items": 6084,
+ "gold_counts": {
+  "2": 1169,
+  "3": 774,
+  "4": 312
+ },
+ "types": {
+  "comparison_query": 856,
+  "inference_query": 816,
+  "temporal_query": 583
+ },
+ "rule_build": {
+  "keys": 26532,
+  "name_entries": 44495,
+  "title_run_entries": 233,
+  "articles_with_a_title_run": 163,
+  "lt_pairs": 25077
+ },
+ "spacy_entities": 21213,
+ "pairs": {
+  "none": 0,
+  "N_sp": 21817,
+  "CN_all": 25005,
+  "F0T": 25080
+ },
+ "ratio_to_N_sp": {
+  "none": 0.0,
+  "N_sp": 1.0,
+  "CN_all": 1.1461,
+  "F0T": 1.1496
+ },
+ "density_pct": {
+  "none": 0.0,
+  "N_sp": 11.78,
+  "CN_all": 13.51,
+  "F0T": 13.55
+ },
+ "GP": {
+  "slots": 5363,
+  "questions": 2255,
+  "none": {
+   "linked": 0,
+   "share": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "density": 0.0,
+   "lift": null,
+   "call": "NO_LIFT"
+  },
+  "N_sp": {
+   "linked": 4334,
+   "share": 80.81,
+   "lo": 79.35,
+   "hi": 82.21,
+   "density": 11.78,
+   "lift": 6.86,
+   "call": "POINTS"
+  },
+  "CN_all": {
+   "linked": 4525,
+   "share": 84.37,
+   "lo": 83.11,
+   "hi": 85.61,
+   "density": 13.51,
+   "lift": 6.25,
+   "call": "POINTS"
+  },
+  "F0T": {
+   "linked": 4541,
+   "share": 84.67,
+   "lo": 83.42,
+   "hi": 85.91,
+   "density": 13.55,
+   "lift": 6.25,
+   "call": "POINTS"
+  },
+  "F0T_vs_N_sp": {
+   "diff": 3.86,
+   "lo": 3.1,
+   "hi": 4.59,
+   "call": "ABOVE"
+  },
+  "CN_all_vs_N_sp": {
+   "diff": 3.56,
+   "lo": 2.85,
+   "hi": 4.27,
+   "call": "ABOVE"
+  }
+ },
+ "GS": {
+  "questions": 2255,
+  "none": {
+   "connected": 0,
+   "share": 0.0
+  },
+  "N_sp": {
+   "connected": 1738,
+   "share": 77.07
+  },
+  "CN_all": {
+   "connected": 1802,
+   "share": 79.91
+  },
+  "F0T": {
+   "connected": 1817,
+   "share": 80.58
+  },
+  "F0T_vs_N_sp": {
+   "diff": 3.5,
+   "lo": 2.3,
+   "hi": 4.66,
+   "call": "ABOVE"
+  },
+  "CN_all_vs_N_sp": {
+   "diff": 2.84,
+   "lo": 1.69,
+   "hi": 3.9,
+   "call": "ABOVE"
+  }
+ },
+ "price_pairs_per_linked_slot": {
+  "N_sp": 5.0,
+  "CN_all": 5.5,
+  "F0T": 5.5
+ },
+ "by_type": {
+  "comparison_query": {
+   "GP": {
+    "slots": 1212,
+    "questions": 856,
+    "none": {
+     "linked": 0,
+     "share": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "density": 0.0,
+     "lift": null,
+     "call": "NO_LIFT"
+    },
+    "N_sp": {
+     "linked": 890,
+     "share": 73.43,
+     "lo": 70.7,
+     "hi": 76.24,
+     "density": 11.78,
+     "lift": 6.23,
+     "call": "POINTS"
+    },
+    "CN_all": {
+     "linked": 910,
+     "share": 75.08,
+     "lo": 72.32,
+     "hi": 77.81,
+     "density": 13.51,
+     "lift": 5.56,
+     "call": "POINTS"
+    },
+    "F0T": {
+     "linked": 913,
+     "share": 75.33,
+     "lo": 72.57,
+     "hi": 78.09,
+     "density": 13.55,
+     "lift": 5.56,
+     "call": "POINTS"
+    },
+    "F0T_vs_N_sp": {
+     "diff": 1.9,
+     "lo": 0.33,
+     "hi": 3.49,
+     "call": "ABOVE"
+    },
+    "CN_all_vs_N_sp": {
+     "diff": 1.65,
+     "lo": 0.08,
+     "hi": 3.12,
+     "call": "ABOVE"
+    }
+   },
+   "GS": {
+    "questions": 856,
+    "none": {
+     "connected": 0,
+     "share": 0.0
+    },
+    "N_sp": {
+     "connected": 586,
+     "share": 68.46
+    },
+    "CN_all": {
+     "connected": 597,
+     "share": 69.74
+    },
+    "F0T": {
+     "connected": 600,
+     "share": 70.09
+    },
+    "F0T_vs_N_sp": {
+     "diff": 1.64,
+     "lo": -0.47,
+     "hi": 3.5,
+     "call": "LEVEL"
+    },
+    "CN_all_vs_N_sp": {
+     "diff": 1.29,
+     "lo": -0.7,
+     "hi": 3.15,
+     "call": "LEVEL"
+    }
+   }
+  },
+  "inference_query": {
+   "GP": {
+    "slots": 3094,
+    "questions": 816,
+    "none": {
+     "linked": 0,
+     "share": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "density": 0.0,
+     "lift": null,
+     "call": "NO_LIFT"
+    },
+    "N_sp": {
+     "linked": 2589,
+     "share": 83.68,
+     "lo": 81.77,
+     "hi": 85.68,
+     "density": 11.78,
+     "lift": 7.1,
+     "call": "POINTS"
+    },
+    "CN_all": {
+     "linked": 2710,
+     "share": 87.59,
+     "lo": 85.93,
+     "hi": 89.26,
+     "density": 13.51,
+     "lift": 6.49,
+     "call": "POINTS"
+    },
+    "F0T": {
+     "linked": 2719,
+     "share": 87.88,
+     "lo": 86.28,
+     "hi": 89.51,
+     "density": 13.55,
+     "lift": 6.49,
+     "call": "POINTS"
+    },
+    "F0T_vs_N_sp": {
+     "diff": 4.2,
+     "lo": 3.18,
+     "hi": 5.2,
+     "call": "ABOVE"
+    },
+    "CN_all_vs_N_sp": {
+     "diff": 3.91,
+     "lo": 2.95,
+     "hi": 4.86,
+     "call": "ABOVE"
+    }
+   },
+   "GS": {
+    "questions": 816,
+    "none": {
+     "connected": 0,
+     "share": 0.0
+    },
+    "N_sp": {
+     "connected": 675,
+     "share": 82.72
+    },
+    "CN_all": {
+     "connected": 716,
+     "share": 87.75
+    },
+    "F0T": {
+     "connected": 724,
+     "share": 88.73
+    },
+    "F0T_vs_N_sp": {
+     "diff": 6.0,
+     "lo": 3.92,
+     "hi": 8.21,
+     "call": "ABOVE"
+    },
+    "CN_all_vs_N_sp": {
+     "diff": 5.02,
+     "lo": 3.06,
+     "hi": 6.99,
+     "call": "ABOVE"
+    }
+   }
+  },
+  "temporal_query": {
+   "GP": {
+    "slots": 1057,
+    "questions": 583,
+    "none": {
+     "linked": 0,
+     "share": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "density": 0.0,
+     "lift": null,
+     "call": "NO_LIFT"
+    },
+    "N_sp": {
+     "linked": 855,
+     "share": 80.89,
+     "lo": 78.16,
+     "hi": 83.65,
+     "density": 11.78,
+     "lift": 6.86,
+     "call": "POINTS"
+    },
+    "CN_all": {
+     "linked": 905,
+     "share": 85.62,
+     "lo": 83.25,
+     "hi": 87.89,
+     "density": 13.51,
+     "lift": 6.34,
+     "call": "POINTS"
+    },
+    "F0T": {
+     "linked": 909,
+     "share": 86.0,
+     "lo": 83.72,
+     "hi": 88.17,
+     "density": 13.55,
+     "lift": 6.35,
+     "call": "POINTS"
+    },
+    "F0T_vs_N_sp": {
+     "diff": 5.11,
+     "lo": 3.43,
+     "hi": 6.76,
+     "call": "ABOVE"
+    },
+    "CN_all_vs_N_sp": {
+     "diff": 4.73,
+     "lo": 3.16,
+     "hi": 6.22,
+     "call": "ABOVE"
+    }
+   },
+   "GS": {
+    "questions": 583,
+    "none": {
+     "connected": 0,
+     "share": 0.0
+    },
+    "N_sp": {
+     "connected": 477,
+     "share": 81.82
+    },
+    "CN_all": {
+     "connected": 489,
+     "share": 83.88
+    },
+    "F0T": {
+     "connected": 493,
+     "share": 84.56
+    },
+    "F0T_vs_N_sp": {
+     "diff": 2.74,
+     "lo": 0.69,
+     "hi": 4.8,
+     "call": "ABOVE"
+    },
+    "CN_all_vs_N_sp": {
+     "diff": 2.06,
+     "lo": 0.17,
+     "hi": 3.95,
+     "call": "ABOVE"
+    }
+   }
+  }
+ },
+ "by_gold_count": {
+  "2": {
+   "GP": {
+    "slots": 1169,
+    "questions": 1169,
+    "none": {
+     "linked": 0,
+     "share": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "density": 0.0,
+     "lift": null,
+     "call": "NO_LIFT"
+    },
+    "N_sp": {
+     "linked": 843,
+     "share": 72.11,
+     "lo": 69.55,
+     "hi": 74.68,
+     "density": 11.78,
+     "lift": 6.12,
+     "call": "POINTS"
+    },
+    "CN_all": {
+     "linked": 858,
+     "share": 73.4,
+     "lo": 70.92,
+     "hi": 75.88,
+     "density": 13.51,
+     "lift": 5.43,
+     "call": "POINTS"
+    },
+    "F0T": {
+     "linked": 859,
+     "share": 73.48,
+     "lo": 71.0,
+     "hi": 76.05,
+     "density": 13.55,
+     "lift": 5.42,
+     "call": "POINTS"
+    },
+    "F0T_vs_N_sp": {
+     "diff": 1.37,
+     "lo": -0.17,
+     "hi": 2.99,
+     "call": "LEVEL"
+    },
+    "CN_all_vs_N_sp": {
+     "diff": 1.28,
+     "lo": -0.17,
+     "hi": 2.83,
+     "call": "LEVEL"
+    }
+   },
+   "GS": {
+    "questions": 1169,
+    "none": {
+     "connected": 0,
+     "share": 0.0
+    },
+    "N_sp": {
+     "connected": 843,
+     "share": 72.11
+    },
+    "CN_all": {
+     "connected": 858,
+     "share": 73.4
+    },
+    "F0T": {
+     "connected": 859,
+     "share": 73.48
+    },
+    "F0T_vs_N_sp": {
+     "diff": 1.37,
+     "lo": -0.17,
+     "hi": 2.99,
+     "call": "LEVEL"
+    },
+    "CN_all_vs_N_sp": {
+     "diff": 1.28,
+     "lo": -0.17,
+     "hi": 2.83,
+     "call": "LEVEL"
+    }
+   }
+  },
+  "3": {
+   "GP": {
+    "slots": 2322,
+    "questions": 774,
+    "none": {
+     "linked": 0,
+     "share": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "density": 0.0,
+     "lift": null,
+     "call": "NO_LIFT"
+    },
+    "N_sp": {
+     "linked": 1853,
+     "share": 79.8,
+     "lo": 77.69,
+     "hi": 81.83,
+     "density": 11.78,
+     "lift": 6.77,
+     "call": "POINTS"
+    },
+    "CN_all": {
+     "linked": 1988,
+     "share": 85.62,
+     "lo": 83.81,
+     "hi": 87.3,
+     "density": 13.51,
+     "lift": 6.34,
+     "call": "POINTS"
+    },
+    "F0T": {
+     "linked": 1999,
+     "share": 86.09,
+     "lo": 84.28,
+     "hi": 87.77,
+     "density": 13.55,
+     "lift": 6.35,
+     "call": "POINTS"
+    },
+    "F0T_vs_N_sp": {
+     "diff": 6.29,
+     "lo": 5.17,
+     "hi": 7.49,
+     "call": "ABOVE"
+    },
+    "CN_all_vs_N_sp": {
+     "diff": 5.81,
+     "lo": 4.74,
+     "hi": 6.93,
+     "call": "ABOVE"
+    }
+   },
+   "GS": {
+    "questions": 774,
+    "none": {
+     "connected": 0,
+     "share": 0.0
+    },
+    "N_sp": {
+     "connected": 615,
+     "share": 79.46
+    },
+    "CN_all": {
+     "connected": 659,
+     "share": 85.14
+    },
+    "F0T": {
+     "connected": 670,
+     "share": 86.56
+    },
+    "F0T_vs_N_sp": {
+     "diff": 7.11,
+     "lo": 5.04,
+     "hi": 9.3,
+     "call": "ABOVE"
+    },
+    "CN_all_vs_N_sp": {
+     "diff": 5.68,
+     "lo": 3.75,
+     "hi": 7.75,
+     "call": "ABOVE"
+    }
+   }
+  },
+  "4": {
+   "GP": {
+    "slots": 1872,
+    "questions": 312,
+    "none": {
+     "linked": 0,
+     "share": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "density": 0.0,
+     "lift": null,
+     "call": "NO_LIFT"
+    },
+    "N_sp": {
+     "linked": 1638,
+     "share": 87.5,
+     "lo": 85.04,
+     "hi": 90.01,
+     "density": 11.78,
+     "lift": 7.43,
+     "call": "POINTS"
+    },
+    "CN_all": {
+     "linked": 1679,
+     "share": 89.69,
+     "lo": 87.61,
+     "hi": 91.99,
+     "density": 13.51,
+     "lift": 6.64,
+     "call": "POINTS"
+    },
+    "F0T": {
+     "linked": 1683,
+     "share": 89.9,
+     "lo": 87.87,
+     "hi": 92.15,
+     "density": 13.55,
+     "lift": 6.64,
+     "call": "POINTS"
+    },
+    "F0T_vs_N_sp": {
+     "diff": 2.4,
+     "lo": 1.23,
+     "hi": 3.58,
+     "call": "ABOVE"
+    },
+    "CN_all_vs_N_sp": {
+     "diff": 2.19,
+     "lo": 1.07,
+     "hi": 3.31,
+     "call": "ABOVE"
+    }
+   },
+   "GS": {
+    "questions": 312,
+    "none": {
+     "connected": 0,
+     "share": 0.0
+    },
+    "N_sp": {
+     "connected": 280,
+     "share": 89.74
+    },
+    "CN_all": {
+     "connected": 285,
+     "share": 91.35
+    },
+    "F0T": {
+     "connected": 288,
+     "share": 92.31
+    },
+    "F0T_vs_N_sp": {
+     "diff": 2.56,
+     "lo": -0.32,
+     "hi": 5.45,
+     "call": "LEVEL"
+    },
+    "CN_all_vs_N_sp": {
+     "diff": 1.6,
+     "lo": -1.28,
+     "hi": 4.17,
+     "call": "LEVEL"
+    }
+   }
+  }
+ },
+ "call": "CARRIED F0T OFF WIKIPEDIA",
+ "fails": [],
+ "seconds": 245.1,
+ "script_sha256": "dac9b0035300959a143dabfd4b2848dd0dd29e4f7ec5f0f35d2d5782c8fd1628"
+}
