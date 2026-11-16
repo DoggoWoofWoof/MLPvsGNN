@@ -157,6 +157,17 @@ runs):
   (PH1's groups); the gap GNX minus zrckpn and zg6r minus zrckpn at D83 beside the record's; per-label counts of links and of
   gold-touching links.
 
+- **The reads' code** (`outputs/mp_unified/zd83r.py`, committed 16 Nov before any read runs): each of the 18 read fits (zg6r,
+  GNX, zrckpn; zspk is a start, not read) is forked from the world's fit folder once its D83 record exists, then read per
+  dataset on two arms: `B1V` (b1v's three settings; roots, gate and LAB under `outputs/b1v`, NEXT columns `outputs/b1v/ltm`;
+  the deciding cells) and `D83E` (the six s1eval carves; roots, gate, typed links and LAB under `outputs/abl/D83E`, NEXT
+  columns from D83's fold fits in the world's `outputs/ltm`; reported). Every read runs with the model changes its fit was
+  trained with (`zd83m.model_changes`: the label axis; LAB beside NEXT for GNX; LAB after NEXT for zrckpn) and its marker
+  names the label axis and the LAB records loaded. The roots are named per read (as zswp.py and zabl.py read ABL's arms), so
+  the reads run in the world's train mode beside the fits still training; no mode switch. GNX and zrckpn go through zswp.py's
+  engine (unedited), zg6r through ML1's read (zabl.read's body). The record's reads it is set against are filed: zg6r on b1w
+  (B1P), zrckpn on b1w (B1M), GNX on b1w (IDP), and every record fit's s1eval reads.
+
 ## 8. Gates (a failure stops the dataset's or the fit's rows; none of its numbers is read)
 
 - **G1 identity:** `D83I` = zd83's chain with the record's stores (N_sp, no dedup, families as link labels, FAMS = 3) on
