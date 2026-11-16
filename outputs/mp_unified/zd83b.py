@@ -392,10 +392,19 @@ def g1b_passed(name):
     return p.exists() and (read_json(p).get("settings", {}).get(name) or {}).get("verdict") == "PASS"
 
 
+def gates_passed(name):
+    """Section 8: no b1v KT pass, labelled link or read before G1 (zd83 g1) and the setting's G1b passed."""
+    if not zd83().g1_passed():
+        raise SystemExit("D83 b1v: G1 has not passed (outputs/abl/D83I/d83_g1.json); b1v waits")
+    if not g1b_passed(name):
+        raise SystemExit(f"D83 b1v: G1b has not passed on {name} ({rel(g1b_path())}); b1v waits")
+    return True
+
+
 def kt_merge(name, host=False, g1b=False):
-    """zd83.kt_merge on b1v's roots; on b1v (not G1b) only once G1b passed on the setting."""
-    if not g1b and not g1b_passed(name):
-        raise SystemExit(f"D83 b1v: G1b has not passed on {name} ({rel(g1b_path())}); the KT merge waits")
+    """zd83.kt_merge on b1v's roots; on b1v (not G1b) only once G1 and the setting's G1b passed."""
+    if not g1b:
+        gates_passed(name)
     with kt_context(g1b) as D:
         return D.kt_merge(ARM, name, host)
 
@@ -454,6 +463,7 @@ def step_ctx(kind, name):
 def run_step(kind, name, index=None, host=False):
     bind()
     if kind == "ktpass":
+        gates_passed(name)
         return kt_pass(name, index or (0, KT_SHARDS), host)
     if kind == "ktmerge":
         return kt_merge(name, host)
@@ -464,10 +474,9 @@ def run_step(kind, name, index=None, host=False):
 
 
 def chain(name, host=False):
-    """The pools link, the KT pass and merge (each its own process; the merge waits on G1b), then zb1h's chain on the
+    """The pools link, the KT pass and merge (each its own process; G1 and G1b first), then zb1h's chain on the
     filed pools: its pools and merge are skipped, the look, bases, cache, labelled links, kt and record run."""
-    if not g1b_passed(name):
-        raise SystemExit(f"D83 b1v: G1b has not passed on {name}; the chain waits")
+    gates_passed(name)
     link_pools(name, host)
     bind()
     M = H.zb().mods(host)
