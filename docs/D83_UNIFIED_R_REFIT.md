@@ -119,6 +119,23 @@ refuses to run elsewhere, so no fit named like a record fit is written outside i
 label axis (FAMS = 5) only: same epochs, widths, optimiser, seeds and candidate (p@swa). A changed encoder input width (LAB; a
 block dead on the training rows) is recorded per fit and is not a gate failure, as SWP-E's amendment A2 recorded it.
 
+**The fit side's code** (outputs/mp_unified/zd83m.py, zd83t.py, outputs/host_ops/d83world.py; committed before any of it
+runs):
+
+- *Label axis:* `zd83m.labels_on` sets `zlink.FAMS = 5` and zlink's settings to the ones D83's links and typed sets were built
+  under, before zprop's first import, and refuses when a module that took three families is already loaded. The label
+  dropout is zg2's, unchanged: a question whose every label would go keeps its lowest label, which is the slot's (S on a KB,
+  R.mention on passages) wherever it has one, as the record kept the slot. Checked on the laptop: zg6r's stack over links of
+  all five labels equals its loop reference with and without the dropout, and the gradient reaches every label's map.
+- *LTM:* `zd83m.py ltm lists|fit|cols` runs ltmcols (unedited) with ltwdiag's features 11-15 = the five label bits, on the
+  named arm's cache and links (D83F's fit carves; D83E's s1eval carves for the reads), in the D83 world.
+- *LAB:* `zd83m.py lab --arm A --dataset D --carve C` writes `outputs/abl/<A>/lab/<D>/<C>/` (per part `lab.npy`, float16, and
+  a record tied to the cache part's and links part's records). zrckpn's carve adds LAB as a block after NEXT (pick = DOB's
+  nine, NEXT, LAB; a fit that did not fit LAB into every set stops unstamped). GNX's carve appends LAB's ten columns to
+  NEXT's seven, so its hook's input is [raw, z, 1] over 17 columns (35 inputs, gnx_w 128 x 35, zero-started).
+- *Records:* each fit writes `outputs/d83/fits/<name>.json` in the world: the label axis every imported module held, LAB's
+  carves and records, and the start's encoder count.
+
 ## 7. Reads, and the rule (fixed now)
 
 - **Deciding:** B1's three settings on `b1u` (the D83 fits) against `b1w` (the record's fits; filed reads, by sha256), R@5 per
