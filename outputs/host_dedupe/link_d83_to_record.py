@@ -11,8 +11,8 @@ file under outputs/abl/D83F/ or outputs/abl/D83E/:
     "never touched"), else the oldest member (the first written; later copies take its name);
   - a member is linked only if it is under outputs/abl/D83F/ or outputs/abl/D83E/, has one name (st_nlink 1), still
     has the survey's size, was not modified within --skip-recent-h (default 1), and is not under an EXCLUDE prefix:
-    every path of a carve whose record (outputs/abl/<arm>/records/<ds>__<carve>.json) is not filed yet (its chain
-    still writes beside these files), and that dataset's label sets in both arms (zd83.write_label_sets runs again);
+    of a carve whose record (outputs/abl/<arm>/records/<ds>__<carve>.json) is not filed yet, the folders its chain
+    still writes (look, links, typed, kt, lab, rmatch, zrc, its pools files) and any cache part without record.json;
   - keeper and member are hashed now and must both equal the survey's sha256; then os.link(keeper, member.lnk.tmp),
     which must be the keeper's file; then os.replace(tmp, member), which must leave member as the keeper's file. A
     member another process holds open is recorded busy and left as it is (the temporary name is removed).
@@ -43,19 +43,28 @@ CARVES = {"D83F": {"squad": "fit", "hotpotqa": "fit", "2wiki": "fit", "musique":
 
 
 def excludes():
-    """Every path of a carve whose chain has not filed its record (its chain still writes beside these files), and a
-    dataset's label sets in both arms while either arm's carve of it is unfiled (zd83.write_label_sets runs again)."""
-    out, open_ds = [], set()
+    """Of a carve whose chain has not filed its record, every folder its chain still writes: look, links, typed, kt, lab,
+    rmatch, zrc and its pools files. Its filed cache parts are linked (the chain builds only the parts without a
+    record.json, zpko.cache_part; nothing else writes under a part), and so are label sets (zd83.write_label_sets
+    compares a set already on disk and never rewrites it; a new one goes in through a temporary name and os.replace).
+    A cache part without its record.json is skipped in the loop (unfiled_part)."""
+    out = []
     for arm, cs in CARVES.items():
         for ds, carve in cs.items():
             if (Path("outputs/abl") / arm / "records" / f"{ds}__{carve}.json").is_file():
                 continue
-            open_ds.add(ds)
             a = f"outputs/abl/{arm}/"
-            out += [f"{a}{k}/{ds}/" for k in ("look", "cache", "links", "typed", "kt", "lab", "labels")]
+            out += [f"{a}{k}/{ds}/" for k in ("look", "links", "typed", "kt", "lab")]
             out += [f"{a}chains/{c}/{ds}/" for c in ("rmatch", "zrc")] + [f"{a}pools/{ds}__"]
-    out += [f"outputs/abl/{arm}/labels/{ds}/" for arm in CARVES for ds in sorted(open_ds)]
     return tuple(dict.fromkeys(out))
+
+
+def unfiled_part(p):
+    """A cache-part file whose part has no record.json yet (a cache step may still be writing it)."""
+    parts = p.split("/")
+    if len(parts) > 6 and parts[3] == "cache" and parts[6].startswith("part_"):
+        return not Path("/".join(parts[:7]) + "/record.json").is_file()
+    return False
 
 
 EXCLUDE = excludes()
@@ -69,7 +78,8 @@ if "--fresh" in sys.argv:   # survey D83F, D83E and the record now (dupe_survey.
     args = [f"outputs/host_dedupe/survey_d83_{time.strftime('%Y%m%d-%H%M%S')}.json"]
     DS.main(["--min-mb", "1", "--skip-recent-min", "10", "--out", args[0], "--root", "D83F=outputs/abl/D83F",
              "--root", "D83E=outputs/abl/D83E", "--root", "pko=outputs/pko"])
-print(f"{len(EXCLUDE)} excluded prefixes (unfiled carves): {sorted({p.split('/')[2] + ':' + p.split('/')[4] for p in EXCLUDE if p.count('/') >= 4})}")
+print(f"{len(EXCLUDE)} excluded prefixes (carves without a filed record): "
+      f"{sorted({p.split('/')[2] + ':' + p.rstrip('/').split('/')[-1].split('__')[0] for p in EXCLUDE})}")
 survey = json.loads(Path(args[0]).read_text(encoding="utf-8"))
 now = time.time()
 free0 = shutil.disk_usage(".").free
@@ -99,6 +109,8 @@ for g in survey["groups"]:
             why = "not a D83 path"
         elif p.startswith(EXCLUDE):
             why = "excluded (a chain still writes beside it)"
+        elif unfiled_part(p):
+            why = "cache part not filed"
         elif p not in st:
             why = "gone"
         elif DL.same_file(st[p], st[keeper]):

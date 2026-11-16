@@ -1,5 +1,6 @@
 """D83's look chunks, pruned once their readers are filed (16 Nov 23:5x; the user: "i dont think you are utilizing the space
-properly"). The rule is zpko.prune_carve's (PKO section 6), applied to D83's arms: a carve's look chunks are read only by
+properly"; 17 Nov 00:1x: "remove whatever is not required"). The rule is zpko.prune_carve's (PKO section 6), applied to
+D83's arms and to b1v (outputs/b1v, zd83b's B1 read carve on the same chain): a carve's look chunks are read only by
 its cache parts, links, and (chained carves) rmatch, zrc and typed. The carve record (zpko.record_carve, written by the
 chain's last step) names every one of those records and the look's own record_*/pools_* JSON, never the chunks, and the
 gate re-hashes only what the record names. A re-run treats a look shard as filed by its record_/pools_ JSON
@@ -22,7 +23,9 @@ from pathlib import Path
 
 ROOT = Path.cwd().resolve()
 ARMS = {"D83F": {"squad": "fit", "hotpotqa": "fit", "2wiki": "fit", "musique": "s1fit", "webqsp": "fit"},
-        "D83E": {d: "s1eval" for d in ("squad", "hotpotqa", "2wiki", "musique", "webqsp", "metaqa")}}
+        "D83E": {d: "s1eval" for d in ("squad", "hotpotqa", "2wiki", "musique", "webqsp", "metaqa")},
+        "b1v": {d: "b1v" for d in ("2wiki", "hotpotqa", "musique")}}       # zd83b's carve: the same chain and record
+BASE = {"D83F": ROOT / "outputs" / "abl" / "D83F", "D83E": ROOT / "outputs" / "abl" / "D83E", "b1v": ROOT / "outputs" / "b1v"}
 
 
 def parts(d):
@@ -30,7 +33,7 @@ def parts(d):
 
 
 def check(arm, ds, carve):
-    a = ROOT / "outputs" / "abl" / arm
+    a = BASE[arm]
     why = []
     rp = a / "records" / f"{ds}__{carve}.json"
     if not rp.is_file():
@@ -81,7 +84,7 @@ if "--delete" not in sys.argv[1:]:
 for arm, ds, carve, d, rows in todo:
     pj = d / "pruned.json"
     readers = [f"cache:{ds}/{carve}", f"links:{ds}/{carve}"]
-    rec = json.loads((ROOT / "outputs" / "abl" / arm / "records" / f"{ds}__{carve}.json").read_text(encoding="utf-8"))
+    rec = json.loads((BASE[arm] / "records" / f"{ds}__{carve}.json").read_text(encoding="utf-8"))
     if rec.get("chained"):
         readers += [f"rmatch:{ds}/{carve}", f"zrc:{ds}/{carve}", f"typed:{ds}/{carve}"]
     doc = {"declared_in": "outputs/host_cleanup/prune_d83_looks.py (zpko.prune_carve's rule)", "stage": "D83", "arm": arm,
