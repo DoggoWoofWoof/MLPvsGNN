@@ -107,6 +107,22 @@ The MLP passes no message: LAB and NEXT are fixed columns of the row and its fir
   recomputed on b1v's stores once G1b passed (section 8), labelled links, then LAB, lists and columns per split in the world;
   outputs under `outputs/b1v/`. The folder and the key sets are built on the laptop (AP1b's levels files are there) and checked
   there against b1n's build.json and AP1b's levels sha256.
+- **The look on the pools of record (added 16 Nov, 17:49 IST, after the first MuSiQue and WebQSP looks stopped; no number
+  read).**
+  - **What stopped.** Every look goes through look_u2d, which calls `p1gb_pools.replace_pools`. That function checks each
+    question's frozen pool, the one `m3b_compile.prepare` builds by walking the context's stores, against the pools file's
+    sha256, then puts in base and seeds plus the filed expansion.
+  - **Why it differs by design.** The frozen contract's regime (configs/m3b_controlled_comparison.yaml, 13 Sep) is FULL
+    (`structural`, `ner`, `knn`) on MuSiQue and WebQSP, STRUCT on 2Wiki, HotpotQA and MetaQA, and RETRIEVAL on SQuAD. D83
+    changes the `ner` store (F0T) and the `knn` store (the dedup) and keeps the structural slot of record. So on MuSiQue and
+    WebQSP that intermediate pool differs from the record's by design, as zabl's `union_pools` already says of an arm's
+    pool; ABL never met it because ABL built its own pools.
+  - **The fix.** On D83F and D83E (never D83I), `zd83.replace_pools_d83` puts the arm's own frozen-pool sha256 and size in
+    for the call only, where the regime walks `ner` or `knn`. Every other check of `replace_pools` runs unchanged: the
+    question in the pools file, base and seeds, and the expansion's length, no repeats, none of base and seeds. Each
+    question's pool stays the record's (A2), and the pools file is never written. Where the regime walks only the
+    structural slot or no family, the filed frozen-pool check runs as before.
+  - **The record.** The look's pools record carries `frozen_check`, `frozen_differ` and the regime.
 
 ## 6. Training (GPU and CPU), in a world of its own
 
@@ -191,6 +207,23 @@ runs):
   for array (each record's array sha256). It proves the plumbing (pools linked, KT pass, on_arm, the labelled links build)
   changes nothing by itself. G1's rows go first; the D83F and D83E look and cache builds run beside them (they read no
   result), and no labelled link, KT pass, fit or read of D83 runs before G1 passes.
+  - **Amended 16 Nov, 17:49 IST, after G1's first run (11:44 UTC).** That run said FAIL for one reason only, on both carves:
+    "the record's chunks are not on disk". Every array it compared was equal:
+    - squad/fit: cache 17/17, links 4/4, KT 2/2;
+    - metaqa/s1eval: cache 612/612, links 144/144, typed 72/72, KT 2/2;
+    - the KT pass equal on both.
+  - **Why the chunks were missing.** PKO pruned its own look chunks on 31 Oct (`pruned.json` beside the shard records:
+    13 chunks on squad/fit, 1,957 on metaqa/s1eval). The prune record names the only steps that read them: the cache
+    parts and links, plus typed, rmatch and zrc on metaqa. So G1's look comparison had nothing to compare against from
+    the start.
+  - **The amended check (`zd83.pruned_look`).** G1 now also compares rmatch and zrc array for array, wherever the record
+    has them. Where the record pruned its look, the look passes only if all of these hold:
+    - the prune record is PKO's for this carve;
+    - D83I holds as many chunks as the prune removed;
+    - D83I's look shard records equal the record's (ids sha256, chunk lists, counts);
+    - every reader the prune names is a step G1 compared, with all arrays equal and one cache record per cache reader.
+  - **Unchanged:** where the record's chunks exist, they are compared array for array as before. G1 runs again under the
+    amended code.
 - **G1b identity on B1** (added 16 Nov, before any b1v row runs): b1w's own folder (`outputs/bench/hipporag2_w`) through b1v's
   plumbing (zb1h's settings and setting context, the pools linked under the b1v stem, the KT pass and merge) under
   `outputs/b1v/g1b` gives KT rows equal, array for array, to B1P's filed KT rows of b1w, per setting

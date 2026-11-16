@@ -338,13 +338,54 @@ def chunk_typed_d83(c, where, n_rel, k_rel, *, orig, keys, n, need, base_keys):
     return (ne, a, b, lab), ue, pad, tdir, st
 
 
+D83_CHANGED = ("ner", "knn")   # the families whose stores D83 changes: the NER store (F0T) and K after the S > R > K dedup
+
+
+def replace_pools_d83(prep, filed, m3c, construction, cfg_h, m3a, m3b_contract, *, orig, pool_sha):
+    """p1gb_pools.replace_pools on a D83F or D83E look (section 5, added 16 Nov after the first musique and webqsp looks
+    stopped; no number read). m3b_compile.prepare's frozen pool walks the context's stores, so where the carve's regime walks
+    a family D83 changes (ner, knn) it differs from the record's by design, as zabl's union_pools says of an arm's pool. For
+    this call only, the filed frozen-pool sha256 and size are the arm's own frozen pools'; every other check is
+    replace_pools' own, unchanged (the question in the pools file, base and seeds, the expansion's length, no repeat, none of
+    base and seeds), and each question's pool is base and seeds plus the filed expansion: the record's (A2). Where the regime
+    walks only the structural slot (the record's on every dataset) or no family, replace_pools runs as filed, with its
+    frozen-pool check. The pools file is never written; the counts go into the look's pools record."""
+    regime = construction["regime"]
+    fams = set(m3c.regime_families(cfg_h, regime)) if regime != "RETRIEVAL" else set()
+    hit = sorted(fams & set(D83_CHANGED))
+    if not hit:
+        return dict(orig(prep, filed, m3c, construction, cfg_h, m3a, m3b_contract), frozen_check="filed", regime=regime)
+    f2 = {k: filed[k] for k in filed}
+    sha, size = np.array(filed["inc_sha"], copy=True), np.array(filed["inc_size"], copy=True)
+    at = {str(q): k for k, q in enumerate(np.asarray(filed["ids"]).tolist())}
+    differ = 0
+    for j, q in enumerate(prep.pop.ids):
+        k = at.get(str(q))
+        if k is None:
+            continue                                                   # replace_pools stops on it
+        inc = np.asarray(prep.pools[j], np.int64)
+        s, old = pool_sha(inc), sha[k]
+        old = old.decode() if isinstance(old, bytes) else str(old)
+        differ += int(s != old or inc.size != int(size[k]))
+        sha[k] = s.encode() if sha.dtype.kind == "S" else s
+        size[k] = inc.size
+    f2["inc_sha"], f2["inc_size"] = sha, size
+    out = orig(prep, f2, m3c, construction, cfg_h, m3a, m3b_contract)
+    return dict(out, frozen_check=f"the arm's (D83: the regime walks {','.join(hit)})", frozen_differ=differ, regime=regime)
+
+
 @contextlib.contextmanager
 def step_patches(kind, arm, name):
     """The links step builds labelled links; the typed step puts zu2n's sets on the S links (D83 arms only; on D83I zu2n
-    runs unpatched on the family links, which G1 compares with the record's)."""
+    runs unpatched on the family links, which G1 compares with the record's); the look step's pool replacement takes the
+    arm's frozen pools where the regime walks a family D83 changes (replace_pools_d83; D83 arms only)."""
     P_ = Z.B.Patches()
     try:
-        if kind == "links":
+        if kind == "look" and arm != IDENTITY:
+            import functools
+            import p1gb_pools as PGB                                   # zu2d_pools' PGB, which look_u2d calls
+            P_.set(PGB, replace_pools=functools.partial(replace_pools_d83, orig=PGB.replace_pools, pool_sha=PGB.C4S.pool_sha))
+        elif kind == "links":
             import functools
             import zlink as ZL
             P_.set(ZL, build=functools.partial(labelled_build, arm=arm))
@@ -509,9 +550,49 @@ def chain(arm, name, lanes=1, host=False):
 
 # ── G1: the identity arm against the record ──────────────────────────────────
 
+G1_OPTIONAL = ("typed", "rmatch", "zrc")                           # steps a carve may lack (typed, chained carves only)
+
+
+def pruned_look(la, lb, name, carve, c):
+    """G1's look check where the record pruned its own look chunks (section 8, added 16 Nov after G1's first run: PKO's
+    prune of 31 Oct left pruned.json beside the shard records, naming the steps that read the chunks). The look is checked
+    through its readers: the prune record is PKO's for this carve, D83I holds as many chunks as the prune removed, D83I's
+    look shard records equal the record's (ids, chunk lists, counts), and every reader the prune names is a step G1
+    compared array for array, all equal, with one cache record per cache reader. Returns (ok, detail)."""
+    pr = la / "pruned.json"
+    if not pr.exists():
+        return False, {"failed": ["the record's chunks are not on disk"]}
+    p_ = read_json(pr)
+    readers = [str(r) for r in p_.get("readers", [])]
+    kinds = sorted({r.split(":")[0] for r in readers})
+    n_cache = sum(r.startswith("cache:") for r in readers)
+    nb = len(list((lb / "chunks").glob("c*.npz")))
+    head = ("carve_ids_sha256", "n_chunks", "chunks", "queries", "carve_queries", "chunk_queries", "zero_gold_excluded")
+    ra = {x.name: read_json(x) for x in sorted(la.glob("record_*.json"))}
+    rb = {x.name: read_json(x) for x in sorted(lb.glob("record_*.json"))}
+    same = bool(ra) and set(ra) == set(rb) and all(ra[k].get(f) == rb[k].get(f) for k in ra for f in head)
+    full = {w for w in ("cache", "links") + G1_OPTIONAL if isinstance(c.get(w), dict) and 0 < c[w]["equal"] == c[w]["arrays"]}
+    why = []
+    if (p_.get("stage"), p_.get("dataset"), p_.get("carve")) != ("PKO", name, carve):
+        why.append("the prune record is not PKO's of this carve")
+    if not readers:
+        why.append("the prune names no reader")
+    if int(p_.get("removed", -1)) != nb:
+        why.append(f"{nb} D83I chunks against {p_.get('removed')} pruned")
+    if not same:
+        why.append("the look shard records differ")
+    if not set(kinds) <= full:
+        why.append(f"readers not compared equal: {sorted(set(kinds) - full)}")
+    if n_cache != (c["cache"]["records"] if isinstance(c.get("cache"), dict) else -1):
+        why.append(f"{n_cache} cache readers against {c.get('cache')} cache records compared")
+    return not why, {"pruned_utc": p_.get("utc"), "removed": p_.get("removed"), "d83i_chunks": nb, "readers": len(readers),
+                     "reader_kinds": kinds, "shard_records": len(ra), "shard_records_equal": same, "failed": why}
+
+
 def g1(host=False):
-    """Every D83I array named by a record (cache parts, links, typed, kt) equal to the record's by sha256, the look's chunk
-    arrays equal to the record's, the KT pass's rows the record's (kt_merge) and the linked pools the record's."""
+    """Every D83I array named by a record (cache parts, links, typed, rmatch, zrc, kt) equal to the record's by sha256, the
+    look's chunk arrays equal to the record's (or, where the record pruned them, checked through their readers:
+    pruned_look), the KT pass's rows the record's (kt_merge) and the linked pools the record's."""
     M = Z.B.mods(host)
     PK = M.PK
     src, R = PK.roots(), Z.roots_of(M, IDENTITY)
@@ -523,10 +604,10 @@ def g1(host=False):
         c["kt_pass_equal"] = bool(man.get("d83", {}).get("kt_equal_to_record"))
         if not c["kt_pass_equal"]:
             bad.append(f"{name}: KT pass")
-        for what in ("cache", "links", "typed", "kt"):
+        for what in ("cache", "links") + G1_OPTIONAL + ("kt",):
             a, b = Path(getattr(src, what)) / name / carve, Path(getattr(R, what)) / name / carve
             ra = sorted(a.rglob("record.json")) if a.exists() else []
-            if what == "typed" and not ra:
+            if what in G1_OPTIONAL and not ra:
                 c[what] = "none in the record"
                 continue
             n_eq = n_all = 0
@@ -558,7 +639,9 @@ def g1(host=False):
                     bad.append(f"{name}/look/{f.name}")
         c["look_chunks"] = {"record": len(fa), "equal": n_eq}
         if not fa:
-            bad.append(f"{name}/look: the record's chunks are not on disk")
+            ok, c["look_pruned"] = pruned_look(la.parent, lb.parent, name, carve, c)
+            if not ok:
+                bad.append(f"{name}/look: " + "; ".join(c["look_pruned"]["failed"]))
     out.update(verdict="FAIL" if bad else "PASS", differ=bad[:50], n_differ=len(bad), utc=utc())
     write_json(Z.arm_dir(IDENTITY) / "d83_g1.json", out)
     log(f"G1: {out['verdict']} ({len(bad)} differ{': ' + ', '.join(bad[:6]) if bad else ''})")
@@ -789,6 +872,86 @@ def selftest():
         assert ZL.build.func is labelled_build and ZL.build.keywords == {"arm": "D83F"}
     assert ZL.build is not labelled_build and getattr(ZL.build, "func", None) is None
     assert fam_need("metaqa")[0] == (0,) and fam_need("2wiki")[0] == (1,) and kt_shards("musique") == 6
+    # replace_pools_d83: the frozen-pool check kept where the regime walks only the structural slot or nothing; where it
+    # walks ner or knn the arm's frozen pools go in for the call (the filed arrays untouched) and orig's other checks run
+    import hashlib
+    from types import SimpleNamespace as NS
+    psha = lambda p: hashlib.sha256(np.ascontiguousarray(p, dtype=np.int64).tobytes()).hexdigest()  # noqa: E731
+    filed = {"ids": np.array(["a", "b"]), "inc_sha": np.array([psha([1, 2]), psha([3])], dtype="S64"),
+             "inc_size": np.array([2, 1])}
+    m3 = NS(regime_families=lambda cfg, r: cfg["graph_regimes"][r])
+    cfg = {"graph_regimes": {"STRUCT": ["structural"], "FULL": ["structural", "ner", "knn"], "RETRIEVAL": []}}
+
+    def fake_orig(prep, f, m3c, construction, cfg_h, m3a, mc):
+        for j, q in enumerate(prep.pop.ids):
+            k = [str(x) for x in f["ids"]].index(q)
+            if psha(prep.pools[j]) != f["inc_sha"][k].decode() or len(prep.pools[j]) != int(f["inc_size"][k]):
+                raise SystemExit(f"{q}: the frozen pool is not the filed one")
+            if q == "zz":
+                raise SystemExit("orig's other checks must still run")
+        return {"questions": len(prep.pop.ids)}
+
+    kw = dict(orig=fake_orig, pool_sha=psha)
+    same = NS(pop=NS(ids=["a", "b"]), pools=[np.array([1, 2]), np.array([3])])
+    arm_p = NS(pop=NS(ids=["a", "b"]), pools=[np.array([1, 2, 9]), np.array([3])])
+    assert replace_pools_d83(same, filed, m3, {"regime": "STRUCT"}, cfg, None, None, **kw)["frozen_check"] == "filed"
+    for r_ in ("STRUCT", "RETRIEVAL"):
+        try:
+            replace_pools_d83(arm_p, filed, m3, {"regime": r_}, cfg, None, None, **kw)
+            raise AssertionError("the frozen-pool check must stay")
+        except SystemExit:
+            pass
+    keep_sha = filed["inc_sha"].copy()
+    o = replace_pools_d83(arm_p, filed, m3, {"regime": "FULL"}, cfg, None, None, **kw)
+    assert o["frozen_differ"] == 1 and o["questions"] == 2 and "walks knn,ner)" in o["frozen_check"] and o["regime"] == "FULL"
+    assert np.array_equal(filed["inc_sha"], keep_sha) and filed["inc_size"].tolist() == [2, 1]
+    try:
+        replace_pools_d83(NS(pop=NS(ids=["zz"]), pools=[np.array([4])]), dict(filed, ids=np.array(["zz", "b"])), m3,
+                          {"regime": "FULL"}, cfg, None, None, **kw)
+        raise AssertionError("orig's other checks must still stop")
+    except SystemExit as e:
+        assert "other checks" in str(e)
+    import p1gb_pools as PGB
+    orig_rp = PGB.replace_pools
+    with step_patches("look", "D83F", "musique"):
+        assert PGB.replace_pools.func is replace_pools_d83 and PGB.replace_pools.keywords["orig"] is orig_rp
+    with step_patches("look", "D83I", "metaqa"):
+        assert PGB.replace_pools is orig_rp
+    assert PGB.replace_pools is orig_rp
+    # pruned_look: the record's pruned look checked through its readers; any gap fails
+    with tempfile.TemporaryDirectory() as td:
+        la, lb = Path(td) / "rec", Path(td) / "d83i"
+        (lb / "chunks").mkdir(parents=True)
+        la.mkdir()
+        for i in range(3):
+            (lb / "chunks" / f"c{i}.npz").write_bytes(b"x")
+        rec = {"carve_ids_sha256": "s", "n_chunks": 3, "chunks": [0, 1, 2], "queries": 9, "carve_queries": 9,
+               "chunk_queries": 3, "zero_gold_excluded": 0}
+        write_json(la / "record_0of1.json", dict(rec, utc="t0"))
+        write_json(lb / "record_0of1.json", dict(rec, utc="t1"))
+        write_json(la / "pruned.json", {"stage": "PKO", "dataset": "squad", "carve": "fit", "removed": 3, "utc": "u",
+                                        "readers": ["cache:squad/fit:0/1", "links:squad/fit"]})
+        c_ok = {"cache": {"records": 1, "arrays": 17, "equal": 17}, "links": {"records": 1, "arrays": 4, "equal": 4},
+                "typed": "none in the record"}
+        ok, det = pruned_look(la, lb, "squad", "fit", c_ok)
+        assert ok and det["reader_kinds"] == ["cache", "links"] and det["shard_records_equal"] and not det["failed"]
+        assert not pruned_look(la, lb, "squad", "fit", dict(c_ok, links={"records": 1, "arrays": 4, "equal": 3}))[0]
+        assert not pruned_look(la, lb, "squad", "fit", dict(c_ok, cache={"records": 2, "arrays": 34, "equal": 34}))[0]
+        assert not pruned_look(la, lb, "metaqa", "fit", c_ok)[0]
+        write_json(la / "pruned.json", {"stage": "PKO", "dataset": "squad", "carve": "fit", "removed": 3, "utc": "u",
+                                        "readers": ["cache:squad/fit:0/1", "links:squad/fit", "zrc:squad/fit"]})
+        assert pruned_look(la, lb, "squad", "fit", c_ok)[1]["failed"] == ["readers not compared equal: ['zrc']"]
+        write_json(la / "pruned.json", {"stage": "PKO", "dataset": "squad", "carve": "fit", "removed": 3, "utc": "u",
+                                        "readers": ["cache:squad/fit:0/1", "links:squad/fit"]})
+        write_json(lb / "record_0of1.json", dict(rec, n_chunks=4))
+        assert not pruned_look(la, lb, "squad", "fit", c_ok)[0]
+        write_json(lb / "record_0of1.json", rec)
+        (lb / "chunks" / "c2.npz").unlink()
+        assert not pruned_look(la, lb, "squad", "fit", c_ok)[0]
+        (lb / "chunks" / "c2.npz").write_bytes(b"x")
+        assert pruned_look(la, lb, "squad", "fit", c_ok)[0]
+        (la / "pruned.json").unlink()
+        assert pruned_look(la, lb, "squad", "fit", c_ok)[1]["failed"] == ["the record's chunks are not on disk"]
     print("zd83 self-test: OK")
     return 0
 
