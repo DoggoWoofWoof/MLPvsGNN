@@ -80,9 +80,12 @@ files, which IDPB does not pin, matched its per-fit R@5). Descriptive: no call.
 | GNX, b1w | 79.1 / 62.3 (+25.6) | 64.3 / 22.5 (+15.2) | 46.6 / 3.8 (+3.8) | 69.1 / 40.0 |
 | J5 zrc, b1 | 76.4 / 57.6 (+20.9) | 61.7 / 17.4 (+10.1) | 43.1 / 1.6 (+1.6) | 66.3 / 35.6 |
 
-- Every row lifts R@5 by about 11-14 points over RRF at each hop count, but the share of questions with every gold in the
-  top 5 falls from about 60% at 2 hops to about 20% at 3 and 2-4% at 4. A 4-hop question has 4 golds, so the top 5 leaves
-  one slot spare.
+- R@5 minus RRF shrinks with hops in every row: zg6r and GNX +13.6 to +14.3 points at 2 hops, +10.8 to +11.5 at 3 and
+  +10.1 to +10.9 at 4; zrckpn +12.7 / +9.5 to +9.9 / +7.7 to +7.8; J5 zrc and zsp +10.5 to +11.7 / +7.9 to +8.9 / +6.2 to
+  +7.4 (all rows on b1w and b1 in `report.md`). The share of questions with every gold in the top 5 falls from about 60% at
+  2 hops to about 20% at 3 and 2-4% at 4. A 4-hop question has 4 golds, so the top 5 leaves one slot spare.
+- **Correction (16 Nov, before any use):** the first filing (cafed99, its commit message too) said every row lifts R@5 by
+  about 11-14 points at each hop count; that held for zg6r and GNX only, and the bullet above replaces it.
 - **2Wiki** (b1w, zg6r): compositional 94.7 / 89.4, inference 93.8 / 87.6, comparison 100.0 / 100.0, bridge_comparison (4
   golds) 90.5 / 70.0; RRF's bridge_comparison FC@5 is 0.4%.
 - **HotpotQA** (zg6r): bridge 93.0 / 86.4 on b1w and 95.7 / 91.7 on b1; comparison 99.9 / 99.8 on both.
