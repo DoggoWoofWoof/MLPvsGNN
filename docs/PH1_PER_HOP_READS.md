@@ -63,3 +63,31 @@ in their questions as well as in their hops.
 ## 6. Outputs
 
 `outputs/ph1/report.json` and `report.md` (committed), with the script's sha256, every read's sha256 and the gates' results.
+
+## 7. Results (filed 16 November 2026; `outputs/ph1/report.json`, `report.md`)
+
+**The run.** `zph1.py run` at the declared commit (eac51a1): 108 reads (30 on MuSiQue and HotpotQA, 48 on 2Wiki), G1, G2 and
+G3 held on all three settings (every row's all-question R@5 and FC@5 equal to B1H, IDPA, IDPB or J5S to 4 decimals; GNX's b1
+files, which IDPB does not pin, matched its per-fit R@5). Descriptive: no call.
+
+**MuSiQue (in-domain, three-seed means; R@5 / FC@5 in %; FC@5 minus RRF in points, paired 95% interval):**
+
+| row | 2 hops (518) | 3 hops (316) | 4 hops (166) | all |
+| --- | ---: | ---: | ---: | ---: |
+| RRF | 65.2 / 36.7 | 52.8 / 7.3 | 35.7 / 0.0 | 56.4 / 21.3 |
+| GNN zg6r, b1w | 79.0 / 61.7 (+25.0 [+20.6, +29.6]) | 64.2 / 22.8 (+15.5 [+11.5, +19.9]) | 46.6 / 2.6 (+2.6 [+0.8, +5.0]) | 69.0 / 39.6 |
+| MLP zrckpn, b1w | 77.9 / 60.3 (+23.6) | 62.8 / 18.6 (+11.3) | 43.5 / 3.4 (+3.4) | 67.4 / 37.7 |
+| GNX, b1w | 79.1 / 62.3 (+25.6) | 64.3 / 22.5 (+15.2) | 46.6 / 3.8 (+3.8) | 69.1 / 40.0 |
+| J5 zrc, b1 | 76.4 / 57.6 (+20.9) | 61.7 / 17.4 (+10.1) | 43.1 / 1.6 (+1.6) | 66.3 / 35.6 |
+
+- Every row lifts R@5 by about 11-14 points over RRF at each hop count, but the share of questions with every gold in the
+  top 5 falls from about 60% at 2 hops to about 20% at 3 and 2-4% at 4. A 4-hop question has 4 golds, so the top 5 leaves
+  one slot spare.
+- **2Wiki** (b1w, zg6r): compositional 94.7 / 89.4, inference 93.8 / 87.6, comparison 100.0 / 100.0, bridge_comparison (4
+  golds) 90.5 / 70.0; RRF's bridge_comparison FC@5 is 0.4%.
+- **HotpotQA** (zg6r): bridge 93.0 / 86.4 on b1w and 95.7 / 91.7 on b1; comparison 99.9 / 99.8 on both.
+- The full tables (every row on b1w and b1, seed 0 beside, MuSiQue's six kinds) are in `report.md`.
+
+What it says, read and not tested: the gap left on these settings is the third and fourth hop of MuSiQue's chains (and
+2Wiki's four-gold bridge_comparison), which is where chain-completing selection (the plan's item 4a) would act. It decides
+nothing.
