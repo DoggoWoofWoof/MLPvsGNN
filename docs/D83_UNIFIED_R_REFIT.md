@@ -123,7 +123,7 @@ The MLP passes no message: LAB and NEXT are fixed columns of the row and its fir
     question's pool stays the record's (A2), and the pools file is never written. Where the regime walks only the
     structural slot or no family, the filed frozen-pool check runs as before.
   - **The record.** The look's pools record carries `frozen_check`, `frozen_differ` and the regime.
-- **b1v's look on the pools of record (added 16 Nov, 19:2x IST, after the three b1v chains stopped in their look at 18:28 and
+- **b1v's look on the pools of record (added 16 Nov, 19:14 IST, after the three b1v chains stopped in their look at 18:28 and
   18:42; no number read).**
   - **What stopped.** look_u2d checks that the graph the look opens is the one the pools manifest names. b1v's manifest is
     B1P's b1w manifest, hard-linked (A2), so it names b1w's graph ("B1P b1w: U2b's W2_S rule cut to the setting's passages",
