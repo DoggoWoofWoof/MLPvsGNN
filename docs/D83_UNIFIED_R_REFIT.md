@@ -167,6 +167,22 @@ runs):
   the reads run in the world's train mode beside the fits still training; no mode switch. GNX and zrckpn go through zswp.py's
   engine (unedited), zg6r through ML1's read (zabl.read's body). The record's reads it is set against are filed: zg6r on b1w
   (B1P), zrckpn on b1w (B1M), GNX on b1w (IDP), and every record fit's s1eval reads.
+- **The report's code** (`outputs/mp_unified/zd83rep.py`, `outputs/host_ops/d83_collect.py`; committed 16 Nov before any
+  read runs, nothing above changed). A cell's per-question value is the mean over its fits of R@5 at p@swa, over the questions
+  with a gold; the interval is `zap1.boot_diff` (copied, checked bit-equal in the self-test; one unit per question, so the
+  ratio estimator is the paired mean difference over resampled questions). **INCOMPLETE** while a deciding cell is unread
+  and none is BELOW; one BELOW gives NOT_ADOPTED at once. G6 is checked before a cell is formed: a D83 read's sha256 must be
+  its marker's (`d83_read_<ds>.json`), a record read's the filed one (B1M's and IDPA's records for b1w; the fit's `read.json`
+  on the host for s1eval, the record's reads in the host's `outputs/screen/fits`, fetched under `outputs/d83/rec`), and the
+  paired reads must hold the same questions in the same order with the same gold totals; a failure leaves the cell unread
+  (listed), an order or gold mismatch stops the report. `d83_collect.py` copies the world's complete reads (marker present,
+  sha256 equal) with their markers and the fits' D83 records into the record tree's `outputs/d83` for `rx fetch`. Beside,
+  deciding nothing: FC@5 and hit@1 with the same interval; seed 0's difference; PH1's groups (`zph1.groups`: MuSiQue's 2,
+  3, 4 hops, 2Wiki's and HotpotQA's kinds); the gaps GNX - zrckpn and zg6r - zrckpn at D83 and at the record and their
+  change (D83 gap minus record gap), on b1v/b1w and on s1eval. **Label counts** (`zd83rep.py labelstats`, on the host,
+  per arm and dataset: b1v and D83E's s1eval against the record's b1w and s1eval stores): per label (the record: per
+  family), the unique unordered pairs per question, those with one end a gold row of the question (gold-touching), those
+  with both ends gold (gold-gold), and the questions with at least one gold-gold pair; the stored directed entries beside.
 
 ## 8. Gates (a failure stops the dataset's or the fit's rows; none of its numbers is read)
 
