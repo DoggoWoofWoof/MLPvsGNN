@@ -108,6 +108,59 @@ def dedup(structural, ner, knn, kb):
     return ner, knn, counts
 
 
+def label_edges(c, nmax, n=None, label_keys=None, fam_need=None, where="chunk"):
+    """One look chunk's pool edges as zlink.chunk_edges reads them, one link per (question, u, v, LABEL): undirected, unique,
+    no self-loops, sorted by (question, u, v, label). With label_keys None the labels are the families (0, 1, 2) and the
+    result is zlink.chunk_edges' bit for bit (G1). Otherwise each edge's pair (the pool rows' node ids, c["pool"]; key
+    min*n + max) carries every label whose sorted key set holds it, and fam_need[f] lists the labels one of which an edge
+    of family f must carry (G4: the look's family edges come from the same stores the key sets were read from).
+    Returns (edges per question, u, v, label, counts)."""
+    qps = c["q_pool_size"].astype(np.int64)
+    eo = np.r_[0, np.cumsum(c["q_edges"].astype(np.int64))]
+    u, v, f = c["e_u"].astype(np.int64), c["e_v"].astype(np.int64), c["e_fam"].astype(np.int64)
+    if int(eo[-1]) != u.size or v.size != u.size or f.size != u.size:
+        raise SystemExit(f"{where}: {u.size} edges against q_edges {int(eo[-1])}")
+    if qps.size and int(qps.max()) >= nmax:
+        raise SystemExit(f"{where}: a pool of {int(qps.max())} rows, above int16")
+    qi = np.repeat(np.arange(qps.size), np.diff(eo))
+    n_e = qps[qi]
+    if bool(((u < 0) | (v < 0) | (u >= n_e) | (v >= n_e)).any()) or bool(((f < 0) | (f >= 3)).any()):
+        raise SystemExit(f"{where}: an edge is outside its pool or its family is not in 0..2")
+    keep = u != v
+    qk, uk, vk, fk = qi[keep], u[keep], v[keep], f[keep]
+    counts = {"raw": int(u.size), "self_loops": int((~keep).sum())}
+    if label_keys is None:
+        L, ei, li = 3, np.arange(qk.size), fk
+    else:
+        L = len(label_keys)
+        pool = np.asarray(c["pool"], np.int64)
+        po = np.r_[0, np.cumsum(qps)]
+        if pool.size != int(po[-1]) or (pool.size and (int(pool.min()) < 0 or int(pool.max()) >= int(n))):
+            raise SystemExit(f"{where}: {pool.size} pool rows against {int(po[-1])}, or a node outside {n}")
+        gu, gv = pool[po[qk] + uk], pool[po[qk] + vk]
+        key = np.minimum(gu, gv) * int(n) + np.maximum(gu, gv)
+        has = np.stack([isin_sorted(key, np.asarray(k, np.int64)) for k in label_keys], axis=1)
+        miss = 0
+        for fam, need in (fam_need or {}).items():
+            m = fk == fam
+            miss += int((m & ~has[:, list(need)].any(axis=1)).sum())
+        counts.update(family_label_misses=miss, no_label=int((~has.any(axis=1)).sum()))
+        if miss or counts["no_label"]:
+            raise SystemExit(f"{where}: G4: {miss} edges lack their family's label, {counts['no_label']} carry no label")
+        ei, li = np.nonzero(has)
+    q2 = np.r_[qk[ei], qk[ei]]
+    a = np.r_[uk[ei], vk[ei]]
+    b = np.r_[vk[ei], uk[ei]]
+    ll = np.r_[li, li].astype(np.int64)
+    key2 = np.unique(((q2 * nmax + a) * nmax + b) * L + ll)
+    ll, key2 = key2 % L, key2 // L
+    b, key2 = key2 % nmax, key2 // nmax
+    a, q2 = key2 % nmax, key2 // nmax
+    ne = np.bincount(q2, minlength=qps.size).astype(np.int64)
+    counts.update(kept=int(key2.size), labels=np.bincount(ll, minlength=L).astype(np.int64).tolist())
+    return ne, a.astype(np.int16), b.astype(np.int16), ll.astype(np.int8), counts
+
+
 def selftest():
     rng = np.random.default_rng(0)
     n = 40
@@ -154,6 +207,41 @@ def selftest():
         assert not (set(pair_keys(knn2).tolist()) & (s_keys | set(pair_keys(ner2).tolist())))
         if not kb:
             assert set(pair_keys(ner2).tolist()) == n_keys
+    # label_edges: identity = zlink.chunk_edges bit for bit; labelled = one link per label the pair's key sets hold
+    import zlink as ZL
+    qps = np.array([4, 3, 5])
+    ck = {"q_pool_size": qps, "q_edges": np.array([4, 2, 3]),
+          "e_u": np.array([0, 1, 1, 2, 0, 2, 0, 4, 3]), "e_v": np.array([1, 0, 1, 3, 1, 1, 4, 0, 1]),
+          "e_fam": np.array([0, 2, 1, 1, 0, 2, 1, 2, 1]),
+          "pool": np.array([10, 11, 12, 13, 20, 21, 22, 30, 31, 32, 33, 34])}
+    want = ZL.chunk_edges({k: ck[k] for k in ("q_pool_size", "q_edges", "e_u", "e_v", "e_fam")}, "toy")
+    got = label_edges(ck, ZL.NMAX, where="toy")
+    for x, y in zip(want[:4], got[:4]):
+        assert x.dtype == y.dtype and np.array_equal(x, y)
+    assert want[4]["kept"] == got[4]["kept"] and want[4]["self_loops"] == got[4]["self_loops"]
+    nn = 40
+    k_ = lambda pairs: np.unique(np.array([min(p) * nn + max(p) for p in pairs], np.int64))  # noqa: E731
+    sets = [k_([(10, 11), (20, 21), (30, 31), (11, 10)]),       # label 0 (the slot): q0 (0,1), q1 (0,1), q2 (0,1)
+            k_([(12, 13), (30, 34)]),                           # label 1: q0 (2,3), q2 (0,4)
+            k_([(10, 11), (21, 22), (30, 34)]),                 # label 2 (knn): q0 (0,1), q1 (1,2), q2 (0,4)
+            k_([(31, 33)])]                                     # label 3: q2 (1,3)
+    need = {0: (0,), 1: (1, 3), 2: (2,)}
+    ne, a, b, lab, cnt = label_edges(ck, ZL.NMAX, nn, sets, need, "toy")
+    got_l = {(q, int(x), int(y), int(z)) for q, (lo, hi) in enumerate(zip(np.r_[0, np.cumsum(ne)][:-1], np.cumsum(ne)))
+             for x, y, z in zip(a[lo:hi], b[lo:hi], lab[lo:hi])}
+    want_l = set()
+    for q, x, y, ls in ((0, 0, 1, (0, 2)), (0, 2, 3, (1,)), (1, 0, 1, (0,)), (1, 1, 2, (2,)), (2, 0, 4, (1, 2)),
+                        (2, 3, 1, (3,))):
+        for z in ls:
+            want_l |= {(q, x, y, z), (q, y, x, z)}
+    assert got_l == want_l and cnt["self_loops"] == 1 and cnt["family_label_misses"] == 0, (sorted(got_l), cnt)
+    assert sum(cnt["labels"]) == len(want_l) and ne.tolist() == [6, 4, 6]
+    for bad in ({0: (1,)}, None):                                        # a family without its label; no label at all
+        try:
+            label_edges(ck, ZL.NMAX, nn, sets if bad else [s[:0] for s in sets], bad or need, "toy")
+            raise AssertionError("G4 must stop")
+        except SystemExit:
+            pass
     print("d83stores self-test: OK")
     return 0
 

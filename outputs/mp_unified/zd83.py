@@ -17,8 +17,13 @@ WebQSP (section 1: the record's domain, where the pools of record exist). The NE
 
     python outputs/mp_unified/zd83.py build --arm D83F --dataset musique --lanes 6 --host   (pools linked, look, bases, cache)
 
-The steps that read the links' labels or the recomputed KT rows (links, typed, kt, record) and the chain that runs them are
-refused by this version: their code is committed, self-tested, before they run (docs section 10).
+    python outputs/mp_unified/zd83.py chain --arm D83F --dataset musique --lanes 6 --host   (build, KT pass, then ABL's chain)
+    python outputs/mp_unified/zd83.py g1 --host                                              (G1: D83I against the record)
+
+The chain: the build (above), then the KT pass (the KT rows of the pools of record recomputed on the arm's stores, in
+shards, `lanes` at a time, then merged and named in the arm's manifest), then zabl.chain, whose pools, merge, look, bases
+and cache are filed, so it runs rmatch and zrc (chained carves), links (one link per label: labelled_build), typed (the
+typed sets on the S links: chunk_typed_d83), kt and record. A D83F or D83E chain refuses until G1 has passed.
 """
 import os
 import sys
@@ -49,7 +54,7 @@ STAGE = "D83"
 FIT_CARVE = {"squad": "fit", "hotpotqa": "fit", "2wiki": "fit", "musique": "s1fit", "webqsp": "fit"}   # zwq.FIT_CARVE
 ARMS = {"D83I": {"squad": "fit", "metaqa": "s1eval"}, "D83F": FIT_CARVE, "D83E": {d: "s1eval" for d in Z.DATASETS}}
 IDENTITY = "D83I"                                                  # G1: the record's stores through D83's plumbing
-DEFERRED = ("links", "typed", "kt", "record")                       # their D83 code is committed before they run
+DEFERRED = ()                                                      # every step's D83 code is in (the KT pass, the labels)
 LABELS = ("S", "R.mention", "R.name_comention", "R.title_comention", "K.knn")   # section 3, ids 0 to 4
 SLOT = {d: ("S" if d in Z.KB else "R") for d in Z.DATASETS}                                       # the record's slot
 U2R = ROOT / "outputs" / "u2r"
@@ -212,6 +217,354 @@ def write_label_sets(arm, name, n, sets):
     return rec
 
 
+def fam_need(name):
+    """The labels one of which an edge of each look family must carry (G4): the slot's (S on a KB, R.mention elsewhere),
+    the NER store's (F0 or the title rule), the knn store's."""
+    return {0: (0,) if name in Z.KB else (1,), 1: (2, 3), 2: (4,)}
+
+
+def load_label_sets(arm, name):
+    """The five key sets the look step wrote, each checked against the labels record. Returns (keys, nodes, record sha)."""
+    d = labels_dir(arm, name)
+    rec = read_json(d / "record.json")
+    if rec["labels"] != list(LABELS) or rec["arm"] != arm or rec["dataset"] != name:
+        raise SystemExit(f"D83: {rel(d)} is not this arm's label record")
+    keys = []
+    for i, lab in enumerate(LABELS):
+        f = d / f"{i}.npy"
+        if sha_file(f) != rec["sha256"][lab]:
+            raise SystemExit(f"D83: {rel(f)} is not the file its record names")
+        keys.append(np.load(f, allow_pickle=False))
+    return keys, int(rec["nodes"]), sha_file(d / "record.json")
+
+
+def d83_settings(ZL):
+    return dict(ZL.SETTINGS, families=len(LABELS), labels=list(LABELS),
+                edges="the look's pool edges, undirected (both directions), once per label the pair carries (D83), no self-loops")
+
+
+def labelled_build(ds, carve, out_root, cache_root, look_root, placement=None, *, arm):
+    """zlink.build with one link per (question, u, v, label) (d83stores.label_edges); on D83I the labels are the families and
+    every array is zlink's own (G1). The record adds the label counts and the label sets' record."""
+    import time
+    import zlink as ZL
+    LC, Rw = ZL.LC, ZL.R
+    identity = arm == IDENTITY
+    keys, n, lab_sha = (None, None, None) if identity else load_label_sets(arm, ds)
+    need = None if identity else fam_need(ds)
+    settings = ZL.SETTINGS if identity else d83_settings(ZL)
+    L = 3 if identity else len(LABELS)
+    t0 = time.time()
+    d, files, _ids, head = LC.look_chunks(ds, carve, look_root)
+    parts, recs = LC.part_dirs(ds, carve, cache_root)
+    summary = {}
+    for p_, r in zip(parts, recs):
+        if r["look"]["carve_ids_sha256"] != head["carve_ids_sha256"] or r["look"]["records"] != head["records"]:
+            raise SystemExit(f"{p_}: built from another look than {d}")
+        tp = time.time()
+        lo, hi = r["chunks"]
+        acc = {"q_ne": [], "e_u": [], "e_v": [], "e_fam": []}
+        n_all, tot = [], {"raw": 0, "self_loops": 0, "kept": 0}
+        labs = np.zeros(L, np.int64)
+        for ch in range(lo, hi):
+            with np.load(files[ch]) as zf:
+                c = {k: zf[k] for k in ("q_pool_size", "q_edges", "e_u", "e_v", "e_fam") + (() if identity else ("pool",))}
+            ne, a, b, ff, st = DS.label_edges(c, ZL.NMAX, n, keys, need, str(files[ch]))
+            for k, x in zip(("q_ne", "e_u", "e_v", "e_fam"), (ne, a, b, ff)):
+                acc[k].append(x)
+            for k in tot:
+                tot[k] += st[k]
+            labs += np.asarray(st["labels"], np.int64)
+            n_all.append(c["q_pool_size"].astype(np.int64))
+        arrays = {k: np.concatenate(v) for k, v in acc.items()}
+        n_all = np.concatenate(n_all)
+        if n_all.size != r["queries"] or int(n_all.sum()) != r["rows"]:
+            raise SystemExit(f"{p_}: {n_all.size} queries and {int(n_all.sum())} rows against {r['queries']} and {r['rows']}")
+        if (p_ / "n.npy").exists():
+            if not np.array_equal(np.asarray(LC.load_array(p_, "n", r, verify=True)).astype(np.int64), n_all):
+                raise SystemExit(f"{p_}: the chunks' pool sizes are not step 1's cached n")
+            against = "IDENTICAL"
+        else:
+            against = "step 1's arrays are not on disk here"
+        out = Path(out_root) / ds / carve / p_.name
+        out.mkdir(parents=True, exist_ok=True)
+        shas = {k: Rw.save_npy(out, k, v) for k, v in arrays.items()}
+        fam = np.bincount(arrays["e_fam"].astype(np.int64), minlength=L)
+        if not np.array_equal(fam, labs):
+            raise SystemExit(f"{p_}: the per-label counts do not add up")
+        rec = {"dataset": ds, "carve": carve, "part": p_.name, "step1_record_sha256": LC.sha_file(p_ / "record.json"),
+               "chunks": [lo, hi], "queries": int(n_all.size), "rows": r["rows"], "edges": int(arrays["e_u"].size),
+               "edges_per_row": round(arrays["e_u"].size / max(1, r["rows"]), 3), "families": [int(x) for x in fam],
+               "look_edges": tot, "look": head["records"], "carve_ids_sha256": head["carve_ids_sha256"],
+               "n_against_step1": against, "settings": settings,
+               "arrays": {k: {"dtype": v.dtype.str, "shape": list(v.shape), "sha256": shas[k]} for k, v in arrays.items()},
+               "placement": placement or {"where": "laptop"}, "script_sha256": LC.sha_src(__file__),
+               "seconds": round(time.time() - tp, 1), "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+        if not identity:
+            rec["d83"] = {"declared_in": DECLARED, "arm": arm, "labels": dict(zip(LABELS, (int(x) for x in fam))),
+                          "label_sets_record_sha256": lab_sha, "family_label_misses": 0}
+        Rw.write_json(out / "record.json", rec)
+        summary[p_.name] = {"queries": int(n_all.size), "edges": rec["edges"], "against": against}
+        log(f"links {ds}/{carve} {p_.name}: {n_all.size} queries, {rec['edges']} links ({rec['edges_per_row']} a row; "
+            f"{'families' if identity else 'labels'} {rec['families']}) ({time.time() - t0:.0f}s)")
+    return summary
+
+
+def chunk_typed_d83(c, where, n_rel, k_rel, *, orig, keys, n, need, base_keys):
+    """zu2n.chunk_typed on labelled links: the typed sets and direction bits zu2n gives each structural (family 0) link go
+    to the S link of the same (question, u, v); links of the other labels carry none. Returns zu2n's tuple on the
+    labelled links."""
+    import zlink as ZL
+    NMAX = ZL.NMAX
+    (ne0, a0, b0, f0), ue0, pad0, tdir0, st0 = orig({k: c[k] for k in base_keys}, where, n_rel, k_rel)
+    ne, a, b, lab, _cnt = DS.label_edges(c, NMAX, n, keys, need, where)
+    E0, E = int(a0.size), int(a.size)
+    q0 = np.repeat(np.arange(ne0.size), ne0)
+    q1 = np.repeat(np.arange(ne.size), ne)
+    k0 = (q0 * NMAX + a0.astype(np.int64)) * NMAX + b0.astype(np.int64)
+    k1 = (q1 * NMAX + a.astype(np.int64)) * NMAX + b.astype(np.int64)
+    i0 = np.nonzero(np.asarray(f0) == 0)[0]
+    i1 = np.nonzero(np.asarray(lab) == need[0][0])[0]                  # the slot's label (S on a KB: typed runs on KBs)
+    if i0.size != i1.size or not np.array_equal(k0[i0], k1[i1]):
+        raise SystemExit(f"{where}: G4: the S links are not the look's structural links ({i1.size} against {i0.size})")
+    srow = np.full(E0, -1, np.int64)
+    srow[ue0] = np.arange(ue0.size)
+    sr = srow[i0]
+    ue = i1[sr >= 0]
+    pad = pad0[sr[sr >= 0]]
+    tdir = np.zeros(E, np.int8)
+    tdir[i1] = tdir0[i0]
+    st = dict(st0, edges=E, family0=int(i1.size), typed=int(ue.size), empty_family0=int(i1.size - ue.size))
+    return (ne, a, b, lab), ue, pad, tdir, st
+
+
+@contextlib.contextmanager
+def step_patches(kind, arm, name):
+    """The links step builds labelled links; the typed step puts zu2n's sets on the S links (D83 arms only; on D83I zu2n
+    runs unpatched on the family links, which G1 compares with the record's)."""
+    P_ = Z.B.Patches()
+    try:
+        if kind == "links":
+            import functools
+            import zlink as ZL
+            P_.set(ZL, build=functools.partial(labelled_build, arm=arm))
+        elif kind == "typed" and arm != IDENTITY:
+            import functools
+            import zlink as ZL
+            import zu2n as U2N
+            keys, n, _sha = load_label_sets(arm, name)
+            P_.set(U2N, chunk_typed=functools.partial(chunk_typed_d83, orig=U2N.chunk_typed, keys=keys, n=n,
+                                                      need=fam_need(name), base_keys=tuple(U2N.TKEYS)),
+                   TKEYS=tuple(U2N.TKEYS) + ("pool",))
+            P_.set(ZL, SETTINGS=d83_settings(ZL))
+        yield
+    finally:
+        P_.restore()
+
+
+# ── the KT pass: the pools' KT rows on the arm's stores ──────────────────────
+
+def kt_dir(R):
+    return Path(R.base) / "d83kt"
+
+
+def kt_shards(name):
+    return 2 * int(Z.SHARDS[name])
+
+
+def kt_pass(arm, name, shard, host=False):
+    """One shard's KT rows: for each question, P1c3's columns (zpko.rule_batch's KT call) on the arm's stores, at the
+    question's filed pool (B and the kept expansion) of the pools of record. Writes <stem>__<i>of<k>.npy and .json."""
+    import time
+    M = Z.B.mods(host)
+    PK = M.PK
+    R = Z.roots_of(M, arm)
+    carve = Z.CARVE
+    i, k = shard
+    st = PK.stem(name, carve)
+    out = kt_dir(R) / f"{st}__{i}of{k}"
+    if out.with_suffix(".json").exists():
+        log(f"KT pass {arm}/{name} {i}/{k}: filed")
+        return 0
+    t0 = time.time()
+    filed, ent, msha = PK.load_filed(name, carve, R)
+    bp, bn = np.asarray(filed["bs_ptr"], np.int64), np.asarray(filed["bs_nodes"], np.int64)
+    ep, en = np.asarray(filed["ptr"], np.int64), np.asarray(filed["nodes"], np.int64)
+    ent_flag = np.asarray(filed["entity"], bool)
+    with Z.B.checks(M), Z.on_arm(M, name, arm):
+        cx, ctx = PK.open_pko(name, carve, 2)
+        t_open = time.time() - t0
+        ids = PK.question_ids(cx)
+        if ids != [str(x) for x in filed["ids"]]:
+            raise SystemExit(f"D83 KT pass {name}/{carve}: the carve's questions are not the pools file's")
+        nq = len(ids)
+        lo, hi = nq * i // k, nq * (i + 1) // k
+        K, D, prep, constant, threads = cx.K, cx.D, cx.prep, cx.constant, cx.threads
+        rows, changed = [], 0
+        for b0 in range(lo, hi, PK.Q.BATCH):
+            js = list(range(b0, min(hi, b0 + PK.Q.BATCH)))
+            srcs = D.sources_batch(prep, js, cx.linked, cx.unions, constant, threads)
+            steered = K.steered_batch(prep, js, cx.linked, cx.unions, srcs, constant, threads)
+            for t, j in enumerate(js):
+                src, _nn, (L_, Ls_) = srcs[t]
+                route = D.routes(L_, Ls_)
+                knd = K.kind(Ls_, prep.seeds[j], cx.nonly)
+                exp = en[ep[j]:ep[j + 1]]
+                pool = np.union1d(bn[bp[j]:bp[j + 1]], exp)
+                oe, pe = K.p1e_orders(src, steered[t], bool(route), knd, cx.n_st, constant)
+                ktc = PK.KT3.columns(PK.ZP.kt_orders(oe, pe), pool, exp, knd == "entity").astype(PK.ZP.KT_DT)
+                if ktc.shape[0] != pool.size:
+                    raise SystemExit(f"D83 KT pass {name}/{carve} question {j}: one KT row per pool row is not what P1c3 gave")
+                changed += int((knd == "entity") != bool(ent_flag[j]))
+                rows.append(ktc)
+            log(f"KT pass {arm}/{name} {i}/{k}: {b0 + len(js) - lo}/{hi - lo} questions, {time.time() - t0:.0f} s")
+    kt = np.concatenate(rows) if rows else np.zeros((0, PK.KT3.NKT), PK.ZP.KT_DT)
+    want = int((np.diff(bp)[lo:hi] + np.diff(ep)[lo:hi]).sum())
+    if kt.shape[0] != want:
+        raise SystemExit(f"D83 KT pass {name}/{carve} {i}/{k}: {kt.shape[0]} rows against the pools' {want}")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    sha = PK.ZP.save_npy(out.with_suffix(".npy"), kt)
+    write_json(out.with_suffix(".json"), {"declared_in": DECLARED, "stage": STAGE, "arm": arm, "dataset": name, "carve": carve,
+                                          "shard": [i, k], "range": [lo, hi], "rows": int(kt.shape[0]), "sha256": sha,
+                                          "kind_changed": changed, "pools_manifest_sha256": msha,
+                                          "pools_file_sha256": ent["sha256"], "seconds": {"open": round(t_open, 1),
+                                          "pass": round(time.time() - t0 - t_open, 1)}, "zd83_sha256": sha_src(__file__),
+                                          "utc": utc()})
+    log(f"KT pass {arm}/{name} {i}/{k}: {hi - lo} questions, {kt.shape[0]} rows, kind changed {changed} "
+        f"({time.time() - t0:.0f} s)")
+    return 0
+
+
+def kt_merge(arm, name, host=False):
+    """The shards' KT rows joined in question order, saved beside the linked pools and named in the arm's manifest (its
+    kt block); the record's KT file and sha256 stay in the manifest's d83 block. On D83I they must be the record's."""
+    M = Z.B.mods(host)
+    PK = M.PK
+    R = Z.roots_of(M, arm)
+    carve = Z.CARVE
+    st = PK.stem(name, carve)
+    man = R.pools / f"{st}.json"
+    ent = read_json(man)
+    if ent.get("d83", {}).get("kt_recomputed"):
+        return 0
+    k = kt_shards(name)
+    parts, recs = [], []
+    for i in range(k):
+        base = kt_dir(R) / f"{st}__{i}of{k}"
+        r = read_json(base.with_suffix(".json"))
+        if sha_file(base.with_suffix(".npy")) != r["sha256"]:
+            raise SystemExit(f"D83: {rel(base)}.npy is not the file its record names")
+        parts.append(np.load(base.with_suffix(".npy"), allow_pickle=False))
+        recs.append(r)
+    kt = np.concatenate(parts)
+    filed, _ent, _msha = PK.load_filed(name, carve, R)
+    PK.check_filed(filed, kt)
+    rec_kt = PK.resolve(ent["kt"]["file"])
+    same = bool(np.array_equal(np.load(rec_kt, allow_pickle=False), kt))
+    if arm == IDENTITY and not same:
+        raise SystemExit(f"D83 G1: {name}/{carve}: the KT pass on the record's stores is not the record's KT rows")
+    f = R.pools / f"{st}.d83kt.npy"
+    sha = PK.ZP.save_npy(f, kt)
+    d83 = dict(ent["d83"], kt_recomputed=True, record_kt={"file": ent["kt"]["file"], "sha256": ent["kt"]["sha256"]},
+               kt_equal_to_record=same, kind_changed=int(sum(r["kind_changed"] for r in recs)),
+               kt_shards=[sha_file((kt_dir(R) / f"{st}__{i}of{k}").with_suffix(".json")) for i in range(k)], kt_utc=utc())
+    write_json(man, dict(ent, kt={"file": rel(f), "sha256": sha, "shape": list(kt.shape)}, d83=d83))
+    log(f"KT merge {arm}/{name}/{carve}: {kt.shape[0]} rows; equal to the record's: {same}; kind changed {d83['kind_changed']}")
+    return 0
+
+
+def g1_passed():
+    p = Z.arm_dir(IDENTITY) / "d83_g1.json"
+    return p.exists() and read_json(p).get("verdict") == "PASS"
+
+
+def chain(arm, name, lanes=1, host=False):
+    """Build, the KT pass (shards `lanes` at a time, then the merge), then zabl.chain for the rest."""
+    if arm != IDENTITY and not g1_passed():
+        raise SystemExit(f"D83 chain {arm}/{name}: G1 has not passed (outputs/abl/{IDENTITY}/d83_g1.json)")
+    build(arm, name, lanes, host)
+    import concurrent.futures as cf
+    import subprocess
+    M = Z.B.mods(host)
+    R = Z.roots_of(M, arm)
+    st = M.PK.stem(name, Z.CARVE)
+    if not read_json(R.pools / f"{st}.json").get("d83", {}).get("kt_recomputed"):
+        base = ([sys.executable, str(Z.PYLIB_RUN)] if host else [sys.executable]) + [str(Path(__file__).resolve())]
+        env = dict(os.environ, PYTHONIOENCODING="utf-8", OPENBLAS_NUM_THREADS="2", OMP_NUM_THREADS="2",
+                   MKL_NUM_THREADS="2", NUMBA_NUM_THREADS="2")
+        k = kt_shards(name)
+
+        def one(i):
+            cmd = base + ["ktpass", "--arm", arm, "--dataset", name, "--shard", f"{i}/{k}"] + (["--host"] if host else [])
+            if subprocess.run(cmd, cwd=str(ROOT), env=env, check=False).returncode:
+                raise SystemExit(f"D83 chain {arm}/{name}: KT pass {i}/{k} failed")
+
+        todo = [i for i in range(k) if not (kt_dir(R) / f"{st}__{i}of{k}.json").exists()]
+        with cf.ThreadPoolExecutor(max_workers=max(1, int(lanes))) as ex:
+            for fut in [ex.submit(one, i) for i in todo]:
+                fut.result()
+        kt_merge(arm, name, host)
+    return Z.chain(arm, name, lanes, host)
+
+
+# ── G1: the identity arm against the record ──────────────────────────────────
+
+def g1(host=False):
+    """Every D83I array named by a record (cache parts, links, typed, kt) equal to the record's by sha256, the look's chunk
+    arrays equal to the record's, the KT pass's rows the record's (kt_merge) and the linked pools the record's."""
+    M = Z.B.mods(host)
+    PK = M.PK
+    src, R = PK.roots(), Z.roots_of(M, IDENTITY)
+    out = {"declared_in": DECLARED, "stage": STAGE, "gate": "G1", "carves": {}, "zd83_sha256": sha_src(__file__)}
+    bad = []
+    for name, carve in ARMS[IDENTITY].items():
+        c = out["carves"][f"{name}/{carve}"] = {}
+        man = read_json(R.pools / f"{PK.stem(name, carve)}.json")
+        c["kt_pass_equal"] = bool(man.get("d83", {}).get("kt_equal_to_record"))
+        if not c["kt_pass_equal"]:
+            bad.append(f"{name}: KT pass")
+        for what in ("cache", "links", "typed", "kt"):
+            a, b = Path(getattr(src, what)) / name / carve, Path(getattr(R, what)) / name / carve
+            ra = sorted(a.rglob("record.json")) if a.exists() else []
+            if what == "typed" and not ra:
+                c[what] = "none in the record"
+                continue
+            n_eq = n_all = 0
+            for r_ in ra:
+                rb = b / r_.relative_to(a)
+                ea, eb = read_json(r_), (read_json(rb) if rb.exists() else {})
+                arrs = ea.get("arrays", {})
+                for key, v in arrs.items():
+                    n_all += 1
+                    if eb.get("arrays", {}).get(key, {}).get("sha256") == v.get("sha256"):
+                        n_eq += 1
+                    else:
+                        bad.append(f"{name}/{what}/{r_.parent.name}/{key}")
+            c[what] = {"records": len(ra), "arrays": n_all, "equal": n_eq}
+            if not ra or n_all == 0:
+                bad.append(f"{name}/{what}: no record to compare")
+        la, lb = Path(src.look) / name / carve / "chunks", Path(R.look) / name / carve / "chunks"
+        fa = sorted(la.glob("c*.npz"))
+        n_eq = 0
+        for f in fa:
+            g = lb / f.name
+            if not g.exists():
+                bad.append(f"{name}/look/{f.name} missing")
+                continue
+            with np.load(f) as za, np.load(g) as zb:
+                if set(za.files) == set(zb.files) and all(np.array_equal(za[k], zb[k]) for k in za.files):
+                    n_eq += 1
+                else:
+                    bad.append(f"{name}/look/{f.name}")
+        c["look_chunks"] = {"record": len(fa), "equal": n_eq}
+        if not fa:
+            bad.append(f"{name}/look: the record's chunks are not on disk")
+    out.update(verdict="FAIL" if bad else "PASS", differ=bad[:50], n_differ=len(bad), utc=utc())
+    write_json(Z.arm_dir(IDENTITY) / "d83_g1.json", out)
+    log(f"G1: {out['verdict']} ({len(bad)} differ{': ' + ', '.join(bad[:6]) if bad else ''})")
+    return 0 if not bad else 1
+
+
 # ── the pools of record in the arm's root ────────────────────────────────────
 
 def link_pools(arm, ds, host=False):
@@ -236,7 +589,8 @@ def link_pools(arm, ds, host=False):
                   "record_manifest_sha256": sha_file(man_src), "placed": placed, "utc": utc()}
     if out.exists():
         old = read_json(out)
-        if old.get("sha256") != ent["sha256"] or old.get("kt", {}).get("sha256") != ent["kt"]["sha256"]:
+        old_kt = old.get("d83", {}).get("record_kt", old.get("kt", {}))
+        if old.get("sha256") != ent["sha256"] or old_kt.get("sha256") != ent["kt"]["sha256"]:
             raise SystemExit(f"D83: {rel(out)} is present and names other pools than the record's")
         return 0
     write_json(out, new)
@@ -335,7 +689,9 @@ def main(argv=None):
         return selftest()
     if a.arm not in ARMS:
         raise SystemExit(f"D83: --arm is one of {', '.join(ARMS)}")
-    if a.cmd in ("chain", "step", "link", "build"):
+    if a.cmd == "g1":
+        return g1(a.host)
+    if a.cmd in ("chain", "step", "link", "build", "ktpass"):
         if not a.dataset:
             raise SystemExit(f"{a.cmd}: --dataset is required")
         use(a.arm, a.dataset)
@@ -344,13 +700,17 @@ def main(argv=None):
     if a.cmd == "build":
         return build(a.arm, a.dataset, a.lanes, a.host)
     if a.cmd == "chain":
-        raise SystemExit("D83: the chain's later steps (links with labels, the KT pass, typed, kt, record) wait on their code")
+        return chain(a.arm, a.dataset, a.lanes, a.host)
+    if a.cmd == "ktpass":
+        return kt_pass(a.arm, a.dataset, Z.parse_pair(a.shard), a.host)
     if a.cmd == "step":
         if a.kind in ("pools", "merge"):
             raise SystemExit("D83: the pools are the record's (A2); pools and merge never run")
-        if a.kind in DEFERRED:
-            raise SystemExit(f"D83: step {a.kind} waits on its D83 code (labels, the KT pass); nothing run")
-        return Z.run_step(a.kind, a.arm, a.dataset, Z.parse_pair(a.index), Z.parse_pair(a.shard), a.host)
+        if a.kind == "kt" and not read_json(Z.roots_of(Z.B.mods(a.host), a.arm).pools /
+                                            f"{a.dataset}__{Z.CARVE}.json").get("d83", {}).get("kt_recomputed"):
+            raise SystemExit("D83: the kt step reads the KT pass's rows; run the KT pass first")
+        with step_patches(a.kind, a.arm, a.dataset):
+            return Z.run_step(a.kind, a.arm, a.dataset, Z.parse_pair(a.index), Z.parse_pair(a.shard), a.host)
     if a.cmd == "gate":
         return gate(a.arm, tuple(a.datasets.split(",")) if a.datasets else None, a.host)
     raise SystemExit(__doc__)
@@ -369,9 +729,9 @@ def selftest():
         assert Z.arm_dir("D83F") == Z.OUT / "D83F" and Z.arm_dir("D83E") == Z.OUT / "D83E"
         assert use("D83I", "squad") == "fit" and Z.on_arm is _ORIG_ON_ARM and use("D83I", "metaqa") == "s1eval"
         refused = [lambda: use("D83F", "metaqa"), lambda: use("RK", "musique"), lambda: use("D83I", "musique"),
-                   lambda: Z.pools("D83F", "musique"), lambda: main(["step", "pools", "--arm", "D83F", "--dataset", "squad"]),
-                   lambda: main(["chain", "--arm", "D83F", "--dataset", "squad"])]
-        refused += [lambda k=k: main(["step", k, "--arm", "D83F", "--dataset", "squad"]) for k in DEFERRED]
+                   lambda: Z.pools("D83F", "musique"), lambda: main(["step", "pools", "--arm", "D83F", "--dataset", "squad"])]
+        if not g1_passed():
+            refused.append(lambda: main(["chain", "--arm", "D83F", "--dataset", "squad"]))
         for bad in refused:
             try:
                 bad()
@@ -404,6 +764,31 @@ def selftest():
                 pass
         finally:
             Z.OUT = keep_out
+    # chunk_typed_d83 on a toy KB chunk: the S links take zu2n's sets of the structural links; other labels carry none
+    import zlink as ZL
+    import zu2n as U2N
+    ck = {"q_pool_size": np.array([3, 3]), "q_edges": np.array([3, 2]), "e_u": np.array([0, 1, 0, 0, 2]),
+          "e_v": np.array([1, 2, 2, 1, 1]), "e_fam": np.array([0, 0, 2, 0, 1]), "e_fwd": np.array([1, 0, 0, 1, 0]),
+          "e_bwd": np.array([0, 1, 0, 0, 0]), "e_rel": np.array([[2, -1], [3, 1], [-1, -1], [0, -1], [-1, -1]]),
+          "pool": np.array([0, 1, 2, 5, 6, 7])}
+    nn = 10
+    kk = lambda pairs: np.unique(np.array([min(p_) * nn + max(p_) for p_ in pairs], np.int64))  # noqa: E731
+    keys = [kk([(0, 1), (1, 2), (5, 6)]), np.zeros(0, np.int64), kk([(6, 7), (0, 1)]), np.zeros(0, np.int64), kk([(0, 2)])]
+    base_keys = tuple(U2N.TKEYS)
+    (ne, a, b, lab), ue, pad, tdir, st = chunk_typed_d83(ck, "toy", 4, 2, orig=U2N.chunk_typed, keys=keys, n=nn,
+                                                         need=fam_need("metaqa"), base_keys=base_keys)
+    (ne0, a0, b0, f0), ue0, pad0, tdir0, _st0 = U2N.chunk_typed({k: ck[k] for k in base_keys}, "toy", 4, 2)
+    s_idx = np.nonzero(lab == 0)[0]
+    assert np.array_equal(ue, s_idx[np.isin(np.nonzero(f0 == 0)[0], ue0)])
+    assert np.array_equal(pad, pad0) and np.array_equal(tdir[s_idx], tdir0[f0 == 0]) and not tdir[lab != 0].any()
+    q_of = np.repeat(np.arange(ne.size), ne)
+    triples = {(int(q), int(x), int(y), int(z)) for q, x, y, z in zip(q_of, a, b, lab)}
+    assert (0, 0, 1, 2) in triples and (0, 0, 1, 0) in triples and (1, 0, 1, 0) in triples and st["typed"] == ue.size
+    assert ZL.SETTINGS["families"] == 3 and d83_settings(ZL)["families"] == 5
+    with step_patches("links", "D83F", "musique"):
+        assert ZL.build.func is labelled_build and ZL.build.keywords == {"arm": "D83F"}
+    assert ZL.build is not labelled_build and getattr(ZL.build, "func", None) is None
+    assert fam_need("metaqa")[0] == (0,) and fam_need("2wiki")[0] == (1,) and kt_shards("musique") == 6
     print("zd83 self-test: OK")
     return 0
 
