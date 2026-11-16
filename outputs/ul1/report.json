@@ -1,0 +1,4577 @@
+{
+ "declared_in": "docs/UL1_UNIFIED_LINKS_ORACLE_CHECK.md",
+ "verdict": "CARRIED F0T",
+ "carried": "F0T",
+ "failures": {
+  "F0T": []
+ },
+ "bound": 1.3,
+ "boot": 2000,
+ "seed": 0,
+ "kb_golds_read": [
+  2,
+  10
+ ],
+ "grades_sha256": {
+  "musique": "44808247f310d7a0f452d98057444c1c19cda64b672a8e2d7dd16e724d1440cb",
+  "squad": "268b6818f2f97984b5ad9b572c2a2a99f1f72dc6acd061bc86934da566371cae",
+  "hotpotqa": "e73190a15b1b4a9b9e9d2a498528d64ebd0999f70d988e42b7366e39a08b093d",
+  "2wiki": "b261a26acd6cfe7a03dc8e1b9ea59598c7c6c9dd55dc0ab232fed546bc1a9dff",
+  "metaqa": "d8e216ea62d626c219fbf2045bd238c5d3e11064ebdbdfa0e0e98ba78ecd1876",
+  "webqsp": "ae9e6b2fadf1b1a95b5b08ccc3fd223eb995f79c6c86041b3e72b913a3fe7bf7"
+ },
+ "datasets": {
+  "musique": {
+   "dataset": "musique",
+   "declared_in": "docs/UL1_UNIFIED_LINKS_ORACLE_CHECK.md",
+   "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+   "nodes": 117534,
+   "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+   "kb": false,
+   "ner_npz_sha256": "f294708600750c48eae9e32d0895d517ac3a8b5d048c736a70e9a566af2fe9c6",
+   "knn_npz_sha256": "6020ac7e0b6773e64866b5e942dc0e02c3b704615ced8de4d557aa543221ef5b",
+   "w2_s_npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+   "f0t_npz_sha256": "a0cea3c450f4a8364d202d7f21fe949e288f2ed0ca325aadea199f7ed2a4eebc",
+   "names_npz_sha256": "279d4b6ff3a2d5e3fbbab9071bcc93328167da1c5d19e805c3a9c5ad7a8f9cda",
+   "family_pairs": {
+    "N_sp": 800278,
+    "K": 265366,
+    "W2_S": 2343920,
+    "CN_all": 931069,
+    "F0T": 973013
+   },
+   "domains": {
+    "RK": {
+     "families": [
+      "R",
+      "K"
+     ],
+     "union_pairs": {
+      "none": 2566268,
+      "N_sp": 3251846,
+      "CN_all": 3365833,
+      "F0T": 3387597
+     },
+     "held_S_R_K": {
+      "none": {
+       "S": 0,
+       "R": 2343920,
+       "K": 222348
+      },
+      "N_sp": {
+       "S": 0,
+       "R": 3067861,
+       "K": 183985
+      },
+      "CN_all": {
+       "S": 0,
+       "R": 3187132,
+       "K": 178701
+      },
+      "F0T": {
+       "S": 0,
+       "R": 3209654,
+       "K": 177943
+      }
+     },
+     "ratio_to_N_sp": {
+      "none": 0.7892,
+      "N_sp": 1.0,
+      "CN_all": 1.0351,
+      "F0T": 1.0417
+     }
+    }
+   },
+   "carves": {
+    "s1sel": {
+     "questions": 1534,
+     "questions_npz_sha256": "0c3d07208f7cbfe263038ce65600020068e91b083e7a1a84a8b22a5f1e1187e6",
+     "slots": {
+      "GP": 3783,
+      "CH": 2530
+     },
+     "RK": {
+      "GP": {
+       "forms": {
+        "none": {
+         "linked": 731,
+         "share": 19.32,
+         "vs_N_sp": {
+          "diff": -9.01,
+          "lo": -9.88,
+          "hi": -8.21,
+          "call": "BELOW"
+         },
+         "vs_none": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "N_sp": {
+         "linked": 1072,
+         "share": 28.34,
+         "vs_N_sp": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 9.01,
+          "lo": 8.21,
+          "hi": 9.88,
+          "call": "ABOVE"
+         }
+        },
+        "CN_all": {
+         "linked": 1120,
+         "share": 29.61,
+         "vs_N_sp": {
+          "diff": 1.27,
+          "lo": 0.75,
+          "hi": 1.83,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 10.28,
+          "lo": 9.45,
+          "hi": 11.2,
+          "call": "ABOVE"
+         }
+        },
+        "F0T": {
+         "linked": 1120,
+         "share": 29.61,
+         "vs_N_sp": {
+          "diff": 1.27,
+          "lo": 0.75,
+          "hi": 1.83,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 10.28,
+          "lo": 9.45,
+          "hi": 11.2,
+          "call": "ABOVE"
+         }
+        },
+        "F0T_vs_CN_all": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        }
+       },
+       "price": {
+        "N_sp": 2010.5,
+        "CN_all": 2055.4,
+        "F0T": 2111.4
+       },
+       "labels": {
+        "N_sp": [
+         {
+          "label": "R.ner_spacy",
+          "pairs": 800278,
+          "slots": 657,
+          "alone": 341,
+          "per_million_pairs": 820.96
+         },
+         {
+          "label": "R.mention",
+          "pairs": 2343920,
+          "slots": 626,
+          "alone": 372,
+          "per_million_pairs": 267.07
+         },
+         {
+          "label": "K.knn",
+          "pairs": 265366,
+          "slots": 231,
+          "alone": 26,
+          "per_million_pairs": 870.5
+         }
+        ],
+        "F0T": [
+         {
+          "label": "R.name_comention",
+          "pairs": 931069,
+          "slots": 694,
+          "alone": 389,
+          "per_million_pairs": 745.38
+         },
+         {
+          "label": "R.mention",
+          "pairs": 2343920,
+          "slots": 626,
+          "alone": 347,
+          "per_million_pairs": 267.07
+         },
+         {
+          "label": "K.knn",
+          "pairs": 265366,
+          "slots": 231,
+          "alone": 18,
+          "per_million_pairs": 870.5
+         },
+         {
+          "label": "R.title_comention",
+          "pairs": 41944,
+          "slots": 37,
+          "alone": 0,
+          "per_million_pairs": 882.13
+         }
+        ]
+       }
+      },
+      "CH": {
+       "forms": {
+        "none": {
+         "linked": 707,
+         "share": 27.94,
+         "vs_N_sp": {
+          "diff": -13.04,
+          "lo": -14.3,
+          "hi": -11.87,
+          "call": "BELOW"
+         },
+         "vs_none": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "N_sp": {
+         "linked": 1037,
+         "share": 40.99,
+         "vs_N_sp": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 13.04,
+          "lo": 11.87,
+          "hi": 14.3,
+          "call": "ABOVE"
+         }
+        },
+        "CN_all": {
+         "linked": 1083,
+         "share": 42.81,
+         "vs_N_sp": {
+          "diff": 1.82,
+          "lo": 1.07,
+          "hi": 2.63,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 14.86,
+          "lo": 13.63,
+          "hi": 16.19,
+          "call": "ABOVE"
+         }
+        },
+        "F0T": {
+         "linked": 1083,
+         "share": 42.81,
+         "vs_N_sp": {
+          "diff": 1.82,
+          "lo": 1.07,
+          "hi": 2.63,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 14.86,
+          "lo": 13.63,
+          "hi": 16.19,
+          "call": "ABOVE"
+         }
+        },
+        "F0T_vs_CN_all": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        }
+       },
+       "price": {
+        "N_sp": 2077.5,
+        "CN_all": 2126.5,
+        "F0T": 2184.4
+       },
+       "labels": {
+        "N_sp": [
+         {
+          "label": "R.ner_spacy",
+          "pairs": 800278,
+          "slots": 646,
+          "alone": 330,
+          "per_million_pairs": 807.22
+         },
+         {
+          "label": "R.mention",
+          "pairs": 2343920,
+          "slots": 603,
+          "alone": 349,
+          "per_million_pairs": 257.26
+         },
+         {
+          "label": "K.knn",
+          "pairs": 265366,
+          "slots": 230,
+          "alone": 25,
+          "per_million_pairs": 866.73
+         }
+        ],
+        "F0T": [
+         {
+          "label": "R.name_comention",
+          "pairs": 931069,
+          "slots": 681,
+          "alone": 376,
+          "per_million_pairs": 731.42
+         },
+         {
+          "label": "R.mention",
+          "pairs": 2343920,
+          "slots": 603,
+          "alone": 324,
+          "per_million_pairs": 257.26
+         },
+         {
+          "label": "K.knn",
+          "pairs": 265366,
+          "slots": 230,
+          "alone": 17,
+          "per_million_pairs": 866.73
+         },
+         {
+          "label": "R.title_comention",
+          "pairs": 41944,
+          "slots": 37,
+          "alone": 0,
+          "per_million_pairs": 882.13
+         }
+        ]
+       }
+      },
+      "CC": {
+       "none": {
+        "2": {
+         "questions": 795,
+         "connected": 184,
+         "share": 23.14
+        },
+        "3": {
+         "questions": 482,
+         "connected": 48,
+         "share": 9.96
+        },
+        "4": {
+         "questions": 257,
+         "connected": 5,
+         "share": 1.95
+        },
+        "all": {
+         "questions": 1534,
+         "connected": 237,
+         "share": 15.45
+        }
+       },
+       "N_sp": {
+        "2": {
+         "questions": 795,
+         "connected": 239,
+         "share": 30.06
+        },
+        "3": {
+         "questions": 482,
+         "connected": 95,
+         "share": 19.71
+        },
+        "4": {
+         "questions": 257,
+         "connected": 19,
+         "share": 7.39
+        },
+        "all": {
+         "questions": 1534,
+         "connected": 353,
+         "share": 23.01
+        }
+       },
+       "CN_all": {
+        "2": {
+         "questions": 795,
+         "connected": 255,
+         "share": 32.08
+        },
+        "3": {
+         "questions": 482,
+         "connected": 98,
+         "share": 20.33
+        },
+        "4": {
+         "questions": 257,
+         "connected": 19,
+         "share": 7.39
+        },
+        "all": {
+         "questions": 1534,
+         "connected": 372,
+         "share": 24.25,
+         "vs_N_sp": {
+          "diff": 1.24,
+          "lo": 0.59,
+          "hi": 1.96,
+          "call": "ABOVE"
+         }
+        }
+       },
+       "F0T": {
+        "2": {
+         "questions": 795,
+         "connected": 255,
+         "share": 32.08
+        },
+        "3": {
+         "questions": 482,
+         "connected": 98,
+         "share": 20.33
+        },
+        "4": {
+         "questions": 257,
+         "connected": 19,
+         "share": 7.39
+        },
+        "all": {
+         "questions": 1534,
+         "connected": 372,
+         "share": 24.25,
+         "vs_N_sp": {
+          "diff": 1.24,
+          "lo": 0.59,
+          "hi": 1.96,
+          "call": "ABOVE"
+         }
+        }
+       }
+      }
+     }
+    },
+    "s1eval": {
+     "questions": 2417,
+     "questions_npz_sha256": "48579db05059b7b0faa92fa7ac1a949e6669b4b91776da3cffbf690a5f48fdde",
+     "slots": {
+      "GP": 5962,
+      "CH": 3987
+     },
+     "RK": {
+      "GP": {
+       "forms": {
+        "none": {
+         "linked": 1274,
+         "share": 21.37,
+         "vs_N_sp": {
+          "diff": -10.3,
+          "lo": -11.08,
+          "hi": -9.57,
+          "call": "BELOW"
+         },
+         "vs_none": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "N_sp": {
+         "linked": 1888,
+         "share": 31.67,
+         "vs_N_sp": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 10.3,
+          "lo": 9.57,
+          "hi": 11.08,
+          "call": "ABOVE"
+         }
+        },
+        "CN_all": {
+         "linked": 1972,
+         "share": 33.08,
+         "vs_N_sp": {
+          "diff": 1.41,
+          "lo": 0.9,
+          "hi": 1.93,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 11.71,
+          "lo": 10.86,
+          "hi": 12.59,
+          "call": "ABOVE"
+         }
+        },
+        "F0T": {
+         "linked": 2005,
+         "share": 33.63,
+         "vs_N_sp": {
+          "diff": 1.96,
+          "lo": 1.4,
+          "hi": 2.51,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 12.26,
+          "lo": 11.41,
+          "hi": 13.13,
+          "call": "ABOVE"
+         }
+        },
+        "F0T_vs_CN_all": {
+         "diff": 0.55,
+         "lo": 0.37,
+         "hi": 0.75,
+         "call": "ABOVE"
+        }
+       },
+       "price": {
+        "N_sp": 1116.6,
+        "CN_all": 1145.5,
+        "F0T": 1123.6
+       },
+       "labels": {
+        "N_sp": [
+         {
+          "label": "R.ner_spacy",
+          "pairs": 800278,
+          "slots": 1200,
+          "alone": 614,
+          "per_million_pairs": 1499.48
+         },
+         {
+          "label": "R.mention",
+          "pairs": 2343920,
+          "slots": 1094,
+          "alone": 556,
+          "per_million_pairs": 466.74
+         },
+         {
+          "label": "K.knn",
+          "pairs": 265366,
+          "slots": 434,
+          "alone": 56,
+          "per_million_pairs": 1635.48
+         }
+        ],
+        "F0T": [
+         {
+          "label": "R.name_comention",
+          "pairs": 931069,
+          "slots": 1326,
+          "alone": 698,
+          "per_million_pairs": 1424.17
+         },
+         {
+          "label": "R.mention",
+          "pairs": 2343920,
+          "slots": 1094,
+          "alone": 513,
+          "per_million_pairs": 466.74
+         },
+         {
+          "label": "K.knn",
+          "pairs": 265366,
+          "slots": 434,
+          "alone": 31,
+          "per_million_pairs": 1635.48
+         },
+         {
+          "label": "R.title_comention",
+          "pairs": 41944,
+          "slots": 112,
+          "alone": 33,
+          "per_million_pairs": 2670.23
+         }
+        ]
+       }
+      },
+      "CH": {
+       "forms": {
+        "none": {
+         "linked": 1262,
+         "share": 31.65,
+         "vs_N_sp": {
+          "diff": -15.12,
+          "lo": -16.2,
+          "hi": -14.12,
+          "call": "BELOW"
+         },
+         "vs_none": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "N_sp": {
+         "linked": 1865,
+         "share": 46.78,
+         "vs_N_sp": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 15.12,
+          "lo": 14.12,
+          "hi": 16.2,
+          "call": "ABOVE"
+         }
+        },
+        "CN_all": {
+         "linked": 1949,
+         "share": 48.88,
+         "vs_N_sp": {
+          "diff": 2.11,
+          "lo": 1.34,
+          "hi": 2.86,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 17.23,
+          "lo": 16.03,
+          "hi": 18.39,
+          "call": "ABOVE"
+         }
+        },
+        "F0T": {
+         "linked": 1982,
+         "share": 49.71,
+         "vs_N_sp": {
+          "diff": 2.93,
+          "lo": 2.09,
+          "hi": 3.72,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 18.06,
+          "lo": 16.86,
+          "hi": 19.28,
+          "call": "ABOVE"
+         }
+        },
+        "F0T_vs_CN_all": {
+         "diff": 0.83,
+         "lo": 0.55,
+         "hi": 1.13,
+         "call": "ABOVE"
+        }
+       },
+       "price": {
+        "N_sp": 1136.9,
+        "CN_all": 1163.9,
+        "F0T": 1140.7
+       },
+       "labels": {
+        "N_sp": [
+         {
+          "label": "R.ner_spacy",
+          "pairs": 800278,
+          "slots": 1189,
+          "alone": 603,
+          "per_million_pairs": 1485.73
+         },
+         {
+          "label": "R.mention",
+          "pairs": 2343920,
+          "slots": 1082,
+          "alone": 544,
+          "per_million_pairs": 461.62
+         },
+         {
+          "label": "K.knn",
+          "pairs": 265366,
+          "slots": 434,
+          "alone": 56,
+          "per_million_pairs": 1635.48
+         }
+        ],
+        "F0T": [
+         {
+          "label": "R.name_comention",
+          "pairs": 931069,
+          "slots": 1315,
+          "alone": 687,
+          "per_million_pairs": 1412.36
+         },
+         {
+          "label": "R.mention",
+          "pairs": 2343920,
+          "slots": 1082,
+          "alone": 501,
+          "per_million_pairs": 461.62
+         },
+         {
+          "label": "K.knn",
+          "pairs": 265366,
+          "slots": 434,
+          "alone": 31,
+          "per_million_pairs": 1635.48
+         },
+         {
+          "label": "R.title_comention",
+          "pairs": 41944,
+          "slots": 112,
+          "alone": 33,
+          "per_million_pairs": 2670.23
+         }
+        ]
+       }
+      },
+      "CC": {
+       "none": {
+        "2": {
+         "questions": 1252,
+         "connected": 528,
+         "share": 42.17
+        },
+        "3": {
+         "questions": 760,
+         "connected": 62,
+         "share": 8.16
+        },
+        "4": {
+         "questions": 405,
+         "connected": 22,
+         "share": 5.43
+        },
+        "all": {
+         "questions": 2417,
+         "connected": 612,
+         "share": 25.32
+        }
+       },
+       "N_sp": {
+        "2": {
+         "questions": 1252,
+         "connected": 864,
+         "share": 69.01
+        },
+        "3": {
+         "questions": 760,
+         "connected": 101,
+         "share": 13.29
+        },
+        "4": {
+         "questions": 405,
+         "connected": 35,
+         "share": 8.64
+        },
+        "all": {
+         "questions": 2417,
+         "connected": 1000,
+         "share": 41.37
+        }
+       },
+       "CN_all": {
+        "2": {
+         "questions": 1252,
+         "connected": 867,
+         "share": 69.25
+        },
+        "3": {
+         "questions": 760,
+         "connected": 107,
+         "share": 14.08
+        },
+        "4": {
+         "questions": 405,
+         "connected": 33,
+         "share": 8.15
+        },
+        "all": {
+         "questions": 2417,
+         "connected": 1007,
+         "share": 41.66,
+         "vs_N_sp": {
+          "diff": 0.29,
+          "lo": -0.46,
+          "hi": 1.03,
+          "call": "LEVEL"
+         }
+        }
+       },
+       "F0T": {
+        "2": {
+         "questions": 1252,
+         "connected": 881,
+         "share": 70.37
+        },
+        "3": {
+         "questions": 760,
+         "connected": 107,
+         "share": 14.08
+        },
+        "4": {
+         "questions": 405,
+         "connected": 34,
+         "share": 8.4
+        },
+        "all": {
+         "questions": 2417,
+         "connected": 1022,
+         "share": 42.28,
+         "vs_N_sp": {
+          "diff": 0.91,
+          "lo": 0.08,
+          "hi": 1.7,
+          "call": "ABOVE"
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   "seconds": 11.3,
+   "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+   "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+   "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+   "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+   "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+  },
+  "squad": {
+   "dataset": "squad",
+   "declared_in": "docs/UL1_UNIFIED_LINKS_ORACLE_CHECK.md",
+   "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+   "nodes": 20233,
+   "nodes_sha256": "34ac47757e0080f0e2eb6c679009a6090ca97be39d576307ba7281db730c1a8b",
+   "kb": false,
+   "ner_npz_sha256": "e8b061c3dc417d7c481e57d9f360dd98c825049d62c61958ca0fed655fa57a22",
+   "knn_npz_sha256": "fee9cca5435668378d2a139614cec141d0b4977991801a004c8ca43ee8ad796f",
+   "w2_s_npz_sha256": "3f44314052d91556d6d694cb97fc5319dcf84e80ef68790ec9a33800286880c5",
+   "f0t_npz_sha256": "04703c6d42e9d2717fc1a3e659d9ef6d376d85dd2bd2e410904a7573b09157e0",
+   "names_npz_sha256": "082a4c61f0563178da69802dc029008ba39becf12993bd6156ec66a1bd73f906",
+   "family_pairs": {
+    "N_sp": 156130,
+    "K": 42969,
+    "W2_S": 878200,
+    "CN_all": 173645,
+    "F0T": 176454
+   },
+   "domains": {
+    "RK": {
+     "families": [
+      "R",
+      "K"
+     ],
+     "union_pairs": {
+      "none": 888311,
+      "N_sp": 986232,
+      "CN_all": 997604,
+      "F0T": 997652
+     },
+     "held_S_R_K": {
+      "none": {
+       "S": 0,
+       "R": 878200,
+       "K": 10111
+      },
+      "N_sp": {
+       "S": 0,
+       "R": 977723,
+       "K": 8509
+      },
+      "CN_all": {
+       "S": 0,
+       "R": 989323,
+       "K": 8281
+      },
+      "F0T": {
+       "S": 0,
+       "R": 989371,
+       "K": 8281
+      }
+     },
+     "ratio_to_N_sp": {
+      "none": 0.9007,
+      "N_sp": 1.0,
+      "CN_all": 1.0115,
+      "F0T": 1.0116
+     }
+    }
+   },
+   "carves": {
+    "s1sel": {
+     "questions": 1498,
+     "questions_npz_sha256": "248cffbd842ba2909f16ee7ef9055c72b90a016834d952858befa397053af1ae",
+     "slots": {
+      "GP": 0
+     },
+     "RK": {
+      "GP": null
+     }
+    },
+    "s1eval": {
+     "questions": 11873,
+     "questions_npz_sha256": "d859795e2b409d42d2e147677c9a64bcbcf57600d5e30d49334821850e9bdd3e",
+     "slots": {
+      "GP": 0
+     },
+     "RK": {
+      "GP": null
+     }
+    }
+   },
+   "seconds": 1.7,
+   "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+   "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+   "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+   "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+   "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+  },
+  "hotpotqa": {
+   "dataset": "hotpotqa",
+   "declared_in": "docs/UL1_UNIFIED_LINKS_ORACLE_CHECK.md",
+   "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+   "nodes": 5233329,
+   "nodes_sha256": "c777ab4b7a64eaaa5af852265daf6ba9f9debb4658a67f0c96595662e43f182a",
+   "kb": false,
+   "ner_npz_sha256": "744da64a5f356b89241b2539085c9a0bf673750abd0b1822891c26f069a37137",
+   "knn_npz_sha256": "a82ee3d96ff6943678444f12279fe666ff5e03465b818bc229844597488222ae",
+   "structural_npz_sha256": "bc27173133e69cc821a14733a2f3dfe9d56442aeb867cf2cdcdcc4fff9c17608",
+   "w2_s_npz_sha256": "c46e17ee41b6a36540d46b5f0775dc707c128d352288aa27e4d1e1a54ff0234c",
+   "f0t_npz_sha256": "7b3bb50b1cc8ee03e4a76e1e7dd8c078000dbc68c3f4f7e32fbb6e0310cd53e7",
+   "names_npz_sha256": "8ae1d1cb11afcda4217ca8a33a6e8df743310489f8decb9a75baf07832da3f04",
+   "family_pairs": {
+    "N_sp": 20369074,
+    "K": 11946289,
+    "S": 15095287,
+    "W2_S": 32159229,
+    "CN_all": 23218108,
+    "F0T": 24450229
+   },
+   "domains": {
+    "RK": {
+     "families": [
+      "R",
+      "K"
+     ],
+     "union_pairs": {
+      "none": 42847105,
+      "N_sp": 59814434,
+      "CN_all": 61793991,
+      "F0T": 62565030
+     },
+     "held_S_R_K": {
+      "none": {
+       "S": 0,
+       "R": 32159229,
+       "K": 10687876
+      },
+      "N_sp": {
+       "S": 0,
+       "R": 50258253,
+       "K": 9556181
+      },
+      "CN_all": {
+       "S": 0,
+       "R": 52432584,
+       "K": 9361407
+      },
+      "F0T": {
+       "S": 0,
+       "R": 53243304,
+       "K": 9321726
+      }
+     },
+     "ratio_to_N_sp": {
+      "none": 0.7163,
+      "N_sp": 1.0,
+      "CN_all": 1.0331,
+      "F0T": 1.046
+     }
+    },
+    "SRK": {
+     "families": [
+      "S",
+      "R",
+      "K"
+     ],
+     "union_pairs": {
+      "none": 47346662,
+      "N_sp": 64080356,
+      "CN_all": 66022204,
+      "F0T": 66773876
+     },
+     "held_S_R_K": {
+      "none": {
+       "S": 15095287,
+       "R": 21866000,
+       "K": 10385375
+      },
+      "N_sp": {
+       "S": 15095287,
+       "R": 39617627,
+       "K": 9367442
+      },
+      "CN_all": {
+       "S": 15095287,
+       "R": 41741109,
+       "K": 9185808
+      },
+      "F0T": {
+       "S": 15095287,
+       "R": 42527421,
+       "K": 9151168
+      }
+     },
+     "ratio_to_N_sp": {
+      "none": 0.7389,
+      "N_sp": 1.0,
+      "CN_all": 1.0303,
+      "F0T": 1.042
+     }
+    }
+   },
+   "carves": {
+    "s1sel": {
+     "questions": 1508,
+     "questions_npz_sha256": "b9f4c3f98a278872eb254d99c474548149df70dfa9f01cf64be6cf396b89453e",
+     "slots": {
+      "GP": 1508
+     },
+     "RK": {
+      "GP": {
+       "forms": {
+        "none": {
+         "linked": 979,
+         "share": 64.92,
+         "vs_N_sp": {
+          "diff": -2.25,
+          "lo": -2.98,
+          "hi": -1.53,
+          "call": "BELOW"
+         },
+         "vs_none": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "N_sp": {
+         "linked": 1013,
+         "share": 67.18,
+         "vs_N_sp": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 2.25,
+          "lo": 1.53,
+          "hi": 2.98,
+          "call": "ABOVE"
+         }
+        },
+        "CN_all": {
+         "linked": 1028,
+         "share": 68.17,
+         "vs_N_sp": {
+          "diff": 0.99,
+          "lo": 0.27,
+          "hi": 1.72,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 3.25,
+          "lo": 2.39,
+          "hi": 4.18,
+          "call": "ABOVE"
+         }
+        },
+        "F0T": {
+         "linked": 1035,
+         "share": 68.63,
+         "vs_N_sp": {
+          "diff": 1.46,
+          "lo": 0.66,
+          "hi": 2.32,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 3.71,
+          "lo": 2.79,
+          "hi": 4.71,
+          "call": "ABOVE"
+         }
+        },
+        "F0T_vs_CN_all": {
+         "diff": 0.46,
+         "lo": 0.13,
+         "hi": 0.86,
+         "call": "ABOVE"
+        }
+       },
+       "price": {
+        "N_sp": 499039.1,
+        "CN_all": 386671.1,
+        "F0T": 352105.8
+       },
+       "labels": {
+        "N_sp": [
+         {
+          "label": "R.mention",
+          "pairs": 32159229,
+          "slots": 913,
+          "alone": 531,
+          "per_million_pairs": 28.39
+         },
+         {
+          "label": "R.ner_spacy",
+          "pairs": 20369074,
+          "slots": 312,
+          "alone": 34,
+          "per_million_pairs": 15.32
+         },
+         {
+          "label": "K.knn",
+          "pairs": 11946289,
+          "slots": 296,
+          "alone": 51,
+          "per_million_pairs": 24.78
+         }
+        ],
+        "F0T": [
+         {
+          "label": "R.mention",
+          "pairs": 32159229,
+          "slots": 913,
+          "alone": 369,
+          "per_million_pairs": 28.39
+         },
+         {
+          "label": "R.name_comention",
+          "pairs": 23218108,
+          "slots": 394,
+          "alone": 49,
+          "per_million_pairs": 16.97
+         },
+         {
+          "label": "K.knn",
+          "pairs": 11946289,
+          "slots": 296,
+          "alone": 47,
+          "per_million_pairs": 24.78
+         },
+         {
+          "label": "R.title_comention",
+          "pairs": 1232121,
+          "slots": 181,
+          "alone": 7,
+          "per_million_pairs": 146.9
+         }
+        ]
+       }
+      }
+     },
+     "SRK": {
+      "GP": {
+       "forms": {
+        "none": {
+         "linked": 1210,
+         "share": 80.24,
+         "vs_N_sp": {
+          "diff": -0.07,
+          "lo": -0.2,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "N_sp": {
+         "linked": 1211,
+         "share": 80.31,
+         "vs_N_sp": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.07,
+          "lo": 0.0,
+          "hi": 0.2,
+          "call": "LEVEL"
+         }
+        },
+        "CN_all": {
+         "linked": 1211,
+         "share": 80.31,
+         "vs_N_sp": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.07,
+          "lo": 0.0,
+          "hi": 0.2,
+          "call": "LEVEL"
+         }
+        },
+        "F0T": {
+         "linked": 1211,
+         "share": 80.31,
+         "vs_N_sp": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.07,
+          "lo": 0.0,
+          "hi": 0.2,
+          "call": "LEVEL"
+         }
+        },
+        "F0T_vs_CN_all": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        }
+       },
+       "price": {
+        "N_sp": 16733694.0,
+        "CN_all": 18675542.0,
+        "F0T": 19427214.0
+       },
+       "labels": {
+        "N_sp": [
+         {
+          "label": "S.hyperlink",
+          "pairs": 15095287,
+          "slots": 1205,
+          "alone": 198,
+          "per_million_pairs": 79.83
+         },
+         {
+          "label": "R.mention",
+          "pairs": 32159229,
+          "slots": 913,
+          "alone": 0,
+          "per_million_pairs": 28.39
+         },
+         {
+          "label": "R.ner_spacy",
+          "pairs": 20369074,
+          "slots": 312,
+          "alone": 1,
+          "per_million_pairs": 15.32
+         },
+         {
+          "label": "K.knn",
+          "pairs": 11946289,
+          "slots": 296,
+          "alone": 5,
+          "per_million_pairs": 24.78
+         }
+        ],
+        "F0T": [
+         {
+          "label": "S.hyperlink",
+          "pairs": 15095287,
+          "slots": 1205,
+          "alone": 176,
+          "per_million_pairs": 79.83
+         },
+         {
+          "label": "R.mention",
+          "pairs": 32159229,
+          "slots": 913,
+          "alone": 0,
+          "per_million_pairs": 28.39
+         },
+         {
+          "label": "R.name_comention",
+          "pairs": 23218108,
+          "slots": 394,
+          "alone": 1,
+          "per_million_pairs": 16.97
+         },
+         {
+          "label": "K.knn",
+          "pairs": 11946289,
+          "slots": 296,
+          "alone": 5,
+          "per_million_pairs": 24.78
+         },
+         {
+          "label": "R.title_comention",
+          "pairs": 1232121,
+          "slots": 181,
+          "alone": 0,
+          "per_million_pairs": 146.9
+         }
+        ]
+       }
+      }
+     }
+    },
+    "s1eval": {
+     "questions": 7405,
+     "questions_npz_sha256": "5c2dc4675720a981e3a53071613c47f41df3b6404bd63dfc404b3b5e2b11892e",
+     "slots": {
+      "GP": 7405
+     },
+     "RK": {
+      "GP": {
+       "forms": {
+        "none": {
+         "linked": 4649,
+         "share": 62.78,
+         "vs_N_sp": {
+          "diff": -2.35,
+          "lo": -2.69,
+          "hi": -2.01,
+          "call": "BELOW"
+         },
+         "vs_none": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "N_sp": {
+         "linked": 4823,
+         "share": 65.13,
+         "vs_N_sp": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 2.35,
+          "lo": 2.01,
+          "hi": 2.69,
+          "call": "ABOVE"
+         }
+        },
+        "CN_all": {
+         "linked": 4847,
+         "share": 65.46,
+         "vs_N_sp": {
+          "diff": 0.32,
+          "lo": 0.05,
+          "hi": 0.61,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 2.67,
+          "lo": 2.31,
+          "hi": 3.07,
+          "call": "ABOVE"
+         }
+        },
+        "F0T": {
+         "linked": 4880,
+         "share": 65.9,
+         "vs_N_sp": {
+          "diff": 0.77,
+          "lo": 0.46,
+          "hi": 1.08,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 3.12,
+          "lo": 2.71,
+          "hi": 3.54,
+          "call": "ABOVE"
+         }
+        },
+        "F0T_vs_CN_all": {
+         "diff": 0.45,
+         "lo": 0.3,
+         "hi": 0.59,
+         "call": "ABOVE"
+        }
+       },
+       "price": {
+        "N_sp": 97513.4,
+        "CN_all": 95691.3,
+        "F0T": 85359.0
+       },
+       "labels": {
+        "N_sp": [
+         {
+          "label": "R.mention",
+          "pairs": 32159229,
+          "slots": 4294,
+          "alone": 2405,
+          "per_million_pairs": 133.52
+         },
+         {
+          "label": "R.ner_spacy",
+          "pairs": 20369074,
+          "slots": 1661,
+          "alone": 174,
+          "per_million_pairs": 81.55
+         },
+         {
+          "label": "K.knn",
+          "pairs": 11946289,
+          "slots": 1486,
+          "alone": 227,
+          "per_million_pairs": 124.39
+         }
+        ],
+        "F0T": [
+         {
+          "label": "R.mention",
+          "pairs": 32159229,
+          "slots": 4294,
+          "alone": 1705,
+          "per_million_pairs": 133.52
+         },
+         {
+          "label": "R.name_comention",
+          "pairs": 23218108,
+          "slots": 1940,
+          "alone": 198,
+          "per_million_pairs": 83.56
+         },
+         {
+          "label": "K.knn",
+          "pairs": 11946289,
+          "slots": 1486,
+          "alone": 197,
+          "per_million_pairs": 124.39
+         },
+         {
+          "label": "R.title_comention",
+          "pairs": 1232121,
+          "slots": 825,
+          "alone": 33,
+          "per_million_pairs": 669.58
+         }
+        ]
+       }
+      }
+     },
+     "SRK": {
+      "GP": {
+       "forms": {
+        "none": {
+         "linked": 5922,
+         "share": 79.97,
+         "vs_N_sp": {
+          "diff": -0.05,
+          "lo": -0.11,
+          "hi": -0.01,
+          "call": "BELOW"
+         },
+         "vs_none": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "N_sp": {
+         "linked": 5926,
+         "share": 80.03,
+         "vs_N_sp": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.05,
+          "lo": 0.01,
+          "hi": 0.11,
+          "call": "ABOVE"
+         }
+        },
+        "CN_all": {
+         "linked": 5925,
+         "share": 80.01,
+         "vs_N_sp": {
+          "diff": -0.01,
+          "lo": -0.05,
+          "hi": 0.03,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.04,
+          "lo": 0.0,
+          "hi": 0.09,
+          "call": "LEVEL"
+         }
+        },
+        "F0T": {
+         "linked": 5925,
+         "share": 80.01,
+         "vs_N_sp": {
+          "diff": -0.01,
+          "lo": -0.05,
+          "hi": 0.03,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.04,
+          "lo": 0.0,
+          "hi": 0.09,
+          "call": "LEVEL"
+         }
+        },
+        "F0T_vs_CN_all": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        }
+       },
+       "price": {
+        "N_sp": 4183423.5,
+        "CN_all": 6225180.7,
+        "F0T": 6475738.0
+       },
+       "labels": {
+        "N_sp": [
+         {
+          "label": "S.hyperlink",
+          "pairs": 15095287,
+          "slots": 5919,
+          "alone": 1103,
+          "per_million_pairs": 392.11
+         },
+         {
+          "label": "R.mention",
+          "pairs": 32159229,
+          "slots": 4294,
+          "alone": 0,
+          "per_million_pairs": 133.52
+         },
+         {
+          "label": "R.ner_spacy",
+          "pairs": 20369074,
+          "slots": 1661,
+          "alone": 4,
+          "per_million_pairs": 81.55
+         },
+         {
+          "label": "K.knn",
+          "pairs": 11946289,
+          "slots": 1486,
+          "alone": 2,
+          "per_million_pairs": 124.39
+         }
+        ],
+        "F0T": [
+         {
+          "label": "S.hyperlink",
+          "pairs": 15095287,
+          "slots": 5919,
+          "alone": 1045,
+          "per_million_pairs": 392.11
+         },
+         {
+          "label": "R.mention",
+          "pairs": 32159229,
+          "slots": 4294,
+          "alone": 0,
+          "per_million_pairs": 133.52
+         },
+         {
+          "label": "R.name_comention",
+          "pairs": 23218108,
+          "slots": 1940,
+          "alone": 3,
+          "per_million_pairs": 83.56
+         },
+         {
+          "label": "K.knn",
+          "pairs": 11946289,
+          "slots": 1486,
+          "alone": 3,
+          "per_million_pairs": 124.39
+         },
+         {
+          "label": "R.title_comention",
+          "pairs": 1232121,
+          "slots": 825,
+          "alone": 0,
+          "per_million_pairs": 669.58
+         }
+        ]
+       }
+      }
+     }
+    }
+   },
+   "S_relations": 1,
+   "S_held_by_RK": {
+    "none": 70.19,
+    "N_sp": 71.74,
+    "CN_all": 71.99,
+    "F0T": 72.12
+   },
+   "seconds": 109.2,
+   "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+   "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+   "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+   "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+   "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+  },
+  "2wiki": {
+   "dataset": "2wiki",
+   "declared_in": "docs/UL1_UNIFIED_LINKS_ORACLE_CHECK.md",
+   "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+   "nodes": 5989847,
+   "nodes_sha256": "73fb822f3e4dd255c2555af717f4664c78a01fec4b5dce892fdec25d5de2426a",
+   "kb": false,
+   "ner_npz_sha256": "fd462a9c08740d57af79855efe37c1d77f30dc593ca6ad6242681c99b51a008a",
+   "knn_npz_sha256": "a7151f6bbebdb13d7e817abcc199fd5feae17585a955f781b0690d7ee1897f99",
+   "structural_npz_sha256": "1e380eaaa62b21eaf24f6dec8302d81482bf35695bfa6cdda2421fa90cfe9c85",
+   "w2_s_npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+   "f0t_npz_sha256": "d6c49214c935c6166fcaa9c3494827cf85aaeafdb1f84f9eb3679b84de52ad5e",
+   "names_npz_sha256": "56269a557dae67578c3c05c6b7c4350f82c28fe51edd44a024104a729d43c020",
+   "family_pairs": {
+    "N_sp": 34067241,
+    "K": 13643063,
+    "S": 28208857,
+    "W2_S": 71483746,
+    "CN_all": 38242751,
+    "F0T": 39863302
+   },
+   "domains": {
+    "RK": {
+     "families": [
+      "R",
+      "K"
+     ],
+     "union_pairs": {
+      "none": 83411377,
+      "N_sp": 111866317,
+      "CN_all": 114756672,
+      "F0T": 115654372
+     },
+     "held_S_R_K": {
+      "none": {
+       "S": 0,
+       "R": 71483746,
+       "K": 11927631
+      },
+      "N_sp": {
+       "S": 0,
+       "R": 101245772,
+       "K": 10620545
+      },
+      "CN_all": {
+       "S": 0,
+       "R": 104345225,
+       "K": 10411447
+      },
+      "F0T": {
+       "S": 0,
+       "R": 105284400,
+       "K": 10369972
+      }
+     },
+     "ratio_to_N_sp": {
+      "none": 0.7456,
+      "N_sp": 1.0,
+      "CN_all": 1.0258,
+      "F0T": 1.0339
+     }
+    },
+    "SRK": {
+     "families": [
+      "S",
+      "R",
+      "K"
+     ],
+     "union_pairs": {
+      "none": 94929719,
+      "N_sp": 122932001,
+      "CN_all": 125771131,
+      "F0T": 126635390
+     },
+     "held_S_R_K": {
+      "none": {
+       "S": 28208857,
+       "R": 55330052,
+       "K": 11390810
+      },
+      "N_sp": {
+       "S": 28208857,
+       "R": 84459003,
+       "K": 10264141
+      },
+      "CN_all": {
+       "S": 28208857,
+       "R": 87493236,
+       "K": 10069038
+      },
+      "F0T": {
+       "S": 28208857,
+       "R": 88392041,
+       "K": 10034492
+      }
+     },
+     "ratio_to_N_sp": {
+      "none": 0.7722,
+      "N_sp": 1.0,
+      "CN_all": 1.0231,
+      "F0T": 1.0301
+     }
+    }
+   },
+   "carves": {
+    "s1sel": {
+     "questions": 1496,
+     "questions_npz_sha256": "be025627b9ae6beac340023262849bcffb2364d793c28a171e88ff093f2f3824",
+     "slots": {
+      "GP": 3131
+     },
+     "RK": {
+      "GP": {
+       "forms": {
+        "none": {
+         "linked": 1344,
+         "share": 42.93,
+         "vs_N_sp": {
+          "diff": -0.73,
+          "lo": -1.05,
+          "hi": -0.44,
+          "call": "BELOW"
+         },
+         "vs_none": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "N_sp": {
+         "linked": 1367,
+         "share": 43.66,
+         "vs_N_sp": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.73,
+          "lo": 0.44,
+          "hi": 1.05,
+          "call": "ABOVE"
+         }
+        },
+        "CN_all": {
+         "linked": 1376,
+         "share": 43.95,
+         "vs_N_sp": {
+          "diff": 0.29,
+          "lo": 0.09,
+          "hi": 0.53,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 1.02,
+          "lo": 0.69,
+          "hi": 1.39,
+          "call": "ABOVE"
+         }
+        },
+        "F0T": {
+         "linked": 1382,
+         "share": 44.14,
+         "vs_N_sp": {
+          "diff": 0.48,
+          "lo": 0.22,
+          "hi": 0.77,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 1.21,
+          "lo": 0.85,
+          "hi": 1.62,
+          "call": "ABOVE"
+         }
+        },
+        "F0T_vs_CN_all": {
+         "diff": 0.19,
+         "lo": 0.06,
+         "hi": 0.36,
+         "call": "ABOVE"
+        }
+       },
+       "price": {
+        "N_sp": 1237171.3,
+        "CN_all": 979540.5,
+        "F0T": 848499.9
+       },
+       "labels": {
+        "N_sp": [
+         {
+          "label": "R.mention",
+          "pairs": 71483746,
+          "slots": 1313,
+          "alone": 706,
+          "per_million_pairs": 18.37
+         },
+         {
+          "label": "R.ner_spacy",
+          "pairs": 34067241,
+          "slots": 558,
+          "alone": 23,
+          "per_million_pairs": 16.38
+         },
+         {
+          "label": "K.knn",
+          "pairs": 13643063,
+          "slots": 255,
+          "alone": 15,
+          "per_million_pairs": 18.69
+         }
+        ],
+        "F0T": [
+         {
+          "label": "R.mention",
+          "pairs": 71483746,
+          "slots": 1313,
+          "alone": 593,
+          "per_million_pairs": 18.37
+         },
+         {
+          "label": "R.name_comention",
+          "pairs": 38242751,
+          "slots": 624,
+          "alone": 32,
+          "per_million_pairs": 16.32
+         },
+         {
+          "label": "K.knn",
+          "pairs": 13643063,
+          "slots": 255,
+          "alone": 11,
+          "per_million_pairs": 18.69
+         },
+         {
+          "label": "R.title_comention",
+          "pairs": 1620551,
+          "slots": 119,
+          "alone": 6,
+          "per_million_pairs": 73.43
+         }
+        ]
+       }
+      }
+     },
+     "SRK": {
+      "GP": {
+       "forms": {
+        "none": {
+         "linked": 1432,
+         "share": 45.74,
+         "vs_N_sp": {
+          "diff": -0.22,
+          "lo": -0.4,
+          "hi": -0.07,
+          "call": "BELOW"
+         },
+         "vs_none": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "N_sp": {
+         "linked": 1439,
+         "share": 45.96,
+         "vs_N_sp": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.22,
+          "lo": 0.07,
+          "hi": 0.4,
+          "call": "ABOVE"
+         }
+        },
+        "CN_all": {
+         "linked": 1444,
+         "share": 46.12,
+         "vs_N_sp": {
+          "diff": 0.16,
+          "lo": 0.0,
+          "hi": 0.35,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.38,
+          "lo": 0.19,
+          "hi": 0.62,
+          "call": "ABOVE"
+         }
+        },
+        "F0T": {
+         "linked": 1444,
+         "share": 46.12,
+         "vs_N_sp": {
+          "diff": 0.16,
+          "lo": 0.0,
+          "hi": 0.35,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.38,
+          "lo": 0.19,
+          "hi": 0.62,
+          "call": "ABOVE"
+         }
+        },
+        "F0T_vs_CN_all": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        }
+       },
+       "price": {
+        "N_sp": 4000326.0,
+        "CN_all": 2570117.7,
+        "F0T": 2642139.2
+       },
+       "labels": {
+        "N_sp": [
+         {
+          "label": "S.hyperlink",
+          "pairs": 28208857,
+          "slots": 1355,
+          "alone": 72,
+          "per_million_pairs": 48.03
+         },
+         {
+          "label": "R.mention",
+          "pairs": 71483746,
+          "slots": 1313,
+          "alone": 40,
+          "per_million_pairs": 18.37
+         },
+         {
+          "label": "R.ner_spacy",
+          "pairs": 34067241,
+          "slots": 558,
+          "alone": 7,
+          "per_million_pairs": 16.38
+         },
+         {
+          "label": "K.knn",
+          "pairs": 13643063,
+          "slots": 255,
+          "alone": 8,
+          "per_million_pairs": 18.69
+         }
+        ],
+        "F0T": [
+         {
+          "label": "S.hyperlink",
+          "pairs": 28208857,
+          "slots": 1355,
+          "alone": 62,
+          "per_million_pairs": 48.03
+         },
+         {
+          "label": "R.mention",
+          "pairs": 71483746,
+          "slots": 1313,
+          "alone": 32,
+          "per_million_pairs": 18.37
+         },
+         {
+          "label": "R.name_comention",
+          "pairs": 38242751,
+          "slots": 624,
+          "alone": 12,
+          "per_million_pairs": 16.32
+         },
+         {
+          "label": "K.knn",
+          "pairs": 13643063,
+          "slots": 255,
+          "alone": 5,
+          "per_million_pairs": 18.69
+         },
+         {
+          "label": "R.title_comention",
+          "pairs": 1620551,
+          "slots": 119,
+          "alone": 0,
+          "per_million_pairs": 73.43
+         }
+        ]
+       }
+      }
+     }
+    },
+    "s1eval": {
+     "questions": 12576,
+     "questions_npz_sha256": "d6d41aee0d5d109e84e81a6cc043c772554e87189cca3f0ed07e2e7f1e1a2adc",
+     "slots": {
+      "GP": 26331
+     },
+     "RK": {
+      "GP": {
+       "forms": {
+        "none": {
+         "linked": 11074,
+         "share": 42.06,
+         "vs_N_sp": {
+          "diff": -1.31,
+          "lo": -1.46,
+          "hi": -1.17,
+          "call": "BELOW"
+         },
+         "vs_none": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "N_sp": {
+         "linked": 11420,
+         "share": 43.37,
+         "vs_N_sp": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 1.31,
+          "lo": 1.17,
+          "hi": 1.46,
+          "call": "ABOVE"
+         }
+        },
+        "CN_all": {
+         "linked": 11472,
+         "share": 43.57,
+         "vs_N_sp": {
+          "diff": 0.2,
+          "lo": 0.11,
+          "hi": 0.28,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 1.51,
+          "lo": 1.35,
+          "hi": 1.67,
+          "call": "ABOVE"
+         }
+        },
+        "F0T": {
+         "linked": 11534,
+         "share": 43.8,
+         "vs_N_sp": {
+          "diff": 0.43,
+          "lo": 0.33,
+          "hi": 0.54,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 1.75,
+          "lo": 1.57,
+          "hi": 1.91,
+          "call": "ABOVE"
+         }
+        },
+        "F0T_vs_CN_all": {
+         "diff": 0.24,
+         "lo": 0.18,
+         "hi": 0.3,
+         "call": "ABOVE"
+        }
+       },
+       "price": {
+        "N_sp": 82239.7,
+        "CN_all": 78757.0,
+        "F0T": 70093.5
+       },
+       "labels": {
+        "N_sp": [
+         {
+          "label": "R.mention",
+          "pairs": 71483746,
+          "slots": 10744,
+          "alone": 5095,
+          "per_million_pairs": 150.3
+         },
+         {
+          "label": "R.ner_spacy",
+          "pairs": 34067241,
+          "slots": 5304,
+          "alone": 346,
+          "per_million_pairs": 155.69
+         },
+         {
+          "label": "K.knn",
+          "pairs": 13643063,
+          "slots": 2805,
+          "alone": 138,
+          "per_million_pairs": 205.6
+         }
+        ],
+        "F0T": [
+         {
+          "label": "R.mention",
+          "pairs": 71483746,
+          "slots": 10744,
+          "alone": 4123,
+          "per_million_pairs": 150.3
+         },
+         {
+          "label": "R.name_comention",
+          "pairs": 38242751,
+          "slots": 5854,
+          "alone": 398,
+          "per_million_pairs": 153.07
+         },
+         {
+          "label": "K.knn",
+          "pairs": 13643063,
+          "slots": 2805,
+          "alone": 105,
+          "per_million_pairs": 205.6
+         },
+         {
+          "label": "R.title_comention",
+          "pairs": 1620551,
+          "slots": 1041,
+          "alone": 62,
+          "per_million_pairs": 642.37
+         }
+        ]
+       }
+      }
+     },
+     "SRK": {
+      "GP": {
+       "forms": {
+        "none": {
+         "linked": 11909,
+         "share": 45.23,
+         "vs_N_sp": {
+          "diff": -0.45,
+          "lo": -0.54,
+          "hi": -0.37,
+          "call": "BELOW"
+         },
+         "vs_none": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "N_sp": {
+         "linked": 12028,
+         "share": 45.68,
+         "vs_N_sp": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.45,
+          "lo": 0.37,
+          "hi": 0.54,
+          "call": "ABOVE"
+         }
+        },
+        "CN_all": {
+         "linked": 12049,
+         "share": 45.76,
+         "vs_N_sp": {
+          "diff": 0.08,
+          "lo": 0.02,
+          "hi": 0.14,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 0.53,
+          "lo": 0.44,
+          "hi": 0.62,
+          "call": "ABOVE"
+         }
+        },
+        "F0T": {
+         "linked": 12066,
+         "share": 45.82,
+         "vs_N_sp": {
+          "diff": 0.14,
+          "lo": 0.08,
+          "hi": 0.21,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 0.6,
+          "lo": 0.51,
+          "hi": 0.69,
+          "call": "ABOVE"
+         }
+        },
+        "F0T_vs_CN_all": {
+         "diff": 0.06,
+         "lo": 0.03,
+         "hi": 0.1,
+         "call": "ABOVE"
+        }
+       },
+       "price": {
+        "N_sp": 235313.3,
+        "CN_all": 220295.8,
+        "F0T": 201946.9
+       },
+       "labels": {
+        "N_sp": [
+         {
+          "label": "S.hyperlink",
+          "pairs": 28208857,
+          "slots": 11234,
+          "alone": 608,
+          "per_million_pairs": 398.24
+         },
+         {
+          "label": "R.mention",
+          "pairs": 71483746,
+          "slots": 10744,
+          "alone": 277,
+          "per_million_pairs": 150.3
+         },
+         {
+          "label": "R.ner_spacy",
+          "pairs": 34067241,
+          "slots": 5304,
+          "alone": 119,
+          "per_million_pairs": 155.69
+         },
+         {
+          "label": "K.knn",
+          "pairs": 13643063,
+          "slots": 2805,
+          "alone": 64,
+          "per_million_pairs": 205.6
+         }
+        ],
+        "F0T": [
+         {
+          "label": "S.hyperlink",
+          "pairs": 28208857,
+          "slots": 11234,
+          "alone": 532,
+          "per_million_pairs": 398.24
+         },
+         {
+          "label": "R.mention",
+          "pairs": 71483746,
+          "slots": 10744,
+          "alone": 190,
+          "per_million_pairs": 150.3
+         },
+         {
+          "label": "R.name_comention",
+          "pairs": 38242751,
+          "slots": 5854,
+          "alone": 140,
+          "per_million_pairs": 153.07
+         },
+         {
+          "label": "K.knn",
+          "pairs": 13643063,
+          "slots": 2805,
+          "alone": 50,
+          "per_million_pairs": 205.6
+         },
+         {
+          "label": "R.title_comention",
+          "pairs": 1620551,
+          "slots": 1041,
+          "alone": 17,
+          "per_million_pairs": 642.37
+         }
+        ]
+       }
+      }
+     }
+    }
+   },
+   "S_relations": 1,
+   "S_held_by_RK": {
+    "none": 59.17,
+    "N_sp": 60.77,
+    "CN_all": 60.95,
+    "F0T": 61.07
+   },
+   "seconds": 192.6,
+   "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+   "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+   "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+   "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+   "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+  },
+  "metaqa": {
+   "dataset": "metaqa",
+   "declared_in": "docs/UL1_UNIFIED_LINKS_ORACLE_CHECK.md",
+   "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+   "nodes": 43234,
+   "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+   "kb": true,
+   "ner_npz_sha256": "93065a2311c2b445cc14ce6458457c9e14ec0d3c641a4bc573ef4b175a374cb8",
+   "knn_npz_sha256": "f7c59640e816951148fee791bc8790e026461ee52a5b6741c63859244b5a4a16",
+   "structural_npz_sha256": "1b2027c64b2e62b5cf122f09a246ed4cb485841bf0823fcee246e8bf45bf8570",
+   "w2_s_npz_sha256": "3f2b97d1474552dae2fea1f7f8be5e83f7960950b38c0ca41bd3a78025aa7dd5",
+   "f0t_npz_sha256": "499e8c70d3d7d1375a77a609819aacdd40c8753ac2bf6f3d1ea277c5ae62a7fe",
+   "names_npz_sha256": "0ccad8b4b6a55c2bec41bfd36e6fa83f48dc448964e170cf15a2c191f517d720",
+   "family_pairs": {
+    "N_sp": 5949,
+    "K": 97920,
+    "S": 124669,
+    "W2_S": 245144,
+    "CN_all": 12605,
+    "F0T": 12605
+   },
+   "domains": {
+    "SRK": {
+     "families": [
+      "S",
+      "R",
+      "K"
+     ],
+     "union_pairs": {
+      "none": 342238,
+      "N_sp": 345232,
+      "CN_all": 351892,
+      "F0T": 351892
+     },
+     "held_S_R_K": {
+      "none": {
+       "S": 124669,
+       "R": 120565,
+       "K": 97004
+      },
+      "N_sp": {
+       "S": 124669,
+       "R": 126310,
+       "K": 94253
+      },
+      "CN_all": {
+       "S": 124669,
+       "R": 133077,
+       "K": 94146
+      },
+      "F0T": {
+       "S": 124669,
+       "R": 133077,
+       "K": 94146
+      }
+     },
+     "ratio_to_N_sp": {
+      "none": 0.9913,
+      "N_sp": 1.0,
+      "CN_all": 1.0193,
+      "F0T": 1.0193
+     }
+    }
+   },
+   "carves": {
+    "s1sel": {
+     "questions": 1497,
+     "questions_npz_sha256": "a8119a120171b1527a99ef0f1a6e234de3a710f148b976e8fd59b97f8f2ef8e4",
+     "slots": {
+      "GP": 6074
+     },
+     "SRK": {
+      "GP": {
+       "forms": {
+        "none": {
+         "linked": 924,
+         "share": 15.21,
+         "vs_N_sp": {
+          "diff": -0.07,
+          "lo": -0.17,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "N_sp": {
+         "linked": 928,
+         "share": 15.28,
+         "vs_N_sp": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.07,
+          "lo": 0.0,
+          "hi": 0.17,
+          "call": "LEVEL"
+         }
+        },
+        "CN_all": {
+         "linked": 925,
+         "share": 15.23,
+         "vs_N_sp": {
+          "diff": -0.05,
+          "lo": -0.13,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.02,
+          "lo": 0.0,
+          "hi": 0.05,
+          "call": "LEVEL"
+         }
+        },
+        "F0T": {
+         "linked": 925,
+         "share": 15.23,
+         "vs_N_sp": {
+          "diff": -0.05,
+          "lo": -0.13,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.02,
+          "lo": 0.0,
+          "hi": 0.05,
+          "call": "LEVEL"
+         }
+        },
+        "F0T_vs_CN_all": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        }
+       },
+       "price": {
+        "N_sp": 748.5,
+        "CN_all": 9654.0,
+        "F0T": 9654.0
+       },
+       "labels": {
+        "N_sp": [
+         {
+          "label": "R.mention",
+          "pairs": 245144,
+          "slots": 718,
+          "alone": 677,
+          "per_million_pairs": 2928.89
+         },
+         {
+          "label": "K.knn",
+          "pairs": 97920,
+          "slots": 212,
+          "alone": 198,
+          "per_million_pairs": 2165.03
+         },
+         {
+          "label": "S.has_genre",
+          "pairs": 15485,
+          "slots": 33,
+          "alone": 0,
+          "per_million_pairs": 2131.09
+         },
+         {
+          "label": "R.ner_spacy",
+          "pairs": 5949,
+          "slots": 13,
+          "alone": 4,
+          "per_million_pairs": 2185.24
+         },
+         {
+          "label": "S.release_year",
+          "pairs": 16715,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 119.65
+         }
+        ],
+        "F0T": [
+         {
+          "label": "R.mention",
+          "pairs": 245144,
+          "slots": 718,
+          "alone": 677,
+          "per_million_pairs": 2928.89
+         },
+         {
+          "label": "K.knn",
+          "pairs": 97920,
+          "slots": 212,
+          "alone": 195,
+          "per_million_pairs": 2165.03
+         },
+         {
+          "label": "S.has_genre",
+          "pairs": 15485,
+          "slots": 33,
+          "alone": 0,
+          "per_million_pairs": 2131.09
+         },
+         {
+          "label": "R.name_comention",
+          "pairs": 12605,
+          "slots": 12,
+          "alone": 1,
+          "per_million_pairs": 952.0
+         },
+         {
+          "label": "S.release_year",
+          "pairs": 16715,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 119.65
+         },
+         {
+          "label": "R.title_comention",
+          "pairs": 0,
+          "slots": 0,
+          "alone": 0,
+          "per_million_pairs": null
+         }
+        ]
+       }
+      }
+     }
+    },
+    "s1eval": {
+     "questions": 9785,
+     "questions_npz_sha256": "fcb6c401d7ed3e93b1ba8aa4db0400a62ed4bc3a851f6b8324bf8e9baa00248d",
+     "slots": {
+      "GP": 37446
+     },
+     "SRK": {
+      "GP": {
+       "forms": {
+        "none": {
+         "linked": 5169,
+         "share": 13.8,
+         "vs_N_sp": {
+          "diff": -0.0,
+          "lo": -0.01,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "N_sp": {
+         "linked": 5170,
+         "share": 13.81,
+         "vs_N_sp": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.01,
+          "call": "LEVEL"
+         }
+        },
+        "CN_all": {
+         "linked": 5173,
+         "share": 13.81,
+         "vs_N_sp": {
+          "diff": 0.01,
+          "lo": 0.0,
+          "hi": 0.02,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.01,
+          "lo": 0.0,
+          "hi": 0.02,
+          "call": "ABOVE"
+         }
+        },
+        "F0T": {
+         "linked": 5173,
+         "share": 13.81,
+         "vs_N_sp": {
+          "diff": 0.01,
+          "lo": 0.0,
+          "hi": 0.02,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.01,
+          "lo": 0.0,
+          "hi": 0.02,
+          "call": "ABOVE"
+         }
+        },
+        "F0T_vs_CN_all": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        }
+       },
+       "price": {
+        "N_sp": 2994.0,
+        "CN_all": 2413.5,
+        "F0T": 2413.5
+       },
+       "labels": {
+        "N_sp": [
+         {
+          "label": "R.mention",
+          "pairs": 245144,
+          "slots": 4280,
+          "alone": 4055,
+          "per_million_pairs": 17459.13
+         },
+         {
+          "label": "K.knn",
+          "pairs": 97920,
+          "slots": 930,
+          "alone": 882,
+          "per_million_pairs": 9497.55
+         },
+         {
+          "label": "S.has_genre",
+          "pairs": 15485,
+          "slots": 155,
+          "alone": 0,
+          "per_million_pairs": 10009.69
+         },
+         {
+          "label": "S.release_year",
+          "pairs": 16715,
+          "slots": 24,
+          "alone": 0,
+          "per_million_pairs": 1435.84
+         },
+         {
+          "label": "R.ner_spacy",
+          "pairs": 5949,
+          "slots": 10,
+          "alone": 1,
+          "per_million_pairs": 1680.95
+         },
+         {
+          "label": "S.written_by",
+          "pairs": 19120,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 156.9
+         },
+         {
+          "label": "S.directed_by",
+          "pairs": 15957,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 62.67
+         },
+         {
+          "label": "S.in_language",
+          "pairs": 3426,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 291.89
+         }
+        ],
+        "F0T": [
+         {
+          "label": "R.mention",
+          "pairs": 245144,
+          "slots": 4280,
+          "alone": 4056,
+          "per_million_pairs": 17459.13
+         },
+         {
+          "label": "K.knn",
+          "pairs": 97920,
+          "slots": 930,
+          "alone": 868,
+          "per_million_pairs": 9497.55
+         },
+         {
+          "label": "S.has_genre",
+          "pairs": 15485,
+          "slots": 155,
+          "alone": 0,
+          "per_million_pairs": 10009.69
+         },
+         {
+          "label": "R.name_comention",
+          "pairs": 12605,
+          "slots": 25,
+          "alone": 4,
+          "per_million_pairs": 1983.34
+         },
+         {
+          "label": "S.release_year",
+          "pairs": 16715,
+          "slots": 24,
+          "alone": 0,
+          "per_million_pairs": 1435.84
+         },
+         {
+          "label": "S.written_by",
+          "pairs": 19120,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 156.9
+         },
+         {
+          "label": "S.directed_by",
+          "pairs": 15957,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 62.67
+         },
+         {
+          "label": "S.in_language",
+          "pairs": 3426,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 291.89
+         },
+         {
+          "label": "R.title_comention",
+          "pairs": 0,
+          "slots": 0,
+          "alone": 0,
+          "per_million_pairs": null
+         }
+        ]
+       }
+      }
+     }
+    }
+   },
+   "S_relations": 9,
+   "seconds": 7.4,
+   "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+   "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+   "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+   "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+   "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+  },
+  "webqsp": {
+   "dataset": "webqsp",
+   "declared_in": "docs/UL1_UNIFIED_LINKS_ORACLE_CHECK.md",
+   "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+   "nodes": 2592894,
+   "nodes_sha256": "b39c615122ad55f587eaea0c3fc5c7eff4190e6236fa258006e957dcfda948fe",
+   "kb": true,
+   "ner_npz_sha256": "8ed08f05db3da877f02d212b2c8ac5b495d12bf15c91c329b33652fdc2e9fb10",
+   "knn_npz_sha256": "75a03f25dfa8c6339773059bffbd8322c2f9bf13e7b48cad0105c2ee189519cd",
+   "structural_npz_sha256": "b7c2c435fc0b9dbab3a238c7db31cd61da9a8bd435864c0eba6990ae12756b95",
+   "w2_s_npz_sha256": "a2e79a93c350f6e4de9455af07b11684b875444d2fb61ed6f2555b443ed093c4",
+   "f0t_npz_sha256": "624684bf80d6605b8a7e9d9f884ee027b35c84f3f51dbdd4d65c10ee29a51edd",
+   "names_npz_sha256": "b567061f6c9fc8653ee964518913a97e72ef42e0d940315528401e80f0140f38",
+   "family_pairs": {
+    "N_sp": 2994802,
+    "K": 6470520,
+    "S": 5882501,
+    "W2_S": 500445467,
+    "CN_all": 995434,
+    "F0T": 997211
+   },
+   "domains": {
+    "SRK": {
+     "families": [
+      "S",
+      "R",
+      "K"
+     ],
+     "union_pairs": {
+      "none": 506654997,
+      "N_sp": 508556193,
+      "CN_all": 507397362,
+      "F0T": 507398750
+     },
+     "held_S_R_K": {
+      "none": {
+       "S": 5882501,
+       "R": 494579148,
+       "K": 6193348
+      },
+      "N_sp": {
+       "S": 5882501,
+       "R": 496802391,
+       "K": 5871301
+      },
+      "CN_all": {
+       "S": 5882501,
+       "R": 495463573,
+       "K": 6051288
+      },
+      "F0T": {
+       "S": 5882501,
+       "R": 495465195,
+       "K": 6051054
+      }
+     },
+     "ratio_to_N_sp": {
+      "none": 0.9963,
+      "N_sp": 1.0,
+      "CN_all": 0.9977,
+      "F0T": 0.9977
+     }
+    }
+   },
+   "carves": {
+    "s1eval": {
+     "questions": 1503,
+     "questions_npz_sha256": "c1d468b74dc8c2309ee09ebf0bec7d65e750a6164179bf9f90f3b668d87c5937",
+     "slots": {
+      "GP": 4369
+     },
+     "SRK": {
+      "GP": {
+       "forms": {
+        "none": {
+         "linked": 898,
+         "share": 20.55,
+         "vs_N_sp": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "N_sp": {
+         "linked": 898,
+         "share": 20.55,
+         "vs_N_sp": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         },
+         "vs_none": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "CN_all": {
+         "linked": 908,
+         "share": 20.78,
+         "vs_N_sp": {
+          "diff": 0.23,
+          "lo": 0.02,
+          "hi": 0.6,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 0.23,
+          "lo": 0.02,
+          "hi": 0.6,
+          "call": "ABOVE"
+         }
+        },
+        "F0T": {
+         "linked": 908,
+         "share": 20.78,
+         "vs_N_sp": {
+          "diff": 0.23,
+          "lo": 0.02,
+          "hi": 0.6,
+          "call": "ABOVE"
+         },
+         "vs_none": {
+          "diff": 0.23,
+          "lo": 0.02,
+          "hi": 0.6,
+          "call": "ABOVE"
+         }
+        },
+        "F0T_vs_CN_all": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        }
+       },
+       "price": {
+        "N_sp": null,
+        "CN_all": 74236.5,
+        "F0T": 74375.3
+       },
+       "labels": {
+        "N_sp": [
+         {
+          "label": "R.mention",
+          "pairs": 500445467,
+          "slots": 733,
+          "alone": 437,
+          "per_million_pairs": 1.46
+         },
+         {
+          "label": "K.knn",
+          "pairs": 6470520,
+          "slots": 244,
+          "alone": 146,
+          "per_million_pairs": 37.71
+         },
+         {
+          "label": "S.location containedby",
+          "pairs": 152621,
+          "slots": 98,
+          "alone": 0,
+          "per_million_pairs": 642.11
+         },
+         {
+          "label": "S.people profession specialization of",
+          "pairs": 1064,
+          "slots": 40,
+          "alone": 0,
+          "per_million_pairs": 37593.98
+         },
+         {
+          "label": "S.profession specializations",
+          "pairs": 1923,
+          "slots": 34,
+          "alone": 0,
+          "per_million_pairs": 17680.71
+         },
+         {
+          "label": "S.administrative area administrative children",
+          "pairs": 5748,
+          "slots": 23,
+          "alone": 0,
+          "per_million_pairs": 4001.39
+         },
+         {
+          "label": "S.administrative area administrative parent",
+          "pairs": 5432,
+          "slots": 23,
+          "alone": 0,
+          "per_million_pairs": 4234.17
+         },
+         {
+          "label": "S.administrative division country",
+          "pairs": 3780,
+          "slots": 23,
+          "alone": 0,
+          "per_million_pairs": 6084.66
+         },
+         {
+          "label": "S.administrative division first level division of",
+          "pairs": 1023,
+          "slots": 20,
+          "alone": 0,
+          "per_million_pairs": 19550.34
+         },
+         {
+          "label": "S.country administrative divisions",
+          "pairs": 3726,
+          "slots": 20,
+          "alone": 0,
+          "per_million_pairs": 5367.69
+         },
+         {
+          "label": "S.country first level divisions",
+          "pairs": 1130,
+          "slots": 20,
+          "alone": 0,
+          "per_million_pairs": 17699.12
+         },
+         {
+          "label": "S.film country",
+          "pairs": 60512,
+          "slots": 18,
+          "alone": 0,
+          "per_million_pairs": 297.46
+         },
+         {
+          "label": "S.influence node influenced",
+          "pairs": 16973,
+          "slots": 17,
+          "alone": 0,
+          "per_million_pairs": 1001.59
+         },
+         {
+          "label": "S.influence node influenced by",
+          "pairs": 18045,
+          "slots": 17,
+          "alone": 0,
+          "per_million_pairs": 942.09
+         },
+         {
+          "label": "S.bibs location country",
+          "pairs": 1185,
+          "slots": 15,
+          "alone": 0,
+          "per_million_pairs": 12658.23
+         },
+         {
+          "label": "S.location contains",
+          "pairs": 70010,
+          "slots": 15,
+          "alone": 0,
+          "per_million_pairs": 214.26
+         },
+         {
+          "label": "S.human language dialects",
+          "pairs": 206,
+          "slots": 13,
+          "alone": 0,
+          "per_million_pairs": 63106.8
+         },
+         {
+          "label": "S.language dialect language",
+          "pairs": 167,
+          "slots": 13,
+          "alone": 0,
+          "per_million_pairs": 77844.31
+         },
+         {
+          "label": "S.countries states provinces within",
+          "pairs": 51,
+          "slots": 11,
+          "alone": 0,
+          "per_million_pairs": 215686.27
+         },
+         {
+          "label": "S.states and provences country",
+          "pairs": 51,
+          "slots": 11,
+          "alone": 0,
+          "per_million_pairs": 215686.27
+         },
+         {
+          "label": "S.book edition book",
+          "pairs": 2672,
+          "slots": 9,
+          "alone": 0,
+          "per_million_pairs": 3368.26
+         },
+         {
+          "label": "S.book editions",
+          "pairs": 14521,
+          "slots": 9,
+          "alone": 0,
+          "per_million_pairs": 619.79
+         },
+         {
+          "label": "S.educational institution parent institution",
+          "pairs": 805,
+          "slots": 9,
+          "alone": 0,
+          "per_million_pairs": 11180.12
+         },
+         {
+          "label": "S.educational institution subsidiary or constituent schools",
+          "pairs": 1012,
+          "slots": 9,
+          "alone": 0,
+          "per_million_pairs": 8893.28
+         },
+         {
+          "label": "S.profession corresponding type",
+          "pairs": 42,
+          "slots": 9,
+          "alone": 1,
+          "per_million_pairs": 214285.71
+         },
+         {
+          "label": "S.genre parent genre",
+          "pairs": 729,
+          "slots": 8,
+          "alone": 0,
+          "per_million_pairs": 10973.94
+         },
+         {
+          "label": "S.genre subgenre",
+          "pairs": 1280,
+          "slots": 8,
+          "alone": 0,
+          "per_million_pairs": 6250.0
+         },
+         {
+          "label": "S.administrative division second level division of",
+          "pairs": 3786,
+          "slots": 7,
+          "alone": 0,
+          "per_million_pairs": 1848.92
+         },
+         {
+          "label": "S.language family member of language families",
+          "pairs": 167,
+          "slots": 7,
+          "alone": 0,
+          "per_million_pairs": 41916.17
+         },
+         {
+          "label": "S.language family sub families",
+          "pairs": 270,
+          "slots": 7,
+          "alone": 0,
+          "per_million_pairs": 25925.93
+         },
+         {
+          "label": "R.ner_spacy",
+          "pairs": 2994802,
+          "slots": 6,
+          "alone": 0,
+          "per_million_pairs": 2.0
+         },
+         {
+          "label": "S.film prequel",
+          "pairs": 2292,
+          "slots": 6,
+          "alone": 0,
+          "per_million_pairs": 2617.8
+         },
+         {
+          "label": "S.film sequel",
+          "pairs": 2338,
+          "slots": 6,
+          "alone": 0,
+          "per_million_pairs": 2566.3
+         },
+         {
+          "label": "S.administrative area subdivides place",
+          "pairs": 25,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 160000.0
+         },
+         {
+          "label": "S.administrative area subdividing place",
+          "pairs": 25,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 160000.0
+         },
+         {
+          "label": "S.bibs location state",
+          "pairs": 612,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 6535.95
+         },
+         {
+          "label": "S.composition recordings",
+          "pairs": 9640,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 414.94
+         },
+         {
+          "label": "S.continents countries within",
+          "pairs": 172,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 23255.81
+         },
+         {
+          "label": "S.countries continent",
+          "pairs": 172,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 23255.81
+         },
+         {
+          "label": "S.fictional setting contained by",
+          "pairs": 232,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 17241.38
+         },
+         {
+          "label": "S.fictional setting contains",
+          "pairs": 298,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 13422.82
+         },
+         {
+          "label": "S.recording song",
+          "pairs": 6931,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 577.12
+         },
+         {
+          "label": "S.sovereign domain sovereign state",
+          "pairs": 5,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 800000.0
+         },
+         {
+          "label": "S.written work subjects",
+          "pairs": 46458,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 86.1
+         },
+         {
+          "label": "S.activism issue includes issues",
+          "pairs": 38,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 78947.37
+         },
+         {
+          "label": "S.activism issue parent issue",
+          "pairs": 28,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 107142.86
+         },
+         {
+          "label": "S.location partially containedby",
+          "pairs": 4523,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 663.28
+         },
+         {
+          "label": "S.location partially contains",
+          "pairs": 4566,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 657.03
+         },
+         {
+          "label": "S.profession professions similar",
+          "pairs": 18,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 166666.67
+         },
+         {
+          "label": "S.profession similar professions",
+          "pairs": 17,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 176470.59
+         },
+         {
+          "label": "S.recording canonical version",
+          "pairs": 5683,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 527.89
+         },
+         {
+          "label": "S.religion branched from",
+          "pairs": 38,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 78947.37
+         },
+         {
+          "label": "S.religion branched into",
+          "pairs": 43,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 69767.44
+         },
+         {
+          "label": "S.single versions",
+          "pairs": 6633,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 452.28
+         },
+         {
+          "label": "S.author works written",
+          "pairs": 56446,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 35.43
+         },
+         {
+          "label": "S.book subject works",
+          "pairs": 21158,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 94.53
+         },
+         {
+          "label": "S.country second level divisions",
+          "pairs": 909,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 2200.22
+         },
+         {
+          "label": "S.defunct sports team later known as",
+          "pairs": 101,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 19801.98
+         },
+         {
+          "label": "S.governmental body body this is a component of",
+          "pairs": 261,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 7662.84
+         },
+         {
+          "label": "S.governmental body component bodies",
+          "pairs": 288,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 6944.44
+         },
+         {
+          "label": "S.location contains major portion of",
+          "pairs": 119,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 16806.72
+         },
+         {
+          "label": "S.location primarily containedby",
+          "pairs": 121,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 16528.93
+         },
+         {
+          "label": "S.neighborhood neighborhood of",
+          "pairs": 5497,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 363.83
+         },
+         {
+          "label": "S.place with neighborhoods neighborhoods",
+          "pairs": 4798,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 416.84
+         },
+         {
+          "label": "S.sports team previously known as",
+          "pairs": 113,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 17699.12
+         },
+         {
+          "label": "S.aircraft model parent aircraft model",
+          "pairs": 33,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 30303.03
+         },
+         {
+          "label": "S.aircraft model variants",
+          "pairs": 73,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 13698.63
+         },
+         {
+          "label": "S.album compositions",
+          "pairs": 194,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 5154.64
+         },
+         {
+          "label": "S.album genre",
+          "pairs": 8270,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 120.92
+         },
+         {
+          "label": "S.album primary release",
+          "pairs": 500,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 2000.0
+         },
+         {
+          "label": "S.album releases",
+          "pairs": 1182,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 846.02
+         },
+         {
+          "label": "S.composition recorded as album",
+          "pairs": 200,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 5000.0
+         },
+         {
+          "label": "S.compositional form subforms",
+          "pairs": 57,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 17543.86
+         },
+         {
+          "label": "S.compositional form superforms",
+          "pairs": 19,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 52631.58
+         },
+         {
+          "label": "S.country capital",
+          "pairs": 632,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1582.28
+         },
+         {
+          "label": "S.disease cause diseases",
+          "pairs": 667,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1499.25
+         },
+         {
+          "label": "S.disease causes",
+          "pairs": 878,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1138.95
+         },
+         {
+          "label": "S.disease risk factors",
+          "pairs": 2190,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 456.62
+         },
+         {
+          "label": "S.equivalent topic equivalent type",
+          "pairs": 141,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 7092.2
+         },
+         {
+          "label": "S.fictional universe works set here",
+          "pairs": 827,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1209.19
+         },
+         {
+          "label": "S.film featured song",
+          "pairs": 710,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1408.45
+         },
+         {
+          "label": "S.film featured song featured in film",
+          "pairs": 337,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 2967.36
+         },
+         {
+          "label": "S.film film series",
+          "pairs": 1263,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 791.77
+         },
+         {
+          "label": "S.film genre",
+          "pairs": 116293,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 8.6
+         },
+         {
+          "label": "S.film language",
+          "pairs": 52297,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 19.12
+         },
+         {
+          "label": "S.film series films in series",
+          "pairs": 482,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 2074.69
+         },
+         {
+          "label": "S.genre albums",
+          "pairs": 2853,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 350.51
+         },
+         {
+          "label": "S.hud county place county",
+          "pairs": 7046,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 141.92
+         },
+         {
+          "label": "S.human language language family",
+          "pairs": 2831,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 353.23
+         },
+         {
+          "label": "S.language family languages",
+          "pairs": 2525,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 396.04
+         },
+         {
+          "label": "S.location in fiction contained by",
+          "pairs": 69,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 14492.75
+         },
+         {
+          "label": "S.location in fiction contains",
+          "pairs": 84,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 11904.76
+         },
+         {
+          "label": "S.media genre child genres",
+          "pairs": 251,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 3984.06
+         },
+         {
+          "label": "S.media genre parent genre",
+          "pairs": 175,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 5714.29
+         },
+         {
+          "label": "S.person children",
+          "pairs": 26532,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 37.69
+         },
+         {
+          "label": "S.person parents",
+          "pairs": 23833,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 41.96
+         },
+         {
+          "label": "S.property expected type",
+          "pairs": 777,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1287.0
+         },
+         {
+          "label": "S.rdf-schema range",
+          "pairs": 777,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1287.0
+         },
+         {
+          "label": "S.recording tracks",
+          "pairs": 2218,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 450.86
+         },
+         {
+          "label": "S.risk factor diseases",
+          "pairs": 1749,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 571.76
+         },
+         {
+          "label": "S.river mouth",
+          "pairs": 847,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1180.64
+         },
+         {
+          "label": "S.topic subject of",
+          "pairs": 6086,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 164.31
+         },
+         {
+          "label": "S.topic subjects",
+          "pairs": 7289,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 137.19
+         },
+         {
+          "label": "S.tv program country of origin",
+          "pairs": 6197,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 161.37
+         },
+         {
+          "label": "S.tv program spin offs",
+          "pairs": 204,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 4901.96
+         },
+         {
+          "label": "S.tv program spun off from",
+          "pairs": 179,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 5586.59
+         },
+         {
+          "label": "S.type expected by",
+          "pairs": 1946,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 513.87
+         },
+         {
+          "label": "S.type profile equivalent topic",
+          "pairs": 198,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 5050.51
+         },
+         {
+          "label": "S.us county county seat",
+          "pairs": 963,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1038.42
+         },
+         {
+          "label": "S.us county hud county place",
+          "pairs": 8140,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 122.85
+         },
+         {
+          "label": "S.us president vice president",
+          "pairs": 49,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 20408.16
+         },
+         {
+          "label": "S.us vice president to president",
+          "pairs": 49,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 20408.16
+         },
+         {
+          "label": "S.work of fiction part of these fictional universes",
+          "pairs": 714,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1400.56
+         }
+        ],
+        "F0T": [
+         {
+          "label": "R.mention",
+          "pairs": 500445467,
+          "slots": 733,
+          "alone": 436,
+          "per_million_pairs": 1.46
+         },
+         {
+          "label": "K.knn",
+          "pairs": 6470520,
+          "slots": 244,
+          "alone": 135,
+          "per_million_pairs": 37.71
+         },
+         {
+          "label": "S.location containedby",
+          "pairs": 152621,
+          "slots": 98,
+          "alone": 0,
+          "per_million_pairs": 642.11
+         },
+         {
+          "label": "R.name_comention",
+          "pairs": 995434,
+          "slots": 42,
+          "alone": 10,
+          "per_million_pairs": 42.19
+         },
+         {
+          "label": "S.people profession specialization of",
+          "pairs": 1064,
+          "slots": 40,
+          "alone": 0,
+          "per_million_pairs": 37593.98
+         },
+         {
+          "label": "S.profession specializations",
+          "pairs": 1923,
+          "slots": 34,
+          "alone": 0,
+          "per_million_pairs": 17680.71
+         },
+         {
+          "label": "S.administrative area administrative children",
+          "pairs": 5748,
+          "slots": 23,
+          "alone": 0,
+          "per_million_pairs": 4001.39
+         },
+         {
+          "label": "S.administrative area administrative parent",
+          "pairs": 5432,
+          "slots": 23,
+          "alone": 0,
+          "per_million_pairs": 4234.17
+         },
+         {
+          "label": "S.administrative division country",
+          "pairs": 3780,
+          "slots": 23,
+          "alone": 0,
+          "per_million_pairs": 6084.66
+         },
+         {
+          "label": "S.administrative division first level division of",
+          "pairs": 1023,
+          "slots": 20,
+          "alone": 0,
+          "per_million_pairs": 19550.34
+         },
+         {
+          "label": "S.country administrative divisions",
+          "pairs": 3726,
+          "slots": 20,
+          "alone": 0,
+          "per_million_pairs": 5367.69
+         },
+         {
+          "label": "S.country first level divisions",
+          "pairs": 1130,
+          "slots": 20,
+          "alone": 0,
+          "per_million_pairs": 17699.12
+         },
+         {
+          "label": "S.film country",
+          "pairs": 60512,
+          "slots": 18,
+          "alone": 0,
+          "per_million_pairs": 297.46
+         },
+         {
+          "label": "S.influence node influenced",
+          "pairs": 16973,
+          "slots": 17,
+          "alone": 0,
+          "per_million_pairs": 1001.59
+         },
+         {
+          "label": "S.influence node influenced by",
+          "pairs": 18045,
+          "slots": 17,
+          "alone": 0,
+          "per_million_pairs": 942.09
+         },
+         {
+          "label": "S.bibs location country",
+          "pairs": 1185,
+          "slots": 15,
+          "alone": 0,
+          "per_million_pairs": 12658.23
+         },
+         {
+          "label": "S.location contains",
+          "pairs": 70010,
+          "slots": 15,
+          "alone": 0,
+          "per_million_pairs": 214.26
+         },
+         {
+          "label": "S.human language dialects",
+          "pairs": 206,
+          "slots": 13,
+          "alone": 0,
+          "per_million_pairs": 63106.8
+         },
+         {
+          "label": "S.language dialect language",
+          "pairs": 167,
+          "slots": 13,
+          "alone": 0,
+          "per_million_pairs": 77844.31
+         },
+         {
+          "label": "S.countries states provinces within",
+          "pairs": 51,
+          "slots": 11,
+          "alone": 0,
+          "per_million_pairs": 215686.27
+         },
+         {
+          "label": "S.states and provences country",
+          "pairs": 51,
+          "slots": 11,
+          "alone": 0,
+          "per_million_pairs": 215686.27
+         },
+         {
+          "label": "S.book edition book",
+          "pairs": 2672,
+          "slots": 9,
+          "alone": 0,
+          "per_million_pairs": 3368.26
+         },
+         {
+          "label": "S.book editions",
+          "pairs": 14521,
+          "slots": 9,
+          "alone": 0,
+          "per_million_pairs": 619.79
+         },
+         {
+          "label": "S.educational institution parent institution",
+          "pairs": 805,
+          "slots": 9,
+          "alone": 0,
+          "per_million_pairs": 11180.12
+         },
+         {
+          "label": "S.educational institution subsidiary or constituent schools",
+          "pairs": 1012,
+          "slots": 9,
+          "alone": 0,
+          "per_million_pairs": 8893.28
+         },
+         {
+          "label": "S.profession corresponding type",
+          "pairs": 42,
+          "slots": 9,
+          "alone": 1,
+          "per_million_pairs": 214285.71
+         },
+         {
+          "label": "S.genre parent genre",
+          "pairs": 729,
+          "slots": 8,
+          "alone": 0,
+          "per_million_pairs": 10973.94
+         },
+         {
+          "label": "S.genre subgenre",
+          "pairs": 1280,
+          "slots": 8,
+          "alone": 0,
+          "per_million_pairs": 6250.0
+         },
+         {
+          "label": "S.administrative division second level division of",
+          "pairs": 3786,
+          "slots": 7,
+          "alone": 0,
+          "per_million_pairs": 1848.92
+         },
+         {
+          "label": "S.language family member of language families",
+          "pairs": 167,
+          "slots": 7,
+          "alone": 0,
+          "per_million_pairs": 41916.17
+         },
+         {
+          "label": "S.language family sub families",
+          "pairs": 270,
+          "slots": 7,
+          "alone": 0,
+          "per_million_pairs": 25925.93
+         },
+         {
+          "label": "S.film prequel",
+          "pairs": 2292,
+          "slots": 6,
+          "alone": 0,
+          "per_million_pairs": 2617.8
+         },
+         {
+          "label": "S.film sequel",
+          "pairs": 2338,
+          "slots": 6,
+          "alone": 0,
+          "per_million_pairs": 2566.3
+         },
+         {
+          "label": "S.administrative area subdivides place",
+          "pairs": 25,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 160000.0
+         },
+         {
+          "label": "S.administrative area subdividing place",
+          "pairs": 25,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 160000.0
+         },
+         {
+          "label": "S.bibs location state",
+          "pairs": 612,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 6535.95
+         },
+         {
+          "label": "S.composition recordings",
+          "pairs": 9640,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 414.94
+         },
+         {
+          "label": "S.continents countries within",
+          "pairs": 172,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 23255.81
+         },
+         {
+          "label": "S.countries continent",
+          "pairs": 172,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 23255.81
+         },
+         {
+          "label": "S.fictional setting contained by",
+          "pairs": 232,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 17241.38
+         },
+         {
+          "label": "S.fictional setting contains",
+          "pairs": 298,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 13422.82
+         },
+         {
+          "label": "S.recording song",
+          "pairs": 6931,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 577.12
+         },
+         {
+          "label": "S.sovereign domain sovereign state",
+          "pairs": 5,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 800000.0
+         },
+         {
+          "label": "S.written work subjects",
+          "pairs": 46458,
+          "slots": 4,
+          "alone": 0,
+          "per_million_pairs": 86.1
+         },
+         {
+          "label": "S.activism issue includes issues",
+          "pairs": 38,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 78947.37
+         },
+         {
+          "label": "S.activism issue parent issue",
+          "pairs": 28,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 107142.86
+         },
+         {
+          "label": "S.location partially containedby",
+          "pairs": 4523,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 663.28
+         },
+         {
+          "label": "S.location partially contains",
+          "pairs": 4566,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 657.03
+         },
+         {
+          "label": "S.profession professions similar",
+          "pairs": 18,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 166666.67
+         },
+         {
+          "label": "S.profession similar professions",
+          "pairs": 17,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 176470.59
+         },
+         {
+          "label": "S.recording canonical version",
+          "pairs": 5683,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 527.89
+         },
+         {
+          "label": "S.religion branched from",
+          "pairs": 38,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 78947.37
+         },
+         {
+          "label": "S.religion branched into",
+          "pairs": 43,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 69767.44
+         },
+         {
+          "label": "S.single versions",
+          "pairs": 6633,
+          "slots": 3,
+          "alone": 0,
+          "per_million_pairs": 452.28
+         },
+         {
+          "label": "S.author works written",
+          "pairs": 56446,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 35.43
+         },
+         {
+          "label": "S.book subject works",
+          "pairs": 21158,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 94.53
+         },
+         {
+          "label": "S.country second level divisions",
+          "pairs": 909,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 2200.22
+         },
+         {
+          "label": "S.defunct sports team later known as",
+          "pairs": 101,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 19801.98
+         },
+         {
+          "label": "S.governmental body body this is a component of",
+          "pairs": 261,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 7662.84
+         },
+         {
+          "label": "S.governmental body component bodies",
+          "pairs": 288,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 6944.44
+         },
+         {
+          "label": "S.location contains major portion of",
+          "pairs": 119,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 16806.72
+         },
+         {
+          "label": "S.location primarily containedby",
+          "pairs": 121,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 16528.93
+         },
+         {
+          "label": "S.neighborhood neighborhood of",
+          "pairs": 5497,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 363.83
+         },
+         {
+          "label": "S.place with neighborhoods neighborhoods",
+          "pairs": 4798,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 416.84
+         },
+         {
+          "label": "S.sports team previously known as",
+          "pairs": 113,
+          "slots": 2,
+          "alone": 0,
+          "per_million_pairs": 17699.12
+         },
+         {
+          "label": "S.aircraft model parent aircraft model",
+          "pairs": 33,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 30303.03
+         },
+         {
+          "label": "S.aircraft model variants",
+          "pairs": 73,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 13698.63
+         },
+         {
+          "label": "S.album compositions",
+          "pairs": 194,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 5154.64
+         },
+         {
+          "label": "S.album genre",
+          "pairs": 8270,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 120.92
+         },
+         {
+          "label": "S.album primary release",
+          "pairs": 500,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 2000.0
+         },
+         {
+          "label": "S.album releases",
+          "pairs": 1182,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 846.02
+         },
+         {
+          "label": "S.composition recorded as album",
+          "pairs": 200,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 5000.0
+         },
+         {
+          "label": "S.compositional form subforms",
+          "pairs": 57,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 17543.86
+         },
+         {
+          "label": "S.compositional form superforms",
+          "pairs": 19,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 52631.58
+         },
+         {
+          "label": "S.country capital",
+          "pairs": 632,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1582.28
+         },
+         {
+          "label": "S.disease cause diseases",
+          "pairs": 667,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1499.25
+         },
+         {
+          "label": "S.disease causes",
+          "pairs": 878,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1138.95
+         },
+         {
+          "label": "S.disease risk factors",
+          "pairs": 2190,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 456.62
+         },
+         {
+          "label": "S.equivalent topic equivalent type",
+          "pairs": 141,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 7092.2
+         },
+         {
+          "label": "S.fictional universe works set here",
+          "pairs": 827,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1209.19
+         },
+         {
+          "label": "S.film featured song",
+          "pairs": 710,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1408.45
+         },
+         {
+          "label": "S.film featured song featured in film",
+          "pairs": 337,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 2967.36
+         },
+         {
+          "label": "S.film film series",
+          "pairs": 1263,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 791.77
+         },
+         {
+          "label": "S.film genre",
+          "pairs": 116293,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 8.6
+         },
+         {
+          "label": "S.film language",
+          "pairs": 52297,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 19.12
+         },
+         {
+          "label": "S.film series films in series",
+          "pairs": 482,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 2074.69
+         },
+         {
+          "label": "S.genre albums",
+          "pairs": 2853,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 350.51
+         },
+         {
+          "label": "S.hud county place county",
+          "pairs": 7046,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 141.92
+         },
+         {
+          "label": "S.human language language family",
+          "pairs": 2831,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 353.23
+         },
+         {
+          "label": "S.language family languages",
+          "pairs": 2525,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 396.04
+         },
+         {
+          "label": "S.location in fiction contained by",
+          "pairs": 69,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 14492.75
+         },
+         {
+          "label": "S.location in fiction contains",
+          "pairs": 84,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 11904.76
+         },
+         {
+          "label": "S.media genre child genres",
+          "pairs": 251,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 3984.06
+         },
+         {
+          "label": "S.media genre parent genre",
+          "pairs": 175,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 5714.29
+         },
+         {
+          "label": "S.person children",
+          "pairs": 26532,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 37.69
+         },
+         {
+          "label": "S.person parents",
+          "pairs": 23833,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 41.96
+         },
+         {
+          "label": "S.property expected type",
+          "pairs": 777,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1287.0
+         },
+         {
+          "label": "S.rdf-schema range",
+          "pairs": 777,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1287.0
+         },
+         {
+          "label": "S.recording tracks",
+          "pairs": 2218,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 450.86
+         },
+         {
+          "label": "S.risk factor diseases",
+          "pairs": 1749,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 571.76
+         },
+         {
+          "label": "S.river mouth",
+          "pairs": 847,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1180.64
+         },
+         {
+          "label": "S.topic subject of",
+          "pairs": 6086,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 164.31
+         },
+         {
+          "label": "S.topic subjects",
+          "pairs": 7289,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 137.19
+         },
+         {
+          "label": "S.tv program country of origin",
+          "pairs": 6197,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 161.37
+         },
+         {
+          "label": "S.tv program spin offs",
+          "pairs": 204,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 4901.96
+         },
+         {
+          "label": "S.tv program spun off from",
+          "pairs": 179,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 5586.59
+         },
+         {
+          "label": "S.type expected by",
+          "pairs": 1946,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 513.87
+         },
+         {
+          "label": "S.type profile equivalent topic",
+          "pairs": 198,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 5050.51
+         },
+         {
+          "label": "S.us county county seat",
+          "pairs": 963,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1038.42
+         },
+         {
+          "label": "S.us county hud county place",
+          "pairs": 8140,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 122.85
+         },
+         {
+          "label": "S.us president vice president",
+          "pairs": 49,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 20408.16
+         },
+         {
+          "label": "S.us vice president to president",
+          "pairs": 49,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 20408.16
+         },
+         {
+          "label": "S.work of fiction part of these fictional universes",
+          "pairs": 714,
+          "slots": 1,
+          "alone": 0,
+          "per_million_pairs": 1400.56
+         },
+         {
+          "label": "R.title_comention",
+          "pairs": 1777,
+          "slots": 0,
+          "alone": 0,
+          "per_million_pairs": 0.0
+         }
+        ]
+       }
+      }
+     }
+    }
+   },
+   "S_relations": 7058,
+   "seconds": 364.0,
+   "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+   "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+   "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+   "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+   "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+  }
+ },
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}

@@ -1,0 +1,706 @@
+{
+ "dataset": "hotpotqa",
+ "declared_in": "docs/UL1_UNIFIED_LINKS_ORACLE_CHECK.md",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "nodes": 5233329,
+ "nodes_sha256": "c777ab4b7a64eaaa5af852265daf6ba9f9debb4658a67f0c96595662e43f182a",
+ "kb": false,
+ "ner_npz_sha256": "744da64a5f356b89241b2539085c9a0bf673750abd0b1822891c26f069a37137",
+ "knn_npz_sha256": "a82ee3d96ff6943678444f12279fe666ff5e03465b818bc229844597488222ae",
+ "structural_npz_sha256": "bc27173133e69cc821a14733a2f3dfe9d56442aeb867cf2cdcdcc4fff9c17608",
+ "w2_s_npz_sha256": "c46e17ee41b6a36540d46b5f0775dc707c128d352288aa27e4d1e1a54ff0234c",
+ "f0t_npz_sha256": "7b3bb50b1cc8ee03e4a76e1e7dd8c078000dbc68c3f4f7e32fbb6e0310cd53e7",
+ "names_npz_sha256": "8ae1d1cb11afcda4217ca8a33a6e8df743310489f8decb9a75baf07832da3f04",
+ "family_pairs": {
+  "N_sp": 20369074,
+  "K": 11946289,
+  "S": 15095287,
+  "W2_S": 32159229,
+  "CN_all": 23218108,
+  "F0T": 24450229
+ },
+ "domains": {
+  "RK": {
+   "families": [
+    "R",
+    "K"
+   ],
+   "union_pairs": {
+    "none": 42847105,
+    "N_sp": 59814434,
+    "CN_all": 61793991,
+    "F0T": 62565030
+   },
+   "held_S_R_K": {
+    "none": {
+     "S": 0,
+     "R": 32159229,
+     "K": 10687876
+    },
+    "N_sp": {
+     "S": 0,
+     "R": 50258253,
+     "K": 9556181
+    },
+    "CN_all": {
+     "S": 0,
+     "R": 52432584,
+     "K": 9361407
+    },
+    "F0T": {
+     "S": 0,
+     "R": 53243304,
+     "K": 9321726
+    }
+   },
+   "ratio_to_N_sp": {
+    "none": 0.7163,
+    "N_sp": 1.0,
+    "CN_all": 1.0331,
+    "F0T": 1.046
+   }
+  },
+  "SRK": {
+   "families": [
+    "S",
+    "R",
+    "K"
+   ],
+   "union_pairs": {
+    "none": 47346662,
+    "N_sp": 64080356,
+    "CN_all": 66022204,
+    "F0T": 66773876
+   },
+   "held_S_R_K": {
+    "none": {
+     "S": 15095287,
+     "R": 21866000,
+     "K": 10385375
+    },
+    "N_sp": {
+     "S": 15095287,
+     "R": 39617627,
+     "K": 9367442
+    },
+    "CN_all": {
+     "S": 15095287,
+     "R": 41741109,
+     "K": 9185808
+    },
+    "F0T": {
+     "S": 15095287,
+     "R": 42527421,
+     "K": 9151168
+    }
+   },
+   "ratio_to_N_sp": {
+    "none": 0.7389,
+    "N_sp": 1.0,
+    "CN_all": 1.0303,
+    "F0T": 1.042
+   }
+  }
+ },
+ "carves": {
+  "s1sel": {
+   "questions": 1508,
+   "questions_npz_sha256": "b9f4c3f98a278872eb254d99c474548149df70dfa9f01cf64be6cf396b89453e",
+   "slots": {
+    "GP": 1508
+   },
+   "RK": {
+    "GP": {
+     "forms": {
+      "none": {
+       "linked": 979,
+       "share": 64.92,
+       "vs_N_sp": {
+        "diff": -2.25,
+        "lo": -2.98,
+        "hi": -1.53,
+        "call": "BELOW"
+       },
+       "vs_none": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       }
+      },
+      "N_sp": {
+       "linked": 1013,
+       "share": 67.18,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_none": {
+        "diff": 2.25,
+        "lo": 1.53,
+        "hi": 2.98,
+        "call": "ABOVE"
+       }
+      },
+      "CN_all": {
+       "linked": 1028,
+       "share": 68.17,
+       "vs_N_sp": {
+        "diff": 0.99,
+        "lo": 0.27,
+        "hi": 1.72,
+        "call": "ABOVE"
+       },
+       "vs_none": {
+        "diff": 3.25,
+        "lo": 2.39,
+        "hi": 4.18,
+        "call": "ABOVE"
+       }
+      },
+      "F0T": {
+       "linked": 1035,
+       "share": 68.63,
+       "vs_N_sp": {
+        "diff": 1.46,
+        "lo": 0.66,
+        "hi": 2.32,
+        "call": "ABOVE"
+       },
+       "vs_none": {
+        "diff": 3.71,
+        "lo": 2.79,
+        "hi": 4.71,
+        "call": "ABOVE"
+       }
+      },
+      "F0T_vs_CN_all": {
+       "diff": 0.46,
+       "lo": 0.13,
+       "hi": 0.86,
+       "call": "ABOVE"
+      }
+     },
+     "price": {
+      "N_sp": 499039.1,
+      "CN_all": 386671.1,
+      "F0T": 352105.8
+     },
+     "labels": {
+      "N_sp": [
+       {
+        "label": "R.mention",
+        "pairs": 32159229,
+        "slots": 913,
+        "alone": 531,
+        "per_million_pairs": 28.39
+       },
+       {
+        "label": "R.ner_spacy",
+        "pairs": 20369074,
+        "slots": 312,
+        "alone": 34,
+        "per_million_pairs": 15.32
+       },
+       {
+        "label": "K.knn",
+        "pairs": 11946289,
+        "slots": 296,
+        "alone": 51,
+        "per_million_pairs": 24.78
+       }
+      ],
+      "F0T": [
+       {
+        "label": "R.mention",
+        "pairs": 32159229,
+        "slots": 913,
+        "alone": 369,
+        "per_million_pairs": 28.39
+       },
+       {
+        "label": "R.name_comention",
+        "pairs": 23218108,
+        "slots": 394,
+        "alone": 49,
+        "per_million_pairs": 16.97
+       },
+       {
+        "label": "K.knn",
+        "pairs": 11946289,
+        "slots": 296,
+        "alone": 47,
+        "per_million_pairs": 24.78
+       },
+       {
+        "label": "R.title_comention",
+        "pairs": 1232121,
+        "slots": 181,
+        "alone": 7,
+        "per_million_pairs": 146.9
+       }
+      ]
+     }
+    }
+   },
+   "SRK": {
+    "GP": {
+     "forms": {
+      "none": {
+       "linked": 1210,
+       "share": 80.24,
+       "vs_N_sp": {
+        "diff": -0.07,
+        "lo": -0.2,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_none": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       }
+      },
+      "N_sp": {
+       "linked": 1211,
+       "share": 80.31,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_none": {
+        "diff": 0.07,
+        "lo": 0.0,
+        "hi": 0.2,
+        "call": "LEVEL"
+       }
+      },
+      "CN_all": {
+       "linked": 1211,
+       "share": 80.31,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_none": {
+        "diff": 0.07,
+        "lo": 0.0,
+        "hi": 0.2,
+        "call": "LEVEL"
+       }
+      },
+      "F0T": {
+       "linked": 1211,
+       "share": 80.31,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_none": {
+        "diff": 0.07,
+        "lo": 0.0,
+        "hi": 0.2,
+        "call": "LEVEL"
+       }
+      },
+      "F0T_vs_CN_all": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      }
+     },
+     "price": {
+      "N_sp": 16733694.0,
+      "CN_all": 18675542.0,
+      "F0T": 19427214.0
+     },
+     "labels": {
+      "N_sp": [
+       {
+        "label": "S.hyperlink",
+        "pairs": 15095287,
+        "slots": 1205,
+        "alone": 198,
+        "per_million_pairs": 79.83
+       },
+       {
+        "label": "R.mention",
+        "pairs": 32159229,
+        "slots": 913,
+        "alone": 0,
+        "per_million_pairs": 28.39
+       },
+       {
+        "label": "R.ner_spacy",
+        "pairs": 20369074,
+        "slots": 312,
+        "alone": 1,
+        "per_million_pairs": 15.32
+       },
+       {
+        "label": "K.knn",
+        "pairs": 11946289,
+        "slots": 296,
+        "alone": 5,
+        "per_million_pairs": 24.78
+       }
+      ],
+      "F0T": [
+       {
+        "label": "S.hyperlink",
+        "pairs": 15095287,
+        "slots": 1205,
+        "alone": 176,
+        "per_million_pairs": 79.83
+       },
+       {
+        "label": "R.mention",
+        "pairs": 32159229,
+        "slots": 913,
+        "alone": 0,
+        "per_million_pairs": 28.39
+       },
+       {
+        "label": "R.name_comention",
+        "pairs": 23218108,
+        "slots": 394,
+        "alone": 1,
+        "per_million_pairs": 16.97
+       },
+       {
+        "label": "K.knn",
+        "pairs": 11946289,
+        "slots": 296,
+        "alone": 5,
+        "per_million_pairs": 24.78
+       },
+       {
+        "label": "R.title_comention",
+        "pairs": 1232121,
+        "slots": 181,
+        "alone": 0,
+        "per_million_pairs": 146.9
+       }
+      ]
+     }
+    }
+   }
+  },
+  "s1eval": {
+   "questions": 7405,
+   "questions_npz_sha256": "5c2dc4675720a981e3a53071613c47f41df3b6404bd63dfc404b3b5e2b11892e",
+   "slots": {
+    "GP": 7405
+   },
+   "RK": {
+    "GP": {
+     "forms": {
+      "none": {
+       "linked": 4649,
+       "share": 62.78,
+       "vs_N_sp": {
+        "diff": -2.35,
+        "lo": -2.69,
+        "hi": -2.01,
+        "call": "BELOW"
+       },
+       "vs_none": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       }
+      },
+      "N_sp": {
+       "linked": 4823,
+       "share": 65.13,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_none": {
+        "diff": 2.35,
+        "lo": 2.01,
+        "hi": 2.69,
+        "call": "ABOVE"
+       }
+      },
+      "CN_all": {
+       "linked": 4847,
+       "share": 65.46,
+       "vs_N_sp": {
+        "diff": 0.32,
+        "lo": 0.05,
+        "hi": 0.61,
+        "call": "ABOVE"
+       },
+       "vs_none": {
+        "diff": 2.67,
+        "lo": 2.31,
+        "hi": 3.07,
+        "call": "ABOVE"
+       }
+      },
+      "F0T": {
+       "linked": 4880,
+       "share": 65.9,
+       "vs_N_sp": {
+        "diff": 0.77,
+        "lo": 0.46,
+        "hi": 1.08,
+        "call": "ABOVE"
+       },
+       "vs_none": {
+        "diff": 3.12,
+        "lo": 2.71,
+        "hi": 3.54,
+        "call": "ABOVE"
+       }
+      },
+      "F0T_vs_CN_all": {
+       "diff": 0.45,
+       "lo": 0.3,
+       "hi": 0.59,
+       "call": "ABOVE"
+      }
+     },
+     "price": {
+      "N_sp": 97513.4,
+      "CN_all": 95691.3,
+      "F0T": 85359.0
+     },
+     "labels": {
+      "N_sp": [
+       {
+        "label": "R.mention",
+        "pairs": 32159229,
+        "slots": 4294,
+        "alone": 2405,
+        "per_million_pairs": 133.52
+       },
+       {
+        "label": "R.ner_spacy",
+        "pairs": 20369074,
+        "slots": 1661,
+        "alone": 174,
+        "per_million_pairs": 81.55
+       },
+       {
+        "label": "K.knn",
+        "pairs": 11946289,
+        "slots": 1486,
+        "alone": 227,
+        "per_million_pairs": 124.39
+       }
+      ],
+      "F0T": [
+       {
+        "label": "R.mention",
+        "pairs": 32159229,
+        "slots": 4294,
+        "alone": 1705,
+        "per_million_pairs": 133.52
+       },
+       {
+        "label": "R.name_comention",
+        "pairs": 23218108,
+        "slots": 1940,
+        "alone": 198,
+        "per_million_pairs": 83.56
+       },
+       {
+        "label": "K.knn",
+        "pairs": 11946289,
+        "slots": 1486,
+        "alone": 197,
+        "per_million_pairs": 124.39
+       },
+       {
+        "label": "R.title_comention",
+        "pairs": 1232121,
+        "slots": 825,
+        "alone": 33,
+        "per_million_pairs": 669.58
+       }
+      ]
+     }
+    }
+   },
+   "SRK": {
+    "GP": {
+     "forms": {
+      "none": {
+       "linked": 5922,
+       "share": 79.97,
+       "vs_N_sp": {
+        "diff": -0.05,
+        "lo": -0.11,
+        "hi": -0.01,
+        "call": "BELOW"
+       },
+       "vs_none": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       }
+      },
+      "N_sp": {
+       "linked": 5926,
+       "share": 80.03,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_none": {
+        "diff": 0.05,
+        "lo": 0.01,
+        "hi": 0.11,
+        "call": "ABOVE"
+       }
+      },
+      "CN_all": {
+       "linked": 5925,
+       "share": 80.01,
+       "vs_N_sp": {
+        "diff": -0.01,
+        "lo": -0.05,
+        "hi": 0.03,
+        "call": "LEVEL"
+       },
+       "vs_none": {
+        "diff": 0.04,
+        "lo": 0.0,
+        "hi": 0.09,
+        "call": "LEVEL"
+       }
+      },
+      "F0T": {
+       "linked": 5925,
+       "share": 80.01,
+       "vs_N_sp": {
+        "diff": -0.01,
+        "lo": -0.05,
+        "hi": 0.03,
+        "call": "LEVEL"
+       },
+       "vs_none": {
+        "diff": 0.04,
+        "lo": 0.0,
+        "hi": 0.09,
+        "call": "LEVEL"
+       }
+      },
+      "F0T_vs_CN_all": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      }
+     },
+     "price": {
+      "N_sp": 4183423.5,
+      "CN_all": 6225180.7,
+      "F0T": 6475738.0
+     },
+     "labels": {
+      "N_sp": [
+       {
+        "label": "S.hyperlink",
+        "pairs": 15095287,
+        "slots": 5919,
+        "alone": 1103,
+        "per_million_pairs": 392.11
+       },
+       {
+        "label": "R.mention",
+        "pairs": 32159229,
+        "slots": 4294,
+        "alone": 0,
+        "per_million_pairs": 133.52
+       },
+       {
+        "label": "R.ner_spacy",
+        "pairs": 20369074,
+        "slots": 1661,
+        "alone": 4,
+        "per_million_pairs": 81.55
+       },
+       {
+        "label": "K.knn",
+        "pairs": 11946289,
+        "slots": 1486,
+        "alone": 2,
+        "per_million_pairs": 124.39
+       }
+      ],
+      "F0T": [
+       {
+        "label": "S.hyperlink",
+        "pairs": 15095287,
+        "slots": 5919,
+        "alone": 1045,
+        "per_million_pairs": 392.11
+       },
+       {
+        "label": "R.mention",
+        "pairs": 32159229,
+        "slots": 4294,
+        "alone": 0,
+        "per_million_pairs": 133.52
+       },
+       {
+        "label": "R.name_comention",
+        "pairs": 23218108,
+        "slots": 1940,
+        "alone": 3,
+        "per_million_pairs": 83.56
+       },
+       {
+        "label": "K.knn",
+        "pairs": 11946289,
+        "slots": 1486,
+        "alone": 3,
+        "per_million_pairs": 124.39
+       },
+       {
+        "label": "R.title_comention",
+        "pairs": 1232121,
+        "slots": 825,
+        "alone": 0,
+        "per_million_pairs": 669.58
+       }
+      ]
+     }
+    }
+   }
+  }
+ },
+ "S_relations": 1,
+ "S_held_by_RK": {
+  "none": 70.19,
+  "N_sp": 71.74,
+  "CN_all": 71.99,
+  "F0T": 72.12
+ },
+ "seconds": 109.2,
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}

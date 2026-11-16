@@ -159,3 +159,59 @@ rule graph holds about 500 million pairs) build and grade on the lab host, which
 WebQSP graph; MuSiQue, SQuAD and MetaQA may run on the laptop, by the same code on the same freeze (G1 checks it either
 way). Commands: `python outputs/mp_unified/zul1.py selftest | build --dataset D [--host] | grade --dataset D [--host] |
 report`.
+
+## 9. Results (filed 16 November 2026; `outputs/ul1/report.json`, `report.md`)
+
+**The run.** `zul1.py` at the declared commit (e014c25). MuSiQue, SQuAD and MetaQA were built and graded on the laptop; 2Wiki,
+HotpotQA and WebQSP on the lab host (feeder rows `ul1-build-<d>` and `ul1-grade-<d>`, all exit code 0), by the same code on the
+same freeze (G1). G1-G4 held on all six; G2: the rebuilt CN_all equals U2r's `names.npz` pairs and weights exactly on all six.
+On the host, U2b's filed W2_S for 2Wiki and HotpotQA was hard-linked from `outputs/u2b/<d>/graphs/` to `outputs/u2i/<d>/ref/`
+after a sha256 check against `build_new.json` (the same file; `zu2i.ref_graph` checks it again). `report` read the six grades.
+
+**Verdict: CARRIED F0T.** F0T holds all three conditions of section 6; no failure is listed.
+
+GP and MuSiQue's CH, share of slots linked (%), F0T minus N_sp with the paired 95% interval:
+
+| dataset | carve | domain | kind | slots | N_sp | F0T | F0T - N_sp |
+| --- | --- | --- | --- | ---: | ---: | ---: | --- |
+| MuSiQue | s1sel | RK | GP | 3,783 | 28.34 | 29.61 | +1.27 [+0.75, +1.83] ABOVE |
+| MuSiQue | s1sel | RK | CH | 2,530 | 40.99 | 42.81 | +1.82 [+1.07, +2.63] ABOVE |
+| MuSiQue | s1eval | RK | GP | 5,962 | 31.67 | 33.63 | +1.96 [+1.40, +2.51] ABOVE |
+| MuSiQue | s1eval | RK | CH | 3,987 | 46.78 | 49.71 | +2.93 [+2.09, +3.72] ABOVE |
+| HotpotQA | s1sel | RK | GP | 1,508 | 67.18 | 68.63 | +1.46 [+0.66, +2.32] ABOVE |
+| HotpotQA | s1sel | SRK | GP | 1,508 | 80.31 | 80.31 | +0.00 [+0.00, +0.00] LEVEL |
+| HotpotQA | s1eval | RK | GP | 7,405 | 65.13 | 65.90 | +0.77 [+0.46, +1.08] ABOVE |
+| HotpotQA | s1eval | SRK | GP | 7,405 | 80.03 | 80.01 | -0.01 [-0.05, +0.03] LEVEL |
+| 2Wiki | s1sel | RK | GP | 3,131 | 43.66 | 44.14 | +0.48 [+0.22, +0.77] ABOVE |
+| 2Wiki | s1sel | SRK | GP | 3,131 | 45.96 | 46.12 | +0.16 [+0.00, +0.35] LEVEL |
+| 2Wiki | s1eval | RK | GP | 26,331 | 43.37 | 43.80 | +0.43 [+0.33, +0.54] ABOVE |
+| 2Wiki | s1eval | SRK | GP | 26,331 | 45.68 | 45.82 | +0.14 [+0.08, +0.21] ABOVE |
+
+Size, F0T's union over N_sp's: MuSiQue 1.042, SQuAD 1.012 (no GP slot), HotpotQA 1.046 (RK) and 1.042 (SRK), 2Wiki 1.034 and
+1.030, MetaQA 1.019, WebQSP 0.998 (spaCy's store adds more pairs there than the rule names do); every one under 1.30.
+
+Beside, deciding nothing:
+- KB GP (questions with 2-10 golds, SRK): MetaQA LEVEL on both carves (-0.05, +0.01); WebQSP s1eval +0.23 [+0.02, +0.60].
+- MuSiQue CC (every chain slot linked): F0T 24.25% against N_sp's 23.01% on s1sel (+1.24 [+0.59, +1.96]), 42.28% against
+  41.37% on s1eval (+0.91 [+0.08, +1.70]). By hops on s1eval: 2 hops 70.37% / 69.01%, 3 hops 14.08% / 13.29%, 4 hops 8.40% /
+  8.64% (s1sel 7.39% / 7.39%).
+- S's pairs held by the RK union: HotpotQA 72.12% with F0T (71.74% with N_sp), 2Wiki 61.07% (60.77%).
+
+What it says (read, not tested):
+- Without S (RK), the rule-built store links more gold pairs than spaCy's on every passage dataset and carve. With S (SRK) the
+  NER store barely matters: on HotpotQA, N_sp itself adds +0.07 and +0.05 over no store, and F0T is LEVEL with it.
+- F0T's own title runs add over CN_all on s1eval (MuSiQue GP +0.55, CH +0.83; HotpotQA RK +0.45; 2Wiki RK +0.24) and nothing
+  on MuSiQue's s1sel; CN_all alone is LEVEL with N_sp on MuSiQue's s1eval CC, F0T ABOVE.
+- Price: on HotpotQA and 2Wiki RK, F0T adds fewer pairs per slot gained over no store than N_sp does (2Wiki s1eval 70,094
+  against 82,240; HotpotQA s1eval 85,359 against 97,513).
+- Labels: R.mention carries the most slots on the passage corpora; R.name_comention carries more than R.ner_spacy (MuSiQue
+  s1eval GP 1,326 against 1,200; HotpotQA s1eval RK 1,940 against 1,661; 2Wiki s1eval RK 5,854 against 5,304); R.title_comention
+  carries 37-1,041 slots, few of them alone (0-62).
+- No NER form moves MuSiQue's 4-hop chain connectivity (about 7-9%): the fourth hop's missing links are not NER links. With PH1
+  (FC@5 2-4% at 4 hops), the fourth hop is short of links at graph level, not only of ranking.
+
+**What follows (section 7):** F0T becomes R's NER store on all six datasets. D83 is declared in its own file before it runs,
+under A2 (pools of record kept and checked by sha256; only what reads R's NER store recomputed, each file named), with the edge
+labels of section 3 read by the models as a declared model change, then ONE refit of zg6r, zrckpn and GNX at three seeds. Two
+calls are the user's, asked before D83 is declared: whether the S > R > K deduplication goes into the models' inputs, and
+whether the pools are rebuilt on the new store (a ruling naming A2). Neither is assumed.

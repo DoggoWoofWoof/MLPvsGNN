@@ -1,0 +1,458 @@
+{
+ "dataset": "metaqa",
+ "declared_in": "docs/UL1_UNIFIED_LINKS_ORACLE_CHECK.md",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "nodes": 43234,
+ "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+ "kb": true,
+ "ner_npz_sha256": "93065a2311c2b445cc14ce6458457c9e14ec0d3c641a4bc573ef4b175a374cb8",
+ "knn_npz_sha256": "f7c59640e816951148fee791bc8790e026461ee52a5b6741c63859244b5a4a16",
+ "structural_npz_sha256": "1b2027c64b2e62b5cf122f09a246ed4cb485841bf0823fcee246e8bf45bf8570",
+ "w2_s_npz_sha256": "3f2b97d1474552dae2fea1f7f8be5e83f7960950b38c0ca41bd3a78025aa7dd5",
+ "f0t_npz_sha256": "499e8c70d3d7d1375a77a609819aacdd40c8753ac2bf6f3d1ea277c5ae62a7fe",
+ "names_npz_sha256": "0ccad8b4b6a55c2bec41bfd36e6fa83f48dc448964e170cf15a2c191f517d720",
+ "family_pairs": {
+  "N_sp": 5949,
+  "K": 97920,
+  "S": 124669,
+  "W2_S": 245144,
+  "CN_all": 12605,
+  "F0T": 12605
+ },
+ "domains": {
+  "SRK": {
+   "families": [
+    "S",
+    "R",
+    "K"
+   ],
+   "union_pairs": {
+    "none": 342238,
+    "N_sp": 345232,
+    "CN_all": 351892,
+    "F0T": 351892
+   },
+   "held_S_R_K": {
+    "none": {
+     "S": 124669,
+     "R": 120565,
+     "K": 97004
+    },
+    "N_sp": {
+     "S": 124669,
+     "R": 126310,
+     "K": 94253
+    },
+    "CN_all": {
+     "S": 124669,
+     "R": 133077,
+     "K": 94146
+    },
+    "F0T": {
+     "S": 124669,
+     "R": 133077,
+     "K": 94146
+    }
+   },
+   "ratio_to_N_sp": {
+    "none": 0.9913,
+    "N_sp": 1.0,
+    "CN_all": 1.0193,
+    "F0T": 1.0193
+   }
+  }
+ },
+ "carves": {
+  "s1sel": {
+   "questions": 1497,
+   "questions_npz_sha256": "a8119a120171b1527a99ef0f1a6e234de3a710f148b976e8fd59b97f8f2ef8e4",
+   "slots": {
+    "GP": 6074
+   },
+   "SRK": {
+    "GP": {
+     "forms": {
+      "none": {
+       "linked": 924,
+       "share": 15.21,
+       "vs_N_sp": {
+        "diff": -0.07,
+        "lo": -0.17,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_none": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       }
+      },
+      "N_sp": {
+       "linked": 928,
+       "share": 15.28,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_none": {
+        "diff": 0.07,
+        "lo": 0.0,
+        "hi": 0.17,
+        "call": "LEVEL"
+       }
+      },
+      "CN_all": {
+       "linked": 925,
+       "share": 15.23,
+       "vs_N_sp": {
+        "diff": -0.05,
+        "lo": -0.13,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_none": {
+        "diff": 0.02,
+        "lo": 0.0,
+        "hi": 0.05,
+        "call": "LEVEL"
+       }
+      },
+      "F0T": {
+       "linked": 925,
+       "share": 15.23,
+       "vs_N_sp": {
+        "diff": -0.05,
+        "lo": -0.13,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_none": {
+        "diff": 0.02,
+        "lo": 0.0,
+        "hi": 0.05,
+        "call": "LEVEL"
+       }
+      },
+      "F0T_vs_CN_all": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      }
+     },
+     "price": {
+      "N_sp": 748.5,
+      "CN_all": 9654.0,
+      "F0T": 9654.0
+     },
+     "labels": {
+      "N_sp": [
+       {
+        "label": "R.mention",
+        "pairs": 245144,
+        "slots": 718,
+        "alone": 677,
+        "per_million_pairs": 2928.89
+       },
+       {
+        "label": "K.knn",
+        "pairs": 97920,
+        "slots": 212,
+        "alone": 198,
+        "per_million_pairs": 2165.03
+       },
+       {
+        "label": "S.has_genre",
+        "pairs": 15485,
+        "slots": 33,
+        "alone": 0,
+        "per_million_pairs": 2131.09
+       },
+       {
+        "label": "R.ner_spacy",
+        "pairs": 5949,
+        "slots": 13,
+        "alone": 4,
+        "per_million_pairs": 2185.24
+       },
+       {
+        "label": "S.release_year",
+        "pairs": 16715,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 119.65
+       }
+      ],
+      "F0T": [
+       {
+        "label": "R.mention",
+        "pairs": 245144,
+        "slots": 718,
+        "alone": 677,
+        "per_million_pairs": 2928.89
+       },
+       {
+        "label": "K.knn",
+        "pairs": 97920,
+        "slots": 212,
+        "alone": 195,
+        "per_million_pairs": 2165.03
+       },
+       {
+        "label": "S.has_genre",
+        "pairs": 15485,
+        "slots": 33,
+        "alone": 0,
+        "per_million_pairs": 2131.09
+       },
+       {
+        "label": "R.name_comention",
+        "pairs": 12605,
+        "slots": 12,
+        "alone": 1,
+        "per_million_pairs": 952.0
+       },
+       {
+        "label": "S.release_year",
+        "pairs": 16715,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 119.65
+       },
+       {
+        "label": "R.title_comention",
+        "pairs": 0,
+        "slots": 0,
+        "alone": 0,
+        "per_million_pairs": null
+       }
+      ]
+     }
+    }
+   }
+  },
+  "s1eval": {
+   "questions": 9785,
+   "questions_npz_sha256": "fcb6c401d7ed3e93b1ba8aa4db0400a62ed4bc3a851f6b8324bf8e9baa00248d",
+   "slots": {
+    "GP": 37446
+   },
+   "SRK": {
+    "GP": {
+     "forms": {
+      "none": {
+       "linked": 5169,
+       "share": 13.8,
+       "vs_N_sp": {
+        "diff": -0.0,
+        "lo": -0.01,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_none": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       }
+      },
+      "N_sp": {
+       "linked": 5170,
+       "share": 13.81,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_none": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.01,
+        "call": "LEVEL"
+       }
+      },
+      "CN_all": {
+       "linked": 5173,
+       "share": 13.81,
+       "vs_N_sp": {
+        "diff": 0.01,
+        "lo": 0.0,
+        "hi": 0.02,
+        "call": "LEVEL"
+       },
+       "vs_none": {
+        "diff": 0.01,
+        "lo": 0.0,
+        "hi": 0.02,
+        "call": "ABOVE"
+       }
+      },
+      "F0T": {
+       "linked": 5173,
+       "share": 13.81,
+       "vs_N_sp": {
+        "diff": 0.01,
+        "lo": 0.0,
+        "hi": 0.02,
+        "call": "LEVEL"
+       },
+       "vs_none": {
+        "diff": 0.01,
+        "lo": 0.0,
+        "hi": 0.02,
+        "call": "ABOVE"
+       }
+      },
+      "F0T_vs_CN_all": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      }
+     },
+     "price": {
+      "N_sp": 2994.0,
+      "CN_all": 2413.5,
+      "F0T": 2413.5
+     },
+     "labels": {
+      "N_sp": [
+       {
+        "label": "R.mention",
+        "pairs": 245144,
+        "slots": 4280,
+        "alone": 4055,
+        "per_million_pairs": 17459.13
+       },
+       {
+        "label": "K.knn",
+        "pairs": 97920,
+        "slots": 930,
+        "alone": 882,
+        "per_million_pairs": 9497.55
+       },
+       {
+        "label": "S.has_genre",
+        "pairs": 15485,
+        "slots": 155,
+        "alone": 0,
+        "per_million_pairs": 10009.69
+       },
+       {
+        "label": "S.release_year",
+        "pairs": 16715,
+        "slots": 24,
+        "alone": 0,
+        "per_million_pairs": 1435.84
+       },
+       {
+        "label": "R.ner_spacy",
+        "pairs": 5949,
+        "slots": 10,
+        "alone": 1,
+        "per_million_pairs": 1680.95
+       },
+       {
+        "label": "S.written_by",
+        "pairs": 19120,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 156.9
+       },
+       {
+        "label": "S.directed_by",
+        "pairs": 15957,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 62.67
+       },
+       {
+        "label": "S.in_language",
+        "pairs": 3426,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 291.89
+       }
+      ],
+      "F0T": [
+       {
+        "label": "R.mention",
+        "pairs": 245144,
+        "slots": 4280,
+        "alone": 4056,
+        "per_million_pairs": 17459.13
+       },
+       {
+        "label": "K.knn",
+        "pairs": 97920,
+        "slots": 930,
+        "alone": 868,
+        "per_million_pairs": 9497.55
+       },
+       {
+        "label": "S.has_genre",
+        "pairs": 15485,
+        "slots": 155,
+        "alone": 0,
+        "per_million_pairs": 10009.69
+       },
+       {
+        "label": "R.name_comention",
+        "pairs": 12605,
+        "slots": 25,
+        "alone": 4,
+        "per_million_pairs": 1983.34
+       },
+       {
+        "label": "S.release_year",
+        "pairs": 16715,
+        "slots": 24,
+        "alone": 0,
+        "per_million_pairs": 1435.84
+       },
+       {
+        "label": "S.written_by",
+        "pairs": 19120,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 156.9
+       },
+       {
+        "label": "S.directed_by",
+        "pairs": 15957,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 62.67
+       },
+       {
+        "label": "S.in_language",
+        "pairs": 3426,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 291.89
+       },
+       {
+        "label": "R.title_comention",
+        "pairs": 0,
+        "slots": 0,
+        "alone": 0,
+        "per_million_pairs": null
+       }
+      ]
+     }
+    }
+   }
+  }
+ },
+ "S_relations": 9,
+ "seconds": 7.4,
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}

@@ -1,0 +1,1757 @@
+{
+ "dataset": "webqsp",
+ "declared_in": "docs/UL1_UNIFIED_LINKS_ORACLE_CHECK.md",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "nodes": 2592894,
+ "nodes_sha256": "b39c615122ad55f587eaea0c3fc5c7eff4190e6236fa258006e957dcfda948fe",
+ "kb": true,
+ "ner_npz_sha256": "8ed08f05db3da877f02d212b2c8ac5b495d12bf15c91c329b33652fdc2e9fb10",
+ "knn_npz_sha256": "75a03f25dfa8c6339773059bffbd8322c2f9bf13e7b48cad0105c2ee189519cd",
+ "structural_npz_sha256": "b7c2c435fc0b9dbab3a238c7db31cd61da9a8bd435864c0eba6990ae12756b95",
+ "w2_s_npz_sha256": "a2e79a93c350f6e4de9455af07b11684b875444d2fb61ed6f2555b443ed093c4",
+ "f0t_npz_sha256": "624684bf80d6605b8a7e9d9f884ee027b35c84f3f51dbdd4d65c10ee29a51edd",
+ "names_npz_sha256": "b567061f6c9fc8653ee964518913a97e72ef42e0d940315528401e80f0140f38",
+ "family_pairs": {
+  "N_sp": 2994802,
+  "K": 6470520,
+  "S": 5882501,
+  "W2_S": 500445467,
+  "CN_all": 995434,
+  "F0T": 997211
+ },
+ "domains": {
+  "SRK": {
+   "families": [
+    "S",
+    "R",
+    "K"
+   ],
+   "union_pairs": {
+    "none": 506654997,
+    "N_sp": 508556193,
+    "CN_all": 507397362,
+    "F0T": 507398750
+   },
+   "held_S_R_K": {
+    "none": {
+     "S": 5882501,
+     "R": 494579148,
+     "K": 6193348
+    },
+    "N_sp": {
+     "S": 5882501,
+     "R": 496802391,
+     "K": 5871301
+    },
+    "CN_all": {
+     "S": 5882501,
+     "R": 495463573,
+     "K": 6051288
+    },
+    "F0T": {
+     "S": 5882501,
+     "R": 495465195,
+     "K": 6051054
+    }
+   },
+   "ratio_to_N_sp": {
+    "none": 0.9963,
+    "N_sp": 1.0,
+    "CN_all": 0.9977,
+    "F0T": 0.9977
+   }
+  }
+ },
+ "carves": {
+  "s1eval": {
+   "questions": 1503,
+   "questions_npz_sha256": "c1d468b74dc8c2309ee09ebf0bec7d65e750a6164179bf9f90f3b668d87c5937",
+   "slots": {
+    "GP": 4369
+   },
+   "SRK": {
+    "GP": {
+     "forms": {
+      "none": {
+       "linked": 898,
+       "share": 20.55,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_none": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       }
+      },
+      "N_sp": {
+       "linked": 898,
+       "share": 20.55,
+       "vs_N_sp": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       },
+       "vs_none": {
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "call": "LEVEL"
+       }
+      },
+      "CN_all": {
+       "linked": 908,
+       "share": 20.78,
+       "vs_N_sp": {
+        "diff": 0.23,
+        "lo": 0.02,
+        "hi": 0.6,
+        "call": "ABOVE"
+       },
+       "vs_none": {
+        "diff": 0.23,
+        "lo": 0.02,
+        "hi": 0.6,
+        "call": "ABOVE"
+       }
+      },
+      "F0T": {
+       "linked": 908,
+       "share": 20.78,
+       "vs_N_sp": {
+        "diff": 0.23,
+        "lo": 0.02,
+        "hi": 0.6,
+        "call": "ABOVE"
+       },
+       "vs_none": {
+        "diff": 0.23,
+        "lo": 0.02,
+        "hi": 0.6,
+        "call": "ABOVE"
+       }
+      },
+      "F0T_vs_CN_all": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      }
+     },
+     "price": {
+      "N_sp": null,
+      "CN_all": 74236.5,
+      "F0T": 74375.3
+     },
+     "labels": {
+      "N_sp": [
+       {
+        "label": "R.mention",
+        "pairs": 500445467,
+        "slots": 733,
+        "alone": 437,
+        "per_million_pairs": 1.46
+       },
+       {
+        "label": "K.knn",
+        "pairs": 6470520,
+        "slots": 244,
+        "alone": 146,
+        "per_million_pairs": 37.71
+       },
+       {
+        "label": "S.location containedby",
+        "pairs": 152621,
+        "slots": 98,
+        "alone": 0,
+        "per_million_pairs": 642.11
+       },
+       {
+        "label": "S.people profession specialization of",
+        "pairs": 1064,
+        "slots": 40,
+        "alone": 0,
+        "per_million_pairs": 37593.98
+       },
+       {
+        "label": "S.profession specializations",
+        "pairs": 1923,
+        "slots": 34,
+        "alone": 0,
+        "per_million_pairs": 17680.71
+       },
+       {
+        "label": "S.administrative area administrative children",
+        "pairs": 5748,
+        "slots": 23,
+        "alone": 0,
+        "per_million_pairs": 4001.39
+       },
+       {
+        "label": "S.administrative area administrative parent",
+        "pairs": 5432,
+        "slots": 23,
+        "alone": 0,
+        "per_million_pairs": 4234.17
+       },
+       {
+        "label": "S.administrative division country",
+        "pairs": 3780,
+        "slots": 23,
+        "alone": 0,
+        "per_million_pairs": 6084.66
+       },
+       {
+        "label": "S.administrative division first level division of",
+        "pairs": 1023,
+        "slots": 20,
+        "alone": 0,
+        "per_million_pairs": 19550.34
+       },
+       {
+        "label": "S.country administrative divisions",
+        "pairs": 3726,
+        "slots": 20,
+        "alone": 0,
+        "per_million_pairs": 5367.69
+       },
+       {
+        "label": "S.country first level divisions",
+        "pairs": 1130,
+        "slots": 20,
+        "alone": 0,
+        "per_million_pairs": 17699.12
+       },
+       {
+        "label": "S.film country",
+        "pairs": 60512,
+        "slots": 18,
+        "alone": 0,
+        "per_million_pairs": 297.46
+       },
+       {
+        "label": "S.influence node influenced",
+        "pairs": 16973,
+        "slots": 17,
+        "alone": 0,
+        "per_million_pairs": 1001.59
+       },
+       {
+        "label": "S.influence node influenced by",
+        "pairs": 18045,
+        "slots": 17,
+        "alone": 0,
+        "per_million_pairs": 942.09
+       },
+       {
+        "label": "S.bibs location country",
+        "pairs": 1185,
+        "slots": 15,
+        "alone": 0,
+        "per_million_pairs": 12658.23
+       },
+       {
+        "label": "S.location contains",
+        "pairs": 70010,
+        "slots": 15,
+        "alone": 0,
+        "per_million_pairs": 214.26
+       },
+       {
+        "label": "S.human language dialects",
+        "pairs": 206,
+        "slots": 13,
+        "alone": 0,
+        "per_million_pairs": 63106.8
+       },
+       {
+        "label": "S.language dialect language",
+        "pairs": 167,
+        "slots": 13,
+        "alone": 0,
+        "per_million_pairs": 77844.31
+       },
+       {
+        "label": "S.countries states provinces within",
+        "pairs": 51,
+        "slots": 11,
+        "alone": 0,
+        "per_million_pairs": 215686.27
+       },
+       {
+        "label": "S.states and provences country",
+        "pairs": 51,
+        "slots": 11,
+        "alone": 0,
+        "per_million_pairs": 215686.27
+       },
+       {
+        "label": "S.book edition book",
+        "pairs": 2672,
+        "slots": 9,
+        "alone": 0,
+        "per_million_pairs": 3368.26
+       },
+       {
+        "label": "S.book editions",
+        "pairs": 14521,
+        "slots": 9,
+        "alone": 0,
+        "per_million_pairs": 619.79
+       },
+       {
+        "label": "S.educational institution parent institution",
+        "pairs": 805,
+        "slots": 9,
+        "alone": 0,
+        "per_million_pairs": 11180.12
+       },
+       {
+        "label": "S.educational institution subsidiary or constituent schools",
+        "pairs": 1012,
+        "slots": 9,
+        "alone": 0,
+        "per_million_pairs": 8893.28
+       },
+       {
+        "label": "S.profession corresponding type",
+        "pairs": 42,
+        "slots": 9,
+        "alone": 1,
+        "per_million_pairs": 214285.71
+       },
+       {
+        "label": "S.genre parent genre",
+        "pairs": 729,
+        "slots": 8,
+        "alone": 0,
+        "per_million_pairs": 10973.94
+       },
+       {
+        "label": "S.genre subgenre",
+        "pairs": 1280,
+        "slots": 8,
+        "alone": 0,
+        "per_million_pairs": 6250.0
+       },
+       {
+        "label": "S.administrative division second level division of",
+        "pairs": 3786,
+        "slots": 7,
+        "alone": 0,
+        "per_million_pairs": 1848.92
+       },
+       {
+        "label": "S.language family member of language families",
+        "pairs": 167,
+        "slots": 7,
+        "alone": 0,
+        "per_million_pairs": 41916.17
+       },
+       {
+        "label": "S.language family sub families",
+        "pairs": 270,
+        "slots": 7,
+        "alone": 0,
+        "per_million_pairs": 25925.93
+       },
+       {
+        "label": "R.ner_spacy",
+        "pairs": 2994802,
+        "slots": 6,
+        "alone": 0,
+        "per_million_pairs": 2.0
+       },
+       {
+        "label": "S.film prequel",
+        "pairs": 2292,
+        "slots": 6,
+        "alone": 0,
+        "per_million_pairs": 2617.8
+       },
+       {
+        "label": "S.film sequel",
+        "pairs": 2338,
+        "slots": 6,
+        "alone": 0,
+        "per_million_pairs": 2566.3
+       },
+       {
+        "label": "S.administrative area subdivides place",
+        "pairs": 25,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 160000.0
+       },
+       {
+        "label": "S.administrative area subdividing place",
+        "pairs": 25,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 160000.0
+       },
+       {
+        "label": "S.bibs location state",
+        "pairs": 612,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 6535.95
+       },
+       {
+        "label": "S.composition recordings",
+        "pairs": 9640,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 414.94
+       },
+       {
+        "label": "S.continents countries within",
+        "pairs": 172,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 23255.81
+       },
+       {
+        "label": "S.countries continent",
+        "pairs": 172,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 23255.81
+       },
+       {
+        "label": "S.fictional setting contained by",
+        "pairs": 232,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 17241.38
+       },
+       {
+        "label": "S.fictional setting contains",
+        "pairs": 298,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 13422.82
+       },
+       {
+        "label": "S.recording song",
+        "pairs": 6931,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 577.12
+       },
+       {
+        "label": "S.sovereign domain sovereign state",
+        "pairs": 5,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 800000.0
+       },
+       {
+        "label": "S.written work subjects",
+        "pairs": 46458,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 86.1
+       },
+       {
+        "label": "S.activism issue includes issues",
+        "pairs": 38,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 78947.37
+       },
+       {
+        "label": "S.activism issue parent issue",
+        "pairs": 28,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 107142.86
+       },
+       {
+        "label": "S.location partially containedby",
+        "pairs": 4523,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 663.28
+       },
+       {
+        "label": "S.location partially contains",
+        "pairs": 4566,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 657.03
+       },
+       {
+        "label": "S.profession professions similar",
+        "pairs": 18,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 166666.67
+       },
+       {
+        "label": "S.profession similar professions",
+        "pairs": 17,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 176470.59
+       },
+       {
+        "label": "S.recording canonical version",
+        "pairs": 5683,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 527.89
+       },
+       {
+        "label": "S.religion branched from",
+        "pairs": 38,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 78947.37
+       },
+       {
+        "label": "S.religion branched into",
+        "pairs": 43,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 69767.44
+       },
+       {
+        "label": "S.single versions",
+        "pairs": 6633,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 452.28
+       },
+       {
+        "label": "S.author works written",
+        "pairs": 56446,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 35.43
+       },
+       {
+        "label": "S.book subject works",
+        "pairs": 21158,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 94.53
+       },
+       {
+        "label": "S.country second level divisions",
+        "pairs": 909,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 2200.22
+       },
+       {
+        "label": "S.defunct sports team later known as",
+        "pairs": 101,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 19801.98
+       },
+       {
+        "label": "S.governmental body body this is a component of",
+        "pairs": 261,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 7662.84
+       },
+       {
+        "label": "S.governmental body component bodies",
+        "pairs": 288,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 6944.44
+       },
+       {
+        "label": "S.location contains major portion of",
+        "pairs": 119,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 16806.72
+       },
+       {
+        "label": "S.location primarily containedby",
+        "pairs": 121,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 16528.93
+       },
+       {
+        "label": "S.neighborhood neighborhood of",
+        "pairs": 5497,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 363.83
+       },
+       {
+        "label": "S.place with neighborhoods neighborhoods",
+        "pairs": 4798,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 416.84
+       },
+       {
+        "label": "S.sports team previously known as",
+        "pairs": 113,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 17699.12
+       },
+       {
+        "label": "S.aircraft model parent aircraft model",
+        "pairs": 33,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 30303.03
+       },
+       {
+        "label": "S.aircraft model variants",
+        "pairs": 73,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 13698.63
+       },
+       {
+        "label": "S.album compositions",
+        "pairs": 194,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 5154.64
+       },
+       {
+        "label": "S.album genre",
+        "pairs": 8270,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 120.92
+       },
+       {
+        "label": "S.album primary release",
+        "pairs": 500,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 2000.0
+       },
+       {
+        "label": "S.album releases",
+        "pairs": 1182,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 846.02
+       },
+       {
+        "label": "S.composition recorded as album",
+        "pairs": 200,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 5000.0
+       },
+       {
+        "label": "S.compositional form subforms",
+        "pairs": 57,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 17543.86
+       },
+       {
+        "label": "S.compositional form superforms",
+        "pairs": 19,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 52631.58
+       },
+       {
+        "label": "S.country capital",
+        "pairs": 632,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1582.28
+       },
+       {
+        "label": "S.disease cause diseases",
+        "pairs": 667,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1499.25
+       },
+       {
+        "label": "S.disease causes",
+        "pairs": 878,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1138.95
+       },
+       {
+        "label": "S.disease risk factors",
+        "pairs": 2190,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 456.62
+       },
+       {
+        "label": "S.equivalent topic equivalent type",
+        "pairs": 141,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 7092.2
+       },
+       {
+        "label": "S.fictional universe works set here",
+        "pairs": 827,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1209.19
+       },
+       {
+        "label": "S.film featured song",
+        "pairs": 710,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1408.45
+       },
+       {
+        "label": "S.film featured song featured in film",
+        "pairs": 337,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 2967.36
+       },
+       {
+        "label": "S.film film series",
+        "pairs": 1263,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 791.77
+       },
+       {
+        "label": "S.film genre",
+        "pairs": 116293,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 8.6
+       },
+       {
+        "label": "S.film language",
+        "pairs": 52297,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 19.12
+       },
+       {
+        "label": "S.film series films in series",
+        "pairs": 482,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 2074.69
+       },
+       {
+        "label": "S.genre albums",
+        "pairs": 2853,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 350.51
+       },
+       {
+        "label": "S.hud county place county",
+        "pairs": 7046,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 141.92
+       },
+       {
+        "label": "S.human language language family",
+        "pairs": 2831,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 353.23
+       },
+       {
+        "label": "S.language family languages",
+        "pairs": 2525,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 396.04
+       },
+       {
+        "label": "S.location in fiction contained by",
+        "pairs": 69,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 14492.75
+       },
+       {
+        "label": "S.location in fiction contains",
+        "pairs": 84,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 11904.76
+       },
+       {
+        "label": "S.media genre child genres",
+        "pairs": 251,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 3984.06
+       },
+       {
+        "label": "S.media genre parent genre",
+        "pairs": 175,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 5714.29
+       },
+       {
+        "label": "S.person children",
+        "pairs": 26532,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 37.69
+       },
+       {
+        "label": "S.person parents",
+        "pairs": 23833,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 41.96
+       },
+       {
+        "label": "S.property expected type",
+        "pairs": 777,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1287.0
+       },
+       {
+        "label": "S.rdf-schema range",
+        "pairs": 777,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1287.0
+       },
+       {
+        "label": "S.recording tracks",
+        "pairs": 2218,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 450.86
+       },
+       {
+        "label": "S.risk factor diseases",
+        "pairs": 1749,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 571.76
+       },
+       {
+        "label": "S.river mouth",
+        "pairs": 847,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1180.64
+       },
+       {
+        "label": "S.topic subject of",
+        "pairs": 6086,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 164.31
+       },
+       {
+        "label": "S.topic subjects",
+        "pairs": 7289,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 137.19
+       },
+       {
+        "label": "S.tv program country of origin",
+        "pairs": 6197,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 161.37
+       },
+       {
+        "label": "S.tv program spin offs",
+        "pairs": 204,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 4901.96
+       },
+       {
+        "label": "S.tv program spun off from",
+        "pairs": 179,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 5586.59
+       },
+       {
+        "label": "S.type expected by",
+        "pairs": 1946,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 513.87
+       },
+       {
+        "label": "S.type profile equivalent topic",
+        "pairs": 198,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 5050.51
+       },
+       {
+        "label": "S.us county county seat",
+        "pairs": 963,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1038.42
+       },
+       {
+        "label": "S.us county hud county place",
+        "pairs": 8140,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 122.85
+       },
+       {
+        "label": "S.us president vice president",
+        "pairs": 49,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 20408.16
+       },
+       {
+        "label": "S.us vice president to president",
+        "pairs": 49,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 20408.16
+       },
+       {
+        "label": "S.work of fiction part of these fictional universes",
+        "pairs": 714,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1400.56
+       }
+      ],
+      "F0T": [
+       {
+        "label": "R.mention",
+        "pairs": 500445467,
+        "slots": 733,
+        "alone": 436,
+        "per_million_pairs": 1.46
+       },
+       {
+        "label": "K.knn",
+        "pairs": 6470520,
+        "slots": 244,
+        "alone": 135,
+        "per_million_pairs": 37.71
+       },
+       {
+        "label": "S.location containedby",
+        "pairs": 152621,
+        "slots": 98,
+        "alone": 0,
+        "per_million_pairs": 642.11
+       },
+       {
+        "label": "R.name_comention",
+        "pairs": 995434,
+        "slots": 42,
+        "alone": 10,
+        "per_million_pairs": 42.19
+       },
+       {
+        "label": "S.people profession specialization of",
+        "pairs": 1064,
+        "slots": 40,
+        "alone": 0,
+        "per_million_pairs": 37593.98
+       },
+       {
+        "label": "S.profession specializations",
+        "pairs": 1923,
+        "slots": 34,
+        "alone": 0,
+        "per_million_pairs": 17680.71
+       },
+       {
+        "label": "S.administrative area administrative children",
+        "pairs": 5748,
+        "slots": 23,
+        "alone": 0,
+        "per_million_pairs": 4001.39
+       },
+       {
+        "label": "S.administrative area administrative parent",
+        "pairs": 5432,
+        "slots": 23,
+        "alone": 0,
+        "per_million_pairs": 4234.17
+       },
+       {
+        "label": "S.administrative division country",
+        "pairs": 3780,
+        "slots": 23,
+        "alone": 0,
+        "per_million_pairs": 6084.66
+       },
+       {
+        "label": "S.administrative division first level division of",
+        "pairs": 1023,
+        "slots": 20,
+        "alone": 0,
+        "per_million_pairs": 19550.34
+       },
+       {
+        "label": "S.country administrative divisions",
+        "pairs": 3726,
+        "slots": 20,
+        "alone": 0,
+        "per_million_pairs": 5367.69
+       },
+       {
+        "label": "S.country first level divisions",
+        "pairs": 1130,
+        "slots": 20,
+        "alone": 0,
+        "per_million_pairs": 17699.12
+       },
+       {
+        "label": "S.film country",
+        "pairs": 60512,
+        "slots": 18,
+        "alone": 0,
+        "per_million_pairs": 297.46
+       },
+       {
+        "label": "S.influence node influenced",
+        "pairs": 16973,
+        "slots": 17,
+        "alone": 0,
+        "per_million_pairs": 1001.59
+       },
+       {
+        "label": "S.influence node influenced by",
+        "pairs": 18045,
+        "slots": 17,
+        "alone": 0,
+        "per_million_pairs": 942.09
+       },
+       {
+        "label": "S.bibs location country",
+        "pairs": 1185,
+        "slots": 15,
+        "alone": 0,
+        "per_million_pairs": 12658.23
+       },
+       {
+        "label": "S.location contains",
+        "pairs": 70010,
+        "slots": 15,
+        "alone": 0,
+        "per_million_pairs": 214.26
+       },
+       {
+        "label": "S.human language dialects",
+        "pairs": 206,
+        "slots": 13,
+        "alone": 0,
+        "per_million_pairs": 63106.8
+       },
+       {
+        "label": "S.language dialect language",
+        "pairs": 167,
+        "slots": 13,
+        "alone": 0,
+        "per_million_pairs": 77844.31
+       },
+       {
+        "label": "S.countries states provinces within",
+        "pairs": 51,
+        "slots": 11,
+        "alone": 0,
+        "per_million_pairs": 215686.27
+       },
+       {
+        "label": "S.states and provences country",
+        "pairs": 51,
+        "slots": 11,
+        "alone": 0,
+        "per_million_pairs": 215686.27
+       },
+       {
+        "label": "S.book edition book",
+        "pairs": 2672,
+        "slots": 9,
+        "alone": 0,
+        "per_million_pairs": 3368.26
+       },
+       {
+        "label": "S.book editions",
+        "pairs": 14521,
+        "slots": 9,
+        "alone": 0,
+        "per_million_pairs": 619.79
+       },
+       {
+        "label": "S.educational institution parent institution",
+        "pairs": 805,
+        "slots": 9,
+        "alone": 0,
+        "per_million_pairs": 11180.12
+       },
+       {
+        "label": "S.educational institution subsidiary or constituent schools",
+        "pairs": 1012,
+        "slots": 9,
+        "alone": 0,
+        "per_million_pairs": 8893.28
+       },
+       {
+        "label": "S.profession corresponding type",
+        "pairs": 42,
+        "slots": 9,
+        "alone": 1,
+        "per_million_pairs": 214285.71
+       },
+       {
+        "label": "S.genre parent genre",
+        "pairs": 729,
+        "slots": 8,
+        "alone": 0,
+        "per_million_pairs": 10973.94
+       },
+       {
+        "label": "S.genre subgenre",
+        "pairs": 1280,
+        "slots": 8,
+        "alone": 0,
+        "per_million_pairs": 6250.0
+       },
+       {
+        "label": "S.administrative division second level division of",
+        "pairs": 3786,
+        "slots": 7,
+        "alone": 0,
+        "per_million_pairs": 1848.92
+       },
+       {
+        "label": "S.language family member of language families",
+        "pairs": 167,
+        "slots": 7,
+        "alone": 0,
+        "per_million_pairs": 41916.17
+       },
+       {
+        "label": "S.language family sub families",
+        "pairs": 270,
+        "slots": 7,
+        "alone": 0,
+        "per_million_pairs": 25925.93
+       },
+       {
+        "label": "S.film prequel",
+        "pairs": 2292,
+        "slots": 6,
+        "alone": 0,
+        "per_million_pairs": 2617.8
+       },
+       {
+        "label": "S.film sequel",
+        "pairs": 2338,
+        "slots": 6,
+        "alone": 0,
+        "per_million_pairs": 2566.3
+       },
+       {
+        "label": "S.administrative area subdivides place",
+        "pairs": 25,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 160000.0
+       },
+       {
+        "label": "S.administrative area subdividing place",
+        "pairs": 25,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 160000.0
+       },
+       {
+        "label": "S.bibs location state",
+        "pairs": 612,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 6535.95
+       },
+       {
+        "label": "S.composition recordings",
+        "pairs": 9640,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 414.94
+       },
+       {
+        "label": "S.continents countries within",
+        "pairs": 172,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 23255.81
+       },
+       {
+        "label": "S.countries continent",
+        "pairs": 172,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 23255.81
+       },
+       {
+        "label": "S.fictional setting contained by",
+        "pairs": 232,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 17241.38
+       },
+       {
+        "label": "S.fictional setting contains",
+        "pairs": 298,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 13422.82
+       },
+       {
+        "label": "S.recording song",
+        "pairs": 6931,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 577.12
+       },
+       {
+        "label": "S.sovereign domain sovereign state",
+        "pairs": 5,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 800000.0
+       },
+       {
+        "label": "S.written work subjects",
+        "pairs": 46458,
+        "slots": 4,
+        "alone": 0,
+        "per_million_pairs": 86.1
+       },
+       {
+        "label": "S.activism issue includes issues",
+        "pairs": 38,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 78947.37
+       },
+       {
+        "label": "S.activism issue parent issue",
+        "pairs": 28,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 107142.86
+       },
+       {
+        "label": "S.location partially containedby",
+        "pairs": 4523,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 663.28
+       },
+       {
+        "label": "S.location partially contains",
+        "pairs": 4566,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 657.03
+       },
+       {
+        "label": "S.profession professions similar",
+        "pairs": 18,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 166666.67
+       },
+       {
+        "label": "S.profession similar professions",
+        "pairs": 17,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 176470.59
+       },
+       {
+        "label": "S.recording canonical version",
+        "pairs": 5683,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 527.89
+       },
+       {
+        "label": "S.religion branched from",
+        "pairs": 38,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 78947.37
+       },
+       {
+        "label": "S.religion branched into",
+        "pairs": 43,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 69767.44
+       },
+       {
+        "label": "S.single versions",
+        "pairs": 6633,
+        "slots": 3,
+        "alone": 0,
+        "per_million_pairs": 452.28
+       },
+       {
+        "label": "S.author works written",
+        "pairs": 56446,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 35.43
+       },
+       {
+        "label": "S.book subject works",
+        "pairs": 21158,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 94.53
+       },
+       {
+        "label": "S.country second level divisions",
+        "pairs": 909,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 2200.22
+       },
+       {
+        "label": "S.defunct sports team later known as",
+        "pairs": 101,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 19801.98
+       },
+       {
+        "label": "S.governmental body body this is a component of",
+        "pairs": 261,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 7662.84
+       },
+       {
+        "label": "S.governmental body component bodies",
+        "pairs": 288,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 6944.44
+       },
+       {
+        "label": "S.location contains major portion of",
+        "pairs": 119,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 16806.72
+       },
+       {
+        "label": "S.location primarily containedby",
+        "pairs": 121,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 16528.93
+       },
+       {
+        "label": "S.neighborhood neighborhood of",
+        "pairs": 5497,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 363.83
+       },
+       {
+        "label": "S.place with neighborhoods neighborhoods",
+        "pairs": 4798,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 416.84
+       },
+       {
+        "label": "S.sports team previously known as",
+        "pairs": 113,
+        "slots": 2,
+        "alone": 0,
+        "per_million_pairs": 17699.12
+       },
+       {
+        "label": "S.aircraft model parent aircraft model",
+        "pairs": 33,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 30303.03
+       },
+       {
+        "label": "S.aircraft model variants",
+        "pairs": 73,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 13698.63
+       },
+       {
+        "label": "S.album compositions",
+        "pairs": 194,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 5154.64
+       },
+       {
+        "label": "S.album genre",
+        "pairs": 8270,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 120.92
+       },
+       {
+        "label": "S.album primary release",
+        "pairs": 500,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 2000.0
+       },
+       {
+        "label": "S.album releases",
+        "pairs": 1182,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 846.02
+       },
+       {
+        "label": "S.composition recorded as album",
+        "pairs": 200,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 5000.0
+       },
+       {
+        "label": "S.compositional form subforms",
+        "pairs": 57,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 17543.86
+       },
+       {
+        "label": "S.compositional form superforms",
+        "pairs": 19,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 52631.58
+       },
+       {
+        "label": "S.country capital",
+        "pairs": 632,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1582.28
+       },
+       {
+        "label": "S.disease cause diseases",
+        "pairs": 667,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1499.25
+       },
+       {
+        "label": "S.disease causes",
+        "pairs": 878,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1138.95
+       },
+       {
+        "label": "S.disease risk factors",
+        "pairs": 2190,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 456.62
+       },
+       {
+        "label": "S.equivalent topic equivalent type",
+        "pairs": 141,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 7092.2
+       },
+       {
+        "label": "S.fictional universe works set here",
+        "pairs": 827,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1209.19
+       },
+       {
+        "label": "S.film featured song",
+        "pairs": 710,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1408.45
+       },
+       {
+        "label": "S.film featured song featured in film",
+        "pairs": 337,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 2967.36
+       },
+       {
+        "label": "S.film film series",
+        "pairs": 1263,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 791.77
+       },
+       {
+        "label": "S.film genre",
+        "pairs": 116293,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 8.6
+       },
+       {
+        "label": "S.film language",
+        "pairs": 52297,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 19.12
+       },
+       {
+        "label": "S.film series films in series",
+        "pairs": 482,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 2074.69
+       },
+       {
+        "label": "S.genre albums",
+        "pairs": 2853,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 350.51
+       },
+       {
+        "label": "S.hud county place county",
+        "pairs": 7046,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 141.92
+       },
+       {
+        "label": "S.human language language family",
+        "pairs": 2831,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 353.23
+       },
+       {
+        "label": "S.language family languages",
+        "pairs": 2525,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 396.04
+       },
+       {
+        "label": "S.location in fiction contained by",
+        "pairs": 69,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 14492.75
+       },
+       {
+        "label": "S.location in fiction contains",
+        "pairs": 84,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 11904.76
+       },
+       {
+        "label": "S.media genre child genres",
+        "pairs": 251,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 3984.06
+       },
+       {
+        "label": "S.media genre parent genre",
+        "pairs": 175,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 5714.29
+       },
+       {
+        "label": "S.person children",
+        "pairs": 26532,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 37.69
+       },
+       {
+        "label": "S.person parents",
+        "pairs": 23833,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 41.96
+       },
+       {
+        "label": "S.property expected type",
+        "pairs": 777,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1287.0
+       },
+       {
+        "label": "S.rdf-schema range",
+        "pairs": 777,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1287.0
+       },
+       {
+        "label": "S.recording tracks",
+        "pairs": 2218,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 450.86
+       },
+       {
+        "label": "S.risk factor diseases",
+        "pairs": 1749,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 571.76
+       },
+       {
+        "label": "S.river mouth",
+        "pairs": 847,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1180.64
+       },
+       {
+        "label": "S.topic subject of",
+        "pairs": 6086,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 164.31
+       },
+       {
+        "label": "S.topic subjects",
+        "pairs": 7289,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 137.19
+       },
+       {
+        "label": "S.tv program country of origin",
+        "pairs": 6197,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 161.37
+       },
+       {
+        "label": "S.tv program spin offs",
+        "pairs": 204,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 4901.96
+       },
+       {
+        "label": "S.tv program spun off from",
+        "pairs": 179,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 5586.59
+       },
+       {
+        "label": "S.type expected by",
+        "pairs": 1946,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 513.87
+       },
+       {
+        "label": "S.type profile equivalent topic",
+        "pairs": 198,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 5050.51
+       },
+       {
+        "label": "S.us county county seat",
+        "pairs": 963,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1038.42
+       },
+       {
+        "label": "S.us county hud county place",
+        "pairs": 8140,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 122.85
+       },
+       {
+        "label": "S.us president vice president",
+        "pairs": 49,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 20408.16
+       },
+       {
+        "label": "S.us vice president to president",
+        "pairs": 49,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 20408.16
+       },
+       {
+        "label": "S.work of fiction part of these fictional universes",
+        "pairs": 714,
+        "slots": 1,
+        "alone": 0,
+        "per_million_pairs": 1400.56
+       },
+       {
+        "label": "R.title_comention",
+        "pairs": 1777,
+        "slots": 0,
+        "alone": 0,
+        "per_million_pairs": 0.0
+       }
+      ]
+     }
+    }
+   }
+  }
+ },
+ "S_relations": 7058,
+ "seconds": 364.0,
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}
