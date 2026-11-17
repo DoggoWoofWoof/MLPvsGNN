@@ -57,8 +57,8 @@ no edge dropped). The stores after D83's dedup decide each pair's families:
 - **Open pairs** are decided by the look's own function (`typed_pool_edges` for the slot, `weighted_pool_edges` for NER, cap
   64, through the look's lookup table) on the question's pool (the cache part's `node` rows, which are the look's pool
   rows in order) and D83's store:
-  - the slot store: U2c's store of the W2_S graph on D83F and D83E, `look_b1.setting_store` on b1v's folder for b1x;
-  - the NER store: F0T (zd83.f0t_pairs) on D83F and D83E, `setting_store` for b1x.
+  - the slot store: U2c's store of the W2_S graph on D83F and D83E, `look_b1.setting_store` on b1v's folder for D91B;
+  - the NER store: F0T (zd83.f0t_pairs) on D83F and D83E, `setting_store` for D91B.
 
   Surveyed before this page: no open pair on SQuAD or on b1v's 2Wiki and HotpotQA; 580 to 10,188 directed open pairs on
   the 2Wiki and HotpotQA carves (out of 24.8M to 85.4M directed pairs); 57,992 on b1v's MuSiQue (of 65.7M). D83F's and D83E's MuSiQue carves
@@ -68,8 +68,16 @@ no edge dropped). The stores after D83's dedup decide each pair's families:
 
 - **D91F** (from D83F: squad, hotpotqa, 2wiki `fit`; musique `s1fit`; webqsp `fit`), **D91E** (from D83E: the six s1eval
   carves), under `outputs/abl/`. Each is built on ABL's machinery, zabl unedited, with its record step and PKO's gate.
-- **b1x** (from b1v: B1's three settings), under `outputs/b1x`. The carve keeps b1v's name and files, so its pools,
-  manifests and cache records are b1v's; zb1h's record step and gate are rebound to b1x's root, as zd83b rebinds them for b1v.
+- **D91B** (from b1v: B1's three settings), under `outputs/abl/D91B`. The carve keeps b1v's name and files, so its pools,
+  manifests and cache records are b1v's; zb1h's record step and gate are rebound to D91B's root, as zd83b rebinds them for
+  b1v.
+- **Every D91 arm is under `outputs/abl/D91*`** (amended 17 Nov, before any D91 number). D91B was first named b1x, under
+  `outputs/b1x`, which is AP2's carve folder (docs/AP2_RULE_NER_SLOT_ON_B1.md). Two of its three rows wrote there:
+  2Wiki's and HotpotQA's, 173 names in all (159 hard links of b1v's files and 14 small D91 files). MuSiQue's row stopped
+  at G3d (AP2's own `settings/musique.json` was there and is not b1v's). All 173 names were moved, not deleted, to `outputs/d91_misplaced/b1x`
+  (`outputs/host_ops/d91_b1x_misplaced.py`; its `moved.json` lists them). No AP2 name was touched. The arm was then renamed
+  and rebuilt from the start. `zd91.claim` now refuses any folder outside `outputs/abl/D91*` or one that holds another
+  stage's files, before a D91 row writes.
 - **Per carve, one row** (`zd91.py arm --arm A --dataset D`):
   1. hard-link D83's files listed in section 2 (a file already present must be the same file or the same sha256);
   2. the family links per cache part (derivation, open pairs decided), each record tied to its cache part's record, with
@@ -78,7 +86,7 @@ no edge dropped). The stores after D83's dedup decide each pair's families:
   4. the carve record (zabl's or zb1h's record step).
 
   Then the gate per arm.
-- **LTM** (in the world): lists, fold fits and NEXT columns on D91F (fits) and on D91E and b1x (reads), with the record's
+- **LTM** (in the world): lists, fold fits and NEXT columns on D91F (fits) and on D91E and D91B (reads), with the record's
   features.
 
 ## 5. Gates (a failure stops the carve's or the fit's rows; none of its numbers is read)
@@ -100,7 +108,7 @@ no edge dropped). The stores after D83's dedup decide each pair's families:
 
 ## 6. Reads, and the rule (fixed now)
 
-- **Reads.** The 18 read fits (zg6r, GNX, zrckpn at three seeds, both splits) on two arms: `B1X` (b1x, B1's three settings;
+- **Reads.** The 18 read fits (zg6r, GNX, zrckpn at three seeds, both splits) on two arms: `D91B` (B1's three settings;
   deciding) and `D91E` (the six s1eval carves; reported).
 - **Cells.** D83's 15 B1 cells (section 7 there): in-domain MuSiQue from WQ-hotpotqa, HotpotQA from WQ-musique, 2Wiki from
   both; held out MuSiQue from WQ-musique and HotpotQA from WQ-hotpotqa; for zg6r, GNX and zrckpn. Per question, R@5 at
@@ -111,7 +119,7 @@ no edge dropped). The stores after D83's dedup decide each pair's families:
   - **HURT**: at least one BELOW and none ABOVE;
   - **MIXED**: both;
   - **LEVEL**: neither.
-- **Call A (D91 itself).** D91 minus the record on the 15 cells (b1x against b1w, the record's filed reads; D83's rule):
+- **Call A (D91 itself).** D91 minus the record on the 15 cells (D91B against b1w, the record's filed reads; D83's rule):
   **ADOPT** when no cell is BELOW, **NOT_ADOPTED** otherwise. INCOMPLETE while a cell is unread and none is BELOW.
 - **What carries** (the after-paper record's input set for the journal program):
   1. Only D83 ADOPT: D83.
