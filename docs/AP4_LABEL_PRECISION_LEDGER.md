@@ -238,7 +238,21 @@ The KBs have no R.mention pairs (and MetaQA no R.title_comention pairs). Lifts c
   - It is BELOW in top1 precision on HotpotQA and 2Wiki (−0.7 each) and in found rank1 on all three (−3.8 to −4.9).
 - **K pairs at the anchors** were expected to be the same set (section 3).
   - They are on 4 of 9 reads. On the other 5, D83's K pairs are a strict subset of the record's, short by 2 to 339; the largest is MuSiQue D83E, 21,292 against 21,631 (1.6%).
-  - The cause is not established. It changes no call: group K is LEVEL in every pair except D83E MuSiQue top1 precision (+0.1, ABOVE).
+  - It changes no call: group K is LEVEL in every pair except D83E MuSiQue top1 precision (+0.1, ABOVE).
+  - **The cause, found 17 Nov** (`outputs/mp_unified/zap4k.py`, which reads the two filed ledgers; record
+    `outputs/ap4/kdiag.json`):
+    - Every missing pair (2 to 339 per read) is absent from D83's ledger altogether: no D83 link of any label joins the two
+      rows. In the record, 380 of the 384 carry K.knn alone and 4 carry NER.spacy plus K.knn.
+    - They sit in larger pools than the median (MuSiQue D83E: median pool 5,258 rows against 4,980; HotpotQA 868
+      against 688).
+    - The mechanism: `m3b_features.weighted_pool_edges` keeps, for each pool node, its first 64 in-pool neighbours per
+      family in stored order (`IN_POOL_CAP`, weight descending). D83's dedup (S > R > K, at the store level) gives a pair
+      that R also holds to R alone. Where R's stores are dense (W2_S hubs; MuSiQue's large pools), such a pair can rank
+      below 64 for both of its nodes. It is then cut from the pool graph, while the record, whose R lacks the pair, keeps
+      it as a K edge.
+  - **So D83's "K.knn read before the dedup" holds for every edge the pool graph keeps.** The edges themselves follow the
+    dedup and the cap. D83 loses at most 1.6% of the K pairs at the anchors (MuSiQue), and none on four reads. D91 (the
+    same stores) loses the same pairs. The code is frozen, so nothing changes; this note goes beside D83's report.
 
 **What follows** (section 3's named consequences):
 - **A flag for D83.** D83's R is BELOW the record's R in top1 precision on B1 HotpotQA, B1 2Wiki, MetaQA and WebQSP. It goes beside D83's report and changes neither D83's rule nor its reads.
@@ -252,4 +266,4 @@ The KBs have no R.mention pairs (and MetaQA no R.title_comention pairs). Lifts c
 
   Their ln(top1 lift) is in the report. **D92 stays default no.**
 - **Label precision is far from uniform.** R.title_comention's few pairs (0.6-0.8 per anchor) are 3x (HotpotQA, 2Wiki) to 13x (MuSiQue) as precise as R.mention's. K.knn is not the weakest label anywhere on passages. This is the case for the query-side typed rules (section 6), still named, not declared.
-- **Open item:** the K-pair subset above. It is checked before D91's report reads the K family.
+- **The K-pair subset above is closed:** the dedup meets the in-pool cap of 64.

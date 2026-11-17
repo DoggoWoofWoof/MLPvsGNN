@@ -1,0 +1,193 @@
+{
+ "stage": "AP4 open item (section 10)",
+ "reads": [
+  {
+   "arm": "B1V",
+   "record_arm": "B1W",
+   "dataset": "musique",
+   "k_pairs_d83": 9546,
+   "k_pairs_record": 9562,
+   "missing_in_d83": 16,
+   "extra_in_d83": 0,
+   "present_in_d83_with_other_labels": 0,
+   "absent_from_d83": 16,
+   "record_labels": {
+    "K.knn": 15,
+    "NER.spacy+K.knn": 1
+   },
+   "d83_labels_when_present": {},
+   "by_kind": {
+    "found": 13,
+    "top1": 3
+   },
+   "questions_holding_them": 14,
+   "most_in_one_question": 2,
+   "pool_size_of_those_questions": {
+    "median": 3487.0,
+    "min": 3440,
+    "max": 3532
+   },
+   "pool_size_all_questions": {
+    "median": 3455.0,
+    "max": 3707
+   }
+  },
+  {
+   "arm": "B1V",
+   "record_arm": "B1W",
+   "dataset": "hotpotqa",
+   "k_pairs_d83": 6240,
+   "k_pairs_record": 6240,
+   "missing_in_d83": 0,
+   "extra_in_d83": 0
+  },
+  {
+   "arm": "B1V",
+   "record_arm": "B1W",
+   "dataset": "2wiki",
+   "k_pairs_d83": 6093,
+   "k_pairs_record": 6093,
+   "missing_in_d83": 0,
+   "extra_in_d83": 0
+  },
+  {
+   "arm": "D83E",
+   "record_arm": "REC",
+   "dataset": "squad",
+   "k_pairs_d83": 43356,
+   "k_pairs_record": 43356,
+   "missing_in_d83": 0,
+   "extra_in_d83": 0
+  },
+  {
+   "arm": "D83E",
+   "record_arm": "REC",
+   "dataset": "hotpotqa",
+   "k_pairs_d83": 79918,
+   "k_pairs_record": 79938,
+   "missing_in_d83": 20,
+   "extra_in_d83": 0,
+   "present_in_d83_with_other_labels": 0,
+   "absent_from_d83": 20,
+   "record_labels": {
+    "K.knn": 20
+   },
+   "d83_labels_when_present": {},
+   "by_kind": {
+    "found": 14,
+    "top1": 6
+   },
+   "questions_holding_them": 13,
+   "most_in_one_question": 2,
+   "pool_size_of_those_questions": {
+    "median": 868.0,
+    "min": 399,
+    "max": 1453
+   },
+   "pool_size_all_questions": {
+    "median": 688.0,
+    "max": 1637
+   }
+  },
+  {
+   "arm": "D83E",
+   "record_arm": "REC",
+   "dataset": "2wiki",
+   "k_pairs_d83": 122403,
+   "k_pairs_record": 122410,
+   "missing_in_d83": 7,
+   "extra_in_d83": 0,
+   "present_in_d83_with_other_labels": 0,
+   "absent_from_d83": 7,
+   "record_labels": {
+    "K.knn": 7
+   },
+   "d83_labels_when_present": {},
+   "by_kind": {
+    "found": 7,
+    "top1": 0
+   },
+   "questions_holding_them": 6,
+   "most_in_one_question": 2,
+   "pool_size_of_those_questions": {
+    "median": 1195.0,
+    "min": 951,
+    "max": 1461
+   },
+   "pool_size_all_questions": {
+    "median": 1090.0,
+    "max": 1853
+   }
+  },
+  {
+   "arm": "D83E",
+   "record_arm": "REC",
+   "dataset": "musique",
+   "k_pairs_d83": 21292,
+   "k_pairs_record": 21631,
+   "missing_in_d83": 339,
+   "extra_in_d83": 0,
+   "present_in_d83_with_other_labels": 0,
+   "absent_from_d83": 339,
+   "record_labels": {
+    "K.knn": 336,
+    "NER.spacy+K.knn": 3
+   },
+   "d83_labels_when_present": {},
+   "by_kind": {
+    "found": 152,
+    "top1": 187
+   },
+   "questions_holding_them": 165,
+   "most_in_one_question": 8,
+   "pool_size_of_those_questions": {
+    "median": 5258.0,
+    "min": 3817,
+    "max": 12056
+   },
+   "pool_size_all_questions": {
+    "median": 4980.0,
+    "max": 12333
+   }
+  },
+  {
+   "arm": "D83E",
+   "record_arm": "REC",
+   "dataset": "metaqa",
+   "k_pairs_d83": 31431,
+   "k_pairs_record": 31431,
+   "missing_in_d83": 0,
+   "extra_in_d83": 0
+  },
+  {
+   "arm": "D83E",
+   "record_arm": "REC",
+   "dataset": "webqsp",
+   "k_pairs_d83": 9120,
+   "k_pairs_record": 9122,
+   "missing_in_d83": 2,
+   "extra_in_d83": 0,
+   "present_in_d83_with_other_labels": 0,
+   "absent_from_d83": 2,
+   "record_labels": {
+    "K.knn": 2
+   },
+   "d83_labels_when_present": {},
+   "by_kind": {
+    "found": 0,
+    "top1": 2
+   },
+   "questions_holding_them": 2,
+   "most_in_one_question": 1,
+   "pool_size_of_those_questions": {
+    "median": 8044.0,
+    "min": 3931,
+    "max": 12157
+   },
+   "pool_size_all_questions": {
+    "median": 4325.0,
+    "max": 12345
+   }
+  }
+ ]
+}
