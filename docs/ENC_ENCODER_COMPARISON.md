@@ -1,6 +1,7 @@
 # ENC: smaller encoders against the frozen one (D93), stage E0: the first stage
 
 Declared 17 Nov 2026, 04:15 IST, before any number. Code: `outputs/mp_unified/zenc.py`. Records: `outputs/enc/`.
+E1a (section 9) declared 17 Nov 2026, before any E1 number. Code: `outputs/mp_unified/zenc1.py`.
 
 ## 1. Why
 
@@ -95,6 +96,11 @@ arm by more than 10 points on three or more of the six datasets, stays out of E1
 - **E1, graph level.** For each carried encoder: the K family rebuilt from its vectors under the record's kNN rule (the
   package's 3 nearest neighbours), the first stage's pools under the record's pool rule, then gold coverage and
   oracle-link reach against the frozen substrate. This is the user's rule: check the links before any refit.
+  E1 runs in two parts:
+  - **E1a** (section 9): each arm's K at UL1's oracle pairs. It needs only the neighbours of the gold ends, so it runs on
+    the CPU as soon as an arm's vectors exist.
+  - **E1b**: the pools and gold coverage. It needs each arm's full K over the corpus and the PKO chain's substitutions.
+    It is named here and declared on this page after E0 and E1a, before its numbers.
 - **E2.** One seed-0 screen fit each of zrckpn and GNX per carried encoder, on D83's layout, read on s1eval.
 - **E3.** Three seeds for the encoder E2 selects, then D93's call (which encoder MultiHop-RAG is encoded with: D84).
 
@@ -121,3 +127,130 @@ question. No ENC number goes into a paper sentence before its section below is f
 ## 8. Results
 
 (Not yet filed.)
+
+## 9. E1a: each encoder's K at the oracle pairs (declared 17 Nov 2026, before any E1 number)
+
+Code: `outputs/mp_unified/zenc1.py`, new. It imports `zenc.py` and `zul1.py` and edits neither. Outputs go only under
+`outputs/enc/e1/`, and its arrays stay uncommitted.
+
+**What E1a does not touch:**
+- Nothing trains and no model is read.
+- No filed graph, pool, fit or record changes.
+- It reads no E0 number. It needs only each arm's document vectors.
+
+### 9.1 Why
+
+K is the only link family an encoder changes. S, R's rule links (W2_S) and F0T are text rules, the same for every arm.
+The user's rule (16 Nov) is to check links against the oracle links before any refit. So E1a asks two questions:
+- Does a smaller encoder's K still link the oracle pairs as the record's K does?
+- How much of any loss do the encoder-free families already cover?
+
+### 9.2 The K rule (the record's)
+
+The rule comes from GRAPH_MANIFEST's `source_manifest` and from `CRAG/scratchpad/knn_parity_check.py`:
+- The score is an exact float32 inner product of L2-renormalised float32 copies of the stored float16 rows.
+- The search runs over distinct source rows: the top 4, including the row itself. Self is dropped; when self is not among
+  the 4, all 4 are kept.
+- Each position inherits its source row's neighbours, mapped to the lowest position of each neighbour. The family is
+  undirected.
+
+E1a applies this rule in three ways:
+- **Source rows.** The package carries no pointer index, on the laptop or on the host. So E1a stands in for a source row
+  with a text group: the positions whose `text` is byte-identical. The group's vector is its lowest position's row. G1a
+  checks this stand-in on the frozen arm.
+- **Only the slot ends.** E1a computes neighbour lists only for the groups of the slot ends, which are the golds of
+  questions that have a slot. Each list is the top 5 by score, then by group. The 5th entry marks ties: a row is a tie
+  row when its 4th and 5th scores are within 0.001, the record's `tie_tolerance`.
+- **Exact ties.** Ties go to the lower group. The record's tie order at the 4th place was arbitrary, so G1a counts a
+  difference there as tie churn.
+
+A slot (a, b) is linked by an arm's K when b is in out(a) or a is in out(b). Here out(x) is the set of lowest positions
+of the neighbours of x's group. Both ends of every slot are slot ends, so this membership is exact.
+
+The same code runs for every arm, including `frozen`, which is rebuilt from the record's vectors.
+
+### 9.3 Questions and slots (UL1's, unchanged)
+
+- **The questions:** each dataset's s1eval carve (U2b's questions files, checked against `carves.json`).
+- **GP slots:** every unordered pair of distinct golds. On the KBs, only questions with 2 to 10 golds count.
+- **CH slots:** MuSiQue's chain slots.
+- **Deciding:**
+  - 2Wiki and HotpotQA: GP, in both RK and SRK;
+  - MuSiQue: GP and CH, in RK.
+- **Beside:** MetaQA and WebQSP (GP, SRK).
+- **Not read:** SQuAD, which has one gold a question and so no slot.
+
+### 9.4 Gates
+
+- **G1a: the rebuild reproduces the record's K at the slot ends** (frozen arm, each dataset, in the frozen `nn` row).
+  Both shares below must be at least 0.995, counting tie churn as agreement:
+  - (i) **Out-pair precision.** The share of each slot end's rebuilt pairs that are in the record's `knn.npz`. A miss
+    at a tie row counts as tie churn.
+  - (ii) **Slot agreement.** The share of GP (and CH) slots on which the rebuilt K and the record's K agree. A
+    disagreement at a tie row of either end counts as tie churn.
+
+  A dataset that fails G1a is not graded. Its new arms wait for a fix, declared here first.
+- **G2a: union consistency.** With the record's K, each domain's union share on s1eval must equal UL1's filed
+  `grade.json` share for the F0T form, within 0.01 points. This checks that E1a reads UL1's families: E1a reads them
+  one at a time, as membership of the slot keys only.
+- **G3a: the vectors.** Every shard of the arm is present, and its manifest's row count equals the record's
+  (`zenc.vec_shards`). Damaged rows stop the search.
+- **Substrate pin,** as in section 3.
+
+### 9.5 Measures
+
+For each dataset, domain, slot kind and arm, over the carve's slots:
+- **K alone:** the share of slots the arm's K links.
+- **Union:** the share linked by D83's layout with the arm's K: (S, in SRK) ∪ W2_S ∪ F0T ∪ K_arm.
+- **K only:** the share linked by K_arm and by none of S, W2_S or F0T.
+- **Against the frozen arm:** the paired difference (new arm minus frozen) for K alone and for the union, with
+  `zap1.boot_diff` (2,000 resamples of the questions, seed 0) and ABOVE, LEVEL or BELOW at 95%.
+- **MuSiQue only:** the share of questions whose chain slots are all linked, by hop count, with its paired difference.
+- **Beside:**
+  - the record's K;
+  - the frozen arm's G1a counts;
+  - the share S and R link without K.
+
+### 9.6 What E1a decides
+
+Three expectations, each called HELD or NOT_HELD per new arm:
+- **Y1.** The arm's K-alone GP share is BELOW the frozen arm's on each of 2Wiki, HotpotQA and MuSiQue. This is the
+  encoder's price in links.
+- **Y2.** On each of those three datasets, in each domain, the union gap (new minus frozen) is closer to zero than the
+  K-alone gap. That means S and R carry part of the loss.
+- **Y3.** The same as Y2, on MuSiQue's CH slots.
+
+**D97** (open). The default is that every arm that passes G3a goes on to E1b and E2. E1a excludes no arm by itself, and
+any exclusion is the user's call. D94's rule from E0 still applies: an arm that E0 keeps out of E1 has its E1a rows
+withdrawn, and the report reads it as not read.
+
+### 9.7 Rows
+
+All rows run on the host CPU:
+- `enc-e1-nn-frozen-<ds>`, for the five datasets. Each runs now, with 8 threads. It builds the text groups (cached at
+  `outputs/enc/e1/groups/`), the frozen neighbour rows and G1a.
+- `enc-e1-nn-<enc>-<ds>`. Each runs after `enc-encode-<enc>-<ds>` and the frozen row.
+- `enc-e1-grade-<ds>`. Each runs after its four `nn` rows and writes `outputs/enc/e1/grade/<ds>.json`.
+- `enc-e1-report`. It runs after the five grades and writes `outputs/enc/e1/report.json` and `report.md`.
+- **Then the laptop:** fetch, then a results section here.
+
+### 9.8 Development log (disclosed before any E1 number)
+
+- **The self-test.** `zenc1.py selftest` passes on the laptop. It checks:
+  - the text groups;
+  - the top 5 against brute force on vectors with exact scores, including exact ties and groups whose own vector is
+    outside their top 4;
+  - slot membership against the record's rule applied to the whole corpus;
+  - G1a, both a pass and a constructed miss;
+  - the W2_S read against `zul1.csr_keys`;
+  - the expectations.
+- **The frozen rows on two datasets.** They ran on the laptop on MuSiQue and MetaQA as a development check of the
+  stand-in and of the family reader. These are the only E1a code runs before this page was committed. They printed:
+  - **MuSiQue:** 117,533 text groups, equal to the manifest's 117,533 distinct source rows. 2,417 questions give
+    5,962 GP slots and 3,987 CH slots over 2,629 slot ends.
+  - **MetaQA:** 43,234 text groups over 43,234 positions. 9,785 questions give 37,446 GP slots.
+  - **G1a passed exactly on both:** out-pair precision 1.0, slot agreement 1.0, with no tie churn.
+  - **G2a reproduced UL1's filed F0T shares exactly:** MuSiQue GP 33.63 and CH 49.71, MetaQA 13.81. These are UL1's
+    numbers, not new ones.
+- **No new arm has been read.** No new arm's vectors exist yet, so no E1a measure exists. The laptop's outputs were set
+  aside; the host rows build their own.
