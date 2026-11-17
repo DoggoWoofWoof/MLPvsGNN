@@ -1,0 +1,788 @@
+{
+ "bar": 0.55,
+ "cells": {
+  "co": {
+   "2wiki": {
+    "A": 0.48578,
+    "call": "BELOW",
+    "counted": 5523,
+    "eligible": 5928
+   },
+   "hotpotqa": {
+    "A": 0.5798,
+    "call": "ABOVE",
+    "counted": 5262,
+    "eligible": 5918
+   },
+   "musique": {
+    "A": 0.52161,
+    "call": "ABOVE",
+    "counted": 4444,
+    "eligible": 4599
+   },
+   "squad": {
+    "A": 0.49416,
+    "call": "LEVEL",
+    "counted": 4197,
+    "eligible": 5758
+   }
+  },
+  "ment": {
+   "2wiki": {
+    "A": 0.59307,
+    "call": "ABOVE",
+    "counted": 5890,
+    "eligible": 5928
+   },
+   "hotpotqa": {
+    "A": 0.69272,
+    "call": "ABOVE",
+    "counted": 5868,
+    "eligible": 5918
+   },
+   "musique": {
+    "A": 0.54972,
+    "call": "ABOVE",
+    "counted": 4500,
+    "eligible": 4599
+   },
+   "squad": {
+    "A": 0.39293,
+    "call": "BELOW",
+    "counted": 5758,
+    "eligible": 5758
+   }
+  }
+ },
+ "code_sha256": "e29184f187189c450575425bb6cea7d011e401fbb37cd3320fa75aad52be3e97",
+ "datasets": {
+  "2wiki": {
+   "auc": {
+    "F_co": 0.74955,
+    "F_co-s_u": {
+     "call": "BELOW",
+     "ci": [
+      -0.02749,
+      -0.02043
+     ],
+     "diff": -0.02405
+    },
+    "F_ment": 0.81968,
+    "F_ment-s_u": {
+     "call": "ABOVE",
+     "ci": [
+      0.04194,
+      0.05002
+     ],
+     "diff": 0.04609
+    },
+    "s_u": 0.7736,
+    "twin0": 0.99316
+   },
+   "carve": "fit",
+   "eligible": 5928,
+   "fam": {
+    "co": {
+     "A": 0.48578,
+     "A_call": {
+      "call": "BELOW",
+      "ci": [
+       -0.02408,
+       -0.00453
+      ],
+      "diff": -0.01422
+     },
+     "A_miss": 0.52164,
+     "A_miss_call": {
+      "call": "ABOVE",
+      "ci": [
+       0.00965,
+       0.03352
+      ],
+      "diff": 0.02164
+     },
+     "counted": 5523,
+     "counted_miss": 4278,
+     "coverage": {
+      "golds": 0.85582,
+      "rows": 0.85483
+     },
+     "median_deg": {
+      "gold": 17.0,
+      "non_gold": 17.0
+     },
+     "pairs": 16643,
+     "terciles": {
+      "0": {
+       "A": 0.40553,
+       "cut": [
+        14.0,
+        32.0
+       ],
+       "pairs": 5912,
+       "questions": 3008
+      },
+      "1": {
+       "A": 0.48185,
+       "cut": [
+        14.0,
+        32.0
+       ],
+       "pairs": 5310,
+       "questions": 2788
+      },
+      "2": {
+       "A": 0.56855,
+       "cut": [
+        14.0,
+        32.0
+       ],
+       "pairs": 5421,
+       "questions": 2823
+      }
+     }
+    },
+    "ment": {
+     "A": 0.59307,
+     "A_call": {
+      "call": "ABOVE",
+      "ci": [
+       0.08464,
+       0.101
+      ],
+      "diff": 0.09307
+     },
+     "A_miss": 0.67911,
+     "A_miss_call": {
+      "call": "ABOVE",
+      "ci": [
+       0.1686,
+       0.1897
+      ],
+      "diff": 0.17911
+     },
+     "counted": 5890,
+     "counted_miss": 5001,
+     "coverage": {
+      "golds": 0.99993,
+      "rows": 0.98125
+     },
+     "median_deg": {
+      "gold": 20.0,
+      "non_gold": 18.0
+     },
+     "pairs": 22161,
+     "terciles": {
+      "0": {
+       "A": 0.44306,
+       "cut": [
+        15.0,
+        34.0
+       ],
+       "pairs": 7907,
+       "questions": 3918
+      },
+      "1": {
+       "A": 0.55548,
+       "cut": [
+        15.0,
+        34.0
+       ],
+       "pairs": 7028,
+       "questions": 3370
+      },
+      "2": {
+       "A": 0.81029,
+       "cut": [
+        15.0,
+        34.0
+       ],
+       "pairs": 7226,
+       "questions": 3152
+      }
+     }
+    }
+   },
+   "g2": {
+    "max_abs_diff": 0.000853,
+    "not_finite": 0,
+    "ok": true,
+    "rows": 6333879
+   },
+   "questions": 5928,
+   "r5": {
+    "F_co": 0.35261,
+    "F_co-s_u": {
+     "call": "BELOW",
+     "ci": [
+      -0.15726,
+      -0.14364
+     ],
+     "diff": -0.15073
+    },
+    "F_ment": 0.29441,
+    "F_ment-s_u": {
+     "call": "BELOW",
+     "ci": [
+      -0.2169,
+      -0.20146
+     ],
+     "diff": -0.20892
+    },
+    "s_u": 0.50333
+   }
+  },
+  "hotpotqa": {
+   "auc": {
+    "F_co": 0.90294,
+    "F_co-s_u": {
+     "call": "LEVEL",
+     "ci": [
+      -0.00158,
+      0.00394
+     ],
+     "diff": 0.00118
+    },
+    "F_ment": 0.9362,
+    "F_ment-s_u": {
+     "call": "ABOVE",
+     "ci": [
+      0.03118,
+      0.03749
+     ],
+     "diff": 0.03444
+    },
+    "s_u": 0.90176,
+    "twin0": 0.99225
+   },
+   "carve": "fit",
+   "eligible": 5918,
+   "fam": {
+    "co": {
+     "A": 0.5798,
+     "A_call": {
+      "call": "ABOVE",
+      "ci": [
+       0.06908,
+       0.09002
+      ],
+      "diff": 0.0798
+     },
+     "A_miss": 0.65042,
+     "A_miss_call": {
+      "call": "ABOVE",
+      "ci": [
+       0.13505,
+       0.16625
+      ],
+      "diff": 0.15042
+     },
+     "counted": 5262,
+     "counted_miss": 2760,
+     "coverage": {
+      "golds": 0.86547,
+      "rows": 0.82204
+     },
+     "median_deg": {
+      "gold": 14.0,
+      "non_gold": 12.0
+     },
+     "pairs": 12284,
+     "terciles": {
+      "0": {
+       "A": 0.55305,
+       "cut": [
+        11.0,
+        26.0
+       ],
+       "pairs": 4234,
+       "questions": 2620
+      },
+      "1": {
+       "A": 0.57497,
+       "cut": [
+        11.0,
+        26.0
+       ],
+       "pairs": 4102,
+       "questions": 2552
+      },
+      "2": {
+       "A": 0.60339,
+       "cut": [
+        11.0,
+        26.0
+       ],
+       "pairs": 3948,
+       "questions": 2335
+      }
+     }
+    },
+    "ment": {
+     "A": 0.69272,
+     "A_call": {
+      "call": "ABOVE",
+      "ci": [
+       0.18455,
+       0.20089
+      ],
+      "diff": 0.19272
+     },
+     "A_miss": 0.77679,
+     "A_miss_call": {
+      "call": "ABOVE",
+      "ci": [
+       0.26498,
+       0.28786
+      ],
+      "diff": 0.27679
+     },
+     "counted": 5868,
+     "counted_miss": 3344,
+     "coverage": {
+      "golds": 0.99665,
+      "rows": 0.98439
+     },
+     "median_deg": {
+      "gold": 14.0,
+      "non_gold": 10.0
+     },
+     "pairs": 16656,
+     "terciles": {
+      "0": {
+       "A": 0.54363,
+       "cut": [
+        10.0,
+        23.0
+       ],
+       "pairs": 5565,
+       "questions": 3358
+      },
+      "1": {
+       "A": 0.66456,
+       "cut": [
+        10.0,
+        23.0
+       ],
+       "pairs": 5668,
+       "questions": 3321
+      },
+      "2": {
+       "A": 0.87835,
+       "cut": [
+        10.0,
+        23.0
+       ],
+       "pairs": 5423,
+       "questions": 2921
+      }
+     }
+    }
+   },
+   "g2": {
+    "max_abs_diff": 0.000996,
+    "not_finite": 0,
+    "ok": true,
+    "rows": 4177279
+   },
+   "questions": 5930,
+   "r5": {
+    "F_co": 0.58009,
+    "F_co-s_u": {
+     "call": "BELOW",
+     "ci": [
+      -0.09826,
+      -0.08525
+     ],
+     "diff": -0.09167
+    },
+    "F_ment": 0.61609,
+    "F_ment-s_u": {
+     "call": "BELOW",
+     "ci": [
+      -0.06337,
+      -0.04833
+     ],
+     "diff": -0.05568
+    },
+    "s_u": 0.67176
+   }
+  },
+  "musique": {
+   "auc": {
+    "F_co": 0.93356,
+    "F_co-s_u": {
+     "call": "BELOW",
+     "ci": [
+      -0.01867,
+      -0.01432
+     ],
+     "diff": -0.01652
+    },
+    "F_ment": 0.9317,
+    "F_ment-s_u": {
+     "call": "BELOW",
+     "ci": [
+      -0.02061,
+      -0.0161
+     ],
+     "diff": -0.01837
+    },
+    "s_u": 0.95008,
+    "twin0": 0.98838
+   },
+   "carve": "s1fit",
+   "eligible": 4599,
+   "fam": {
+    "co": {
+     "A": 0.52161,
+     "A_call": {
+      "call": "ABOVE",
+      "ci": [
+       0.0116,
+       0.03215
+      ],
+      "diff": 0.02161
+     },
+     "A_miss": 0.56692,
+     "A_miss_call": {
+      "call": "ABOVE",
+      "ci": [
+       0.05318,
+       0.08072
+      ],
+      "diff": 0.06692
+     },
+     "counted": 4444,
+     "counted_miss": 3397,
+     "coverage": {
+      "golds": 0.884,
+      "rows": 0.90382
+     },
+     "median_deg": {
+      "gold": 15.0,
+      "non_gold": 16.0
+     },
+     "pairs": 14329,
+     "terciles": {
+      "0": {
+       "A": 0.37192,
+       "cut": [
+        11.0,
+        26.0
+       ],
+       "pairs": 4810,
+       "questions": 2413
+      },
+      "1": {
+       "A": 0.54047,
+       "cut": [
+        11.0,
+        26.0
+       ],
+       "pairs": 4853,
+       "questions": 2389
+      },
+      "2": {
+       "A": 0.65088,
+       "cut": [
+        11.0,
+        26.0
+       ],
+       "pairs": 4666,
+       "questions": 2192
+      }
+     }
+    },
+    "ment": {
+     "A": 0.54972,
+     "A_call": {
+      "call": "ABOVE",
+      "ci": [
+       0.04003,
+       0.05948
+      ],
+      "diff": 0.04972
+     },
+     "A_miss": 0.60494,
+     "A_miss_call": {
+      "call": "ABOVE",
+      "ci": [
+       0.09228,
+       0.11741
+      ],
+      "diff": 0.10494
+     },
+     "counted": 4500,
+     "counted_miss": 3498,
+     "coverage": {
+      "golds": 0.93316,
+      "rows": 0.94313
+     },
+     "median_deg": {
+      "gold": 16.0,
+      "non_gold": 19.0
+     },
+     "pairs": 15726,
+     "terciles": {
+      "0": {
+       "A": 0.41688,
+       "cut": [
+        10.0,
+        61.0
+       ],
+       "pairs": 5283,
+       "questions": 2621
+      },
+      "1": {
+       "A": 0.58562,
+       "cut": [
+        10.0,
+        61.0
+       ],
+       "pairs": 5218,
+       "questions": 2414
+      },
+      "2": {
+       "A": 0.6552,
+       "cut": [
+        10.0,
+        61.0
+       ],
+       "pairs": 5225,
+       "questions": 2205
+      }
+     }
+    }
+   },
+   "g2": {
+    "max_abs_diff": 0.000852,
+    "not_finite": 0,
+    "ok": true,
+    "rows": 25112502
+   },
+   "questions": 4601,
+   "r5": {
+    "F_co": 0.35843,
+    "F_co-s_u": {
+     "call": "BELOW",
+     "ci": [
+      -0.1477,
+      -0.13195
+     ],
+     "diff": -0.1396
+    },
+    "F_ment": 0.35943,
+    "F_ment-s_u": {
+     "call": "BELOW",
+     "ci": [
+      -0.14697,
+      -0.13006
+     ],
+     "diff": -0.1386
+    },
+    "s_u": 0.49802
+   }
+  },
+  "squad": {
+   "auc": {
+    "F_co": 0.92764,
+    "F_co-s_u": {
+     "call": "BELOW",
+     "ci": [
+      -0.04309,
+      -0.03658
+     ],
+     "diff": -0.03981
+    },
+    "F_ment": 0.92909,
+    "F_ment-s_u": {
+     "call": "BELOW",
+     "ci": [
+      -0.04153,
+      -0.03492
+     ],
+     "diff": -0.03835
+    },
+    "s_u": 0.96744,
+    "twin0": 0.99113
+   },
+   "carve": "fit",
+   "eligible": 5758,
+   "fam": {
+    "co": {
+     "A": 0.49416,
+     "A_call": {
+      "call": "LEVEL",
+      "ci": [
+       -0.02061,
+       0.00882
+      ],
+      "diff": -0.00584
+     },
+     "A_miss": 0.49357,
+     "A_miss_call": {
+      "call": "LEVEL",
+      "ci": [
+       -0.05013,
+       0.03856
+      ],
+      "diff": -0.00643
+     },
+     "counted": 4197,
+     "counted_miss": 389,
+     "coverage": {
+      "golds": 0.80531,
+      "rows": 0.82295
+     },
+     "median_deg": {
+      "gold": 13.0,
+      "non_gold": 14.0
+     },
+     "pairs": 5241,
+     "terciles": {
+      "0": {
+       "A": 0.4116,
+       "cut": [
+        12.0,
+        27.0
+       ],
+       "pairs": 1769,
+       "questions": 1465
+      },
+      "1": {
+       "A": 0.53365,
+       "cut": [
+        12.0,
+        27.0
+       ],
+       "pairs": 1727,
+       "questions": 1382
+      },
+      "2": {
+       "A": 0.54333,
+       "cut": [
+        12.0,
+        27.0
+       ],
+       "pairs": 1745,
+       "questions": 1350
+      }
+     }
+    },
+    "ment": {
+     "A": 0.39293,
+     "A_call": {
+      "call": "BELOW",
+      "ci": [
+       -0.11957,
+       -0.09526
+      ],
+      "diff": -0.10707
+     },
+     "A_miss": 0.45688,
+     "A_miss_call": {
+      "call": "BELOW",
+      "ci": [
+       -0.08008,
+       -0.00616
+      ],
+      "diff": -0.04312
+     },
+     "counted": 5758,
+     "counted_miss": 487,
+     "coverage": {
+      "golds": 1.0,
+      "rows": 1.0
+     },
+     "median_deg": {
+      "gold": 57.0,
+      "non_gold": 64.0
+     },
+     "pairs": 7320,
+     "terciles": {
+      "0": {
+       "A": 0.38706,
+       "cut": [
+        42.0,
+        76.0
+       ],
+       "pairs": 2535,
+       "questions": 1979
+      },
+      "1": {
+       "A": 0.3875,
+       "cut": [
+        42.0,
+        76.0
+       ],
+       "pairs": 2346,
+       "questions": 1880
+      },
+      "2": {
+       "A": 0.40442,
+       "cut": [
+        42.0,
+        76.0
+       ],
+       "pairs": 2439,
+       "questions": 1899
+      }
+     }
+    }
+   },
+   "g2": {
+    "max_abs_diff": 0.00095,
+    "not_finite": 0,
+    "ok": true,
+    "rows": 292994
+   },
+   "questions": 5856,
+   "r5": {
+    "F_co": 0.81695,
+    "F_co-s_u": {
+     "call": "BELOW",
+     "ci": [
+      -0.10733,
+      -0.08961
+     ],
+     "diff": -0.09847
+    },
+    "F_ment": 0.83206,
+    "F_ment-s_u": {
+     "call": "BELOW",
+     "ci": [
+      -0.09152,
+      -0.07555
+     ],
+     "diff": -0.08336
+    },
+    "s_u": 0.91542
+   }
+  }
+ },
+ "declared": "docs/HR1_HOPRETRIEVER_ROUTE1.md",
+ "stage": "HR1",
+ "verdicts": {
+  "co": {
+   "below": [
+    "2wiki"
+   ],
+   "carry": [
+    "hotpotqa"
+   ],
+   "verdict": "NO_SIGNAL"
+  },
+  "ment": {
+   "below": [
+    "squad"
+   ],
+   "carry": [
+    "2wiki",
+    "hotpotqa"
+   ],
+   "verdict": "NO_SIGNAL"
+  }
+ },
+ "written_utc": "2026-11-17T14:59:57Z"
+}

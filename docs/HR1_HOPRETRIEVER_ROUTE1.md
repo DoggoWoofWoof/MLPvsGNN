@@ -3,7 +3,7 @@
 Declared 17 November 2026, before any HR1 number. Code: `outputs/mp_unified/zhr1.py`. HR1 writes only under `outputs/hr1`.
 It trains nothing and changes no fit, graph, pool, link, encoder, cache or feature. It edits no other script. It is a
 graph-level scouting stage: it checks a new input on the training questions before any refit would carry it, as UL1
-checked links against the oracle before D83's one refit (the user, 16 Nov: verify first, then train once). Status: declared.
+checked links against the oracle before D83's one refit (the user, 16 Nov: verify first, then train once). Status: filed 17 Nov (section 10), NO_SIGNAL on both families.
 
 ## 1. The question
 
@@ -134,3 +134,62 @@ Per question with at least one gold and one non-gold row in its pool:
 - **Not the models' margin.** A^f measures information beyond the plain cosine, not beyond the record models' other
   inputs (WALK, DISTS, SEED). Only a refit measures that, which is why a carried family goes into the one next refit and
   not into a verdict on the models.
+
+## 10. Results, filed 17 November 2026
+
+**Provenance.**
+- `hr1-rep` ran on the host with `zhr1.py report`: sha256 e29184f187189c45 (the file of f9b98ae), written
+  2026-11-17T14:59:57Z.
+- The four `hr1-cols-<d>` rows ran first (4 CPUs each; 2wiki 17 min at 14 GB, hotpotqa 11 min).
+- **Gates.** G1 passed on every dataset (the rows ran). G2's largest |s_u - dense_cos| is 0.000996, over 292,994
+  (squad) to 25,112,502 (musique) rows, with no non-finite value. G3 passed (the report was written).
+- **Files.** `outputs/hr1/report.json` and `report.md` are filed with this section. The columns stay on the host.
+
+**Verdict: NO_SIGNAL for both families.** Route 1 closes for these forms. D96 is not raised.
+
+| dataset | A^ment | call | carries | A^co | call | carries |
+|---|---|---|---|---|---|---|
+| squad | 0.393 | BELOW | no | 0.494 | LEVEL | no |
+| musique | 0.550 (0.54972) | ABOVE | no: under the 0.55 bar | 0.522 | ABOVE | no: under the bar |
+| hotpotqa | 0.693 | ABOVE | yes | 0.580 | ABOVE | yes |
+| 2wiki | 0.593 | ABOVE | yes | 0.486 | BELOW | no |
+
+- **ment:** two datasets carry it and one is BELOW (squad); the rule needs three and none BELOW. Had MuSiQue carried,
+  squad's BELOW would still stop it.
+- **co:** one carries it (hotpotqa) and one is BELOW (2wiki).
+
+**Beside (deciding nothing):**
+- **Next-hop golds.** On the three multi-hop datasets, A over the golds outside s_u's top five (A_miss) is above A in
+  every cell:
+  - ment: 2wiki 0.679, hotpotqa 0.777, musique 0.605;
+  - co: 0.522, 0.650 and 0.567.
+
+  On squad it stays under 0.5 (ment 0.457).
+- **Degree.** On the multi-hop datasets, A rises with the gold's degree tercile. The lowest tercile is under 0.5 on
+  2wiki and musique.
+
+  | dataset | ment A by tercile (low, mid, high) |
+  |---|---|
+  | 2wiki | 0.44, 0.56, 0.81 |
+  | hotpotqa | 0.54, 0.66, 0.88 |
+  | musique | 0.42, 0.59, 0.66 |
+  | squad | 0.39, 0.39, 0.40 |
+
+  So what the entity vector separates, it separates on well-linked golds.
+- **As a score.** Eq. 5's parameter-free fusion is not a usable score on its own:
+  - **AUC.** F^ment's AUC is above s_u's on hotpotqa (0.936 against 0.902) and 2wiki (0.820 against 0.774), and below
+    it on musique and squad.
+  - **R@5.** F's R@5 is below s_u's on every dataset and both families, by 5.6 to 20.9 points.
+  - **The trained twin.** twin0's AUC is 0.988 to 0.993 everywhere.
+- **Coverage.** R.mention reaches 94 to 100% of pool rows and co 82 to 90%. Gold and non-gold median degrees are
+  close.
+
+**What follows (section 7, NO_SIGNAL).**
+- Route 1 closes for s_m^ment, s_m^co and their eq. 5 fusion, as declared. The verdict closes only these forms.
+- **Route 2 is named, not declared.** It reads the mention's own sentence through the frozen encoder, which needs new
+  encoder calls. That is the user's call under the encoder rule, and it waits for the encoder comparison (ENC) to
+  settle the encoder.
+- **A new form would come after this report.** The tercile pattern was seen here, so a degree-gated or
+  next-hop-only form would be chosen on these training carves. It is not named here. Any such form would need its own
+  file and unseen carves.
+- **The journal.** The coverage and degree tables go to its analysis beside AP4's precision ledger.
