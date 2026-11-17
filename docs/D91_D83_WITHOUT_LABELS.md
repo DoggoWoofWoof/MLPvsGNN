@@ -104,6 +104,13 @@ no edge dropped). The stores after D83's dedup decide each pair's families:
   family's label.
 - **G3d (equal to D83).** Every hard-linked file is D83's (same file, or sha256 equal). D83's arms are read only and
   nothing in them is written.
+  - *Amended 17 Nov, before any D91 number:* the 14 kt records (`kt/<ds>/<carve>/record.json`, every arm) are D91's
+    own files. Each is D83's record with `cache_root` naming the D91 arm's cache, plus a `d91` block naming D83's record
+    and its sha256. `zp1c3.load_kt` compares `cache_root` with the root it reads on, so the first six zrckpn fits (D91F,
+    read through the world's `outputs/pko`) stopped there. The kt arrays stay D83's links, and `load_kt` still checks
+    their sha256 and the cache parts' sha256. Script: `outputs/host_ops/d91_roots.py kt`; ledger:
+    `outputs/abl/<arm>/d91_kt_roots.json`. The other D83 paths in D91's linked records are notes that no loader
+    compares (`d91_roots.py survey`). The six fits, and the 60 forks and reads behind them, run again as the `-r2` rows.
 - **G4 world, G6 reads:** as D83's section 8 (G5, G6), for d91world.
 
 ## 6. Reads, and the rule (fixed now)
