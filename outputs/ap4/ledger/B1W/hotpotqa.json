@@ -1,0 +1,37 @@
+{
+ "declared_in": "docs/AP4_LABEL_PRECISION_LEDGER.md",
+ "stage": "AP4",
+ "arm": "B1W",
+ "dataset": "hotpotqa",
+ "carve": "b1w",
+ "root": "outputs/b1p",
+ "names": [
+  "slot",
+  "NER.spacy",
+  "K.knn"
+ ],
+ "limit": null,
+ "questions": 1000,
+ "with_gold": 1000,
+ "pairs": {
+  "found": 8628,
+  "top1": 5266
+ },
+ "targets": 422,
+ "ids_sha256": "34c0d0a566d7405b536de4c9b7660e224157168c9133ab19fd8808618464ca27",
+ "pool_sha256": "b2be402b5bd479a41fb4e574855089c51aee3dd5f88125eb497d4788cc30d071",
+ "top5_sha256": "a11f04af3104f7b5a88ff98ff563beb441932d9414cd0b57d253e40cadbc61f4",
+ "npz_sha256": "ca9edbf5da36f9ee12e6c6a555d50a3a91766f1a68a50b328063afb253889166",
+ "parts": [
+  {
+   "part": "part_0of1",
+   "rows": 65251,
+   "queries": 1000,
+   "cache_record_sha256": "1612f3745e9c8a33b2d0f18ab12791a6d198662d005ba6655e5ea646ada8bd7e",
+   "links_record_sha256": "e18622e80e154bff6dc6c9911bc80fa64223f78c0942a64852a3497090210ffe"
+  }
+ ],
+ "zap4_sha256": "377e6c57b5ea41bf315051471124fd81c9f1c020bd727caa141b30e808951da2",
+ "seconds": 0.4,
+ "utc": "2026-11-16T12:00:51Z"
+}

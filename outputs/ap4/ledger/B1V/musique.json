@@ -1,0 +1,60 @@
+{
+ "declared_in": "docs/AP4_LABEL_PRECISION_LEDGER.md",
+ "stage": "AP4",
+ "arm": "B1V",
+ "dataset": "musique",
+ "carve": "b1v",
+ "root": "outputs/b1v",
+ "names": [
+  "S",
+  "R.mention",
+  "R.name_comention",
+  "R.title_comention",
+  "K.knn"
+ ],
+ "limit": null,
+ "questions": 1000,
+ "with_gold": 1000,
+ "pairs": {
+  "found": 38901,
+  "top1": 29303
+ },
+ "targets": 1299,
+ "ids_sha256": "9c5753f56dc7a93d796e39f6c6baa71d16f01aa09b576e6cf1334efc42bb2071",
+ "pool_sha256": "a39b01abee80b1d2d635fc1d8366d264f3e4e33a48702bf062ce90a95c068e46",
+ "top5_sha256": "b0a7dafedf191d9f1c82857899ef2c0d71a1acbb239c37e04d3dc02b3946935c",
+ "npz_sha256": "88f2ba25fea78defcef8b6caf16da7cfba1655cab56a827b1894faedd13e0022",
+ "parts": [
+  {
+   "part": "part_0of4",
+   "rows": 839163,
+   "queries": 246,
+   "cache_record_sha256": "7c2fcb308a0b811e15ad37377b36c978c56cb97146327a615be8b4dfd3cc65ed",
+   "links_record_sha256": "da5ee8237f7d904aa8816901a3619360af0af0ec8739dd48c7e53b2ba8c0b0a8"
+  },
+  {
+   "part": "part_1of4",
+   "rows": 869187,
+   "queries": 252,
+   "cache_record_sha256": "6bfbe9b9a53c7e51c33f2a3e95e57487b05e2d7adca9e2145c461e5c33ec0e0e",
+   "links_record_sha256": "d655bcff9a1cc8e4cc59dde1e0946ef8a467bef998d2c683a45ef22d5695c9ee"
+  },
+  {
+   "part": "part_2of4",
+   "rows": 866679,
+   "queries": 252,
+   "cache_record_sha256": "044dd8f744cc57ad7daf2e8af6298358ea408e92a9222eb9b57d80f056fefafb",
+   "links_record_sha256": "f184ce7acc6958e16398da5ea171a584a1754ee524877c9bf5346851fbc41f87"
+  },
+  {
+   "part": "part_3of4",
+   "rows": 858549,
+   "queries": 250,
+   "cache_record_sha256": "ed4ce15cb87457c3d0c750aa8ab35c8c98974c65fb85ac7c59cf6ced8f3f10b0",
+   "links_record_sha256": "356334ea45c5cfa9659f031f2c4608de6642388e4249fc27d21146afa3f5ae81"
+  }
+ ],
+ "zap4_sha256": "377e6c57b5ea41bf315051471124fd81c9f1c020bd727caa141b30e808951da2",
+ "seconds": 1.5,
+ "utc": "2026-11-16T16:10:32Z"
+}

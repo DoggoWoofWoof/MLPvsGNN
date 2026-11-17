@@ -1,0 +1,39 @@
+{
+ "declared_in": "docs/AP4_LABEL_PRECISION_LEDGER.md",
+ "stage": "AP4",
+ "arm": "B1V",
+ "dataset": "2wiki",
+ "carve": "b1v",
+ "root": "outputs/b1v",
+ "names": [
+  "S",
+  "R.mention",
+  "R.name_comention",
+  "R.title_comention",
+  "K.knn"
+ ],
+ "limit": null,
+ "questions": 1000,
+ "with_gold": 1000,
+ "pairs": {
+  "found": 8397,
+  "top1": 5359
+ },
+ "targets": 1166,
+ "ids_sha256": "697960605d63ab7816c47ff4f35a033fc4041a4f5bb62e5c70590c625f82fa7f",
+ "pool_sha256": "6bece688d3f679a5b509149e35ac3ae79b3ca8197e87b7037af3738de79ddaf9",
+ "top5_sha256": "e45fb7ef5b5693e2dbb6865733dbedd5df1b680e0df5b2ede4b71e4311e912b0",
+ "npz_sha256": "0fac6fb4892ae73c99708e84fe7446a1f86227b99337c14f8b8860cf1c1ab131",
+ "parts": [
+  {
+   "part": "part_0of1",
+   "rows": 88472,
+   "queries": 1000,
+   "cache_record_sha256": "61eaa1c261a73f890854771ebe36960e04ebefc370c2fef8ab66d693550d2077",
+   "links_record_sha256": "2de6a6524df2b604f9768ae9724d646ddeaf5446f7150910e1d2c9d084b7097f"
+  }
+ ],
+ "zap4_sha256": "377e6c57b5ea41bf315051471124fd81c9f1c020bd727caa141b30e808951da2",
+ "seconds": 0.4,
+ "utc": "2026-11-16T13:58:54Z"
+}

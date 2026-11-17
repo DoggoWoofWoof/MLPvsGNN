@@ -1,0 +1,130 @@
+{
+ "declared_in": "docs/AP4_LABEL_PRECISION_LEDGER.md",
+ "stage": "AP4",
+ "arm": "D83E",
+ "dataset": "musique",
+ "carve": "s1eval",
+ "root": "outputs/abl/D83E",
+ "names": [
+  "S",
+  "R.mention",
+  "R.name_comention",
+  "R.title_comention",
+  "K.knn"
+ ],
+ "limit": null,
+ "questions": 2417,
+ "with_gold": 2417,
+ "pairs": {
+  "found": 159708,
+  "top1": 156473
+ },
+ "targets": 2178,
+ "ids_sha256": "bad4f9b18a7abb8e475b7285db2c370540b9a4aa51770ce553056e9b0761ce46",
+ "pool_sha256": "874707f5945716b0d53914d611469a3bfe0751e84ec09baaa3edc923d465c619",
+ "top5_sha256": "8e111fab301164777b5c5d36511996a1f200fb84227f0b5d8a4bfd3e89cadfb7",
+ "npz_sha256": "5ca6b6e080d797904a9132ba9371e6e719b1ce260226375fb6f375fc2105525b",
+ "parts": [
+  {
+   "part": "part_0of14",
+   "rows": 852101,
+   "queries": 172,
+   "cache_record_sha256": "f1339c06aedb9f1b05a7d2322b5abd8af81e73693ab9e3f70b445ce39d6dfa57",
+   "links_record_sha256": "c094a1fb30134d20a6b86307b807890046ed895f1831e0236366dece69434042"
+  },
+  {
+   "part": "part_1of14",
+   "rows": 856923,
+   "queries": 172,
+   "cache_record_sha256": "db543df7e1da35db1e8af7664aa516de155fc8497a14239a70680cab120e8866",
+   "links_record_sha256": "93112a399c9d5c490395ac6db6d9eb0f2bd3ad58de11014b824f4cd79ff31e46"
+  },
+  {
+   "part": "part_2of14",
+   "rows": 858373,
+   "queries": 172,
+   "cache_record_sha256": "75dce715f3dca7782a44e2827ac4e74953d4739cb57680f3f8765322744a35bd",
+   "links_record_sha256": "4d109b0a6b15c32f901399cb979c23c3e27d3859323b0a14b93852888dc5adc1"
+  },
+  {
+   "part": "part_3of14",
+   "rows": 883704,
+   "queries": 172,
+   "cache_record_sha256": "b6ac7f2f682567257505ad720551a7f83dd3da2447a2d75e3359918fea1bcbba",
+   "links_record_sha256": "ec60e0a8d58efa523bf804bd711e74fb5e1464f169fe7b02f4c8a7e374f8d785"
+  },
+  {
+   "part": "part_4of14",
+   "rows": 950346,
+   "queries": 176,
+   "cache_record_sha256": "7840447789f9570462f638baadd2b40670cd9142d88b602221f5dcc3997382d4",
+   "links_record_sha256": "0bb8a11748134a2788ab83721a348d47e76e93c8b8fd62b0980d3b1b87e20d51"
+  },
+  {
+   "part": "part_5of14",
+   "rows": 859382,
+   "queries": 172,
+   "cache_record_sha256": "674b72f92cb887872ad9f441801ef4ffa82920fbdb1f8f5f1acc8f1ffcfc4117",
+   "links_record_sha256": "78c58cbde0b103d23f1cc8da871a5b2e9a4ac077589a84d7e92dfd67c33b060f"
+  },
+  {
+   "part": "part_6of14",
+   "rows": 892959,
+   "queries": 172,
+   "cache_record_sha256": "c3814bef7031d8e353ca3f5dba4722d6bb711c938030857b5b30550f7443bcae",
+   "links_record_sha256": "a84ecfa05d3beece82e0cd72b0f22eab8684ab471e7cf4564f7757517605eeae"
+  },
+  {
+   "part": "part_7of14",
+   "rows": 842581,
+   "queries": 172,
+   "cache_record_sha256": "0c7a761cc57a112210b46e6ddccaae2e646c682072447a698cada83bbaa2656e",
+   "links_record_sha256": "e55da262e115d625886916a7b864921649644e8792240d17165976274f233250"
+  },
+  {
+   "part": "part_8of14",
+   "rows": 897950,
+   "queries": 172,
+   "cache_record_sha256": "7992c70c0aee770af23b532076d6b54bf2f12521484c6f782689e7545739c605",
+   "links_record_sha256": "eb982f35ecb16a6659563820a0f34348e6c347a228757b9cc60c49480b69ffd8"
+  },
+  {
+   "part": "part_9of14",
+   "rows": 900484,
+   "queries": 176,
+   "cache_record_sha256": "8d1ec7576184b08d3fb05edcc1634e13f61bbb4f0af39d783ca4d25620614255",
+   "links_record_sha256": "e919f60b2889638152ff55d9132bef008bcab851bea540e07e66e30122de3cb6"
+  },
+  {
+   "part": "part_10of14",
+   "rows": 866021,
+   "queries": 172,
+   "cache_record_sha256": "910cada8b70d99aba958d1b2eec171f009c677ac4d7b464107c5e874cb555d4d",
+   "links_record_sha256": "b3330a2ec3bfa7d98ab5be55d8c4a0661a50fdc33b3f80e77a1d528cd92436ae"
+  },
+  {
+   "part": "part_11of14",
+   "rows": 953331,
+   "queries": 172,
+   "cache_record_sha256": "1848bb380c90d643ecab40effe629e3e2f6f08cf2e45b71c5ccc52b91731a284",
+   "links_record_sha256": "ca1c382d6766752e9a4775b73c20b9df3c22f961dc42134fb49c962d275121bd"
+  },
+  {
+   "part": "part_12of14",
+   "rows": 1054458,
+   "queries": 172,
+   "cache_record_sha256": "0045960a24cbd9b32559ac1e8cb9ad14c85d4b7433307fa2509cf103eabd9e24",
+   "links_record_sha256": "9e555ab9780fa35cc403251e324d0aa48361a4e9a5c44a856254062fe98e4307"
+  },
+  {
+   "part": "part_13of14",
+   "rows": 1053557,
+   "queries": 173,
+   "cache_record_sha256": "8a6c2f9fa832c5a173ba9e14df595d20b9fe9cc89fc3cb040c36d77760a52d5e",
+   "links_record_sha256": "50f7596b5ee1cd4017f5131df8b1f48df59563b80a19e9edf3461a447ab94e33"
+  }
+ ],
+ "zap4_sha256": "377e6c57b5ea41bf315051471124fd81c9f1c020bd727caa141b30e808951da2",
+ "seconds": 17.3,
+ "utc": "2026-11-16T20:14:29Z"
+}
