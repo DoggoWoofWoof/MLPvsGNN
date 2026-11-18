@@ -308,3 +308,88 @@ All rows run on the host CPU:
     numbers, not new ones.
 - **No new arm has been read.** No new arm's vectors exist yet, so no E1a measure exists. The laptop's outputs were set
   aside; the host rows build their own.
+
+## 10. E1b, part 1: each encoder's base pool B (declared 18 Nov 2026, 20:58 IST, before any E1b number)
+
+Script: `outputs/mp_unified/zenc1b.py` (new; zenc.py and zenc1.py are imported unchanged). Outputs only under
+`outputs/enc/e1b/`. Nothing trains.
+
+### 10.1 Why this part first
+
+The user chose the pool check before any E2 fit: "Train E2 only for encoders whose pools keep the golds within about 1
+point of frozen", built on MuSiQue, SQuAD and MetaQA on the CPU.
+
+A real pool under another encoder has never been built. D83 kept the record's pools by design (A2). The PKO rule reads
+the encoder in four places: the question vectors (the walks and steering), the node vectors (cos1 and kt_cos), the
+first-stage lists (B), and the K family. So the full pools need an arm package view and the arm's K over the whole
+corpus. That is part 2 (10.6), and it is built only for an arm this part carries.
+
+Part 1 rebuilds the one piece that needs no new machinery: **B, the pool's base**. B is the record's own construction
+over the first-stage lists, plus the seeds:
+- the base rows `m3b_compile.base_rows` gives for the dataset's own construction (MuSiQue `equal_rrf_budget_200`,
+  SQuAD and MetaQA `equal_rrf_budget_50`): equal RRF (constant 60) of the dense and SPLADE top 200, the first 200 or 50;
+- the seeds, `m3b_pools.seeds_of`: dense top 5 then SPLADE top 5;
+- B = the union of both, as `zpko.rule_batch` forms it.
+
+Each arm's B uses its own dense top-1000 (E0's `outputs/enc/e0/<arm>/<ds>.npz`) and the package's SPLADE top-1000.
+Every callee is the record's, unchanged.
+
+**What B is to the pool.** On SQuAD the own cell is rrf50+none, so the pool is B: part 1 is the pool check there. On
+MuSiQue and MetaQA the pool is B plus the expansion through the links. The frozen arm's filed expansion share (pool
+minus B, from PKO's filed s1eval parts) is read beside, so the size of what the links add is on the record.
+
+### 10.2 Gates (any failure stops the dataset with no measure)
+
+| gate | test |
+| --- | --- |
+| G1 | the four arms' E0 files hold the same ids, rows and gold totals; the gold cache's ids equal them; every id is in PKO's filed s1eval pools |
+| G2 | B rebuilt from the package's own dense list equals the filed B (`bs_nodes`) for every question, exactly |
+| G3 | B rebuilt from E0's frozen list equals the filed B for at least 99% of questions, and its gold share is within 0.1 point of the filed B's |
+
+G2 shows the rule is the record's. G3 bounds the float churn of E0's own search, which every arm shares.
+
+### 10.3 Measures (per dataset, s1eval, each arm)
+
+- **gold share of B:** golds held in B over all golds (the ratio over questions), and the share of questions with
+  every gold in B;
+- the mean size of B;
+- **the gap:** the arm minus E0's frozen arm, in points, by `zap1.boot_diff` (2,000 resamples of the questions,
+  seed 0), with ABOVE, LEVEL or BELOW;
+- beside, for the frozen arm only: the filed B's and the filed pool's gold shares, and X, the expansion share (pool
+  minus B, in points).
+
+### 10.4 The call (per arm)
+
+Per dataset:
+- **PASS** iff the gap's lower bound is above -1.0 point.
+- **NEAR** iff not PASS, X > 0 on that dataset, and the point gap is above -(1.0 + X). The links add X points to the
+  frozen pool, so a gap that small could be won back by the expansion, and only the real pools tell.
+- **FAIL** otherwise.
+
+Per arm, over MuSiQue, SQuAD and MetaQA:
+- **CARRY** iff PASS on all three.
+- **NEAR** iff no FAIL and at least one NEAR.
+- **HOLD** iff any FAIL.
+
+### 10.5 What follows
+
+- **CARRY:** part 2 (10.6) is declared for that arm, then E2 on its pools.
+- **NEAR:** whether part 2 runs for it is the user's call.
+- **HOLD:** the arm is not trained (an E2 fit would only measure a loss already seen at the base). Its vectors go on a
+  delete list at the filing; the delete is the user's.
+- **No arm CARRIES or is NEAR:** E2 does not run. mpnet's 2Wiki encode stays held. The encoder stays the frozen one,
+  so D84's MultiHop-RAG encode can use it (the user's call). The encoder gap's next form is the first stage itself.
+
+### 10.6 Part 2 (named only, declared here before its code)
+
+The arm's real pools under PKO's rule on s1eval for MuSiQue, SQuAD and MetaQA. This needs:
+- an arm package view (the arm's question and document vectors and dense top-1000 in place of the record's);
+- the arm's K over the whole corpus under the record's kNN rule;
+- PKO's chain run on it, with every check against the record re-pointed at the view.
+
+The estimate is two to three days of code and about 7 host hours per arm on MuSiQue.
+
+### 10.7 Rows
+
+- `enc-e1b-base-<ds>` for MuSiQue, SQuAD and MetaQA: host CPU, 4 threads, minutes each; all inputs are already on the host.
+- `enc-e1b-report`: after the three. It writes `outputs/enc/e1b/report.json` and `report.md`.
