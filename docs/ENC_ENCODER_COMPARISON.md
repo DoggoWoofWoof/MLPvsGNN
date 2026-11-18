@@ -920,3 +920,22 @@ uses 11.5's words. The user decides (D101).
 **Order.** The frozen world's rows go in now: they need nothing from W1 or W2. Its GPU fits yield to other users, as
 every GPU row does. mpnet's rows wait on its W2 chains. Estimates: the frozen reads about 20 November 2026; mpnet's
 about 21 November; the report as 12.9 says.
+
+**Development log, 19 Nov 2026 02:13 IST (before any E2 number).**
+- **The report's code** is zenc2r.py (3cd6585): `collect` on the host copies each world's reads whose sha256 is their
+  marker's, and the s1eval pool parts behind them; `report` on the laptop reads them as above. GA leaves a failed run
+  out only when its named successor passed (zenc2r.SUPERSEDED: the two runs below).
+- **The frozen world's zrckpn fit** (t-fz-fit-zrckpn) trained for 23 minutes and then stopped with rc 1. After training,
+  the fit's screen.json is stamped with the sha256 of every dataset's chain record under the tree (rmatch_records), and
+  the fence refused the first of WebQSP's. Nothing of it was read. Every fit stamps the same walks (the built_records of
+  rmatch, zlink, relcols, hubwalk and zfeat). With a split, the hook now narrows them to the split's datasets (SQuAD and
+  MuSiQue): no other dataset's record is opened, and an E2 fit's screen.json lists only those two datasets' chain
+  records. zenc2t's self-test checks it: a WebQSP record beside SQuAD's and MuSiQue's is left out with the split, and
+  listed without it. The fit reruns from scratch as t-fz-fit-zrckpn-b; the frozen GNN fits were held until the change
+  was in place.
+- **mpnet's first D83F chain** (w2b-chain-f-squad) stopped after 9 s at D83's look step. PKO builds nothing before its
+  section-5 checks pass (<base>/check: WebQSP, HotpotQA, SQuAD fit and SQuAD s1eval), and the arm's PKO base has none.
+  Those checks certify PKO's code (it rebuilds the earlier pools); the arm's world runs that code pinned to the
+  record's, and re-running them on the arm's vectors would compare against the frozen vectors' pools by design. The arm's
+  world therefore carries the record's four PASS verdicts (zenc2k.py: sha256-checked copies, and carried.json naming
+  their sources). The chain reruns as w2c-chain-f-squad.

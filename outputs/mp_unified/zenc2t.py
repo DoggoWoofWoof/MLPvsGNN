@@ -267,6 +267,17 @@ assert len(ALL_CARVES) == 11
 LG_STUB = '''def basis_of(train):
     return next(b for b in ("2wiki", "hotpotqa") if b in train)
 '''
+RM_STUB = '''import hashlib, os
+from pathlib import Path
+class LC:
+    @staticmethod
+    def sha_file(p):
+        return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+CH_OUT = Path(os.environ["E2T_RM"])
+def built_records(root=CH_OUT):
+    return {str(f.parent.relative_to(root)).replace("\\\\", "/"): LC.sha_file(f)
+            for f in sorted(Path(root).glob("*/*/part_*/record.json"))}
+'''
 LAZY_STUB = '''import zwq as WQ
 assert WQ.SPLITS["WQ-musique"] == ("webqsp", "squad", "hotpotqa", "2wiki"), WQ.SPLITS
 SEEN = WQ.SPLITS["WQ-musique"]
@@ -276,7 +287,9 @@ sys.path.insert(0, sys.argv[1])
 import ltmc as LTMC
 import lean_gpu as LG
 import zwq as WQ
-out = {"all": len(LTMC.ALL_CARVES), "run": list(WQ.SPLITS["WQ-musique"]), "zs": list(WQ.ZERO_SHOT["WQ-musique"]),
+import rmatch as RM
+_BUILT = RM.built_records                                       # zp1c2's capture after the import
+out = {"rm": sorted(RM.built_records()), "rm_root": sorted(_BUILT(RM.CH_OUT)), "all": len(LTMC.ALL_CARVES), "run": list(WQ.SPLITS["WQ-musique"]), "zs": list(WQ.ZERO_SHOT["WQ-musique"]),
        "hp": list(WQ.SPLITS["WQ-hotpotqa"]), "train": [list(c) for c in LTMC.train_carves("WQ-musique")]}
 def late():
     import lazy
@@ -315,7 +328,7 @@ sys.exit(0 if ok else 3)
 def _split_child(tmp, spec, hook):
     sp = tmp / f"spec_{len(list(tmp.glob('spec_*.json')))}.json"
     sp.write_text(json.dumps(spec), encoding="utf-8")
-    env = dict(os.environ, E2HOOK=str(sp), PYTHONPATH=str(hook))
+    env = dict(os.environ, E2HOOK=str(sp), PYTHONPATH=str(hook), E2T_RM=str(tmp / "rm"))
     r = subprocess.run([sys.executable, str(tmp / "split_child.py"), str(tmp / "mods")], env=env, capture_output=True,
                        text=True)
     line = [x for x in r.stdout.splitlines() if x.startswith("RESULT ")]
@@ -330,8 +343,12 @@ def selftest():
     try:
         # 1. the split: E2's table at run time, the record's during every import
         (tmp / "mods").mkdir()
-        for name, src in (("zwq", ZWQ_STUB), ("ltmc", LTMC_STUB), ("lean_gpu", LG_STUB), ("lazy", LAZY_STUB)):
+        for name, src in (("zwq", ZWQ_STUB), ("ltmc", LTMC_STUB), ("lean_gpu", LG_STUB), ("lazy", LAZY_STUB),
+                          ("rmatch", RM_STUB)):
             (tmp / "mods" / f"{name}.py").write_text(src, encoding="utf-8")
+        for ds in ("squad", "webqsp", "musique"):                # the provenance walk: three datasets' chain records
+            (tmp / "rm" / ds / "fit" / "part_0of1").mkdir(parents=True)
+            (tmp / "rm" / ds / "fit" / "part_0of1" / "record.json").write_text(ds, encoding="utf-8")
         (tmp / "split_child.py").write_text(SPLIT_CHILD, encoding="utf-8")
         base = {"world": str(tmp / "w"), "served": str(tmp / "served"), "audit": str(tmp / "audit"), "write_ok": [str(tmp)],
                 "swap": {}, "forbid": []}
@@ -342,9 +359,12 @@ def selftest():
         assert got["train"] == [["squad", "fit"], ["musique", "s1fit"]], got
         assert got["lazy_saw"] == ["webqsp", "squad", "hotpotqa", "2wiki"] and got["after_lazy"] == list(TRAIN), got
         assert got["basis_two"] == "2wiki" and got["basis_rec"] == "2wiki", got
+        two = ["musique/fit/part_0of1", "squad/fit/part_0of1"]
+        assert got["rm"] == two and got["rm_root"] == two, got   # the split's datasets only; webqsp's never opened
         r0, got0 = _split_child(tmp, base, hook)                # no split: the record's table at run time
         assert r0.returncode == 0 and got0["run"] == ["webqsp", "squad", "hotpotqa", "2wiki"], (r0.stderr[-800:], got0)
         assert got0["basis_two"] == "StopIteration" and got0["all"] == 11 and got0["lazy_saw"] == got0["run"], got0
+        assert got0["rm"] == ["musique/fit/part_0of1", "squad/fit/part_0of1", "webqsp/fit/part_0of1"], got0
         bad = dict(base, split={"tables": {"SPLITS": {SPLIT: ["squad", "musique"]}}, "basis": BASIS})
         rb, gotb = _split_child(tmp, bad, hook)                 # E2's split without its zero-shot: refused at zwq's load
         assert rb.returncode != 0 and gotb is None and "E2 split" in rb.stderr, rb.stderr[-800:]

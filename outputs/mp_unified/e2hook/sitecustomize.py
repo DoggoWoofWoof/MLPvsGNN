@@ -29,6 +29,9 @@ From the spec (written by zenc2w.py run):
   spec's entries while the process runs, and the record's entries while any module's code runs (an import, at any
   depth), so the record's import-time checks and import-time tables are unchanged; lean_gpu.basis_of gives the spec's
   basis to a training set that holds neither 2wiki nor hotpotqa. A spec without "split" changes nothing.
+- provenance (section 12.11's log, 19 Nov): with a split, the chain-record walks a fit stamps into its screen.json
+  (rmatch, zlink, relcols, hubwalk and zfeat's built_records: every dataset's */*/part_*/record.json under a root) list
+  only the split's datasets. No other dataset's record is opened, so the fence (GW) holds; no number reads them.
 """
 import json
 import os
@@ -284,7 +287,31 @@ if _SPEC_PATH:
         mod.basis_of = basis_of
         _note("S", f"lean_gpu basis_of -> {base}")
 
+    # the provenance walks: {"<ds>/<carve>/part_*": sha of its record.json} for the split's datasets only
+    _REC_ROOT = {"rmatch": "CH_OUT", "zlink": "LK_OUT", "relcols": "RC_OUT", "hubwalk": "HW_OUT", "zfeat": "FZ_OUT"}
+    _KEEP = sorted({d for v in ((_SPLIT.get("tables") or {}).get("SPLITS") or {}).values() for d in v})
+
+    def _patch_records(mod):
+        stem = mod.__name__.rsplit(".", 1)[-1]
+        attr = _REC_ROOT[stem]
+        orig = getattr(mod, "built_records", None)
+        if orig is None or not hasattr(mod, attr) or not _KEEP:
+            raise RuntimeError(f"E2 split: {stem} has no built_records or {attr}, or the split names no dataset")
+
+        def built_records(root=None):
+            from pathlib import Path as _P
+            r = _P(getattr(mod, attr) if root is None else root)
+            got = []
+            for ds in _KEEP:
+                got += list(r.glob(f"{ds}/*/part_*/record.json"))
+            return {str(f.parent.relative_to(r)).replace("\\", "/"): mod.LC.sha_file(f) for f in sorted(got)}
+        built_records._e2 = orig
+        mod.built_records = built_records
+        _note("S", f"{stem} built_records -> {_KEEP}")
+
     _SPLIT_PATCH = {"zwq": _patch_zwq, "lean_gpu": _patch_basis} if _SPLIT else {}
+    if _SPLIT:
+        _SPLIT_PATCH.update({k: _patch_records for k in _REC_ROOT})
 
     if _SWAP or _SPLIT:
         _orig_exec = importlib.machinery.SourceFileLoader.exec_module

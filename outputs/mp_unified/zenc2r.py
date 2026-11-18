@@ -56,7 +56,12 @@ BOOT, SEED = 2000, 0
 PASS_LO = -1.0                                                 # points (11.5)
 DIMS = {"frozen": 1536, "qwen3e06": 1024, "mpnet": 768}        # zenc.ENCODERS
 # the audited runs behind a world's reads (zenc2w / zenc2t tags); a tag starting "t-smoke" is a check, not a step
-TAGS = {"frozen": ("t-fz-",), "mpnet": ("w1-types-", "w1b-", "w2b-", "t-mp-"), "qwen3e06": ("t-qw-",)}
+TAGS = {"frozen": ("t-fz-",), "mpnet": ("w1-types-", "w1b-", "w2b-", "w2c-", "t-mp-"), "qwen3e06": ("t-qw-",)}
+# runs that failed and were rerun under a new tag (12.11's development log names each); a superseded run leaves GA only
+# when its successor is there and passes
+SUPERSEDED = {"frozen": {"t-fz-fit-zrckpn": "t-fz-fit-zrckpn-b"},     # the fence refused the provenance hash of WebQSP's
+                                                                     # chain record after training; nothing was read
+              "mpnet": {"w2b-chain-f-squad": "w2c-chain-f-squad"}}    # PKO's check gate: no section-5 verdicts (zenc2k)
 
 BASE = {}
 
@@ -226,12 +231,23 @@ def gap_of(x, r, qidx=None, nq=None):
     return {"pts": pts(pt), "ci": [pts(lo), pts(hi)], "call": call(lo, hi)}
 
 
+def passed(enc, tag):
+    t = BASE["audit"] / enc / tag
+    if not (t / "run.json").is_file() or not (t / "summary.json").is_file():
+        return False
+    r, s = read_json(t / "run.json"), read_json(t / "summary.json")
+    return r.get("rc") == 0 and not s.get("blocked_read") and not s.get("blocked_write")
+
+
 def ga(enc):
-    """GA over the world's audited runs: (verdict, runs, problems)."""
+    """GA over the world's audited runs: (verdict, runs, problems). A superseded run whose successor passed is left out."""
     d = BASE["audit"] / enc
     runs, bad = [], []
+    sup = SUPERSEDED.get(enc, {})
     for t in sorted(d.glob("*")) if d.is_dir() else []:
         if not t.is_dir() or not t.name.startswith(TAGS[enc]) or t.name.startswith("t-smoke"):
+            continue
+        if t.name in sup and passed(enc, sup[t.name]):
             continue
         rj, sj = t / "run.json", t / "summary.json"
         if not rj.is_file() or not sj.is_file():
@@ -445,7 +461,7 @@ def report():
             calls[arm][kind] = {"gaps": dict(zip(DATASETS, gaps)), "call": arm_call(gaps)}
     rep = {"stage": STAGE, "declared_in": DECLARED, "rule": "R@5 per question, arm minus frozen, zap1.boot_diff (2,000, seed 0, 95%); "
            "11.5's words over SQuAD and MuSiQue s1eval for GNX and zrckpn; the user decides (D101)",
-           "ga": gates, "cells": cells, "beside": beside, "calls": calls,
+           "ga": gates, "superseded": SUPERSEDED, "cells": cells, "beside": beside, "calls": calls,
            "cost": {e: cost_of(e) for e in ENCS}, "problems": problems,
            "code_sha256": sha_file(__file__), "seconds": round(time.time() - t0, 1),
            "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
@@ -561,6 +577,16 @@ def selftest():
         cj = read_json(BASE["col"] / "collect.json")["encs"]
         assert len(cj["frozen"]["reads"]) == 6 and len(cj["mpnet"]["reads"]) == 5 and len(cj["mpnet"]["incomplete"]) == 1, cj
         assert not cj["qwen3e06"]["reads"] and len(cj["frozen"]["pools"]) == 5
+        a = BASE["audit"] / REF / "t-fz-fit-zrckpn"
+        a.mkdir(parents=True, exist_ok=True)
+        write_json(a / "run.json", {"rc": 1, "seconds": 5})
+        write_json(a / "summary.json", {"blocked_read": ["webqsp record"], "blocked_write": []})
+        assert ga(REF)[0] == "FAIL"                                   # superseded, but no successor yet
+        a = BASE["audit"] / REF / "t-fz-fit-zrckpn-b"
+        a.mkdir(parents=True, exist_ok=True)
+        write_json(a / "run.json", {"rc": 0, "seconds": 5})
+        write_json(a / "summary.json", {"blocked_read": [], "blocked_write": []})
+        assert ga(REF)[0] == "PASS" and "t-fz-fit-zrckpn" not in ga(REF)[1]
         report()
         rep = read_json(BASE["out"] / "report.json")
         assert rep["ga"]["frozen"]["verdict"] == "PASS" and rep["ga"]["mpnet"]["verdict"] == "PASS", rep["ga"]
