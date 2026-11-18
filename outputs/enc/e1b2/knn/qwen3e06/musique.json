@@ -1,0 +1,26 @@
+{
+ "stage": "ENC E1b part 2: K",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 11",
+ "dataset": "musique",
+ "enc": "qwen3e06",
+ "nodes": 117534,
+ "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+ "groups": 117533,
+ "groups_sha256": "bb3f1258c74ba4056c53944507c0977a12ebf6785646795bad66593d90a78e7d",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "edges": 270211,
+ "tie_rows": 11789,
+ "threads": 8,
+ "search_seconds": 171.4,
+ "npz_sha256": "79c58ad4dab86626fd77d176f45aeb6e02fb6047f45ee063d98062375ca43dd0",
+ "vectors": {
+  "manifest_sha256": "5d4d9badbd24853a69b28768098b9e6e702ff9a6954fad428668a6df40029d8c",
+  "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3"
+ },
+ "code_sha256": {
+  "zenc1b2.py": "ab45e3204dd7f0eb025ed955e6ddceae2b8133f3c9f49b29c0438b676bdc69aa",
+  "zenc.py": "4429138d128e4e07e09ebefee64c0b32052476d476d96991462ec258a141f52b",
+  "zenc1.py": "88285cb77949a90977e3f35159ae1f5a2f1b591a368e3dc4cbbe404d2a717841"
+ },
+ "seconds": 171.7
+}

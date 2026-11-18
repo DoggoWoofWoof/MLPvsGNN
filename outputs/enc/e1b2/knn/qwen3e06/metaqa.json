@@ -1,0 +1,26 @@
+{
+ "stage": "ENC E1b part 2: K",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 11",
+ "dataset": "metaqa",
+ "enc": "qwen3e06",
+ "nodes": 43234,
+ "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+ "groups": 43234,
+ "groups_sha256": "628fb8310cb9ba862b285a5f6901a49087e594544702faa5a270c05a2e5484c0",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "edges": 104059,
+ "tie_rows": 9510,
+ "threads": 8,
+ "search_seconds": 29.7,
+ "npz_sha256": "d1fdf6c1e1eb69463894d2faf118cf40d383c60cae8e8cbb25a891c16fe43465",
+ "vectors": {
+  "manifest_sha256": "c5463114d5df62f6f6647f9bb1381f7d177f04a398ae5bcf95acbcfe2d3016b8",
+  "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3"
+ },
+ "code_sha256": {
+  "zenc1b2.py": "ab45e3204dd7f0eb025ed955e6ddceae2b8133f3c9f49b29c0438b676bdc69aa",
+  "zenc.py": "4429138d128e4e07e09ebefee64c0b32052476d476d96991462ec258a141f52b",
+  "zenc1.py": "88285cb77949a90977e3f35159ae1f5a2f1b591a368e3dc4cbbe404d2a717841"
+ },
+ "seconds": 30.0
+}
