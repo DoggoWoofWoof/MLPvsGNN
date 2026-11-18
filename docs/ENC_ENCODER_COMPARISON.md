@@ -393,3 +393,45 @@ The estimate is two to three days of code and about 7 host hours per arm on MuSi
 
 - `enc-e1b-base-<ds>` for MuSiQue, SQuAD and MetaQA: host CPU, 4 threads, minutes each; all inputs are already on the host.
 - `enc-e1b-report`: after the three. It writes `outputs/enc/e1b/report.json` and `report.md`.
+
+### 10.8 Results (filed 18 Nov 2026, 21:06 IST)
+
+The rows ran on the host CPU from 21:04 to 21:05 IST, in 8 to 22 s each. The record is `outputs/enc/e1b/report.md` and
+`.json`, with one `<ds>.json` per dataset.
+
+**Gates.**
+- G1 passed.
+- G2 passed on all three datasets: the rebuilt B equals PKO's filed B on every question (MuSiQue 2,417, SQuAD 11,873,
+  MetaQA 9,785).
+- G3: E0's frozen list gives the filed B on every question (equal share 1.0), so the arms' gaps carry no float churn.
+
+Shares are % of golds in B. Gaps are points against the frozen arm (95%).
+
+| dataset (frozen B / filed pool / X) | arm | gold share | gap | gate |
+| --- | --- | --- | --- | --- |
+| MuSiQue (76.06 / 97.77 / +21.71) | qwen3e06 | 72.83 | -3.23 [-3.89, -2.58] BELOW | NEAR |
+| | mpnet | 73.08 | -2.98 [-3.62, -2.32] BELOW | NEAR |
+| | mpnetqa | 72.24 | -3.83 [-4.45, -3.20] BELOW | NEAR |
+| SQuAD (97.98 / 97.98 / 0) | qwen3e06 | 97.09 | -0.88 [-1.08, -0.70] BELOW | FAIL |
+| | mpnet | 96.88 | -1.09 [-1.31, -0.88] BELOW | FAIL |
+| | mpnetqa | 97.02 | -0.96 [-1.16, -0.76] BELOW | FAIL |
+| MetaQA (1.42 / 98.84 / +97.42) | qwen3e06 | 0.86 | -0.56 [-0.66, -0.45] BELOW | PASS |
+| | mpnet | 1.08 | -0.34 [-0.46, -0.22] BELOW | PASS |
+| | mpnetqa | 0.67 | -0.75 [-0.85, -0.65] BELOW | PASS |
+
+**The calls: qwen3e06 HOLD, mpnet HOLD, mpnetqa HOLD.** Every HOLD comes from SQuAD.
+
+**What it says.**
+- **SQuAD.** The pool is B, so no link can win the loss back under the pool rule. Each smaller encoder loses about one
+  point of SQuAD's golds there for good. qwen3e06's point gap (-0.88) is inside one point, but its bound misses by 0.08.
+- **MuSiQue.** Each arm loses 3.0 to 3.8 points at B. The frozen arm's links add 21.71 points on top of B, so only
+  part 2's real pools can say whether the expansion wins those points back.
+- **MetaQA.** B holds 1.4% of the golds. The KB links carry the pool (97.42 points), and every arm is within one point.
+
+**What follows (10.5).**
+- E2 does not run.
+- mpnet's 2Wiki encode stays held.
+- The encoder stays the frozen one, so D84's MultiHop-RAG encode can use it.
+
+**D99** (open; the user's call): carry qwen3e06 to part 2 anyway, given the user's "within about 1 point" and its
+-0.88 point gap on SQuAD? The default is no: the declared rule holds, and the encoder stays frozen.
