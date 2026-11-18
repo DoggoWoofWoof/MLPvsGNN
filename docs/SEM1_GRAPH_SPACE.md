@@ -179,7 +179,7 @@ Other work uses the graph in two other ways:
 baseline a reader would ask for. SEM1 as declared does not read it. It is named here for a later stage and is not
 declared. Noisy graphs are known to hurt retrofitted vectors. MuSiQue's largest degree (14,300) is the case to watch.
 
-## 12. Results (filed 18 November 2026, about 20:25 IST): Z1, Z2 and Z3 NOT_HELD; the space closes as a first-stage channel
+## 12. Results (filed 18 November 2026, 20:16 IST): Z1, Z2 and Z3 NOT_HELD; the space closes as a first-stage channel
 
 `zsem1.py report` on the host (`outputs/sem1/report.json` and `report.md`). Every record carries script sha256
 5f0447b3... (ed4e426). All 25 rows ran: 12 sel, 12 read, one report.

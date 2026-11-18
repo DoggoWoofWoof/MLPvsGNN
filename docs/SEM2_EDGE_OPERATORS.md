@@ -1,6 +1,6 @@
 # SEM2 (sketch): edges as learned operators on any frozen vectors
 
-**Status: a sketch, written 18 November 2026, about 20:30 IST. It is not declared, and no number exists.** The rules,
+**Status: a sketch, written 18 November 2026, 20:16 IST. It is not declared, and no number exists.** The rules,
 reads and calls are fixed on this page before any fit runs. This is not the journal's work: the user sees it as a
 possible separate paper. Nothing here enters D83's pools.
 
