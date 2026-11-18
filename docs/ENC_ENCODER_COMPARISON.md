@@ -791,3 +791,68 @@ zrckpn. The user decides (D101).
 - Disk: the padded SQuAD and MuSiQue vectors are about 1 GiB; a world is about 5 to 8 GiB.
 - The four big encodes stay held (feed 793a17ec).
 - Code first, about a day. The worlds run after D91's GPU rows. The report is about 21-22 November 2026.
+
+### 12.10 Amendment: the arm's pools on the host (declared 19 Nov 2026, 00:35 IST, before any E2 number)
+
+**What a first run showed.** Two audited pools passes ran on the host, 20 SQuAD fit questions each, nothing written.
+- **The frozen world** ran (0.98 s per question at 2 threads). The record files it read fall in three groups:
+  - files the arm replaces: the dense vectors and lists, the CSR kNN store, the EM types, and step 4d's pools;
+  - files kept as the record's (below);
+  - verdicts, carves and the host mirror's verify records.
+- **The mpnet world** stopped at step 4e's check ("base and seeds are not step 4d's"). Step 4d's pools were built from
+  the frozen lists.
+
+**How a step runs.** The record's PKO host runs use zpkoh's mirror route: the package is served from the host mirror,
+in memory, with S6.host_mode's pinned verify records. E2 uses the same route. In an arm's world, zpko runs as a module
+through `outputs/mp_unified/zenc2p.py` (`types`, `pools`, `merge`, each with `--host`). The hook patches modules as they
+load, and a main script is not one.
+
+**What the hook swaps.** This makes 12.9's list exact. For SQuAD and MuSiQue in an arm's world:
+- **The package loader:** the dense vectors, the dense lists and K, as in 12.9.
+- **M3B's kNN store:** built in memory from the arm's K. The record's CSR file is never opened.
+- **The EM types:** zu2m_a_types writes to and reads from the arm's folder, `outputs/enc/e2/types/<arm>/`. U2s's record
+  carries the arm's types sha, as zenc1b2 swapped it in 11.2.
+- **Step 4e's union:** B1P's form. B is the base united with the seeds, and I is the prepared pools, as E1b part 2 built
+  its pools (11.2).
+- **The bases:** zpko.copy_bases takes them from `outputs/enc/e2/bases/<arm>/`.
+
+The arm's spec forbids reading the record's EM types, step 4d's pools of the two datasets, and the two bases. zenc2p
+checks, before it writes, that every swap its step needs is in force.
+
+**Kept as the record's.** These files are encoder-free, or they are recipe constants:
+- the score types (U2p) and the SPLADE lists, as zenc1b2 kept them in E1b part 2;
+- U2b's chosen graph W2_S. It reads no dense vector: the dense context choice is the `_D` variants, and W2_S differs from
+  W2_DS on MuSiQue;
+- M3B's NER store;
+- U2s's and U2e's stats on the s1sel carves (the budgets and walk-mass counts), which are the recipe's constants.
+
+**The frozen side's form, disclosed.** The frozen world keeps the pools of record (12.9), and the arm uses B1P's union
+form. 11.9's GS measured the gap between the two forms with the frozen vectors:
+- gold share: 0.0 points;
+- equal pools: 99.79% of MuSiQue's s1eval questions.
+
+The report states this beside the model gap.
+
+**The bases.** fit_basis runs on the record's draw (60,000 rows, seed 0) at two BLAS threads. Its input is the arm's
+float16 rows, padded to 1536:
+- **HotpotQA:** rows from the arm's full encode (host GPU, float16 model).
+- **2Wiki:** the drawn rows' texts, encoded for this on the host CPU (float32 model, 6 threads). 2Wiki's full encode
+  stays held (12.9).
+
+The two devices differ only by rounding. The record's draw-only reader gives the full reader's basis bit for bit
+(zenc2p self-test).
+
+**Padding, made exact.** A padded inner product equals the unpadded one in exact arithmetic. In float32 it agrees up to
+rounding, not bit for bit, because the GEMM's blocking depends on the width. 12.9's "stays the arm's own" means this.
+
+**Order.**
+- **W1:** the arm's bases, EM types and pools on the four carves (feed rows `e2p-*`). A 20-question check runs before
+  the parts.
+- **W2:** D83's chain in the arm's world, then the training.
+
+The training code fixes four training datasets per split (zwq.SPLITS, and the carve-count checks in the column builders).
+12.9's two-carve training therefore needs a patched split. It is declared in 12.11 before any fit.
+
+**Gate added.**
+- **GA:** every E2 run's audit summary shows 0 blocked reads and 0 blocked writes.
+- A failed run's numbers are not read.
