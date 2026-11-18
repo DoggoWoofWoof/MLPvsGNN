@@ -1,4 +1,4 @@
-"""ENC E2 (docs/ENC_ENCODER_COMPARISON.md section 12.9): the small worlds, one per arm (frozen, mpnet, qwen3e06).
+"""ENC E2 (docs/ENC_ENCODER_COMPARISON.md sections 12.9 and 12.10): the small worlds, one per arm (frozen, mpnet, qwen3e06).
 
 A world is a sibling tree of the workspace built by sworld.py's make (SWP's S-world code, not edited): copies of the
 record's code, junctions to the record's other folders, and folders of its own. Every command in a world runs with the
@@ -7,7 +7,8 @@ start-up hook e2hook/sitecustomize.py (E2HOOK names the spec), which:
 - refuses reads of the record's files that the arm replaces;
 - refuses writes outside the world;
 - swaps, in the package loader, the dense vectors, the dense lists and the knn family of the arm's datasets for the
-  arm's own.
+  arm's own; and, in four record modules, the knn store, the EM types, U2s's EM-types sha, step 4e's union and the
+  bases (the hook's docstring; section 12.10).
 The frozen world has the audit and the write guard, and no swap.
 
     python outputs/mp_unified/zenc2w.py pad --enc mpnet --ds squad          (the arm's vectors, zero-padded to 1536, in the
@@ -43,7 +44,7 @@ if str(ROOT / "outputs" / "host_ops") not in sys.path:
 import sworld as S  # noqa: E402  (the S-world's code, not edited)
 import zenc2 as Z2  # noqa: E402
 
-DECLARED = "docs/ENC_ENCODER_COMPARISON.md section 12.9"
+DECLARED = "docs/ENC_ENCODER_COMPARISON.md sections 12.9 and 12.10"
 OUT = ROOT / "outputs" / "enc" / "e2"
 ARMS = ("frozen", "mpnet", "qwen3e06")
 SMALL = ("squad", "musique")                                  # the small worlds' datasets (section 12.9)
@@ -197,6 +198,17 @@ def make_world(enc, root=ROOT, world=None):
     return world
 
 
+BASES = ("2wiki", "hotpotqa")                                 # lean_cache's two bases (zpko.copy_bases)
+
+
+def types_dir(enc, root=ROOT):
+    return Path(root) / "outputs" / "enc" / "e2" / "types" / enc
+
+
+def bases_dir(enc, root=ROOT):
+    return Path(root) / "outputs" / "enc" / "e2" / "bases" / enc
+
+
 def served_str():
     return str(E.served_root())
 
@@ -218,7 +230,14 @@ def spec_of(enc, world, audit, root=ROOT, served=None):
                            "knn": str(Z2.knn_path(enc, d))}
         spec["forbid"] += [str(served / d / "embeddings" / "dense"), str(served / d / "retrieval_cache" / "dense_top1000.npz"),
                            str(served / d / "graph" / "knn.npz"),
-                           str(Path(root) / "outputs" / "m3b" / "csr" / f"{d}_knn.npz")]
+                           str(Path(root) / "outputs" / "m3b" / "csr" / f"{d}_knn.npz"),
+                           str(Path(root) / "outputs" / "u2m" / "a" / "types" / f"{d}.npz"),
+                           str(Path(root) / "outputs" / "u2m" / "a" / "types" / f"{d}.json")]
+        spec["forbid"] += sorted(str(x) for x in (Path(root) / "outputs" / "step4d" / "pools").glob(f"{d}__*.npz"))
+    spec["forbid"] += [str(Path(root) / "outputs" / "step1" / "cache" / f"basis_{b}.{x}")
+                       for b in BASES for x in ("npz", "json")]
+    spec["types_dir"], spec["bases"] = str(types_dir(enc, root)), str(bases_dir(enc, root))
+    spec["write_ok"].append(spec["types_dir"])
     return spec
 
 
@@ -358,6 +377,8 @@ class Dataset(object):
     def cache(self, model):
         z = np.load(os.path.join(self.dir, "retrieval_cache", "%s_top1000.npz" % model))
         return z["ids"], z["scores"]
+    def graph(self, family="structural"):
+        return Graph(self, family)
     @property
     def graph_manifest(self):
         return _rj(os.path.join(self.dir, "graph", "GRAPH_MANIFEST.json"))
@@ -369,10 +390,34 @@ class Graph(object):
         self.provenance = self.manifest["families"][family]
 '''
 
+MOD_STUBS = {
+    "m3b_pools": '''class FamilyStore(object):
+    def __init__(self, fam, n):
+        self.fam, self.n = fam, n
+    @classmethod
+    def from_graph(cls, g, fam):
+        return cls(fam, int(len(g.src)))
+def load_or_build_store(ds, family, cache_dir):
+    return "record store"
+''',
+    "zu2m_a_types": '''OUT = "record types"
+''',
+    "zpko": '''def u2s_record(name, v=None):
+    return {"em_types_sha256": "record", "dataset": name}, "u2s.npz"
+def copy_bases(R=None, src="record step1"):
+    return [str(src)]
+''',
+    "step4e_paper_pools": '''def union_pools(name, carve, pop, prep, bases):
+    return "record union"
+''',
+}
+
 CHILD = '''import os, sys, json
+import importlib.util
 import numpy as np
 served, world, outside = sys.argv[1:4]
 sys.path.insert(0, served)
+sys.path.insert(0, os.path.join(os.path.dirname(served), "mods"))
 import canonical as C
 ds = C.Dataset("squad")
 e = ds.embeddings("dense", "docs")
@@ -383,6 +428,21 @@ r = {"docs": e.dir, "queries": q.dir, "row": e.read([1])[0, :4].tolist(), "ids0"
 g = C.Graph(ds, "knn")
 r["knn"] = [g.src.tolist(), g.dst.tolist(), g.provenance["n_edges"], str(g.src.dtype)]
 r["knn_other"] = C.Graph(C.Dataset("hotpotqa"), "knn").src.tolist()
+import m3b_pools as MP, zu2m_a_types as AT, zpko as PK
+st_ = MP.load_or_build_store(ds, "knn", "x")
+r["store"] = getattr(st_, "n", st_)
+r["store_other"] = MP.load_or_build_store(C.Dataset("hotpotqa"), "knn", "x")
+r["types_out"] = str(AT.OUT)
+r["u2s"] = [PK.u2s_record("squad")[0]["em_types_sha256"], PK.u2s_record("hotpotqa")[0]["em_types_sha256"]]
+r["bases"] = PK.copy_bases(None)
+sp = importlib.util.spec_from_file_location("step4e_paper_pools", os.path.join(os.path.dirname(served), "mods", "step4e_paper_pools.py"))
+E4 = importlib.util.module_from_spec(sp)
+sp.loader.exec_module(E4)
+class Prep(object):
+    seeds, pools = [[5, 1]], [[7, 8]]
+u = E4.union_pools("squad", "fit", None, Prep(), [[1, 2]])
+r["union"] = [u[0], [x.tolist() for x in u[2]], [x.tolist() for x in u[3]], u[4]] if isinstance(u, tuple) else u
+r["union_other"] = E4.union_pools("hotpotqa", "fit", None, Prep(), [[1, 2]])
 try:
     np.load(os.path.join(served, "squad", "embeddings", "dense", "docs", "shard_00000.npy"))
     r["direct"] = "read"
@@ -408,6 +468,11 @@ def selftest():
             p.mkdir(parents=True)
         (served / "canonical.py").parent.mkdir(parents=True)
         (served / "canonical.py").write_text(CANON_STUB, encoding="utf-8")
+        (tmp / "mods").mkdir()
+        for name, src in MOD_STUBS.items():
+            (tmp / "mods" / f"{name}.py").write_text(src, encoding="utf-8")
+        (tmp / "types").mkdir()
+        (tmp / "types" / "squad.json").write_text(json.dumps({"file_sha256": "arm types"}), encoding="utf-8")
         rec_rows = np.eye(4, DIM, dtype=np.float16)
         arm_rows = pad_shard((np.eye(4, 768, k=1) + 0).astype(np.float16), 768)
         for ds in ("squad", "hotpotqa"):
@@ -437,7 +502,8 @@ def selftest():
                 "swap": {"squad": {"docs": str(arm / "embeddings/dense/docs"), "queries": str(arm / "embeddings/dense/queries"),
                                    "cache": str(arm / "retrieval_cache/dense_top1000.npz"), "knn": str(tmp / "arm_knn.npz")}},
                 "forbid": [str(served / "squad" / "embeddings" / "dense"), str(served / "squad" / "graph" / "knn.npz"),
-                           str(served / "squad" / "retrieval_cache" / "dense_top1000.npz")]}
+                           str(served / "squad" / "retrieval_cache" / "dense_top1000.npz")],
+                "types_dir": str(tmp / "types"), "bases": str(tmp / "bases")}
         np.savez(tmp / "arm_knn.npz", src=np.array([2, 0], np.int64), dst=np.array([3, 3], np.int64),
                  weight=np.array([0.5, 0.25], np.float64))
         sp = tmp / "spec.json"
@@ -455,6 +521,10 @@ def selftest():
         assert norm(got["other_ds"]) == norm(served / "hotpotqa/embeddings/dense/docs"), got
         assert got["knn"] == [[2, 0], [3, 3], 2, "int32"] and got["knn_other"] == [0], got
         assert got["direct"] == "refused" and got["write_out"] == "refused" and got["write_in"] == "written", got
+        assert got["store"] == 2 and got["store_other"] == "record store", got
+        assert norm(got["types_out"]) == norm(tmp / "types") and got["u2s"] == ["arm types", "record"], got
+        assert [norm(x) for x in got["bases"]] == [norm(tmp / "bases")], got
+        assert got["union"] == [None, [[1, 2, 5]], [[7, 8]], None] and got["union_other"] == "record union", got
         logs = list(audit.glob("*.log"))
         assert len(logs) == 1
         tags = {ln.split("\t")[0] for ln in logs[0].read_text(encoding="utf-8").splitlines()}
@@ -466,6 +536,8 @@ def selftest():
                             capture_output=True, text=True)
         got0 = json.loads([x for x in r0.stdout.splitlines() if x.startswith("RESULT ")][0][7:])
         assert got0["direct"] == "read" and got0["write_out"] == "written" and got0["ids0"] == 0, got0
+        assert got0["store"] == "record store" and got0["union"] == "record union" and got0["u2s"] == ["record", "record"]
+        assert got0["types_out"] == "record types" and got0["bases"] == ["record step1"], got0
         # pad keeps every inner product
         x = np.random.default_rng(0).standard_normal((50, 768)).astype(np.float32)
         x = (x / np.linalg.norm(x, axis=1, keepdims=True)).astype(np.float16)
@@ -499,7 +571,7 @@ def selftest():
         S.verify(w2, root, quiet=True)
         make_world("mpnet", root, w2)                       # a refresh keeps the own folders
         sp2 = spec_of("frozen", w2, tmp / "a2", root, served)
-        assert sp2["swap"] == {} and sp2["forbid"] == [] and str(w2) in sp2["write_ok"]
+        assert sp2["swap"] == {} and sp2["forbid"] == [] and str(w2) in sp2["write_ok"] and "types_dir" not in sp2
         # run: verify, the hook from the world's e2hook, the audit summary also on a failed command
         code = "import os;open('made.txt','w').write('1');open(os.path.join('data','z.txt')).read();raise SystemExit(5)"
         rc = run_in("frozen", "t1", [sys.executable, "-c", code], root, w2, served, tmp / "a3")

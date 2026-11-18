@@ -1,31 +1,41 @@
-"""ENC E2 (docs/ENC_ENCODER_COMPARISON.md section 12): the start-up hook of a process in an E2 world.
+"""ENC E2 (docs/ENC_ENCODER_COMPARISON.md sections 12.9 and 12.10): the start-up hook of a process in an E2 world.
 
 Python imports `sitecustomize` at start-up from the first folder on sys.path that holds one. zenc2w.py puts this folder
 first on PYTHONPATH for the commands it runs in a world, and names a spec file in E2HOOK. The children of those commands
 inherit both. With E2HOOK unset this file does nothing.
 
-From the spec (written by zenc2w.py world make):
+From the spec (written by zenc2w.py run):
 - audit: every file the process opens is logged once per path to <audit>/<pid>.log ('R' read, 'W' write), with the
   process's argv on the first line.
-- read guard: opening a path under a "forbid" prefix raises PermissionError. These are the record's dense vectors and
-  dense lists of the arm's datasets, and the record's files built from them.
-- write guard: a write whose real path (junctions resolved) is outside the world's tree, the audit folder or the temp
-  folder (unless the spec's temp_ok is false) raises PermissionError. So no step in a world can write into the record's folders.
-- swap: when the package loader (canonical.py) is imported, Embeddings.__init__ is wrapped so that the dense
-  docs/queries folder of an arm dataset is the arm's padded folder, and Dataset.cache('dense') of an arm dataset returns
-  the arm's first-stage lists, and Graph(ds, 'knn') of an arm dataset holds the arm's K (the package's dtypes, its
-  manifest entry with the arm's edge count). Nothing else in the loader changes.
+- read guard: opening a path under a "forbid" prefix raises PermissionError. These are the record's files that the arm
+  replaces: the dense vectors, dense lists and knn graph of the arm's datasets, the CSR knn stores, the bases, the EM
+  types and step 4d's pools built from the frozen vectors.
+- write guard: a write whose real path (junctions resolved) is outside the world's tree, the audit folder, the spec's
+  other write_ok folders or the temp folder (unless the spec's temp_ok is false) raises PermissionError.
+- swaps (arm worlds only: the spec's swap is not empty). A module named below is patched right after its code runs,
+  whichever way it was loaded (an import or a spec_from_file_location load: both run SourceFileLoader.exec_module):
+    canonical            Embeddings.__init__: the dense docs/queries folder of an arm dataset is the arm's padded
+                         folder; Dataset.cache('dense') of an arm dataset: the arm's first-stage lists; Graph(ds, 'knn')
+                         of an arm dataset: the arm's K (the package's dtypes, its manifest entry with the arm's count).
+    m3b_pools            load_or_build_store(ds, 'knn', dir) of an arm dataset: built from the (swapped) knn graph,
+                         never loaded from or saved to a CSR cache.
+    zu2m_a_types         OUT: the arm's EM types folder (spec types_dir).
+    zpko                 u2s_record(d) of an arm dataset: U2s's record with em_types_sha256 = the arm's types file's sha
+                         (zenc1b2's swap); copy_bases(R): from the arm's bases folder (spec bases).
+    step4e_paper_pools   union_pools of an arm dataset: B1P's form (B = base united with the seeds, I = the prepared
+                         pools; step 4d's files hold the frozen vectors' pools), as zenc1b2 swapped it.
+  A module run as the main script (runpy) is not patched: an arm world runs zpko's steps through zenc2p.py.
 """
 import json
 import os
 import sys
 
-_SPEC_PATH = os.environ.get("E2HOOK")
-
 
 def _norm(p):
     return os.path.normcase(os.path.abspath(p)).replace("\\", "/")
 
+
+_SPEC_PATH = os.environ.get("E2HOOK")
 
 if _SPEC_PATH:
     import importlib.machinery
@@ -113,7 +123,7 @@ if _SPEC_PATH:
 
         def init(self, d, model):
             alt = want.get(_norm(d)) if model == "dense" else None
-            if alt is not None and _FD[0] is not None:
+            if alt is not None:
                 _note("S", _norm(alt))
             orig_init(self, alt if alt is not None else d, model)
 
@@ -163,24 +173,76 @@ if _SPEC_PATH:
         E.__init__, D.cache, G.__init__ = init, cache, graph_init
         E._e2_swapped = True
 
-    class _CanonFinder:
-        """Finds `canonical` with the other finders, then patches the module right after it runs."""
+    def _patch_store(mod):
+        orig = mod.load_or_build_store
+        if getattr(orig, "_e2", False):
+            return
 
-        @classmethod
-        def find_spec(cls, name, path=None, target=None):
-            if name != "canonical":
-                return None
-            spec = importlib.machinery.PathFinder.find_spec(name, path)
-            if spec is None or spec.loader is None:
-                return spec
-            orig_exec = spec.loader.exec_module
+        def load_or_build_store(ds, family, cache_dir):
+            if family != "knn" or getattr(ds, "name", None) not in _SWAP:
+                return orig(ds, family, cache_dir)
+            g = ds.graph("knn")
+            if (getattr(g, "provenance", None) or {}).get("e2_arm") != SPEC.get("enc"):
+                raise SystemExit(f"E2 hook: {ds.name}'s knn graph is not the arm's (the loader swap is not in force)")
+            _note("S", f"store:{ds.name}:knn")
+            return mod.FamilyStore.from_graph(g, "knn")          # never loaded from or saved to a CSR cache
 
-            def exec_module(module):
-                orig_exec(module)
-                _patch_canonical(module)
+        load_or_build_store._e2 = True
+        mod.load_or_build_store = load_or_build_store
 
-            spec.loader.exec_module = exec_module
-            return spec
+    def _patch_types(mod):
+        from pathlib import Path
+        mod.OUT = Path(SPEC["types_dir"])
+        _note("S", "types:" + _norm(SPEC["types_dir"]))
+
+    def _patch_zpko(mod):
+        from pathlib import Path
+        orig_rec, orig_bases = mod.u2s_record, mod.copy_bases
+        if getattr(orig_rec, "_e2", False):
+            return
+
+        def u2s_record(name, v=None):
+            rec, npz = orig_rec(name, v)
+            if name not in _SWAP:
+                return rec, npz
+            tj = Path(SPEC["types_dir"]) / f"{name}.json"
+            arec = json.loads(tj.read_text(encoding="utf-8"))
+            _note("S", f"u2s_record:{name}:em_types")
+            return dict(rec, em_types_sha256=arec["file_sha256"]), npz
+
+        def copy_bases(R=None, src=None):
+            _note("S", "bases:" + _norm(SPEC["bases"]))
+            return orig_bases(R, src=Path(SPEC["bases"]))
+
+        u2s_record._e2 = True
+        mod.u2s_record, mod.copy_bases = u2s_record, copy_bases
+
+    def _patch_union(mod):
+        orig = mod.union_pools
+        if getattr(orig, "_e2", False):
+            return
+
+        def union_pools(name, carve, pop, prep, bases):
+            if name not in _SWAP:
+                return orig(name, carve, pop, prep, bases)
+            import numpy as np
+            _note("S", f"union_pools:{name}:{carve}")
+            bs = [np.union1d(np.asarray(b, np.int64), np.asarray(s, np.int64)) for b, s in zip(bases, prep.seeds)]
+            return None, None, bs, [np.asarray(p, np.int64) for p in prep.pools], None
+
+        union_pools._e2 = True
+        mod.union_pools = union_pools
+
+    _PATCH = {"canonical": _patch_canonical, "m3b_pools": _patch_store, "zu2m_a_types": _patch_types,
+              "zpko": _patch_zpko, "step4e_paper_pools": _patch_union}
 
     if _SWAP:
-        sys.meta_path.insert(0, _CanonFinder)
+        _orig_exec = importlib.machinery.SourceFileLoader.exec_module
+
+        def _exec_module(self, module):
+            _orig_exec(self, module)
+            f = _PATCH.get(module.__name__.rsplit(".", 1)[-1])
+            if f is not None:
+                f(module)
+
+        importlib.machinery.SourceFileLoader.exec_module = _exec_module
