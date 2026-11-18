@@ -1,0 +1,120 @@
+{
+ "stage": "ENC E1b part 1",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 10",
+ "dataset": "musique",
+ "base_pool": "equal_rrf_budget_200",
+ "rrf_constant": 60,
+ "questions": 2417,
+ "golds": 6404,
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "threads": 4,
+ "inputs": {
+  "e0": {
+   "frozen": {
+    "file": "outputs/enc/e0/frozen/musique.npz",
+    "sha256": "b274c6dd1bf403b224bdf057132baa578b0e893cad62acc2be5951eced700ad9"
+   },
+   "qwen3e06": {
+    "file": "outputs/enc/e0/qwen3e06/musique.npz",
+    "sha256": "43ba8ae5fb289c41cd2efe2239c00d7bd22165e93fab9ca1dd65c25aa2f5c1dd"
+   },
+   "mpnet": {
+    "file": "outputs/enc/e0/mpnet/musique.npz",
+    "sha256": "0d63bd3886cc14c1510b8ceb9b104536d97f5dbd6b5865f5131c4545e569f566"
+   },
+   "mpnetqa": {
+    "file": "outputs/enc/e0/mpnetqa/musique.npz",
+    "sha256": "ae619548287b830446bb758fa03848020a1782d40ec47b5dc808ee44fc92c7ae"
+   }
+  },
+  "gold": {
+   "file": "outputs/enc/e0/gold/musique.npz",
+   "sha256": "ead7f553619406b9d9ea12cec0b55ceae00913918a77c22bc23d555356ab0424"
+  },
+  "filed_pools": [
+   {
+    "file": "outputs/pko/pools/parts/musique__s1eval__0of1.npz",
+    "sha256": "6bcb58bd8a2ee319917be3fb4e777a1ca082af5f74a3c411bac6527f1a2333e3"
+   }
+  ]
+ },
+ "gates": {
+  "G1": "PASS",
+  "G2": {
+   "questions": 2417,
+   "differ": 0,
+   "first": []
+  },
+  "G3": {
+   "equal_share": 1.0,
+   "gold_share_diff_pts": 0.0
+  }
+ },
+ "frozen": {
+  "e0_B": {
+   "gold_share": 76.0618,
+   "all_golds_share": 52.6272,
+   "mean_size": 200.0
+  },
+  "filed_B": {
+   "gold_share": 76.0618,
+   "all_golds_share": 52.6272,
+   "mean_size": 200.0
+  },
+  "filed_pool": {
+   "gold_share": 97.767,
+   "all_golds_share": 94.7456,
+   "mean_size": 5263.62
+  },
+  "X_expansion_pts": 21.7052
+ },
+ "arms": {
+  "qwen3e06": {
+   "gold_share": 72.8295,
+   "all_golds_share": 45.8006,
+   "mean_size": 200.0,
+   "gap_pts": [
+    -3.2324,
+    -3.8904,
+    -2.5763
+   ],
+   "call": "BELOW",
+   "gate": "NEAR"
+  },
+  "mpnet": {
+   "gold_share": 73.0793,
+   "all_golds_share": 46.5867,
+   "mean_size": 200.0,
+   "gap_pts": [
+    -2.9825,
+    -3.6213,
+    -2.3154
+   ],
+   "call": "BELOW",
+   "gate": "NEAR"
+  },
+  "mpnetqa": {
+   "gold_share": 72.2361,
+   "all_golds_share": 44.6835,
+   "mean_size": 200.0,
+   "gap_pts": [
+    -3.8257,
+    -4.4476,
+    -3.1959
+   ],
+   "call": "BELOW",
+   "gate": "NEAR"
+  }
+ },
+ "seconds": 8.2,
+ "code_sha256": {
+  "outputs/mp_unified/zenc1b.py": "44062f4c281dadeee8dc78c21923a5476dcff30966f998615c50cfe6f0c4d516",
+  "outputs/mp_unified/zenc.py": "0416ecefcb9a803549d2dfa9aef844d66f4c05e2a5b26821930c7f701f32eeb7",
+  "outputs/mp_unified/zap1.py": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+  "scripts/m3b_compile.py": "dcb39337856541b7614c04f29680492894dedd877773bfe499f859be1f8f6851",
+  "scripts/m3b_contract.py": "bfe83d744cedab7ca240c1f74c1b7613cc45196fc585f0ec07d56e106871d451",
+  "scripts/m3a_headroom.py": "d3df956c55f852fbe1882d4a129c8a86ce70e429a49d92351b74c090dcf42a87",
+  "src/mp_retrieval/m3b_pools.py": "219e82af6c54a6c3e6d2ce12980cc4253d6915c9e023eaa47d222f93be592697",
+  "src/mp_retrieval/rank_fusion.py": "6c42ad38edd43a5a72254d2ddfa30368e0ec53a4228ffeae9351d82c8b67a5e0"
+ }
+}
