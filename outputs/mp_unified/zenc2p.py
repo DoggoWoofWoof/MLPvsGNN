@@ -1,6 +1,6 @@
 """ENC E2 (docs/ENC_ENCODER_COMPARISON.md section 12.10): the arm's bases, EM types and PKO pools for the small worlds.
 
-    python outputs/mp_unified/zenc2p.py bases --enc mpnet --graph 2wiki [--torch-threads 8] --threads 2
+    python outputs/mp_unified/zenc2p.py bases --enc mpnet --graph 2wiki [--torch-threads 8] --threads 2   (plain python)
     python outputs/mp_unified/zenc2w.py run --enc mpnet --tag T -- python outputs/host_ops/pylib_run.py \\
         outputs/mp_unified/zenc2p.py types --enc mpnet --ds squad --host --threads 2
     python outputs/mp_unified/zenc2w.py run --enc mpnet --tag T -- python outputs/host_ops/pylib_run.py \\
@@ -137,13 +137,42 @@ def encoded_rows(enc, g, rows, torch_threads):
                "revision": E.pinned(enc), "encode_seconds": round(time.time() - t, 1), **st}
 
 
+def lean_mlp3():
+    """lean_mlp3 needs numba. Run as a plain script (not under pylib_run, which loads numpy before zenc sets the BLAS
+    threads): the host's numba is the unpacked pushed zip, put on the path here, after numpy has loaded."""
+    try:
+        import numba  # noqa: F401
+    except ImportError:
+        d = ROOT / "outputs" / "host_ops" / "pylib" / "cp313"
+        if not (d / "unpacked_from.sha256").is_file():
+            stop(f"no numba and no unpacked pylib at {rel(d)}")
+        sys.path.insert(0, str(d))
+        import numba  # noqa: F401
+    import lean_mlp3 as L3
+    return L3
+
+
+def blas_threads():
+    """The BLAS pools numpy loaded with (threadpoolctl, if present): each must be 2."""
+    try:
+        from threadpoolctl import threadpool_info
+    except ImportError:
+        return None
+    got = {f"{x.get('internal_api')}:{Path(x.get('filepath', '')).name}": x.get("num_threads") for x in threadpool_info()
+           if x.get("user_api") == "blas"}
+    if any(v != 2 for v in got.values()):
+        stop(f"the BLAS pools run {got} threads, not 2: numpy loaded before zenc set them")
+    return got
+
+
 def cmd_bases(a):
     enc, g = a.enc, a.graph
     if enc not in E.NEW or g not in GRAPHS:
         stop(f"bases runs on {E.NEW} and {GRAPHS}")
     if os.environ.get("OPENBLAS_NUM_THREADS") != "2":
         stop("bases are fit at two BLAS threads (lean_cache's rule): pass --threads 2")
-    import lean_mlp3 as L3
+    blas = blas_threads()
+    L3 = lean_mlp3()
     out = bases_dir(enc)
     npz, js = out / f"basis_{g}.npz", out / f"basis_{g}.json"
     if js.exists():
@@ -163,7 +192,7 @@ def cmd_bases(a):
     os.replace(tmp, npz)
     rec = {"graph": g, "fit_nodes": FIT_NODES, "rows": basis["rows"], "explained": basis["explained"],
            "seconds": basis["seconds"], "freeze_RECORD_SHA256": E.RECORD_SHA, "npz": npz.name,
-           "npz_sha256": E.sha256(npz), "blas_threads": os.environ.get("OPENBLAS_NUM_THREADS"),
+           "npz_sha256": E.sha256(npz), "blas_threads": os.environ.get("OPENBLAS_NUM_THREADS"), "blas_pools": blas,
            "stage": "ENC E2: the arm's basis", "declared_in": DECLARED, "enc": enc, "dim_real": dim_real, "dim": DIM,
            "draw": {"n_rows": n_rows, "seed": SEED, "rows_sha256": E.hashlib.sha256(rows.tobytes()).hexdigest()},
            "vectors": src, "lean_mlp3_sha256": E.sha256(L3.__file__), **code_shas(),
@@ -280,7 +309,8 @@ def cmd_merge(a):
 # ── self-test ────────────────────────────────────────────────────────────────
 
 def selftest():
-    import lean_mlp3 as L3
+    L3 = lean_mlp3()
+    print("BLAS pools:", blas_threads())
     rng = np.random.default_rng(1)
     n = 5000
     full = rng.standard_normal((n, 768)).astype(np.float32)
