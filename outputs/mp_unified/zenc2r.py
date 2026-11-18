@@ -56,12 +56,13 @@ BOOT, SEED = 2000, 0
 PASS_LO = -1.0                                                 # points (11.5)
 DIMS = {"frozen": 1536, "qwen3e06": 1024, "mpnet": 768}        # zenc.ENCODERS
 # the audited runs behind a world's reads (zenc2w / zenc2t tags); a tag starting "t-smoke" is a check, not a step
-TAGS = {"frozen": ("t-fz-",), "mpnet": ("w1-types-", "w1b-", "w2b-", "w2c-", "t-mp-"), "qwen3e06": ("t-qw-",)}
+TAGS = {"frozen": ("t-fz-",), "mpnet": ("w1-types-", "w1b-", "w2b-", "w2c-", "w2d-", "t-mp-"), "qwen3e06": ("t-qw-",)}
 # runs that failed and were rerun under a new tag (12.11's development log names each); a superseded run leaves GA only
-# when its successor is there and passes
+# when its successor (or the successor's own, down the chain) is there and passes
 SUPERSEDED = {"frozen": {"t-fz-fit-zrckpn": "t-fz-fit-zrckpn-b"},     # the fence refused the provenance hash of WebQSP's
                                                                      # chain record after training; nothing was read
-              "mpnet": {"w2b-chain-f-squad": "w2c-chain-f-squad"}}    # PKO's check gate: no section-5 verdicts (zenc2k)
+              "mpnet": {"w2b-chain-f-squad": "w2c-chain-f-squad",     # PKO's check gate: no section-5 verdicts (zenc2k)
+                        "w2c-chain-f-squad": "w2d-chain-f-squad"}}    # no ABL slot types in the arm's world (zabl_g all)
 
 BASE = {}
 
@@ -247,7 +248,11 @@ def ga(enc):
     for t in sorted(d.glob("*")) if d.is_dir() else []:
         if not t.is_dir() or not t.name.startswith(TAGS[enc]) or t.name.startswith("t-smoke"):
             continue
-        if t.name in sup and passed(enc, sup[t.name]):
+        nxt, seen = sup.get(t.name), {t.name}
+        while nxt in sup and nxt not in seen and not passed(enc, nxt):
+            seen.add(nxt)
+            nxt = sup[nxt]
+        if nxt is not None and passed(enc, nxt):
             continue
         rj, sj = t / "run.json", t / "summary.json"
         if not rj.is_file() or not sj.is_file():
@@ -587,6 +592,17 @@ def selftest():
         write_json(a / "run.json", {"rc": 0, "seconds": 5})
         write_json(a / "summary.json", {"blocked_read": [], "blocked_write": []})
         assert ga(REF)[0] == "PASS" and "t-fz-fit-zrckpn" not in ga(REF)[1]
+        for tag, rc in (("w2b-chain-f-squad", 1), ("w2c-chain-f-squad", 1)):   # a chain of reruns: out once the last passes
+            a = BASE["audit"] / "mpnet" / tag
+            a.mkdir(parents=True, exist_ok=True)
+            write_json(a / "run.json", {"rc": rc, "seconds": 9})
+            write_json(a / "summary.json", {"blocked_read": [], "blocked_write": []})
+        assert ga("mpnet")[0] == "FAIL"
+        a = BASE["audit"] / "mpnet" / "w2d-chain-f-squad"
+        a.mkdir(parents=True, exist_ok=True)
+        write_json(a / "run.json", {"rc": 0, "seconds": 9})
+        write_json(a / "summary.json", {"blocked_read": [], "blocked_write": []})
+        assert ga("mpnet")[0] == "PASS" and not {"w2b-chain-f-squad", "w2c-chain-f-squad"} & set(ga("mpnet")[1])
         report()
         rep = read_json(BASE["out"] / "report.json")
         assert rep["ga"]["frozen"]["verdict"] == "PASS" and rep["ga"]["mpnet"]["verdict"] == "PASS", rep["ga"]

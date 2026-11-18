@@ -939,3 +939,9 @@ about 21 November; the report as 12.9 says.
   record's, and re-running them on the arm's vectors would compare against the frozen vectors' pools by design. The arm's
   world therefore carries the record's four PASS verdicts (zenc2k.py: sha256-checked copies, and carried.json naming
   their sources). The chain reruns as w2c-chain-f-squad.
+- **The rerun (w2c-chain-f-squad)** passed the check gate and stopped after 8 s at D83's store: ABL's slot types
+  (outputs/abl/g/<dataset>/<slot>/types.json; D83F fills its structural slot with R, D83E with S) are not in the arm's
+  world. They are EM types fit on the slot graph's node vectors (ABL section 4, U2m (a)'s types stage), so the arm fits
+  its own with ABL's command, unchanged: `zabl_g.py all musique`, then `all squad`, in the arm's world (the hook swaps
+  the vectors and U2m's types as in 12.10). The chain reruns as w2d-chain-f-squad after both. The frozen world uses
+  the record's D83F and D83E, built with the record's slot types.
