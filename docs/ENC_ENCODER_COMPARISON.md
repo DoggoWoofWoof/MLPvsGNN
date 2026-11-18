@@ -435,3 +435,125 @@ Shares are % of golds in B. Gaps are points against the frozen arm (95%).
 
 **D99** (open; the user's call): carry qwen3e06 to part 2 anyway, given the user's "within about 1 point" and its
 -0.88 point gap on SQuAD? The default is no: the declared rule holds, and the encoder stays frozen.
+
+## 11. E1b, part 2: each encoder's real pools under PKO's rule (declared 18 Nov 2026, 21:45 IST, before any part 2 pool number)
+
+Script: `outputs/mp_unified/zenc1b2.py` (new). zenc, zenc1, zenc1b, zpko, zpkoh, zu2m_a_types and every module they open
+are imported unchanged. Outputs only under `outputs/enc/e1b2/`. Nothing trains.
+
+### 11.1 Why, and what changed since 10.5
+
+Part 1 put all three arms on HOLD, and 10.5 said a HOLD arm goes no further. The user then asked, on 18 November:
+"check properly how much can we recover and what are the pools and results after that if it is doable then we will go
+with the smallest possible encoder which doesnt lose much". This answers D99 more widely than it asked: part 2 runs for
+all three arms, and the choice of encoder moves to 11.5 and 11.6.
+
+Part 1 measured B only. On SQuAD the pool is B, so part 1 already measured SQuAD's pool. On MuSiQue and MetaQA the links add
+21.71 and 97.42 points to the frozen pool, so only the real pools say how much of B's loss the expansion wins back.
+
+### 11.2 The view
+
+Each pools run is PKO's own `zpko.pools_pass` on s1eval, with PKO's own rule and opener. Before it opens the carve, the
+script swaps the encoder's inputs in the process. The package on disk is never written.
+
+| what the rule reads | the record | an arm's view |
+| --- | --- | --- |
+| document vectors (cos1, kt_cos, the dense node reader) | the package's | the arm's (`outputs/enc/<arm>/<ds>/docs`) |
+| question vectors (the walks, steering) | the package's | the arm's (`outputs/enc/<arm>/<ds>/queries`, every query) |
+| the dense top-1000 (seeds, B, steering, anchors) | the package's cache | E0's list for the s1eval rows (`outputs/enc/e0/<arm>/<ds>.npz`) |
+| the K family | the package's `graph/knn.npz` and its cached store | this file's K for the arm, built into a store in memory |
+| the EM types (U2m (a)) | `outputs/u2m/a/types/<ds>` | refit on the view by U2m's own stage, into `outputs/enc/e1b2/types/<view>/` |
+
+**How.**
+- The package loader's `Dataset.embeddings`, `Dataset.cache` and `Dataset.graph` are patched for the one dataset.
+- `m3b_pools.load_or_build_store` builds the K store from the view's graph and never saves it. The record's CSR cache is
+  not touched.
+- `zu2m_a_types.OUT` points at the view's types. `zpko.u2s_record` hands open_pko the view's types sha, so that U2s's
+  check reads the view's types.
+- Step 4d's union is swapped for the form B1P used (`zb1p.on_b1`): B is the base united with the seeds, and the pools
+  are the prepared ones. Step 4d's files hold the record's B, which an arm's B is not.
+
+**What stays the record's:**
+- SPLADE;
+- the S and R stores and U2's chosen graph;
+- U2b's W2_S. Its title tie-break read the dense cosine when it was built; it stays the record's and is disclosed here;
+- the score types (U2p);
+- the carves, U2s's pick and PKO's rule.
+
+MetaQA's relation vectors are the frozen encoder's. They feed only the types record's NMI field, not the pools.
+
+**Three views beside the arms:**
+- **record:** nothing swapped. It rebuilds one filed part per dataset (MuSiQue 0 of 1, MetaQA 0 of 10) for GV.
+- **search:** the frozen encoder through every swap an arm takes: E0's frozen list, this file's frozen K, and types refit.
+  Every arm is measured against it, so the swaps' own churn cancels.
+- **qwen3e06, mpnet, mpnetqa:** the arms.
+
+**K** is the record's kNN rule (zenc1's pieces, 9.2) over every text group. It was built before this section by the first
+version of this script (sha256 ab45e320...). That version is committed as is, before this section's version; its K code
+is unchanged here. K reads no gold. GK passed on both datasets, the rebuilt frozen edges being the package's:
+- MuSiQue: 265,366 edges, weights within 4.2e-7;
+- MetaQA: 97,920 edges, weights within 8.9e-7.
+
+### 11.3 Gates (any failure stops the dataset with no measure)
+
+| gate | test |
+| --- | --- |
+| GK | (passed, above) the frozen K equals the package's `graph/knn.npz`: no pair more or less, weights within 1e-3 |
+| GV | the record view's parts equal PKO's filed parts, every array of the npz and the KT rows, exactly |
+| GS | the search view's pool gold share is within 0.1 point of the filed pools' (equal-pool share reported) |
+| served | in every pools row, every swap served at least once (the cache, the K store, the prepare guard, the union; the vectors for an arm), or the row stops |
+| guard | a population row without an E0 list stops the run (the view serves E0's s1eval rows only) |
+
+GT, the search view's refit types against the filed types (array equality, mu's largest difference, cls's equal
+share), is reported and is not a gate. GS covers its effect on the pools.
+
+### 11.4 Measures (per dataset, s1eval, each arm, against the search view)
+
+- the pool's gold share (golds in the pool over all golds) and the share of questions with every gold in it;
+- **the pool gap** in points, by `zap1.boot_diff` (2,000 resamples of the questions, seed 0), with ABOVE, LEVEL or BELOW;
+- B's gold share and gap, read from the same parts;
+- **won back** = the pool gap minus B's gap: the points the expansion recovers;
+- the mean pool size as a multiple of the search view's;
+- beside: the filed pools' and the search view's shares.
+
+### 11.5 The call (per arm)
+
+The call reads MuSiQue's and MetaQA's pool gaps from this part and SQuAD's gap from part 1 (10.8), where the pool is B.
+
+- **KEEPS** iff every lower bound is above -1.0 point.
+- **CLOSE** iff not KEEPS, and every point gap is above -1.0.
+- **LOSES** otherwise.
+
+**Disclosure.** This rule is written after part 1's SQuAD numbers were read. On those alone mpnet already LOSES (-1.09),
+and qwen3e06 (-0.88) and mpnetqa (-0.96) can be CLOSE at best. The -1.0 point is part 1's (10.4) and the user's "within
+about 1 point".
+
+### 11.6 What follows
+
+- **The pick:** the smallest arm that KEEPS. If none does, the smallest arm that is CLOSE. The sizes:
+  - mpnet and mpnetqa: 109M parameters;
+  - qwen3e06: 596M;
+  - the frozen encoder: 1.5B.
+  Between mpnet and mpnetqa, the one with the higher worst point gap is picked.
+- **D100** (the user's call; the default is to go): E2 on the pick. E2 stays named only (section 5). It needs the
+  pick's encode of every dataset (2Wiki and HotpotQA included) and its pools on the training carves. It is declared on
+  this page, with its cost, before any fit.
+- **Every arm LOSES:** the encoder stays the frozen one, and MultiHop-RAG enters the fold on it.
+
+### 11.7 Rows (host CPU, 2 threads a row as PKO's lanes; no GPU)
+
+- `enc-e1b2-types-<view>-<ds>`: search and the three arms, on MuSiQue and MetaQA (8 rows, minutes each).
+- `enc-e1b2-dev-mpnet-<ds>`: `--limit 4` on each dataset. Nothing is written but a view record with the timing and
+  the served counts. The full rows wait on them.
+- `enc-e1b2-pools-record-<ds>`: GV's two parts.
+- `enc-e1b2-pools-<view>-<ds>-<i>`: search and the three arms; MuSiQue in 1 part (about 1.5 h each, about 10 GB),
+  MetaQA in 10 (about 35 min each, about 7 GB).
+- `enc-e1b2-report`: after all of them. It writes `outputs/enc/e1b2/report.json` and `report.md`.
+
+### 11.8 Development log (disclosed before any part 2 pool number)
+
+- K ran on the host from 21:23 to 21:32 IST (8 rows). GK passed.
+- The self-test passed: the K edges equal a brute force on a toy corpus with a shared text group, the patches restore,
+  and the call rule is as 11.5 says.
+- The laptop holds no E0 list, so the view first runs in the host's dev rows. Those rows report timing and served
+  counts, not shares.
