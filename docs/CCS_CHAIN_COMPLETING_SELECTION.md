@@ -179,3 +179,47 @@ All per question, then by cell and by PH1's groups: MuSiQue by hops (2, 3, 4); 2
   dataset cell by a 2-hop loss. The cells decide; the hop groups are read beside.
 - **Device.** The re-reads run on the host's RTX 4500 Ada, as the record's reads did, and G1 checks them against those
   reads.
+
+## 10. Results (filed 18 Nov 2026, 21:3x IST)
+
+The twelve re-reads ran on the host's GPU from 20:44 to 21:12 IST on 18 November (rows `ccs-rd-<fit>-r3`, after the -r2
+guard fix), and the 36 analyses on its CPU after each read. The report ran on the laptop (`zccs.py report`, section 8).
+The record is `outputs/ccs/report.md` and `report.json`.
+
+**G1:** exact on all 36 (fit, dataset) reads against the record's reads.
+
+**The verdicts: BF NOT_ADOPTED, BJ NOT_ADOPTED. Nothing is carried.**
+
+R@5, form minus base, three-seed cells (paired 95% bootstrap):
+
+| cell | base R@5 | BF | BJ |
+| --- | ---: | --- | --- |
+| zg6r MuSiQue in-domain | 69.0 | -1.03 [-1.54, -0.49] BELOW | -0.38 [-0.64, -0.12] BELOW |
+| zg6r HotpotQA in-domain | 94.3 | -1.77 [-2.32, -1.23] BELOW | -0.17 [-0.40, +0.08] LEVEL |
+| zg6r 2Wiki in-domain | 94.9 | -1.45 [-1.87, -1.08] BELOW | -0.22 [-0.42, -0.04] BELOW |
+| zg6r MuSiQue held-out | 60.8 | -1.01 [-1.46, -0.54] BELOW | -0.23 [-0.48, +0.03] LEVEL |
+| zg6r HotpotQA held-out | 92.9 | -1.78 [-2.38, -1.18] BELOW | -0.18 [-0.43, +0.08] LEVEL |
+| GNX MuSiQue in-domain | 69.1 | -1.07 [-1.54, -0.57] BELOW | -0.43 [-0.73, -0.15] BELOW |
+| GNX HotpotQA in-domain | 94.1 | -1.95 [-2.53, -1.37] BELOW | -0.12 [-0.33, +0.08] LEVEL |
+| GNX 2Wiki in-domain | 95.0 | -1.43 [-1.86, -1.03] BELOW | -0.17 [-0.33, -0.05] BELOW |
+| GNX MuSiQue held-out | 63.1 | -1.33 [-1.82, -0.83] BELOW | -0.09 [-0.33, +0.14] LEVEL |
+| GNX HotpotQA held-out | 93.2 | -2.12 [-2.77, -1.47] BELOW | -0.10 [-0.33, +0.15] LEVEL |
+
+**What it says.**
+- **Two anchors are selective, but the swap still costs more than it gains.** On MuSiQue a row linked to two rows of T is
+  gold 37 to 40% of the time against about 1% for the rest (adj2 lift 26 to 46). Yet when BF fires, a non-gold row comes
+  in for a gold one going out two to three times as often as the reverse (zg6r MuSiQue in-domain: 26.0 gold in for a
+  non-gold out against 64.0 the other way, per fit). The best-scored bridge outside T is usually not the missing hop.
+- **Where it hurts (section 9's risks, as read).**
+  - Comparison questions lose most: BF -8.9 to -10.1 points of R@5 on HotpotQA's comparison group and -5.6 on 2Wiki's.
+    Their golds need no link between them, so the unlinked gold is the row swapped out.
+  - MuSiQue's 3- and 4-hop groups lose 2.3 to 2.9 points under BF. Its 2-hop group is LEVEL.
+- **Where it helps:** only three groups are ABOVE, each small: zg6r 2Wiki compositional (BF +0.26), GNX HotpotQA bridge
+  (BJ +0.12) and GNX MuSiQue held-out 2-hop (BJ +0.42).
+- BJ, which needs the bridge to join two parts of T, fires a fifth to two fifths as often as BF and loses far less, but four cells are
+  still BELOW.
+
+**What follows (section 7).** The hard set swap closes for BF and BJ; the verdict closes only these two forms. The two
+next forms stay named and not declared: a soft two-anchor term inside the GNN's readout, and the learned three-way
+score of (question, found passage, row) that CHN named. Section 4's reach and bounds (the table in the report) go to the
+journal's per-hop analysis beside PH1.
