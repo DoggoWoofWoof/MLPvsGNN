@@ -303,6 +303,61 @@ except StopIteration:
     out["basis_two"] = "StopIteration"
 print("RESULT " + json.dumps(out))
 '''
+ZABL_STUB = '''import contextlib
+from types import SimpleNamespace
+class Patches:
+    def __init__(self):
+        self.saved = []
+    def set(self, obj, **kw):
+        for k, v in kw.items():
+            self.saved.append((obj, k, getattr(obj, k)))
+            setattr(obj, k, v)
+    def restore(self):
+        for obj, k, v in reversed(self.saved):
+            setattr(obj, k, v)
+@contextlib.contextmanager
+def on_arm(M, name, arm):
+    P_, seen = Patches(), {}
+    try:
+        def union_pools(name_, carve_, pop, prep, bases):
+            raise SystemExit("record check 1: step 4d's carve")
+        P_.set(M.E, union_pools=union_pools)
+        yield SimpleNamespace(seen=seen)
+    finally:
+        P_.restore()
+'''
+ABL_CHILD = '''import hashlib, json, sys
+sys.path.insert(0, sys.argv[1])
+from pathlib import Path
+from types import SimpleNamespace
+import zabl
+class E:
+    @staticmethod
+    def sha_file(p):
+        return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+    @staticmethod
+    def union_pools(*a):
+        return "before"
+M = SimpleNamespace(E=E)
+pop = SimpleNamespace(ids=["q0", "q1"])
+prep = SimpleNamespace(seeds=[[5], [7, 1]], pools=[[1, 2], [3]])
+out = {}
+for name in ("squad", "webqsp"):
+    with zabl.on_arm(M, name, "D83F") as got:
+        try:
+            r = M.E.union_pools(name, "fit", pop, prep, [[2, 5], [1]])
+            out[name] = [[int(x) for x in b] for b in r[2]] + [got.seen.get("base_seeds_checked")]
+        except SystemExit as e:
+            out[name] = "exit: " + str(e)
+        if name == "squad":
+            try:
+                M.E.union_pools(name, "fit", pop, SimpleNamespace(seeds=[[5], [8]], pools=prep.pools), [[2, 5], [1]])
+                out["bad"] = "passed"
+            except SystemExit as e:
+                out["bad"] = "exit: " + str(e)
+out["after"] = M.E.union_pools()
+print("RESULT " + json.dumps(out))
+'''
 INNER_CHILD = '''import os, sys
 from pathlib import Path
 ok = os.environ.get("D83WORLD") == "1" and os.environ.get("SWORLD_MODE") == "train" and Path.cwd().name == "d83world"
@@ -336,7 +391,8 @@ def _split_child(tmp, spec, hook):
 
 
 def selftest():
-    import numpy as np  # noqa: F401  (zenc2w's import order: zenc first)
+    import hashlib
+    import numpy as np  # (zenc2w's import order: zenc first)
     Z2W = z2w()
     hook = Z2W.HOOK
     tmp = Path(tempfile.mkdtemp(prefix="zenc2t_t_"))
@@ -361,6 +417,25 @@ def selftest():
         assert got["basis_two"] == "2wiki" and got["basis_rec"] == "2wiki", got
         two = ["musique/fit/part_0of1", "squad/fit/part_0of1"]
         assert got["rm"] == two and got["rm_root"] == two, got   # the split's datasets only; webqsp's never opened
+        # 1b. ABL's union in an arm's world (12.11's log): an arm dataset is checked against the arm's PKO carve
+        (tmp / "mods" / "zabl.py").write_text(ZABL_STUB, encoding="utf-8")
+        (tmp / "abl_child.py").write_text(ABL_CHILD, encoding="utf-8")
+        pk = tmp / "w" / "outputs" / "pko" / "pools"
+        pk.mkdir(parents=True)
+        np.savez(pk / "squad__fit.npz", ids=np.array(["q0", "q1"]), bs_ptr=np.array([0, 2, 4]),
+                 bs_nodes=np.array([2, 5, 1, 7], np.int32))
+        (pk / "squad__fit.json").write_text(json.dumps({"sha256": hashlib.sha256((pk / "squad__fit.npz").read_bytes())
+                                                        .hexdigest()}), encoding="utf-8")
+        spa = tmp / "spec_abl.json"
+        spa.write_text(json.dumps(dict(base, swap={"squad": {"docs": "d", "queries": "q", "cache": "c"}})), encoding="utf-8")
+        ra = subprocess.run([sys.executable, str(tmp / "abl_child.py"), str(tmp / "mods")], capture_output=True, text=True,
+                            env=dict(os.environ, E2HOOK=str(spa), PYTHONPATH=str(hook)))
+        la = [x for x in ra.stdout.splitlines() if x.startswith("RESULT ")]
+        assert ra.returncode == 0 and la, (ra.stdout[-600:], ra.stderr[-1500:])
+        ga = json.loads(la[0][7:])
+        assert ga["squad"] == [[2, 5], [1, 7], 2] and ga["after"] == "before", ga
+        assert ga["webqsp"] == "exit: record check 1: step 4d's carve", ga          # a record dataset: ABL's own
+        assert ga["bad"] == "exit: q1: base and seeds are not the arm's PKO carve's", ga
         r0, got0 = _split_child(tmp, base, hook)                # no split: the record's table at run time
         assert r0.returncode == 0 and got0["run"] == ["webqsp", "squad", "hotpotqa", "2wiki"], (r0.stderr[-800:], got0)
         assert got0["basis_two"] == "StopIteration" and got0["all"] == 11 and got0["lazy_saw"] == got0["run"], got0

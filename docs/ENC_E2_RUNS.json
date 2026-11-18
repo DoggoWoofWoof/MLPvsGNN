@@ -11,6 +11,7 @@
    "w2b-",
    "w2c-",
    "w2d-",
+   "w2e-",
    "t-mp-"
   ],
   "qwen3e06": [
@@ -24,7 +25,8 @@
   "mpnet": {
    "w2b-chain-f-squad": "w2c-chain-f-squad",
    "w2c-chain-f-squad": "w2d-chain-f-squad",
-   "w2d-g-musique": "w2d-g2-musique"
+   "w2d-g-musique": "w2d-g2-musique",
+   "w2d-chain-f-squad": "w2e-chain-f-squad"
   }
  }
 }

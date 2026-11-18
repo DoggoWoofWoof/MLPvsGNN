@@ -24,6 +24,10 @@ From the spec (written by zenc2w.py run):
                          (zenc1b2's swap); copy_bases(R): from the arm's bases folder (spec bases).
     step4e_paper_pools   union_pools of an arm dataset: B1P's form (B = base united with the seeds, I = the prepared
                          pools; step 4d's files hold the frozen vectors' pools), as zenc1b2 swapped it.
+    zabl                 on_arm (12.11's log): ABL puts in its own union_pools, the same form with check 1 (base and
+                         seeds, question by question, against step 4d's filed carve). For an arm dataset the form stays
+                         and check 1 reads the arm's own filed carve: the world's PKO pools (12.10's W1), its sha256
+                         from its manifest. A record dataset keeps ABL's union_pools.
   A module run as the main script (runpy) is not patched: an arm world runs zpko's steps through zenc2p.py.
 - split (section 12.11; any world whose spec has "split", the frozen one too): zwq's SPLITS and ZERO_SHOT hold the
   spec's entries while the process runs, and the record's entries while any module's code runs (an import, at any
@@ -240,8 +244,50 @@ if _SPEC_PATH:
         union_pools._e2 = True
         mod.union_pools = union_pools
 
+    def _patch_zabl(mod):
+        import contextlib
+        orig = mod.on_arm
+        if getattr(orig, "_e2", False):
+            return
+
+        @contextlib.contextmanager
+        def on_arm(M, name, arm):
+            with orig(M, name, arm) as got:
+                if name in _SWAP:
+                    E = M.E
+
+                    def union_pools(name_, carve_, pop, prep, bases):
+                        import numpy as np
+                        from pathlib import Path
+                        if name_ != name:
+                            raise SystemExit(f"ABL: union_pools({name_}); ABL opens {name} only")
+                        pools = Path(SPEC["world"]) / "outputs" / "pko" / "pools"
+                        man = json.loads((pools / f"{name_}__{carve_}.json").read_text(encoding="utf-8"))
+                        path = pools / f"{name_}__{carve_}.npz"
+                        if E.sha_file(path) != man["sha256"]:
+                            raise SystemExit(f"{path}: not the arm's PKO manifest's file")
+                        with np.load(path) as z:
+                            f = {k: z[k] for k in ("ids", "bs_ptr", "bs_nodes")}
+                        n = len(pop.ids)
+                        if f["ids"].tolist()[:n] != list(pop.ids):
+                            raise SystemExit(f"{name_}/{carve_}: the arm's PKO carve's first {n} ids are not the population's")
+                        bs_all = []
+                        for j in range(n):
+                            bs = np.union1d(np.asarray(bases[j], np.int64), np.asarray(prep.seeds[j], np.int64))
+                            if not np.array_equal(bs, f["bs_nodes"][f["bs_ptr"][j]:f["bs_ptr"][j + 1]].astype(np.int64)):
+                                raise SystemExit(f"{pop.ids[j]}: base and seeds are not the arm's PKO carve's")
+                            bs_all.append(bs)
+                        got.seen["base_seeds_checked"] = got.seen.get("base_seeds_checked", 0) + n
+                        _note("S", f"zabl union_pools:{name_}:{carve_} -> {_norm(path)}")
+                        return None, None, bs_all, [np.asarray(p, np.int64) for p in prep.pools], None
+                    E.union_pools = union_pools               # ABL's Patches puts its saved value back on exit
+                yield got
+
+        on_arm._e2 = orig
+        mod.on_arm = on_arm
+
     _PATCH = {"canonical": _patch_canonical, "m3b_pools": _patch_store, "zu2m_a_types": _patch_types,
-              "zpko": _patch_zpko, "step4e_paper_pools": _patch_union}
+              "zpko": _patch_zpko, "step4e_paper_pools": _patch_union, "zabl": _patch_zabl}
 
     # ── section 12.11: the two-carve split ──────────────────────────────────
     # spec "split": {"tables": {"SPLITS": {split: [datasets]}, "ZERO_SHOT": {split: [datasets]}}, "basis": "2wiki"}.

@@ -950,3 +950,10 @@ about 21 November; the report as 12.9 says.
   tree. zabl_g now runs through zenc2g.py, which imports it unchanged and records such a path relative to the world
   ("../ws/..."). The fits rerun as w2d-g2-musique and w2d-g2-squad. The report's tag families and reruns now live in
   docs/ENC_E2_RUNS.json (data, not pinned code), so naming a rerun no longer touches the worlds.
+- **The chain after the slot types (w2d-chain-f-squad)** stopped after 147 s in D83's KT pass, at ABL's check 1.
+  ABL's on_arm installs its own step 4e union. Its form is 12.10's: B is the base united with the seeds, I is the
+  prepared pools. Check 1 then compares each question's base and seeds with step 4d's filed carve. That carve holds the
+  frozen vectors' pools, which the arm's spec forbids, so the guard refused the read and nothing was built. For an arm
+  dataset, the hook now keeps ABL's form and runs check 1 against the arm's own filed carve: the world's PKO pools from
+  12.10's W1, with the sha256 checked against their manifest. A record dataset keeps ABL's function, and the frozen
+  world swaps nothing. zenc2t's self-test checks all three cases. The chain reruns as w2e-chain-f-squad.
