@@ -185,3 +185,22 @@ census itself.
 
 Committed: this file, `nmddiag.py`, and later `outputs/nmd/report.json` and `report.md` (masked). The census JSONs
 stay on the host and the laptop.
+
+## 8. Result (filed 3 Nov 2026, 21:51 IST, 53210eb; this section added 18 Nov)
+
+The record is `outputs/nmd/report.md` and `report.json`.
+
+**Call on musique/s1fit: NO_SIGNAL (RARE).**
+- 3,022 A cases.
+- CN_u from the anchor names 1.97% of the 2,536 unlinked targets (bar 10%).
+- Its rrf-matched lift is 12.3, so the names it does reach are selective; they are too few.
+
+**Beside (they decide nothing).**
+- 2wiki/fit: 0.32% named.
+- hotpotqa/fit: 2.63% named.
+- From the top five instead of the anchor, CN_u names 10.9% of musique's unlinked targets (matched lift 5.6). This is
+  a different form from the one the rule reads.
+
+**What followed (section 5).** No names term was built. The names line moved to its open forms. Names as entity
+nodes are now MHB's Part A (`docs/MHB_MULTIHOP_BRIDGES.md`, declared 18 Nov), which takes the hub names the cap of 25
+refuses.
