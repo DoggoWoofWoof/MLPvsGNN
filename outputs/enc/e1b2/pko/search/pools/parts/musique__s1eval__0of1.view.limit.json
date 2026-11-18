@@ -1,0 +1,56 @@
+{
+ "stage": "ENC E1b part 2: pools",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 11",
+ "view": "search",
+ "dataset": "musique",
+ "carve": "s1eval",
+ "shard": [
+  0,
+  1
+ ],
+ "limit": 0,
+ "result": {
+  "seconds": 1198.0935373306274,
+  "questions": 2417,
+  "check": null
+ },
+ "stats": {
+  "view": "search",
+  "dataset": "musique",
+  "enc": "frozen",
+  "e0": {
+   "file": "outputs/enc/e0/frozen/musique.npz",
+   "sha256": "b274c6dd1bf403b224bdf057132baa578b0e893cad62acc2be5951eced700ad9"
+  },
+  "knn": {
+   "file": "outputs/enc/e1b2/knn/frozen/musique.npz",
+   "sha256": "6a97c8670c1cffba0024ae55e5f8df76ccf1fd43e018d9bb81eec7fbcdc15a72"
+  },
+  "served": {
+   "embeddings": 0,
+   "cache": 2,
+   "knn_graph": 1,
+   "knn_store": 1,
+   "prepare_checked": 2,
+   "union_pools": 1
+  },
+  "em_types": {
+   "file": "outputs/enc/e1b2/types/search/musique.npz",
+   "sha256": "8156b4756da02ae3a29eda2ed4730f784491b4ebd34baeeba5fff971e3bcf5c9",
+   "record_em_types_sha256": "8156b4756da02ae3a29eda2ed4730f784491b4ebd34baeeba5fff971e3bcf5c9"
+  },
+  "knn_store_vs_record": {
+   "indptr_equal": true,
+   "col_equal": true,
+   "weight_max_abs_diff": 0.00048828125
+  }
+ },
+ "seconds": 1250.5,
+ "code_sha256": {
+  "zenc1b2.py": "14b4746511bf323338c8fb2a2917a57b8939ee292636b3bd47cc781fb41e2795",
+  "zenc.py": "4429138d128e4e07e09ebefee64c0b32052476d476d96991462ec258a141f52b",
+  "zpko.py": "cff0e7e082d5f19c928a5cc6ae1195beaee5491fa9305e571c33e3a2f93883c3",
+  "zu2m_a_types.py": "5a6dbaf99f17b75ba41821203d2948ebee8d834a89965b0d7d8ed1a2b1bfeede",
+  "m3b_pools.py": "219e82af6c54a6c3e6d2ce12980cc4253d6915c9e023eaa47d222f93be592697"
+ }
+}

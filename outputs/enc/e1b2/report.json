@@ -1,0 +1,312 @@
+{
+ "stage": "ENC E1b part 2",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 11",
+ "datasets": {
+  "musique": {
+   "gv": {
+    "parts": [
+     "0of1"
+    ],
+    "differ": [],
+    "verdict": "PASS"
+   },
+   "gold": {
+    "file": "outputs/enc/e0/gold/musique.npz",
+    "sha256": "ead7f553619406b9d9ea12cec0b55ceae00913918a77c22bc23d555356ab0424"
+   },
+   "questions": 2417,
+   "golds": 6404,
+   "filed": {
+    "pool": {
+     "gold_share": 97.767,
+     "all_golds_share": 94.7456,
+     "mean_size": 5263.62
+    },
+    "B": {
+     "gold_share": 76.0618,
+     "all_golds_share": 52.6272,
+     "mean_size": 200.0
+    }
+   },
+   "gs": {
+    "equal_pool_share": 0.997931,
+    "gold_share_diff_pts": 0.0,
+    "verdict": "PASS"
+   },
+   "search": {
+    "pool": {
+     "gold_share": 97.767,
+     "all_golds_share": 94.7456,
+     "mean_size": 5263.62
+    },
+    "B": {
+     "gold_share": 76.0618,
+     "all_golds_share": 52.6272,
+     "mean_size": 200.0
+    }
+   },
+   "arms": {
+    "qwen3e06": {
+     "pool": {
+      "gold_share": 97.1893,
+      "all_golds_share": 93.5043,
+      "mean_size": 5415.89
+     },
+     "B": {
+      "gold_share": 72.8295,
+      "all_golds_share": 45.8006,
+      "mean_size": 200.0
+     },
+     "pool_gap_pts": [
+      -0.58,
+      -0.86,
+      -0.3
+     ],
+     "pool_call": "BELOW",
+     "B_gap_pts": [
+      -3.23,
+      -3.89,
+      -2.58
+     ],
+     "won_back_pts": 2.65,
+     "pool_size_ratio": 1.0289
+    },
+    "mpnet": {
+     "pool": {
+      "gold_share": 97.2205,
+      "all_golds_share": 93.9181,
+      "mean_size": 5254.03
+     },
+     "B": {
+      "gold_share": 73.0793,
+      "all_golds_share": 46.5867,
+      "mean_size": 200.0
+     },
+     "pool_gap_pts": [
+      -0.55,
+      -0.85,
+      -0.24
+     ],
+     "pool_call": "BELOW",
+     "B_gap_pts": [
+      -2.98,
+      -3.62,
+      -2.32
+     ],
+     "won_back_pts": 2.43,
+     "pool_size_ratio": 0.9982
+    },
+    "mpnetqa": {
+     "pool": {
+      "gold_share": 96.9706,
+      "all_golds_share": 93.3802,
+      "mean_size": 5237.45
+     },
+     "B": {
+      "gold_share": 72.2361,
+      "all_golds_share": 44.6835,
+      "mean_size": 200.0
+     },
+     "pool_gap_pts": [
+      -0.8,
+      -1.11,
+      -0.5
+     ],
+     "pool_call": "BELOW",
+     "B_gap_pts": [
+      -3.83,
+      -4.45,
+      -3.2
+     ],
+     "won_back_pts": 3.03,
+     "pool_size_ratio": 0.995
+    }
+   }
+  },
+  "metaqa": {
+   "gv": {
+    "parts": [
+     "0of10"
+    ],
+    "differ": [],
+    "verdict": "PASS"
+   },
+   "gold": {
+    "file": "outputs/enc/e0/gold/metaqa.npz",
+    "sha256": "3b7556899e2a4bccada1aed266d4f19efc67ec9d098eaa959f69fbe06d95b800"
+   },
+   "questions": 9785,
+   "golds": 72697,
+   "filed": {
+    "pool": {
+     "gold_share": 98.8376,
+     "all_golds_share": 97.8641,
+     "mean_size": 4373.68
+    },
+    "B": {
+     "gold_share": 1.4223,
+     "all_golds_share": 1.4614,
+     "mean_size": 50.02
+    }
+   },
+   "gs": {
+    "equal_pool_share": 0.999796,
+    "gold_share_diff_pts": 0.0,
+    "verdict": "PASS"
+   },
+   "search": {
+    "pool": {
+     "gold_share": 98.8376,
+     "all_golds_share": 97.8641,
+     "mean_size": 4373.68
+    },
+    "B": {
+     "gold_share": 1.4223,
+     "all_golds_share": 1.4614,
+     "mean_size": 50.02
+    }
+   },
+   "arms": {
+    "qwen3e06": {
+     "pool": {
+      "gold_share": 98.5997,
+      "all_golds_share": 97.2816,
+      "mean_size": 4375.0
+     },
+     "B": {
+      "gold_share": 0.8639,
+      "all_golds_share": 0.9096,
+      "mean_size": 50.01
+     },
+     "pool_gap_pts": [
+      -0.24,
+      -0.4,
+      -0.09
+     ],
+     "pool_call": "BELOW",
+     "B_gap_pts": [
+      -0.56,
+      -0.66,
+      -0.45
+     ],
+     "won_back_pts": 0.32,
+     "pool_size_ratio": 1.0003
+    },
+    "mpnet": {
+     "pool": {
+      "gold_share": 97.6478,
+      "all_golds_share": 96.9647,
+      "mean_size": 4321.33
+     },
+     "B": {
+      "gold_share": 1.0812,
+      "all_golds_share": 2.3812,
+      "mean_size": 50.02
+     },
+     "pool_gap_pts": [
+      -1.19,
+      -1.45,
+      -0.93
+     ],
+     "pool_call": "BELOW",
+     "B_gap_pts": [
+      -0.34,
+      -0.46,
+      -0.22
+     ],
+     "won_back_pts": -0.85,
+     "pool_size_ratio": 0.988
+    },
+    "mpnetqa": {
+     "pool": {
+      "gold_share": 97.0411,
+      "all_golds_share": 96.0143,
+      "mean_size": 4288.93
+     },
+     "B": {
+      "gold_share": 0.6685,
+      "all_golds_share": 1.3592,
+      "mean_size": 50.06
+     },
+     "pool_gap_pts": [
+      -1.8,
+      -2.1,
+      -1.49
+     ],
+     "pool_call": "BELOW",
+     "B_gap_pts": [
+      -0.75,
+      -0.85,
+      -0.65
+     ],
+     "won_back_pts": -1.05,
+     "pool_size_ratio": 0.9806
+    }
+   }
+  }
+ },
+ "calls": {
+  "qwen3e06": {
+   "gaps": {
+    "musique": [
+     -0.58,
+     -0.86
+    ],
+    "metaqa": [
+     -0.24,
+     -0.4
+    ],
+    "squad": [
+     -0.8844,
+     -1.0781
+    ]
+   },
+   "call": "CLOSE"
+  },
+  "mpnet": {
+   "gaps": {
+    "musique": [
+     -0.55,
+     -0.85
+    ],
+    "metaqa": [
+     -1.19,
+     -1.45
+    ],
+    "squad": [
+     -1.0949,
+     -1.3139
+    ]
+   },
+   "call": "LOSES"
+  },
+  "mpnetqa": {
+   "gaps": {
+    "musique": [
+     -0.8,
+     -1.11
+    ],
+    "metaqa": [
+     -1.8,
+     -2.1
+    ],
+    "squad": [
+     -0.9602,
+     -1.1623
+    ]
+   },
+   "call": "LOSES"
+  }
+ },
+ "part1": {
+  "file": "outputs/enc/e1b/report.json",
+  "sha256": "aac7c26390f3818fa0466732f52d38a5536f6010522346c53716317b64d7e9ee"
+ },
+ "seconds": 145.7,
+ "code_sha256": {
+  "zenc1b2.py": "14b4746511bf323338c8fb2a2917a57b8939ee292636b3bd47cc781fb41e2795",
+  "zenc.py": "4429138d128e4e07e09ebefee64c0b32052476d476d96991462ec258a141f52b",
+  "zap1.py": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+  "zenc1b.py": "44062f4c281dadeee8dc78c21923a5476dcff30966f998615c50cfe6f0c4d516"
+ }
+}

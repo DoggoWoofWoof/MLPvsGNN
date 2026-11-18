@@ -1,0 +1,29 @@
+{
+ "stage": "ENC E1b part 2: pools",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 11",
+ "view": "record",
+ "dataset": "musique",
+ "carve": "s1eval",
+ "shard": [
+  0,
+  1
+ ],
+ "limit": 0,
+ "result": {
+  "seconds": 1149.0442473888397,
+  "questions": 2417,
+  "check": null
+ },
+ "stats": {
+  "view": "record",
+  "dataset": "musique"
+ },
+ "seconds": 1208.6,
+ "code_sha256": {
+  "zenc1b2.py": "14b4746511bf323338c8fb2a2917a57b8939ee292636b3bd47cc781fb41e2795",
+  "zenc.py": "4429138d128e4e07e09ebefee64c0b32052476d476d96991462ec258a141f52b",
+  "zpko.py": "cff0e7e082d5f19c928a5cc6ae1195beaee5491fa9305e571c33e3a2f93883c3",
+  "zu2m_a_types.py": "5a6dbaf99f17b75ba41821203d2948ebee8d834a89965b0d7d8ed1a2b1bfeede",
+  "m3b_pools.py": "219e82af6c54a6c3e6d2ce12980cc4253d6915c9e023eaa47d222f93be592697"
+ }
+}

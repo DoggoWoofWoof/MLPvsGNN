@@ -557,3 +557,42 @@ about 1 point".
   and the call rule is as 11.5 says.
 - The laptop holds no E0 list, so the view first runs in the host's dev rows. Those rows report timing and served
   counts, not shares.
+
+### 11.9 Results (filed 18 Nov 2026, 22:55 IST)
+
+Records: `outputs/enc/e1b2/report.json` and `report.md` (zenc1b2.py 14b47465, report in 146 s on the host), with each
+part's view record under `outputs/enc/e1b2/pko/<view>/pools/parts/` and the refit types under `types/<view>/`.
+
+**Gates.**
+- GV passed on both datasets: the record view rebuilt PKO's filed part exactly.
+- GS passed on both. The search view's gold share equals the filed pools' (0.0 points). Its pools equal the filed ones
+  for 99.79% of MuSiQue's questions and 99.98% of MetaQA's.
+
+**Pools against the search view** (s1eval; points; paired 95% intervals):
+
+| dataset | arm | pool share | pool gap | B gap | won back | rows (x search) |
+| --- | --- | ---: | --- | --- | ---: | ---: |
+| MuSiQue (search 97.77) | qwen3e06 | 97.19 | -0.58 [-0.86, -0.30] | -3.23 [-3.89, -2.58] | +2.65 | 1.029 |
+| | mpnet | 97.22 | -0.55 [-0.85, -0.24] | -2.98 [-3.62, -2.32] | +2.43 | 0.998 |
+| | mpnetqa | 96.97 | -0.80 [-1.11, -0.50] | -3.83 [-4.45, -3.20] | +3.03 | 0.995 |
+| MetaQA (search 98.84) | qwen3e06 | 98.60 | -0.24 [-0.40, -0.09] | -0.56 [-0.66, -0.45] | +0.32 | 1.000 |
+| | mpnet | 97.65 | -1.19 [-1.45, -0.93] | -0.34 [-0.46, -0.22] | -0.85 | 0.988 |
+| | mpnetqa | 97.04 | -1.80 [-2.10, -1.49] | -0.75 [-0.85, -0.65] | -1.05 | 0.981 |
+
+**The calls (11.5), with SQuAD's gap from part 1:**
+- **qwen3e06: CLOSE.** Every point gap is above -1: MuSiQue -0.58, MetaQA -0.24, SQuAD -0.88. SQuAD's lower bound
+  (-1.08) keeps it from KEEPS.
+- **mpnet: LOSES.** MetaQA -1.19 and SQuAD -1.09.
+- **mpnetqa: LOSES.** MetaQA -1.80.
+
+**The pick (11.6): qwen3e06** (596M parameters, 1024 dims). No arm KEEPS, and it is the only arm that is CLOSE.
+
+**What it shows.**
+- On MuSiQue, the links win back most of what a smaller encoder loses. The dense lists (B) lose 3.0 to 3.8 points,
+  and the pools lose 0.55 to 0.80.
+- On MetaQA, qwen3e06 loses little anywhere. The 109M arms lose more in the pools than in B, so the KB's pool rule
+  leans on the encoder there.
+
+**Next: D100, E2 on qwen3e06.** It is the user's call; the default is go. E2 stays named until it is declared on
+this page, with its cost, before any fit. It needs qwen3e06's encode of every dataset, 2Wiki and HotpotQA included,
+and its pools on the training carves. MultiHop-RAG (D84) enters the fold on the encoder that E2 settles.

@@ -1,0 +1,39 @@
+{
+ "stage": "ENC E1b part 2: EM types",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 11",
+ "view": "qwen3e06",
+ "dataset": "musique",
+ "stats": {
+  "view": "qwen3e06",
+  "enc": "qwen3e06",
+  "dataset": "musique",
+  "e0": {
+   "file": "outputs/enc/e0/qwen3e06/musique.npz",
+   "sha256": "43ba8ae5fb289c41cd2efe2239c00d7bd22165e93fab9ca1dd65c25aa2f5c1dd"
+  },
+  "knn": {
+   "file": "outputs/enc/e1b2/knn/qwen3e06/musique.npz",
+   "sha256": "79c58ad4dab86626fd77d176f45aeb6e02fb6047f45ee063d98062375ca43dd0"
+  },
+  "served": {
+   "embeddings": 1,
+   "cache": 0,
+   "knn_graph": 1,
+   "knn_store": 1,
+   "prepare_checked": 0,
+   "union_pools": 0
+  }
+ },
+ "types": {
+  "file": "outputs/enc/e1b2/types/qwen3e06/musique.npz",
+  "sha256": "d3d639a66b9fcc518c6fc25deb89e76efd826b539ff66984e6ff7fb0a86571ff"
+ },
+ "seconds": 100.2,
+ "code_sha256": {
+  "zenc1b2.py": "14b4746511bf323338c8fb2a2917a57b8939ee292636b3bd47cc781fb41e2795",
+  "zenc.py": "4429138d128e4e07e09ebefee64c0b32052476d476d96991462ec258a141f52b",
+  "zpko.py": "cff0e7e082d5f19c928a5cc6ae1195beaee5491fa9305e571c33e3a2f93883c3",
+  "zu2m_a_types.py": "5a6dbaf99f17b75ba41821203d2948ebee8d834a89965b0d7d8ed1a2b1bfeede",
+  "m3b_pools.py": "219e82af6c54a6c3e6d2ce12980cc4253d6915c9e023eaa47d222f93be592697"
+ }
+}

@@ -1,0 +1,76 @@
+{
+ "declared_in": "docs/PKO_PICK_O_POOLS_UNDER_WQ.md",
+ "stage": "PKO",
+ "dataset": "metaqa",
+ "carve": "s1eval",
+ "pick": "own/kind_t/kt_cos:ada_f16_k0@0.85",
+ "construction": "PKO:own/kind_t/kt_cos:ada_f16_k0@0.85",
+ "graph_detail": {
+  "graph": "cached (the KB)"
+ },
+ "walk": "RWe@0.5",
+ "threads": 2,
+ "u2s": {
+  "verdict": "outputs/u2s/verdict.json",
+  "verdict_sha256": "516cd92d4df8444f74b9c4b70e92c7483d3c97333d2dfd3666f959be949c47c2",
+  "record": "outputs/u2s/stats/metaqa__s1sel.json",
+  "record_sha256": "49df702c9f87866d852c4f7e210742e1a12eb469a3c1e9952658acf4def988e4",
+  "file_sha256": "5b0271d60fa255bd7eebf93da9c233665d841ff4796c0b33089f990bb26b31ab",
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0"
+ },
+ "types": {
+  "em_types_sha256": "b212c88919163372318f55e0083ce43086fb2fe61c539505e536a4774aab351a",
+  "score_types_sha256": null
+ },
+ "scripts": {
+  "outputs/mp_unified/lean_cache.py": "19bcc079c742b05d4998221cd2c4dac3c641d8ef69b6e7c59420191c6ff76c2c",
+  "outputs/mp_unified/look_u2d.py": "494a1000e510e8f7f603fa5833dcb397e2de27a98c30a733420cdca171222862",
+  "outputs/mp_unified/zp1c2.py": "cac9dabb206ef3848312d7639a0a8eaf820c2a9a708eccf832f8de4691410770",
+  "outputs/mp_unified/zp1h.py": "256a1aa65949bbdab27f3e58ce03de3c60ec15770492344f915a3659a12914cb",
+  "outputs/mp_unified/zpko.py": "cff0e7e082d5f19c928a5cc6ae1195beaee5491fa9305e571c33e3a2f93883c3",
+  "outputs/mp_unified/zu2d_pools.py": "210d222ac961707e44900415d9599e2f9b5acac50751ccd49f3553325359c6dd",
+  "outputs/mp_unified/zu2e.py": "9f781ecf07446e1fd2d89d54aa591ff43d39af9d8bd2c476f71ed341916fe30a",
+  "outputs/mp_unified/zu2m.py": "6f90ac0e5acd7ccfd8005c03eef1f211bfe150a1c2acf60b9cdc5bed121966e8",
+  "outputs/mp_unified/zu2m_a.py": "2327179621c88de1c66b9d8c7139a8f32682d92657999e469c05bad8a90e2bbe",
+  "outputs/mp_unified/zu2m_a_types.py": "5a6dbaf99f17b75ba41821203d2948ebee8d834a89965b0d7d8ed1a2b1bfeede",
+  "outputs/mp_unified/zu2m_b.py": "82c2d5494b999136fbd8dc324e39c4568f57f024cb6dfc229bd5ebaed1801c9f",
+  "outputs/mp_unified/zu2n.py": "26291debd1b2de8d7477daea938132f36d12be24804bcbadd7fa17bd87f44434",
+  "outputs/mp_unified/zu2p.py": "b18f44be0a8fe58ef3543fdc6fde8af19ef743d1a2403c4c5b47cec12ae3e44f",
+  "outputs/mp_unified/zu2q.py": "d2f59715deb9b1719f63c39d313af8ca6e0214f22e89843ba84014f34576bf9f",
+  "outputs/mp_unified/zu2s.py": "0c4fb2ef63fe0226336cc23bbd449ef214def537fa9e60f0f6b947db174d0c29",
+  "outputs/mp_unified/zwq.py": "cac99ace45e39dfb954618768483375a309f140a9ca439793428559c15d814da",
+  "outputs/mp_unified/zwqk.py": "b3c96017559f26a4b7041c570c3cd7d5f60721e2824996c5ee30a76fe447baad",
+  "scripts/d5_gold_reach.py": "8e78cc7fa52fc0d15879df54d199b5ee191f10819cf0553725642c22189f32a6",
+  "scripts/d5b_neighbour_orders.py": "dd7f897d459452da8b907257fbcd75361b35b08a45c027ac80e0fc62493bd78e",
+  "scripts/p1c3_kt.py": "5c43248c611d6caaa15de3e3592fb4d6439a3d71f47d2ef02106cfc9becf88d1",
+  "scripts/p1f_pool_size.py": "fd409345fb482f42d1948281fb59b55376581059249c99d5dc3f47e732f6c780",
+  "scripts/p1gb_pools.py": "fcb90d27819ca2160105fec6c3100103d150a62ba561d22783e0fc519d47c769"
+ },
+ "shard": [
+  3,
+  10
+ ],
+ "range": [
+  2935,
+  3914
+ ],
+ "nq": 9785,
+ "questions": 979,
+ "seconds": {
+  "open": 56.0,
+  "pass": 292.8
+ },
+ "utc": "2026-11-18T16:58:03Z",
+ "file": "metaqa__s1eval__3of10.npz",
+ "file_sha256": "777319bac06b4c050435f171a00d9251af8517dce0dee09e80140939853da762",
+ "rows": 4231611,
+ "kt": {
+  "file": "metaqa__s1eval__3of10.kt.npy",
+  "sha256": "c561de3878eeb5f8a6ac2527dc856782144346e6bf5b42ddfbaabf703954e09a",
+  "shape": [
+   4231611,
+   8
+  ]
+ },
+ "check": null
+}

@@ -1,0 +1,51 @@
+{
+ "stage": "ENC E1b part 2: pools",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 11",
+ "view": "qwen3e06",
+ "dataset": "metaqa",
+ "carve": "s1eval",
+ "shard": [
+  5,
+  10
+ ],
+ "limit": 0,
+ "result": {
+  "seconds": 354.9158663749695,
+  "questions": 979,
+  "check": null
+ },
+ "stats": {
+  "view": "qwen3e06",
+  "dataset": "metaqa",
+  "enc": "qwen3e06",
+  "e0": {
+   "file": "outputs/enc/e0/qwen3e06/metaqa.npz",
+   "sha256": "8aaf81a402f700ebd566c591859912b513c12ca794118decdba05d0989a706a4"
+  },
+  "knn": {
+   "file": "outputs/enc/e1b2/knn/qwen3e06/metaqa.npz",
+   "sha256": "d1fdf6c1e1eb69463894d2faf118cf40d383c60cae8e8cbb25a891c16fe43465"
+  },
+  "served": {
+   "embeddings": 2,
+   "cache": 1,
+   "knn_graph": 1,
+   "knn_store": 1,
+   "prepare_checked": 1,
+   "union_pools": 1
+  },
+  "em_types": {
+   "file": "outputs/enc/e1b2/types/qwen3e06/metaqa.npz",
+   "sha256": "a289cf7e98b11dcfbbfc531d85bce6e635465af00ae60c84422f9d4cd1cef4ec",
+   "record_em_types_sha256": "ca3d237ec3fb4269ab65846223f9e724f8fd76eea03523b2a90a48a16dbc77eb"
+  }
+ },
+ "seconds": 412.3,
+ "code_sha256": {
+  "zenc1b2.py": "14b4746511bf323338c8fb2a2917a57b8939ee292636b3bd47cc781fb41e2795",
+  "zenc.py": "4429138d128e4e07e09ebefee64c0b32052476d476d96991462ec258a141f52b",
+  "zpko.py": "cff0e7e082d5f19c928a5cc6ae1195beaee5491fa9305e571c33e3a2f93883c3",
+  "zu2m_a_types.py": "5a6dbaf99f17b75ba41821203d2948ebee8d834a89965b0d7d8ed1a2b1bfeede",
+  "m3b_pools.py": "219e82af6c54a6c3e6d2ce12980cc4253d6915c9e023eaa47d222f93be592697"
+ }
+}

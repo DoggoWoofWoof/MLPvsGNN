@@ -1,0 +1,52 @@
+{
+ "stage": "ENC E1b part 2: EM types",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 11",
+ "view": "search",
+ "dataset": "metaqa",
+ "stats": {
+  "view": "search",
+  "enc": "frozen",
+  "dataset": "metaqa",
+  "e0": {
+   "file": "outputs/enc/e0/frozen/metaqa.npz",
+   "sha256": "ee47ed2c2651b294339c3d8d10b445213a1ba49d11fbf7fc7ccdf4c6f6ebe9d1"
+  },
+  "knn": {
+   "file": "outputs/enc/e1b2/knn/frozen/metaqa.npz",
+   "sha256": "5d1aa2d5afbcf136b7391250a76d4abd43eff583f3a7a93a017503c157598954"
+  },
+  "served": {
+   "embeddings": 0,
+   "cache": 0,
+   "knn_graph": 1,
+   "knn_store": 1,
+   "prepare_checked": 0,
+   "union_pools": 0
+  },
+  "knn_store_vs_record": {
+   "indptr_equal": true,
+   "col_equal": true,
+   "weight_max_abs_diff": 0.00048828125
+  }
+ },
+ "types": {
+  "file": "outputs/enc/e1b2/types/search/metaqa.npz",
+  "sha256": "ca3d237ec3fb4269ab65846223f9e724f8fd76eea03523b2a90a48a16dbc77eb"
+ },
+ "seconds": 95.4,
+ "code_sha256": {
+  "zenc1b2.py": "14b4746511bf323338c8fb2a2917a57b8939ee292636b3bd47cc781fb41e2795",
+  "zenc.py": "4429138d128e4e07e09ebefee64c0b32052476d476d96991462ec258a141f52b",
+  "zpko.py": "cff0e7e082d5f19c928a5cc6ae1195beaee5491fa9305e571c33e3a2f93883c3",
+  "zu2m_a_types.py": "5a6dbaf99f17b75ba41821203d2948ebee8d834a89965b0d7d8ed1a2b1bfeede",
+  "m3b_pools.py": "219e82af6c54a6c3e6d2ce12980cc4253d6915c9e023eaa47d222f93be592697"
+ },
+ "gt": {
+  "bln": true,
+  "bst": true,
+  "cls": true,
+  "mu": true,
+  "mu_max_abs_diff": 0.0,
+  "cls_equal_share": 1.0
+ }
+}
