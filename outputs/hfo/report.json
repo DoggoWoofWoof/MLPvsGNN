@@ -1,0 +1,1141 @@
+{
+ "declared_in": "docs/HFO_HUB_FAMILY_ORACLE_CHECK.md",
+ "call": {
+  "outcome": "ADOPT_H",
+  "k": "5",
+  "per_k": {
+   "3": {
+    "P1": false,
+    "P2": false,
+    "P3": true,
+    "others": {
+     "musique/GP": "LEVEL",
+     "2wiki/GP": "LEVEL",
+     "hotpotqa/GP": "LEVEL"
+    },
+    "diff": [
+     0.0028,
+     0.0,
+     0.0056
+    ],
+    "gain_H": [
+     0.0145,
+     0.0108,
+     0.0184
+    ],
+    "gain_D": [
+     0.0118,
+     0.0085,
+     0.0153
+    ]
+   },
+   "5": {
+    "P1": true,
+    "P2": true,
+    "P3": true,
+    "others": {
+     "musique/GP": "LEVEL",
+     "2wiki/GP": "LEVEL",
+     "hotpotqa/GP": "LEVEL"
+    },
+    "diff": [
+     0.006,
+     0.0025,
+     0.0096
+    ],
+    "gain_H": [
+     0.0208,
+     0.0163,
+     0.0251
+    ],
+    "gain_D": [
+     0.0148,
+     0.011,
+     0.0186
+    ]
+   },
+   "10": {
+    "P1": true,
+    "P2": true,
+    "P3": true,
+    "others": {
+     "musique/GP": "ABOVE",
+     "2wiki/GP": "LEVEL",
+     "hotpotqa/GP": "LEVEL"
+    },
+    "diff": [
+     0.0221,
+     0.0164,
+     0.0276
+    ],
+    "gain_H": [
+     0.0424,
+     0.0362,
+     0.0486
+    ],
+    "gain_D": [
+     0.0203,
+     0.0158,
+     0.0247
+    ]
+   }
+  },
+  "next": "the transfer step (section 7), declared in its own section before it runs"
+ },
+ "results": {
+  "musique": {
+   "dataset": "musique",
+   "declared_in": "docs/HFO_HUB_FAMILY_ORACLE_CHECK.md",
+   "domain": "RK",
+   "dev_limit": 0,
+   "nodes": 117534,
+   "union_pairs": 3387597,
+   "families": {
+    "W2_S": 2343920,
+    "F0T": 973013,
+    "K": 265366
+   },
+   "keys": 405016,
+   "entries": 1057628,
+   "dfmax": 100000,
+   "ks": [
+    3,
+    5,
+    10
+   ],
+   "budget": {
+    "sample": 20000,
+    "C_minus_U": {
+     "median": 4713,
+     "p10": 50
+    },
+    "k": {
+     "3": {
+      "H_per_passage": 2.7879,
+      "D_per_passage": 3.0,
+      "H_directed_est": 327679,
+      "D_directed_est": 352602,
+      "H_full_share": 0.9284
+     },
+     "5": {
+      "H_per_passage": 4.6444,
+      "D_per_passage": 5.0,
+      "H_directed_est": 545869,
+      "D_directed_est": 587670,
+      "H_full_share": 0.9282
+     },
+     "10": {
+      "H_per_passage": 9.2835,
+      "D_per_passage": 10.0,
+      "H_directed_est": 1091121,
+      "D_directed_est": 1175340,
+      "H_full_share": 0.9275
+     }
+    }
+   },
+   "carves": {
+    "s1sel": {
+     "questions": 1534,
+     "questions_npz_sha256": "0c3d07208f7cbfe263038ce65600020068e91b083e7a1a84a8b22a5f1e1187e6",
+     "anchors": 1379,
+     "cases": 4016,
+     "g4": {
+      "cases": 64,
+      "disagree": 0,
+      "examples": [],
+      "max_abs_rank_diff": 0
+     },
+     "kinds": {
+      "GP": {
+       "slots": 3783,
+       "linked_U": 1120,
+       "share_U": 0.2961,
+       "unlinked": 2663,
+       "k": {
+        "3": {
+         "H_new": 23,
+         "D_new": 21,
+         "share_UH": 0.3021,
+         "share_UD": 0.3016,
+         "gain_H": [
+          0.0061,
+          0.0037,
+          0.0087
+         ],
+         "gain_D": [
+          0.0056,
+          0.0034,
+          0.008
+         ],
+         "diff": [
+          0.0005,
+          -0.0008,
+          0.0018
+         ],
+         "call": "LEVEL"
+        },
+        "5": {
+         "H_new": 33,
+         "D_new": 26,
+         "share_UH": 0.3048,
+         "share_UD": 0.3029,
+         "gain_H": [
+          0.0087,
+          0.0059,
+          0.0117
+         ],
+         "gain_D": [
+          0.0069,
+          0.0044,
+          0.0095
+         ],
+         "diff": [
+          0.0019,
+          0.0,
+          0.0037
+         ],
+         "call": "LEVEL"
+        },
+        "10": {
+         "H_new": 59,
+         "D_new": 41,
+         "share_UH": 0.3117,
+         "share_UD": 0.3069,
+         "gain_H": [
+          0.0156,
+          0.0118,
+          0.0194
+         ],
+         "gain_D": [
+          0.0108,
+          0.0078,
+          0.0141
+         ],
+         "diff": [
+          0.0048,
+          0.0019,
+          0.0078
+         ],
+         "call": "ABOVE"
+        }
+       },
+       "alone": {
+        "W2_S": 626,
+        "F0T": 731,
+        "K": 231
+       }
+      },
+      "CH": {
+       "slots": 2530,
+       "linked_U": 1083,
+       "share_U": 0.4281,
+       "unlinked": 1447,
+       "k": {
+        "3": {
+         "H_new": 15,
+         "D_new": 13,
+         "share_UH": 0.434,
+         "share_UD": 0.4332,
+         "gain_H": [
+          0.0059,
+          0.0031,
+          0.0089
+         ],
+         "gain_D": [
+          0.0051,
+          0.0027,
+          0.0079
+         ],
+         "diff": [
+          0.0008,
+          -0.0008,
+          0.0024
+         ],
+         "call": "LEVEL",
+         "by_hops": {
+          "2": {
+           "slots": 795,
+           "linked_U": 255,
+           "H_new": 7,
+           "D_new": 5
+          },
+          "3": {
+           "slots": 964,
+           "linked_U": 445,
+           "H_new": 8,
+           "D_new": 8
+          },
+          "4": {
+           "slots": 771,
+           "linked_U": 383,
+           "H_new": 0,
+           "D_new": 0
+          }
+         }
+        },
+        "5": {
+         "H_new": 25,
+         "D_new": 17,
+         "share_UH": 0.4379,
+         "share_UD": 0.4348,
+         "gain_H": [
+          0.0099,
+          0.0063,
+          0.0138
+         ],
+         "gain_D": [
+          0.0067,
+          0.0039,
+          0.01
+         ],
+         "diff": [
+          0.0032,
+          0.0008,
+          0.0059
+         ],
+         "call": "ABOVE",
+         "by_hops": {
+          "2": {
+           "slots": 795,
+           "linked_U": 255,
+           "H_new": 10,
+           "D_new": 7
+          },
+          "3": {
+           "slots": 964,
+           "linked_U": 445,
+           "H_new": 15,
+           "D_new": 10
+          },
+          "4": {
+           "slots": 771,
+           "linked_U": 383,
+           "H_new": 0,
+           "D_new": 0
+          }
+         }
+        },
+        "10": {
+         "H_new": 46,
+         "D_new": 27,
+         "share_UH": 0.4462,
+         "share_UD": 0.4387,
+         "gain_H": [
+          0.0182,
+          0.0131,
+          0.0235
+         ],
+         "gain_D": [
+          0.0107,
+          0.0068,
+          0.0148
+         ],
+         "diff": [
+          0.0075,
+          0.0036,
+          0.0117
+         ],
+         "call": "ABOVE",
+         "by_hops": {
+          "2": {
+           "slots": 795,
+           "linked_U": 255,
+           "H_new": 23,
+           "D_new": 13
+          },
+          "3": {
+           "slots": 964,
+           "linked_U": 445,
+           "H_new": 19,
+           "D_new": 13
+          },
+          "4": {
+           "slots": 771,
+           "linked_U": 383,
+           "H_new": 4,
+           "D_new": 1
+          }
+         }
+        }
+       },
+       "alone": {
+        "W2_S": 603,
+        "F0T": 718,
+        "K": 230
+       }
+      }
+     }
+    },
+    "s1eval": {
+     "questions": 2417,
+     "questions_npz_sha256": "48579db05059b7b0faa92fa7ac1a949e6669b4b91776da3cffbf690a5f48fdde",
+     "anchors": 1539,
+     "cases": 4896,
+     "g4": {
+      "cases": 64,
+      "disagree": 0,
+      "examples": [],
+      "max_abs_rank_diff": 0
+     },
+     "kinds": {
+      "GP": {
+       "slots": 5962,
+       "linked_U": 2005,
+       "share_U": 0.3363,
+       "unlinked": 3957,
+       "k": {
+        "3": {
+         "H_new": 62,
+         "D_new": 55,
+         "share_UH": 0.3467,
+         "share_UD": 0.3455,
+         "gain_H": [
+          0.0104,
+          0.008,
+          0.013
+         ],
+         "gain_D": [
+          0.0092,
+          0.0069,
+          0.0117
+         ],
+         "diff": [
+          0.0012,
+          -0.0008,
+          0.0032
+         ],
+         "call": "LEVEL"
+        },
+        "5": {
+         "H_new": 91,
+         "D_new": 74,
+         "share_UH": 0.3516,
+         "share_UD": 0.3487,
+         "gain_H": [
+          0.0153,
+          0.012,
+          0.0184
+         ],
+         "gain_D": [
+          0.0124,
+          0.0096,
+          0.0153
+         ],
+         "diff": [
+          0.0029,
+          0.0,
+          0.0056
+         ],
+         "call": "LEVEL"
+        },
+        "10": {
+         "H_new": 215,
+         "D_new": 123,
+         "share_UH": 0.3724,
+         "share_UD": 0.3569,
+         "gain_H": [
+          0.0361,
+          0.0314,
+          0.0407
+         ],
+         "gain_D": [
+          0.0206,
+          0.017,
+          0.0244
+         ],
+         "diff": [
+          0.0154,
+          0.0112,
+          0.0197
+         ],
+         "call": "ABOVE"
+        }
+       },
+       "alone": {
+        "W2_S": 1094,
+        "F0T": 1438,
+        "K": 434
+       }
+      },
+      "CH": {
+       "slots": 3987,
+       "linked_U": 1982,
+       "share_U": 0.4971,
+       "unlinked": 2005,
+       "k": {
+        "3": {
+         "H_new": 58,
+         "D_new": 47,
+         "share_UH": 0.5117,
+         "share_UD": 0.5089,
+         "gain_H": [
+          0.0145,
+          0.0108,
+          0.0184
+         ],
+         "gain_D": [
+          0.0118,
+          0.0085,
+          0.0153
+         ],
+         "diff": [
+          0.0028,
+          0.0,
+          0.0056
+         ],
+         "call": "LEVEL",
+         "by_hops": {
+          "2": {
+           "slots": 1252,
+           "linked_U": 881,
+           "H_new": 12,
+           "D_new": 11
+          },
+          "3": {
+           "slots": 1520,
+           "linked_U": 528,
+           "H_new": 44,
+           "D_new": 34
+          },
+          "4": {
+           "slots": 1215,
+           "linked_U": 573,
+           "H_new": 2,
+           "D_new": 2
+          }
+         }
+        },
+        "5": {
+         "H_new": 83,
+         "D_new": 59,
+         "share_UH": 0.5179,
+         "share_UD": 0.5119,
+         "gain_H": [
+          0.0208,
+          0.0163,
+          0.0251
+         ],
+         "gain_D": [
+          0.0148,
+          0.011,
+          0.0186
+         ],
+         "diff": [
+          0.006,
+          0.0025,
+          0.0096
+         ],
+         "call": "ABOVE",
+         "by_hops": {
+          "2": {
+           "slots": 1252,
+           "linked_U": 881,
+           "H_new": 19,
+           "D_new": 19
+          },
+          "3": {
+           "slots": 1520,
+           "linked_U": 528,
+           "H_new": 61,
+           "D_new": 38
+          },
+          "4": {
+           "slots": 1215,
+           "linked_U": 573,
+           "H_new": 3,
+           "D_new": 2
+          }
+         }
+        },
+        "10": {
+         "H_new": 169,
+         "D_new": 81,
+         "share_UH": 0.5395,
+         "share_UD": 0.5174,
+         "gain_H": [
+          0.0424,
+          0.0362,
+          0.0486
+         ],
+         "gain_D": [
+          0.0203,
+          0.0158,
+          0.0247
+         ],
+         "diff": [
+          0.0221,
+          0.0164,
+          0.0276
+         ],
+         "call": "ABOVE",
+         "by_hops": {
+          "2": {
+           "slots": 1252,
+           "linked_U": 881,
+           "H_new": 34,
+           "D_new": 27
+          },
+          "3": {
+           "slots": 1520,
+           "linked_U": 528,
+           "H_new": 92,
+           "D_new": 52
+          },
+          "4": {
+           "slots": 1215,
+           "linked_U": 573,
+           "H_new": 43,
+           "D_new": 2
+          }
+         }
+        }
+       },
+       "alone": {
+        "W2_S": 1082,
+        "F0T": 1427,
+        "K": 434
+       }
+      }
+     }
+    }
+   },
+   "inputs": {
+    "ner_npz_sha256": "f294708600750c48eae9e32d0895d517ac3a8b5d048c736a70e9a566af2fe9c6",
+    "knn_npz_sha256": "6020ac7e0b6773e64866b5e942dc0e02c3b704615ced8de4d557aa543221ef5b",
+    "w2_s_npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+    "f0t_npz_sha256": "a0cea3c450f4a8364d202d7f21fe949e288f2ed0ca325aadea199f7ed2a4eebc",
+    "names_npz_sha256": "279d4b6ff3a2d5e3fbbab9071bcc93328167da1c5d19e805c3a9c5ad7a8f9cda"
+   },
+   "code": {
+    "zhfo_sha256": "dbb42c2d0df2d13d9bbe3f23030021fdeb5184591ef87a5764794db0400eecdc",
+    "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+    "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+    "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+    "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+    "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+    "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+   },
+   "seconds": 57.1
+  },
+  "2wiki": {
+   "dataset": "2wiki",
+   "declared_in": "docs/HFO_HUB_FAMILY_ORACLE_CHECK.md",
+   "domain": "SRK",
+   "dev_limit": 0,
+   "nodes": 5989847,
+   "union_pairs": 126635390,
+   "families": {
+    "W2_S": 71483746,
+    "F0T": 39863302,
+    "K": 13643063,
+    "S": 28208857
+   },
+   "keys": 9936838,
+   "entries": 50235896,
+   "dfmax": 100000,
+   "ks": [
+    3,
+    5,
+    10
+   ],
+   "budget": {
+    "sample": 20000,
+    "C_minus_U": {
+     "median": 18804,
+     "p10": 0
+    },
+    "k": {
+     "3": {
+      "H_per_passage": 2.6916,
+      "D_per_passage": 3.0,
+      "H_directed_est": 16122272,
+      "D_directed_est": 17969541,
+      "H_full_share": 0.8969
+     },
+     "5": {
+      "H_per_passage": 4.485,
+      "D_per_passage": 5.0,
+      "H_directed_est": 26864164,
+      "D_directed_est": 29949235,
+      "H_full_share": 0.8966
+     },
+     "10": {
+      "H_per_passage": 8.9672,
+      "D_per_passage": 10.0,
+      "H_directed_est": 53712456,
+      "D_directed_est": 59898470,
+      "H_full_share": 0.8963
+     }
+    }
+   },
+   "carves": {
+    "s1sel": {
+     "questions": 1496,
+     "questions_npz_sha256": "be025627b9ae6beac340023262849bcffb2364d793c28a171e88ff093f2f3824",
+     "anchors": 1974,
+     "cases": 3374,
+     "g4": {
+      "cases": 64,
+      "disagree": 0,
+      "examples": [],
+      "max_abs_rank_diff": 2
+     },
+     "kinds": {
+      "GP": {
+       "slots": 3131,
+       "linked_U": 1444,
+       "share_U": 0.4612,
+       "unlinked": 1687,
+       "k": {
+        "3": {
+         "H_new": 1,
+         "D_new": 1,
+         "share_UH": 0.4615,
+         "share_UD": 0.4615,
+         "gain_H": [
+          0.0003,
+          0.0,
+          0.001
+         ],
+         "gain_D": [
+          0.0003,
+          0.0,
+          0.001
+         ],
+         "diff": [
+          0.0,
+          0.0,
+          0.0
+         ],
+         "call": "LEVEL"
+        },
+        "5": {
+         "H_new": 3,
+         "D_new": 1,
+         "share_UH": 0.4622,
+         "share_UD": 0.4615,
+         "gain_H": [
+          0.001,
+          0.0,
+          0.0022
+         ],
+         "gain_D": [
+          0.0003,
+          0.0,
+          0.001
+         ],
+         "diff": [
+          0.0006,
+          0.0,
+          0.0016
+         ],
+         "call": "LEVEL"
+        },
+        "10": {
+         "H_new": 4,
+         "D_new": 2,
+         "share_UH": 0.4625,
+         "share_UD": 0.4618,
+         "gain_H": [
+          0.0013,
+          0.0003,
+          0.0026
+         ],
+         "gain_D": [
+          0.0006,
+          0.0,
+          0.0016
+         ],
+         "diff": [
+          0.0006,
+          0.0,
+          0.0016
+         ],
+         "call": "LEVEL"
+        }
+       },
+       "alone": {
+        "W2_S": 1313,
+        "F0T": 743,
+        "K": 255,
+        "S": 1355
+       }
+      }
+     }
+    },
+    "s1eval": {
+     "questions": 12576,
+     "questions_npz_sha256": "d6d41aee0d5d109e84e81a6cc043c772554e87189cca3f0ed07e2e7f1e1a2adc",
+     "anchors": 13752,
+     "cases": 27168,
+     "g4": {
+      "cases": 64,
+      "disagree": 0,
+      "examples": [],
+      "max_abs_rank_diff": 1
+     },
+     "kinds": {
+      "GP": {
+       "slots": 26331,
+       "linked_U": 12066,
+       "share_U": 0.4582,
+       "unlinked": 14265,
+       "k": {
+        "3": {
+         "H_new": 42,
+         "D_new": 36,
+         "share_UH": 0.4598,
+         "share_UD": 0.4596,
+         "gain_H": [
+          0.0016,
+          0.0011,
+          0.0021
+         ],
+         "gain_D": [
+          0.0014,
+          0.0009,
+          0.0018
+         ],
+         "diff": [
+          0.0002,
+          -0.0001,
+          0.0005
+         ],
+         "call": "LEVEL"
+        },
+        "5": {
+         "H_new": 51,
+         "D_new": 47,
+         "share_UH": 0.4602,
+         "share_UD": 0.46,
+         "gain_H": [
+          0.0019,
+          0.0014,
+          0.0025
+         ],
+         "gain_D": [
+          0.0018,
+          0.0013,
+          0.0023
+         ],
+         "diff": [
+          0.0002,
+          -0.0002,
+          0.0005
+         ],
+         "call": "LEVEL"
+        },
+        "10": {
+         "H_new": 68,
+         "D_new": 60,
+         "share_UH": 0.4608,
+         "share_UD": 0.4605,
+         "gain_H": [
+          0.0026,
+          0.002,
+          0.0032
+         ],
+         "gain_D": [
+          0.0023,
+          0.0017,
+          0.0029
+         ],
+         "diff": [
+          0.0003,
+          -0.0001,
+          0.0007
+         ],
+         "call": "LEVEL"
+        }
+       },
+       "alone": {
+        "W2_S": 10744,
+        "F0T": 6895,
+        "K": 2805,
+        "S": 11234
+       }
+      }
+     }
+    }
+   },
+   "inputs": {
+    "ner_npz_sha256": "fd462a9c08740d57af79855efe37c1d77f30dc593ca6ad6242681c99b51a008a",
+    "knn_npz_sha256": "a7151f6bbebdb13d7e817abcc199fd5feae17585a955f781b0690d7ee1897f99",
+    "structural_npz_sha256": "1e380eaaa62b21eaf24f6dec8302d81482bf35695bfa6cdda2421fa90cfe9c85",
+    "w2_s_npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+    "f0t_npz_sha256": "d6c49214c935c6166fcaa9c3494827cf85aaeafdb1f84f9eb3679b84de52ad5e",
+    "names_npz_sha256": "56269a557dae67578c3c05c6b7c4350f82c28fe51edd44a024104a729d43c020"
+   },
+   "code": {
+    "zhfo_sha256": "dbb42c2d0df2d13d9bbe3f23030021fdeb5184591ef87a5764794db0400eecdc",
+    "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+    "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+    "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+    "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+    "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+    "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+   },
+   "seconds": 2820.1
+  },
+  "hotpotqa": {
+   "dataset": "hotpotqa",
+   "declared_in": "docs/HFO_HUB_FAMILY_ORACLE_CHECK.md",
+   "domain": "SRK",
+   "dev_limit": 0,
+   "nodes": 5233329,
+   "union_pairs": 66773876,
+   "families": {
+    "W2_S": 32159229,
+    "F0T": 24450229,
+    "K": 11946289,
+    "S": 15095287
+   },
+   "keys": 7137780,
+   "entries": 32330425,
+   "dfmax": 100000,
+   "ks": [
+    3,
+    5,
+    10
+   ],
+   "budget": {
+    "sample": 20000,
+    "C_minus_U": {
+     "median": 14497,
+     "p10": 0
+    },
+    "k": {
+     "3": {
+      "H_per_passage": 2.6745,
+      "D_per_passage": 3.0,
+      "H_directed_est": 13996800,
+      "D_directed_est": 15699987,
+      "H_full_share": 0.8913
+     },
+     "5": {
+      "H_per_passage": 4.457,
+      "D_per_passage": 5.0,
+      "H_directed_est": 23324947,
+      "D_directed_est": 26166645,
+      "H_full_share": 0.8912
+     },
+     "10": {
+      "H_per_passage": 8.9118,
+      "D_per_passage": 10.0,
+      "H_directed_est": 46638381,
+      "D_directed_est": 52333290,
+      "H_full_share": 0.8907
+     }
+    }
+   },
+   "carves": {
+    "s1sel": {
+     "questions": 1508,
+     "questions_npz_sha256": "b9f4c3f98a278872eb254d99c474548149df70dfa9f01cf64be6cf396b89453e",
+     "anchors": 580,
+     "cases": 594,
+     "g4": {
+      "cases": 64,
+      "disagree": 0,
+      "examples": [],
+      "max_abs_rank_diff": 2
+     },
+     "kinds": {
+      "GP": {
+       "slots": 1508,
+       "linked_U": 1211,
+       "share_U": 0.8031,
+       "unlinked": 297,
+       "k": {
+        "3": {
+         "H_new": 0,
+         "D_new": 0,
+         "share_UH": 0.8031,
+         "share_UD": 0.8031,
+         "gain_H": [
+          0.0,
+          0.0,
+          0.0
+         ],
+         "gain_D": [
+          0.0,
+          0.0,
+          0.0
+         ],
+         "diff": [
+          0.0,
+          0.0,
+          0.0
+         ],
+         "call": "LEVEL"
+        },
+        "5": {
+         "H_new": 0,
+         "D_new": 1,
+         "share_UH": 0.8031,
+         "share_UD": 0.8037,
+         "gain_H": [
+          0.0,
+          0.0,
+          0.0
+         ],
+         "gain_D": [
+          0.0007,
+          0.0,
+          0.002
+         ],
+         "diff": [
+          -0.0007,
+          -0.002,
+          0.0
+         ],
+         "call": "LEVEL"
+        },
+        "10": {
+         "H_new": 1,
+         "D_new": 2,
+         "share_UH": 0.8037,
+         "share_UD": 0.8044,
+         "gain_H": [
+          0.0007,
+          0.0,
+          0.002
+         ],
+         "gain_D": [
+          0.0013,
+          0.0,
+          0.0033
+         ],
+         "diff": [
+          -0.0007,
+          -0.0027,
+          0.0013
+         ],
+         "call": "LEVEL"
+        }
+       },
+       "alone": {
+        "W2_S": 913,
+        "F0T": 575,
+        "K": 296,
+        "S": 1205
+       }
+      }
+     }
+    },
+    "s1eval": {
+     "questions": 7405,
+     "questions_npz_sha256": "5c2dc4675720a981e3a53071613c47f41df3b6404bd63dfc404b3b5e2b11892e",
+     "anchors": 2634,
+     "cases": 2958,
+     "g4": {
+      "cases": 64,
+      "disagree": 0,
+      "examples": [],
+      "max_abs_rank_diff": 1
+     },
+     "kinds": {
+      "GP": {
+       "slots": 7405,
+       "linked_U": 5925,
+       "share_U": 0.8001,
+       "unlinked": 1480,
+       "k": {
+        "3": {
+         "H_new": 6,
+         "D_new": 7,
+         "share_UH": 0.8009,
+         "share_UD": 0.8011,
+         "gain_H": [
+          0.0008,
+          0.0003,
+          0.0015
+         ],
+         "gain_D": [
+          0.0009,
+          0.0003,
+          0.0018
+         ],
+         "diff": [
+          -0.0001,
+          -0.0008,
+          0.0004
+         ],
+         "call": "LEVEL"
+        },
+        "5": {
+         "H_new": 11,
+         "D_new": 11,
+         "share_UH": 0.8016,
+         "share_UD": 0.8016,
+         "gain_H": [
+          0.0015,
+          0.0007,
+          0.0024
+         ],
+         "gain_D": [
+          0.0015,
+          0.0007,
+          0.0024
+         ],
+         "diff": [
+          0.0,
+          -0.0008,
+          0.0008
+         ],
+         "call": "LEVEL"
+        },
+        "10": {
+         "H_new": 16,
+         "D_new": 19,
+         "share_UH": 0.8023,
+         "share_UD": 0.8027,
+         "gain_H": [
+          0.0022,
+          0.0011,
+          0.0032
+         ],
+         "gain_D": [
+          0.0026,
+          0.0015,
+          0.0038
+         ],
+         "diff": [
+          -0.0004,
+          -0.0015,
+          0.0005
+         ],
+         "call": "LEVEL"
+        }
+       },
+       "alone": {
+        "W2_S": 4294,
+        "F0T": 2765,
+        "K": 1486,
+        "S": 5919
+       }
+      }
+     }
+    }
+   },
+   "inputs": {
+    "ner_npz_sha256": "744da64a5f356b89241b2539085c9a0bf673750abd0b1822891c26f069a37137",
+    "knn_npz_sha256": "a82ee3d96ff6943678444f12279fe666ff5e03465b818bc229844597488222ae",
+    "structural_npz_sha256": "bc27173133e69cc821a14733a2f3dfe9d56442aeb867cf2cdcdcc4fff9c17608",
+    "w2_s_npz_sha256": "c46e17ee41b6a36540d46b5f0775dc707c128d352288aa27e4d1e1a54ff0234c",
+    "f0t_npz_sha256": "7b3bb50b1cc8ee03e4a76e1e7dd8c078000dbc68c3f4f7e32fbb6e0310cd53e7",
+    "names_npz_sha256": "8ae1d1cb11afcda4217ca8a33a6e8df743310489f8decb9a75baf07832da3f04"
+   },
+   "code": {
+    "zhfo_sha256": "dbb42c2d0df2d13d9bbe3f23030021fdeb5184591ef87a5764794db0400eecdc",
+    "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+    "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+    "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+    "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+    "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+    "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+   },
+   "seconds": 1035.7
+  }
+ }
+}

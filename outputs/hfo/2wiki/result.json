@@ -1,0 +1,260 @@
+{
+ "dataset": "2wiki",
+ "declared_in": "docs/HFO_HUB_FAMILY_ORACLE_CHECK.md",
+ "domain": "SRK",
+ "dev_limit": 0,
+ "nodes": 5989847,
+ "union_pairs": 126635390,
+ "families": {
+  "W2_S": 71483746,
+  "F0T": 39863302,
+  "K": 13643063,
+  "S": 28208857
+ },
+ "keys": 9936838,
+ "entries": 50235896,
+ "dfmax": 100000,
+ "ks": [
+  3,
+  5,
+  10
+ ],
+ "budget": {
+  "sample": 20000,
+  "C_minus_U": {
+   "median": 18804,
+   "p10": 0
+  },
+  "k": {
+   "3": {
+    "H_per_passage": 2.6916,
+    "D_per_passage": 3.0,
+    "H_directed_est": 16122272,
+    "D_directed_est": 17969541,
+    "H_full_share": 0.8969
+   },
+   "5": {
+    "H_per_passage": 4.485,
+    "D_per_passage": 5.0,
+    "H_directed_est": 26864164,
+    "D_directed_est": 29949235,
+    "H_full_share": 0.8966
+   },
+   "10": {
+    "H_per_passage": 8.9672,
+    "D_per_passage": 10.0,
+    "H_directed_est": 53712456,
+    "D_directed_est": 59898470,
+    "H_full_share": 0.8963
+   }
+  }
+ },
+ "carves": {
+  "s1sel": {
+   "questions": 1496,
+   "questions_npz_sha256": "be025627b9ae6beac340023262849bcffb2364d793c28a171e88ff093f2f3824",
+   "anchors": 1974,
+   "cases": 3374,
+   "g4": {
+    "cases": 64,
+    "disagree": 0,
+    "examples": [],
+    "max_abs_rank_diff": 2
+   },
+   "kinds": {
+    "GP": {
+     "slots": 3131,
+     "linked_U": 1444,
+     "share_U": 0.4612,
+     "unlinked": 1687,
+     "k": {
+      "3": {
+       "H_new": 1,
+       "D_new": 1,
+       "share_UH": 0.4615,
+       "share_UD": 0.4615,
+       "gain_H": [
+        0.0003,
+        0.0,
+        0.001
+       ],
+       "gain_D": [
+        0.0003,
+        0.0,
+        0.001
+       ],
+       "diff": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "call": "LEVEL"
+      },
+      "5": {
+       "H_new": 3,
+       "D_new": 1,
+       "share_UH": 0.4622,
+       "share_UD": 0.4615,
+       "gain_H": [
+        0.001,
+        0.0,
+        0.0022
+       ],
+       "gain_D": [
+        0.0003,
+        0.0,
+        0.001
+       ],
+       "diff": [
+        0.0006,
+        0.0,
+        0.0016
+       ],
+       "call": "LEVEL"
+      },
+      "10": {
+       "H_new": 4,
+       "D_new": 2,
+       "share_UH": 0.4625,
+       "share_UD": 0.4618,
+       "gain_H": [
+        0.0013,
+        0.0003,
+        0.0026
+       ],
+       "gain_D": [
+        0.0006,
+        0.0,
+        0.0016
+       ],
+       "diff": [
+        0.0006,
+        0.0,
+        0.0016
+       ],
+       "call": "LEVEL"
+      }
+     },
+     "alone": {
+      "W2_S": 1313,
+      "F0T": 743,
+      "K": 255,
+      "S": 1355
+     }
+    }
+   }
+  },
+  "s1eval": {
+   "questions": 12576,
+   "questions_npz_sha256": "d6d41aee0d5d109e84e81a6cc043c772554e87189cca3f0ed07e2e7f1e1a2adc",
+   "anchors": 13752,
+   "cases": 27168,
+   "g4": {
+    "cases": 64,
+    "disagree": 0,
+    "examples": [],
+    "max_abs_rank_diff": 1
+   },
+   "kinds": {
+    "GP": {
+     "slots": 26331,
+     "linked_U": 12066,
+     "share_U": 0.4582,
+     "unlinked": 14265,
+     "k": {
+      "3": {
+       "H_new": 42,
+       "D_new": 36,
+       "share_UH": 0.4598,
+       "share_UD": 0.4596,
+       "gain_H": [
+        0.0016,
+        0.0011,
+        0.0021
+       ],
+       "gain_D": [
+        0.0014,
+        0.0009,
+        0.0018
+       ],
+       "diff": [
+        0.0002,
+        -0.0001,
+        0.0005
+       ],
+       "call": "LEVEL"
+      },
+      "5": {
+       "H_new": 51,
+       "D_new": 47,
+       "share_UH": 0.4602,
+       "share_UD": 0.46,
+       "gain_H": [
+        0.0019,
+        0.0014,
+        0.0025
+       ],
+       "gain_D": [
+        0.0018,
+        0.0013,
+        0.0023
+       ],
+       "diff": [
+        0.0002,
+        -0.0002,
+        0.0005
+       ],
+       "call": "LEVEL"
+      },
+      "10": {
+       "H_new": 68,
+       "D_new": 60,
+       "share_UH": 0.4608,
+       "share_UD": 0.4605,
+       "gain_H": [
+        0.0026,
+        0.002,
+        0.0032
+       ],
+       "gain_D": [
+        0.0023,
+        0.0017,
+        0.0029
+       ],
+       "diff": [
+        0.0003,
+        -0.0001,
+        0.0007
+       ],
+       "call": "LEVEL"
+      }
+     },
+     "alone": {
+      "W2_S": 10744,
+      "F0T": 6895,
+      "K": 2805,
+      "S": 11234
+     }
+    }
+   }
+  }
+ },
+ "inputs": {
+  "ner_npz_sha256": "fd462a9c08740d57af79855efe37c1d77f30dc593ca6ad6242681c99b51a008a",
+  "knn_npz_sha256": "a7151f6bbebdb13d7e817abcc199fd5feae17585a955f781b0690d7ee1897f99",
+  "structural_npz_sha256": "1e380eaaa62b21eaf24f6dec8302d81482bf35695bfa6cdda2421fa90cfe9c85",
+  "w2_s_npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+  "f0t_npz_sha256": "d6c49214c935c6166fcaa9c3494827cf85aaeafdb1f84f9eb3679b84de52ad5e",
+  "names_npz_sha256": "56269a557dae67578c3c05c6b7c4350f82c28fe51edd44a024104a729d43c020"
+ },
+ "code": {
+  "zhfo_sha256": "dbb42c2d0df2d13d9bbe3f23030021fdeb5184591ef87a5764794db0400eecdc",
+  "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+  "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+  "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+  "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+  "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+  "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+ },
+ "seconds": 2820.1
+}

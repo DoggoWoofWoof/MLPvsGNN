@@ -119,6 +119,38 @@ Which models read R.hub, and how the MLP stays MP-free, is decided in that decla
 - **Outputs:** outputs/hfo/<d>/result.json and outputs/hfo/report.{json,md}.
 - **Host CPU rows, no GPU:** one run per dataset, then the report.
 
-## 9. Results
+## 9. Results (filed 19 Nov 2026, 00:00 IST)
 
-Filled in after the report; nothing is written here before then.
+Files: outputs/hfo/report.json and report.md, and outputs/hfo/<dataset>/result.json for MuSiQue, 2Wiki and HotpotQA.
+None is a dev result (no --limit).
+
+**Gates.**
+- G1 to G3 held on all three datasets. The code stops at a failed gate, and every result was written.
+- G4: 64 cases per carve on all six carves (s1sel and s1eval of each dataset), 0 disagreements. The largest rank
+  difference was 2 (2Wiki and HotpotQA s1sel), within 2 + 0.1%.
+
+**The call: ADOPT_H at k = 5.**
+- P1: on MuSiQue CH (s1eval), H_5 minus D_5 is +0.60 points [+0.25, +0.96]: ABOVE.
+- P2: H_5's gain over U on MuSiQue CH is 0.0208 [0.0163, 0.0251]. The rule reads the point estimate (at least 0.02);
+  the interval's lower end is below 0.02.
+- P3: MuSiQue GP, 2Wiki GP and HotpotQA GP are LEVEL.
+- k = 3 fails P1 and P2. k = 10 also meets all three (diff +2.21 [+1.64, +2.76], gain 0.0424, MuSiQue GP ABOVE), but
+  the rule takes the smallest k.
+
+**Size.**
+- MuSiQue s1eval CH (3,987 slots): U links 49.7%, U + H_5 51.8%, U + D_5 51.2%. H_5 links 83 of the 2,005 unlinked
+  slots, D_5 links 59.
+- MuSiQue s1eval GP (5,962 slots): U 33.6%, U + H_5 35.2%, U + D_5 34.9% (LEVEL at k = 5, ABOVE at k = 10).
+- 2Wiki and HotpotQA: neither H nor D changes the union's share by more than 0.1 points at any k. The union already
+  links 45.8% (2Wiki s1eval) and 80.0% (HotpotQA s1eval) of the gold slots.
+
+**What this says.** At the same number of new partners per passage, restricting the neighbours to hub-name passages
+finds more of MuSiQue's gold chain partners than plain nearest neighbours do. At k = 5 the difference is small (0.6
+points of the chain slots). It does not move 2Wiki or HotpotQA.
+
+**Next.** The transfer step (section 7) gets its own declared section before it runs. Under the user's 16 Nov rule
+(check links against the oracle on all datasets, unify, then train once):
+- Its steps 1 and 2 need no training: build H_5 as the static family R.hub on the four passage corpora, then grade
+  the pools on all six datasets.
+- Its step 3, the GNN refit, is not a refit of its own. It joins the one unified refit after the encoder decision
+  (ENC, D101).
