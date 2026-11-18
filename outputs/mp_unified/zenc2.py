@@ -122,12 +122,24 @@ def ge0(ids, sc, e0p):
     t5 = np.mean([set(a_ids[i, :5].tolist()) == set(e_ids[i, :5].tolist()) for i in range(rows.size)])
     dif = float(np.abs(a_sc - e_sc).max())
     bad = sum(near_tie_bad(a_ids[i], a_sc[i], e_ids[i], e_sc[i]) for i in np.flatnonzero(~same))
+    bad5 = sum(top5_beyond_tie(a_ids[i], a_sc[i], e_ids[i], e_sc[i]) for i in range(rows.size))
     g = {"rows": int(rows.size), "lists_equal_share": round(float(same.mean()), 6), "top5_set_equal_share": round(float(t5), 6),
-         "score_max_abs_diff": round(dif, 6), "beyond_near_tie_rows": int(bad), "rule": "section 12.8",
-         "e0": {"file": rel(e0p), "sha256": E.sha256(e0p)}}
-    g["verdict"] = "PASS" if (g["top5_set_equal_share"] >= GE0_TOP5 and dif <= GE0_SCORE
-                              and bad <= (1 - GE0_TOP5) * rows.size) else "FAIL"
+         "score_max_abs_diff": round(dif, 6), "beyond_near_tie_rows": int(bad), "top5_beyond_near_tie_rows": int(bad5),
+         "rule": "section 12.8 (second form)", "e0": {"file": rel(e0p), "sha256": E.sha256(e0p)}}
+    cap = (1 - GE0_TOP5) * rows.size
+    g["verdict"] = "PASS" if (dif <= GE0_SCORE and bad <= cap and bad5 <= cap) else "FAIL"
     return g
+
+
+def top5_beyond_tie(a_i, a_s, e_i, e_s):
+    """True when the two top-5 sets differ by more than a near tie at the 5th place: an id in one top 5 only, scoring
+    above the lower 5th score + GE0_SCORE."""
+    sa, se = set(a_i[:5].tolist()), set(e_i[:5].tolist())
+    if sa == se:
+        return False
+    floor = min(float(a_s[4]), float(e_s[4])) + GE0_SCORE
+    return any(float(s) > floor for g, s in zip(a_i[:5].tolist(), a_s[:5]) if g not in se) or \
+        any(float(s) > floor for g, s in zip(e_i[:5].tolist(), e_s[:5]) if g not in sa)
 
 
 def cmd_gate(a):
@@ -263,9 +275,16 @@ def cmd_selftest(_a):
                 j = int(j[0]) + 10
                 tie[r, j], tie[r, j + 1] = ids32[r, j + 1], ids32[r, j]
                 nt += 1
+        n5 = 0                                           # a near tie across the 5th place: the top-5 set changes
+        for r in rows:
+            if abs(float(sc16[r, 4]) - float(sc16[r, 5])) <= GE0_SCORE:
+                tie[r, 4], tie[r, 5] = tie[r, 5], tie[r, 4]
+                n5 += 1
         g = ge0(tie, sc16, e0p)
         if nt == 0 or g["verdict"] != "PASS" or g["lists_equal_share"] == 1.0:
             stop(f"selftest: GE0 on near-tie swaps ({nt} rows): {g}")
+        if n5 and g["top5_set_equal_share"] == 1.0:
+            stop(f"selftest: {n5} 5th-place swaps left every top-5 set equal")
         bad = ids32.copy()                               # ids moved without their scores
         bad[rows[:5], 0], bad[rows[:5], 500] = ids32[rows[:5], 500], ids32[rows[:5], 0]
         g = ge0(bad, sc16, e0p)

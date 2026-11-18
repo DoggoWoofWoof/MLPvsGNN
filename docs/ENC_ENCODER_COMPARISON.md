@@ -695,3 +695,19 @@ The bar is replaced, before any list is used, by this rule. On E0's s1eval rows:
 
 The share of equal whole lists is reported but not gated. `zenc2.py gate` applies the rule to a saved list file and keeps
 the first verdict as `ge0_first`.
+
+**GE0's second form (23:31 IST).** On mpnet's MetaQA lists, the rule above failed only on its top-5 share: 99.73%,
+against the 99.95% bar.
+- No row differed beyond a near tie.
+- The scores agreed within 0.00024.
+- MetaQA's KB holds many entities with near-identical text, so the 5th place often ties.
+
+The top-5 share is now reported, not gated. What is gated is the share of rows whose top-5 sets differ by more than a
+near tie at the 5th place: an id in one top 5 only, scoring above the lower 5th score + 0.002. That share must be at
+most 0.05%.
+
+The other two parts are unchanged:
+- the position-wise scores within 0.002;
+- the lists equal up to near ties on 99.95% of the rows.
+
+The rows already gated under the first form (SQuAD and MuSiQue, both arms) pass both forms.
