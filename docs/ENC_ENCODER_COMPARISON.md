@@ -945,3 +945,8 @@ about 21 November; the report as 12.9 says.
   its own with ABL's command, unchanged: `zabl_g.py all musique`, then `all squad`, in the arm's world (the hook swaps
   the vectors and U2m's types as in 12.10). The chain reruns as w2d-chain-f-squad after both. The frozen world uses
   the record's D83F and D83E, built with the record's slot types.
+- **ABL's slot types, first run (w2d-g-musique)**: zabl_g stopped after 77 s while writing its record. It records
+  each path relative to the tree it runs in, and the arm's U2m types folder (the hook's swap, 12.10) lies in the record's
+  tree. zabl_g now runs through zenc2g.py, which imports it unchanged and records such a path relative to the world
+  ("../ws/..."). The fits rerun as w2d-g2-musique and w2d-g2-squad. The report's tag families and reruns now live in
+  docs/ENC_E2_RUNS.json (data, not pinned code), so naming a rerun no longer touches the worlds.

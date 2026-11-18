@@ -55,14 +55,17 @@ CAND = "p@swa"
 BOOT, SEED = 2000, 0
 PASS_LO = -1.0                                                 # points (11.5)
 DIMS = {"frozen": 1536, "qwen3e06": 1024, "mpnet": 768}        # zenc.ENCODERS
-# the audited runs behind a world's reads (zenc2w / zenc2t tags); a tag starting "t-smoke" is a check, not a step
-TAGS = {"frozen": ("t-fz-",), "mpnet": ("w1-types-", "w1b-", "w2b-", "w2c-", "w2d-", "t-mp-"), "qwen3e06": ("t-qw-",)}
-# runs that failed and were rerun under a new tag (12.11's development log names each); a superseded run leaves GA only
-# when its successor (or the successor's own, down the chain) is there and passes
-SUPERSEDED = {"frozen": {"t-fz-fit-zrckpn": "t-fz-fit-zrckpn-b"},     # the fence refused the provenance hash of WebQSP's
-                                                                     # chain record after training; nothing was read
-              "mpnet": {"w2b-chain-f-squad": "w2c-chain-f-squad",     # PKO's check gate: no section-5 verdicts (zenc2k)
-                        "w2c-chain-f-squad": "w2d-chain-f-squad"}}    # no ABL slot types in the arm's world (zabl_g all)
+# the audited runs behind a world's reads (zenc2w / zenc2t tags) and the reruns, from docs/ENC_E2_RUNS.json: a data file
+# beside 12.11's log, so a rerun named there changes no pinned code (the worlds' verify pins outputs/mp_unified)
+RUNS = ROOT / "docs" / "ENC_E2_RUNS.json"
+
+
+def runs_table(path=None):
+    d = json.loads(Path(path or RUNS).read_text(encoding="utf-8"))
+    return {k: tuple(v) for k, v in d["tags"].items()}, d["superseded"]
+
+
+TAGS, SUPERSEDED = runs_table()
 
 BASE = {}
 

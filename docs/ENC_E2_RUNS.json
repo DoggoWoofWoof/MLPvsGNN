@@ -1,0 +1,30 @@
+{
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 12.11 (development log)",
+ "note": "zenc2r's GA reads the audited runs whose tag starts with a family below (t-smoke* excluded); a run named under superseded leaves GA once the last run down its rerun chain passes. Each entry is named in 12.11's log.",
+ "tags": {
+  "frozen": [
+   "t-fz-"
+  ],
+  "mpnet": [
+   "w1-types-",
+   "w1b-",
+   "w2b-",
+   "w2c-",
+   "w2d-",
+   "t-mp-"
+  ],
+  "qwen3e06": [
+   "t-qw-"
+  ]
+ },
+ "superseded": {
+  "frozen": {
+   "t-fz-fit-zrckpn": "t-fz-fit-zrckpn-b"
+  },
+  "mpnet": {
+   "w2b-chain-f-squad": "w2c-chain-f-squad",
+   "w2c-chain-f-squad": "w2d-chain-f-squad",
+   "w2d-g-musique": "w2d-g2-musique"
+  }
+ }
+}
