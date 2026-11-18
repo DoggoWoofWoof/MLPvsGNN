@@ -1,0 +1,67 @@
+{
+ "stage": "SEM1 read (s1eval)",
+ "page": "docs/SEM1_GRAPH_SPACE.md",
+ "script_sha256": "5f0447b3128f045842aa0019bf322d3c8c7f5d21af0d065668e6d3a045c3748e",
+ "enc": "qwen3e06",
+ "dataset": "squad",
+ "chosen": {
+  "h": 1,
+  "alpha": 0.25,
+  "s1sel_mean_add5": {
+   "h1_a0.25": 0.43417037855680385,
+   "h1_a0.1": 0.4340019045669583,
+   "h2_a0.1": 0.4340019045669583,
+   "h2_a0.25": 0.4337253407285884,
+   "h1_a0.5": 0.43281565249267956,
+   "h2_a0.5": 0.43168953401345544,
+   "h1_a1.0": 0.4257917882581958,
+   "h2_a1.0": 0.41748954819963097
+  }
+ },
+ "questions": 11873,
+ "read": {
+  "path": "outputs/screen/fits/scr-gnx-nx-s0/reads/squad__s1eval.npz",
+  "sha256": "9629d9a85aa3fafb2a5bed389429e770d912445a6b35d7a288f3f3d965865e85"
+ },
+ "graph": {
+  "families": [
+   "W2_S",
+   "F0T"
+  ],
+  "family_pairs": {
+   "W2_S": 878200,
+   "F0T": 176454
+  },
+  "pairs": 989371,
+  "isolated": 0,
+  "degree_median": 74.0,
+  "degree_max": 991,
+  "sha256": {
+   "ner_npz_sha256": "e8b061c3dc417d7c481e57d9f360dd98c825049d62c61958ca0fed655fa57a22",
+   "knn_npz_sha256": "fee9cca5435668378d2a139614cec141d0b4977991801a004c8ca43ee8ad796f",
+   "w2_s_npz_sha256": "3f44314052d91556d6d694cb97fc5319dcf84e80ef68790ec9a33800286880c5",
+   "f0t_npz_sha256": "04703c6d42e9d2717fc1a3e659d9ef6d376d85dd2bd2e410904a7573b09157e0",
+   "names_npz_sha256": "082a4c61f0563178da69802dc029008ba39becf12993bd6156ec66a1bd73f906"
+  }
+ },
+ "threads": 8,
+ "g2": {
+  "hits_equal_share": 1.0,
+  "base5": 0.871726,
+  "e0_rrf5": 0.871726
+ },
+ "recall": {
+  "base5": 0.871726,
+  "add5": 0.85665,
+  "add20": 0.932873,
+  "swap5": 0.867093,
+  "ctrl5": 0.858839,
+  "u5": 0.806704,
+  "u20": 0.900531,
+  "u1000": 0.990567,
+  "v5": 0.813695,
+  "v1000": 0.991493
+ },
+ "npz_sha256": "dcee3f990ba642de74ab61bf595055e2c7b7d19a91828b2cb2ac182b1c37da89",
+ "seconds": 102.7
+}

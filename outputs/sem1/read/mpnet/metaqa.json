@@ -1,0 +1,70 @@
+{
+ "stage": "SEM1 read (s1eval)",
+ "page": "docs/SEM1_GRAPH_SPACE.md",
+ "script_sha256": "5f0447b3128f045842aa0019bf322d3c8c7f5d21af0d065668e6d3a045c3748e",
+ "enc": "mpnet",
+ "dataset": "metaqa",
+ "chosen": {
+  "h": 1,
+  "alpha": 0.1,
+  "s1sel_mean_add5": {
+   "h1_a0.1": 0.40692839228976285,
+   "h2_a0.1": 0.4067473116002076,
+   "h1_a0.25": 0.40582748966230003,
+   "h2_a0.25": 0.40564252956857105,
+   "h1_a0.5": 0.40356218084157086,
+   "h2_a0.5": 0.40253775012646625,
+   "h1_a1.0": 0.39738739961059616,
+   "h2_a1.0": 0.3895472937821081
+  }
+ },
+ "questions": 9785,
+ "read": {
+  "path": "outputs/screen/fits/scr-gnx-nx-s0/reads/metaqa__s1eval.npz",
+  "sha256": "c61b5036739d223a94b059cbb539ebe0d265ec8a63fc005feb82009780211c7e"
+ },
+ "graph": {
+  "families": [
+   "W2_S",
+   "F0T",
+   "S"
+  ],
+  "family_pairs": {
+   "W2_S": 245144,
+   "F0T": 12605,
+   "S": 124669
+  },
+  "pairs": 257746,
+  "isolated": 0,
+  "degree_median": 5.0,
+  "degree_max": 5098,
+  "sha256": {
+   "ner_npz_sha256": "93065a2311c2b445cc14ce6458457c9e14ec0d3c641a4bc573ef4b175a374cb8",
+   "knn_npz_sha256": "f7c59640e816951148fee791bc8790e026461ee52a5b6741c63859244b5a4a16",
+   "structural_npz_sha256": "1b2027c64b2e62b5cf122f09a246ed4cb485841bf0823fcee246e8bf45bf8570",
+   "w2_s_npz_sha256": "3f2b97d1474552dae2fea1f7f8be5e83f7960950b38c0ca41bd3a78025aa7dd5",
+   "f0t_npz_sha256": "499e8c70d3d7d1375a77a609819aacdd40c8753ac2bf6f3d1ea277c5ae62a7fe",
+   "names_npz_sha256": "0ccad8b4b6a55c2bec41bfd36e6fa83f48dc448964e170cf15a2c191f517d720"
+  }
+ },
+ "threads": 8,
+ "g2": {
+  "hits_equal_share": 1.0,
+  "base5": 0.005438,
+  "e0_rrf5": 0.005438
+ },
+ "recall": {
+  "base5": 0.005438,
+  "add5": 0.006316,
+  "add20": 0.021603,
+  "swap5": 0.004662,
+  "ctrl5": 0.006552,
+  "u5": 0.005884,
+  "u20": 0.02161,
+  "u1000": 0.18519,
+  "v5": 0.006997,
+  "v1000": 0.182717
+ },
+ "npz_sha256": "21c06f0bac2b4c59e7eed61b8ec86d2f90f72f148082d413ad23ff100ccc763f",
+ "seconds": 87.7
+}

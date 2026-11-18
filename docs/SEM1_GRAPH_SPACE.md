@@ -179,6 +179,54 @@ Other work uses the graph in two other ways:
 baseline a reader would ask for. SEM1 as declared does not read it. It is named here for a later stage and is not
 declared. Noisy graphs are known to hurt retrofitted vectors. MuSiQue's largest degree (14,300) is the case to watch.
 
-## 12. Results
+## 12. Results (filed 18 November 2026, about 20:25 IST): Z1, Z2 and Z3 NOT_HELD; the space closes as a first-stage channel
 
-(Not yet filed.)
+`zsem1.py report` on the host (`outputs/sem1/report.json` and `report.md`). Every record carries script sha256
+5f0447b3... (ed4e426). All 25 rows ran: 12 sel, 12 read, one report.
+
+**Gates.** G1, G3 and G4 held. G2 held exactly on all 12 reads: the recomputed base hits equal E0's `h_rrf5` on 100% of
+questions, and the base R@5 equals E0's on every read.
+
+**Chosen settings (s1sel).** frozen h2, a = 0.1; qwen3e06 h1, a = 0.25; mpnet h1, a = 0.1; mpnetqa h2, a = 0.1. Each
+arm's choice sits at the low end of the ladder, and s1sel's mean add R@5 falls as a grows (frozen: 0.4654 at a = 0.1
+down to 0.4493 at a = 1.0). Less graph scored better on the selection carve itself.
+
+**The calls** (s1eval; points, 95% intervals, paired bootstrap over questions):
+
+| dataset | arm | base R@5 | C1 add − base | C2 add − ctrl | C3 add − frozen base | u − v, R@1000 |
+| --- | --- | ---: | --- | --- | --- | --- |
+| MuSiQue | frozen | 47.34 | +0.27 [−0.19, +0.72] LEVEL | −0.03 [−0.22, +0.17] LEVEL | | +0.23 [+0.03, +0.43] ABOVE |
+| MuSiQue | qwen3e06 | 44.98 | −0.09 [−0.48, +0.31] LEVEL | +0.67 [+0.41, +0.92] ABOVE | −2.44 [−3.15, −1.73] BELOW | +0.57 [+0.27, +0.88] ABOVE |
+| MuSiQue | mpnet | 41.24 | −1.44 [−1.86, −1.00] BELOW | +0.11 [−0.06, +0.28] LEVEL | −7.54 [−8.40, −6.65] BELOW | +0.60 [+0.37, +0.84] ABOVE |
+| MuSiQue | mpnetqa | 40.92 | −1.51 [−1.94, −1.06] BELOW | −0.01 [−0.21, +0.19] LEVEL | −7.93 [−8.80, −7.03] BELOW | +0.80 [+0.56, +1.05] ABOVE |
+| SQuAD | frozen | 90.53 | −0.28 [−0.52, −0.04] BELOW | −0.04 [−0.14, +0.06] LEVEL | | −0.01 [−0.03, +0.02] LEVEL |
+| SQuAD | qwen3e06 | 87.17 | −1.51 [−1.80, −1.23] BELOW | −0.22 [−0.40, −0.05] BELOW | −4.87 [−5.33, −4.43] BELOW | −0.09 [−0.18, −0.01] BELOW |
+| SQuAD | mpnet | 83.98 | −2.36 [−2.70, −2.04] BELOW | −0.03 [−0.16, +0.08] LEVEL | −8.91 [−9.49, −8.36] BELOW | −0.02 [−0.07, +0.03] LEVEL |
+| SQuAD | mpnetqa | 85.02 | −2.16 [−2.46, −1.84] BELOW | −0.11 [−0.24, +0.01] LEVEL | −7.67 [−8.19, −7.13] BELOW | +0.01 [−0.04, +0.06] LEVEL |
+| MetaQA | frozen | 0.47 | +0.28 [+0.19, +0.38] ABOVE | −0.00 [−0.04, +0.02] LEVEL | | +0.94 [+0.78, +1.13] ABOVE |
+| MetaQA | qwen3e06 | 0.35 | +0.03 [−0.01, +0.09] LEVEL | −0.00 [−0.03, +0.02] LEVEL | −0.09 [−0.18, +0.01] LEVEL | +2.03 [+1.77, +2.31] ABOVE |
+| MetaQA | mpnet | 0.54 | +0.09 [+0.02, +0.16] ABOVE | −0.02 [−0.06, +0.00] LEVEL | +0.16 [+0.04, +0.27] ABOVE | +0.25 [+0.10, +0.40] ABOVE |
+| MetaQA | mpnetqa | 0.46 | +0.02 [−0.03, +0.06] LEVEL | −0.02 [−0.05, +0.01] LEVEL | −0.00 [−0.10, +0.09] LEVEL | +0.25 [+0.12, +0.39] ABOVE |
+
+**Expectations.** Z1 is NOT_HELD for every arm (no MuSiQue read has C1 and C2 both ABOVE). Z2 is NOT_HELD: qwen3e06's
+C3 on MuSiQue is −2.44, against E0's −2.36. Z3 is NOT_HELD: every arm's C1 on SQuAD is BELOW.
+
+**What the reads say.**
+- **The graph adds nothing at the top that a second copy of the dense list does not.** C2 is LEVEL on 10 of 12 reads.
+  It is ABOVE once (qwen3e06 on MuSiQue, where ctrl falls below base and add stays at base) and BELOW once (qwen3e06 on
+  SQuAD).
+- **A third list hurts where the dense list is weak.** For mpnet and mpnetqa, add is 1.4 to 2.4 points BELOW base on
+  MuSiQue and SQuAD. The smoothed list pulls the fused order toward the weaker dense side, as ctrl does.
+- **Little is won back.** Of the golds each small arm loses against the frozen base's top 5, add wins back 1.5% to 10%
+  (MuSiQue, qwen3e06: 35 of 349). It drops 91 to 340 of the arm's own base top-5 golds.
+- **The smoothed space reaches deeper, not higher.** u's R@1000 is ABOVE v's on MuSiQue and MetaQA for every arm
+  (MuSiQue +0.23 to +0.80, MetaQA +0.25 to +2.03), and LEVEL or just BELOW on SQuAD. The golds it adds sit far below
+  the top 5.
+- MetaQA's first-stage R@5 is under 1% for every arm (E0's), so its two ABOVE C1 calls sit on a floor.
+
+**D98.** Section 8's rule applies. Z1 failed for every arm, so the space as a first-stage channel closes, beside P5a to
+P5c. The gain-back question goes to E2 (the models on each arm's pools). Before this result, on 18 November, the user
+read it the same way: "smoothing the original doc vector with neighbours i do not think it would work, because we are
+limited by the dimentions". The user's next form is a learned one: edges as functions of any frozen vectors, with
+attention choosing which links to follow. It is sketched in [SEM2_EDGE_OPERATORS.md](SEM2_EDGE_OPERATORS.md), and it
+will be declared there before any number. Nothing here is adopted.
