@@ -1,0 +1,1894 @@
+{
+ "declared_in": "docs/MHB_MULTIHOP_BRIDGES.md",
+ "call": {
+  "dataset": "musique",
+  "carve": "s1eval",
+  "kind": "CH",
+  "k": 10,
+  "share": 0.1,
+  "min_slots": 200,
+  "unlinked_slots": 2005,
+  "NEW@k": 0.1731,
+  "verdict": "SIGNAL"
+ },
+ "results": {
+  "musique": {
+   "dataset": "musique",
+   "declared_in": "docs/MHB_MULTIHOP_BRIDGES.md",
+   "domain": "RK",
+   "families": {
+    "W2_S": 2343920,
+    "F0T": 973013,
+    "K": 265366
+   },
+   "union_pairs": 3387597,
+   "keys": 405016,
+   "entries": 1057628,
+   "dfmax": 100000,
+   "carves": {
+    "s1sel": {
+     "questions": 1534,
+     "questions_npz_sha256": "0c3d07208f7cbfe263038ce65600020068e91b083e7a1a84a8b22a5f1e1187e6",
+     "g4_max_abs": 0.0002442002296447754,
+     "slots": {
+      "GP": 3783,
+      "CH": 2530
+     },
+     "linked": {
+      "GP": 1120,
+      "CH": 1083
+     },
+     "partA": {
+      "GP": {
+       "unlinked_slots": 2663,
+       "share_any_key": 0.5126,
+       "min_df_band": {
+        "101-1k": 685,
+        "26-100": 233,
+        "1k-10k": 362,
+        "10k-100k": 85
+       },
+       "only_above_dfmax": 0.0,
+       "HUB": {
+        "5": 0.3875,
+        "10": 0.4352,
+        "20": 0.4615
+       },
+       "NEW": {
+        "5": 0.1119,
+        "10": 0.1179,
+        "20": 0.1273
+       },
+       "slots_with_a_found_end": 1635,
+       "HUB_found": {
+        "5": 0.1224,
+        "10": 0.1547,
+        "20": 0.1866
+       },
+       "NEW_found": {
+        "5": 0.0432,
+        "10": 0.0398,
+        "20": 0.0511
+       },
+       "C_size": {
+        "median": 5049,
+        "p90": 18739,
+        "max": 38819
+       }
+      },
+      "CH": {
+       "unlinked_slots": 1447,
+       "share_any_key": 0.718,
+       "min_df_band": {
+        "101-1k": 595,
+        "26-100": 227,
+        "1k-10k": 191,
+        "10k-100k": 26
+       },
+       "only_above_dfmax": 0.0,
+       "HUB": {
+        "5": 0.548,
+        "10": 0.6185,
+        "20": 0.6558
+       },
+       "NEW": {
+        "5": 0.1728,
+        "10": 0.1811,
+        "20": 0.2039
+       },
+       "slots_with_a_found_end": 908,
+       "HUB_found": {
+        "5": 0.1735,
+        "10": 0.217,
+        "20": 0.2695
+       },
+       "NEW_found": {
+        "5": 0.0629,
+        "10": 0.0581,
+        "20": 0.0822
+       },
+       "C_size": {
+        "median": 4476,
+        "p90": 19012,
+        "max": 38819
+       }
+      }
+     },
+     "partB": {
+      "unlinked": {
+       "B1": 862,
+       "B4": 292,
+       "B7": 100,
+       "B5": 46,
+       "B6": 102,
+       "B3w": 18,
+       "B3u": 27
+      },
+      "all": {
+       "B1": 1180,
+       "B4": 370,
+       "B7": 106,
+       "B5": 53,
+       "B2": 668,
+       "B6": 108,
+       "B3w": 18,
+       "B3u": 27
+      },
+      "unlinked_share": {
+       "B1": 0.5957,
+       "B4": 0.2018,
+       "B7": 0.0691,
+       "B5": 0.0318,
+       "B6": 0.0705,
+       "B3w": 0.0124,
+       "B3u": 0.0187
+      },
+      "hub10_from_earlier": {
+       "B1": 0.5998,
+       "B4": 0.1027,
+       "B7": 0.11,
+       "B5": 0.0652,
+       "B6": 0.451,
+       "B3w": 0.1111,
+       "B3u": 0.4074
+      },
+      "ans_written_in_earlier": {
+       "B1": 1.0,
+       "B4": 1.0,
+       "B7": 1.0,
+       "B5": 1.0,
+       "B6": 1.0,
+       "B3w": 1.0,
+       "B3u": 1.0
+      },
+      "examples": {
+       "B1": [
+        {
+         "ans": "FIFA World Cup",
+         "earlier": "High-definition television",
+         "later": "2018 FIFA World Cup"
+        },
+        {
+         "ans": "FIFA World Cup",
+         "earlier": "High-definition television",
+         "later": "Cameroon v Colombia (1990 FIFA World Cup)"
+        },
+        {
+         "ans": "FIFA World Cup",
+         "earlier": "High-definition television",
+         "later": "2018 FIFA World Cup statistics"
+        },
+        {
+         "ans": "FIFA World Cup",
+         "earlier": "High-definition television",
+         "later": "Adidas Telstar 18"
+        },
+        {
+         "ans": "Sri Lanka",
+         "earlier": "Sanath Nandasiri",
+         "later": "Sri Lanka national cricket team"
+        },
+        {
+         "ans": "Sri Lanka",
+         "earlier": "Siri Gunasinghe",
+         "later": "Sri Lankan passport"
+        }
+       ],
+       "B4": [
+        {
+         "ans": "China",
+         "earlier": "Dai Jitao",
+         "later": "National debt of the United States"
+        },
+        {
+         "ans": "Sri Lanka",
+         "earlier": "Jayantha Ketagoda",
+         "later": "Sri Lankan independence movement"
+        },
+        {
+         "ans": "Sri Lanka",
+         "earlier": "Jayantha Ketagoda",
+         "later": "Sri Lanka national cricket team"
+        },
+        {
+         "ans": "Sri Lanka",
+         "earlier": "Bernard Aluwihare",
+         "later": "Sri Lanka Matha"
+        },
+        {
+         "ans": "Sri Lanka",
+         "earlier": "Bernard Aluwihare",
+         "later": "Sri Lankan passport"
+        },
+        {
+         "ans": "Colombia",
+         "earlier": "Yomara Hinestroza",
+         "later": "Colombian conflict"
+        }
+       ],
+       "B7": [
+        {
+         "ans": "Sri Lanka",
+         "earlier": "Dilum Amunugama",
+         "later": "C. W. W. Kannangara"
+        },
+        {
+         "ans": "Sri Lanka",
+         "earlier": "Bernard Aluwihare",
+         "later": "C. W. W. Kannangara"
+        },
+        {
+         "ans": "Sri Lanka",
+         "earlier": "Wasana",
+         "later": "C. W. W. Kannangara"
+        },
+        {
+         "ans": "Sri Lanka",
+         "earlier": "Malu Mirisata",
+         "later": "C. W. W. Kannangara"
+        },
+        {
+         "ans": "Boston",
+         "earlier": "WUMB-FM",
+         "later": "William Howe, 5th Viscount Howe"
+        },
+        {
+         "ans": "Manitoba",
+         "earlier": "Manex Arena",
+         "later": "Leader of the Opposition (Manitoba)"
+        }
+       ],
+       "B5": [
+        {
+         "ans": "Romania",
+         "earlier": "RN-94",
+         "later": "Prime Minister of Romania"
+        },
+        {
+         "ans": "BBC",
+         "earlier": "Working Lunch",
+         "later": "BBC Television"
+        },
+        {
+         "ans": "BBC",
+         "earlier": "Fascist Legacy",
+         "later": "BBC Television"
+        },
+        {
+         "ans": "BBC",
+         "earlier": "Song of Summer",
+         "later": "BBC Television"
+        },
+        {
+         "ans": "BBC",
+         "earlier": "The Mysti Show",
+         "later": "BBC Television"
+        },
+        {
+         "ans": "BBC",
+         "earlier": "What the Victorians Did for Us",
+         "later": "BBC Television"
+        }
+       ],
+       "B6": [
+        {
+         "ans": "New Mexico",
+         "earlier": "Chihuahua (state)",
+         "later": "North American Monsoon"
+        },
+        {
+         "ans": "New Mexico",
+         "earlier": "KCLV-FM",
+         "later": "North American Monsoon"
+        },
+        {
+         "ans": "New Mexico",
+         "earlier": "Big Hatchet Peak",
+         "later": "North American Monsoon"
+        },
+        {
+         "ans": "New Mexico",
+         "earlier": "William Hanna",
+         "later": "North American Monsoon"
+        },
+        {
+         "ans": "Rutgers University",
+         "earlier": "John Belton",
+         "later": "New Jersey Agricultural Experiment Station"
+        },
+        {
+         "ans": "Bill Clinton",
+         "earlier": "Affirmative action in the United States",
+         "later": "Godwin Chepkurgor"
+        }
+       ],
+       "B3w": [
+        {
+         "ans": "the EU",
+         "earlier": "Switzerland",
+         "later": "European Union law"
+        },
+        {
+         "ans": "EU",
+         "earlier": "IPod",
+         "later": "Southern Europe"
+        },
+        {
+         "ans": "bandy",
+         "earlier": "IK Tellus",
+         "later": "England national bandy team"
+        },
+        {
+         "ans": "bandy",
+         "earlier": "GT-76",
+         "later": "England national bandy team"
+        },
+        {
+         "ans": "bandy",
+         "earlier": "Helenelunds IK",
+         "later": "England national bandy team"
+        },
+        {
+         "ans": "bandy",
+         "earlier": "Helenelunds IK",
+         "later": "England national bandy team"
+        }
+       ],
+       "B3u": [
+        {
+         "ans": "The US",
+         "earlier": "Washing machine",
+         "later": "Super Nintendo Entertainment System"
+        },
+        {
+         "ans": "The US",
+         "earlier": "Washing machine",
+         "later": "North American Free Trade Agreement"
+        },
+        {
+         "ans": "The US",
+         "earlier": "Washing machine",
+         "later": "Military history of the United States during World War II"
+        },
+        {
+         "ans": "The US",
+         "earlier": "Washing machine",
+         "later": "North American Free Trade Agreement"
+        },
+        {
+         "ans": "US",
+         "earlier": "Narragansett Regional High School",
+         "later": "Military history of the United States during World War II"
+        },
+        {
+         "ans": "the US",
+         "earlier": "Oyster pail",
+         "later": "Military history of the United States during World War II"
+        }
+       ]
+      }
+     },
+     "partC": {
+      "CH_by_hops": {
+       "2": {
+        "n": 795,
+        "W2_S": 0.2138,
+        "F0T": 0.1648,
+        "K": 0.0302,
+        "union": 0.3208
+       },
+       "3": {
+        "n": 964,
+        "W2_S": 0.25,
+        "F0T": 0.3071,
+        "K": 0.1255,
+        "union": 0.4616
+       },
+       "4": {
+        "n": 771,
+        "W2_S": 0.249,
+        "F0T": 0.3774,
+        "K": 0.1102,
+        "union": 0.4968
+       }
+      },
+      "CH_by_relation": {
+       "(free text)": {
+        "n": 1278,
+        "W2_S": 0.2433,
+        "F0T": 0.2113,
+        "K": 0.0775,
+        "union": 0.3897
+       },
+       "located in the administrative territorial entity": {
+        "n": 220,
+        "W2_S": 0.1636,
+        "F0T": 0.4045,
+        "K": 0.05,
+        "union": 0.45
+       },
+       "place of birth": {
+        "n": 190,
+        "W2_S": 0.2789,
+        "F0T": 0.1474,
+        "K": 0.0,
+        "union": 0.3684
+       },
+       "country": {
+        "n": 174,
+        "W2_S": 0.1149,
+        "F0T": 0.0,
+        "K": 0.0,
+        "union": 0.1149
+       },
+       "performer": {
+        "n": 142,
+        "W2_S": 0.4577,
+        "F0T": 0.7746,
+        "K": 0.3169,
+        "union": 0.8239
+       },
+       "educated at": {
+        "n": 67,
+        "W2_S": 0.0,
+        "F0T": 0.4776,
+        "K": 0.0,
+        "union": 0.4776
+       },
+       "shares border with": {
+        "n": 54,
+        "W2_S": 0.0556,
+        "F0T": 0.7037,
+        "K": 0.3333,
+        "union": 0.7407
+       },
+       "author": {
+        "n": 48,
+        "W2_S": 0.4375,
+        "F0T": 1.0,
+        "K": 0.7292,
+        "union": 1.0
+       },
+       "place of death": {
+        "n": 42,
+        "W2_S": 0.3571,
+        "F0T": 0.1905,
+        "K": 0.0,
+        "union": 0.5
+       },
+       "country of citizenship": {
+        "n": 30,
+        "W2_S": 0.1333,
+        "F0T": 0.0,
+        "K": 0.0,
+        "union": 0.1333
+       },
+       "employer": {
+        "n": 27,
+        "W2_S": 0.037,
+        "F0T": 0.1111,
+        "K": 0.0,
+        "union": 0.1481
+       },
+       "contains administrative territorial entity": {
+        "n": 18,
+        "W2_S": 0.0,
+        "F0T": 0.8333,
+        "K": 0.0,
+        "union": 0.8333
+       },
+       "headquarters location": {
+        "n": 17,
+        "W2_S": 0.2353,
+        "F0T": 0.2941,
+        "K": 0.0,
+        "union": 0.2941
+       },
+       "director": {
+        "n": 17,
+        "W2_S": 0.1765,
+        "F0T": 0.8235,
+        "K": 0.1765,
+        "union": 0.8824
+       },
+       "producer": {
+        "n": 14,
+        "W2_S": 0.4286,
+        "F0T": 0.7143,
+        "K": 0.1429,
+        "union": 0.8571
+       },
+       "member of sports team": {
+        "n": 12,
+        "W2_S": 0.5833,
+        "F0T": 0.1667,
+        "K": 0.0,
+        "union": 0.6667
+       },
+       "country of origin": {
+        "n": 11,
+        "W2_S": 0.0909,
+        "F0T": 0.0,
+        "K": 0.0,
+        "union": 0.0909
+       },
+       "location": {
+        "n": 11,
+        "W2_S": 0.0909,
+        "F0T": 0.0,
+        "K": 0.0,
+        "union": 0.0909
+       },
+       "original language of film or tv show": {
+        "n": 10,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "union": 0.0
+       },
+       "located on terrain feature": {
+        "n": 10,
+        "W2_S": 1.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "union": 1.0
+       },
+       "military branch": {
+        "n": 10,
+        "W2_S": 0.0,
+        "F0T": 0.1,
+        "K": 0.2,
+        "union": 0.2
+       },
+       "named after": {
+        "n": 10,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "union": 0.0
+       },
+       "capital of": {
+        "n": 9,
+        "W2_S": 0.6667,
+        "F0T": 0.0,
+        "K": 0.0,
+        "union": 0.6667
+       },
+       "instance of": {
+        "n": 8,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "union": 0.0
+       },
+       "owned by": {
+        "n": 7,
+        "W2_S": 0.0,
+        "F0T": 0.2857,
+        "K": 0.0,
+        "union": 0.2857
+       }
+      }
+     }
+    },
+    "s1eval": {
+     "questions": 2417,
+     "questions_npz_sha256": "48579db05059b7b0faa92fa7ac1a949e6669b4b91776da3cffbf690a5f48fdde",
+     "g4_max_abs": 0.0002442598342895508,
+     "slots": {
+      "GP": 5962,
+      "CH": 3987
+     },
+     "linked": {
+      "GP": 2005,
+      "CH": 1982
+     },
+     "partA": {
+      "GP": {
+       "unlinked_slots": 3957,
+       "share_any_key": 0.5214,
+       "min_df_band": {
+        "1k-10k": 185,
+        "26-100": 555,
+        "101-1k": 1279,
+        "10k-100k": 44
+       },
+       "only_above_dfmax": 0.0,
+       "HUB": {
+        "5": 0.3571,
+        "10": 0.4016,
+        "20": 0.4377
+       },
+       "NEW": {
+        "5": 0.0955,
+        "10": 0.1145,
+        "20": 0.1291
+       },
+       "slots_with_a_found_end": 2362,
+       "HUB_found": {
+        "5": 0.0824,
+        "10": 0.1132,
+        "20": 0.1453
+       },
+       "NEW_found": {
+        "5": 0.0323,
+        "10": 0.0364,
+        "20": 0.0462
+       },
+       "C_size": {
+        "median": 3572,
+        "p90": 16308,
+        "max": 38823
+       }
+      },
+      "CH": {
+       "unlinked_slots": 2005,
+       "share_any_key": 0.7641,
+       "min_df_band": {
+        "1k-10k": 83,
+        "26-100": 482,
+        "101-1k": 955,
+        "10k-100k": 12
+       },
+       "only_above_dfmax": 0.0,
+       "HUB": {
+        "5": 0.5117,
+        "10": 0.5771,
+        "20": 0.6359
+       },
+       "NEW": {
+        "5": 0.1476,
+        "10": 0.1731,
+        "20": 0.201
+       },
+       "slots_with_a_found_end": 1145,
+       "HUB_found": {
+        "5": 0.1027,
+        "10": 0.1466,
+        "20": 0.194
+       },
+       "NEW_found": {
+        "5": 0.0464,
+        "10": 0.0524,
+        "20": 0.0718
+       },
+       "C_size": {
+        "median": 3774,
+        "p90": 16308,
+        "max": 38823
+       }
+      }
+     },
+     "partB": {
+      "unlinked": {
+       "B6": 99,
+       "B4": 432,
+       "B7": 149,
+       "B1": 1255,
+       "B5": 66,
+       "B3w": 2,
+       "B3u": 2
+      },
+      "all": {
+       "B2": 1178,
+       "B6": 145,
+       "B4": 571,
+       "B5": 120,
+       "B3w": 8,
+       "B7": 168,
+       "B1": 1795,
+       "B3u": 2
+      },
+      "unlinked_share": {
+       "B6": 0.0494,
+       "B4": 0.2155,
+       "B7": 0.0743,
+       "B1": 0.6259,
+       "B5": 0.0329,
+       "B3w": 0.001,
+       "B3u": 0.001
+      },
+      "hub10_from_earlier": {
+       "B6": 0.2121,
+       "B4": 0.169,
+       "B7": 0.1074,
+       "B1": 0.5116,
+       "B5": 0.1515,
+       "B3w": 0.0,
+       "B3u": 0.0
+      },
+      "ans_written_in_earlier": {
+       "B6": 1.0,
+       "B4": 1.0,
+       "B7": 1.0,
+       "B1": 1.0,
+       "B5": 1.0,
+       "B3w": 1.0,
+       "B3u": 1.0
+      },
+      "examples": {
+       "B6": [
+        {
+         "ans": "German Aerospace Center",
+         "earlier": "Ulrich Walter",
+         "later": "Philae (spacecraft)"
+        },
+        {
+         "ans": "Ajay Devgan",
+         "earlier": "Anil Devgan",
+         "later": "Yeh Raaste Hain Pyaar Ke"
+        },
+        {
+         "ans": "Ajay Devgan",
+         "earlier": "Anil Devgan",
+         "later": "Yeh Raaste Hain Pyaar Ke"
+        },
+        {
+         "ans": "Ajay Devgan",
+         "earlier": "U Me Aur Hum",
+         "later": "Yeh Raaste Hain Pyaar Ke"
+        },
+        {
+         "ans": "In Chile",
+         "earlier": "The Motorcycle Diaries (film)",
+         "later": "Daylight saving time"
+        },
+        {
+         "ans": "In Chile",
+         "earlier": "The Motorcycle Diaries (film)",
+         "later": "San Clemente, Chile"
+        }
+       ],
+       "B4": [
+        {
+         "ans": "Louis XIII",
+         "earlier": "Philippe I, Duke of Orléans",
+         "later": "Leonora Dori"
+        },
+        {
+         "ans": "Charles Tupper",
+         "earlier": "Frances Tupper",
+         "later": "Arthur Rupert Dickey"
+        },
+        {
+         "ans": "Ninghai County",
+         "earlier": "Qiantong, Zhejiang",
+         "later": "Hu Sanxing"
+        },
+        {
+         "ans": "Joseph",
+         "earlier": "São José dos Campos",
+         "later": "Mary, mother of Jesus"
+        },
+        {
+         "ans": "Cabo Verde",
+         "earlier": "RTC (Cape Verde)",
+         "later": "Cape Verde"
+        },
+        {
+         "ans": "Natalie Wood",
+         "earlier": "Miracle on 34th Street",
+         "later": "Five Finger Exercise"
+        }
+       ],
+       "B7": [
+        {
+         "ans": "Stefan Nemanja",
+         "earlier": "Stracimir Zavidović",
+         "later": "Saint Sava"
+        },
+        {
+         "ans": "United Kingdom's",
+         "earlier": "Myanmar",
+         "later": "Plymouth"
+        },
+        {
+         "ans": "Gil Moore",
+         "earlier": "Metalworks Institute",
+         "later": "TML Entertainment"
+        },
+        {
+         "ans": "Geena Davis",
+         "earlier": "Thelma & Louise",
+         "later": "A League of Their Own"
+        },
+        {
+         "ans": "Geena Davis",
+         "earlier": "Thelma & Louise",
+         "later": "A League of Their Own"
+        },
+        {
+         "ans": "Goyang Hi FC",
+         "earlier": "Maycon Carvalho Inez",
+         "later": "Bae Hae-min"
+        }
+       ],
+       "B1": [
+        {
+         "ans": "Joseph",
+         "earlier": "Mary, mother of Jesus",
+         "later": "Sisters of St Joseph of Nazareth"
+        },
+        {
+         "ans": "United States Census Bureau",
+         "earlier": "U.S. and World Population Clock",
+         "later": "Atlantic City, New Jersey"
+        },
+        {
+         "ans": "United States Census Bureau",
+         "earlier": "Southern California",
+         "later": "Atlantic City, New Jersey"
+        },
+        {
+         "ans": "United States Census Bureau",
+         "earlier": "Census county division",
+         "later": "Atlantic City, New Jersey"
+        },
+        {
+         "ans": "United States Census Bureau",
+         "earlier": "Topologically Integrated Geographic Encoding and Referencing",
+         "later": "Atlantic City, New Jersey"
+        },
+        {
+         "ans": "Richard",
+         "earlier": "William de Longchamp",
+         "later": "Normans"
+        }
+       ],
+       "B5": [
+        {
+         "ans": "Edwin Henry Landseer",
+         "earlier": "A Distinguished Member of the Humane Society",
+         "later": "Edwin Lutyens"
+        },
+        {
+         "ans": "Bankim Chandra Chattopadhyay",
+         "earlier": "Kapalkundala",
+         "later": "Sanjib Chandra Chattopadhyay"
+        },
+        {
+         "ans": "In Chile",
+         "earlier": "The Motorcycle Diaries (film)",
+         "later": "Climate of Chile"
+        },
+        {
+         "ans": "National Security Agency",
+         "earlier": "MYSTIC (surveillance program)",
+         "later": "Director of the National Security Agency"
+        },
+        {
+         "ans": "National Security Agency",
+         "earlier": "ThinThread",
+         "later": "Director of the National Security Agency"
+        },
+        {
+         "ans": "Nile River",
+         "earlier": "Solar energy",
+         "later": "Flooding of the Nile"
+        }
+       ],
+       "B3w": [
+        {
+         "ans": "plankton",
+         "earlier": "Annelid",
+         "later": "List of SpongeBob SquarePants cast members"
+        },
+        {
+         "ans": "plankton",
+         "earlier": "Portugal",
+         "later": "List of SpongeBob SquarePants cast members"
+        }
+       ],
+       "B3u": [
+        {
+         "ans": "early 20th century",
+         "earlier": "Child labour",
+         "later": "Great power"
+        },
+        {
+         "ans": "early in the 20th century",
+         "earlier": "Alps",
+         "later": "Great power"
+        }
+       ]
+      }
+     },
+     "partC": {
+      "CH_by_hops": {
+       "2": {
+        "n": 1252,
+        "W2_S": 0.3498,
+        "F0T": 0.6134,
+        "K": 0.1701,
+        "union": 0.7037
+       },
+       "3": {
+        "n": 1520,
+        "W2_S": 0.1967,
+        "F0T": 0.2086,
+        "K": 0.075,
+        "union": 0.3474
+       },
+       "4": {
+        "n": 1215,
+        "W2_S": 0.284,
+        "F0T": 0.2815,
+        "K": 0.0881,
+        "union": 0.4716
+       }
+      },
+      "CH_by_relation": {
+       "(free text)": {
+        "n": 2188,
+        "W2_S": 0.2838,
+        "F0T": 0.2856,
+        "K": 0.0864,
+        "union": 0.4671
+       },
+       "located in the administrative territorial entity": {
+        "n": 198,
+        "W2_S": 0.1313,
+        "F0T": 0.5556,
+        "K": 0.101,
+        "union": 0.601
+       },
+       "performer": {
+        "n": 192,
+        "W2_S": 0.4583,
+        "F0T": 0.974,
+        "K": 0.4375,
+        "union": 0.974
+       },
+       "place of birth": {
+        "n": 160,
+        "W2_S": 0.2313,
+        "F0T": 0.2562,
+        "K": 0.0063,
+        "union": 0.3688
+       },
+       "country": {
+        "n": 153,
+        "W2_S": 0.2026,
+        "F0T": 0.1765,
+        "K": 0.1634,
+        "union": 0.2157
+       },
+       "headquarters location": {
+        "n": 92,
+        "W2_S": 0.4457,
+        "F0T": 0.3804,
+        "K": 0.0326,
+        "union": 0.7717
+       },
+       "place of death": {
+        "n": 90,
+        "W2_S": 0.1778,
+        "F0T": 0.1111,
+        "K": 0.0222,
+        "union": 0.2444
+       },
+       "author": {
+        "n": 59,
+        "W2_S": 0.2881,
+        "F0T": 0.8644,
+        "K": 0.2034,
+        "union": 0.8644
+       },
+       "operator": {
+        "n": 58,
+        "W2_S": 0.0862,
+        "F0T": 0.2069,
+        "K": 0.0172,
+        "union": 0.2069
+       },
+       "member of sports team": {
+        "n": 47,
+        "W2_S": 0.0638,
+        "F0T": 0.1277,
+        "K": 0.0213,
+        "union": 0.1277
+       },
+       "shares border with": {
+        "n": 46,
+        "W2_S": 0.5435,
+        "F0T": 0.913,
+        "K": 0.0217,
+        "union": 1.0
+       },
+       "creator": {
+        "n": 42,
+        "W2_S": 0.3571,
+        "F0T": 0.5238,
+        "K": 0.2619,
+        "union": 0.5238
+       },
+       "cast member": {
+        "n": 36,
+        "W2_S": 0.1389,
+        "F0T": 0.8889,
+        "K": 0.1389,
+        "union": 0.8889
+       },
+       "country of citizenship": {
+        "n": 34,
+        "W2_S": 0.0294,
+        "F0T": 0.0294,
+        "K": 0.0,
+        "union": 0.0294
+       },
+       "record label": {
+        "n": 31,
+        "W2_S": 0.129,
+        "F0T": 0.2581,
+        "K": 0.129,
+        "union": 0.2581
+       },
+       "owned by": {
+        "n": 29,
+        "W2_S": 0.069,
+        "F0T": 0.2759,
+        "K": 0.1379,
+        "union": 0.2759
+       },
+       "platform": {
+        "n": 29,
+        "W2_S": 1.0,
+        "F0T": 0.0,
+        "K": 0.069,
+        "union": 1.0
+       },
+       "manufacturer": {
+        "n": 26,
+        "W2_S": 0.4231,
+        "F0T": 0.1538,
+        "K": 0.1154,
+        "union": 0.5385
+       },
+       "winner": {
+        "n": 25,
+        "W2_S": 0.08,
+        "F0T": 0.08,
+        "K": 0.08,
+        "union": 0.12
+       },
+       "member of": {
+        "n": 24,
+        "W2_S": 0.5417,
+        "F0T": 0.2917,
+        "K": 0.1667,
+        "union": 0.5833
+       },
+       "composer": {
+        "n": 24,
+        "W2_S": 0.0833,
+        "F0T": 0.875,
+        "K": 0.3333,
+        "union": 0.875
+       },
+       "employer": {
+        "n": 22,
+        "W2_S": 0.3636,
+        "F0T": 0.5,
+        "K": 0.0,
+        "union": 0.5
+       },
+       "location of formation": {
+        "n": 21,
+        "W2_S": 0.7143,
+        "F0T": 0.1905,
+        "K": 0.0,
+        "union": 0.8095
+       },
+       "contains administrative territorial entity": {
+        "n": 21,
+        "W2_S": 0.0,
+        "F0T": 0.1905,
+        "K": 0.0,
+        "union": 0.1905
+       },
+       "spouse": {
+        "n": 18,
+        "W2_S": 0.2222,
+        "F0T": 0.7778,
+        "K": 0.1667,
+        "union": 0.7778
+       }
+      }
+     }
+    }
+   },
+   "code": {
+    "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+    "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+    "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+    "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+    "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+    "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+   },
+   "inputs": {
+    "ner_npz_sha256": "f294708600750c48eae9e32d0895d517ac3a8b5d048c736a70e9a566af2fe9c6",
+    "knn_npz_sha256": "6020ac7e0b6773e64866b5e942dc0e02c3b704615ced8de4d557aa543221ef5b",
+    "w2_s_npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+    "f0t_npz_sha256": "a0cea3c450f4a8364d202d7f21fe949e288f2ed0ca325aadea199f7ed2a4eebc",
+    "names_npz_sha256": "279d4b6ff3a2d5e3fbbab9071bcc93328167da1c5d19e805c3a9c5ad7a8f9cda"
+   },
+   "seconds": 40.7
+  },
+  "2wiki": {
+   "dataset": "2wiki",
+   "declared_in": "docs/MHB_MULTIHOP_BRIDGES.md",
+   "domain": "SRK",
+   "families": {
+    "W2_S": 71483746,
+    "F0T": 39863302,
+    "K": 13643063,
+    "S": 28208857
+   },
+   "union_pairs": 126635390,
+   "keys": 9936838,
+   "entries": 50235896,
+   "dfmax": 100000,
+   "carves": {
+    "s1sel": {
+     "questions": 1496,
+     "questions_npz_sha256": "be025627b9ae6beac340023262849bcffb2364d793c28a171e88ff093f2f3824",
+     "g4_max_abs": 0.00024765729904174805,
+     "slots": {
+      "GP": 3131
+     },
+     "linked": {
+      "GP": 1444
+     },
+     "partA": {
+      "GP": {
+       "unlinked_slots": 1687,
+       "share_any_key": 0.2282,
+       "min_df_band": {
+        ">100k": 297,
+        "10k-100k": 63,
+        "1k-10k": 14,
+        "26-100": 7,
+        "101-1k": 4
+       },
+       "only_above_dfmax": 0.1761,
+       "HUB": {
+        "5": 0.0451,
+        "10": 0.0462,
+        "20": 0.0468
+       },
+       "NEW": {
+        "5": 0.0047,
+        "10": 0.0071,
+        "20": 0.0053
+       },
+       "slots_with_a_found_end": 1078,
+       "HUB_found": {
+        "5": 0.0207,
+        "10": 0.0249,
+        "20": 0.0285
+       },
+       "NEW_found": {
+        "5": 0.0018,
+        "10": 0.0036,
+        "20": 0.0018
+       },
+       "C_size": {
+        "median": 19858,
+        "p90": 100331,
+        "max": 352143
+       }
+      }
+     },
+     "partC": {
+      "GP_by_type": {
+       "bridge_comparison": {
+        "n": 1962,
+        "W2_S": 0.3043,
+        "F0T": 0.1575,
+        "K": 0.0423,
+        "S": 0.3186,
+        "union": 0.3318
+       },
+       "comparison": {
+        "n": 362,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "S": 0.0,
+        "union": 0.0
+       },
+       "compositional": {
+        "n": 623,
+        "W2_S": 0.8844,
+        "F0T": 0.4896,
+        "K": 0.1445,
+        "S": 0.9101,
+        "union": 0.9807
+       },
+       "inference": {
+        "n": 184,
+        "W2_S": 0.8967,
+        "F0T": 0.7011,
+        "K": 0.4457,
+        "S": 0.8859,
+        "union": 0.9891
+       }
+      },
+      "GP_by_first_relation": {
+       "director": {
+        "n": 2292,
+        "W2_S": 0.3892,
+        "F0T": 0.2086,
+        "K": 0.0454,
+        "S": 0.4084,
+        "union": 0.4263
+       },
+       "father": {
+        "n": 186,
+        "W2_S": 0.8656,
+        "F0T": 0.6882,
+        "K": 0.4624,
+        "S": 0.871,
+        "union": 0.9839
+       },
+       "country": {
+        "n": 116,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "S": 0.0,
+        "union": 0.0
+       },
+       "spouse": {
+        "n": 114,
+        "W2_S": 0.8509,
+        "F0T": 0.5175,
+        "K": 0.3421,
+        "S": 0.886,
+        "union": 0.9825
+       },
+       "country of citizenship": {
+        "n": 68,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "S": 0.0,
+        "union": 0.0
+       },
+       "composer": {
+        "n": 64,
+        "W2_S": 0.9375,
+        "F0T": 0.25,
+        "K": 0.0312,
+        "S": 0.8438,
+        "union": 0.9531
+       },
+       "country of origin": {
+        "n": 55,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "S": 0.0,
+        "union": 0.0
+       },
+       "date of birth": {
+        "n": 54,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "S": 0.0,
+        "union": 0.0
+       },
+       "mother": {
+        "n": 52,
+        "W2_S": 0.8846,
+        "F0T": 0.75,
+        "K": 0.3462,
+        "S": 0.8846,
+        "union": 0.9808
+       },
+       "performer": {
+        "n": 49,
+        "W2_S": 0.9184,
+        "F0T": 0.2653,
+        "K": 0.0612,
+        "S": 0.898,
+        "union": 0.9796
+       },
+       "publication date": {
+        "n": 36,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "S": 0.0,
+        "union": 0.0
+       },
+       "date of death": {
+        "n": 13,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "S": 0.0,
+        "union": 0.0
+       },
+       "place of birth": {
+        "n": 11,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "S": 0.0,
+        "union": 0.0
+       },
+       "founded by": {
+        "n": 8,
+        "W2_S": 0.875,
+        "F0T": 0.75,
+        "K": 0.125,
+        "S": 0.875,
+        "union": 0.875
+       },
+       "inception": {
+        "n": 5,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "S": 0.0,
+        "union": 0.0
+       },
+       "sibling": {
+        "n": 3,
+        "W2_S": 1.0,
+        "F0T": 1.0,
+        "K": 0.3333,
+        "S": 1.0,
+        "union": 1.0
+       },
+       "occupation": {
+        "n": 3,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "S": 0.0,
+        "union": 0.0
+       },
+       "doctoral advisor": {
+        "n": 1,
+        "W2_S": 1.0,
+        "F0T": 0.0,
+        "K": 1.0,
+        "S": 1.0,
+        "union": 1.0
+       },
+       "child": {
+        "n": 1,
+        "W2_S": 1.0,
+        "F0T": 1.0,
+        "K": 0.0,
+        "S": 1.0,
+        "union": 1.0
+       }
+      },
+      "bridge_object": {
+       "questions": 807,
+       "written_in_subject": 692,
+       "gold_titled_object": 655,
+       "no_subject_passage": 111,
+       "written_share": 0.9943,
+       "titled_share": 0.9411
+      }
+     }
+    },
+    "s1eval": {
+     "questions": 12576,
+     "questions_npz_sha256": "d6d41aee0d5d109e84e81a6cc043c772554e87189cca3f0ed07e2e7f1e1a2adc",
+     "g4_max_abs": 0.00024902820587158203,
+     "slots": {
+      "GP": 26331
+     },
+     "linked": {
+      "GP": 12066
+     },
+     "partA": {
+      "GP": {
+       "unlinked_slots": 14265,
+       "share_any_key": 0.2582,
+       "min_df_band": {
+        ">100k": 2757,
+        "10k-100k": 604,
+        "26-100": 90,
+        "1k-10k": 158,
+        "101-1k": 74
+       },
+       "only_above_dfmax": 0.1933,
+       "HUB": {
+        "5": 0.0514,
+        "10": 0.0528,
+        "20": 0.0536
+       },
+       "NEW": {
+        "5": 0.0107,
+        "10": 0.0094,
+        "20": 0.0068
+       },
+       "slots_with_a_found_end": 9444,
+       "HUB_found": {
+        "5": 0.0209,
+        "10": 0.0238,
+        "20": 0.0252
+       },
+       "NEW_found": {
+        "5": 0.0053,
+        "10": 0.0045,
+        "20": 0.0033
+       },
+       "C_size": {
+        "median": 17793,
+        "p90": 104281,
+        "max": 687756
+       }
+      }
+     },
+     "partC": {
+      "GP_by_type": {
+       "bridge_comparison": {
+        "n": 16506,
+        "W2_S": 0.3024,
+        "F0T": 0.1501,
+        "K": 0.0394,
+        "S": 0.3163,
+        "union": 0.3286
+       },
+       "comparison": {
+        "n": 3040,
+        "W2_S": 0.0,
+        "F0T": 0.0007,
+        "K": 0.0003,
+        "S": 0.0,
+        "union": 0.001
+       },
+       "compositional": {
+        "n": 5236,
+        "W2_S": 0.8585,
+        "F0T": 0.6238,
+        "K": 0.2701,
+        "S": 0.8892,
+        "union": 0.978
+       },
+       "inference": {
+        "n": 1549,
+        "W2_S": 0.8121,
+        "F0T": 0.7418,
+        "K": 0.4777,
+        "S": 0.876,
+        "union": 0.98
+       }
+      },
+      "GP_by_first_relation": {
+       "director": {
+        "n": 18474,
+        "W2_S": 0.3654,
+        "F0T": 0.2062,
+        "K": 0.0479,
+        "S": 0.3821,
+        "union": 0.4001
+       },
+       "father": {
+        "n": 2260,
+        "W2_S": 0.8239,
+        "F0T": 0.7146,
+        "K": 0.5097,
+        "S": 0.8642,
+        "union": 0.9765
+       },
+       "publication date": {
+        "n": 1092,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "S": 0.0,
+        "union": 0.0
+       },
+       "spouse": {
+        "n": 867,
+        "W2_S": 0.8247,
+        "F0T": 0.5709,
+        "K": 0.3818,
+        "S": 0.8708,
+        "union": 0.9689
+       },
+       "date of birth": {
+        "n": 840,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "S": 0.0,
+        "union": 0.0
+       },
+       "mother": {
+        "n": 696,
+        "W2_S": 0.8103,
+        "F0T": 0.8218,
+        "K": 0.3894,
+        "S": 0.8764,
+        "union": 0.9784
+       },
+       "performer": {
+        "n": 426,
+        "W2_S": 0.8732,
+        "F0T": 0.3122,
+        "K": 0.115,
+        "S": 0.9202,
+        "union": 0.9859
+       },
+       "country of origin": {
+        "n": 345,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "S": 0.0,
+        "union": 0.0
+       },
+       "country": {
+        "n": 316,
+        "W2_S": 0.0,
+        "F0T": 0.0063,
+        "K": 0.0032,
+        "S": 0.0,
+        "union": 0.0095
+       },
+       "composer": {
+        "n": 262,
+        "W2_S": 0.9084,
+        "F0T": 0.4427,
+        "K": 0.0878,
+        "S": 0.8969,
+        "union": 0.9733
+       },
+       "country of citizenship": {
+        "n": 203,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "S": 0.0,
+        "union": 0.0
+       },
+       "date of death": {
+        "n": 144,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "S": 0.0,
+        "union": 0.0
+       },
+       "producer": {
+        "n": 98,
+        "W2_S": 0.2755,
+        "F0T": 0.1122,
+        "K": 0.0102,
+        "S": 0.2857,
+        "union": 0.3163
+       },
+       "founded by": {
+        "n": 71,
+        "W2_S": 0.8732,
+        "F0T": 0.5352,
+        "K": 0.338,
+        "S": 0.831,
+        "union": 0.9859
+       },
+       "inception": {
+        "n": 64,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "S": 0.0,
+        "union": 0.0
+       },
+       "child": {
+        "n": 44,
+        "W2_S": 0.8636,
+        "F0T": 0.6818,
+        "K": 0.5682,
+        "S": 0.8864,
+        "union": 1.0
+       },
+       "publisher": {
+        "n": 34,
+        "W2_S": 0.9118,
+        "F0T": 0.3529,
+        "K": 0.2647,
+        "S": 0.8529,
+        "union": 1.0
+       },
+       "sibling": {
+        "n": 32,
+        "W2_S": 0.9375,
+        "F0T": 0.75,
+        "K": 0.5,
+        "S": 0.9688,
+        "union": 1.0
+       },
+       "creator": {
+        "n": 18,
+        "W2_S": 0.9444,
+        "F0T": 0.4444,
+        "K": 0.2222,
+        "S": 0.7778,
+        "union": 1.0
+       },
+       "has part": {
+        "n": 17,
+        "W2_S": 0.9412,
+        "F0T": 0.8235,
+        "K": 0.3529,
+        "S": 0.7647,
+        "union": 1.0
+       },
+       "editor": {
+        "n": 12,
+        "W2_S": 0.9167,
+        "F0T": 0.8333,
+        "K": 0.3333,
+        "S": 1.0,
+        "union": 1.0
+       },
+       "presenter": {
+        "n": 6,
+        "W2_S": 1.0,
+        "F0T": 0.6667,
+        "K": 0.5,
+        "S": 0.6667,
+        "union": 1.0
+       },
+       "occupation": {
+        "n": 5,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "S": 0.0,
+        "union": 0.0
+       },
+       "manufacturer": {
+        "n": 3,
+        "W2_S": 1.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "S": 0.0,
+        "union": 1.0
+       },
+       "place of birth": {
+        "n": 1,
+        "W2_S": 0.0,
+        "F0T": 0.0,
+        "K": 0.0,
+        "S": 0.0,
+        "union": 0.0
+       }
+      },
+      "bridge_object": {
+       "questions": 6785,
+       "written_in_subject": 5670,
+       "gold_titled_object": 5318,
+       "no_subject_passage": 1044,
+       "written_share": 0.9876,
+       "titled_share": 0.9263
+      }
+     }
+    }
+   },
+   "code": {
+    "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+    "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+    "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+    "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+    "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+    "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+   },
+   "inputs": {
+    "ner_npz_sha256": "fd462a9c08740d57af79855efe37c1d77f30dc593ca6ad6242681c99b51a008a",
+    "knn_npz_sha256": "a7151f6bbebdb13d7e817abcc199fd5feae17585a955f781b0690d7ee1897f99",
+    "structural_npz_sha256": "1e380eaaa62b21eaf24f6dec8302d81482bf35695bfa6cdda2421fa90cfe9c85",
+    "w2_s_npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+    "f0t_npz_sha256": "d6c49214c935c6166fcaa9c3494827cf85aaeafdb1f84f9eb3679b84de52ad5e",
+    "names_npz_sha256": "56269a557dae67578c3c05c6b7c4350f82c28fe51edd44a024104a729d43c020"
+   },
+   "seconds": 1865.2
+  },
+  "hotpotqa": {
+   "dataset": "hotpotqa",
+   "declared_in": "docs/MHB_MULTIHOP_BRIDGES.md",
+   "domain": "SRK",
+   "families": {
+    "W2_S": 32159229,
+    "F0T": 24450229,
+    "K": 11946289,
+    "S": 15095287
+   },
+   "union_pairs": 66773876,
+   "keys": 7137780,
+   "entries": 32330425,
+   "dfmax": 100000,
+   "carves": {
+    "s1sel": {
+     "questions": 1508,
+     "questions_npz_sha256": "b9f4c3f98a278872eb254d99c474548149df70dfa9f01cf64be6cf396b89453e",
+     "g4_max_abs": 0.00024771690368652344,
+     "slots": {
+      "GP": 1508
+     },
+     "linked": {
+      "GP": 1211
+     },
+     "partA": {
+      "GP": {
+       "unlinked_slots": 297,
+       "share_any_key": 0.3434,
+       "min_df_band": {
+        "10k-100k": 21,
+        "101-1k": 10,
+        ">100k": 55,
+        "26-100": 1,
+        "1k-10k": 15
+       },
+       "only_above_dfmax": 0.1852,
+       "HUB": {
+        "5": 0.1582,
+        "10": 0.1582,
+        "20": 0.1582
+       },
+       "NEW": {
+        "5": 0.0135,
+        "10": 0.0168,
+        "20": 0.0067
+       },
+       "slots_with_a_found_end": 296,
+       "HUB_found": {
+        "5": 0.1414,
+        "10": 0.1549,
+        "20": 0.1582
+       },
+       "NEW_found": {
+        "5": 0.0135,
+        "10": 0.0168,
+        "20": 0.0067
+       },
+       "C_size": {
+        "median": 18394,
+        "p90": 83944,
+        "max": 334972
+       }
+      }
+     },
+     "partC": {
+      "GP_by_type": {
+       "bridge": {
+        "n": 1205,
+        "W2_S": 0.7577,
+        "F0T": 0.4763,
+        "K": 0.2415,
+        "S": 1.0,
+        "union": 1.0
+       },
+       "comparison": {
+        "n": 303,
+        "W2_S": 0.0,
+        "F0T": 0.0033,
+        "K": 0.0165,
+        "S": 0.0,
+        "union": 0.0198
+       }
+      }
+     }
+    },
+    "s1eval": {
+     "questions": 7405,
+     "questions_npz_sha256": "5c2dc4675720a981e3a53071613c47f41df3b6404bd63dfc404b3b5e2b11892e",
+     "g4_max_abs": 0.0002490878105163574,
+     "slots": {
+      "GP": 7405
+     },
+     "linked": {
+      "GP": 5925
+     },
+     "partA": {
+      "GP": {
+       "unlinked_slots": 1480,
+       "share_any_key": 0.3169,
+       "min_df_band": {
+        ">100k": 274,
+        "1k-10k": 87,
+        "10k-100k": 71,
+        "101-1k": 30,
+        "26-100": 7
+       },
+       "only_above_dfmax": 0.1851,
+       "HUB": {
+        "5": 0.1318,
+        "10": 0.1318,
+        "20": 0.1318
+       },
+       "NEW": {
+        "5": 0.0081,
+        "10": 0.0041,
+        "20": 0.0034
+       },
+       "slots_with_a_found_end": 1456,
+       "HUB_found": {
+        "5": 0.1142,
+        "10": 0.1209,
+        "20": 0.1243
+       },
+       "NEW_found": {
+        "5": 0.0081,
+        "10": 0.0041,
+        "20": 0.0034
+       },
+       "C_size": {
+        "median": 18199,
+        "p90": 88451,
+        "max": 339103
+       }
+      }
+     },
+     "partC": {
+      "GP_by_type": {
+       "bridge": {
+        "n": 5918,
+        "W2_S": 0.7254,
+        "F0T": 0.4667,
+        "K": 0.2506,
+        "S": 1.0,
+        "union": 1.0
+       },
+       "comparison": {
+        "n": 1487,
+        "W2_S": 0.0007,
+        "F0T": 0.002,
+        "K": 0.002,
+        "S": 0.0007,
+        "union": 0.0047
+       }
+      }
+     }
+    }
+   },
+   "code": {
+    "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+    "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+    "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+    "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+    "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+    "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+   },
+   "inputs": {
+    "ner_npz_sha256": "744da64a5f356b89241b2539085c9a0bf673750abd0b1822891c26f069a37137",
+    "knn_npz_sha256": "a82ee3d96ff6943678444f12279fe666ff5e03465b818bc229844597488222ae",
+    "structural_npz_sha256": "bc27173133e69cc821a14733a2f3dfe9d56442aeb867cf2cdcdcc4fff9c17608",
+    "w2_s_npz_sha256": "c46e17ee41b6a36540d46b5f0775dc707c128d352288aa27e4d1e1a54ff0234c",
+    "f0t_npz_sha256": "7b3bb50b1cc8ee03e4a76e1e7dd8c078000dbc68c3f4f7e32fbb6e0310cd53e7",
+    "names_npz_sha256": "8ae1d1cb11afcda4217ca8a33a6e8df743310489f8decb9a75baf07832da3f04"
+   },
+   "seconds": 756.5
+  }
+ }
+}

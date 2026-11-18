@@ -132,6 +132,57 @@ The run uses host CPU only, one row per dataset, with no GPU.
 
 `zmhb.py report` gathers the three into `outputs/mhb/report.json` and `report.md`.
 
-## 8. Results
+## 8. Results (filed 18 November 2026, 21:40 IST)
 
-None yet.
+The three host rows ran on 18 November (MuSiQue 41 s, HotpotQA 757 s, 2Wiki 1,865 s) with `zmhb.py` as committed in
+1ccb99c (sha256 d112d348...). The report ran on the host at 21:37. The record is `outputs/mhb/report.md` and `report.json`.
+
+**Gates:** G1 to G5 passed on every dataset and carve. G3's union counts equal UL1's filed counts. G4's largest score
+difference is 2.5e-4 (the bar is 1e-3). G5: B2 = 0 on the unlinked chain slots.
+
+**The call: SIGNAL.** On MuSiQue's s1eval chain slots NEW@10 = 0.1731 over 2,005 unlinked slots (the bar: 0.10 with at
+least 200 slots).
+
+**Part A, read beside the call.**
+
+| dataset / carve / kind | unlinked | share any key | HUB@10 | NEW@10 | NEW@10, anchor found | C(a) median |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| MuSiQue s1eval CH | 2,005 | 0.764 | 0.577 | 0.173 | 0.052 | 3,774 |
+| MuSiQue s1eval GP | 3,957 | 0.521 | 0.402 | 0.115 | 0.036 | 3,572 |
+| MuSiQue s1sel CH | 1,447 | 0.718 | 0.619 | 0.181 | 0.058 | 4,476 |
+| 2Wiki s1eval GP | 14,265 | 0.258 | 0.053 | 0.009 | 0.004 | 17,793 |
+| HotpotQA s1eval GP | 1,480 | 0.317 | 0.132 | 0.004 | 0.004 | 18,199 |
+
+- **The signal is MuSiQue's.** Three quarters of its unlinked chain slots share a name. With the question choosing
+  among those names' passages, the missing hop is in the top 10 for 58% of the unlinked slots, and for 17% the question
+  alone would not have put it in its top 10.
+- **The caveat for the next form.** When the anchor is one the question already finds (dense rank <= 5), NEW@10 is
+  0.052, a third of the headline. A family grown from pool seeds starts from found anchors, so its gain should sit
+  nearer 0.05 than 0.17. The coverage check below decides; this number only sets the expectation.
+- **2Wiki and HotpotQA gain nothing from hub names** (NEW@10 under 0.01). What their links miss is mostly not a hop
+  (Part C).
+
+**Part B: why MuSiQue's chain slots are unlinked (s1eval, 2,005 slots).**
+- B1, named in both passages as a hub (df > 25): 63%. This is what Part A reaches.
+- B4, written in the later passage but not as a rule name: 22%. The name rules miss it there.
+- B7, unwritten (a pronoun, a paraphrase, or nothing): 7%. B5 (title) 3%, B6 (partial name) 5%, B3 (not a name) 0.2%.
+- The answer is written in the earlier passage in every unlinked slot.
+
+**Part C: how the chains and triplets are built.**
+- **MuSiQue**, the share of s1eval chain slots the union links: 2 hops 0.70, 3 hops 0.35, 4 hops 0.47. The weakest
+  relations end in places and countries: country of citizenship 0.03, member of sports team 0.13, country 0.22, place
+  of death 0.24, place of birth 0.37. These are the hub names of Part B's B1.
+- **2Wiki:** comparison questions are linked 0.001 of the time (their two passages need no link). bridge_comparison is
+  0.33, and its first relation is mostly director (0.40). Compositional and inference are 0.98. Relations whose object
+  is a value (dates, countries) are linked under 0.01. In compositional and inference questions with a subject passage,
+  the bridge object is written in that passage in 98.8%, and a gold passage is titled as it in 92.6%.
+- **HotpotQA:** bridge questions are linked 1.0 (S alone); comparison questions 0.005.
+
+**What follows (section 3).**
+- **The hub family H is next**, declared in its own file before any number: from each pool seed, the top k of its hub
+  names' passages by the question, labelled R.hub. It is graded first by pool gold coverage on all six datasets (the
+  oracle check, no training), and trained only if coverage rises with no dataset BELOW.
+- **B4** (22%) names a second form: the later passage's text holds the answer, so a rule that reads the answer string
+  in the passage, not only its rule names, could link it. Named only.
+- 2Wiki's comparison and value-object slots, and HotpotQA's comparison slots, are not link problems. No link form is
+  aimed at them.
