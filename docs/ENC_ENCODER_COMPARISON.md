@@ -711,3 +711,83 @@ The other two parts are unchanged:
 - the lists equal up to near ties on 99.95% of the rows.
 
 The rows already gated under the first form (SQuAD and MuSiQue, both arms) pass both forms.
+
+### 12.9 Amendment: in-domain first, on the small and hard datasets (declared 18 Nov 2026, 23:43 IST, before any E2 number)
+
+**Why.** A survey of the code (18 Nov, about 23:35) found three things.
+
+First, the model stack assumes 1536-wide vectors in about ten places:
+- look's projection;
+- lean_mlp's SEMB and projection;
+- rmatch and zu2n's Q_DIM;
+- zg6r's P_f and P_b;
+- DenseNodes;
+- lean_mlp3.fit_basis.
+
+zg6r's encoder element count is checked against a pinned number.
+
+Second, every chain step runs in its own process.
+
+Third, an exact K over HotpotQA (5.2M passages), 2Wiki (6.0M) and WebQSP (2.6M) costs about a day of CPU per dataset
+per arm. That runs against the user's "check only the small and hard datasets ... dont waste space nor time". The user,
+on the plan: "we will check in domain first as comparision then any generalization stuff".
+
+**A correction, disclosed.** A note to the user (18 Nov, about 23:40) said the models read the old twin0/gnn0 scores.
+They do not. Every fit opens the cache without them, and a read loads them only as reference rankings printed beside the
+candidates (lean_gpu.read_carve). The record has one model per family: zrckpn (MLP) and GNX (GNN). GNX warm-starts from
+zg6r, which warm-starts from zspk; these are stages of the one GNN, not separate models. Look still writes those
+reference scores, and nothing trains on them.
+
+**This replaces 12.2-12.7 where they differ.**
+
+**Worlds.** Small worlds with one recipe:
+- the frozen world: the reference, retrained the same way;
+- mpnet (the smallest);
+- qwen3e06, only when mpnet's call below is LOSES or the user asks.
+
+**Carves.**
+- Training: SQuAD fit and MuSiQue s1fit (D83F's carves of the two).
+- Reads, in-domain: SQuAD and MuSiQue s1eval.
+- Generalization reads (MetaQA s1eval, the big datasets, MultiHop-RAG) come after, each declared before its numbers.
+
+**The frozen world.** It links D83F's and D83E's chain outputs for the two datasets (sha-equal; the pools of record). It
+retrains LTM, LAB and the fits on the two training carves. Its reads are the reference; D83's own five-carve fits are not.
+
+**Width.** The arm's float16 rows are copied into 1536-wide rows with zeros after them:
+- every inner product, norm and top-k list stays the arm's own;
+- the record's code runs with unchanged widths and parameter counts;
+- a padded column is zero in every row, so no weight on it can change an output.
+
+The arm's real width is in the cost (12.4). A real-width build is for the encoder the user chooses.
+
+**Rebuilt per arm (the padded vectors):**
+1. The first-stage lists over every query: zenc2 first, GE0 PASS (12.8).
+2. K: SQuAD's from zenc2; MuSiQue's from E1b part 2.
+3. The kNN store, built from that K in the arm's own folder. The record's CSR cache is never opened: it loads with no
+   check against the graph.
+4. The EM types, refit.
+5. The basis: the record's rule (fit_basis on the 60,000 sampled nodes of the record's basis graph, seed 0), on the
+   arm's vectors of those rows, encoded for this.
+6. PKO's pools on the four carves.
+7. D83's chain on them.
+8. LTM, LAB, then zspk -> zg6r -> GNX and zrckpn, at seed 0 on one split (a screen fit, section 5).
+
+**Measures (per s1eval carve).**
+- The model gap: R@5 per question, the arm's world minus the frozen world. zap1.boot_diff gives the paired interval and
+  ABOVE / LEVEL / BELOW, for GNX and zrckpn, with zg6r beside.
+- Beside it: the first-stage gap (the dense top 5), the pool gap, won back (the model gap minus the first-stage gap) and
+  the cost.
+
+**The call (per arm, information only).** 11.5's words (KEEPS / CLOSE / LOSES) on the two in-domain reads, for GNX and
+zrckpn. The user decides (D101).
+
+**Gates.**
+- GE0 (12.8), GK and D83's own gates are unchanged.
+- GW: the frozen world's chain inputs are D83's (sha-equal).
+- Every vector the arm's carves read comes from the arm's files. A frozen dense row read for SQuAD or MuSiQue inside an
+  arm's world stops it.
+
+**Cost and ETA.**
+- Disk: the padded SQuAD and MuSiQue vectors are about 1 GiB; a world is about 5 to 8 GiB.
+- The four big encodes stay held (feed 793a17ec).
+- Code first, about a day. The worlds run after D91's GPU rows. The report is about 21-22 November 2026.
