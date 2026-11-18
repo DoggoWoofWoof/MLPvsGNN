@@ -132,7 +132,7 @@ The run uses host CPU only, one row per dataset, with no GPU.
 
 `zmhb.py report` gathers the three into `outputs/mhb/report.json` and `report.md`.
 
-## 8. Results (filed 18 November 2026, 21:40 IST)
+## 8. Results (filed 18 November 2026, 21:39 IST)
 
 The three host rows ran on 18 November (MuSiQue 41 s, HotpotQA 757 s, 2Wiki 1,865 s) with `zmhb.py` as committed in
 1ccb99c (sha256 d112d348...). The report ran on the host at 21:37. The record is `outputs/mhb/report.md` and `report.json`.
