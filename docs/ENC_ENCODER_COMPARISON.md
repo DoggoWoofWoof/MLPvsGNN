@@ -596,3 +596,86 @@ part's view record under `outputs/enc/e1b2/pko/<view>/pools/parts/` and the refi
 **Next: D100, E2 on qwen3e06.** It is the user's call; the default is go. E2 stays named until it is declared on
 this page, with its cost, before any fit. It needs qwen3e06's encode of every dataset, 2Wiki and HotpotQA included,
 and its pools on the training carves. MultiHop-RAG (D84) enters the fold on the encoder that E2 settles.
+
+## 12. E2: the models on qwen3e06 and on the smallest encoder (declared 18 Nov 2026, 23:08 IST, before any E2 number)
+
+### 12.1 Why, and which arms
+
+The user, after 11.9: "yeah but also even if we lose more than 1 point i want to see how much we can recover even with the
+smallest encoder so can we test properly and then decide?"
+
+Section 11 measured the pools. E2 measures the trained models.
+- **Arms:** qwen3e06 (11.9's pick, 596M) and mpnet (109M, the smallest).
+- **Why mpnet, not mpnetqa:** 11.6's rule between the two 109M arms picks the higher worst point gap in 11.9: mpnet
+  -1.19, mpnetqa -1.80. mpnetqa is not carried.
+- **Who decides:** the user, after E2's report (D101). Nothing is picked automatically. D100 (E2 on 11.9's pick) is
+  widened by the user's words to both arms.
+
+### 12.2 What is rebuilt per arm, and what is kept
+
+Everything the encoder feeds is rebuilt from the arm's vectors, under the record's rules unchanged:
+1. **The first-stage lists:** the top 1,000 by the arm's question and document vectors, for every question of D83's five
+   fit carves and six s1eval carves (E0's search, extended past s1eval).
+2. **K:** the record's kNN rule (zenc1b2's K code) on all six corpora.
+3. **The EM types:** refit as in 11.2.
+4. **The pools:** PKO's pools pass on the five fit carves and the six s1eval carves. This is 11.2's in-process view,
+   extended to all six datasets and the fit carves.
+5. **D83's chain on those pools:** look, cache, rmatch and zrc, labelled links, typed, kt, record and gate, with the view
+   installed in every step.
+6. **In a world per arm (the d83world pattern):** LTM's lists, fold fits and NEXT; LAB; the seed-0 fits. On the GPU, zspk,
+   then zg6r, then GNX; on the CPU, zrckpn. Both splits, as in D83. Then the reads on the six s1eval carves.
+
+Kept unchanged: the corpora, questions and carves; S; R's rule links (W2_S and F0T, which read no vector); D83's labels
+and layout; and the models' code, epochs, widths, seeds and candidate (p@swa).
+
+The view serves the arm's vectors wherever a step reads a vector. Each step records the vectors it was served. A frozen
+vector read inside an arm's run stops that run (11.2's served counts).
+
+### 12.3 The reference
+
+The reference is D83's own seed-0 fits of the same names, read on D83E's six s1eval carves, as filed by D83's report. Both
+sides share D83's layout and differ only in the encoder.
+
+### 12.4 Measures (per arm, per s1eval carve, seed 0)
+
+- **The model gap:** R@5 per question (the record's read, p@swa), arm minus reference. The interval is the paired
+  bootstrap of zap1.boot_diff (2,000 resamples, seed 0, 95%), with ABOVE / LEVEL / BELOW. It is read for GNX and zrckpn,
+  with zg6r beside.
+- **Beside:** FC@5 and hit@1, and MuSiQue by hops.
+- **Recovery:**
+  - the first-stage gap: R@5 of the first-stage list's top 5, arm minus frozen, on the same questions;
+  - the pool gap: gold share of the pool, as in 11.4;
+  - won back = the model gap minus the first-stage gap.
+- **Cost:** parameters, dimensions, document vectors on disk, the encode's measured GPU hours, and the query encode time
+  per question on the host's CPU (cold, measured).
+
+### 12.5 What the report says
+
+- **Per arm, 11.5's words applied to the model reads** (GNX and zrckpn on the six carves): KEEPS, CLOSE or LOSES.
+- **Beside it, the recovery and the cost.**
+- **No pick is made.** The user chooses the encoder that carries (D101).
+- **After the choice:** E3 (three seeds on the chosen encoder), then MultiHop-RAG (D84) encoded with it.
+
+### 12.6 Gates (a failure stops the arm's step; none of its numbers is read)
+
+- **GE0:** the arm's lists on the s1eval carves equal E0's (`outputs/enc/e0/<arm>/<d>.npz`).
+- **GK:** as in 11.3, on all six: the frozen rebuild equals the package's K.
+- **GS:** a search view (the frozen encoder through every swap) rebuilds one fit carve's pools. They must equal the
+  pools of record within 11.3's bar, so the view itself changes nothing.
+- **Served counts:** each step's record lists every vector read and its source.
+- **D83's own gates (section 8)** run unchanged in each chain.
+
+### 12.7 Rows, order, disk and cost (estimates; the host's measured numbers replace them)
+
+1. **GPU encodes, after D91's last GPU row:** first `enc-encode-mpnet-2wiki` (about 1 h; mpnet's other datasets are
+   encoded), then qwen3e06 on WebQSP, HotpotQA and 2Wiki (about 8-9 h). New vectors: about 9 GiB and 27 GiB.
+2. **Code:** `outputs/mp_unified/zenc2.py` and an `e2world` runner, both new files; nothing of D83's is edited. Each is
+   self-tested on the laptop and committed before its step runs.
+3. **mpnet first, since its vectors land first, then qwen3e06:**
+   - per arm, the CPU chains take about 1 to 1.5 days on 3 lanes;
+   - per arm, the GPU fits take about 8 h.
+4. **Disk:** about 25 GiB per arm beyond the vectors (D83's chain and world measured 16 GiB beside its linked pools).
+   - The host had 111 GiB free at declaration.
+   - The arms run one after the other.
+   - Each arm's look and cache are pruned after its reads (16-17 Nov ruling), and the 30 GB floor is kept.
+5. **ETA for the report:** about 24-25 November 2026, after D91's GPU rows.
