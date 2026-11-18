@@ -180,7 +180,7 @@ All per question, then by cell and by PH1's groups: MuSiQue by hops (2, 3, 4); 2
 - **Device.** The re-reads run on the host's RTX 4500 Ada, as the record's reads did, and G1 checks them against those
   reads.
 
-## 10. Results (filed 18 Nov 2026, 21:3x IST)
+## 10. Results (filed 18 Nov 2026, 21:26 IST)
 
 The twelve re-reads ran on the host's GPU from 20:44 to 21:12 IST on 18 November (rows `ccs-rd-<fit>-r3`, after the -r2
 guard fix), and the 36 analyses on its CPU after each read. The report ran on the laptop (`zccs.py report`, section 8).
