@@ -118,7 +118,7 @@ def arm_rows(enc, g, rows):
                  "manifest_sha256": E.sha256(E.vec_dir(root, enc, g, "docs") / "manifest.json")}
 
 
-def encoded_rows(enc, g, rows, torch_threads):
+def encoded_rows(enc, g, rows, torch_threads, budget):
     import torch
     torch.set_num_threads(int(torch_threads))
     root = E.served_root()
@@ -129,12 +129,12 @@ def encoded_rows(enc, g, rows, torch_threads):
     m = E.load_model(enc, "cpu", E.pinned(enc))
     if m.default_prompt_name:
         stop(f"{enc}: a default prompt would prefix the documents")
-    v, st = E.encode_texts(m, enc, [texts[int(r)] for r in rows], "docs")
+    v, st = E.encode_texts(m, enc, [texts[int(r)] for r in rows], "docs", budget=int(budget))   # a CPU-sized batch
     bad = E.damaged(v)
     if bad:
         stop(f"{enc} {g}: {bad} damaged rows")
     return v, {"source": "the drawn rows' texts, encoded for this", "device": "cpu", "torch_threads": int(torch_threads),
-               "revision": E.pinned(enc), "encode_seconds": round(time.time() - t, 1), **st}
+               "revision": E.pinned(enc), "token_budget": int(budget), "encode_seconds": round(time.time() - t, 1), **st}
 
 
 def lean_mlp3():
@@ -180,7 +180,7 @@ def cmd_bases(a):
     n_rows = int(E.manifest(E.served_root(), g, "docs")["n_rows"])
     rows = draw(n_rows)
     have = E.vec_dir(E.served_root(), enc, g, "docs") / "manifest.json"
-    v, src = arm_rows(enc, g, rows) if have.is_file() else encoded_rows(enc, g, rows, a.torch_threads)
+    v, src = arm_rows(enc, g, rows) if have.is_file() else encoded_rows(enc, g, rows, a.torch_threads, a.budget)
     dim_real = int(E.ENCODERS[enc]["dim"])
     nodes = Rows(n_rows, rows, pad(v, dim_real))
     basis = L3.fit_basis(nodes, FIT_NODES)
@@ -371,6 +371,7 @@ def main(argv=None):
     p.add_argument("--enc", required=True)
     p.add_argument("--graph", required=True)
     p.add_argument("--torch-threads", type=int, default=8)
+    p.add_argument("--budget", type=int, default=8192)          # tokens per CPU batch (the GPU budget ran out of memory)
     p.add_argument("--threads", type=int, default=2)
     for name in ("types", "pools", "merge"):
         p = sub.add_parser(name)
