@@ -151,6 +151,34 @@ All rows run on the host CPU with 8 BLAS threads.
 
   No gold was read and no recall was computed.
 
-## 11. Results
+## 11. Prior work (added 18 Nov after the declaration; it changes no rule above)
+
+The mechanism is not new. Averaging a vector with its graph neighbours, offline and without training, is known from:
+- **Retrofitting** (Faruqui et al., 2015): word vectors pulled toward lexicon neighbours, post hoc;
+- **SGC** (Wu et al., 2019) and **NAFS** (Zhang et al., 2022): precomputed, parameter-free feature propagation for node
+  classification;
+- **Database-side augmentation in image retrieval** (Turcot and Lowe, 2009; Arandjelovic and Zisserman, 2012; the alpha
+  form of Radenovic et al., 2018): each indexed vector replaced offline by a weighted mean of itself and its k nearest
+  neighbours. This is SEM1's form, with neighbours taken from the same embedding;
+- **Score regularization** (Diaz, 2005 and 2007): scores, not vectors, smoothed over a document-similarity graph at query
+  time.
+
+Other work uses the graph in two other ways:
+- **At query time:** GAR (MacAvaney et al., 2022) and LADR (Kulkarni et al., 2023) walk a kNN corpus graph, and
+  HippoRAG 2 (Gutierrez et al., 2025) runs PPR over an LLM-built graph.
+- **Trained into the encoder:** hyperlink pre-training (HLP, Zhou et al., 2022; LinkBERT, Yasunaga et al., 2022),
+  citation graphs (SPECTER, SciNCL), neighbour context (Contextual Document Embeddings, Morris and Rush, 2024), and GASE
+  (Ding et al., 2026: frozen LLM embeddings with structure injected into a subspace, for node classification).
+
+**What was not found** (18 Nov searches; not exhaustive):
+- an encoder-free, LLM-free, rule-built and typed link graph baked into a passage index as a first-stage channel for
+  multi-hop retrieval, so that one vector lookup carries the links' reach;
+- any test of whether such a graph-in-the-index closes the gap between a small and a large encoder.
+
+**What a later stage must add.** The kNN graph from the arm's own vectors (database-side augmentation's form) is the
+baseline a reader would ask for. SEM1 as declared does not read it. It is named here for a later stage and is not
+declared. Noisy graphs are known to hurt retrofitted vectors. MuSiQue's largest degree (14,300) is the case to watch.
+
+## 12. Results
 
 (Not yet filed.)
