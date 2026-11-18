@@ -856,3 +856,67 @@ The training code fixes four training datasets per split (zwq.SPLITS, and the ca
 **Gate added.**
 - **GA:** every E2 run's audit summary shows 0 blocked reads and 0 blocked writes.
 - A failed run's numbers are not read.
+
+### 12.11 Amendment: the two-carve training (declared 19 Nov 2026, 01:13 IST, before any E2 fit)
+
+**Why.** 12.9 trains on two carves (SQuAD fit, MuSiQue s1fit). The record's training code fixes four training datasets
+per split (zwq.SPLITS). Tables and checks built at import read that table: ltmcols.ALL_CARVES (11 carves), zwqp's and
+zltg's asserts. D83's training and read steps run only in a tree named d83world with D83WORLD set (zd83t, zd83m and
+zd83r check both). Neither D83's code nor the training code is edited; both are pinned.
+
+**The split, patched by the hook.** When an E2 spec names a split (`outputs/mp_unified/e2hook/sitecustomize.py`):
+- while the process runs, zwq's SPLITS["WQ-musique"] is (squad, musique) and ZERO_SHOT["WQ-musique"] is (metaqa,
+  hotpotqa, 2wiki, webqsp);
+- while any module executes (at any depth), both tables hold the record's entries. Every table and check built at import
+  is therefore the record's, unchanged;
+- lean_gpu.basis_of gives 2wiki for a training set with neither 2Wiki nor HotpotQA. The record's rule gives 2wiki for
+  both record splits, so the basis graph is the record's (in an arm's world, 12.10's arm basis of it);
+- the key stays "WQ-musique", so every file name is the record's form (fit names without "-hp");
+- the hook checks the table when zwq loads: both keys exist, training plus zero-shot is zwq.EVAL_ORDER, and every
+  training dataset has a fit carve. A bad split is refused. A spec without a split behaves as before (self-test).
+
+Two consequences, stated before any fit:
+- ltmcols' MIN_LISTS (200) is unchanged. SQuAD fit has no A lists, so LTM fits on MuSiQue s1fit's lists alone.
+- ZERO_SHOT is only written into the fits' metadata (zltm). No training step reads a zero-shot carve.
+
+**The training worlds.** Each E2 world gets one: `<E2 world>/e2t/d83world`, made by sworld's make with d83world's
+targets and the E2 world as its root, in train mode (outputs/pko -> outputs/abl/D83F). Its code is pinned to the E2
+world's copies, and zenc2w pins those to the record's. Every step runs through `outputs/mp_unified/zenc2t.py run`: the
+hook, the audit, the write guard and GA, as in 12.10. `--where e2` runs a step in the E2 world itself (an arm's LAB and
+D83 gates).
+
+**What each world holds.**
+- **Frozen:** its outputs/abl/D83F and D83E are junctions to the record's (the pools of record, 12.9). Its LAB tables
+  and D83 gates are therefore the record's, already done. zenc2w's world command refuses those junctions, so the frozen
+  world is refreshed with `zenc2t.py world --enc frozen` (which also refreshes its training world).
+- **mpnet:** its own D83F and D83E (12.10's W2 chains), its own gates (`zd83.py gate --host`), and its own LAB on the
+  four carves.
+
+**Steps per world** (seed 0; the record's commands and sizes, run in the training world):
+1. LTM lists on four carves: SQuAD fit, MuSiQue s1fit, SQuAD s1eval, MuSiQue s1eval.
+2. The LTM fit (`ltm fit --split WQ-musique --host`).
+3. The columns on the same four carves.
+4. The fits: zspk -> zg6r -> GNX on the GPU, zrckpn on the CPU.
+5. The forks, then six reads (arm D83E): zg6r, GNX and zrckpn on SQuAD s1eval and MuSiQue s1eval. zg6r is a stage of
+   the one GNN, read beside GNX (12.9), not a third model.
+
+**Gate GW, the fence.** Every D83F or D83E entry of a dataset other than SQuAD and MuSiQue is a forbidden read, the
+record's and the E2 world's (to depth 3). In an arm's world the record's whole D83F and D83E are forbidden. A step that
+touches one stops, and none of its numbers is read.
+
+**Development log (disclosed before any E2 fit).**
+- W1's 20-question check (feed row e2p-a1) ran on the host: 20 SQuAD fit questions, 1.28 s per question, 0 blocked
+  reads, 8 swaps in force (the SQuAD kNN store among them), nothing written. zenc2p then stopped it with "the swap of
+  the knn store is not in force". The check was wrong, not the run. zu2m and zu2c rebind m3b_pools.load_or_build_store
+  to their own wrappers, so the attribute is no longer the hook's function itself. zenc2p's check now follows a
+  wrapper's closure to the hook's function, and checks every loaded copy of the module. Its self-test passes a wrapper
+  that reaches the hook and refuses one that does not. The check runs again (e2p-a1b) before the parts.
+- D83's chain reads K through the package loader, so its kNN family comes from the swap (read in the code).
+
+**The report.** Its code is written before the first read lands: per world and carve, R@5 per question; the arm minus
+the frozen world with zap1.boot_diff (12.9); the first-stage gap, the pool gap, won back and the cost beside. The call
+uses 11.5's words. The user decides (D101).
+
+**Order.** The frozen world's rows go in now: they need nothing from W1 or W2. Its GPU fits yield to other users, as
+every GPU row does. mpnet's rows wait on its W2 chains. Estimates: the frozen reads about 20 November 2026; mpnet's
+about 21 November; the report as 12.9 says.

@@ -1,4 +1,4 @@
-"""ENC E2 (docs/ENC_ENCODER_COMPARISON.md sections 12.9 and 12.10): the start-up hook of a process in an E2 world.
+"""ENC E2 (docs/ENC_ENCODER_COMPARISON.md sections 12.9, 12.10 and 12.11): the start-up hook of a process in an E2 world.
 
 Python imports `sitecustomize` at start-up from the first folder on sys.path that holds one. zenc2w.py puts this folder
 first on PYTHONPATH for the commands it runs in a world, and names a spec file in E2HOOK. The children of those commands
@@ -25,6 +25,10 @@ From the spec (written by zenc2w.py run):
     step4e_paper_pools   union_pools of an arm dataset: B1P's form (B = base united with the seeds, I = the prepared
                          pools; step 4d's files hold the frozen vectors' pools), as zenc1b2 swapped it.
   A module run as the main script (runpy) is not patched: an arm world runs zpko's steps through zenc2p.py.
+- split (section 12.11; any world whose spec has "split", the frozen one too): zwq's SPLITS and ZERO_SHOT hold the
+  spec's entries while the process runs, and the record's entries while any module's code runs (an import, at any
+  depth), so the record's import-time checks and import-time tables are unchanged; lean_gpu.basis_of gives the spec's
+  basis to a training set that holds neither 2wiki nor hotpotqa. A spec without "split" changes nothing.
 """
 import json
 import os
@@ -236,13 +240,72 @@ if _SPEC_PATH:
     _PATCH = {"canonical": _patch_canonical, "m3b_pools": _patch_store, "zu2m_a_types": _patch_types,
               "zpko": _patch_zpko, "step4e_paper_pools": _patch_union}
 
-    if _SWAP:
+    # ── section 12.11: the two-carve split ──────────────────────────────────
+    # spec "split": {"tables": {"SPLITS": {split: [datasets]}, "ZERO_SHOT": {split: [datasets]}}, "basis": "2wiki"}.
+    # zwq's tables hold E2's entries while the process runs and the record's entries while any module's code runs
+    # (an import, at any depth), so every import-time check and every table built at import sees the record's split.
+    # lean_gpu.basis_of gives the spec's basis to a training set that holds neither base graph (the record's own
+    # rule gives 2wiki for both of its splits).
+    _SPLIT = SPEC.get("split") or {}
+    _DEPTH = [0]
+    _ZWQ = []
+
+    def _split_set(on):
+        for mod, rec in _ZWQ:
+            for tname, tab in _SPLIT["tables"].items():
+                d = getattr(mod, tname)
+                for k, v in tab.items():
+                    d[k] = tuple(v) if on else rec[tname][k]
+
+    def _patch_zwq(mod):
+        rec = {}
+        for tname, tab in _SPLIT["tables"].items():
+            d = getattr(mod, tname, None)
+            if not isinstance(d, dict) or any(k not in d for k in tab):
+                raise RuntimeError(f"E2 split: zwq.{tname} lacks {sorted(tab)}")
+            rec[tname] = {k: d[k] for k in tab}
+        sp = _SPLIT["tables"].get("SPLITS", {})
+        zs = _SPLIT["tables"].get("ZERO_SHOT", {})
+        for k, v in sp.items():
+            if sorted(list(v) + list(zs.get(k, mod.ZERO_SHOT[k]))) != sorted(mod.EVAL_ORDER) or not set(v) <= set(mod.FIT_CARVE):
+                raise RuntimeError(f"E2 split: {k} = {v} with zero-shot {zs.get(k)} is not a split of {mod.EVAL_ORDER}")
+        _ZWQ.append((mod, rec))
+        _note("S", f"zwq split {json.dumps({k: list(v) for k, v in sp.items()})}")
+
+    def _patch_basis(mod):
+        orig = mod.basis_of
+        base = _SPLIT["basis"]
+
+        def basis_of(train):
+            if any(b in train for b in ("2wiki", "hotpotqa")):
+                return orig(train)
+            return base
+        basis_of._e2 = orig
+        mod.basis_of = basis_of
+        _note("S", f"lean_gpu basis_of -> {base}")
+
+    _SPLIT_PATCH = {"zwq": _patch_zwq, "lean_gpu": _patch_basis} if _SPLIT else {}
+
+    if _SWAP or _SPLIT:
         _orig_exec = importlib.machinery.SourceFileLoader.exec_module
 
         def _exec_module(self, module):
-            _orig_exec(self, module)
-            f = _PATCH.get(module.__name__.rsplit(".", 1)[-1])
-            if f is not None:
-                f(module)
+            outer = _DEPTH[0] == 0
+            if outer and _ZWQ:
+                _split_set(False)
+            _DEPTH[0] += 1
+            try:
+                _orig_exec(self, module)
+                stem = module.__name__.rsplit(".", 1)[-1]
+                f = _PATCH.get(stem) if _SWAP else None
+                if f is not None:
+                    f(module)
+                g = _SPLIT_PATCH.get(stem)
+                if g is not None:
+                    g(module)
+            finally:
+                _DEPTH[0] -= 1
+                if outer and _ZWQ:
+                    _split_set(True)
 
         importlib.machinery.SourceFileLoader.exec_module = _exec_module

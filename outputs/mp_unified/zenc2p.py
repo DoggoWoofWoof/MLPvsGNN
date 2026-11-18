@@ -234,14 +234,41 @@ def check_swaps(spec, PK, AT, opened=()):
     need(Path(AT.OUT) == Path(spec["types_dir"]), "the EM types folder")
     need(getattr(PK.u2s_record, "_e2", False), "U2s's EM-types sha")
     if "canonical" in opened:
-        can = sys.modules.get("canonical")
-        need(can is not None and getattr(can.Embeddings, "_e2_swapped", False), "the package loader")
+        can = loaded("canonical")
+        need(can and all(getattr(m.Embeddings, "_e2_swapped", False) for m in can), "the package loader")
     if "store" in opened:
-        mp = sys.modules.get("mp_retrieval.m3b_pools")
-        need(mp is not None and getattr(mp.load_or_build_store, "_e2", False), "the knn store")
+        mp = loaded("m3b_pools")
+        need(mp and all(reaches_e2(m.load_or_build_store) for m in mp), "the knn store")
     if "union" in opened:
-        e4 = sys.modules.get("step4e_paper_pools")
-        need(e4 is not None and getattr(e4.union_pools, "_e2", False), "step 4e's union")
+        e4 = loaded("step4e_paper_pools")
+        need(e4 and all(reaches_e2(m.union_pools) for m in e4), "step 4e's union")
+
+
+def reaches_e2(fn, cap=64):
+    """The hook's function is fn or one fn calls through its closures: a pools pass rebinds the store loader to its own
+    wrapper (zu2m, zu2c: load0 = the loader in place before), which keeps the hook's function as its fallback."""
+    todo, seen = [fn], set()
+    while todo and len(seen) < cap:
+        f = todo.pop()
+        if id(f) in seen:
+            continue
+        seen.add(id(f))
+        if getattr(f, "_e2", False) is True:
+            return True
+        for c in getattr(f, "__closure__", None) or ():
+            try:
+                v = c.cell_contents
+            except ValueError:
+                continue
+            if callable(v):
+                todo.append(v)
+    return False
+
+
+def loaded(stem):
+    """Every loaded module of that file stem, whatever name its loader gave it (the hook patches by stem: M3B's pools
+    module is loaded by path, not as mp_retrieval.m3b_pools)."""
+    return [m for n, m in list(sys.modules.items()) if m is not None and n.rsplit(".", 1)[-1] == stem]
 
 
 def cmd_types(a):
@@ -357,6 +384,38 @@ def selftest():
             raise AssertionError("an unpatched u2s_record must be refused")
         except SystemExit:
             pass
+        # a pass's own wrapper around the hook's store loader (zu2m, zu2c) keeps the swap; any module of the stem counts
+        import types as _types
+
+        def hooked(*x):
+            return None
+        hooked._e2 = True
+
+        def wrap(f):
+            load0 = f
+
+            def load(*x):
+                return load0(*x)
+            return load
+        assert reaches_e2(hooked) and reaches_e2(wrap(wrap(hooked))) and not reaches_e2(wrap(lambda *x: None))
+        u2 = wrap(hooked)
+        u2._e2 = True
+        PK2 = SimpleNamespace(u2s_record=u2)
+        m1, m2 = _types.ModuleType("zenc2p_t1.m3b_pools"), _types.ModuleType("zenc2p_t2.m3b_pools")
+        m1.load_or_build_store, m2.load_or_build_store = wrap(hooked), hooked
+        sys.modules[m1.__name__], sys.modules[m2.__name__] = m1, m2
+        try:
+            assert {id(m) for m in loaded("m3b_pools")} >= {id(m1), id(m2)}
+            check_swaps(spec, PK2, SimpleNamespace(OUT=tmp / "types"), opened=("store",))
+            m1.load_or_build_store = wrap(lambda *x: None)
+            try:
+                check_swaps(spec, PK2, SimpleNamespace(OUT=tmp / "types"), opened=("store",))
+                raise AssertionError("a store loader that never reaches the hook's must be refused")
+            except SystemExit:
+                pass
+        finally:
+            sys.modules.pop(m1.__name__, None)
+            sys.modules.pop(m2.__name__, None)
     finally:
         os.environ.pop("E2HOOK", None)
         shutil.rmtree(tmp, ignore_errors=True)
