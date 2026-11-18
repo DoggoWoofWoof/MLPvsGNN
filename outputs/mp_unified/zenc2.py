@@ -3,13 +3,15 @@
   python outputs/mp_unified/zenc2.py first --enc mpnet --ds squad [--threads 8]      # the arm's dense top-1000, every query
   python outputs/mp_unified/zenc2.py knn   --enc mpnet --ds squad [--host] [--threads 8]   # the arm's K (SQuAD; MuSiQue and
                                                                                     # MetaQA reuse E1b part 2's K files)
+  python outputs/mp_unified/zenc2.py gate  --enc mpnet --ds squad                 # GE0 again on the saved lists
   python outputs/mp_unified/zenc2.py selftest
 
 first: the record's dense first stage (exact float32 inner product, top 1,000, ties to the lower id: zenc.search,
 unchanged) over EVERY query of the dataset, stored as the package's own cache is (ids int32, scores float16), so a view
-can serve a complete cache to any step. Gate GE0: on E0's s1eval rows the lists equal E0's (zenc first's) up to the
-float order of a different GEMM blocking: GE0_ROWS of the rows with equal 1,000-id lists, every top-5 set equal on
-GE0_TOP5 of the rows, scores within GE0_SCORE.
+can serve a complete cache to any step. Gate GE0 (section 12.8's rule): on E0's s1eval rows the lists equal E0's (zenc
+first's) up to near-tie order (a different GEMM blocking reorders scores within float16's step): every top-5 set equal
+and the lists equal up to near ties on GE0_TOP5 of the rows, and the position-wise scores within GE0_SCORE. `gate`
+re-checks a saved list file under that rule (the first verdict kept as ge0_first).
 
 knn: the record's kNN rule, zenc1's pieces unchanged (zenc1b2's cmd_knn, widened to SQuAD). GK on the frozen arm: the
 rebuilt edge set equals the package's graph/knn.npz.
@@ -36,8 +38,7 @@ ROOT = HERE.parents[1]
 OUT = ROOT / "outputs" / "enc" / "e2"
 E1B2 = ROOT / "outputs" / "enc" / "e1b2"
 CARRY = ("mpnet", "qwen3e06")                            # section 12.1's arms
-SMALL = ("squad", "musique", "metaqa")                   # the small and hard datasets (section 12.8)
-GE0_ROWS = 0.999
+SMALL = ("squad", "musique", "metaqa")                   # the small and hard datasets (section 12.9)
 GE0_TOP5 = 0.9995
 GE0_SCORE = 2e-3
 GK_W_TOL = 1e-3
@@ -97,8 +98,22 @@ def all_queries(root, enc, d):
     return Q
 
 
+def near_tie_bad(a_i, a_s, e_i, e_s):
+    """True when two lists of one row differ by more than near-tie order (section 12.8): an id in both lists with
+    scores further apart than GE0_SCORE, or an id in one list only scoring above the lower list end + GE0_SCORE."""
+    da, de = dict(zip(a_i.tolist(), a_s.tolist())), dict(zip(e_i.tolist(), e_s.tolist()))
+    floor = min(float(a_s[-1]), float(e_s[-1])) + GE0_SCORE
+    for g, s in da.items():
+        t = de.get(g)
+        if (t is None and s > floor) or (t is not None and abs(s - t) > GE0_SCORE):
+            return True
+    return any(s > floor for g, s in de.items() if g not in da)
+
+
 def ge0(ids, sc, e0p):
-    """GE0 against E0's lists on its s1eval rows (ids int32, scores float16 on both sides)."""
+    """GE0 against E0's lists on its s1eval rows (ids int32, scores float16 on both sides), section 12.8's rule:
+    every top-5 set equal on GE0_TOP5 of the rows, the position-wise scores within GE0_SCORE, and the lists equal up
+    to near-tie order (near_tie_bad) on GE0_TOP5 of the rows. Equal whole lists are reported, not gated (12.8)."""
     with np.load(e0p, allow_pickle=False) as z:
         rows = z["rows"].astype(np.int64)
         e_ids, e_sc = z["top_ids"].astype(np.int64), z["top_scores"].astype(np.float32)
@@ -106,11 +121,31 @@ def ge0(ids, sc, e0p):
     same = np.all(a_ids == e_ids, axis=1)
     t5 = np.mean([set(a_ids[i, :5].tolist()) == set(e_ids[i, :5].tolist()) for i in range(rows.size)])
     dif = float(np.abs(a_sc - e_sc).max())
+    bad = sum(near_tie_bad(a_ids[i], a_sc[i], e_ids[i], e_sc[i]) for i in np.flatnonzero(~same))
     g = {"rows": int(rows.size), "lists_equal_share": round(float(same.mean()), 6), "top5_set_equal_share": round(float(t5), 6),
-         "score_max_abs_diff": round(dif, 6), "e0": {"file": rel(e0p), "sha256": E.sha256(e0p)}}
-    g["verdict"] = "PASS" if (g["lists_equal_share"] >= GE0_ROWS and g["top5_set_equal_share"] >= GE0_TOP5
-                              and dif <= GE0_SCORE) else "FAIL"
+         "score_max_abs_diff": round(dif, 6), "beyond_near_tie_rows": int(bad), "rule": "section 12.8",
+         "e0": {"file": rel(e0p), "sha256": E.sha256(e0p)}}
+    g["verdict"] = "PASS" if (g["top5_set_equal_share"] >= GE0_TOP5 and dif <= GE0_SCORE
+                              and bad <= (1 - GE0_TOP5) * rows.size) else "FAIL"
     return g
+
+
+def cmd_gate(a):
+    """GE0 again on a saved list file under section 12.8's rule; the first verdict is kept as ge0_first."""
+    d, enc = a.ds, a.enc
+    p = first_path(enc, d)
+    rp = p.with_suffix(".json")
+    rec = json.loads(rp.read_text(encoding="utf-8"))
+    if E.sha256(p) != rec["npz_sha256"]:
+        stop(f"{rel(p)} is not the file its record names")
+    with np.load(p) as z:
+        ids, sc = z["ids"], z["scores"]
+    rec.setdefault("ge0_first", rec["ge0"])
+    rec["ge0"] = ge0(ids, sc, E.OUT / "e0" / enc / f"{d}.npz")
+    rec["ge0_gated_by"] = code_shas()["code_sha256"]
+    E.wjson(rp, rec)
+    log(f"{d} {enc}: GE0 {rec['ge0']['verdict']}: {json.dumps(rec['ge0'])}")
+    return 0 if rec["ge0"]["verdict"] == "PASS" else 3
 
 
 def cmd_first(a):
@@ -220,19 +255,36 @@ def cmd_selftest(_a):
         g = ge0(ids32, sc16, e0p)
         if g["verdict"] != "PASS" or g["lists_equal_share"] != 1.0:
             stop(f"selftest: GE0 on its own lists: {g}")
-        bad = ids32.copy()
-        bad[rows[:5], 0], bad[rows[:5], 1] = ids32[rows[:5], 1], ids32[rows[:5], 0]
+        tie = ids32.copy()                               # near-tie order: equal stored scores swapped deep in the list
+        nt = 0
+        for r in rows:
+            j = np.flatnonzero(sc16[r, 10:-1] == sc16[r, 11:])
+            if j.size:
+                j = int(j[0]) + 10
+                tie[r, j], tie[r, j + 1] = ids32[r, j + 1], ids32[r, j]
+                nt += 1
+        g = ge0(tie, sc16, e0p)
+        if nt == 0 or g["verdict"] != "PASS" or g["lists_equal_share"] == 1.0:
+            stop(f"selftest: GE0 on near-tie swaps ({nt} rows): {g}")
+        bad = ids32.copy()                               # ids moved without their scores
+        bad[rows[:5], 0], bad[rows[:5], 500] = ids32[rows[:5], 500], ids32[rows[:5], 0]
         g = ge0(bad, sc16, e0p)
+        if g["verdict"] != "FAIL" or g["beyond_near_tie_rows"] != 5:
+            stop(f"selftest: GE0 passed moved ids: {g}")
+        out = ids32.copy()                               # a far id in place of the list's end: beyond near ties
+        out[rows[:3], 999] = ids32[rows[:3], 0]
+        out[rows[:3], 0] = n - 1 if n - 1 not in ids32[rows[0]] else n - 2
+        g = ge0(out, sc16, e0p)
         if g["verdict"] != "FAIL":
-            stop("selftest: GE0 passed swapped lists")
-    log("selftest PASS (search = brute force on 9 rows; GE0 passes itself, fails swapped lists)")
+            stop(f"selftest: GE0 passed a changed list: {g}")
+    log(f"selftest PASS (search = brute force on 9 rows; GE0 passes itself and {nt} near-tie swaps, fails moved ids)")
     return 0
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
-    for name in ("first", "knn"):
+    for name in ("first", "knn", "gate"):
         s = sub.add_parser(name)
         s.add_argument("--enc", required=True)
         s.add_argument("--ds", required=True)
@@ -241,7 +293,7 @@ def main(argv=None):
     s = sub.add_parser("selftest")
     s.add_argument("--threads", default="8")
     a = ap.parse_args(argv)
-    return {"first": cmd_first, "knn": cmd_knn, "selftest": cmd_selftest}[a.cmd](a)
+    return {"first": cmd_first, "knn": cmd_knn, "gate": cmd_gate, "selftest": cmd_selftest}[a.cmd](a)
 
 
 if __name__ == "__main__":

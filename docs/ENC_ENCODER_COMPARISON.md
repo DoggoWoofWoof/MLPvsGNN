@@ -679,3 +679,19 @@ sides share D83's layout and differ only in the encoder.
    - The arms run one after the other.
    - Each arm's look and cache are pruned after its reads (16-17 Nov ruling), and the 30 GB floor is kept.
 5. **ETA for the report:** about 24-25 November 2026, after D91's GPU rows.
+
+### 12.8 Development log (disclosed 23:22 IST, before any E2 number)
+
+**GE0's bar.** zenc2.py's first bar (77971e0) asked for the whole 1,000-id lists to equal E0's on 99.9% of the s1eval
+rows. On mpnet it failed on SQuAD (97.46% of rows) and MuSiQue (94.62%). On both, every top-5 set was equal and the
+position-wise scores agreed within 0.0005, which is float16's step. The lists differ only by the order of near-ties deep
+in the list: E0 searched the s1eval rows alone, and E2 searches every query, so the GEMM blocks differ.
+
+The bar is replaced, before any list is used, by this rule. On E0's s1eval rows:
+- every top-5 set is equal on 99.95% of the rows;
+- the position-wise scores agree within 0.002;
+- the lists are equal up to near ties on 99.95% of the rows. An id in both lists must score within 0.002 on both sides.
+  An id in one list only must score within 0.002 of the lower list end.
+
+The share of equal whole lists is reported but not gated. `zenc2.py gate` applies the rule to a saved list file and keeps
+the first verdict as `ge0_first`.
