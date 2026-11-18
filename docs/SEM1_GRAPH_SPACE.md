@@ -141,8 +141,15 @@ All rows run on the host CPU with 8 BLAS threads.
 
 - **The graph probe.** Before this page, a laptop probe built G_d for the three datasets with `zul1.families`. It printed
   only the sizes in section 3 and the shard counts. No vector was searched and no gold was read.
-- **The self-test.** `zsem1.py selftest` runs on the laptop after this page is committed. Its results are added here
-  before any row runs.
+- **The self-test.** `zsem1.py selftest --real` passed on the laptop after this page was committed (84772ea). It
+  checked:
+  - the space against a dense formula on a toy graph with an isolated node, for all eight settings;
+  - RRF against `zenc.rrf_top` with two lists and against a dense float32 sum with three, with ties;
+  - the in-memory search against `zenc.search`: two full shards and a part, duplicated rows, 1,500 questions;
+  - the real SQuAD graph with the frozen vectors: 989,371 pairs, 0 isolated, rows summing to 1, unit norms, and the
+    search on 20 question rows equal to `zenc.search`.
+
+  No gold was read and no recall was computed.
 
 ## 11. Results
 
