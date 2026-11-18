@@ -962,3 +962,12 @@ about 21 November; the report as 12.9 says.
   E2's split holds MuSiQue s1fit, as D91's -hp split does, and D91's -hp rows ask for cuda_alloc 0.9 and a 0.85 share.
   E2's zg6r and GNX fits in both worlds now ask the same. Nothing else changes: same code, data and seed. zspk passed at
   its own share. The fit reruns from scratch as t-fz-fit-zg6r-b.
+- **mpnet's D83F MuSiQue chain (w2b-chain-f-musique)** ended rc 1 after 6,891 s. The world had no MuSiQue label sets
+  yet, so the six look lanes that start together each wrote the same labels/musique/1.npy through os.replace, and two
+  of them (shards 3 and 4) lost that race at 02:59 (WinError 5). The other 24 shards ran to the end, so the race had
+  left retry_cmd's 4,000-character window long before the chain ended. zd83 build skips filed steps, and
+  write_label_sets compares a label file already on disk instead of writing it. The chain reruns as w2c-chain-f-musique
+  and redoes shards 3 and 4 only. The two D83E chains will start on empty label folders, so they now run under
+  e2hook/e2race.py instead of retry_cmd. It is retry_cmd's rule (rerun on WinError 5 or 32, up to three runs, any other
+  failure ends at once) with the whole output scanned. It sits in the junctioned e2hook folder and touches no pinned
+  file. Its self-test covers the three cases. Nothing else changes.
