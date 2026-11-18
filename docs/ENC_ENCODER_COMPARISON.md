@@ -126,7 +126,61 @@ question. No ENC number goes into a paper sentence before its section below is f
 
 ## 8. Results
 
-(Not yet filed.)
+**Scope (18 Nov 2026).** The user held the big datasets: "check only the small and hard datasets and see what do we
+lose and can we gain back". The nine `enc-encode-<enc>-<hotpotqa|2wiki|webqsp>` rows wait on `hold-enc-big`, and no
+item has that name. E0 is read on SQuAD, MuSiQue and MetaQA by `enc-report-small`, which is the same command as
+`enc-report`; its record is `outputs/enc/e0_report.md` and `.json` on the host. The declared expectations X1 to X3 and
+D94 need the six datasets. They stay **not read**, and the readings below describe the small datasets only. G0b passed
+on all six datasets.
+
+**E0, RRF R@5 and dense R@5 (new minus frozen, points, 95%):**
+
+| arm | SQuAD dense R@5 | SQuAD RRF R@5 | MuSiQue dense R@5 | MuSiQue dense R@1000 | MuSiQue RRF R@5 | MetaQA RRF R@5 |
+|---|---|---|---|---|---|---|
+| frozen (level) | 87.69 | 90.53 | 45.72 | 87.25 | 47.34 | 0.47 |
+| qwen3e06 | -6.33 BELOW | -3.36 BELOW | -4.46 BELOW | -3.65 BELOW | -2.36 [-3.04, -1.63] BELOW | -0.12 BELOW |
+| mpnet | -14.18 BELOW | -6.55 BELOW | -11.89 BELOW | -7.29 BELOW | -6.10 [-6.90, -5.27] BELOW | +0.07 LEVEL |
+| mpnetqa | -11.17 BELOW | -5.52 BELOW | -11.32 BELOW | -7.45 BELOW | -6.42 [-7.23, -5.57] BELOW | -0.02 LEVEL |
+
+- **The small-dataset reading of X2 and X3.** On SQuAD and MuSiQue, for every arm, the RRF gap and the dense R@1000
+  gap are both closer to zero than the dense R@5 gap. SPLADE and the pool reach carry part of the loss.
+- **The small-dataset reading of X1.** On MuSiQue, every arm is BELOW on dense R@5.
+- **MetaQA.** MetaQA's golds are answer sets, and every arm's RRF R@5 there is under 1%.
+- **Cost.** Each arm's cost, against the frozen gte-Qwen2-1.5B:
+
+  | arm | parameters | bytes per row | host GPU seconds per million documents |
+  |---|---|---|---|
+  | qwen3e06 | 596M | 2,048 | 3,173 |
+  | mpnet | 109M | 1,536 | 479 |
+  | mpnetqa | 109M | 1,536 | 490 |
+
+**E1a** (section 9). Read on MuSiQue and MetaQA by `enc-e1-report-small`; its record is `outputs/enc/e1/report.md` and
+`.json` on the host. HotpotQA, 2Wiki and WebQSP were not graded. Shares are % of slots, and differences are points
+against the frozen arm, rebuilt by the same code.
+
+| set (frozen K alone / union) | arm | K alone - frozen | union - frozen |
+|---|---|---|---|
+| MuSiQue GP, RK (7.28 / 33.63) | qwen3e06 | -1.36 [-1.89, -0.87] BELOW | +0.18 [+0.02, +0.36] ABOVE |
+| | mpnet | -1.59 BELOW | +0.13 LEVEL |
+| | mpnetqa | -2.08 BELOW | -0.10 LEVEL |
+| MuSiQue CH, RK (10.89 / 49.71) | qwen3e06 | -2.03 BELOW | +0.28 [+0.03, +0.53] ABOVE |
+| | mpnet | -2.43 BELOW | +0.15 LEVEL |
+| | mpnetqa | -3.16 BELOW | -0.20 LEVEL |
+| MetaQA GP, SRK (2.48 / 13.81) | qwen3e06 | -0.22 BELOW | -0.12 LEVEL |
+| | mpnet | -0.05 LEVEL | -0.04 LEVEL |
+| | mpnetqa | -0.58 BELOW | -0.57 [-0.72, -0.44] BELOW |
+
+- **G2a reproduced UL1's filed F0T shares** on both datasets.
+- **Y1 to Y3, read on MuSiQue only.** They hold for all three arms there. Each arm's K-alone share is BELOW, and the
+  union gap is closer to zero than the K-alone gap, on both GP and CH. The declared calls need 2Wiki and HotpotQA, so
+  they stay **not read**.
+- **D97** stays open.
+
+**What the small datasets say.** On the hard multi-hop set (MuSiQue), what a smaller encoder loses is in the first
+stage: 2.4 to 6.4 points of RRF R@5. It loses almost nothing in links. S and R hold the union level or above, because K
+is a small part of it. MetaQA's one BELOW (mpnetqa's union, -0.57) comes from K: 2.32 of the frozen union's 13.81 points are slots that only K links. The
+place to gain the loss back is therefore the first stage. SEM1 (`docs/SEM1_GRAPH_SPACE.md`) reads one parameter-free
+way to do that on these datasets. Nothing here is adopted.
 
 ## 9. E1a: each encoder's K at the oracle pairs (declared 17 Nov 2026, before any E1 number)
 
