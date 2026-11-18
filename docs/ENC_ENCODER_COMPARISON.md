@@ -957,3 +957,8 @@ about 21 November; the report as 12.9 says.
   dataset, the hook now keeps ABL's form and runs check 1 against the arm's own filed carve: the world's PKO pools from
   12.10's W1, with the sha256 checked against their manifest. A record dataset keeps ABL's function, and the frozen
   world swaps nothing. zenc2t's self-test checks all three cases. The chain reruns as w2e-chain-f-squad.
+- **The frozen world's zg6r fit (t-fz-fit-zg6r)** ran out of GPU memory three times (rc 1 after 409 s; peak 12.85 GB
+  under a 13.2 GiB cap). The training rows kept the GPU shares of the record's four-dataset split (zg6r 0.47, GNX 0.52).
+  E2's split holds MuSiQue s1fit, as D91's -hp split does, and D91's -hp rows ask for cuda_alloc 0.9 and a 0.85 share.
+  E2's zg6r and GNX fits in both worlds now ask the same. Nothing else changes: same code, data and seed. zspk passed at
+  its own share. The fit reruns from scratch as t-fz-fit-zg6r-b.
