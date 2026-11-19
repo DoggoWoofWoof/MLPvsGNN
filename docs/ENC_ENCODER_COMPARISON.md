@@ -992,3 +992,11 @@ about 21 November; the report as 12.9 says.
   The four unsent zg6r and GNX fit rows (mpnet's and qwen3e06's) now ask the feeder for 0.82. cuda_alloc's cap stays at
   0.9. The frozen world's zg6r and GNX fits peaked at 15.4 GB allocated (20.55 GB reserved). The code, data and seed
   are unchanged.
+- **mpnet's calls (20 Nov 2026, 00:51 IST).** mpnet's zg6r and GNX fits, forks and reads (t-mp-*-b) ran, then
+  the collect (e2r-collect-mp-b) and the report. GA passes in all three worlds. Both deciding models LOSE:
+  - GNX: SQuAD -2.62 [-3.02, -2.16], MuSiQue -5.14 [-6.06, -4.23].
+  - zrckpn: SQuAD -2.77 [-3.18, -2.35], MuSiQue -3.82 [-4.72, -2.95], the same as the interim report.
+  - zg6r, read beside: SQuAD -2.59 [-3.01, -2.15], MuSiQue -4.25 [-5.18, -3.35].
+  - The first stage loses 14.18 (SQuAD) and 11.89 (MuSiQue) points. The models win back 11.41 to 11.59 and 6.75 to
+    8.07 of them. The pools hold 1.09 and 0.55 points fewer golds.
+  mpnet's arm is complete. qwen3e06's cells are INCOMPLETE until its world's reads. The user decides (D101).
