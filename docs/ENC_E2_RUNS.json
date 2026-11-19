@@ -30,6 +30,9 @@
    "w2d-g-musique": "w2d-g2-musique",
    "w2d-chain-f-squad": "w2e-chain-f-squad",
    "w2b-chain-f-musique": "w2c-chain-f-musique"
+  },
+  "qwen3e06": {
+   "q1-chain-f-squad": "q1-chain-f-squad-b"
   }
  }
 }

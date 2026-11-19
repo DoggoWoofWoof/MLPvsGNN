@@ -1003,7 +1003,8 @@ about 21 November; the report as 12.9 says.
 - **qwen3e06's first D83F chain (q1-chain-f-squad, 20 Nov 01:48)** stopped after 5 s at PKO's check gate. Its world
   had no section-5 verdicts: mpnet's world got them from `zenc2k.py carry --enc mpnet`, which ran outside the feed, so
   the cloned rows left it out. `zenc2k.py carry --enc qwen3e06` ran at 01:53 (four sha256-checked copies and
-  carried.json; the code unchanged). The feeder's own retry of the chain follows. Nothing else differs.
+  carried.json; the code unchanged). zenc2w refuses a tag that holds a run, so the feeder's retry of the row runs
+  under q1-chain-f-squad-b (docs/ENC_E2_RUNS.json: superseded). Nothing else differs.
 
 ## 13. E2M: mpnet's vectors mapped into the frozen space, at the first stage (declared 20 Nov 2026, 01:00 IST, before any map is fit)
 
