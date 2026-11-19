@@ -1000,3 +1000,71 @@ about 21 November; the report as 12.9 says.
   - The first stage loses 14.18 (SQuAD) and 11.89 (MuSiQue) points. The models win back 11.41 to 11.59 and 6.75 to
     8.07 of them. The pools hold 1.09 and 0.55 points fewer golds.
   mpnet's arm is complete. qwen3e06's cells are INCOMPLETE until its world's reads. The user decides (D101).
+
+## 13. E2M: mpnet's vectors mapped into the frozen space, at the first stage (declared 20 Nov 2026, 01:00 IST, before any map is fit)
+
+Code: outputs/mp_unified/zenc2m.py (run, report, selftest). Outputs: outputs/enc/e2m/. The user asked for it on 20 Nov
+("sure check it out"). It reads nothing of qwen3e06 and changes nothing of E2.
+
+### 13.1 Why
+
+mpnet's E2 arm loses with both deciding models (12.11's log, 20 Nov 00:51). Most of the loss starts at the first
+stage: mpnet's dense top 5 is 14.18 (SQuAD) and 11.89 (MuSiQue) points behind the frozen encoder's, and the models win
+back 6.75 to 11.59 of those points. E2M asks whether that first-stage loss is geometry, which a map learned from
+mpnet's space into the frozen encoder's recovers, or information, which no map recovers. If a map recovers enough,
+the smallest encoder could stand in for the frozen one under the models as they are trained, and a new dataset would
+need only mpnet's encode.
+
+### 13.2 The pairs
+
+- SQuAD and MuSiQue pooled, from the vectors on the host (the record's frozen rows and the mpnet rows E0 encoded; no new encode).
+- Questions: every train-split question (SQuAD 130,319; MuSiQue 19,938), mpnet's vector to the frozen one.
+- Documents: every document that is no dev or test question's gold. Every s1eval gold is among those left out (the
+  run checks). Dev questions' other documents stay in, so the eval golds are the only documents the maps never see.
+- 10% of each side (seed 0) is held out and picks each arm's setting by mean cosine. No s1eval question and no eval
+  gold enters a fit or a choice.
+
+### 13.3 The arms
+
+Two maps per arm: f_q for questions and f_d for documents. The outputs are L2-normalised.
+- **ridge:** least squares with a bias (the bias unpenalised); lambda from 0.01, 0.1, 1, 10, 100 or 1,000 by
+  held-out cosine.
+- **mlp:** ridge's map plus a residual branch (768 to 2,048, GELU, to 1,536) whose last layer starts at zero, so epoch
+  0 is ridge. AdamW at 1e-3 (weight decay 1e-4 on the branch only), batch 2,048, loss 1 minus cosine, 60 epochs. The
+  held-out best epoch is kept (epoch 0 included). Seed 0.
+
+### 13.4 The reads
+
+- On the s1eval carves E0 and E2 read (SQuAD 11,873 questions, MuSiQue 2,417), with E0's measure: zenc.search
+  (exact float32, top 1,000), R@5, R@20 and R@1000, and RRF@5 with the record's SPLADE list.
+- **both:** f_q(mpnet question) against f_d(mpnet document) over the whole corpus. This is the small encoder alone,
+  and it decides.
+- **qonly:** f_q(mpnet question) against the frozen documents. Beside: only the question side is small.
+- **G1:** the run's own raw mpnet read equals E0's mpnet hits on at least 99.5% of the questions at every k, per
+  carve. Otherwise the report stops.
+
+### 13.5 The call
+
+Per arm, on 'both': R@5 minus E0's frozen R@5 in points per carve, paired 95% bootstrap over questions (2,000, seed
+0). Won back is the same against E0's mpnet read.
+- **ADVANCE:** both carves' point gaps clear one deciding model's bars. A bar is -1 point divided by that model's E2
+  ratio of model gap to first-stage gap on the carve: zrckpn SQuAD -5.12 and MuSiQue -3.11; GNX SQuAD -5.41 and
+  MuSiQue -2.31. It assumes the models win back the same share of the first-stage gap as they did on raw mpnet. It
+  is a gate for spending more, not a claim about the models.
+- **PARTIAL:** not ADVANCE, but won back's interval starts above 0 on both carves. The map recovers a real part.
+- **STOP:** otherwise. mpnet's first-stage loss is taken as information in its vectors.
+- The stage's call is ADVANCE if either arm's is, else PARTIAL if either arm's is, else STOP. Both arms are reported.
+- Beside, with no call: R@20, R@1000 (the pools' reach), RRF@5, the qonly reads, and the held-out cosines.
+
+### 13.6 What follows
+
+- ADVANCE: a stage 2 is declared on this page and put to the user before it runs. The frozen world's trained models
+  would read on the mapped vectors, in a world built like E2's, with no training.
+- PARTIAL or STOP: no stage 2. The result goes beside E2's for D101.
+
+### 13.7 Rows and cost
+
+- e2m-selftest (CPU), e2m-run (one GPU row: 8 threads, about 20 GB, 0.29 of the card; estimated under 30 minutes),
+  then e2m-report (CPU).
+- The maps take about 60 MB and the reads about 20 MB, under outputs/enc/e2m/. The mapped corpus (up to 0.72 GB) is
+  a temporary file the run removes.
