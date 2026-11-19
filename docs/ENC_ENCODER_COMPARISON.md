@@ -1000,6 +1000,10 @@ about 21 November; the report as 12.9 says.
   - The first stage loses 14.18 (SQuAD) and 11.89 (MuSiQue) points. The models win back 11.41 to 11.59 and 6.75 to
     8.07 of them. The pools hold 1.09 and 0.55 points fewer golds.
   mpnet's arm is complete. qwen3e06's cells are INCOMPLETE until its world's reads. The user decides (D101).
+- **qwen3e06's first D83F chain (q1-chain-f-squad, 20 Nov 01:48)** stopped after 5 s at PKO's check gate. Its world
+  had no section-5 verdicts: mpnet's world got them from `zenc2k.py carry --enc mpnet`, which ran outside the feed, so
+  the cloned rows left it out. `zenc2k.py carry --enc qwen3e06` ran at 01:53 (four sha256-checked copies and
+  carried.json; the code unchanged). The feeder's own retry of the chain follows. Nothing else differs.
 
 ## 13. E2M: mpnet's vectors mapped into the frozen space, at the first stage (declared 20 Nov 2026, 01:00 IST, before any map is fit)
 
@@ -1068,3 +1072,23 @@ Per arm, on 'both': R@5 minus E0's frozen R@5 in points per carve, paired 95% bo
   then e2m-report (CPU).
 - The maps take about 60 MB and the reads about 20 MB, under outputs/enc/e2m/. The mapped corpus (up to 0.72 GB) is
   a temporary file the run removes.
+
+### 13.8 Report (20 Nov 2026, 01:08 IST): STOP
+
+- e2m-run ran in 257 s on the host's GPU. G1 passed: the run's raw mpnet read equals E0's on every question at every
+  k on both carves.
+- The pairs: 150,257 questions and 133,934 documents (SQuAD's 1,204 and MuSiQue's 2,629 dev or test golds left out).
+  Held-out cosine to the frozen vectors: questions 0.749, documents 0.725 (ridge, lambda 0.1).
+- **ridge, both** (decides): R@5 SQuAD 66.98, gap to frozen -20.72 [-21.54, -19.91]; MuSiQue 22.75, -22.97
+  [-24.12, -21.77]. Against raw mpnet it loses more: won back -6.54 [-7.18, -5.95] and -11.08 [-11.99, -10.18].
+  qonly is worse still (-23.76 and -30.68 to frozen).
+- **mlp** never beat its start. The first epoch lowered the held-out cosine (0.749 to 0.745 for questions, 0.725 to
+  0.722 for documents), and 60 epochs climbed back to just under epoch 0. The best epoch is 0, so the mlp arm is ridge
+  and its reads equal ridge's. The recipe's step size (1e-3 on top of the ridge solution) is the likely cause. A
+  better-tuned branch could add a little cosine, but closing a 20-point gap to the -5.12 bar is not within reach of
+  that, so it is not re-run.
+- **Calls:** ridge STOP, mlp STOP; the stage is STOP. A map fit to the frozen vectors recovers none of mpnet's
+  first-stage loss: the mapped space retrieves worse than mpnet's own. Under 13.5, mpnet's first-stage loss is taken as
+  information in its vectors. There is no stage 2. The result sits beside E2's for D101.
+- What it does not test: a map trained on retrieval itself (questions against their gold documents). That is in-domain
+  supervised training on top of mpnet, the job the E2 models already do (they win back 6.75 to 11.59 points).

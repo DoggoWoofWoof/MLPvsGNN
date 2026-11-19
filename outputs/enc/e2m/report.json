@@ -1,0 +1,460 @@
+{
+ "stage": "ENC E2M",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 13",
+ "bars": {
+  "zrckpn": {
+   "squad": -5.12,
+   "musique": -3.11
+  },
+  "gnx": {
+   "squad": -5.41,
+   "musique": -2.31
+  }
+ },
+ "g1": {
+  "squad": {
+   "equal_share": {
+    "d5": 1.0,
+    "d20": 1.0,
+    "d1000": 1.0,
+    "rrf5": 1.0
+   },
+   "pass": true
+  },
+  "musique": {
+   "equal_share": {
+    "d5": 1.0,
+    "d20": 1.0,
+    "d1000": 1.0,
+    "rrf5": 1.0
+   },
+   "pass": true
+  }
+ },
+ "fit": {
+  "ridge": {
+   "q": {
+    "lambda": 0.1,
+    "held_cos": 0.749174,
+    "seconds": 9.0,
+    "train": 135231,
+    "held": 15026
+   },
+   "d": {
+    "lambda": 0.1,
+    "held_cos": 0.725069,
+    "seconds": 5.1,
+    "train": 120541,
+    "held": 13393
+   }
+  },
+  "mlp": {
+   "q": {
+    "best_epoch": 0,
+    "held_cos": 0.749174,
+    "epoch0_cos": 0.749174,
+    "seconds": 22.3,
+    "train": 135231,
+    "held": 15026
+   },
+   "d": {
+    "best_epoch": 0,
+    "held_cos": 0.725069,
+    "epoch0_cos": 0.725069,
+    "seconds": 17.7,
+    "train": 120541,
+    "held": 13393
+   }
+  }
+ },
+ "cells": {
+  "ridge-both__squad": {
+   "r5": 66.98,
+   "gap": {
+    "d5": {
+     "pts": -20.72,
+     "ci": [
+      -21.54,
+      -19.91
+     ],
+     "call": "BELOW"
+    },
+    "d20": {
+     "pts": -13.88,
+     "ci": [
+      -14.6,
+      -13.21
+     ],
+     "call": "BELOW"
+    },
+    "d1000": {
+     "pts": -1.49,
+     "ci": [
+      -1.72,
+      -1.26
+     ],
+     "call": "BELOW"
+    },
+    "rrf5": {
+     "pts": -9.21,
+     "ci": [
+      -9.8,
+      -8.62
+     ],
+     "call": "BELOW"
+    }
+   },
+   "won_back": {
+    "pts": -6.54,
+    "ci": [
+     -7.18,
+     -5.95
+    ],
+    "call": "BELOW"
+   }
+  },
+  "ridge-both__musique": {
+   "r5": 22.75,
+   "gap": {
+    "d5": {
+     "pts": -22.97,
+     "ci": [
+      -24.12,
+      -21.77
+     ],
+     "call": "BELOW"
+    },
+    "d20": {
+     "pts": -25.12,
+     "ci": [
+      -26.3,
+      -23.94
+     ],
+     "call": "BELOW"
+    },
+    "d1000": {
+     "pts": -12.23,
+     "ci": [
+      -13.22,
+      -11.24
+     ],
+     "call": "BELOW"
+    },
+    "rrf5": {
+     "pts": -12.94,
+     "ci": [
+      -13.89,
+      -11.97
+     ],
+     "call": "BELOW"
+    }
+   },
+   "won_back": {
+    "pts": -11.08,
+    "ci": [
+     -11.99,
+     -10.18
+    ],
+    "call": "BELOW"
+   }
+  },
+  "ridge-qonly__squad": {
+   "r5": 63.93,
+   "gap": {
+    "d5": {
+     "pts": -23.76,
+     "ci": [
+      -24.54,
+      -23.0
+     ],
+     "call": "BELOW"
+    },
+    "d20": {
+     "pts": -14.12,
+     "ci": [
+      -14.81,
+      -13.48
+     ],
+     "call": "BELOW"
+    },
+    "d1000": {
+     "pts": -1.04,
+     "ci": [
+      -1.23,
+      -0.85
+     ],
+     "call": "BELOW"
+    },
+    "rrf5": {
+     "pts": -8.98,
+     "ci": [
+      -9.54,
+      -8.44
+     ],
+     "call": "BELOW"
+    }
+   },
+   "won_back": {
+    "pts": -9.58,
+    "ci": [
+     -10.35,
+     -8.85
+    ],
+    "call": "BELOW"
+   }
+  },
+  "ridge-qonly__musique": {
+   "r5": 15.04,
+   "gap": {
+    "d5": {
+     "pts": -30.68,
+     "ci": [
+      -31.83,
+      -29.54
+     ],
+     "call": "BELOW"
+    },
+    "d20": {
+     "pts": -33.17,
+     "ci": [
+      -34.38,
+      -31.98
+     ],
+     "call": "BELOW"
+    },
+    "d1000": {
+     "pts": -15.34,
+     "ci": [
+      -16.37,
+      -14.34
+     ],
+     "call": "BELOW"
+    },
+    "rrf5": {
+     "pts": -18.92,
+     "ci": [
+      -19.89,
+      -17.87
+     ],
+     "call": "BELOW"
+    }
+   },
+   "won_back": {
+    "pts": -18.79,
+    "ci": [
+     -19.89,
+     -17.7
+    ],
+    "call": "BELOW"
+   }
+  },
+  "mlp-both__squad": {
+   "r5": 66.98,
+   "gap": {
+    "d5": {
+     "pts": -20.72,
+     "ci": [
+      -21.54,
+      -19.91
+     ],
+     "call": "BELOW"
+    },
+    "d20": {
+     "pts": -13.88,
+     "ci": [
+      -14.6,
+      -13.21
+     ],
+     "call": "BELOW"
+    },
+    "d1000": {
+     "pts": -1.49,
+     "ci": [
+      -1.72,
+      -1.26
+     ],
+     "call": "BELOW"
+    },
+    "rrf5": {
+     "pts": -9.21,
+     "ci": [
+      -9.8,
+      -8.62
+     ],
+     "call": "BELOW"
+    }
+   },
+   "won_back": {
+    "pts": -6.54,
+    "ci": [
+     -7.18,
+     -5.95
+    ],
+    "call": "BELOW"
+   }
+  },
+  "mlp-both__musique": {
+   "r5": 22.75,
+   "gap": {
+    "d5": {
+     "pts": -22.97,
+     "ci": [
+      -24.12,
+      -21.77
+     ],
+     "call": "BELOW"
+    },
+    "d20": {
+     "pts": -25.12,
+     "ci": [
+      -26.3,
+      -23.94
+     ],
+     "call": "BELOW"
+    },
+    "d1000": {
+     "pts": -12.23,
+     "ci": [
+      -13.22,
+      -11.24
+     ],
+     "call": "BELOW"
+    },
+    "rrf5": {
+     "pts": -12.94,
+     "ci": [
+      -13.89,
+      -11.97
+     ],
+     "call": "BELOW"
+    }
+   },
+   "won_back": {
+    "pts": -11.08,
+    "ci": [
+     -11.99,
+     -10.18
+    ],
+    "call": "BELOW"
+   }
+  },
+  "mlp-qonly__squad": {
+   "r5": 63.93,
+   "gap": {
+    "d5": {
+     "pts": -23.76,
+     "ci": [
+      -24.54,
+      -23.0
+     ],
+     "call": "BELOW"
+    },
+    "d20": {
+     "pts": -14.12,
+     "ci": [
+      -14.81,
+      -13.48
+     ],
+     "call": "BELOW"
+    },
+    "d1000": {
+     "pts": -1.04,
+     "ci": [
+      -1.23,
+      -0.85
+     ],
+     "call": "BELOW"
+    },
+    "rrf5": {
+     "pts": -8.98,
+     "ci": [
+      -9.54,
+      -8.44
+     ],
+     "call": "BELOW"
+    }
+   },
+   "won_back": {
+    "pts": -9.58,
+    "ci": [
+     -10.35,
+     -8.85
+    ],
+    "call": "BELOW"
+   }
+  },
+  "mlp-qonly__musique": {
+   "r5": 15.04,
+   "gap": {
+    "d5": {
+     "pts": -30.68,
+     "ci": [
+      -31.83,
+      -29.54
+     ],
+     "call": "BELOW"
+    },
+    "d20": {
+     "pts": -33.17,
+     "ci": [
+      -34.38,
+      -31.98
+     ],
+     "call": "BELOW"
+    },
+    "d1000": {
+     "pts": -15.34,
+     "ci": [
+      -16.37,
+      -14.34
+     ],
+     "call": "BELOW"
+    },
+    "rrf5": {
+     "pts": -18.92,
+     "ci": [
+      -19.89,
+      -17.87
+     ],
+     "call": "BELOW"
+    }
+   },
+   "won_back": {
+    "pts": -18.79,
+    "ci": [
+     -19.89,
+     -17.7
+    ],
+    "call": "BELOW"
+   }
+  }
+ },
+ "calls": {
+  "ridge": {
+   "call": "STOP",
+   "bars_met": null,
+   "gaps": {
+    "squad": -20.72,
+    "musique": -22.97
+   },
+   "won_back_low": {
+    "squad": -7.18,
+    "musique": -11.99
+   }
+  },
+  "mlp": {
+   "call": "STOP",
+   "bars_met": null,
+   "gaps": {
+    "squad": -20.72,
+    "musique": -22.97
+   },
+   "won_back_low": {
+    "squad": -7.18,
+    "musique": -11.99
+   }
+  }
+ },
+ "stage_call": "STOP",
+ "utc": "2026-11-19T19:38:47Z"
+}
