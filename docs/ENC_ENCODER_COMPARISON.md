@@ -971,3 +971,19 @@ about 21 November; the report as 12.9 says.
   e2hook/e2race.py instead of retry_cmd. It is retry_cmd's rule (rerun on WinError 5 or 32, up to three runs, any other
   failure ends at once) with the whole output scanned. It sits in the junctioned e2hook folder and touches no pinned
   file. Its self-test covers the three cases. Nothing else changes.
+- **qwen3e06's world starts (19 Nov, 20:21 IST).** 12.9 runs it "only when mpnet's call below is LOSES or the user
+  asks". An interim collect and report (20:13, GA PASS on both worlds) gives mpnet's zrckpn call as LOSES: SQuAD
+  -2.77 [-3.18, -2.35], MuSiQue -3.82 [-4.72, -2.95]. mpnet's GNX reads are still queued behind the GPU, so its GNX
+  call is INCOMPLETE. The world starts now, on one deciding model's LOSES, because a pick between the arms needs
+  qwen3e06's cells whatever GNX gives, and the host's CPU is idle. The user may stop it or say otherwise (D101).
+  The rows are mpnet's last generation with --enc qwen3e06, in the same order and at the same sizes: pads, world,
+  bases, types, pools, ABL's slot types, the four chains, then the training rows, forks and reads, and a collect.
+  Three things differ:
+  - No whole-graph qwen3e06 encode of HotpotQA or 2Wiki exists (12.9: the small and hard datasets only), so both
+    bases CPU-encode the 60,000 drawn rows, as mpnet's 2Wiki basis did (2,088 s at six torch threads). qwen3e06 has
+    about 5.5 times mpnet's parameters, so each takes about three hours. The two run side by side.
+  - All four chains run under e2race, since the world's label folders start empty for D83F too.
+  - The slot-type rows wait for the world's pools, as mpnet's ran.
+  After the four chains, the world's filed look chunks are pruned (prune_d83_looks.py, the 16-17 Nov rule). The
+  world's build tags start q1- and its training tags t-qw- (docs/ENC_E2_RUNS.json). No qwen3e06 number is read before
+  its report.
