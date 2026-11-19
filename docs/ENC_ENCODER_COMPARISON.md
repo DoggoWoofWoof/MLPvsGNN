@@ -987,3 +987,8 @@ about 21 November; the report as 12.9 says.
   After the four chains, the world's filed look chunks are pruned (prune_d83_looks.py, the 16-17 Nov rule). The
   world's build tags start q1- and its training tags t-qw- (docs/ENC_E2_RUNS.json). No qwen3e06 number is read before
   its report.
+- **The GPU share of the E2 GNN fits (19 Nov, 21:55 IST).** mpnet's zg6r fit waited at the head of the GPU queue
+  because another user's idle context held about 2.3 GB of the card, leaving 0.842 free against the row's 0.85.
+  The four unsent zg6r and GNX fit rows (mpnet's and qwen3e06's) now ask the feeder for 0.82. cuda_alloc's cap stays at
+  0.9. The frozen world's zg6r and GNX fits peaked at 15.4 GB allocated (20.55 GB reserved). The code, data and seed
+  are unchanged.
