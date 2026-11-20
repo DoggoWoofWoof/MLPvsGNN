@@ -60,7 +60,10 @@ def stop(msg):
 
 
 def rel(p):
-    return Path(p).resolve().relative_to(ROOTWS).as_posix()
+    try:
+        return Path(p).resolve().relative_to(ROOTWS).as_posix()
+    except ValueError:
+        return str(p)
 
 
 def utc():
