@@ -1,0 +1,134 @@
+{
+ "stage": "ENC E2B",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 16",
+ "encs": {
+  "mpnet": {
+   "V": {
+    "gamma": 1.0,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.5,
+    "prf": null
+   },
+   "applied": {
+    "gamma": 1.0,
+    "prf": null,
+    "w": 0.0
+   },
+   "lambda": 1.0,
+   "changed_docs": 104398,
+   "seconds": 1005.5
+  },
+  "frozen": {
+   "V": {
+    "gamma": 0.5,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.0,
+    "prf": null
+   },
+   "applied": {
+    "gamma": 0.5,
+    "prf": null,
+    "w": 0.0
+   },
+   "lambda": 0.5,
+   "changed_docs": 104398,
+   "seconds": 1142.4
+  }
+ },
+ "g1": {
+  "mpnet": {
+   "equal_share": {
+    "d5": 1.0,
+    "d20": 1.0,
+    "d1000": 1.0,
+    "rrf5": 1.0
+   },
+   "pass": true
+  },
+  "frozen": {
+   "equal_share": {
+    "d5": 1.0,
+    "d20": 1.0,
+    "d1000": 1.0,
+    "rrf5": 1.0
+   },
+   "pass": true
+  }
+ },
+ "g4": {
+  "mpnet": {
+   "equal_share": {
+    "d5": 1.0,
+    "d20": 1.0,
+    "d1000": 1.0,
+    "rrf5": 1.0
+   },
+   "pass": true
+  },
+  "frozen": {
+   "equal_share": {
+    "d5": 1.0,
+    "d20": 1.0,
+    "d1000": 1.0,
+    "rrf5": 1.0
+   },
+   "pass": true
+  }
+ },
+ "reads": {
+  "hot-mpnet-V": {
+   "npz": "hot-mpnet-V__hotpotqa.npz",
+   "sha256": "71c0105a34653bbf036a52926013dd1acb4bb08d824e74328338f9b666745a07",
+   "recall": {
+    "d5": 0.460095,
+    "d20": 0.562728,
+    "d1000": 0.782647,
+    "rrf5": 0.581769
+   }
+  },
+  "hot-mpnet-V-mem": {
+   "npz": "hot-mpnet-V-mem__hotpotqa.npz",
+   "sha256": "02df59aa6d10b0c777a075bab6dd3b1947eda05bbf054d18c5894b186755ce7d",
+   "recall": {
+    "d5": 0.536259,
+    "d20": 0.636124,
+    "d1000": 0.843552,
+    "rrf5": 0.625523
+   },
+   "exact1000_share": 1.0
+  },
+  "hot-frozen-V": {
+   "npz": "hot-frozen-V__hotpotqa.npz",
+   "sha256": "f490e8be55bb07ca8f781dd73d026bed0903768f51c575625f50549cbaee5afa",
+   "recall": {
+    "d5": 0.658744,
+    "d20": 0.7526,
+    "d1000": 0.915598,
+    "rrf5": 0.684335
+   }
+  },
+  "hot-frozen-V-mem": {
+   "npz": "hot-frozen-V-mem__hotpotqa.npz",
+   "sha256": "43031dc78893ffca2bb628b516f6b88ef1d99239423f3a2f6e150b2e4b05a2fb",
+   "recall": {
+    "d5": 0.730925,
+    "d20": 0.81472,
+    "d1000": 0.950034,
+    "rrf5": 0.710601
+   },
+   "exact1000_share": 1.0
+  }
+ },
+ "threads": 8,
+ "code_sha256": {
+  "outputs/mp_unified/zenc2b.py": "f15a7afc4d3442895ac17d1c1bbef40e5a7c0a12be4bb4d29f21828f8690c4c4",
+  "outputs/mp_unified/zenc.py": "0416ecefcb9a803549d2dfa9aef844d66f4c05e2a5b26821930c7f701f32eeb7",
+  "outputs/mp_unified/zenc2m.py": "cf5bd755f39a8149924ae1f42ddf88617979b2e8d2cd1c7161d1964da654cf4f",
+  "outputs/mp_unified/zenc2s.py": "432b8873a55f6f1e7a47f42ed84ad27cc359868985c8aa6b74178f1387a48205",
+  "outputs/mp_unified/zenc2n.py": "21e856aafea20532bfb999632bc424606b0c10da055a0cef2c97f00157e703b3"
+ },
+ "seconds": 2158.0,
+ "utc": "2026-11-20T09:02:21Z"
+}

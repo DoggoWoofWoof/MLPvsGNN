@@ -1398,6 +1398,36 @@ for it. No encoder's weights change.
 - **Disk:** the windows take about 3.9 GB under outputs/enc/e2b/win/. They can be rebuilt, and are kept until D101,
   since stage 2 would need them. The maps and reads take under 100 MB. The host had 59 GB free at declaration.
 
+### 16.10 Report (20 Nov 2026, 17:51 IST): both small arms PARTIAL
+
+- **Gates:** G1 and G2 passed. The frozen windows first failed on the host (the model was not in its cache); zencdl.py
+  fetched it at the record's revision (468fb44) before the retry.
+- **Chosen settings:**
+  - mpnet: V = gamma 1, w 0.5; F adds W 64, beta 0.5.
+  - qwen3e06: V = gamma 0.5; F = gamma 1, W 64, beta 0.75.
+  - frozen: V = gamma 0.5; F = gamma 1, W 64, beta 0.5.
+  - prf was chosen for no arm.
+
+| arm | V R@5 | V won back | V gap to frozen | gate | F R@5 | F gap to frozen |
+|---|---|---|---|---|---|---|
+| mpnet | 75.43 / 39.31 | +1.91 [+1.41, +2.44] / +5.48 [+4.65, +6.33] | -12.26 / -6.41 | PARTIAL | 80.48 / 40.33 | -7.22 / -5.39 |
+| qwen3e06 | 82.01 / 42.50 | +0.64 [+0.39, +0.93] / +1.24 [+0.75, +1.73] | -5.69 / -3.22 | PARTIAL | 87.08 / 43.76 | -0.61 / -1.95 |
+| frozen (beside) | 87.75 / 47.63 | +0.05 [-0.21, +0.30] / +1.91 [+1.38, +2.42] | | | 90.45 / 48.57 | +2.75 / +2.85 |
+
+- s1eval dense R@5, points, SQuAD / MuSiQue. Every small-arm recipe call is IMPROVES. Frozen's V is MIXED and its F
+  IMPROVES.
+- **Neither small arm clears its bars on V, so both are PARTIAL (16.7): nothing is trained.**
+  - The recipes raise frozen too, so the gap to frozen's own recipe stays wide: mpnet V -12.31 / -8.32, qwen3e06 V
+    -5.74 / -5.13.
+- **Windows (F) took qwen3e06 within 0.61 of frozen's raw SQuAD read.** That pointed section 18 at windows and fusion for
+  E0N's encoders.
+- **HotpotQA beside (V, no call):**
+  - mpnet 46.01, frozen 65.87.
+  - With E2N's gold memory: mpnet 53.63 (+11.00 won back), frozen 73.09 (+7.32).
+- **Section 18 supersedes this as the small-encoder lead:**
+  - gtemodern+granitesm's V (83.68 / 48.15) is above both arms here on both carves.
+  - The user chose its E2 world (section 19).
+
 ## 17. E0N: three retrieval-trained encoders at mpnet's size, at the first stage (declared 20 Nov 2026, 12:35 IST, before any E0N number)
 
 Code: `outputs/mp_unified/zenc3.py` (models, encode, first, report, selftest). Records: `outputs/enc/e0n/`. Vectors go

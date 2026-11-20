@@ -1,0 +1,935 @@
+{
+ "stage": "ENC E2B",
+ "arm": "qwen3e06",
+ "encoders": [
+  "qwen3e06"
+ ],
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 16",
+ "step_a": [
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.796395,
+    "musique": 0.421121
+   },
+   "mean": 0.6087582226105908
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.25,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.818425,
+    "musique": 0.42525
+   },
+   "mean": 0.6218372287198519
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.25,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.807076,
+    "musique": 0.421773
+   },
+   "mean": 0.614424621790375
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.5,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.837116,
+    "musique": 0.426608
+   },
+   "mean": 0.6318620756982075
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.5,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.810414,
+    "musique": 0.420904
+   },
+   "mean": 0.6156589199912501
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.838451,
+    "musique": 0.419763
+   },
+   "mean": 0.629107207407936
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.75,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.808411,
+    "musique": 0.418242
+   },
+   "mean": 0.6133266418095342
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 1.0,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.835113,
+    "musique": 0.409387
+   },
+   "mean": 0.62225035379637
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 1.0,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.802403,
+    "musique": 0.414439
+   },
+   "mean": 0.6084212892287499
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.802403,
+    "musique": 0.437038
+   },
+   "mean": 0.6197207242569986
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.25,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.82243,
+    "musique": 0.44095
+   },
+   "mean": 0.6316897468390419
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.25,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.809079,
+    "musique": 0.436984
+   },
+   "mean": 0.6230313458651808
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.5,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.841789,
+    "musique": 0.440678
+   },
+   "mean": 0.6412335090855604
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.5,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.815754,
+    "musique": 0.4353
+   },
+   "mean": 0.6255271043703643
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.84713,
+    "musique": 0.435028
+   },
+   "mean": 0.6410788772977907
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.75,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.816422,
+    "musique": 0.433996
+   },
+   "mean": 0.6252089922591269
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 1.0,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.843124,
+    "musique": 0.424272
+   },
+   "mean": 0.63369811059103
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 1.0,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.818425,
+    "musique": 0.430519
+   },
+   "mean": 0.624471952752881
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.801736,
+    "musique": 0.437147
+   },
+   "mean": 0.6194412700927036
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.25,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.817089,
+    "musique": 0.44133
+   },
+   "mean": 0.6292096545937826
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.25,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.805073,
+    "musique": 0.436441
+   },
+   "mean": 0.6207570546038786
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.5,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.838451,
+    "musique": 0.441113
+   },
+   "mean": 0.639781914057219
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.5,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.809746,
+    "musique": 0.435463
+   },
+   "mean": 0.6226045853402102
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.846462,
+    "musique": 0.439591
+   },
+   "mean": 0.6430267156150254
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.75,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.813084,
+    "musique": 0.433236
+   },
+   "mean": 0.6231598309552531
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 1.0,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.843124,
+    "musique": 0.424707
+   },
+   "mean": 0.6339154074184963
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 1.0,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.812417,
+    "musique": 0.426825
+   },
+   "mean": 0.6196209243789633
+  }
+ ],
+ "base": {
+  "V": {
+   "gamma": 0.5,
+   "beta": 0.0,
+   "W": null,
+   "w": 0.0,
+   "prf": null
+  },
+  "F": {
+   "gamma": 1.0,
+   "beta": 0.75,
+   "W": 64,
+   "w": 0.0,
+   "prf": null
+  }
+ },
+ "step_b": {
+  "V": [
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.0,
+     "W": null,
+     "w": 0.0,
+     "prf": null
+    },
+    "s1sel_r5": {
+     "squad": 0.802403,
+     "musique": 0.437038
+    },
+    "mean": 0.6197207242569986
+   },
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.0,
+     "W": null,
+     "w": 0.0,
+     "prf": [
+      3,
+      0.25
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.79239,
+     "musique": 0.419709
+    },
+    "mean": 0.6060493376943559
+   },
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.0,
+     "W": null,
+     "w": 0.0,
+     "prf": [
+      3,
+      0.5
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.788385,
+     "musique": 0.416721
+    },
+    "mean": 0.6025527517785557
+   },
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.0,
+     "W": null,
+     "w": 0.0,
+     "prf": [
+      3,
+      1.0
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.785047,
+     "musique": 0.410039
+    },
+    "mean": 0.5975429212004533
+   },
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.0,
+     "W": null,
+     "w": 0.0,
+     "prf": [
+      10,
+      0.25
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.789052,
+     "musique": 0.393307
+    },
+    "mean": 0.5911796635699693
+   },
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.0,
+     "W": null,
+     "w": 0.0,
+     "prf": [
+      10,
+      0.5
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.780374,
+     "musique": 0.362179
+    },
+    "mean": 0.571276659477594
+   },
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.0,
+     "W": null,
+     "w": 0.0,
+     "prf": [
+      10,
+      1.0
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.748331,
+     "musique": 0.32638
+    },
+    "mean": 0.5373554714993016
+   }
+  ],
+  "F": [
+   {
+    "setting": {
+     "gamma": 1.0,
+     "beta": 0.75,
+     "W": 64,
+     "w": 0.0,
+     "prf": null
+    },
+    "s1sel_r5": {
+     "squad": 0.846462,
+     "musique": 0.439591
+    },
+    "mean": 0.6430267156150254
+   },
+   {
+    "setting": {
+     "gamma": 1.0,
+     "beta": 0.75,
+     "W": 64,
+     "w": 0.0,
+     "prf": [
+      3,
+      0.25
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.840454,
+     "musique": 0.418351
+    },
+    "mean": 0.6294023278321552
+   },
+   {
+    "setting": {
+     "gamma": 1.0,
+     "beta": 0.75,
+     "W": 64,
+     "w": 0.0,
+     "prf": [
+      3,
+      0.5
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.838451,
+     "musique": 0.413136
+    },
+    "mean": 0.6257934307890747
+   },
+   {
+    "setting": {
+     "gamma": 1.0,
+     "beta": 0.75,
+     "W": 64,
+     "w": 0.0,
+     "prf": [
+      3,
+      1.0
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.831108,
+     "musique": 0.408355
+    },
+    "mean": 0.6197316036041681
+   },
+   {
+    "setting": {
+     "gamma": 1.0,
+     "beta": 0.75,
+     "W": 64,
+     "w": 0.0,
+     "prf": [
+      10,
+      0.25
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.843124,
+     "musique": 0.399772
+    },
+    "mean": 0.6214480019426163
+   },
+   {
+    "setting": {
+     "gamma": 1.0,
+     "beta": 0.75,
+     "W": 64,
+     "w": 0.0,
+     "prf": [
+      10,
+      0.5
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.828438,
+     "musique": 0.368481
+    },
+    "mean": 0.5984595061994872
+   },
+   {
+    "setting": {
+     "gamma": 1.0,
+     "beta": 0.75,
+     "W": 64,
+     "w": 0.0,
+     "prf": [
+      10,
+      1.0
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.805073,
+     "musique": 0.333985
+    },
+    "mean": 0.5695293275286939
+   }
+  ]
+ },
+ "chosen": {
+  "V": {
+   "gamma": 0.5,
+   "beta": 0.0,
+   "W": null,
+   "w": 0.0,
+   "prf": null
+  },
+  "F": {
+   "gamma": 1.0,
+   "beta": 0.75,
+   "W": 64,
+   "w": 0.0,
+   "prf": null
+  }
+ },
+ "g1": {
+  "raw__squad": {
+   "equal_share": {
+    "d5": 1.0,
+    "d20": 1.0,
+    "d1000": 1.0,
+    "rrf5": 1.0
+   },
+   "pass": true
+  },
+  "raw__musique": {
+   "equal_share": {
+    "d5": 1.0,
+    "d20": 1.0,
+    "d1000": 1.0,
+    "rrf5": 1.0
+   },
+   "pass": true
+  }
+ },
+ "g2": {
+  "qwen3e06": {
+   "squad_w64": {
+    "one_window_docs": 1199,
+    "share_ge": 1.0,
+    "min_cos": 0.999995,
+    "median_cos": 1.0,
+    "pass": true
+   },
+   "squad_w126": {
+    "one_window_docs": 7789,
+    "share_ge": 1.0,
+    "min_cos": 0.999995,
+    "median_cos": 1.0,
+    "pass": true
+   },
+   "musique_w64": {
+    "one_window_docs": 42772,
+    "share_ge": 1.0,
+    "min_cos": 0.999987,
+    "median_cos": 0.999998,
+    "pass": true
+   },
+   "musique_w126": {
+    "one_window_docs": 89306,
+    "share_ge": 1.0,
+    "min_cos": 0.999987,
+    "median_cos": 1.0,
+    "pass": true
+   }
+  }
+ },
+ "maps": {
+  "qwen3e06": {
+   "npz": "qwen3e06.npz",
+   "sha256": "98696b153421b067cbe760ebab9f2f1c4cfeb119840696bbd97cc95ddfd1ccc7"
+  }
+ },
+ "reads": {
+  "qwen3e06-V__squad": {
+   "npz": "qwen3e06-V__squad.npz",
+   "sha256": "41cdce77db041bdd872ba50b0bb83ddb479537b85afc7251468d3eb2e574fb5a",
+   "recall": {
+    "d5": 0.820096,
+    "d20": 0.909206,
+    "d1000": 0.992588,
+    "rrf5": 0.876358
+   },
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.0,
+    "prf": null
+   }
+  },
+  "qwen3e06-V-no-gamma__squad": {
+   "npz": "qwen3e06-V-no-gamma__squad.npz",
+   "sha256": "24048a76af9cebd2646b2d98c867d291bf56fc4d9fbe4bfe579450eb00e8ec8f",
+   "recall": {
+    "d5": 0.813695,
+    "d20": 0.905163,
+    "d1000": 0.991493,
+    "rrf5": 0.871726
+   },
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.0,
+    "prf": null
+   }
+  },
+  "qwen3e06-F__squad": {
+   "npz": "qwen3e06-F__squad.npz",
+   "sha256": "17dbffdd4b553866d6d1b5c387e0077f748b1d4743f633db826b2812a0211329",
+   "recall": {
+    "d5": 0.870799,
+    "d20": 0.944159,
+    "d1000": 0.996631,
+    "rrf5": 0.902468
+   },
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   }
+  },
+  "qwen3e06-F-no-gamma__squad": {
+   "npz": "qwen3e06-F-no-gamma__squad.npz",
+   "sha256": "e6257550c031ca686b633815d9fa2031b2187f299ae23a586e26c5c534cb2dae",
+   "recall": {
+    "d5": 0.87122,
+    "d20": 0.94079,
+    "d1000": 0.996968,
+    "rrf5": 0.897162
+   },
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   }
+  },
+  "qwen3e06-F-no-beta__squad": {
+   "npz": "qwen3e06-F-no-beta__squad.npz",
+   "sha256": "10bb4e39771a209fc7b35eb0b764d9eaa1a27ab998c466d8f61b057ad894a3dd",
+   "recall": {
+    "d5": 0.814706,
+    "d20": 0.906089,
+    "d1000": 0.99183,
+    "rrf5": 0.874421
+   },
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.0,
+    "prf": null
+   }
+  },
+  "qwen3e06-V__musique": {
+   "npz": "qwen3e06-V__musique.npz",
+   "sha256": "4211396c0ce21beee4da957b27f6bbb3835417ad2062432ffeac17088648e805",
+   "recall": {
+    "d5": 0.424976,
+    "d20": 0.553682,
+    "d1000": 0.841677,
+    "rrf5": 0.457109
+   },
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.0,
+    "prf": null
+   }
+  },
+  "qwen3e06-V-no-gamma__musique": {
+   "npz": "qwen3e06-V-no-gamma__musique.npz",
+   "sha256": "caa32345cc6981ba84130b9b0b64875342e42ca7f7f3d1618bfb1d8f144745e7",
+   "recall": {
+    "d5": 0.412598,
+    "d20": 0.539753,
+    "d1000": 0.836023,
+    "rrf5": 0.449835
+   },
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.0,
+    "prf": null
+   }
+  },
+  "qwen3e06-F__musique": {
+   "npz": "qwen3e06-F__musique.npz",
+   "sha256": "984a0ccf28aa5d7d85defb2a1b8fc8f46a25dddb01e0dceea9bf44600ceb1333",
+   "recall": {
+    "d5": 0.437629,
+    "d20": 0.557751,
+    "d1000": 0.837402,
+    "rrf5": 0.463764
+   },
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   }
+  },
+  "qwen3e06-F-no-gamma__musique": {
+   "npz": "qwen3e06-F-no-gamma__musique.npz",
+   "sha256": "8fef6679cd4588b7524647134c167a32a50335524052b09678f5875a84b36500",
+   "recall": {
+    "d5": 0.424872,
+    "d20": 0.547028,
+    "d1000": 0.832954,
+    "rrf5": 0.45511
+   },
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   }
+  },
+  "qwen3e06-F-no-beta__musique": {
+   "npz": "qwen3e06-F-no-beta__musique.npz",
+   "sha256": "7188e77b3ed77ed2092dfe77fa8222a67ebaa5ff1fd88d5791c5640d5c3e6ebb",
+   "recall": {
+    "d5": 0.42108,
+    "d20": 0.547373,
+    "d1000": 0.833885,
+    "rrf5": 0.455661
+   },
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.0,
+    "prf": null
+   }
+  }
+ },
+ "plan": {
+  "qwen3e06-V": {
+   "gamma": 0.5,
+   "beta": 0.0,
+   "W": null,
+   "w": 0.0,
+   "prf": null
+  },
+  "qwen3e06-V-no-gamma": {
+   "gamma": 0.0,
+   "beta": 0.0,
+   "W": null,
+   "w": 0.0,
+   "prf": null
+  },
+  "qwen3e06-F": {
+   "gamma": 1.0,
+   "beta": 0.75,
+   "W": 64,
+   "w": 0.0,
+   "prf": null
+  },
+  "qwen3e06-F-no-gamma": {
+   "gamma": 0.0,
+   "beta": 0.75,
+   "W": 64,
+   "w": 0.0,
+   "prf": null
+  },
+  "qwen3e06-F-no-beta": {
+   "gamma": 1.0,
+   "beta": 0.0,
+   "W": null,
+   "w": 0.0,
+   "prf": null
+  }
+ },
+ "threads": 8,
+ "code_sha256": {
+  "outputs/mp_unified/zenc2b.py": "f15a7afc4d3442895ac17d1c1bbef40e5a7c0a12be4bb4d29f21828f8690c4c4",
+  "outputs/mp_unified/zenc.py": "0416ecefcb9a803549d2dfa9aef844d66f4c05e2a5b26821930c7f701f32eeb7",
+  "outputs/mp_unified/zenc2m.py": "cf5bd755f39a8149924ae1f42ddf88617979b2e8d2cd1c7161d1964da654cf4f",
+  "outputs/mp_unified/zenc2s.py": "432b8873a55f6f1e7a47f42ed84ad27cc359868985c8aa6b74178f1387a48205",
+  "outputs/mp_unified/zenc2n.py": "21e856aafea20532bfb999632bc424606b0c10da055a0cef2c97f00157e703b3"
+ },
+ "seconds": 412.2,
+ "utc": "2026-11-20T07:29:23Z"
+}

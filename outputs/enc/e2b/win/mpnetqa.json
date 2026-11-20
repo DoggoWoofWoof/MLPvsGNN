@@ -1,0 +1,103 @@
+{
+ "stage": "ENC E2B",
+ "enc": "mpnetqa",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 16",
+ "device": "cuda",
+ "sets": {
+  "squad_w64": {
+   "windows": 86113,
+   "docs": 20233,
+   "stats": {
+    "tokens": 5666404,
+    "cut": 0,
+    "max_len": 68,
+    "limit": 512,
+    "ooms": 0,
+    "budget_end": 131072
+   },
+   "sha256": "d048c28ce437e66b29bbcfdca2dc20c841172defb974b50d2d92cb5b738cae08",
+   "seconds": 33.5
+  },
+  "squad_w126": {
+   "windows": 39407,
+   "docs": 20233,
+   "stats": {
+    "tokens": 4815802,
+    "cut": 0,
+    "max_len": 130,
+    "limit": 512,
+    "ooms": 0,
+    "budget_end": 131072
+   },
+   "sha256": "b04563e82fb0a47e13954d56db113ce726cb82985db42fbfa130ada0220de9c7",
+   "seconds": 29.5
+  },
+  "musique_w64": {
+   "windows": 301495,
+   "docs": 117534,
+   "stats": {
+    "tokens": 19105666,
+    "cut": 0,
+    "max_len": 68,
+    "limit": 512,
+    "ooms": 0,
+    "budget_end": 131072
+   },
+   "sha256": "2aae658a164422ed28236b39af670ccacb379d317f33c086a4d7e0124344867a",
+   "seconds": 114.1
+  },
+  "musique_w126": {
+   "windows": 159298,
+   "docs": 117534,
+   "stats": {
+    "tokens": 15348447,
+    "cut": 0,
+    "max_len": 130,
+    "limit": 512,
+    "ooms": 0,
+    "budget_end": 131072
+   },
+   "sha256": "b8d2cdda2bad486841e1cbc231bc6072aef22b5d00ddf5dc00f7ee3aee4d6615",
+   "seconds": 97.5
+  }
+ },
+ "g2": {
+  "squad_w64": {
+   "one_window_docs": 1199,
+   "share_ge": 1.0,
+   "min_cos": 0.999999,
+   "median_cos": 1.0,
+   "pass": true
+  },
+  "squad_w126": {
+   "one_window_docs": 7789,
+   "share_ge": 1.0,
+   "min_cos": 0.999958,
+   "median_cos": 1.0,
+   "pass": true
+  },
+  "musique_w64": {
+   "one_window_docs": 42772,
+   "share_ge": 1.0,
+   "min_cos": 0.996702,
+   "median_cos": 1.0,
+   "pass": true
+  },
+  "musique_w126": {
+   "one_window_docs": 89306,
+   "share_ge": 1.0,
+   "min_cos": 0.996702,
+   "median_cos": 1.0,
+   "pass": true
+  }
+ },
+ "code_sha256": {
+  "outputs/mp_unified/zenc2b.py": "f15a7afc4d3442895ac17d1c1bbef40e5a7c0a12be4bb4d29f21828f8690c4c4",
+  "outputs/mp_unified/zenc.py": "0416ecefcb9a803549d2dfa9aef844d66f4c05e2a5b26821930c7f701f32eeb7",
+  "outputs/mp_unified/zenc2m.py": "cf5bd755f39a8149924ae1f42ddf88617979b2e8d2cd1c7161d1964da654cf4f",
+  "outputs/mp_unified/zenc2s.py": "432b8873a55f6f1e7a47f42ed84ad27cc359868985c8aa6b74178f1387a48205",
+  "outputs/mp_unified/zenc2n.py": "21e856aafea20532bfb999632bc424606b0c10da055a0cef2c97f00157e703b3"
+ },
+ "seconds": 280.7,
+ "utc": "2026-11-20T06:23:19Z"
+}
