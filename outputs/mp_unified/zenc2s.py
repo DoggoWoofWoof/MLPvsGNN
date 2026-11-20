@@ -251,14 +251,16 @@ def cmd_fuse(a):
 # ── adapt ────────────────────────────────────────────────────────────────────
 
 def build_pairs(root, ds, golds, sel):
-    """14.2's pairs: train-split questions, less s1sel's and those sharing a gold with s1sel or with any non-train
-    question; one (question, gold) pair per gold."""
+    """14.2's pairs: train-split questions, less s1sel's and those sharing a gold with s1sel; one (question, gold) pair
+    per gold. bad = the golds of every non-train question; kept questions sharing one are counted (not dropped: 14.2
+    leaves out no others), and the callers stop if a pair's document is an s1eval gold."""
     sp = M.split_rows(root, ds)
     tr = sp["train"]
     nontrain = np.setdiff1d(np.arange(len(golds)), tr)
     bad = set(ragged([golds[r] for r in nontrain])[0].tolist())
     selg, selr = set(sel["flat"].tolist()), set(sel["rows"].tolist())
-    keep, why = [], {"in_s1sel": 0, "shares_s1sel_gold": 0, "shares_nontrain_gold": 0, "no_gold": 0}
+    keep, why = [], {"in_s1sel": 0, "shares_s1sel_gold": 0, "no_gold": 0}
+    kept_sharing_nontrain = 0
     for r in tr.tolist():
         g = set(golds[r].tolist())
         if r in selr:
@@ -267,14 +269,14 @@ def build_pairs(root, ds, golds, sel):
             why["no_gold"] += 1
         elif g & selg:
             why["shares_s1sel_gold"] += 1
-        elif g & bad:
-            why["shares_nontrain_gold"] += 1
         else:
             keep.append(r)
+            kept_sharing_nontrain += bool(g & bad)
     keep = np.asarray(keep, np.int64)
     pq = np.concatenate([np.full(golds[r].size, i, np.int64) for i, r in enumerate(keep)])
     pd = np.concatenate([golds[r] for r in keep])
-    info = {"train_questions": int(tr.size), "kept_questions": int(keep.size), "pairs": int(pq.size), "dropped": why}
+    info = {"train_questions": int(tr.size), "kept_questions": int(keep.size), "pairs": int(pq.size), "dropped": why,
+            "kept_sharing_a_nontrain_gold": int(kept_sharing_nontrain)}
     return keep, pq, pd, bad, info
 
 
@@ -376,8 +378,10 @@ def adapt_data(root, enc, ds, golds, sel):
     Q = rows_of(root, enc, ds, "queries", keep)
     D = M.load_all(root, enc, ds, "docs")
     if enc == "frozen":
-        top = np.asarray(np.load(root / ds / "retrieval_cache" / "dense_top1000.npz", mmap_mode="r")["ids"][keep][:, :MINE],
-                         np.int64)
+        rec = np.load(root / ds / "retrieval_cache" / "dense_top1000.npz", mmap_mode="r")["ids"]
+        if rec.shape[0] != len(golds):
+            stop(f"{ds}: the record's dense list has {rec.shape[0]} rows, the queries {len(golds)}")
+        top = np.asarray(rec[keep][:, :MINE], np.int64)
     else:
         top, _ = topk(lambda q0, q1: Q[q0:q1] @ D.T, keep.size, MINE, qb=1024)
     hard = hard_negs(top, keep, golds)
@@ -417,8 +421,8 @@ def cmd_adapt(a):
         cs = sel_carve(ds, golds[ds], qids)
         ces[ds] = M.carve(root, ds)
         blocks[ds], bad, info[ds] = adapt_data(root, "mpnet", ds, golds[ds], cs)
-        if not np.isin(ces[ds]["flat"], np.asarray(sorted(bad), np.int64)).all():
-            stop(f"{ds}: an s1eval gold is not a non-train question's gold")
+        if np.isin(blocks[ds]["pd"], ces[ds]["flat"]).any():
+            stop(f"{ds}: a training pair's document is an s1eval gold")
         sels[ds] = (cs, rows_of(root, "mpnet", ds, "queries", cs["rows"]))
         log(f"adapt pairs {ds}: {json.dumps(info[ds])}")
     Ds = {ds: blocks[ds]["D"] for ds in DS}
@@ -500,12 +504,10 @@ def cmd_adapt(a):
 
 def window_spans(offsets, W):
     """Token windows of W at stride W // 2 as character spans; the last window ends at the last token. A text of W
-    tokens or fewer is one window."""
+    tokens or fewer is one window: None, its whole text."""
     L = len(offsets)
-    if L == 0:
-        return [None]
     if L <= W:
-        return [(offsets[0][0], offsets[-1][1])]
+        return [None]
     s = W // 2
     n = 1 + -(-(L - W) // s)
     starts = [min(k * s, L - W) for k in range(n)]
@@ -748,6 +750,8 @@ def selftest_toy():
             if L > W:
                 assert sp[-1][1] == offs[-1][1] and all((b - a + 1) == 3 * W for a, b in sp)
                 assert all(sp[i][0] < sp[i + 1][0] for i in range(len(sp) - 1))
+            else:
+                assert sp == [None]
     # reduceat max equals the per-document maximum
     doc = np.sort(rng.integers(0, 30, 200))
     doc = np.r_[np.arange(30), doc]
@@ -818,6 +822,7 @@ def selftest_real():
         ce = M.carve(root, ds)
         assert np.isin(ce["flat"], np.asarray(sorted(bad), np.int64)).all(), ds
         assert not np.isin(keep, cs["rows"]).any() and not np.isin(pd, cs["flat"]).any(), ds
+        assert not np.isin(pd, ce["flat"]).any(), ds
         out[ds].update(info)
     m = E.load_model("mpnet", "cpu", E.pinned("mpnet"))
     for ds in DS:
