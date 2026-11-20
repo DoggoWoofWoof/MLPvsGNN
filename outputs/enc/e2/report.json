@@ -1,0 +1,908 @@
+{
+ "stage": "ENC E2: report",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md sections 12.9, 12.10 and 12.11",
+ "rule": "R@5 per question, arm minus frozen, zap1.boot_diff (2,000, seed 0, 95%); 11.5's words over SQuAD and MuSiQue s1eval for GNX and zrckpn; the user decides (D101)",
+ "ga": {
+  "frozen": {
+   "verdict": "PASS",
+   "runs": [
+    "t-fz-cols-mue",
+    "t-fz-cols-muf",
+    "t-fz-cols-sqe",
+    "t-fz-cols-sqf",
+    "t-fz-fit-gnx",
+    "t-fz-fit-zg6r-b",
+    "t-fz-fit-zrckpn-b",
+    "t-fz-fit-zspk",
+    "t-fz-fork-gnx",
+    "t-fz-fork-zg6r",
+    "t-fz-fork-zrckpn",
+    "t-fz-lists-mue",
+    "t-fz-lists-muf",
+    "t-fz-lists-sqe",
+    "t-fz-lists-sqf",
+    "t-fz-ltmfit",
+    "t-fz-rd-musique-gnx",
+    "t-fz-rd-musique-zg6r",
+    "t-fz-rd-musique-zrckpn",
+    "t-fz-rd-squad-gnx",
+    "t-fz-rd-squad-zg6r",
+    "t-fz-rd-squad-zrckpn"
+   ],
+   "problems": []
+  },
+  "mpnet": {
+   "verdict": "PASS",
+   "runs": [
+    "t-mp-cols-mue",
+    "t-mp-cols-muf",
+    "t-mp-cols-sqe",
+    "t-mp-cols-sqf",
+    "t-mp-fit-gnx",
+    "t-mp-fit-zg6r",
+    "t-mp-fit-zrckpn",
+    "t-mp-fit-zspk",
+    "t-mp-fork-gnx",
+    "t-mp-fork-zg6r",
+    "t-mp-fork-zrckpn",
+    "t-mp-gate-e",
+    "t-mp-gate-f",
+    "t-mp-lab-e-musique",
+    "t-mp-lab-e-squad",
+    "t-mp-lab-f-musique",
+    "t-mp-lab-f-squad",
+    "t-mp-lists-mue",
+    "t-mp-lists-muf",
+    "t-mp-lists-sqe",
+    "t-mp-lists-sqf",
+    "t-mp-ltmfit",
+    "t-mp-rd-musique-gnx",
+    "t-mp-rd-musique-zg6r",
+    "t-mp-rd-musique-zrckpn",
+    "t-mp-rd-squad-gnx",
+    "t-mp-rd-squad-zg6r",
+    "t-mp-rd-squad-zrckpn",
+    "w1-types-musique",
+    "w1-types-squad",
+    "w1b-a1-pools-sqf",
+    "w1b-merge-mue",
+    "w1b-merge-muf",
+    "w1b-merge-sqe",
+    "w1b-merge-sqf",
+    "w1b-pools-mue-0of1",
+    "w1b-pools-muf-0of2",
+    "w1b-pools-muf-1of2",
+    "w1b-pools-sqe-0of4",
+    "w1b-pools-sqe-1of4",
+    "w1b-pools-sqe-2of4",
+    "w1b-pools-sqe-3of4",
+    "w1b-pools-sqf-0of2",
+    "w1b-pools-sqf-1of2",
+    "w2b-chain-e-musique",
+    "w2b-chain-e-squad",
+    "w2c-chain-f-musique",
+    "w2d-g2-musique",
+    "w2d-g2-squad",
+    "w2e-chain-f-squad"
+   ],
+   "problems": []
+  },
+  "qwen3e06": {
+   "verdict": "PASS",
+   "runs": [
+    "q1-a1-pools-sqf",
+    "q1-chain-e-musique",
+    "q1-chain-e-squad",
+    "q1-chain-f-musique",
+    "q1-chain-f-squad-b",
+    "q1-g-musique",
+    "q1-g-squad",
+    "q1-merge-mue",
+    "q1-merge-muf",
+    "q1-merge-sqe",
+    "q1-merge-sqf",
+    "q1-pools-mue-0of1",
+    "q1-pools-muf-0of2",
+    "q1-pools-muf-1of2",
+    "q1-pools-sqe-0of4",
+    "q1-pools-sqe-1of4",
+    "q1-pools-sqe-2of4",
+    "q1-pools-sqe-3of4",
+    "q1-pools-sqf-0of2",
+    "q1-pools-sqf-1of2",
+    "q1-types-musique",
+    "q1-types-squad",
+    "t-qw-cols-mue",
+    "t-qw-cols-muf",
+    "t-qw-cols-sqe",
+    "t-qw-cols-sqf",
+    "t-qw-fit-gnx",
+    "t-qw-fit-zg6r",
+    "t-qw-fit-zrckpn",
+    "t-qw-fit-zspk",
+    "t-qw-fork-gnx",
+    "t-qw-fork-zg6r",
+    "t-qw-fork-zrckpn",
+    "t-qw-gate-e",
+    "t-qw-gate-f",
+    "t-qw-lab-e-musique",
+    "t-qw-lab-e-squad",
+    "t-qw-lab-f-musique",
+    "t-qw-lab-f-squad",
+    "t-qw-lists-mue",
+    "t-qw-lists-muf",
+    "t-qw-lists-sqe",
+    "t-qw-lists-sqf",
+    "t-qw-ltmfit",
+    "t-qw-rd-musique-gnx",
+    "t-qw-rd-musique-zg6r",
+    "t-qw-rd-musique-zrckpn",
+    "t-qw-rd-squad-gnx",
+    "t-qw-rd-squad-zg6r",
+    "t-qw-rd-squad-zrckpn"
+   ],
+   "problems": []
+  }
+ },
+ "superseded": {
+  "frozen": {
+   "t-fz-fit-zrckpn": "t-fz-fit-zrckpn-b",
+   "t-fz-fit-zg6r": "t-fz-fit-zg6r-b"
+  },
+  "mpnet": {
+   "w2b-chain-f-squad": "w2c-chain-f-squad",
+   "w2c-chain-f-squad": "w2d-chain-f-squad",
+   "w2d-g-musique": "w2d-g2-musique",
+   "w2d-chain-f-squad": "w2e-chain-f-squad",
+   "w2b-chain-f-musique": "w2c-chain-f-musique"
+  },
+  "qwen3e06": {
+   "q1-chain-f-squad": "q1-chain-f-squad-b"
+  }
+ },
+ "cells": {
+  "mpnet zg6r squad": {
+   "questions": 11873,
+   "frozen": 91.13,
+   "arm": 88.54,
+   "pts": -2.59,
+   "ci": [
+    -3.01,
+    -2.15
+   ],
+   "call": "BELOW",
+   "in_pool_rrf": {
+    "frozen": 90.54,
+    "arm": 83.99,
+    "pts": -6.55,
+    "ci": [
+     -7.04,
+     -6.06
+    ],
+    "call": "BELOW"
+   },
+   "reads": {
+    "frozen": {
+     "file": "outputs/enc/e2/collect/frozen/reads/scr-ml1-zg6r-s0/reads/squad__s1eval.npz",
+     "sha256": "e0bd96bed0a80b5b142cb74218c16c0f6009c6ec0f8b51a6c7cd71d8a79d4f6b"
+    },
+    "mpnet": {
+     "file": "outputs/enc/e2/collect/mpnet/reads/scr-ml1-zg6r-s0/reads/squad__s1eval.npz",
+     "sha256": "7d1df5664f3bd95686babcd63ee77b12cbf36400efd71a7a9d485b34322367b3"
+    }
+   },
+   "won_back_pts": 11.59
+  },
+  "mpnet gnx squad": {
+   "questions": 11873,
+   "frozen": 91.05,
+   "arm": 88.43,
+   "pts": -2.62,
+   "ci": [
+    -3.02,
+    -2.16
+   ],
+   "call": "BELOW",
+   "in_pool_rrf": {
+    "frozen": 90.54,
+    "arm": 83.99,
+    "pts": -6.55,
+    "ci": [
+     -7.04,
+     -6.06
+    ],
+    "call": "BELOW"
+   },
+   "reads": {
+    "frozen": {
+     "file": "outputs/enc/e2/collect/frozen/reads/scr-gnx-nx-s0/reads/squad__s1eval.npz",
+     "sha256": "a299ea27351fd3bd0e909d88233d833455bc8980dc7f40cbd445b791be4b5138"
+    },
+    "mpnet": {
+     "file": "outputs/enc/e2/collect/mpnet/reads/scr-gnx-nx-s0/reads/squad__s1eval.npz",
+     "sha256": "ea0e8fe1e27268c765431050cfe19cea1c1cf914782e086bf81407edb491a4de"
+    }
+   },
+   "won_back_pts": 11.56
+  },
+  "mpnet zrckpn squad": {
+   "questions": 11873,
+   "frozen": 91.42,
+   "arm": 88.65,
+   "pts": -2.77,
+   "ci": [
+    -3.18,
+    -2.35
+   ],
+   "call": "BELOW",
+   "in_pool_rrf": {
+    "frozen": 90.54,
+    "arm": 83.99,
+    "pts": -6.55,
+    "ci": [
+     -7.04,
+     -6.06
+    ],
+    "call": "BELOW"
+   },
+   "reads": {
+    "frozen": {
+     "file": "outputs/enc/e2/collect/frozen/reads/scr-ltm-zrckpn-s0/reads/squad__s1eval.npz",
+     "sha256": "053613c279fe4f9399ea70d483408eefdd09820a05181fc30e2bd3be6cd1089f"
+    },
+    "mpnet": {
+     "file": "outputs/enc/e2/collect/mpnet/reads/scr-ltm-zrckpn-s0/reads/squad__s1eval.npz",
+     "sha256": "36b4c3a74597a4520e58d1877c6cf9efbc41a10f5b191cd0feff50f650345709"
+    }
+   },
+   "won_back_pts": 11.41
+  },
+  "mpnet zg6r musique": {
+   "questions": 2417,
+   "frozen": 57.53,
+   "arm": 53.28,
+   "pts": -4.25,
+   "ci": [
+    -5.18,
+    -3.35
+   ],
+   "call": "BELOW",
+   "in_pool_rrf": {
+    "frozen": 47.34,
+    "arm": 41.22,
+    "pts": -6.12,
+    "ci": [
+     -6.92,
+     -5.3
+    ],
+    "call": "BELOW"
+   },
+   "reads": {
+    "frozen": {
+     "file": "outputs/enc/e2/collect/frozen/reads/scr-ml1-zg6r-s0/reads/musique__s1eval.npz",
+     "sha256": "1f62f22791ce7affecd637da87db4bf3d8e1d5b078f19b5e6bc42f5b98d3492f"
+    },
+    "mpnet": {
+     "file": "outputs/enc/e2/collect/mpnet/reads/scr-ml1-zg6r-s0/reads/musique__s1eval.npz",
+     "sha256": "e392e27d945a5b68dbb053987092565e25fcb7e5bde22df95e36dd5607f37b8b"
+    }
+   },
+   "won_back_pts": 7.64
+  },
+  "mpnet gnx musique": {
+   "questions": 2417,
+   "frozen": 58.21,
+   "arm": 53.07,
+   "pts": -5.14,
+   "ci": [
+    -6.06,
+    -4.23
+   ],
+   "call": "BELOW",
+   "in_pool_rrf": {
+    "frozen": 47.34,
+    "arm": 41.22,
+    "pts": -6.12,
+    "ci": [
+     -6.92,
+     -5.3
+    ],
+    "call": "BELOW"
+   },
+   "reads": {
+    "frozen": {
+     "file": "outputs/enc/e2/collect/frozen/reads/scr-gnx-nx-s0/reads/musique__s1eval.npz",
+     "sha256": "3518402006c23c14635b7571305497c8be352c2cae4c1bbe32fd3dba2ed1b053"
+    },
+    "mpnet": {
+     "file": "outputs/enc/e2/collect/mpnet/reads/scr-gnx-nx-s0/reads/musique__s1eval.npz",
+     "sha256": "5b769e38c070de44a6e31c2f1eaa0369974223eaede43ec62b9b034692aa2acb"
+    }
+   },
+   "won_back_pts": 6.75
+  },
+  "mpnet zrckpn musique": {
+   "questions": 2417,
+   "frozen": 57.95,
+   "arm": 54.13,
+   "pts": -3.82,
+   "ci": [
+    -4.72,
+    -2.95
+   ],
+   "call": "BELOW",
+   "in_pool_rrf": {
+    "frozen": 47.34,
+    "arm": 41.22,
+    "pts": -6.12,
+    "ci": [
+     -6.92,
+     -5.3
+    ],
+    "call": "BELOW"
+   },
+   "reads": {
+    "frozen": {
+     "file": "outputs/enc/e2/collect/frozen/reads/scr-ltm-zrckpn-s0/reads/musique__s1eval.npz",
+     "sha256": "e2aa151004904155c6ae4e56205dc27d6678b57f9d87a7f2349ab1aa966a18dc"
+    },
+    "mpnet": {
+     "file": "outputs/enc/e2/collect/mpnet/reads/scr-ltm-zrckpn-s0/reads/musique__s1eval.npz",
+     "sha256": "b93cfff9fa2edd7632a74f7aec22973c3de0e991b6c35d7f606d17bbcb5c409c"
+    }
+   },
+   "won_back_pts": 8.07
+  },
+  "qwen3e06 zg6r squad": {
+   "questions": 11873,
+   "frozen": 91.13,
+   "arm": 89.62,
+   "pts": -1.51,
+   "ci": [
+    -1.9,
+    -1.11
+   ],
+   "call": "BELOW",
+   "in_pool_rrf": {
+    "frozen": 90.54,
+    "arm": 87.15,
+    "pts": -3.39,
+    "ci": [
+     -3.8,
+     -3.0
+    ],
+    "call": "BELOW"
+   },
+   "reads": {
+    "frozen": {
+     "file": "outputs/enc/e2/collect/frozen/reads/scr-ml1-zg6r-s0/reads/squad__s1eval.npz",
+     "sha256": "e0bd96bed0a80b5b142cb74218c16c0f6009c6ec0f8b51a6c7cd71d8a79d4f6b"
+    },
+    "qwen3e06": {
+     "file": "outputs/enc/e2/collect/qwen3e06/reads/scr-ml1-zg6r-s0/reads/squad__s1eval.npz",
+     "sha256": "7b465c51b8d09464eaf6472f2315a8642341de1eecc67094eef04d582b73c313"
+    }
+   },
+   "won_back_pts": 4.82
+  },
+  "qwen3e06 gnx squad": {
+   "questions": 11873,
+   "frozen": 91.05,
+   "arm": 89.56,
+   "pts": -1.49,
+   "ci": [
+    -1.88,
+    -1.09
+   ],
+   "call": "BELOW",
+   "in_pool_rrf": {
+    "frozen": 90.54,
+    "arm": 87.15,
+    "pts": -3.39,
+    "ci": [
+     -3.8,
+     -3.0
+    ],
+    "call": "BELOW"
+   },
+   "reads": {
+    "frozen": {
+     "file": "outputs/enc/e2/collect/frozen/reads/scr-gnx-nx-s0/reads/squad__s1eval.npz",
+     "sha256": "a299ea27351fd3bd0e909d88233d833455bc8980dc7f40cbd445b791be4b5138"
+    },
+    "qwen3e06": {
+     "file": "outputs/enc/e2/collect/qwen3e06/reads/scr-gnx-nx-s0/reads/squad__s1eval.npz",
+     "sha256": "338732a7e56d7382ee82e0365666940bf592a9478915229ed15152db3657ca53"
+    }
+   },
+   "won_back_pts": 4.84
+  },
+  "qwen3e06 zrckpn squad": {
+   "questions": 11873,
+   "frozen": 91.42,
+   "arm": 89.75,
+   "pts": -1.67,
+   "ci": [
+    -2.03,
+    -1.29
+   ],
+   "call": "BELOW",
+   "in_pool_rrf": {
+    "frozen": 90.54,
+    "arm": 87.15,
+    "pts": -3.39,
+    "ci": [
+     -3.8,
+     -3.0
+    ],
+    "call": "BELOW"
+   },
+   "reads": {
+    "frozen": {
+     "file": "outputs/enc/e2/collect/frozen/reads/scr-ltm-zrckpn-s0/reads/squad__s1eval.npz",
+     "sha256": "053613c279fe4f9399ea70d483408eefdd09820a05181fc30e2bd3be6cd1089f"
+    },
+    "qwen3e06": {
+     "file": "outputs/enc/e2/collect/qwen3e06/reads/scr-ltm-zrckpn-s0/reads/squad__s1eval.npz",
+     "sha256": "59a1c4ce0b0858e9bf4e4c3064c05bd8314060881c3374b24e9c40d04b7ea14d"
+    }
+   },
+   "won_back_pts": 4.66
+  },
+  "qwen3e06 zg6r musique": {
+   "questions": 2417,
+   "frozen": 57.53,
+   "arm": 55.33,
+   "pts": -2.19,
+   "ci": [
+    -3.1,
+    -1.35
+   ],
+   "call": "BELOW",
+   "in_pool_rrf": {
+    "frozen": 47.34,
+    "arm": 45.01,
+    "pts": -2.33,
+    "ci": [
+     -3.0,
+     -1.61
+    ],
+    "call": "BELOW"
+   },
+   "reads": {
+    "frozen": {
+     "file": "outputs/enc/e2/collect/frozen/reads/scr-ml1-zg6r-s0/reads/musique__s1eval.npz",
+     "sha256": "1f62f22791ce7affecd637da87db4bf3d8e1d5b078f19b5e6bc42f5b98d3492f"
+    },
+    "qwen3e06": {
+     "file": "outputs/enc/e2/collect/qwen3e06/reads/scr-ml1-zg6r-s0/reads/musique__s1eval.npz",
+     "sha256": "b0848cdbe244cd7c9437d79b9144f99e3be0512892c875fa5d49e69985e9be9d"
+    }
+   },
+   "won_back_pts": 2.27
+  },
+  "qwen3e06 gnx musique": {
+   "questions": 2417,
+   "frozen": 58.21,
+   "arm": 54.63,
+   "pts": -3.58,
+   "ci": [
+    -4.47,
+    -2.71
+   ],
+   "call": "BELOW",
+   "in_pool_rrf": {
+    "frozen": 47.34,
+    "arm": 45.01,
+    "pts": -2.33,
+    "ci": [
+     -3.0,
+     -1.61
+    ],
+    "call": "BELOW"
+   },
+   "reads": {
+    "frozen": {
+     "file": "outputs/enc/e2/collect/frozen/reads/scr-gnx-nx-s0/reads/musique__s1eval.npz",
+     "sha256": "3518402006c23c14635b7571305497c8be352c2cae4c1bbe32fd3dba2ed1b053"
+    },
+    "qwen3e06": {
+     "file": "outputs/enc/e2/collect/qwen3e06/reads/scr-gnx-nx-s0/reads/musique__s1eval.npz",
+     "sha256": "6eec9425a25768d2e83e8214a80b176d078a81e9862e6b14f8d651cea8111cb5"
+    }
+   },
+   "won_back_pts": 0.88
+  },
+  "qwen3e06 zrckpn musique": {
+   "questions": 2417,
+   "frozen": 57.95,
+   "arm": 54.03,
+   "pts": -3.91,
+   "ci": [
+    -4.76,
+    -3.1
+   ],
+   "call": "BELOW",
+   "in_pool_rrf": {
+    "frozen": 47.34,
+    "arm": 45.01,
+    "pts": -2.33,
+    "ci": [
+     -3.0,
+     -1.61
+    ],
+    "call": "BELOW"
+   },
+   "reads": {
+    "frozen": {
+     "file": "outputs/enc/e2/collect/frozen/reads/scr-ltm-zrckpn-s0/reads/musique__s1eval.npz",
+     "sha256": "e2aa151004904155c6ae4e56205dc27d6678b57f9d87a7f2349ab1aa966a18dc"
+    },
+    "qwen3e06": {
+     "file": "outputs/enc/e2/collect/qwen3e06/reads/scr-ltm-zrckpn-s0/reads/musique__s1eval.npz",
+     "sha256": "e821a5faa54436c4a195268b9e08580235acdd5855cd62c26c793c20cd24a468"
+    }
+   },
+   "won_back_pts": 0.55
+  }
+ },
+ "beside": {
+  "mpnet squad": {
+   "questions": 11873,
+   "e0_frozen": {
+    "file": "outputs/enc/e0/frozen/squad.npz",
+    "sha256": "586c809fa9bb0386b87c196f3847994a2dc8de43c3b09bc8d0944934bd67da01"
+   },
+   "e0_mpnet": {
+    "file": "outputs/enc/e0/mpnet/squad.npz",
+    "sha256": "d8cea676763e69a577efc1648c7ca43a2ac8b854f1b32512076973c227ac1dff"
+   },
+   "first_stage": {
+    "frozen": 87.69,
+    "arm": 73.52,
+    "pts": -14.18,
+    "ci": [
+     -14.87,
+     -13.47
+    ],
+    "call": "BELOW"
+   },
+   "pool": {
+    "frozen": 97.98,
+    "arm": 96.88,
+    "pts": -1.09,
+    "ci": [
+     -1.31,
+     -0.88
+    ],
+    "call": "BELOW",
+    "mean_size": {
+     "frozen": 50.0,
+     "arm": 50.0
+    },
+    "gold": {
+     "file": "outputs/enc/e0/gold/squad.npz",
+     "sha256": "705195dc8b4fc2fec8274db1f4592112220819306277ad012738ae6581c33c8f"
+    },
+    "parts": {
+     "frozen": [
+      {
+       "file": "outputs/enc/e2/collect/frozen/pools/squad__s1eval__0of4.npz",
+       "sha256": "d1018c06332effbc9e27d1c393c38bdff620f54944e6b1df841da6c1cd4580d5"
+      },
+      {
+       "file": "outputs/enc/e2/collect/frozen/pools/squad__s1eval__1of4.npz",
+       "sha256": "66cf4658f59f8620761b3b68150282942877a6370f29640ed0ce81a2d533564d"
+      },
+      {
+       "file": "outputs/enc/e2/collect/frozen/pools/squad__s1eval__2of4.npz",
+       "sha256": "385744afb7f40ba43e844ffb2609d72569d6d50a38a77852fc61d62dc438786f"
+      },
+      {
+       "file": "outputs/enc/e2/collect/frozen/pools/squad__s1eval__3of4.npz",
+       "sha256": "b96fce65687df79bf72869091faf4e96b39aa4fa03d483ee5d03918ed7e032ff"
+      }
+     ],
+     "mpnet": [
+      {
+       "file": "outputs/enc/e2/collect/mpnet/pools/squad__s1eval__0of4.npz",
+       "sha256": "9cb681dc8e6026a4897d69345a794109c6e36b981c639f89de00fcf626e5ab57"
+      },
+      {
+       "file": "outputs/enc/e2/collect/mpnet/pools/squad__s1eval__1of4.npz",
+       "sha256": "e4c8834ed1b8ff17e68a64ff61363e411b1ee5e9894714a8f948f6729a7a8b3b"
+      },
+      {
+       "file": "outputs/enc/e2/collect/mpnet/pools/squad__s1eval__2of4.npz",
+       "sha256": "4eb093b781f2dda085221fd8565d998a41c4d4a27d69a8f677c43ddde2642862"
+      },
+      {
+       "file": "outputs/enc/e2/collect/mpnet/pools/squad__s1eval__3of4.npz",
+       "sha256": "7df8a9d4497a76ca10c71b2ba7da88f83cdbcdda20ee2182712a2d0fe61ffc7a"
+      }
+     ]
+    }
+   }
+  },
+  "mpnet musique": {
+   "questions": 2417,
+   "e0_frozen": {
+    "file": "outputs/enc/e0/frozen/musique.npz",
+    "sha256": "b274c6dd1bf403b224bdf057132baa578b0e893cad62acc2be5951eced700ad9"
+   },
+   "e0_mpnet": {
+    "file": "outputs/enc/e0/mpnet/musique.npz",
+    "sha256": "0d63bd3886cc14c1510b8ceb9b104536d97f5dbd6b5865f5131c4545e569f566"
+   },
+   "first_stage": {
+    "frozen": 45.72,
+    "arm": 33.83,
+    "pts": -11.89,
+    "ci": [
+     -12.99,
+     -10.81
+    ],
+    "call": "BELOW"
+   },
+   "pool": {
+    "frozen": 97.77,
+    "arm": 97.22,
+    "pts": -0.55,
+    "ci": [
+     -0.85,
+     -0.24
+    ],
+    "call": "BELOW",
+    "mean_size": {
+     "frozen": 5263.6,
+     "arm": 5254.0
+    },
+    "gold": {
+     "file": "outputs/enc/e0/gold/musique.npz",
+     "sha256": "ead7f553619406b9d9ea12cec0b55ceae00913918a77c22bc23d555356ab0424"
+    },
+    "parts": {
+     "frozen": [
+      {
+       "file": "outputs/enc/e2/collect/frozen/pools/musique__s1eval__0of1.npz",
+       "sha256": "6bcb58bd8a2ee319917be3fb4e777a1ca082af5f74a3c411bac6527f1a2333e3"
+      }
+     ],
+     "mpnet": [
+      {
+       "file": "outputs/enc/e2/collect/mpnet/pools/musique__s1eval__0of1.npz",
+       "sha256": "35f2f601a41ef77c7de36a3ef7cfe4dc9d0b646a7226cde9abf463b8985c23ba"
+      }
+     ]
+    }
+   }
+  },
+  "qwen3e06 squad": {
+   "questions": 11873,
+   "e0_frozen": {
+    "file": "outputs/enc/e0/frozen/squad.npz",
+    "sha256": "586c809fa9bb0386b87c196f3847994a2dc8de43c3b09bc8d0944934bd67da01"
+   },
+   "e0_qwen3e06": {
+    "file": "outputs/enc/e0/qwen3e06/squad.npz",
+    "sha256": "bb1aa1bcb510f1a0f335ea09c66b778813579fe0645e735b406210b6c192c31f"
+   },
+   "first_stage": {
+    "frozen": 87.69,
+    "arm": 81.37,
+    "pts": -6.33,
+    "ci": [
+     -6.91,
+     -5.75
+    ],
+    "call": "BELOW"
+   },
+   "pool": {
+    "frozen": 97.98,
+    "arm": 97.09,
+    "pts": -0.88,
+    "ci": [
+     -1.08,
+     -0.7
+    ],
+    "call": "BELOW",
+    "mean_size": {
+     "frozen": 50.0,
+     "arm": 50.0
+    },
+    "gold": {
+     "file": "outputs/enc/e0/gold/squad.npz",
+     "sha256": "705195dc8b4fc2fec8274db1f4592112220819306277ad012738ae6581c33c8f"
+    },
+    "parts": {
+     "frozen": [
+      {
+       "file": "outputs/enc/e2/collect/frozen/pools/squad__s1eval__0of4.npz",
+       "sha256": "d1018c06332effbc9e27d1c393c38bdff620f54944e6b1df841da6c1cd4580d5"
+      },
+      {
+       "file": "outputs/enc/e2/collect/frozen/pools/squad__s1eval__1of4.npz",
+       "sha256": "66cf4658f59f8620761b3b68150282942877a6370f29640ed0ce81a2d533564d"
+      },
+      {
+       "file": "outputs/enc/e2/collect/frozen/pools/squad__s1eval__2of4.npz",
+       "sha256": "385744afb7f40ba43e844ffb2609d72569d6d50a38a77852fc61d62dc438786f"
+      },
+      {
+       "file": "outputs/enc/e2/collect/frozen/pools/squad__s1eval__3of4.npz",
+       "sha256": "b96fce65687df79bf72869091faf4e96b39aa4fa03d483ee5d03918ed7e032ff"
+      }
+     ],
+     "qwen3e06": [
+      {
+       "file": "outputs/enc/e2/collect/qwen3e06/pools/squad__s1eval__0of4.npz",
+       "sha256": "e12e2235d1fd2b95c90a28a48a1dd913e5e58c2576332e359a42d235a07a41dd"
+      },
+      {
+       "file": "outputs/enc/e2/collect/qwen3e06/pools/squad__s1eval__1of4.npz",
+       "sha256": "9c5d03a2fd795335ea3ef699e18a705e3c81fc43bd1a0ba00eb2e2ba5259ebb2"
+      },
+      {
+       "file": "outputs/enc/e2/collect/qwen3e06/pools/squad__s1eval__2of4.npz",
+       "sha256": "14f586c25f0740e1243b49376f1220aec34d9b5aa741e8fec38b7f781fa76b0d"
+      },
+      {
+       "file": "outputs/enc/e2/collect/qwen3e06/pools/squad__s1eval__3of4.npz",
+       "sha256": "b4188c159d7372ef38c5694326f23b2d855f21a225aa70f4e855b55f652e2b89"
+      }
+     ]
+    }
+   }
+  },
+  "qwen3e06 musique": {
+   "questions": 2417,
+   "e0_frozen": {
+    "file": "outputs/enc/e0/frozen/musique.npz",
+    "sha256": "b274c6dd1bf403b224bdf057132baa578b0e893cad62acc2be5951eced700ad9"
+   },
+   "e0_qwen3e06": {
+    "file": "outputs/enc/e0/qwen3e06/musique.npz",
+    "sha256": "43ba8ae5fb289c41cd2efe2239c00d7bd22165e93fab9ca1dd65c25aa2f5c1dd"
+   },
+   "first_stage": {
+    "frozen": 45.72,
+    "arm": 41.26,
+    "pts": -4.46,
+    "ci": [
+     -5.41,
+     -3.52
+    ],
+    "call": "BELOW"
+   },
+   "pool": {
+    "frozen": 97.77,
+    "arm": 97.19,
+    "pts": -0.58,
+    "ci": [
+     -0.86,
+     -0.3
+    ],
+    "call": "BELOW",
+    "mean_size": {
+     "frozen": 5263.6,
+     "arm": 5415.9
+    },
+    "gold": {
+     "file": "outputs/enc/e0/gold/musique.npz",
+     "sha256": "ead7f553619406b9d9ea12cec0b55ceae00913918a77c22bc23d555356ab0424"
+    },
+    "parts": {
+     "frozen": [
+      {
+       "file": "outputs/enc/e2/collect/frozen/pools/musique__s1eval__0of1.npz",
+       "sha256": "6bcb58bd8a2ee319917be3fb4e777a1ca082af5f74a3c411bac6527f1a2333e3"
+      }
+     ],
+     "qwen3e06": [
+      {
+       "file": "outputs/enc/e2/collect/qwen3e06/pools/musique__s1eval__0of1.npz",
+       "sha256": "8c31413619705f4ffc82e33567afdf333cb309e6f2e3a86d8c9b1e8f3779bccb"
+      }
+     ]
+    }
+   }
+  }
+ },
+ "calls": {
+  "mpnet": {
+   "gnx": {
+    "gaps": {
+     "squad": [
+      -2.62,
+      -3.02
+     ],
+     "musique": [
+      -5.14,
+      -6.06
+     ]
+    },
+    "call": "LOSES"
+   },
+   "zrckpn": {
+    "gaps": {
+     "squad": [
+      -2.77,
+      -3.18
+     ],
+     "musique": [
+      -3.82,
+      -4.72
+     ]
+    },
+    "call": "LOSES"
+   }
+  },
+  "qwen3e06": {
+   "gnx": {
+    "gaps": {
+     "squad": [
+      -1.49,
+      -1.88
+     ],
+     "musique": [
+      -3.58,
+      -4.47
+     ]
+    },
+    "call": "LOSES"
+   },
+   "zrckpn": {
+    "gaps": {
+     "squad": [
+      -1.67,
+      -2.03
+     ],
+     "musique": [
+      -3.91,
+      -4.76
+     ]
+    },
+    "call": "LOSES"
+   }
+  }
+ },
+ "cost": {
+  "frozen": {
+   "params": null,
+   "dim": 1536,
+   "bytes_per_row_f16": 3072,
+   "padded_to": 1536,
+   "audited_seconds": {
+    "other": 391.4,
+    "fits": 13061.8,
+    "reads": 1052.8
+   }
+  },
+  "mpnet": {
+   "params": 109486464,
+   "dim": 768,
+   "bytes_per_row_f16": 1536,
+   "padded_to": 1536,
+   "audited_seconds": {
+    "other": 24131.9,
+    "fits": 13162.6,
+    "reads": 1121.2
+   }
+  },
+  "qwen3e06": {
+   "params": 595776512,
+   "dim": 1024,
+   "bytes_per_row_f16": 2048,
+   "padded_to": 1536,
+   "audited_seconds": {
+    "other": 26900.2,
+    "fits": 11691.3,
+    "reads": 1311.8
+   }
+  }
+ },
+ "problems": [],
+ "code_sha256": "f105a790023a62f63ca99d091448d6cdc654b5575ccd29ca6c5ab45bf84ccd57",
+ "seconds": 53.6,
+ "utc": "2026-11-20T02:41:00Z"
+}

@@ -1006,6 +1006,17 @@ about 21 November; the report as 12.9 says.
   carried.json; the code unchanged). zenc2w refuses a tag that holds a run, so the feeder's retry of the row runs
   under q1-chain-f-squad-b (docs/ENC_E2_RUNS.json: superseded). Nothing else differs.
 
+- **qwen3e06's calls; E2 complete (20 Nov 2026, 08:11 IST).** qwen3e06's fits, forks and reads ran, then
+  e2r-collect-qw and the report (outputs/enc/e2/report.md). GA passes in all three worlds. Both deciding models LOSE:
+  - GNX: SQuAD -1.49 [-1.88, -1.09], MuSiQue -3.58 [-4.47, -2.71].
+  - zrckpn: SQuAD -1.67 [-2.03, -1.29], MuSiQue -3.91 [-4.76, -3.10].
+  - zg6r, read beside: SQuAD -1.51 [-1.90, -1.11], MuSiQue -2.19 [-3.10, -1.35].
+  - The first stage loses 6.33 (SQuAD) and 4.46 (MuSiQue) points. The models win back 4.66 to 4.84 on SQuAD but only
+    0.55 to 0.88 on MuSiQue (2.27 for zg6r). The pools hold 0.88 and 0.58 points fewer golds.
+  - Against mpnet (-2.62 / -5.14 GNX, -2.77 / -3.82 zrckpn), qwen3e06 loses less on SQuAD and about as much on MuSiQue.
+  Every E2 cell is read: mpnet LOSES and qwen3e06 LOSES on both deciding models. No pick is made (12.5). The user
+  decides (D101).
+
 ## 13. E2M: mpnet's vectors mapped into the frozen space, at the first stage (declared 20 Nov 2026, 01:00 IST, before any map is fit)
 
 Code: outputs/mp_unified/zenc2m.py (run, report, selftest). Outputs: outputs/enc/e2m/. The user asked for it on 20 Nov
@@ -1221,3 +1232,35 @@ Nothing is declared. The calls go to the user.
 
 e2n-selftest, e2n-run (CPU, 8 threads, about 2 to 3 h: the self form searches the 5.2M documents for HotpotQA's 90,447
 train questions, and frozen's reads search its 1,536-wide index), e2n-report. The output is a few MB.
+
+### 14.8 Report (20 Nov 2026, 08:00 IST): win IMPROVES, fuse IMPROVES, adapt NO
+
+From `zenc2s.py report` (outputs/enc/e2s/report.md; the arms' records fuse.json, adapt.json, win.json and
+win/winenc.json). G1 passed in every run (the raw reads equal E0's on every question at every k, HotpotQA included). G2
+passed: one-window documents' window vectors against E1's, minimum cosine 0.9999 (SQuAD) and 0.9996 / 0.9981 (MuSiQue
+at W 64 / 126). The windows: SQuAD 86,113 (W 64) and 39,407 (W 126); MuSiQue 301,495 and 159,298; encoded in 287 s.
+
+Won back is the read minus raw mpnet's (E0), s1eval dense R@5, points, 95% paired bootstrap:
+
+| arm (setting, by s1sel) | SQuAD won back | MuSiQue won back | share of E0's gap won (SQuAD / MuSiQue) | call |
+|---|---|---|---|---|
+| win (W 64, beta 0.5) | +5.05 [+4.58, +5.53] | +0.86 [+0.38, +1.36] | 36% / 7% | IMPROVES |
+| fuse (w 0.5) | +2.96 [+2.56, +3.39] | +1.52 [+0.96, +2.08] | 21% / 13% | IMPROVES |
+| adapt (linear, lr 1e-4, epoch 4) | -0.88 [-1.38, -0.38] | +4.46 [+3.66, +5.29] | -6% / 38% | NO |
+
+- **adapt on HotpotQA, never trained on:** +3.38 [+2.88, +3.89] over raw mpnet (46.01 against 42.63), so the NO is not
+  IN-DOMAIN ONLY. Its pairs were 118,903 (SQuAD) and 36,564 (MuSiQue). Every one of the six adapter settings beat
+  raw mpnet on the s1sel mean (0.540 to between 0.554 and 0.576).
+- **Beside: cross maps.** SQuAD's map read on MuSiQue +2.43 [+1.88, +3.00]; MuSiQue's map read on SQuAD -3.42 [-3.94,
+  -2.89]. The same recipe on the frozen vectors: SQuAD -0.87 [-1.24, -0.50], MuSiQue +2.17 [+1.46, +2.91]. The map
+  helps multi-hop questions and costs SQuAD a little, on both encoders.
+- **Beside: the windows.** On s1sel, W 64 beats W 126 on SQuAD at every beta, on MuSiQue up to beta 0.5. On SQuAD the window score alone (beta 1) is
+  already above the document vector, and the mix is best; on MuSiQue windows help only a little and alone they hurt.
+- **Beside: what is left.** Every arm's gap to frozen stays far outside E2M's bars (win -9.13 / -11.03; fuse -11.22 /
+  -10.37; adapt -15.05 / -7.43; the bars need about -5 / -3).
+- **What the calls say:** yes, mpnet's vectors can be improved without touching mpnet. Each method wins back a part of
+  the gap, and each helps a different place: windows help SQuAD's single-paragraph questions, the question map helps
+  multi-hop questions (MuSiQue, and HotpotQA unseen), and fusing two small encoders helps both a little. The three were
+  read one at a time; how they combine was not tested. Three arms were read, so one lucky pass is more likely than 5%;
+  two passed, each on both carves.
+- Nothing is declared after E2S (14.6). The user sets the next step.

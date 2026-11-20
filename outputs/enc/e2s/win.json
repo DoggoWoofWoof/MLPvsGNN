@@ -1,0 +1,177 @@
+{
+ "stage": "ENC E2S",
+ "arm": "win",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 14",
+ "curve": [
+  {
+   "W": 64,
+   "beta": 0.0,
+   "s1sel_r5": {
+    "squad": 0.76235,
+    "musique": 0.318177
+   },
+   "mean": 0.5402633396752674
+  },
+  {
+   "W": 64,
+   "beta": 0.25,
+   "s1sel_r5": {
+    "squad": 0.790387,
+    "musique": 0.325837
+   },
+   "mean": 0.5581118878481464
+  },
+  {
+   "W": 64,
+   "beta": 0.5,
+   "s1sel_r5": {
+    "squad": 0.805073,
+    "musique": 0.322577
+   },
+   "mean": 0.5638252858077031
+  },
+  {
+   "W": 64,
+   "beta": 0.75,
+   "s1sel_r5": {
+    "squad": 0.789052,
+    "musique": 0.308942
+   },
+   "mean": 0.5489969169380702
+  },
+  {
+   "W": 64,
+   "beta": 1.0,
+   "s1sel_r5": {
+    "squad": 0.780374,
+    "musique": 0.28053
+   },
+   "mean": 0.5304520180173594
+  },
+  {
+   "W": 126,
+   "beta": 0.0,
+   "s1sel_r5": {
+    "squad": 0.76235,
+    "musique": 0.318177
+   },
+   "mean": 0.5402633396752674
+  },
+  {
+   "W": 126,
+   "beta": 0.25,
+   "s1sel_r5": {
+    "squad": 0.767023,
+    "musique": 0.319263
+   },
+   "mean": 0.5431430303420641
+  },
+  {
+   "W": 126,
+   "beta": 0.5,
+   "s1sel_r5": {
+    "squad": 0.769693,
+    "musique": 0.320187
+   },
+   "mean": 0.5449398995850762
+  },
+  {
+   "W": 126,
+   "beta": 0.75,
+   "s1sel_r5": {
+    "squad": 0.768358,
+    "musique": 0.317851
+   },
+   "mean": 0.5431043723951217
+  },
+  {
+   "W": 126,
+   "beta": 1.0,
+   "s1sel_r5": {
+    "squad": 0.763017,
+    "musique": 0.309757
+   },
+   "mean": 0.5363869920142691
+  }
+ ],
+ "chosen": {
+  "W": 64,
+  "beta": 0.5
+ },
+ "g1": {
+  "squad": {
+   "equal_share": {
+    "d5": 1.0,
+    "d20": 1.0,
+    "d1000": 1.0,
+    "rrf5": 1.0
+   },
+   "pass": true
+  },
+  "musique": {
+   "equal_share": {
+    "d5": 1.0,
+    "d20": 1.0,
+    "d1000": 1.0,
+    "rrf5": 1.0
+   },
+   "pass": true
+  }
+ },
+ "g2": {
+  "squad_w64": {
+   "one_window_docs": 1199,
+   "share_ge": 1.0,
+   "min_cos": 0.999927,
+   "pass": true
+  },
+  "squad_w126": {
+   "one_window_docs": 7789,
+   "share_ge": 1.0,
+   "min_cos": 0.999923,
+   "pass": true
+  },
+  "musique_w64": {
+   "one_window_docs": 42772,
+   "share_ge": 1.0,
+   "min_cos": 0.999569,
+   "pass": true
+  },
+  "musique_w126": {
+   "one_window_docs": 89306,
+   "share_ge": 0.999989,
+   "min_cos": 0.998078,
+   "pass": true
+  }
+ },
+ "reads": {
+  "win__squad": {
+   "npz": "win__squad.npz",
+   "sha256": "c2277268269895f33cd039129c0c6c714faff0c72645d78c8d7f43291126ecdf",
+   "recall": {
+    "d5": 0.785648,
+    "d20": 0.89135,
+    "d1000": 0.989977,
+    "rrf5": 0.859513
+   }
+  },
+  "win__musique": {
+   "npz": "win__musique.npz",
+   "sha256": "dbde7586bfeb0edd17aea0185ed077f8e259114b46a222b959531db1933c13fd",
+   "recall": {
+    "d5": 0.346883,
+    "d20": 0.473969,
+    "d1000": 0.809819,
+    "rrf5": 0.415563
+   }
+  }
+ },
+ "threads": 8,
+ "code_sha256": {
+  "outputs/mp_unified/zenc2s.py": "432b8873a55f6f1e7a47f42ed84ad27cc359868985c8aa6b74178f1387a48205",
+  "outputs/mp_unified/zenc.py": "0416ecefcb9a803549d2dfa9aef844d66f4c05e2a5b26821930c7f701f32eeb7",
+  "outputs/mp_unified/zenc2m.py": "cf5bd755f39a8149924ae1f42ddf88617979b2e8d2cd1c7161d1964da654cf4f"
+ },
+ "seconds": 142.8,
+ "utc": "2026-11-20T02:29:12Z"
+}

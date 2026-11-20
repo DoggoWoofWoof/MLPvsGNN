@@ -1,0 +1,122 @@
+{
+ "stage": "ENC E2S",
+ "arm": "fuse",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 14",
+ "curve": [
+  {
+   "w": 0.0,
+   "s1sel_r5": {
+    "squad": 0.76235,
+    "musique": 0.318177
+   },
+   "mean": 0.5402633396752674
+  },
+  {
+   "w": 0.25,
+   "s1sel_r5": {
+    "squad": 0.773698,
+    "musique": 0.333388
+   },
+   "mean": 0.5535429609463349
+  },
+  {
+   "w": 0.5,
+   "s1sel_r5": {
+    "squad": 0.783044,
+    "musique": 0.334583
+   },
+   "mean": 0.558813424418129
+  },
+  {
+   "w": 0.75,
+   "s1sel_r5": {
+    "squad": 0.775033,
+    "musique": 0.335343
+   },
+   "mean": 0.5551883534122565
+  },
+  {
+   "w": 1.0,
+   "s1sel_r5": {
+    "squad": 0.766355,
+    "musique": 0.330128
+   },
+   "mean": 0.5482416726575605
+  }
+ ],
+ "chosen": {
+  "w": 0.5
+ },
+ "g1": {
+  "mpnet": {
+   "squad": {
+    "equal_share": {
+     "d5": 1.0,
+     "d20": 1.0,
+     "d1000": 1.0,
+     "rrf5": 1.0
+    },
+    "pass": true
+   },
+   "musique": {
+    "equal_share": {
+     "d5": 1.0,
+     "d20": 1.0,
+     "d1000": 1.0,
+     "rrf5": 1.0
+    },
+    "pass": true
+   }
+  },
+  "mpnetqa": {
+   "squad": {
+    "equal_share": {
+     "d5": 1.0,
+     "d20": 1.0,
+     "d1000": 1.0,
+     "rrf5": 1.0
+    },
+    "pass": true
+   },
+   "musique": {
+    "equal_share": {
+     "d5": 1.0,
+     "d20": 1.0,
+     "d1000": 1.0,
+     "rrf5": 1.0
+    },
+    "pass": true
+   }
+  }
+ },
+ "reads": {
+  "fuse__squad": {
+   "npz": "fuse__squad.npz",
+   "sha256": "31a4d1a5fdee919d4f7e6572ff9ce59a6dd7ba47552db1460582382dfde2ddce",
+   "recall": {
+    "d5": 0.76476,
+    "d20": 0.880738,
+    "d1000": 0.990398,
+    "rrf5": 0.848732
+   }
+  },
+  "fuse__musique": {
+   "npz": "fuse__musique.npz",
+   "sha256": "3b2f34b4f793f41c097430fd48febce7d2e484b3b8feb971f385c838dedb8dc1",
+   "recall": {
+    "d5": 0.353503,
+    "d20": 0.48676,
+    "d1000": 0.808509,
+    "rrf5": 0.415632
+   }
+  }
+ },
+ "threads": 8,
+ "code_sha256": {
+  "outputs/mp_unified/zenc2s.py": "432b8873a55f6f1e7a47f42ed84ad27cc359868985c8aa6b74178f1387a48205",
+  "outputs/mp_unified/zenc.py": "0416ecefcb9a803549d2dfa9aef844d66f4c05e2a5b26821930c7f701f32eeb7",
+  "outputs/mp_unified/zenc2m.py": "cf5bd755f39a8149924ae1f42ddf88617979b2e8d2cd1c7161d1964da654cf4f"
+ },
+ "seconds": 135.4,
+ "utc": "2026-11-20T01:25:46Z"
+}

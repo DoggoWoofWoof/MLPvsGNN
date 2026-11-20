@@ -1,0 +1,101 @@
+{
+ "stage": "ENC E2S",
+ "arm": "win",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 14",
+ "device": "cuda",
+ "sets": {
+  "squad_w64": {
+   "windows": 86113,
+   "docs": 20233,
+   "stats": {
+    "tokens": 5666404,
+    "cut": 0,
+    "max_len": 68,
+    "limit": 384,
+    "ooms": 0,
+    "budget_end": 131072
+   },
+   "sha256": "e8f7e966131ff288fbb8560fd01daafc07b9ee953b6964e520a7d027ecda436b",
+   "doc_sha256": "dd613982c95f60081f62d3a3f92d16b626f237658dfce13b91c126b61a63ce8e",
+   "seconds": 36.3
+  },
+  "squad_w126": {
+   "windows": 39407,
+   "docs": 20233,
+   "stats": {
+    "tokens": 4815802,
+    "cut": 0,
+    "max_len": 130,
+    "limit": 384,
+    "ooms": 0,
+    "budget_end": 131072
+   },
+   "sha256": "ad11c2a4f958e9322903fe617e945bdef979c8de46dae320559451b68b4a4c37",
+   "doc_sha256": "47f238b92a4ddf46402a15d40f62eb286336d41e818e219ec0f97b689a06e9dc",
+   "seconds": 30.4
+  },
+  "musique_w64": {
+   "windows": 301495,
+   "docs": 117534,
+   "stats": {
+    "tokens": 19105666,
+    "cut": 0,
+    "max_len": 68,
+    "limit": 384,
+    "ooms": 0,
+    "budget_end": 131072
+   },
+   "sha256": "fb9f4abcca5fc7e7397beb00e0b879cc05f35f5b9c56d16be0ef350a5e84597d",
+   "doc_sha256": "a3b3f3861dd2a204b6313738337b27819341a553f6893a263432cf2dd06de180",
+   "seconds": 114.4
+  },
+  "musique_w126": {
+   "windows": 159298,
+   "docs": 117534,
+   "stats": {
+    "tokens": 15348447,
+    "cut": 0,
+    "max_len": 130,
+    "limit": 384,
+    "ooms": 0,
+    "budget_end": 131072
+   },
+   "sha256": "7b0f84f424f14e822b12dfb52ecb73d8b12870ae08a22f1fcf4185567cba2609",
+   "doc_sha256": "96382f49e0430086f9ac58c6658c6c8098b04361c73202ea63e9721001cc937f",
+   "seconds": 99.2
+  }
+ },
+ "g2": {
+  "squad_w64": {
+   "one_window_docs": 1199,
+   "share_ge": 1.0,
+   "min_cos": 0.999927,
+   "pass": true
+  },
+  "squad_w126": {
+   "one_window_docs": 7789,
+   "share_ge": 1.0,
+   "min_cos": 0.999923,
+   "pass": true
+  },
+  "musique_w64": {
+   "one_window_docs": 42772,
+   "share_ge": 1.0,
+   "min_cos": 0.999569,
+   "pass": true
+  },
+  "musique_w126": {
+   "one_window_docs": 89306,
+   "share_ge": 0.999989,
+   "min_cos": 0.998078,
+   "pass": true
+  }
+ },
+ "code_sha256": {
+  "outputs/mp_unified/zenc2s.py": "432b8873a55f6f1e7a47f42ed84ad27cc359868985c8aa6b74178f1387a48205",
+  "outputs/mp_unified/zenc.py": "0416ecefcb9a803549d2dfa9aef844d66f4c05e2a5b26821930c7f701f32eeb7",
+  "outputs/mp_unified/zenc2m.py": "cf5bd755f39a8149924ae1f42ddf88617979b2e8d2cd1c7161d1964da654cf4f"
+ },
+ "seconds": 287.1,
+ "utc": "2026-11-20T02:25:55Z"
+}

@@ -1,0 +1,600 @@
+{
+ "stage": "ENC E2S",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 14",
+ "g1": {
+  "win": {
+   "squad": {
+    "equal_share": {
+     "d5": 1.0,
+     "d20": 1.0,
+     "d1000": 1.0,
+     "rrf5": 1.0
+    },
+    "pass": true
+   },
+   "musique": {
+    "equal_share": {
+     "d5": 1.0,
+     "d20": 1.0,
+     "d1000": 1.0,
+     "rrf5": 1.0
+    },
+    "pass": true
+   }
+  },
+  "fuse": {
+   "mpnet": {
+    "squad": {
+     "equal_share": {
+      "d5": 1.0,
+      "d20": 1.0,
+      "d1000": 1.0,
+      "rrf5": 1.0
+     },
+     "pass": true
+    },
+    "musique": {
+     "equal_share": {
+      "d5": 1.0,
+      "d20": 1.0,
+      "d1000": 1.0,
+      "rrf5": 1.0
+     },
+     "pass": true
+    }
+   },
+   "mpnetqa": {
+    "squad": {
+     "equal_share": {
+      "d5": 1.0,
+      "d20": 1.0,
+      "d1000": 1.0,
+      "rrf5": 1.0
+     },
+     "pass": true
+    },
+    "musique": {
+     "equal_share": {
+      "d5": 1.0,
+      "d20": 1.0,
+      "d1000": 1.0,
+      "rrf5": 1.0
+     },
+     "pass": true
+    }
+   }
+  },
+  "adapt": {
+   "squad": {
+    "equal_share": {
+     "d5": 1.0,
+     "d20": 1.0,
+     "d1000": 1.0,
+     "rrf5": 1.0
+    },
+    "pass": true
+   },
+   "musique": {
+    "equal_share": {
+     "d5": 1.0,
+     "d20": 1.0,
+     "d1000": 1.0,
+     "rrf5": 1.0
+    },
+    "pass": true
+   },
+   "hotpotqa": {
+    "equal_share": {
+     "d5": 1.0,
+     "d20": 1.0,
+     "d1000": 1.0,
+     "rrf5": 1.0
+    },
+    "pass": true
+   }
+  }
+ },
+ "g2": {
+  "squad_w64": {
+   "one_window_docs": 1199,
+   "share_ge": 1.0,
+   "min_cos": 0.999927,
+   "pass": true
+  },
+  "squad_w126": {
+   "one_window_docs": 7789,
+   "share_ge": 1.0,
+   "min_cos": 0.999923,
+   "pass": true
+  },
+  "musique_w64": {
+   "one_window_docs": 42772,
+   "share_ge": 1.0,
+   "min_cos": 0.999569,
+   "pass": true
+  },
+  "musique_w126": {
+   "one_window_docs": 89306,
+   "share_ge": 0.999989,
+   "min_cos": 0.998078,
+   "pass": true
+  }
+ },
+ "chosen": {
+  "win": {
+   "W": 64,
+   "beta": 0.5
+  },
+  "fuse": {
+   "w": 0.5
+  },
+  "adapt": {
+   "form": "linear",
+   "lr": 0.0001,
+   "epoch": 4
+  }
+ },
+ "cells": {
+  "win__squad": {
+   "r5": 78.56,
+   "won_back": {
+    "pts": 5.05,
+    "ci": [
+     4.58,
+     5.53
+    ],
+    "call": "ABOVE"
+   },
+   "gap": {
+    "d5": {
+     "pts": -9.13,
+     "ci": [
+      -9.78,
+      -8.46
+     ],
+     "call": "BELOW"
+    },
+    "d20": {
+     "pts": -5.57,
+     "ci": [
+      -6.06,
+      -5.07
+     ],
+     "call": "BELOW"
+    },
+    "d1000": {
+     "pts": -0.76,
+     "ci": [
+      -0.94,
+      -0.58
+     ],
+     "call": "BELOW"
+    },
+    "rrf5": {
+     "pts": -4.58,
+     "ci": [
+      -5.04,
+      -4.12
+     ],
+     "call": "BELOW"
+    }
+   },
+   "e0_gap": -14.18,
+   "share_won": 0.3561
+  },
+  "win__musique": {
+   "r5": 34.69,
+   "won_back": {
+    "pts": 0.86,
+    "ci": [
+     0.38,
+     1.36
+    ],
+    "call": "ABOVE"
+   },
+   "gap": {
+    "d5": {
+     "pts": -11.03,
+     "ci": [
+      -12.14,
+      -9.98
+     ],
+     "call": "BELOW"
+    },
+    "d20": {
+     "pts": -12.51,
+     "ci": [
+      -13.57,
+      -11.47
+     ],
+     "call": "BELOW"
+    },
+    "d1000": {
+     "pts": -6.27,
+     "ci": [
+      -7.1,
+      -5.48
+     ],
+     "call": "BELOW"
+    },
+    "rrf5": {
+     "pts": -5.79,
+     "ci": [
+      -6.57,
+      -4.97
+     ],
+     "call": "BELOW"
+    }
+   },
+   "e0_gap": -11.89,
+   "share_won": 0.0723
+  },
+  "fuse__squad": {
+   "r5": 76.48,
+   "won_back": {
+    "pts": 2.96,
+    "ci": [
+     2.56,
+     3.39
+    ],
+    "call": "ABOVE"
+   },
+   "gap": {
+    "d5": {
+     "pts": -11.22,
+     "ci": [
+      -11.88,
+      -10.56
+     ],
+     "call": "BELOW"
+    },
+    "d20": {
+     "pts": -6.63,
+     "ci": [
+      -7.14,
+      -6.1
+     ],
+     "call": "BELOW"
+    },
+    "d1000": {
+     "pts": -0.72,
+     "ci": [
+      -0.89,
+      -0.54
+     ],
+     "call": "BELOW"
+    },
+    "rrf5": {
+     "pts": -5.66,
+     "ci": [
+      -6.15,
+      -5.19
+     ],
+     "call": "BELOW"
+    }
+   },
+   "e0_gap": -14.18,
+   "share_won": 0.2087
+  },
+  "fuse__musique": {
+   "r5": 35.35,
+   "won_back": {
+    "pts": 1.52,
+    "ci": [
+     0.96,
+     2.08
+    ],
+    "call": "ABOVE"
+   },
+   "gap": {
+    "d5": {
+     "pts": -10.37,
+     "ci": [
+      -11.4,
+      -9.34
+     ],
+     "call": "BELOW"
+    },
+    "d20": {
+     "pts": -11.23,
+     "ci": [
+      -12.23,
+      -10.22
+     ],
+     "call": "BELOW"
+    },
+    "d1000": {
+     "pts": -6.4,
+     "ci": [
+      -7.2,
+      -5.66
+     ],
+     "call": "BELOW"
+    },
+    "rrf5": {
+     "pts": -5.78,
+     "ci": [
+      -6.52,
+      -4.95
+     ],
+     "call": "BELOW"
+    }
+   },
+   "e0_gap": -11.89,
+   "share_won": 0.1278
+  },
+  "adapt__squad": {
+   "r5": 72.64,
+   "won_back": {
+    "pts": -0.88,
+    "ci": [
+     -1.38,
+     -0.38
+    ],
+    "call": "BELOW"
+   },
+   "gap": {
+    "d5": {
+     "pts": -15.05,
+     "ci": [
+      -15.79,
+      -14.33
+     ],
+     "call": "BELOW"
+    },
+    "d20": {
+     "pts": -9.74,
+     "ci": [
+      -10.33,
+      -9.19
+     ],
+     "call": "BELOW"
+    },
+    "d1000": {
+     "pts": -1.39,
+     "ci": [
+      -1.61,
+      -1.17
+     ],
+     "call": "BELOW"
+    },
+    "rrf5": {
+     "pts": -7.15,
+     "ci": [
+      -7.65,
+      -6.65
+     ],
+     "call": "BELOW"
+    }
+   },
+   "e0_gap": -14.18,
+   "share_won": -0.0621
+  },
+  "adapt__musique": {
+   "r5": 38.29,
+   "won_back": {
+    "pts": 4.46,
+    "ci": [
+     3.66,
+     5.29
+    ],
+    "call": "ABOVE"
+   },
+   "gap": {
+    "d5": {
+     "pts": -7.43,
+     "ci": [
+      -8.44,
+      -6.41
+     ],
+     "call": "BELOW"
+    },
+    "d20": {
+     "pts": -9.12,
+     "ci": [
+      -10.11,
+      -8.11
+     ],
+     "call": "BELOW"
+    },
+    "d1000": {
+     "pts": -7.12,
+     "ci": [
+      -7.91,
+      -6.31
+     ],
+     "call": "BELOW"
+    },
+    "rrf5": {
+     "pts": -3.67,
+     "ci": [
+      -4.38,
+      -2.92
+     ],
+     "call": "BELOW"
+    }
+   },
+   "e0_gap": -11.89,
+   "share_won": 0.3751
+  },
+  "adapt__hotpotqa": {
+   "r5": 46.01,
+   "won_back": {
+    "pts": 3.38,
+    "ci": [
+     2.88,
+     3.89
+    ],
+    "call": "ABOVE"
+   },
+   "gap": {
+    "d5": {
+     "pts": -19.76,
+     "ci": [
+      -20.5,
+      -19.05
+     ],
+     "call": "BELOW"
+    },
+    "d20": {
+     "pts": -18.8,
+     "ci": [
+      -19.52,
+      -18.1
+     ],
+     "call": "BELOW"
+    },
+    "d1000": {
+     "pts": -12.76,
+     "ci": [
+      -13.36,
+      -12.19
+     ],
+     "call": "BELOW"
+    },
+    "rrf5": {
+     "pts": -10.28,
+     "ci": [
+      -10.86,
+      -9.72
+     ],
+     "call": "BELOW"
+    }
+   },
+   "e0_gap": -23.15,
+   "share_won": 0.146
+  }
+ },
+ "calls": {
+  "win": {
+   "call": "IMPROVES",
+   "bars_pointer": []
+  },
+  "fuse": {
+   "call": "IMPROVES",
+   "bars_pointer": []
+  },
+  "adapt": {
+   "call": "NO",
+   "bars_pointer": [],
+   "unseen": "ABOVE"
+  }
+ },
+ "beside": {
+  "cross-squad__musique": {
+   "r5": 36.26,
+   "won_back": {
+    "pts": 2.43,
+    "ci": [
+     1.88,
+     3.0
+    ],
+    "call": "ABOVE"
+   },
+   "gap": {
+    "d5": {
+     "pts": -9.45,
+     "ci": [
+      -10.46,
+      -8.38
+     ],
+     "call": "BELOW"
+    },
+    "d20": {
+     "pts": -10.84,
+     "ci": [
+      -11.88,
+      -9.81
+     ],
+     "call": "BELOW"
+    },
+    "d1000": {
+     "pts": -7.05,
+     "ci": [
+      -7.83,
+      -6.29
+     ],
+     "call": "BELOW"
+    },
+    "rrf5": {
+     "pts": -5.14,
+     "ci": [
+      -5.94,
+      -4.33
+     ],
+     "call": "BELOW"
+    }
+   },
+   "e0_gap": -11.89,
+   "share_won": 0.2044
+  },
+  "cross-musique__squad": {
+   "r5": 70.1,
+   "won_back": {
+    "pts": -3.42,
+    "ci": [
+     -3.94,
+     -2.89
+    ],
+    "call": "BELOW"
+   },
+   "gap": {
+    "d5": {
+     "pts": -17.59,
+     "ci": [
+      -18.38,
+      -16.83
+     ],
+     "call": "BELOW"
+    },
+    "d20": {
+     "pts": -11.26,
+     "ci": [
+      -11.87,
+      -10.66
+     ],
+     "call": "BELOW"
+    },
+    "d1000": {
+     "pts": -1.88,
+     "ci": [
+      -2.13,
+      -1.61
+     ],
+     "call": "BELOW"
+    },
+    "rrf5": {
+     "pts": -8.09,
+     "ci": [
+      -8.6,
+      -7.55
+     ],
+     "call": "BELOW"
+    }
+   },
+   "e0_gap": -14.18,
+   "share_won": -0.2412
+  },
+  "frozen-map__squad": {
+   "won_back_vs_frozen": {
+    "pts": -0.87,
+    "ci": [
+     -1.24,
+     -0.5
+    ],
+    "call": "BELOW"
+   }
+  },
+  "frozen-map__musique": {
+   "won_back_vs_frozen": {
+    "pts": 2.17,
+    "ci": [
+     1.46,
+     2.91
+    ],
+    "call": "ABOVE"
+   }
+  }
+ },
+ "utc": "2026-11-20T02:30:27Z"
+}

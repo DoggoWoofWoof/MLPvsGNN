@@ -1,0 +1,1105 @@
+{
+ "stage": "ENC E2S",
+ "arm": "adapt",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 14",
+ "pairs": {
+  "squad": {
+   "train_questions": 130319,
+   "kept_questions": 118903,
+   "pairs": 118903,
+   "dropped": {
+    "in_s1sel": 1498,
+    "shares_s1sel_gold": 9918,
+    "no_gold": 0
+   },
+   "kept_sharing_a_nontrain_gold": 0
+  },
+  "musique": {
+   "train_questions": 19938,
+   "kept_questions": 16091,
+   "pairs": 36564,
+   "dropped": {
+    "in_s1sel": 1534,
+    "shares_s1sel_gold": 2313,
+    "no_gold": 0
+   },
+   "kept_sharing_a_nontrain_gold": 0
+  }
+ },
+ "runs": [
+  {
+   "form": "linear",
+   "lr": 0.0001,
+   "best_epoch": 4,
+   "score": 0.576227487729547,
+   "curve": [
+    {
+     "epoch": 0,
+     "sel": {
+      "squad": 0.76235,
+      "musique": 0.318177
+     },
+     "score": 0.5402633396752674,
+     "loss": null
+    },
+    {
+     "epoch": 1,
+     "sel": {
+      "squad": 0.772363,
+      "musique": 0.36093
+     },
+     "score": 0.5666465906446898,
+     "loss": 2.179193
+    },
+    {
+     "epoch": 2,
+     "sel": {
+      "squad": 0.773698,
+      "musique": 0.367286
+     },
+     "score": 0.5704921134887078,
+     "loss": 1.982587
+    },
+    {
+     "epoch": 3,
+     "sel": {
+      "squad": 0.776368,
+      "musique": 0.372447
+     },
+     "score": 0.5744076267995165,
+     "loss": 1.889741
+    },
+    {
+     "epoch": 4,
+     "sel": {
+      "squad": 0.776368,
+      "musique": 0.376086
+     },
+     "score": 0.576227487729547,
+     "loss": 1.831132
+    },
+    {
+     "epoch": 5,
+     "sel": {
+      "squad": 0.767023,
+      "musique": 0.375326
+     },
+     "score": 0.5711743210852193,
+     "loss": 1.792374
+    },
+    {
+     "epoch": 6,
+     "sel": {
+      "squad": 0.771696,
+      "musique": 0.376956
+     },
+     "score": 0.5743256327863488,
+     "loss": 1.761435
+    },
+    {
+     "epoch": 7,
+     "sel": {
+      "squad": 0.77036,
+      "musique": 0.380704
+     },
+     "score": 0.5755322611809227,
+     "loss": 1.738334
+    },
+    {
+     "epoch": 8,
+     "sel": {
+      "squad": 0.766355,
+      "musique": 0.379672
+     },
+     "score": 0.5730135109887209,
+     "loss": 1.719435
+    },
+    {
+     "epoch": 9,
+     "sel": {
+      "squad": 0.76502,
+      "musique": 0.380432
+     },
+     "score": 0.5727262236944638,
+     "loss": 1.704755
+    },
+    {
+     "epoch": 10,
+     "sel": {
+      "squad": 0.76235,
+      "musique": 0.378585
+     },
+     "score": 0.5704675986930858,
+     "loss": 1.691006
+    }
+   ],
+   "seconds": 101.8
+  },
+  {
+   "form": "linear",
+   "lr": 0.0003,
+   "best_epoch": 1,
+   "score": 0.5699718631070604,
+   "curve": [
+    {
+     "epoch": 0,
+     "sel": {
+      "squad": 0.76235,
+      "musique": 0.318177
+     },
+     "score": 0.5402633396752674,
+     "loss": null
+    },
+    {
+     "epoch": 1,
+     "sel": {
+      "squad": 0.771028,
+      "musique": 0.368916
+     },
+     "score": 0.5699718631070604,
+     "loss": 2.058186
+    },
+    {
+     "epoch": 2,
+     "sel": {
+      "squad": 0.761682,
+      "musique": 0.36859
+     },
+     "score": 0.5651359932901989,
+     "loss": 1.833113
+    },
+    {
+     "epoch": 3,
+     "sel": {
+      "squad": 0.761682,
+      "musique": 0.376249
+     },
+     "score": 0.5689658498742928,
+     "loss": 1.760623
+    },
+    {
+     "epoch": 4,
+     "sel": {
+      "squad": 0.759012,
+      "musique": 0.376195
+     },
+     "score": 0.5676035742862132,
+     "loss": 1.719272
+    },
+    {
+     "epoch": 5,
+     "sel": {
+      "squad": 0.75968,
+      "musique": 0.376032
+     },
+     "score": 0.567855866347075,
+     "loss": 1.692636
+    },
+    {
+     "epoch": 6,
+     "sel": {
+      "squad": 0.755674,
+      "musique": 0.379346
+     },
+     "score": 0.5675100844295363,
+     "loss": 1.671085
+    },
+    {
+     "epoch": 7,
+     "sel": {
+      "squad": 0.755007,
+      "musique": 0.379074
+     },
+     "score": 0.5670404955412083,
+     "loss": 1.654242
+    },
+    {
+     "epoch": 8,
+     "sel": {
+      "squad": 0.748331,
+      "musique": 0.373914
+     },
+     "score": 0.5611223120034303,
+     "loss": 1.640967
+    },
+    {
+     "epoch": 9,
+     "sel": {
+      "squad": 0.751669,
+      "musique": 0.379237
+     },
+     "score": 0.5654530899957004,
+     "loss": 1.630987
+    },
+    {
+     "epoch": 10,
+     "sel": {
+      "squad": 0.748999,
+      "musique": 0.37663
+     },
+     "score": 0.5628141955462563,
+     "loss": 1.619951
+    }
+   ],
+   "seconds": 102.2
+  },
+  {
+   "form": "linear",
+   "lr": 0.001,
+   "best_epoch": 4,
+   "score": 0.5607498756853263,
+   "curve": [
+    {
+     "epoch": 0,
+     "sel": {
+      "squad": 0.76235,
+      "musique": 0.318177
+     },
+     "score": 0.5402633396752674,
+     "loss": null
+    },
+    {
+     "epoch": 1,
+     "sel": {
+      "squad": 0.746996,
+      "musique": 0.362125
+     },
+     "score": 0.5545605788160833,
+     "loss": 1.983655
+    },
+    {
+     "epoch": 2,
+     "sel": {
+      "squad": 0.745661,
+      "musique": 0.365004
+     },
+     "score": 0.5553326135557246,
+     "loss": 1.78279
+    },
+    {
+     "epoch": 3,
+     "sel": {
+      "squad": 0.748331,
+      "musique": 0.366037
+     },
+     "score": 0.5571838070056033,
+     "loss": 1.728459
+    },
+    {
+     "epoch": 4,
+     "sel": {
+      "squad": 0.748999,
+      "musique": 0.372501
+     },
+     "score": 0.5607498756853263,
+     "loss": 1.696617
+    },
+    {
+     "epoch": 5,
+     "sel": {
+      "squad": 0.744993,
+      "musique": 0.364189
+     },
+     "score": 0.5545914036330637,
+     "loss": 1.673252
+    },
+    {
+     "epoch": 6,
+     "sel": {
+      "squad": 0.743658,
+      "musique": 0.367938
+     },
+     "score": 0.5557980320276377,
+     "loss": 1.655379
+    },
+    {
+     "epoch": 7,
+     "sel": {
+      "squad": 0.744326,
+      "musique": 0.370274
+     },
+     "score": 0.5572997808464306,
+     "loss": 1.640574
+    },
+    {
+     "epoch": 8,
+     "sel": {
+      "squad": 0.736315,
+      "musique": 0.361636
+     },
+     "score": 0.548975665946599,
+     "loss": 1.630324
+    },
+    {
+     "epoch": 9,
+     "sel": {
+      "squad": 0.734312,
+      "musique": 0.372664
+     },
+     "score": 0.5534882378300722,
+     "loss": 1.623108
+    },
+    {
+     "epoch": 10,
+     "sel": {
+      "squad": 0.74032,
+      "musique": 0.369513
+     },
+     "score": 0.5549168411713953,
+     "loss": 1.612297
+    }
+   ],
+   "seconds": 104.3
+  },
+  {
+   "form": "mlp",
+   "lr": 0.0001,
+   "best_epoch": 4,
+   "score": 0.570596591486026,
+   "curve": [
+    {
+     "epoch": 0,
+     "sel": {
+      "squad": 0.76235,
+      "musique": 0.318177
+     },
+     "score": 0.5402633396752674,
+     "loss": null
+    },
+    {
+     "epoch": 1,
+     "sel": {
+      "squad": 0.77036,
+      "musique": 0.352075
+     },
+     "score": 0.5612178326715789,
+     "loss": 2.16736
+    },
+    {
+     "epoch": 2,
+     "sel": {
+      "squad": 0.76502,
+      "musique": 0.358594
+     },
+     "score": 0.5618070581142812,
+     "loss": 1.982614
+    },
+    {
+     "epoch": 3,
+     "sel": {
+      "squad": 0.768358,
+      "musique": 0.368047
+     },
+     "score": 0.5682021559674815,
+     "loss": 1.888934
+    },
+    {
+     "epoch": 4,
+     "sel": {
+      "squad": 0.771028,
+      "musique": 0.370165
+     },
+     "score": 0.570596591486026,
+     "loss": 1.829533
+    },
+    {
+     "epoch": 5,
+     "sel": {
+      "squad": 0.760347,
+      "musique": 0.371034
+     },
+     "score": 0.5656907312023738,
+     "loss": 1.789418
+    },
+    {
+     "epoch": 6,
+     "sel": {
+      "squad": 0.761015,
+      "musique": 0.374783
+     },
+     "score": 0.5678986947104324,
+     "loss": 1.757786
+    },
+    {
+     "epoch": 7,
+     "sel": {
+      "squad": 0.757009,
+      "musique": 0.374783
+     },
+     "score": 0.5658960244834631,
+     "loss": 1.733486
+    },
+    {
+     "epoch": 8,
+     "sel": {
+      "squad": 0.756342,
+      "musique": 0.373425
+     },
+     "score": 0.5648831935264693,
+     "loss": 1.713926
+    },
+    {
+     "epoch": 9,
+     "sel": {
+      "squad": 0.75968,
+      "musique": 0.378477
+     },
+     "score": 0.5690781610015729,
+     "loss": 1.698975
+    },
+    {
+     "epoch": 10,
+     "sel": {
+      "squad": 0.751001,
+      "musique": 0.373968
+     },
+     "score": 0.5624845875915099,
+     "loss": 1.683805
+    }
+   ],
+   "seconds": 163.8
+  },
+  {
+   "form": "mlp",
+   "lr": 0.0003,
+   "best_epoch": 2,
+   "score": 0.5625634265939985,
+   "curve": [
+    {
+     "epoch": 0,
+     "sel": {
+      "squad": 0.76235,
+      "musique": 0.318177
+     },
+     "score": 0.5402633396752674,
+     "loss": null
+    },
+    {
+     "epoch": 1,
+     "sel": {
+      "squad": 0.758344,
+      "musique": 0.359572
+     },
+     "score": 0.5589581922644651,
+     "loss": 2.063775
+    },
+    {
+     "epoch": 2,
+     "sel": {
+      "squad": 0.76235,
+      "musique": 0.362777
+     },
+     "score": 0.5625634265939985,
+     "loss": 1.847053
+    },
+    {
+     "epoch": 3,
+     "sel": {
+      "squad": 0.754339,
+      "musique": 0.368481
+     },
+     "score": 0.5614101070005553,
+     "loss": 1.772062
+    },
+    {
+     "epoch": 4,
+     "sel": {
+      "squad": 0.753672,
+      "musique": 0.371306
+     },
+     "score": 0.5624887580079247,
+     "loss": 1.729249
+    },
+    {
+     "epoch": 5,
+     "sel": {
+      "squad": 0.750334,
+      "musique": 0.368535
+     },
+     "score": 0.5594345988770193,
+     "loss": 1.699412
+    },
+    {
+     "epoch": 6,
+     "sel": {
+      "squad": 0.750334,
+      "musique": 0.372338
+     },
+     "score": 0.5613359461173495,
+     "loss": 1.676524
+    },
+    {
+     "epoch": 7,
+     "sel": {
+      "squad": 0.744993,
+      "musique": 0.37299
+     },
+     "score": 0.5589916643892567,
+     "loss": 1.65757
+    },
+    {
+     "epoch": 8,
+     "sel": {
+      "squad": 0.741656,
+      "musique": 0.364896
+     },
+     "score": 0.5532756191218887,
+     "loss": 1.643648
+    },
+    {
+     "epoch": 9,
+     "sel": {
+      "squad": 0.743658,
+      "musique": 0.373425
+     },
+     "score": 0.5585414044743999,
+     "loss": 1.633607
+    },
+    {
+     "epoch": 10,
+     "sel": {
+      "squad": 0.746328,
+      "musique": 0.371034
+     },
+     "score": 0.5586813854079813,
+     "loss": 1.620466
+    }
+   ],
+   "seconds": 163.8
+  },
+  {
+   "form": "mlp",
+   "lr": 0.001,
+   "best_epoch": 4,
+   "score": 0.5543850949462386,
+   "curve": [
+    {
+     "epoch": 0,
+     "sel": {
+      "squad": 0.76235,
+      "musique": 0.318177
+     },
+     "score": 0.5402633396752674,
+     "loss": null
+    },
+    {
+     "epoch": 1,
+     "sel": {
+      "squad": 0.753672,
+      "musique": 0.349359
+     },
+     "score": 0.5515152682208757,
+     "loss": 2.025644
+    },
+    {
+     "epoch": 2,
+     "sel": {
+      "squad": 0.744993,
+      "musique": 0.356584
+     },
+     "score": 0.5507887091524031,
+     "loss": 1.837746
+    },
+    {
+     "epoch": 3,
+     "sel": {
+      "squad": 0.747664,
+      "musique": 0.360061
+     },
+     "score": 0.5538621972567799,
+     "loss": 1.778675
+    },
+    {
+     "epoch": 4,
+     "sel": {
+      "squad": 0.738985,
+      "musique": 0.369785
+     },
+     "score": 0.5543850949462386,
+     "loss": 1.745596
+    },
+    {
+     "epoch": 5,
+     "sel": {
+      "squad": 0.739653,
+      "musique": 0.363592
+     },
+     "score": 0.5516223935260052,
+     "loss": 1.71975
+    },
+    {
+     "epoch": 6,
+     "sel": {
+      "squad": 0.73498,
+      "musique": 0.36256
+     },
+     "score": 0.5487698649626418,
+     "loss": 1.70097
+    },
+    {
+     "epoch": 7,
+     "sel": {
+      "squad": 0.740988,
+      "musique": 0.366688
+     },
+     "score": 0.5538381901640257,
+     "loss": 1.683412
+    },
+    {
+     "epoch": 8,
+     "sel": {
+      "squad": 0.730975,
+      "musique": 0.361419
+     },
+     "score": 0.5461967905635734,
+     "loss": 1.673199
+    },
+    {
+     "epoch": 9,
+     "sel": {
+      "squad": 0.73498,
+      "musique": 0.372338
+     },
+     "score": 0.5536590435806339,
+     "loss": 1.664284
+    },
+    {
+     "epoch": 10,
+     "sel": {
+      "squad": 0.739653,
+      "musique": 0.358431
+     },
+     "score": 0.5490419936998425,
+     "loss": 1.652082
+    }
+   ],
+   "seconds": 169.0
+  }
+ ],
+ "chosen": {
+  "form": "linear",
+  "lr": 0.0001,
+  "epoch": 4
+ },
+ "cross": {
+  "squad": {
+   "read_on": "musique",
+   "best_epoch": 1,
+   "curve": [
+    {
+     "epoch": 0,
+     "sel": {
+      "squad": 0.76235
+     },
+     "score": 0.7623497997329773,
+     "loss": null
+    },
+    {
+     "epoch": 1,
+     "sel": {
+      "squad": 0.786382
+     },
+     "score": 0.7863818424566088,
+     "loss": 1.724227
+    },
+    {
+     "epoch": 2,
+     "sel": {
+      "squad": 0.784379
+     },
+     "score": 0.7843791722296395,
+     "loss": 1.623216
+    },
+    {
+     "epoch": 3,
+     "sel": {
+      "squad": 0.775701
+     },
+     "score": 0.7757009345794392,
+     "loss": 1.569873
+    },
+    {
+     "epoch": 4,
+     "sel": {
+      "squad": 0.771028
+     },
+     "score": 0.7710280373831776,
+     "loss": 1.534104
+    },
+    {
+     "epoch": 5,
+     "sel": {
+      "squad": 0.773031
+     },
+     "score": 0.7730307076101469,
+     "loss": 1.508004
+    },
+    {
+     "epoch": 6,
+     "sel": {
+      "squad": 0.771696
+     },
+     "score": 0.7716955941255007,
+     "loss": 1.488558
+    },
+    {
+     "epoch": 7,
+     "sel": {
+      "squad": 0.766355
+     },
+     "score": 0.7663551401869159,
+     "loss": 1.472502
+    },
+    {
+     "epoch": 8,
+     "sel": {
+      "squad": 0.767023
+     },
+     "score": 0.767022696929239,
+     "loss": 1.458942
+    },
+    {
+     "epoch": 9,
+     "sel": {
+      "squad": 0.765688
+     },
+     "score": 0.7656875834445928,
+     "loss": 1.446952
+    },
+    {
+     "epoch": 10,
+     "sel": {
+      "squad": 0.765688
+     },
+     "score": 0.7656875834445928,
+     "loss": 1.436802
+    }
+   ]
+  },
+  "musique": {
+   "read_on": "squad",
+   "best_epoch": 3,
+   "curve": [
+    {
+     "epoch": 0,
+     "sel": {
+      "musique": 0.318177
+     },
+     "score": 0.3181768796175576,
+     "loss": null
+    },
+    {
+     "epoch": 1,
+     "sel": {
+      "musique": 0.335941
+     },
+     "score": 0.3359408952629291,
+     "loss": 3.707094
+    },
+    {
+     "epoch": 2,
+     "sel": {
+      "musique": 0.345556
+     },
+     "score": 0.3455562798783137,
+     "loss": 3.167589
+    },
+    {
+     "epoch": 3,
+     "sel": {
+      "musique": 0.353433
+     },
+     "score": 0.3534332898739679,
+     "loss": 2.865416
+    },
+    {
+     "epoch": 4,
+     "sel": {
+      "musique": 0.352673
+     },
+     "score": 0.35267275097783574,
+     "loss": 2.62359
+    },
+    {
+     "epoch": 5,
+     "sel": {
+      "musique": 0.352836
+     },
+     "score": 0.35283572359843546,
+     "loss": 2.426977
+    },
+    {
+     "epoch": 6,
+     "sel": {
+      "musique": 0.346914
+     },
+     "score": 0.34691438504997824,
+     "loss": 2.274989
+    },
+    {
+     "epoch": 7,
+     "sel": {
+      "musique": 0.345176
+     },
+     "score": 0.3451760104302477,
+     "loss": 2.160766
+    },
+    {
+     "epoch": 8,
+     "sel": {
+      "musique": 0.343166
+     },
+     "score": 0.34316601477618425,
+     "loss": 2.067549
+    },
+    {
+     "epoch": 9,
+     "sel": {
+      "musique": 0.342731
+     },
+     "score": 0.34273142112125166,
+     "loss": 1.991867
+    },
+    {
+     "epoch": 10,
+     "sel": {
+      "musique": 0.341265
+     },
+     "score": 0.341264667535854,
+     "loss": 1.927065
+    }
+   ]
+  }
+ },
+ "frozen": {
+  "best_epoch": 3,
+  "curve": [
+   {
+    "epoch": 0,
+    "sel": {
+     "squad": 0.879172,
+     "musique": 0.44937
+    },
+    "score": 0.6642710344199335,
+    "loss": null
+   },
+   {
+    "epoch": 1,
+    "sel": {
+     "squad": 0.875167,
+     "musique": 0.482942
+    },
+    "score": 0.6790545441147373,
+    "loss": 1.629238
+   },
+   {
+    "epoch": 2,
+    "sel": {
+     "squad": 0.873164,
+     "musique": 0.48593
+    },
+    "score": 0.6795471246900837,
+    "loss": 1.45822
+   },
+   {
+    "epoch": 3,
+    "sel": {
+     "squad": 0.873832,
+     "musique": 0.485495
+    },
+    "score": 0.6796636062337789,
+    "loss": 1.379554
+   },
+   {
+    "epoch": 4,
+    "sel": {
+     "squad": 0.870494,
+     "musique": 0.484789
+    },
+    "score": 0.6776416070333384,
+    "loss": 1.328637
+   },
+   {
+    "epoch": 5,
+    "sel": {
+     "squad": 0.867824,
+     "musique": 0.482453
+    },
+    "score": 0.6751385231010607,
+    "loss": 1.292661
+   },
+   {
+    "epoch": 6,
+    "sel": {
+     "squad": 0.867156,
+     "musique": 0.483105
+    },
+    "score": 0.6751306899710986,
+    "loss": 1.263215
+   },
+   {
+    "epoch": 7,
+    "sel": {
+     "squad": 0.867156,
+     "musique": 0.478814
+    },
+    "score": 0.6729848837998688,
+    "loss": 1.240297
+   },
+   {
+    "epoch": 8,
+    "sel": {
+     "squad": 0.861816,
+     "musique": 0.478705
+    },
+    "score": 0.6702603326237098,
+    "loss": 1.221265
+   },
+   {
+    "epoch": 9,
+    "sel": {
+     "squad": 0.858478,
+     "musique": 0.478922
+    },
+    "score": 0.6687000891816351,
+    "loss": 1.205207
+   },
+   {
+    "epoch": 10,
+    "sel": {
+     "squad": 0.858478,
+     "musique": 0.475174
+    },
+    "score": 0.6668259040447382,
+    "loss": 1.190785
+   }
+  ]
+ },
+ "g1": {
+  "squad": {
+   "equal_share": {
+    "d5": 1.0,
+    "d20": 1.0,
+    "d1000": 1.0,
+    "rrf5": 1.0
+   },
+   "pass": true
+  },
+  "musique": {
+   "equal_share": {
+    "d5": 1.0,
+    "d20": 1.0,
+    "d1000": 1.0,
+    "rrf5": 1.0
+   },
+   "pass": true
+  },
+  "hotpotqa": {
+   "equal_share": {
+    "d5": 1.0,
+    "d20": 1.0,
+    "d1000": 1.0,
+    "rrf5": 1.0
+   },
+   "pass": true
+  }
+ },
+ "reads": {
+  "adapt__squad": {
+   "npz": "adapt__squad.npz",
+   "sha256": "c71586dabe45573f5a87b367a51f2f1e27ad5450e97b466344094fcb687dcaf5",
+   "recall": {
+    "d5": 0.726438,
+    "d20": 0.849575,
+    "d1000": 0.98366,
+    "rrf5": 0.833825
+   }
+  },
+  "adapt__musique": {
+   "npz": "adapt__musique.npz",
+   "sha256": "5372a4da8faf7e56118b65c1735b1181d77d3187177d0af5aaad484b2a71df4c",
+   "recall": {
+    "d5": 0.382913,
+    "d20": 0.507861,
+    "d1000": 0.801338,
+    "rrf5": 0.436767
+   }
+  },
+  "adapt-cross-squad__musique": {
+   "npz": "adapt-cross-squad__musique.npz",
+   "sha256": "130a08d2984598317a026035a01507813d9ec3706644a090b5eb477643221292",
+   "recall": {
+    "d5": 0.36264,
+    "d20": 0.490656,
+    "d1000": 0.801993,
+    "rrf5": 0.422011
+   }
+  },
+  "adapt-cross-musique__squad": {
+   "npz": "adapt-cross-musique__squad.npz",
+   "sha256": "3aa0de411d9af24dc3c67b3fd84c947ad00bcce5783ab832491df8304935b432",
+   "recall": {
+    "d5": 0.701002,
+    "d20": 0.834414,
+    "d1000": 0.978775,
+    "rrf5": 0.824476
+   }
+  },
+  "adapt-frozen__squad": {
+   "npz": "adapt-frozen__squad.npz",
+   "sha256": "2c2ce668d60c666cb536f47e8d32ce1b1b12943b72781d582d3c81037cfea778",
+   "recall": {
+    "d5": 0.868273,
+    "d20": 0.941801,
+    "d1000": 0.997221,
+    "rrf5": 0.901204
+   }
+  },
+  "adapt-frozen__musique": {
+   "npz": "adapt-frozen__musique.npz",
+   "sha256": "7b5b04b1657a2692de2aa2dad33ff6dc833fc3351b703f77633c1adee551cbbf",
+   "recall": {
+    "d5": 0.478865,
+    "d20": 0.604468,
+    "d1000": 0.874431,
+    "rrf5": 0.481106
+   }
+  },
+  "adapt__hotpotqa": {
+   "npz": "adapt__hotpotqa.npz",
+   "sha256": "71c0105a34653bbf036a52926013dd1acb4bb08d824e74328338f9b666745a07",
+   "recall": {
+    "d5": 0.460095,
+    "d20": 0.562728,
+    "d1000": 0.782647,
+    "rrf5": 0.581769
+   }
+  }
+ },
+ "maps": {
+  "adapt": {
+   "npz": "adapt.npz",
+   "sha256": "773b894903f27963a7a2cd9222657e8e6820248d691a248eb974ccc9e112a1bf"
+  },
+  "adapt-cross-squad": {
+   "npz": "adapt-cross-squad.npz",
+   "sha256": "b053df6e519dfad08ffae9bcfc3ce69d7348bfd4840214b1944b0a88a611770c"
+  },
+  "adapt-cross-musique": {
+   "npz": "adapt-cross-musique.npz",
+   "sha256": "eea275a76ef3fffca6b9e66972cacaaecdd8359460edd6b1507840bd8b4deec6"
+  },
+  "adapt-frozen": {
+   "npz": "adapt-frozen.npz",
+   "sha256": "938d5f74f0a3143c02192cc1868cc067a45aefb3569031c4fb528abcd0cf5a02"
+  }
+ },
+ "threads": 8,
+ "code_sha256": {
+  "outputs/mp_unified/zenc2s.py": "432b8873a55f6f1e7a47f42ed84ad27cc359868985c8aa6b74178f1387a48205",
+  "outputs/mp_unified/zenc.py": "0416ecefcb9a803549d2dfa9aef844d66f4c05e2a5b26821930c7f701f32eeb7",
+  "outputs/mp_unified/zenc2m.py": "cf5bd755f39a8149924ae1f42ddf88617979b2e8d2cd1c7161d1964da654cf4f"
+ },
+ "seconds": 2084.1,
+ "utc": "2026-11-20T01:58:16Z"
+}
