@@ -1,0 +1,10 @@
+{
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 19",
+ "note": "The audited runs behind the e3v world's reads (zenc2w / zenc2t tags under outputs/enc/e2/audit/e3v/), read by outputs/mp_unified/zenc3r.py. A rerun under a new tag is named in superseded (old tag -> new tag), so no pinned code changes.",
+ "tags": {
+  "e3v": ["v1-", "t-v1-"]
+ },
+ "superseded": {
+  "e3v": {}
+ }
+}

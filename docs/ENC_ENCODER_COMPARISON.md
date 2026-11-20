@@ -1666,3 +1666,111 @@ map encoders and stage name set for this stage, and with fusion for every two-en
   - Their E2 stage would be 12.9's world on V's vectors: GNX and zrckpn at seed 0, trained on SQuAD fit and MuSiQue
     s1fit, read on the two s1eval carves against the frozen world. It is put to the user before it is declared.
   - Nothing was trained. The user decides D101.
+
+## 19. E3W: E2's world on the fused arm gtemodern+granitesm (declared 20 Nov 2026, 18:17 IST, before any E3W number)
+
+Code:
+- `outputs/mp_unified/zenc3v.py`: the arm's vectors, its first-stage read and GV.
+- `outputs/mp_unified/zenc3w.py`: E2's modules, unchanged, with the arm added to their arm lists in its own process; it
+  also encodes the bases (GB) and marks the world's D83 folders compressed.
+- `outputs/mp_unified/zenc3r.py`: E2's report code (zenc2r.py, unchanged) on this arm.
+
+Records: `outputs/enc/e3v/` (the vectors), `outputs/enc/e3w/`, and E2's folders under the arm's name `e3v`
+(`outputs/enc/e2/{first,knn,pad,bases,types,audit}/e3v/`, the world `e2world_e3v`). Audit tags: docs/ENC_E3W_RUNS.json.
+
+### 19.1 Why
+
+- 18.9: both fused arms ADVANCE, and 18.7 puts the arm's E2 stage to the user. The user, 20 Nov, chose
+  gtemodern+granitesm (197M parameters, one 1,152-wide vector).
+- E2 asks whether GNX and zrckpn, rebuilt and refit on an encoder's vectors, keep the frozen world's in-domain reads.
+  Both small arms LOSE (outputs/enc/e2/report.json):
+  - qwen3e06: first-stage gap -6.32 / -4.46 (SQuAD / MuSiQue); model gaps -1.49 to -1.67 on SQuAD, -3.58 to -3.91 on
+    MuSiQue.
+  - mpnet: first-stage gap -14.17 / -11.89; model gaps -2.62 to -2.77 and -3.82 to -5.14.
+- This arm's first stage is closer: -3.99 on SQuAD and +2.00 on MuSiQue against E0's raw frozen read (19.2's vector).
+
+### 19.2 The vectors (e3v)
+
+- One vector per row, for documents and questions alike: [sqrt(0.5) v_gtemodern ; sqrt(0.5) v_granitesm].
+  - It is built from E0N's float16 encodes and stored float16 at unit length.
+  - Its dense score is E3B's fused score at w = 0.5 (16.3).
+  - In the world it is zero-padded to 1,536 wide (12.9's pad).
+- **No q-map. This departs from 18.7, which named V:**
+  - E3B's maps were trained on train-split questions: 118,903 of SQuAD's and 16,091 of MuSiQue's. The world's training
+    carves (SQuAD fit, MuSiQue s1fit) come from those splits. With the map, the training pools would be built from
+    questions the map was fitted on, and the s1eval pools from questions it was not.
+  - On this arm the map adds little. 18.9's leave-one-out read of V without it is 83.70 / 47.72, against V's 83.68 /
+    48.15 (-0.03 / +0.43).
+  - So the world serves the parameter-free fused vector, and nothing in its pools is learned.
+
+### 19.3 Gates
+
+- **GV, before the world:** zenc's first-stage read on e3v (E0's code, `outputs/enc/e0/e3v/`) against E3B's V-no-gamma
+  read, per s1eval carve.
+  - The two reads must hold the same questions in the same order, with the same gold totals.
+  - Hits at 5 must be equal on at least 99.5% of the questions, and R@5 within 0.10 points. (The vectors are rounded to
+    float16 after the scaling, so near ties may reorder.)
+  - A FAIL stops the stage.
+- **GB, the bases:** the two bases graphs (2Wiki and HotpotQA, lean_cache's) have no e3v vectors.
+  - Their 60,000 drawn rows (zenc2p's draw) are encoded by each part as E0N encoded: zenc's encode, float16 on the GPU,
+    each encoder's own token budget. Then they are fused as e3v.
+  - The host self-test encodes 16 SQuAD documents this way on the CPU. Each part must give E0N's stored vector back
+    (cosine >= 0.99, E0N's GP floor).
+  - The self-test also checks that e3v's vectors give E3B's top 5 on at least 99% of 300 s1eval questions per carve.
+- **E2's gates, unchanged:**
+  - GE0 (12.8's second form) on the arm's top-1000 lists, and the pad's row and unit-length checks;
+  - the hook's swaps and refusals (12.9);
+  - GA over every audited run, and the read markers (12.11).
+
+### 19.4 The world, the fits and the reads: 12.9 to 12.11, unchanged
+
+- **The world:**
+  - K is rebuilt from e3v (SQuAD by zenc2 knn, MuSiQue by zenc1b2).
+  - Then the types, the pools (sqf in 2 shards, sqe 4, muf 2, mue 1), ABL's slot types and the carried PKO verdicts.
+  - Then the D83 chains F and E on SQuAD and MuSiQue.
+- **The training world and fits:** zrckpn (MLP) and GNX (GNN, with zg6r as its stage, read beside), seed 0, 12.11's
+  split. Then the reads on SQuAD and MuSiQue s1eval.
+- The code is the code of qwen3e06's world. zenc3w only adds e3v to E2's arm lists and encodes the bases as GB says.
+
+### 19.5 The call (12.9 and 12.11's rule, per deciding model)
+
+- R@5 per question (candidate p@swa), e3v's world minus the frozen world, paired 95% bootstrap (2,000 resamples, seed 0).
+- Per model, over the two carves, in 11.5's words:
+  - **KEEPS:** both lower bounds are above -1 point;
+  - **CLOSE:** both point gaps are above -1 point;
+  - **LOSES:** otherwise.
+- Beside, with no call:
+  - the first-stage gap, the pool gap (golds held) and won back (model gap minus first-stage gap);
+  - the in-pool RRF;
+  - E2's qwen3e06 and mpnet cells;
+  - the cost (parameters, vector width).
+
+### 19.6 What follows
+
+- **KEEPS or CLOSE for both GNX and zrckpn:** e3v is the candidate small encoder for D101. If the user takes it, it is
+  the encoder for the unified refit (D89, HFO's H) and for D84 (MultiHop-RAG waits for the encoder).
+- **Otherwise:** the beside measures say where the loss sits (first stage, pools or models) before anything else is
+  tried. Nothing more is trained on e3v without a new declaration.
+- The user decides D101. Nothing here changes the record or the frozen world.
+
+### 19.7 Rows, disk and cost (estimates; the host's measured numbers replace them)
+
+- **First rows:**
+  - e3w-selftest (CPU, the host's real checks);
+  - e3w-vec-squad and -musique (CPU, minutes), e3w-e0-squad and -musique (CPU), then e3w-gv;
+  - e3w-bases-2wiki and -hotpotqa (GPU, 0.29 of the card, as E0N's encodes), after the self-test.
+- **After GV, E2's rows as qwen3e06's world ran them** (11.1 audited hours, about 8 to 10 hours end to end):
+  - first and K (CPU, 8 threads), pad, world, mark, types, pools, slot types and carry;
+  - the four chains (12 CPUs, about 4 hours);
+  - the training world, labels, lists and cols; then zrckpn's fit (CPU), and zspk, zg6r and GNX (GPU, about 3 hours);
+  - the reads, then collect on the host and the report on the laptop.
+- **Disk:**
+  - A world is about 28 GB of unique bytes. qwen3e06's holds 21 GB of chain caches and link parts, and about 7 GB of
+    top-1000 lists, pads, pools and training files.
+  - The drive had 42.8 GB free on the last reading, and the feeder holds heavy writers below 30 GB.
+  - Two lossless steps make room:
+    - the closed E2 worlds' arrays (mpnet's and qwen3e06's) are NTFS-compressed by disk_squeeze before the chains (zlib
+      estimates of 12.4 and 13.1 GB saved);
+    - the e3v world's own D83 folders are marked compressed before the chains write (zenc3w mark), so its caches are
+      compressed as they are written.
+  - Nothing is deleted.
