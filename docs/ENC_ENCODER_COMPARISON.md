@@ -1824,3 +1824,88 @@ Records: `outputs/enc/e3v/` (the vectors), `outputs/enc/e3w/`, and E2's folders 
   - The closed world was NTFS-compressed after collect (row e3w-release-squeeze).
 - **Next (19.6):** nothing more is trained on e3v without a new declaration. The user decides D101. Nothing here
   changes the record or the frozen world.
+
+### 19.9 D101 (21 Nov 2026, 03:42 IST): the user takes e3v
+
+- The user, on 19.8's options (take e3v, keep frozen, or one more test on SQuAD's first stage), chose to take e3v as it
+  is: "yeah this sunds nice, with better links and preprcessing we can cse the gap and then imprve the vectrs itsef in
+  semantic space".
+- Then: "keep the frzen as cmparisn rest yu can recaim back space frm rest encders".
+- **So e3v is the encoder of the after-paper program**: gte-modernbert-base + granite-embedding-small-english-r2, one
+  fused 1,152-wide vector, 196.7M parameters. The frozen world and frozen's vectors stay as the comparison. The record
+  is unchanged.
+- **Reclaimed (21 Nov 03:36 IST; the host's record outputs/host_cleanup/deleted_enc_20261121-033647.json):**
+  - qwen3e06's, mpnet's, mpnetqa's and granite's vector shards, and their E2 worlds (e2world_mpnet, e2world_qwen3e06);
+  - their arrays of 20 MB or more in outputs/enc's stage folders (E2's top-1000 lists and pads, E2B's and E3B's window
+    vectors, E1b2's pools).
+  - In all, 10,430 files and 1,372 links (removed as links; no target was touched), 76.5 GB logical. The drive went
+    from 23.28 to 78.26 GB free.
+  - Kept: every json record, the E0 reads (outputs/enc/e0) and E2's collected reads, which back the filed numbers; and
+    frozen's, e3v's, gtemodern's and granitesm's vectors.
+  - Checked after: J5S's six folders are intact. Every junction in the two kept worlds (e3v's, frozen's) points to an
+    existing folder. Three point to empty folders, as before the delete: abl/SRK (emptied 19 Nov) twice, and the frozen
+    world's pko_rec.
+  - The hold-enc-big feed rows (big-dataset encodes of qwen3e06, mpnetqa and mpnet) stay held; nothing runs them.
+
+## 20. E4: e3v's vectors on the four other datasets (declared 21 Nov 2026, 03:42 IST, before any E4 number)
+
+Code: outputs/mp_unified/zenc4.py. It runs zenc3.py's encode, zenc3v.py's fusion and zenc.py's first stage unchanged,
+widening their dataset lists in its own process only (their files are not edited, so their records keep their code
+shas). Report: outputs/enc/e4/report.md.
+
+### 20.1 Why
+
+- D101 (19.9) made e3v the encoder. The after-paper program runs on all six datasets: links are checked against the
+  oracle links on every dataset, then one unified refit, then generalization (all six and zero-shot).
+- K links, the pools and the models' inputs need e3v's vectors on every dataset. SQuAD and MuSiQue have them (E3W).
+  HotpotQA, 2Wiki, WebQSP and MetaQA do not (13.86M documents between them).
+
+### 20.2 The vectors
+
+- Per dataset, each part is encoded on the GPU as E0N encoded it (zenc3.py encode): the GP check, float16, each
+  encoder's own token budget, queries and documents. zenc's checks run as they do: no damaged rows (G0c), and row and
+  shard counts equal to the record's.
+- The parts are fused per shard by zenc3v.fuse: [sqrt(0.5) v_gtemodern ; sqrt(0.5) v_granitesm], float16, 1,152 wide,
+  with no q-map (19.2).
+
+### 20.3 FC, the gate before a dataset's parts go
+
+- Every e3v shard hashes to its manifest.
+- Every shard's recorded sources hash to the parts' files as they are now.
+- The first 256 rows of every shard equal zenc3v.fuse of the parts' rows exactly.
+- A FAIL stops that dataset, and its parts stay.
+
+### 20.4 Disk
+
+- The four corpora take about 32 GB as e3v (2,304 bytes a row) and about 32 GB more as parts.
+- So the drive holds one big dataset's parts at a time. MetaQA and WebQSP go first, then HotpotQA, then 2Wiki, each
+  dataset's encodes waiting on the previous dataset's release.
+- Once FC passes, the dataset's part shard arrays go (zenc4 release-parts; record
+  outputs/host_cleanup/deleted_e4parts_<ds>_<stamp>.json). The parts' shard json files and manifests stay: they name
+  every removed file and its sha256.
+- The parts can be rebuilt from the pinned revisions (about 8 GPU-hours for all four datasets). SQuAD's and MuSiQue's
+  parts stay (0.66 GB).
+
+### 20.5 The read (beside, no call)
+
+- s1eval dense R@5, R@20 and R@1000, on all six datasets:
+  - e3v's, from zenc's first stage (exact search over the documents);
+  - frozen's, from the record's vectors (zenc's first stage, checked against the record's dense top-1000).
+- The gap is e3v minus frozen, in points, with a paired 95% bootstrap over questions (2,000 resamples, seed 0), and
+  ABOVE, LEVEL or BELOW by the interval.
+- It decides nothing. It says where the first stage stands on each dataset before the link and preprocessing work.
+
+### 20.6 What follows
+
+- **The storage check** (the user, 20 Nov: freeze the encoders first, then check space optimization): int8, PCA768
+  and PCA768+int8 on e3v's six datasets, first-stage R@5 plus a pool-gold check. It is declared before it runs.
+- **Links and preprocessing on e3v** (D101's words): links checked against the oracle links on all datasets first,
+  then one unified refit (D83 carried, D89, HFO's H), then the semantic-space work on the vectors.
+- **D84 (MultiHop-RAG)** is encoded with e3v once its own path is declared.
+
+### 20.7 Rows and cost (estimates; the host's measured numbers replace them)
+
+- Rows e4-*: eight GPU encodes (0.29 of the card each, as E0N's), four vectors, four FC, four releases, eight
+  first-stage reads (e3v and frozen on the four datasets, 8 CPU threads) and the report.
+- GPU: gtemodern encoded 520 to 710 rows a second in E0N and granitesm 2,100 to 2,500, so about 8 GPU-hours for the
+  13.86M documents and their questions.
