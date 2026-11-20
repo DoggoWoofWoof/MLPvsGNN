@@ -1909,3 +1909,55 @@ shas). Report: outputs/enc/e4/report.md.
   first-stage reads (e3v and frozen on the four datasets, 8 CPU threads) and the report.
 - GPU: gtemodern encoded 520 to 710 rows a second in E0N and granitesm 2,100 to 2,500, so about 8 GPU-hours for the
   13.86M documents and their questions.
+
+## 21. E5: how small e3v's vectors can be stored (declared 21 Nov 2026, 03:52 IST, before any E5 number)
+
+Code: outputs/mp_unified/zenc5.py. Report: outputs/enc/e5/report.md.
+
+### 21.1 Why
+
+The user, 20 Nov: "freeze the encoders first once we finalize what we are doing based on the reports we can check space
+optimization for them". D101 (19.9) froze the encoder. The 20 Nov pointer (SQuAD and MuSiQue only, no call) found int8
+free and PCA-768 + int8 near free. This stage reads all six datasets, as the user asked, with a declared call.
+
+### 21.2 The forms
+
+- The forms are stored versions of the document vectors. Questions stay float32 and get the same projection.
+
+| form | what is stored | bytes a document | share of frozen's |
+|---|---|---|---|
+| fp16 | e3v as it is | 2,304 | 0.75 |
+| int8 | one scale per dimension: max abs over the dataset's documents / 127 | 1,152 | 0.38 |
+| pca768-own | centred, top 768 principal directions of the dataset's own documents, unit length | 1,536 | 0.50 |
+| pca768-own+int8 | both | 768 | 0.25 |
+| pca768-loo | as pca768-own, but the mean and directions come from the other five datasets (equal weight each) | 1,536 | 0.50 |
+| pca768-loo+int8 | both | 768 | 0.25 |
+
+- The loo forms test a projection on a corpus it never saw, as a new graph would be (generalization first).
+- No form looks at questions or labels when fitted.
+
+### 21.3 The read
+
+- Exact float32 search over each dataset's documents, the s1eval questions (zenc's first stage), top 1,000.
+- Measures: dense R@5, dense R@1000 and RRF R@5 (dense top 1,000 with the record's SPLADE top 1,000, zenc.rrf_top).
+- FS gate: the fp16 form through this search must reproduce E0's (E3W's, E4's) e3v read exactly (hits at 5, 20 and
+  1,000, and RRF R@5). A FAIL stops the dataset.
+- Passes: moments over the documents (sums, second moments, max abs); the projected documents' int8 scales; then every
+  form from one read of each shard.
+
+### 21.4 The call (declared now)
+
+- A form is **FREE** on a dataset when all three of its gaps to fp16 (in points, paired 95% bootstrap over questions,
+  2,000 resamples, seed 0) are LEVEL or ABOVE, and each point gap is -0.30 or higher.
+- **The call is the smallest form FREE on all six datasets.** At equal bytes, loo comes before own (no fit on the corpus
+  itself). If no form is FREE on all six, e3v stays fp16.
+- What the call allows: the unified world may store the chosen form. Before any fit there, that world grades the chosen
+  form's pools beside fp16's (golds held, every dataset). If any dataset holds fewer golds (BELOW), fp16 stays.
+
+### 21.5 Rows
+
+- e5-selftest: toy checks, plus the real shapes (SQuAD's fp16 through E5's search equals its E0 read).
+- Six e5-moments rows; the four E4 datasets' rows wait for their FC.
+- Six e5-read rows (8 CPU threads each); each waits for all six moments (the loo fits) and for its dataset's E0 read.
+- e5-report.
+- CPU only; it runs beside E4's GPU encodes.
