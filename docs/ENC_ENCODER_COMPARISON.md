@@ -1398,7 +1398,7 @@ for it. No encoder's weights change.
 - **Disk:** the windows take about 3.9 GB under outputs/enc/e2b/win/. They can be rebuilt, and are kept until D101,
   since stage 2 would need them. The maps and reads take under 100 MB. The host had 59 GB free at declaration.
 
-## 17. E0N: three retrieval-trained encoders at mpnet's size, at the first stage (declared 20 Nov 2026, 12:40 IST, before any E0N number)
+## 17. E0N: three retrieval-trained encoders at mpnet's size, at the first stage (declared 20 Nov 2026, 12:35 IST, before any E0N number)
 
 Code: `outputs/mp_unified/zenc3.py` (models, encode, first, report, selftest). Records: `outputs/enc/e0n/`. Vectors go
 under `outputs/enc/<arm>/<ds>/`, as E0's do, and reads beside E0's under `outputs/enc/e0/<arm>/`.
