@@ -1397,3 +1397,87 @@ for it. No encoder's weights change.
 - e2b-hotpot (CPU, about 2 h), then e2b-report.
 - **Disk:** the windows take about 3.9 GB under outputs/enc/e2b/win/. They can be rebuilt, and are kept until D101,
   since stage 2 would need them. The maps and reads take under 100 MB. The host had 59 GB free at declaration.
+
+## 17. E0N: three retrieval-trained encoders at mpnet's size, at the first stage (declared 20 Nov 2026, 12:40 IST, before any E0N number)
+
+Code: `outputs/mp_unified/zenc3.py` (models, encode, first, report, selftest). Records: `outputs/enc/e0n/`. Vectors go
+under `outputs/enc/<arm>/<ds>/`, as E0's do, and reads beside E0's under `outputs/enc/e0/<arm>/`.
+
+### 17.1 Why
+
+- The user, 20 Nov: "are there any better models around this size?", then "yes download those three and run the
+  screen we will try to improve from there if the scores are workable".
+- E2B's mpnet grid (section 16) chose V = q-map at gamma 1 with mpnetqa fused at w 0.5. Its s1eval dense R@5 is 75.43
+  on SQuAD and 39.31 on MuSiQue, against frozen's 87.69 and 45.72.
+  - On SQuAD, 91% of the gold gap at 5 is order: the golds are inside mpnet's top 1,000 (gap at 1,000: 76 golds,
+    against 857 at 5).
+  - On MuSiQue the gap at 1,000 (374 golds) is larger than the gap at 5 (327): the golds are never reached.
+  - Both point at what the model was trained for (all-mpnet-base-v2: sentence similarity, trained at 128 tokens),
+    not at what is done with its vectors.
+- Public retrieval scores put several retrieval-trained models of mpnet's size well above it. They are not taken as
+  evidence. Qwen3-Embedding-0.6B reports 61.83 on MTEB(eng, v2) retrieval and still loses 6.33 points to frozen on
+  SQuAD (E0). This stage reads the three on our carves.
+
+### 17.2 The arms
+
+| arm | model | revision (pinned) | params | dim | length |
+|---|---|---|---|---|---|
+| `gtemodern` | Alibaba-NLP/gte-modernbert-base | e7f32e3c00f9 | 149M | 768 | 8,192 |
+| `granite` | ibm-granite/granite-embedding-english-r2 | 47ea694b257b | 149M | 768 | 8,192 |
+| `granitesm` | ibm-granite/granite-embedding-small-english-r2 | 2ab6fa8ea2d6 | 47M | 384 | 8,192 |
+
+- **The text contract is section 2's.** Document text verbatim with no prompt; questions verbatim. None of the three
+  publishes a query prompt (gte-modernbert-base's sentence-transformers config lists none; the Granite repos have no
+  prompt config). The models step stops if a loaded model has a non-empty prompt or a default prompt.
+- **Length:** 8,192 tokens for each, the limit the model cards state, set explicitly. Each config's own default is
+  recorded beside. Cut rows are counted and reported.
+- **Pins:** the revisions above are the repos' heads on 20 Nov. They are recorded with every file's sha256 in
+  `outputs/enc/e0n/models.json`. `outputs/enc/models.json` is not touched.
+- Licences: Apache-2.0 for all three. Parameter counts are the cards'; the models step counts them.
+- **Encoding as E0's (section 2):** host GPU, fp16, unit L2, float16 shards of 40,000 rows. Every query row and every
+  document row of SQuAD (142,192 and 20,233) and MuSiQue (24,814 and 117,534). Only these two datasets (the user, 18
+  Nov: "check only the small and hard datasets").
+
+### 17.3 Gates
+
+- **G0c** (section 3) on every shard.
+- **GP (precision):** before an arm's encode, 256 document rows and 256 query rows per dataset (rng seed 0) are encoded
+  on the GPU in float32 and in float16. Every row's cosine between the two must be at least 0.99. ModernBERT (the base
+  of all three) was trained in bf16, so fp16 is checked, not assumed. A failure stops the arm.
+- **GR (the reads' references):** E0's frozen, mpnet and qwen3e06 reads and E2B's mpnet-V read hold the same question
+  ids in the same order as each new read. Otherwise the report stops.
+
+### 17.4 Reads
+
+`zenc.py first`, unchanged (section 4): E0's s1eval carves (SQuAD 11,873 questions, MuSiQue 2,417), exact search over
+the whole corpus. Dense R@5, R@20 and R@1000, and RRF@5 with the record's SPLADE list.
+
+### 17.5 The call (per arm; s1eval dense R@5; paired 95% bootstrap over questions, 2,000, seed 0)
+
+- **NO:** the interval against E0's raw mpnet read does not start above 0 on both carves.
+- **WORKABLE:** above raw mpnet on both carves.
+- **STRONG:** WORKABLE, and also above E2B's mpnet V read on both carves (the best mpnet recipe a model can read).
+- **Beside, with no call:**
+  - the gap to frozen, set against mpnet's bars (13.5) and qwen3e06's (16.7) as pointers only, since the models' win-back
+    ratio on a new encoder is not measured;
+  - the gap to qwen3e06's raw read;
+  - R@20, R@1000 and RRF@5;
+  - MuSiQue by hop count;
+  - the order share of the gold gap to frozen (1 minus the gap at 1,000 over the gap at 5);
+  - the cost: parameters, vector width, encode seconds and cut rows.
+
+### 17.6 What follows
+
+- For each WORKABLE or STRONG arm, best first by the mean of its two R@5 gaps to frozen, the next step is E2B's recipe
+  search on that arm ("we will try to improve from there"), declared on this page before it runs.
+- A NO arm gets nothing further. Its vectors (about 0.47 GB for a 768-wide arm, 0.23 GB for granitesm) are offered to
+  the user for deletion.
+- Nothing is trained in this stage. The user decides D101.
+
+### 17.7 Rows and cost (estimates; the host's measured numbers replace them)
+
+- e0n-selftest (CPU), then e0n-models (CPU; downloads of about 0.6, 0.6 and 0.2 GB through huggingface_hub).
+- e0n-enc-gtemodern, -granite and -granitesm (GPU, 0.29 of the card; GP, then both datasets' queries and documents;
+  some minutes each). The GPU queue keeps the file's order, so they run after E2B's window encodes.
+- e0n-first-<arm>-<ds> (CPU, 8 threads; six rows), then e0n-report.
+- **Disk:** about 1.2 GB of vectors and 1.4 GB of downloads. The host had about 59 GB free at declaration.
