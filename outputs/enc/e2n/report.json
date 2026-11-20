@@ -1,0 +1,287 @@
+{
+ "stage": "ENC E2N",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 15",
+ "g1": {
+  "mpnet": {
+   "equal_share": {
+    "d5": 1.0,
+    "d20": 1.0,
+    "d1000": 1.0,
+    "rrf5": 1.0
+   },
+   "pass": true
+  },
+  "frozen": {
+   "equal_share": {
+    "d5": 1.0,
+    "d20": 1.0,
+    "d1000": 1.0,
+    "rrf5": 1.0
+   },
+   "pass": true
+  }
+ },
+ "e0_gap_mpnet_to_frozen": -23.15,
+ "cells": {
+  "mpnet-gold": {
+   "r5": 55.27,
+   "won_back": {
+    "pts": 12.65,
+    "ci": [
+     11.92,
+     13.37
+    ],
+    "call": "ABOVE"
+   },
+   "seen": {
+    "pts": 16.46,
+    "ci": [
+     15.63,
+     17.27
+    ],
+    "call": "ABOVE"
+   },
+   "not_seen": {
+    "pts": -3.67,
+    "ci": [
+     -4.42,
+     -3.0
+    ],
+    "call": "BELOW"
+   },
+   "gap": {
+    "d5": {
+     "pts": -10.5,
+     "ci": [
+      -11.3,
+      -9.68
+     ],
+     "call": "BELOW"
+    },
+    "d20": {
+     "pts": -9.66,
+     "ci": [
+      -10.46,
+      -8.88
+     ],
+     "call": "BELOW"
+    },
+    "d1000": {
+     "pts": -4.15,
+     "ci": [
+      -4.68,
+      -3.61
+     ],
+     "call": "BELOW"
+    },
+    "rrf5": {
+     "pts": -4.01,
+     "ci": [
+      -4.63,
+      -3.43
+     ],
+     "call": "BELOW"
+    }
+   },
+   "lambda": 1.0,
+   "exact1000_share": 1.0,
+   "share_of_gap_won": 0.5464
+  },
+  "mpnet-self": {
+   "r5": 42.57,
+   "won_back": {
+    "pts": -0.05,
+    "ci": [
+     -0.38,
+     0.26
+    ],
+    "call": "LEVEL"
+   },
+   "seen": {
+    "pts": 0.2,
+    "ci": [
+     -0.17,
+     0.59
+    ],
+    "call": "LEVEL"
+   },
+   "not_seen": {
+    "pts": -1.14,
+    "ci": [
+     -1.57,
+     -0.71
+    ],
+    "call": "BELOW"
+   },
+   "gap": {
+    "d5": {
+     "pts": -23.2,
+     "ci": [
+      -23.98,
+      -22.46
+     ],
+     "call": "BELOW"
+    },
+    "d20": {
+     "pts": -21.84,
+     "ci": [
+      -22.63,
+      -21.12
+     ],
+     "call": "BELOW"
+    },
+    "d1000": {
+     "pts": -13.67,
+     "ci": [
+      -14.29,
+      -13.07
+     ],
+     "call": "BELOW"
+    },
+    "rrf5": {
+     "pts": -11.26,
+     "ci": [
+      -11.86,
+      -10.65
+     ],
+     "call": "BELOW"
+    }
+   },
+   "lambda": 0.25,
+   "exact1000_share": 1.0,
+   "share_of_gap_won": -0.0022
+  },
+  "frozen-gold": {
+   "r5": 74.08,
+   "won_back": {
+    "pts": 8.31,
+    "ci": [
+     7.79,
+     8.81
+    ],
+    "call": "ABOVE"
+   },
+   "seen": {
+    "pts": 10.84,
+    "ci": [
+     10.26,
+     11.43
+    ],
+    "call": "ABOVE"
+   },
+   "not_seen": {
+    "pts": -2.53,
+    "ci": [
+     -3.1,
+     -2.0
+    ],
+    "call": "BELOW"
+   },
+   "gap": {
+    "d5": {
+     "pts": 8.31,
+     "ci": [
+      7.79,
+      8.81
+     ],
+     "call": "ABOVE"
+    },
+    "d20": {
+     "pts": 7.22,
+     "ci": [
+      6.78,
+      7.7
+     ],
+     "call": "ABOVE"
+    },
+    "d1000": {
+     "pts": 4.23,
+     "ci": [
+      3.9,
+      4.56
+     ],
+     "call": "ABOVE"
+    },
+    "rrf5": {
+     "pts": 3.3,
+     "ci": [
+      2.98,
+      3.62
+     ],
+     "call": "ABOVE"
+    }
+   },
+   "lambda": 0.5,
+   "exact1000_share": 1.0
+  },
+  "frozen-self": {
+   "r5": 66.63,
+   "won_back": {
+    "pts": 0.86,
+    "ci": [
+     0.61,
+     1.12
+    ],
+    "call": "ABOVE"
+   },
+   "seen": {
+    "pts": 1.23,
+    "ci": [
+     0.93,
+     1.54
+    ],
+    "call": "ABOVE"
+   },
+   "not_seen": {
+    "pts": -0.75,
+    "ci": [
+     -1.11,
+     -0.43
+    ],
+    "call": "BELOW"
+   },
+   "gap": {
+    "d5": {
+     "pts": 0.86,
+     "ci": [
+      0.61,
+      1.12
+     ],
+     "call": "ABOVE"
+    },
+    "d20": {
+     "pts": 0.47,
+     "ci": [
+      0.28,
+      0.66
+     ],
+     "call": "ABOVE"
+    },
+    "d1000": {
+     "pts": 0.38,
+     "ci": [
+      0.26,
+      0.52
+     ],
+     "call": "ABOVE"
+    },
+    "rrf5": {
+     "pts": 0.38,
+     "ci": [
+      0.22,
+      0.54
+     ],
+     "call": "ABOVE"
+    }
+   },
+   "lambda": 0.25,
+   "exact1000_share": 1.0
+  }
+ },
+ "calls": {
+  "gold": "HELPS",
+  "self": "LEVEL"
+ },
+ "s1eval_seen_share": 0.810668,
+ "utc": "2026-11-20T02:42:37Z"
+}

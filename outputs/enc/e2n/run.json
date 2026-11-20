@@ -1,0 +1,201 @@
+{
+ "stage": "ENC E2N",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 15",
+ "feedback_questions": 88939,
+ "train_questions": 90447,
+ "s1sel_left_out": 1508,
+ "s1eval_seen_share": 0.810668,
+ "encs": {
+  "mpnet": {
+   "self_top1_is_gold_share": 0.54236,
+   "gold": {
+    "changed_docs": 104398,
+    "pairs": 177878,
+    "curve": [
+     {
+      "lambda": 0.25,
+      "s1sel_r5": 0.5139257294429708,
+      "exact5_share": 1.0
+     },
+     {
+      "lambda": 0.5,
+      "s1sel_r5": 0.5503978779840849,
+      "exact5_share": 1.0
+     },
+     {
+      "lambda": 1.0,
+      "s1sel_r5": 0.5570291777188329,
+      "exact5_share": 1.0
+     },
+     {
+      "lambda": 2.0,
+      "s1sel_r5": 0.5295092838196287,
+      "exact5_share": 1.0
+     }
+    ],
+    "chosen": 1.0
+   },
+   "self": {
+    "changed_docs": 73622,
+    "pairs": 88939,
+    "curve": [
+     {
+      "lambda": 0.25,
+      "s1sel_r5": 0.4253978779840849,
+      "exact5_share": 1.0
+     },
+     {
+      "lambda": 0.5,
+      "s1sel_r5": 0.40716180371352784,
+      "exact5_share": 1.0
+     },
+     {
+      "lambda": 1.0,
+      "s1sel_r5": 0.38461538461538464,
+      "exact5_share": 1.0
+     },
+     {
+      "lambda": 2.0,
+      "s1sel_r5": 0.36903183023872677,
+      "exact5_share": 1.0
+     }
+    ],
+    "chosen": 0.25
+   },
+   "seconds": 4031.3
+  },
+  "frozen": {
+   "self_top1_is_gold_share": 0.815885,
+   "gold": {
+    "changed_docs": 104398,
+    "pairs": 177878,
+    "curve": [
+     {
+      "lambda": 0.25,
+      "s1sel_r5": 0.7198275862068966,
+      "exact5_share": 1.0
+     },
+     {
+      "lambda": 0.5,
+      "s1sel_r5": 0.7400530503978779,
+      "exact5_share": 1.0
+     },
+     {
+      "lambda": 1.0,
+      "s1sel_r5": 0.7380636604774535,
+      "exact5_share": 1.0
+     },
+     {
+      "lambda": 2.0,
+      "s1sel_r5": 0.7194960212201591,
+      "exact5_share": 1.0
+     }
+    ],
+    "chosen": 0.5
+   },
+   "self": {
+    "changed_docs": 70992,
+    "pairs": 88939,
+    "curve": [
+     {
+      "lambda": 0.25,
+      "s1sel_r5": 0.6654509283819628,
+      "exact5_share": 1.0
+     },
+     {
+      "lambda": 0.5,
+      "s1sel_r5": 0.6651193633952255,
+      "exact5_share": 1.0
+     },
+     {
+      "lambda": 1.0,
+      "s1sel_r5": 0.6541777188328912,
+      "exact5_share": 1.0
+     },
+     {
+      "lambda": 2.0,
+      "s1sel_r5": 0.6419098143236074,
+      "exact5_share": 1.0
+     }
+    ],
+    "chosen": 0.25
+   },
+   "seconds": 566.3
+  }
+ },
+ "g1": {
+  "mpnet": {
+   "equal_share": {
+    "d5": 1.0,
+    "d20": 1.0,
+    "d1000": 1.0,
+    "rrf5": 1.0
+   },
+   "pass": true
+  },
+  "frozen": {
+   "equal_share": {
+    "d5": 1.0,
+    "d20": 1.0,
+    "d1000": 1.0,
+    "rrf5": 1.0
+   },
+   "pass": true
+  }
+ },
+ "reads": {
+  "mpnet-gold": {
+   "npz": "mpnet-gold__hotpotqa.npz",
+   "sha256": "8c861883905f259ab78ab4acf05841a1d610906f1f15f589c69a1714ca8a5bb8",
+   "recall": {
+    "d5": 0.552735,
+    "d20": 0.654153,
+    "d1000": 0.868737,
+    "rrf5": 0.644429
+   },
+   "exact1000_share": 1.0
+  },
+  "mpnet-self": {
+   "npz": "mpnet-self__hotpotqa.npz",
+   "sha256": "49642c8c943166fe41d164cb73510fbd70a85e304da817d3e0e27d07d1e1525d",
+   "recall": {
+    "d5": 0.425726,
+    "d20": 0.532275,
+    "d1000": 0.773599,
+    "rrf5": 0.571911
+   },
+   "exact1000_share": 1.0
+  },
+  "frozen-gold": {
+   "npz": "frozen-gold__hotpotqa.npz",
+   "sha256": "875a4393d71572ccdb0130a5faf33c42818d7e74a13ddd332872b9ef7f4ced15",
+   "recall": {
+    "d5": 0.740783,
+    "d20": 0.822957,
+    "d1000": 0.952532,
+    "rrf5": 0.717556
+   },
+   "exact1000_share": 1.0
+  },
+  "frozen-self": {
+   "npz": "frozen-self__hotpotqa.npz",
+   "sha256": "4d83d61b272e7652d75578f94f2a2d600134a62a111fa60df236addca4f25376",
+   "recall": {
+    "d5": 0.666307,
+    "d20": 0.755368,
+    "d1000": 0.914045,
+    "rrf5": 0.688386
+   },
+   "exact1000_share": 1.0
+  }
+ },
+ "threads": 8,
+ "code_sha256": {
+  "outputs/mp_unified/zenc2n.py": "21e856aafea20532bfb999632bc424606b0c10da055a0cef2c97f00157e703b3",
+  "outputs/mp_unified/zenc.py": "0416ecefcb9a803549d2dfa9aef844d66f4c05e2a5b26821930c7f701f32eeb7",
+  "outputs/mp_unified/zenc2m.py": "cf5bd755f39a8149924ae1f42ddf88617979b2e8d2cd1c7161d1964da654cf4f",
+  "outputs/mp_unified/zenc2s.py": "432b8873a55f6f1e7a47f42ed84ad27cc359868985c8aa6b74178f1387a48205"
+ },
+ "seconds": 4703.8,
+ "utc": "2026-11-20T02:41:56Z"
+}

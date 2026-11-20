@@ -1264,3 +1264,29 @@ Won back is the read minus raw mpnet's (E0), s1eval dense R@5, points, 95% paire
   read one at a time; how they combine was not tested. Three arms were read, so one lucky pass is more likely than 5%;
   two passed, each on both carves.
 - Nothing is declared after E2S (14.6). The user sets the next step.
+
+### 15.7 Report (20 Nov 2026, 08:12 IST): gold HELPS, self LEVEL
+
+From `zenc2n.py run` (4,704 s on the host's CPU) and `report` (outputs/enc/e2n/report.md, run.json). G1 passed for both
+encoders. Feedback came from 88,939 train-split questions (s1sel's left out). 81.1% of the 7,405 s1eval questions have
+a gold among those questions' golds ("seen"). Every R@1000 read was exact (the share is 1.0).
+
+| encoder | form | lambda | changed docs | R@5 | won back [95%] | seen | not seen |
+|---|---|---|---|---|---|---|---|
+| mpnet | gold | 1.0 | 104,398 | 55.27 | +12.65 [+11.92, +13.37] | +16.46 | -3.67 |
+| mpnet | self | 0.25 | 73,622 | 42.57 | -0.05 [-0.38, +0.26] | +0.20 | -1.14 |
+| frozen | gold | 0.5 | 104,398 | 74.08 | +8.31 [+7.79, +8.81] | +10.84 | -2.53 |
+| frozen | self | 0.25 | 70,992 | 66.63 | +0.86 [+0.61, +1.12] | +1.23 | -0.75 |
+
+- **Calls (15.4, mpnet):** gold **HELPS**, self **LEVEL**.
+- **gold** wins back 55% of mpnet's 23.15-point HotpotQA gap to frozen (the gap left: -10.50 [-11.30, -9.68]). It lifts
+  the frozen encoder too (+8.31), so memory raises both encoders rather than closing the gap. The gain sits with the
+  seen questions. Questions whose golds no training question reached lose 3.67 (mpnet) and 2.53 (frozen) points: moved
+  documents crowd them.
+- **self** does nothing for mpnet, whose own top 1 is a gold for 54.2% of the feedback questions. For frozen, whose top 1
+  is a gold 81.6% of the time, it helps a little (+0.86). On s1sel every larger lambda was worse for self, and lambda
+  1 was best for mpnet's gold feedback.
+- **What the calls say:** a document's vector does get better from the questions that reached it, if the feedback is
+  right. Feedback as noisy as raw mpnet's top 1 is not enough. Between the two sit the deciding models' own top picks
+  (hit@1 about 87 to 91 on B1's HotpotQA settings in D83's reads, with the frozen encoder); they were not read here.
+- Nothing is declared after E2N (15.5). The user sets the next step.
