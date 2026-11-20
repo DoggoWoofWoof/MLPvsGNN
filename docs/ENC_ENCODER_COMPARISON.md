@@ -1512,7 +1512,7 @@ the whole corpus. Dense R@5, R@20 and R@1000, and RRF@5 with the record's SPLADE
 - **What follows (17.6):** E2B's recipe search on the new arms, gtemodern first, is declared next (section 18). Nothing
   was trained. The user decides D101.
 
-## 18. E3B: E2B's recipe search on E0N's encoders (declared 20 Nov 2026, 13:13 IST, before any E3B number)
+## 18. E3B: E2B's recipe search on E0N's encoders (declared 20 Nov 2026, 13:12 IST, before any E3B number)
 
 Code: `outputs/mp_unified/zenc3b.py`. It runs E2B's code (zenc2b.py, unchanged) with its output folder, arms, window and
 map encoders and stage name set for this stage, and with fusion for every two-encoder arm. Records: `outputs/enc/e3b/`.
