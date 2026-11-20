@@ -1910,6 +1910,27 @@ shas). Report: outputs/enc/e4/report.md.
 - GPU: gtemodern encoded 520 to 710 rows a second in E0N and granitesm 2,100 to 2,500, so about 8 GPU-hours for the
   13.86M documents and their questions.
 
+### 20.8 K on e3v (added 21 Nov 2026, 04:01 IST, before any e3v number of E4)
+
+- **Why:** every vector-fed piece of the unified world comes from e3v (12.2's list, D101). The E3W world built e3v's K
+  for SQuAD and MuSiQue; the four other datasets need it too. It feeds the link check against the oracle links and
+  the pools that follow.
+- **The rule:** the record's kNN rule, by zenc1b2's K code unedited: 3 nearest text groups per group, exact float32,
+  every position inheriting its group's neighbours, an undirected pair keeping the larger score.
+  - The wrapper is outputs/mp_unified/zenc4k.py. It widens zenc1b2's arm and dataset lists and its output folder in
+    its own process only.
+  - Output: outputs/enc/e4/knn/e3v/<ds>.npz and its json.
+- **GKs, the gate before a dataset's e3v K:**
+  - A full frozen rebuild (GK, zero pairs more or fewer) passed on SQuAD, MuSiQue and MetaQA with this code.
+  - On the four others, a seeded sample of 20,000 text groups is checked: frozen's out-pairs by the rule's code must
+    all be in the package's graph/knn.npz, with weights within 1e-3.
+  - A miss counts only outside tie rows (4th and 5th scores within zenc1.TIE). A GEMM block of another shape can
+    round differently near a tie (HFO's G4).
+  - A FAIL stops that dataset's e3v K.
+- **Cost (estimate):** an all-pairs exact search on the CPU. On 8 threads that is about 14 h for 2Wiki, 10 h for
+  HotpotQA, 3 h for WebQSP and minutes for MetaQA. Each GKs takes minutes.
+- **No call:** K's numbers are read only by the link check that follows, declared before it runs.
+
 ## 21. E5: how small e3v's vectors can be stored (declared 21 Nov 2026, 03:52 IST, before any E5 number)
 
 Code: outputs/mp_unified/zenc5.py. Report: outputs/enc/e5/report.md.
