@@ -1,0 +1,64 @@
+{
+ "stage": "ENC E3W: GV",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 19.3",
+ "rule": "hits at 5 equal on >= 0.995 of the s1eval questions and R@5 within 0.1 points, per carve",
+ "datasets": {
+  "squad": {
+   "questions": 11873,
+   "h_d5_equal_share": 0.999579,
+   "r5_pts": {
+    "e3v": 83.69,
+    "e3b": 83.7,
+    "diff": -0.008
+   },
+   "beside": {
+    "h_d20_equal_share": 0.999832,
+    "h_d1000_equal_share": 1.0,
+    "h_rrf5_equal_share": 0.99941,
+    "top5_set_equal_share": 0.989893
+   },
+   "verdict": "PASS",
+   "e0": {
+    "file": "outputs/enc/e0/e3v/squad.npz",
+    "sha256": "f86c31c6cd66c1375948d5b3533bf62a7a8d5cc52320d5a70a8ca71e306feec1"
+   },
+   "ref": {
+    "file": "outputs/enc/e3b/reads/gtemodern+granitesm-V-no-gamma__squad.npz",
+    "sha256": "4ddf5f032ad2dab6d8ee3beb45f42860142da7a2542715dd9aeeb5ff6332d6ff",
+    "grid": "outputs/enc/e3b/grid-gtemodern+granitesm.json",
+    "grid_sha256": "9112b8167f1a84f3cb121f11d57a4427c3dff63610245c3506a87248087dbc01"
+   }
+  },
+  "musique": {
+   "questions": 2417,
+   "h_d5_equal_share": 0.998759,
+   "r5_pts": {
+    "e3v": 47.69,
+    "e3b": 47.72,
+    "diff": -0.031
+   },
+   "beside": {
+    "h_d20_equal_share": 0.999173,
+    "h_d1000_equal_share": 0.999586,
+    "h_rrf5_equal_share": 0.998759,
+    "top5_set_equal_share": 0.989243
+   },
+   "verdict": "PASS",
+   "e0": {
+    "file": "outputs/enc/e0/e3v/musique.npz",
+    "sha256": "c86c6fbf8760ae6ffd9f2197a6930130c13669def07759266ad381512c78ab5a"
+   },
+   "ref": {
+    "file": "outputs/enc/e3b/reads/gtemodern+granitesm-V-no-gamma__musique.npz",
+    "sha256": "0210d9980eca51493405e44ff3adcc97313b247923c15d72e42d51c2c82a87d5",
+    "grid": "outputs/enc/e3b/grid-gtemodern+granitesm.json",
+    "grid_sha256": "9112b8167f1a84f3cb121f11d57a4427c3dff63610245c3506a87248087dbc01"
+   }
+  }
+ },
+ "code_sha256": {
+  "zenc3v.py": "f8f7601a94c4d69fc2cf9e6c7e111b7898ea7f0da3ff770c78437076c2417741"
+ },
+ "utc": "2026-11-20T12:57:44Z",
+ "verdict": "PASS"
+}

@@ -1,0 +1,692 @@
+{
+ "stage": "ENC E3W: report",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 19 (sections 12.9 to 12.11's rule)",
+ "rule": "R@5 per question, arm minus frozen, zap1.boot_diff (2,000, seed 0, 95%); 11.5's words over SQuAD and MuSiQue s1eval for GNX and zrckpn; the user decides (D101)",
+ "ga": {
+  "frozen": {
+   "verdict": "PASS",
+   "runs": [
+    "t-fz-cols-mue",
+    "t-fz-cols-muf",
+    "t-fz-cols-sqe",
+    "t-fz-cols-sqf",
+    "t-fz-fit-gnx",
+    "t-fz-fit-zg6r-b",
+    "t-fz-fit-zrckpn-b",
+    "t-fz-fit-zspk",
+    "t-fz-fork-gnx",
+    "t-fz-fork-zg6r",
+    "t-fz-fork-zrckpn",
+    "t-fz-lists-mue",
+    "t-fz-lists-muf",
+    "t-fz-lists-sqe",
+    "t-fz-lists-sqf",
+    "t-fz-ltmfit",
+    "t-fz-rd-musique-gnx",
+    "t-fz-rd-musique-zg6r",
+    "t-fz-rd-musique-zrckpn",
+    "t-fz-rd-squad-gnx",
+    "t-fz-rd-squad-zg6r",
+    "t-fz-rd-squad-zrckpn"
+   ],
+   "problems": []
+  },
+  "e3v": {
+   "verdict": "PASS",
+   "runs": [
+    "t-v1-cols-mue",
+    "t-v1-cols-muf",
+    "t-v1-cols-sqe",
+    "t-v1-cols-sqf",
+    "t-v1-fit-gnx",
+    "t-v1-fit-zg6r",
+    "t-v1-fit-zrckpn",
+    "t-v1-fit-zspk",
+    "t-v1-fork-gnx",
+    "t-v1-fork-zg6r",
+    "t-v1-fork-zrckpn",
+    "t-v1-gate-e",
+    "t-v1-gate-f",
+    "t-v1-lab-e-musique",
+    "t-v1-lab-e-squad",
+    "t-v1-lab-f-musique",
+    "t-v1-lab-f-squad",
+    "t-v1-lists-mue",
+    "t-v1-lists-muf",
+    "t-v1-lists-sqe",
+    "t-v1-lists-sqf",
+    "t-v1-ltmfit",
+    "t-v1-rd-musique-gnx",
+    "t-v1-rd-musique-zg6r",
+    "t-v1-rd-musique-zrckpn",
+    "t-v1-rd-squad-gnx",
+    "t-v1-rd-squad-zg6r",
+    "t-v1-rd-squad-zrckpn",
+    "v1-a1-pools-sqf",
+    "v1-chain-e-musique",
+    "v1-chain-e-squad",
+    "v1-chain-f-musique",
+    "v1-chain-f-squad-b",
+    "v1-g-musique",
+    "v1-g-squad",
+    "v1-merge-mue",
+    "v1-merge-muf",
+    "v1-merge-sqe",
+    "v1-merge-sqf",
+    "v1-pools-mue-0of1",
+    "v1-pools-muf-0of2",
+    "v1-pools-muf-1of2",
+    "v1-pools-sqe-0of4",
+    "v1-pools-sqe-1of4",
+    "v1-pools-sqe-2of4",
+    "v1-pools-sqe-3of4",
+    "v1-pools-sqf-0of2",
+    "v1-pools-sqf-1of2",
+    "v1-types-musique",
+    "v1-types-squad"
+   ],
+   "problems": []
+  }
+ },
+ "superseded": {
+  "frozen": {
+   "t-fz-fit-zrckpn": "t-fz-fit-zrckpn-b",
+   "t-fz-fit-zg6r": "t-fz-fit-zg6r-b"
+  },
+  "mpnet": {
+   "w2b-chain-f-squad": "w2c-chain-f-squad",
+   "w2c-chain-f-squad": "w2d-chain-f-squad",
+   "w2d-g-musique": "w2d-g2-musique",
+   "w2d-chain-f-squad": "w2e-chain-f-squad",
+   "w2b-chain-f-musique": "w2c-chain-f-musique"
+  },
+  "qwen3e06": {
+   "q1-chain-f-squad": "q1-chain-f-squad-b"
+  },
+  "e3v": {}
+ },
+ "cells": {
+  "e3v zg6r squad": {
+   "questions": 11873,
+   "frozen": 91.13,
+   "arm": 89.66,
+   "pts": -1.47,
+   "ci": [
+    -1.84,
+    -1.08
+   ],
+   "call": "BELOW",
+   "in_pool_rrf": {
+    "frozen": 90.54,
+    "arm": 88.25,
+    "pts": -2.29,
+    "ci": [
+     -2.66,
+     -1.93
+    ],
+    "call": "BELOW"
+   },
+   "reads": {
+    "frozen": {
+     "file": "outputs/enc/e3w/collect/frozen/reads/scr-ml1-zg6r-s0/reads/squad__s1eval.npz",
+     "sha256": "e0bd96bed0a80b5b142cb74218c16c0f6009c6ec0f8b51a6c7cd71d8a79d4f6b"
+    },
+    "e3v": {
+     "file": "outputs/enc/e3w/collect/e3v/reads/scr-ml1-zg6r-s0/reads/squad__s1eval.npz",
+     "sha256": "7588674a676533b2848c1f812ceaacb96648f41850d50a3d23010120f342ea3d"
+    }
+   },
+   "won_back_pts": 2.53
+  },
+  "e3v gnx squad": {
+   "questions": 11873,
+   "frozen": 91.05,
+   "arm": 89.71,
+   "pts": -1.34,
+   "ci": [
+    -1.71,
+    -0.94
+   ],
+   "call": "BELOW",
+   "in_pool_rrf": {
+    "frozen": 90.54,
+    "arm": 88.25,
+    "pts": -2.29,
+    "ci": [
+     -2.66,
+     -1.93
+    ],
+    "call": "BELOW"
+   },
+   "reads": {
+    "frozen": {
+     "file": "outputs/enc/e3w/collect/frozen/reads/scr-gnx-nx-s0/reads/squad__s1eval.npz",
+     "sha256": "a299ea27351fd3bd0e909d88233d833455bc8980dc7f40cbd445b791be4b5138"
+    },
+    "e3v": {
+     "file": "outputs/enc/e3w/collect/e3v/reads/scr-gnx-nx-s0/reads/squad__s1eval.npz",
+     "sha256": "db4ff6a94232e6536ecb9538d391ed9f49f2c3b035de6af53ea888618245d266"
+    }
+   },
+   "won_back_pts": 2.66
+  },
+  "e3v zrckpn squad": {
+   "questions": 11873,
+   "frozen": 91.42,
+   "arm": 89.67,
+   "pts": -1.75,
+   "ci": [
+    -2.12,
+    -1.39
+   ],
+   "call": "BELOW",
+   "in_pool_rrf": {
+    "frozen": 90.54,
+    "arm": 88.25,
+    "pts": -2.29,
+    "ci": [
+     -2.66,
+     -1.93
+    ],
+    "call": "BELOW"
+   },
+   "reads": {
+    "frozen": {
+     "file": "outputs/enc/e3w/collect/frozen/reads/scr-ltm-zrckpn-s0/reads/squad__s1eval.npz",
+     "sha256": "053613c279fe4f9399ea70d483408eefdd09820a05181fc30e2bd3be6cd1089f"
+    },
+    "e3v": {
+     "file": "outputs/enc/e3w/collect/e3v/reads/scr-ltm-zrckpn-s0/reads/squad__s1eval.npz",
+     "sha256": "1a083d02cc0f42d3e18aa8050558aec004a611b1e8d055620378f9ee0aa4cbe4"
+    }
+   },
+   "won_back_pts": 2.25
+  },
+  "e3v zg6r musique": {
+   "questions": 2417,
+   "frozen": 57.53,
+   "arm": 58.2,
+   "pts": 0.68,
+   "ci": [
+    -0.21,
+    1.52
+   ],
+   "call": "LEVEL",
+   "in_pool_rrf": {
+    "frozen": 47.34,
+    "arm": 47.78,
+    "pts": 0.43,
+    "ci": [
+     -0.19,
+     1.03
+    ],
+    "call": "LEVEL"
+   },
+   "reads": {
+    "frozen": {
+     "file": "outputs/enc/e3w/collect/frozen/reads/scr-ml1-zg6r-s0/reads/musique__s1eval.npz",
+     "sha256": "1f62f22791ce7affecd637da87db4bf3d8e1d5b078f19b5e6bc42f5b98d3492f"
+    },
+    "e3v": {
+     "file": "outputs/enc/e3w/collect/e3v/reads/scr-ml1-zg6r-s0/reads/musique__s1eval.npz",
+     "sha256": "285c7579b0b48b64f92dde4df80e4df091999cde3797fad47a04451d983c64fc"
+    }
+   },
+   "won_back_pts": -1.29
+  },
+  "e3v gnx musique": {
+   "questions": 2417,
+   "frozen": 58.21,
+   "arm": 57.55,
+   "pts": -0.66,
+   "ci": [
+    -1.5,
+    0.12
+   ],
+   "call": "LEVEL",
+   "in_pool_rrf": {
+    "frozen": 47.34,
+    "arm": 47.78,
+    "pts": 0.43,
+    "ci": [
+     -0.19,
+     1.03
+    ],
+    "call": "LEVEL"
+   },
+   "reads": {
+    "frozen": {
+     "file": "outputs/enc/e3w/collect/frozen/reads/scr-gnx-nx-s0/reads/musique__s1eval.npz",
+     "sha256": "3518402006c23c14635b7571305497c8be352c2cae4c1bbe32fd3dba2ed1b053"
+    },
+    "e3v": {
+     "file": "outputs/enc/e3w/collect/e3v/reads/scr-gnx-nx-s0/reads/musique__s1eval.npz",
+     "sha256": "6649cdfd36ffc64f6679422017060fc62a4934a4074e850131e9cf9cf001de28"
+    }
+   },
+   "won_back_pts": -2.63
+  },
+  "e3v zrckpn musique": {
+   "questions": 2417,
+   "frozen": 57.95,
+   "arm": 57.48,
+   "pts": -0.47,
+   "ci": [
+    -1.25,
+    0.32
+   ],
+   "call": "LEVEL",
+   "in_pool_rrf": {
+    "frozen": 47.34,
+    "arm": 47.78,
+    "pts": 0.43,
+    "ci": [
+     -0.19,
+     1.03
+    ],
+    "call": "LEVEL"
+   },
+   "reads": {
+    "frozen": {
+     "file": "outputs/enc/e3w/collect/frozen/reads/scr-ltm-zrckpn-s0/reads/musique__s1eval.npz",
+     "sha256": "e2aa151004904155c6ae4e56205dc27d6678b57f9d87a7f2349ab1aa966a18dc"
+    },
+    "e3v": {
+     "file": "outputs/enc/e3w/collect/e3v/reads/scr-ltm-zrckpn-s0/reads/musique__s1eval.npz",
+     "sha256": "65aa546de9b4cf39cd7020533a37a349f80cfea455fc83ac368ac9712b9c52f5"
+    }
+   },
+   "won_back_pts": -2.44
+  }
+ },
+ "beside": {
+  "e3v squad": {
+   "questions": 11873,
+   "e0_frozen": {
+    "file": "outputs/enc/e0/frozen/squad.npz",
+    "sha256": "586c809fa9bb0386b87c196f3847994a2dc8de43c3b09bc8d0944934bd67da01"
+   },
+   "e0_e3v": {
+    "file": "outputs/enc/e0/e3v/squad.npz",
+    "sha256": "f86c31c6cd66c1375948d5b3533bf62a7a8d5cc52320d5a70a8ca71e306feec1"
+   },
+   "first_stage": {
+    "frozen": 87.69,
+    "arm": 83.69,
+    "pts": -4.0,
+    "ci": [
+     -4.56,
+     -3.46
+    ],
+    "call": "BELOW"
+   },
+   "pool": {
+    "frozen": 97.98,
+    "arm": 97.4,
+    "pts": -0.58,
+    "ci": [
+     -0.76,
+     -0.41
+    ],
+    "call": "BELOW",
+    "mean_size": {
+     "frozen": 50.0,
+     "arm": 50.0
+    },
+    "gold": {
+     "file": "outputs/enc/e0/gold/squad.npz",
+     "sha256": "705195dc8b4fc2fec8274db1f4592112220819306277ad012738ae6581c33c8f"
+    },
+    "parts": {
+     "frozen": [
+      {
+       "file": "outputs/enc/e3w/collect/frozen/pools/squad__s1eval__0of4.npz",
+       "sha256": "d1018c06332effbc9e27d1c393c38bdff620f54944e6b1df841da6c1cd4580d5"
+      },
+      {
+       "file": "outputs/enc/e3w/collect/frozen/pools/squad__s1eval__1of4.npz",
+       "sha256": "66cf4658f59f8620761b3b68150282942877a6370f29640ed0ce81a2d533564d"
+      },
+      {
+       "file": "outputs/enc/e3w/collect/frozen/pools/squad__s1eval__2of4.npz",
+       "sha256": "385744afb7f40ba43e844ffb2609d72569d6d50a38a77852fc61d62dc438786f"
+      },
+      {
+       "file": "outputs/enc/e3w/collect/frozen/pools/squad__s1eval__3of4.npz",
+       "sha256": "b96fce65687df79bf72869091faf4e96b39aa4fa03d483ee5d03918ed7e032ff"
+      }
+     ],
+     "e3v": [
+      {
+       "file": "outputs/enc/e3w/collect/e3v/pools/squad__s1eval__0of4.npz",
+       "sha256": "b5d093acf5a47b510035f302d778cdfd1ed0689c45e12b80421554c23de16302"
+      },
+      {
+       "file": "outputs/enc/e3w/collect/e3v/pools/squad__s1eval__1of4.npz",
+       "sha256": "0eb64aaba92286b18fdbab19bc696d0a66be32e6eb90d6c39636fee21dc05a84"
+      },
+      {
+       "file": "outputs/enc/e3w/collect/e3v/pools/squad__s1eval__2of4.npz",
+       "sha256": "d2222af1cfa16e5368a0bb7d2bd682effc76b08a81e5f7f3e1177a9831ae2a03"
+      },
+      {
+       "file": "outputs/enc/e3w/collect/e3v/pools/squad__s1eval__3of4.npz",
+       "sha256": "388652ee10e219fa2f1d39ff77570d9a0aa8e5226a66b111b6e5c294b0be8ecf"
+      }
+     ]
+    }
+   }
+  },
+  "e3v musique": {
+   "questions": 2417,
+   "e0_frozen": {
+    "file": "outputs/enc/e0/frozen/musique.npz",
+    "sha256": "b274c6dd1bf403b224bdf057132baa578b0e893cad62acc2be5951eced700ad9"
+   },
+   "e0_e3v": {
+    "file": "outputs/enc/e0/e3v/musique.npz",
+    "sha256": "c86c6fbf8760ae6ffd9f2197a6930130c13669def07759266ad381512c78ab5a"
+   },
+   "first_stage": {
+    "frozen": 45.72,
+    "arm": 47.69,
+    "pts": 1.97,
+    "ci": [
+     1.01,
+     2.88
+    ],
+    "call": "ABOVE"
+   },
+   "pool": {
+    "frozen": 97.77,
+    "arm": 97.35,
+    "pts": -0.42,
+    "ci": [
+     -0.71,
+     -0.14
+    ],
+    "call": "BELOW",
+    "mean_size": {
+     "frozen": 5263.6,
+     "arm": 5320.6
+    },
+    "gold": {
+     "file": "outputs/enc/e0/gold/musique.npz",
+     "sha256": "ead7f553619406b9d9ea12cec0b55ceae00913918a77c22bc23d555356ab0424"
+    },
+    "parts": {
+     "frozen": [
+      {
+       "file": "outputs/enc/e3w/collect/frozen/pools/musique__s1eval__0of1.npz",
+       "sha256": "6bcb58bd8a2ee319917be3fb4e777a1ca082af5f74a3c411bac6527f1a2333e3"
+      }
+     ],
+     "e3v": [
+      {
+       "file": "outputs/enc/e3w/collect/e3v/pools/musique__s1eval__0of1.npz",
+       "sha256": "1dac1f6424dcab9b027bf8a90a625029d3ab4cfd453bb896a598fb622199d2d9"
+      }
+     ]
+    }
+   }
+  }
+ },
+ "calls": {
+  "e3v": {
+   "gnx": {
+    "gaps": {
+     "squad": [
+      -1.34,
+      -1.71
+     ],
+     "musique": [
+      -0.66,
+      -1.5
+     ]
+    },
+    "call": "LOSES"
+   },
+   "zrckpn": {
+    "gaps": {
+     "squad": [
+      -1.75,
+      -2.12
+     ],
+     "musique": [
+      -0.47,
+      -1.25
+     ]
+    },
+    "call": "LOSES"
+   }
+  }
+ },
+ "cost": {
+  "frozen": {
+   "params": null,
+   "dim": 1536,
+   "bytes_per_row_f16": 3072,
+   "padded_to": 1536,
+   "audited_seconds": {
+    "other": 391.4,
+    "fits": 13061.8,
+    "reads": 1052.8
+   }
+  },
+  "e3v": {
+   "params": 196676736,
+   "dim": 1152,
+   "bytes_per_row_f16": 2304,
+   "padded_to": 1536,
+   "audited_seconds": {
+    "other": 24349.0,
+    "fits": 11274.2,
+    "reads": 848.1
+   },
+   "params_parts": {
+    "gtemodern": 149014272,
+    "granitesm": 47662464
+   }
+  }
+ },
+ "problems": [],
+ "code_sha256": "f105a790023a62f63ca99d091448d6cdc654b5575ccd29ca6c5ab45bf84ccd57",
+ "seconds": 16.4,
+ "utc": "2026-11-20T21:44:05Z",
+ "beside_e2": {
+  "file": "outputs/enc/e2/report.json",
+  "sha256": "d6b340c5b8ae60760ea4ce14f475ff5f113013031b0c37b9c43b5e1f9575d2e2",
+  "calls": {
+   "mpnet": {
+    "gnx": {
+     "gaps": {
+      "squad": [
+       -2.62,
+       -3.02
+      ],
+      "musique": [
+       -5.14,
+       -6.06
+      ]
+     },
+     "call": "LOSES"
+    },
+    "zrckpn": {
+     "gaps": {
+      "squad": [
+       -2.77,
+       -3.18
+      ],
+      "musique": [
+       -3.82,
+       -4.72
+      ]
+     },
+     "call": "LOSES"
+    }
+   },
+   "qwen3e06": {
+    "gnx": {
+     "gaps": {
+      "squad": [
+       -1.49,
+       -1.88
+      ],
+      "musique": [
+       -3.58,
+       -4.47
+      ]
+     },
+     "call": "LOSES"
+    },
+    "zrckpn": {
+     "gaps": {
+      "squad": [
+       -1.67,
+       -2.03
+      ],
+      "musique": [
+       -3.91,
+       -4.76
+      ]
+     },
+     "call": "LOSES"
+    }
+   }
+  },
+  "cells": {
+   "mpnet zg6r squad": {
+    "frozen": 91.13,
+    "arm": 88.54,
+    "pts": -2.59,
+    "ci": [
+     -3.01,
+     -2.15
+    ],
+    "call": "BELOW",
+    "won_back_pts": 11.59
+   },
+   "mpnet gnx squad": {
+    "frozen": 91.05,
+    "arm": 88.43,
+    "pts": -2.62,
+    "ci": [
+     -3.02,
+     -2.16
+    ],
+    "call": "BELOW",
+    "won_back_pts": 11.56
+   },
+   "mpnet zrckpn squad": {
+    "frozen": 91.42,
+    "arm": 88.65,
+    "pts": -2.77,
+    "ci": [
+     -3.18,
+     -2.35
+    ],
+    "call": "BELOW",
+    "won_back_pts": 11.41
+   },
+   "mpnet zg6r musique": {
+    "frozen": 57.53,
+    "arm": 53.28,
+    "pts": -4.25,
+    "ci": [
+     -5.18,
+     -3.35
+    ],
+    "call": "BELOW",
+    "won_back_pts": 7.64
+   },
+   "mpnet gnx musique": {
+    "frozen": 58.21,
+    "arm": 53.07,
+    "pts": -5.14,
+    "ci": [
+     -6.06,
+     -4.23
+    ],
+    "call": "BELOW",
+    "won_back_pts": 6.75
+   },
+   "mpnet zrckpn musique": {
+    "frozen": 57.95,
+    "arm": 54.13,
+    "pts": -3.82,
+    "ci": [
+     -4.72,
+     -2.95
+    ],
+    "call": "BELOW",
+    "won_back_pts": 8.07
+   },
+   "qwen3e06 zg6r squad": {
+    "frozen": 91.13,
+    "arm": 89.62,
+    "pts": -1.51,
+    "ci": [
+     -1.9,
+     -1.11
+    ],
+    "call": "BELOW",
+    "won_back_pts": 4.82
+   },
+   "qwen3e06 gnx squad": {
+    "frozen": 91.05,
+    "arm": 89.56,
+    "pts": -1.49,
+    "ci": [
+     -1.88,
+     -1.09
+    ],
+    "call": "BELOW",
+    "won_back_pts": 4.84
+   },
+   "qwen3e06 zrckpn squad": {
+    "frozen": 91.42,
+    "arm": 89.75,
+    "pts": -1.67,
+    "ci": [
+     -2.03,
+     -1.29
+    ],
+    "call": "BELOW",
+    "won_back_pts": 4.66
+   },
+   "qwen3e06 zg6r musique": {
+    "frozen": 57.53,
+    "arm": 55.33,
+    "pts": -2.19,
+    "ci": [
+     -3.1,
+     -1.35
+    ],
+    "call": "BELOW",
+    "won_back_pts": 2.27
+   },
+   "qwen3e06 gnx musique": {
+    "frozen": 58.21,
+    "arm": 54.63,
+    "pts": -3.58,
+    "ci": [
+     -4.47,
+     -2.71
+    ],
+    "call": "BELOW",
+    "won_back_pts": 0.88
+   },
+   "qwen3e06 zrckpn musique": {
+    "frozen": 57.95,
+    "arm": 54.03,
+    "pts": -3.91,
+    "ci": [
+     -4.76,
+     -3.1
+    ],
+    "call": "BELOW",
+    "won_back_pts": 0.55
+   }
+  }
+ }
+}

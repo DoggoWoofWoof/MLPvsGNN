@@ -1,0 +1,10 @@
+{
+ "stage": "ENC E3W",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 19",
+ "params": {
+  "gtemodern": 149014272,
+  "granitesm": 47662464
+ },
+ "total": 196676736,
+ "utc": "2026-11-20T12:54:48Z"
+}

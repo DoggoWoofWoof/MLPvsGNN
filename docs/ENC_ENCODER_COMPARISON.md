@@ -1774,3 +1774,53 @@ Records: `outputs/enc/e3v/` (the vectors), `outputs/enc/e3w/`, and E2's folders 
     - the e3v world's own D83 folders are marked compressed before the chains write (zenc3w mark), so its caches are
       compressed as they are written.
   - Nothing is deleted.
+
+### 19.8 Report (21 Nov 2026, 03:14 IST): e3v LOSES for both GNX and zrckpn
+
+- **Gates:**
+  - GV passed: hits at 5 were equal on 99.96% of SQuAD's questions (83.69 against E3B's 83.70) and on 99.88% of
+    MuSiQue's (47.69 against 47.72).
+  - GB passed: the host's CPU encode against the GPU encode had cosines of 0.99966 (gtemodern) and 0.99950 (granitesm).
+  - GA passed for both worlds (frozen 22 runs, e3v 50 runs). zenc2r found 0 problems.
+
+| model | carve | frozen | e3v | model gap | first-stage gap | won back | in-pool RRF gap |
+|---|---|---|---|---|---|---|---|
+| GNX (GNN) | SQuAD | 91.05 | 89.71 | -1.34 [-1.71, -0.94] BELOW | -4.00 [-4.56, -3.46] BELOW | 2.66 | -2.29 [-2.66, -1.93] BELOW |
+| GNX (GNN) | MuSiQue | 58.21 | 57.55 | -0.66 [-1.50, +0.12] LEVEL | +1.97 [+1.01, +2.88] ABOVE | -2.63 | +0.43 [-0.19, +1.03] LEVEL |
+| zrckpn (MLP) | SQuAD | 91.42 | 89.67 | -1.75 [-2.12, -1.39] BELOW | -4.00 [-4.56, -3.46] BELOW | 2.25 | -2.29 [-2.66, -1.93] BELOW |
+| zrckpn (MLP) | MuSiQue | 57.95 | 57.48 | -0.47 [-1.25, +0.32] LEVEL | +1.97 [+1.01, +2.88] ABOVE | -2.44 | +0.43 [-0.19, +1.03] LEVEL |
+| zg6r (beside) | SQuAD | 91.13 | 89.66 | -1.47 [-1.84, -1.08] BELOW | -4.00 [-4.56, -3.46] BELOW | 2.53 | -2.29 [-2.66, -1.93] BELOW |
+| zg6r (beside) | MuSiQue | 57.53 | 58.20 | +0.68 [-0.21, +1.52] LEVEL | +1.97 [+1.01, +2.88] ABOVE | -1.29 | +0.43 [-0.19, +1.03] LEVEL |
+
+- s1eval R@5 x100, candidate p@swa, seed 0. A gap is e3v's world minus the frozen world, with a paired 95% bootstrap
+  over questions. outputs/enc/e3w/report.md and report.json hold every cell.
+- **The calls (19.5): GNX LOSES, zrckpn LOSES.**
+  - Both models are LEVEL on MuSiQue.
+  - On SQuAD, both point gaps are below -1: -1.34 (GNX) and -1.75 (zrckpn). So neither model is CLOSE.
+- **Where the loss sits (19.6), from the beside measures:**
+  - **SQuAD: the first stage.** e3v's one vector is 4.00 points under frozen at the first stage. The models win back 2.25
+    to 2.66 points of it. The pools hold 0.58 points fewer golds (97.40 against 97.98, BELOW), with the same mean size
+    (50.0).
+  - **MuSiQue: the lead does not carry.** The first stage is 1.97 points above frozen. The pools hold 0.42 points fewer
+    golds (97.35 against 97.77, BELOW; mean size 5,320.6 against 5,263.6). The in-pool RRF is LEVEL (+0.43), and every
+    model ends LEVEL: the models give back 1.29 to 2.63 points of the first-stage lead.
+- **Beside E2's arms (outputs/enc/e2/report.json), the model gaps, SQuAD / MuSiQue:**
+  - GNX: e3v -1.34 / -0.66; qwen3e06 -1.49 / -3.58; mpnet -2.62 / -5.14.
+  - zrckpn: e3v -1.75 / -0.47; qwen3e06 -1.67 / -3.91; mpnet -2.77 / -3.82.
+  - e3v is the closest small arm on MuSiQue by about 3 points for both models. On SQuAD it is 0.15 closer than qwen3e06
+    for GNX, and 0.08 further for zrckpn.
+- **Cost:**
+  - e3v runs 196.7M parameters (gtemodern 149.0M + granitesm 47.7M), against frozen's gte-Qwen2-1.5B-instruct (about
+    1.5B, about 7.8 times as many). Its vector is 1,152 wide, against 1,536. In the world it is padded to 1,536.
+  - Audited host seconds, e3v against frozen: fits 11,274 against 13,062; reads 848 against 1,053.
+  - "other" (24,349 against 391) is not comparable: e3v's includes building its whole world (bases, first stage, K,
+    pools and the four chains), and frozen's world was built before the audit.
+- **Disclosed (runtime only; no command, input or number changed):**
+  - The feed left out the closed worlds' look prune. It ran at run time with the standing tool
+    (prune_d83_looks.py): the filed F carves' look chunks (9.48 GB) after the F chains, and the E carves' (4.91 GB, row
+    e3w-release-looks-e) after the E chains. The carve records were kept.
+  - The GNN fits' GPU share was lowered from 0.82 to 0.80 of the card (a feed resource field), because the card's free
+    share read 0.8146.
+  - The closed world was NTFS-compressed after collect (row e3w-release-squeeze).
+- **Next (19.6):** nothing more is trained on e3v without a new declaration. The user decides D101. Nothing here
+  changes the record or the frozen world.
