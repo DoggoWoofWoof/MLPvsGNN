@@ -1931,6 +1931,30 @@ shas). Report: outputs/enc/e4/report.md.
   HotpotQA, 3 h for WebQSP and minutes for MetaQA. Each GKs takes minutes.
 - **No call:** K's numbers are read only by the link check that follows, declared before it runs.
 
+### 20.9 K's search on the GPU for the three large corpora (added 21 Nov 2026, 04:12 IST, before any K number)
+
+- **Why:** 20.8's CPU estimate was wrong. The record's exact all-pairs search took 193 s for MuSiQue's 117,533 groups
+  on 8 threads, and it grows with the square of the groups. That gives about 26 h for WebQSP, about 4 days for
+  HotpotQA and about 5 days for 2Wiki. Those three CPU rows were taken out of the feed before any of them ran.
+  MetaQA's stays on the CPU (seconds).
+- **What changes:** only the search (zenc1.nn_top) runs on the GPU, in outputs/mp_unified/zenc4g.py.
+  - The scores are exact float32 with TF32 off, every group against every group.
+  - The order is score descending, then group ascending, as zenc1.row_top orders.
+  - The groups, the unit rows, out_positions, scores_at, k_edges and the tie rows are zenc1's and zenc1b2's,
+    unedited.
+  - On the toy (three shards, exact ties) the search equals zenc1.nn_top on every row.
+- **GK-G, the gate:** frozen's K rebuilt by the GPU search, on the whole corpus, against the package's graph/knn.npz.
+  - A pair found in only one of the two passes only when one end's group is a tie row (4th and 5th scores within
+    zenc1.TIE): the GPU's GEMM rounds differently from the CPU's near a tie.
+  - Common pairs' weights must agree within 1e-3.
+  - It runs first on MuSiQue and MetaQA, where the CPU's full GK passed with no exception, as a check of the code.
+    Then it runs on WebQSP, HotpotQA and 2Wiki.
+  - A FAIL stops that dataset's e3v K.
+- **e3v's K** on WebQSP, HotpotQA and 2Wiki by the same search, once GK-G and E4's FC have passed. Output:
+  outputs/enc/e4/knn/e3v/<ds>.npz and its json (the device, the GPU peak and GK-G's sha256).
+- **GPU:** 0.15 of the card for the two checks, 0.50 for the large ones. Estimate: about 1 h for 2Wiki's frozen GK-G,
+  less for the others and for e3v.
+
 ## 21. E5: how small e3v's vectors can be stored (declared 21 Nov 2026, 03:52 IST, before any E5 number)
 
 Code: outputs/mp_unified/zenc5.py. Report: outputs/enc/e5/report.md.
