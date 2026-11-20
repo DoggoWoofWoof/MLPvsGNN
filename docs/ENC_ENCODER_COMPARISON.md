@@ -1586,3 +1586,53 @@ map encoders and stage name set for this stage, and with fusion for every two-en
   e3b-report. The report waits for E2B's frozen grid, whose V and F it reads beside.
 - **Disk:** windows about 0.9 GB for each 768-wide encoder and 0.45 GB for granitesm (2.3 GB), kept until D101. Maps and
   reads take under 100 MB.
+
+### 18.9 Report (20 Nov 2026, 14:34 IST): both fused arms ADVANCE
+
+- **Gates:** G1 passed on every arm's raw read, on both carves. G2 passed for all three encoders' windows: the lowest
+  cosine was 0.99999 or higher, and every one-window document cleared 0.99.
+- **The maps:** gtemodern's best s1sel epoch was 1, granite's 6, granitesm's 0 (its map is the identity).
+- **Chosen settings:**
+  - Both fused arms: V = gamma 0.5 and w 0.5 (equal weights), no prf; F adds windows (W 64, beta 0.75).
+  - gtemodern: V = gamma 0.5; F adds W 64, beta 0.75.
+  - granitesm: V is raw (no s1sel setting beat its plain vector); F = W 64, beta 0.5.
+  - prf was chosen for no arm.
+
+| arm | params / width | V R@5 | V gap to frozen | V call | gate | F R@5 | F gap to frozen | F call |
+|---|---|---|---|---|---|---|---|---|
+| gtemodern | 149M / 768 | 82.93 / 45.18 | -4.77 [-5.35, -4.21] / -0.54 [-1.49, +0.35] | MIXED | NEAR | 88.15 / 45.95 | +0.45 [-0.08, +0.99] / +0.23 [-0.69, +1.13] | IMPROVES |
+| gtemodern+granite | 298M / 1,536 | 83.53 / 49.00 | -4.17 [-4.72, -3.63] / +3.28 [+2.38, +4.18] | MIXED | ADVANCE | 88.71 / 49.09 | +1.01 [+0.49, +1.54] / +3.37 [+2.43, +4.29] | IMPROVES |
+| gtemodern+granitesm | 197M / 1,152 | 83.68 / 48.15 | -4.02 [-4.57, -3.49] / +2.43 [+1.53, +3.29] | IMPROVES | ADVANCE | 88.93 / 48.62 | +1.24 [+0.70, +1.77] / +2.91 [+1.96, +3.83] | IMPROVES |
+| granitesm | 48M / 384 | 76.12 / 43.89 | -11.57 [-12.26, -10.90] / -1.82 [-2.81, -0.87] | NO | SHORT | 82.59 / 44.62 | -5.10 [-5.69, -4.49] / -1.10 [-2.10, -0.13] | IMPROVES |
+
+- s1eval dense R@5, points, SQuAD / MuSiQue. The gap is to E0's raw frozen read (87.69 / 45.72). The calls are on won
+  back against the arm's first encoder raw (report.json has the intervals).
+- **Both fused arms ADVANCE, on GNX's qwen3e06 bars (-4.25 / -1.25).**
+  - On SQuAD they clear the bar by 0.08 and 0.23 points; on MuSiQue they clear it by far.
+  - Neither clears zrckpn's SQuAD bar (-3.79).
+  - The bars are pointers: they are the share of the gap qwen3e06's models won back, not these arms' models.
+- **MuSiQue: both fused one-vector arms are above frozen.**
+  - Against E0's raw frozen read: +3.28 and +2.43.
+  - Against frozen's own V from E2B's frozen grid (87.75 / 47.63): +1.37 [+0.52, +2.22] and +0.52 [-0.37, +1.35].
+  - Fusion is what does it: leaving w out costs 3.82 and 2.97 points on MuSiQue (0.60 and 0.75 on SQuAD).
+  - R@1000 on MuSiQue: 86.81 and 86.29, against frozen's 87.25.
+- **SQuAD: the one-vector gap stays near 4 points (order).**
+  - With windows (F), every arm with gtemodern is level with or above frozen's raw read: +0.45, +1.01 and +1.24.
+  - Against frozen's own F (90.45 / 48.57), F trails on SQuAD by 2.30 (gtemodern), 1.74 and 1.52 (the fused arms).
+  - On MuSiQue, F is level with frozen's F for both fused arms (+0.52 and +0.06).
+- **Against qwen3e06's recipes (E2B's grid):** every gtemodern arm is above qwen3e06's V and F on both carves. For
+  example, gtemodern+granitesm V is +1.67 / +5.65 above qwen3e06 V.
+- **Cost:**
+  - gtemodern+granitesm runs two encoders per question (149M + 48M), and its one vector is 1,152 wide, under frozen's
+    1,536.
+  - gtemodern+granite runs 149M + 149M at 1,536.
+- **Disclosed:**
+  - As in E2B, G1 checks each arm's first encoder only. granite's raw read inside its fused arm is not G1-checked. Its E0
+    read passed GR in 17.8.
+  - The frozen V and F references are E2B's grid reads, taken before E2B's report.
+- **Next (18.7):**
+  - The best arm is gtemodern+granite (mean V gap -0.45).
+  - gtemodern+granitesm (mean -0.80) is within 0.5 points with fewer parameters, so it is named too.
+  - Their E2 stage would be 12.9's world on V's vectors: GNX and zrckpn at seed 0, trained on SQuAD fit and MuSiQue
+    s1fit, read on the two s1eval carves against the frozen world. It is put to the user before it is declared.
+  - Nothing was trained. The user decides D101.

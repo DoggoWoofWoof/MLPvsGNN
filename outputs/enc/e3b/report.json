@@ -1,0 +1,1318 @@
+{
+ "stage": "ENC E3B",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 18",
+ "bars": {
+  "mpnet": {
+   "zrckpn": {
+    "squad": -5.12,
+    "musique": -3.11
+   },
+   "gnx": {
+    "squad": -5.41,
+    "musique": -2.31
+   }
+  },
+  "qwen3e06": {
+   "zrckpn": {
+    "squad": -3.79,
+    "musique": -1.14
+   },
+   "gnx": {
+    "squad": -4.25,
+    "musique": -1.25
+   }
+  }
+ },
+ "arms": {
+  "gtemodern": {
+   "chosen": {
+    "V": {
+     "gamma": 0.5,
+     "beta": 0.0,
+     "W": null,
+     "w": 0.0,
+     "prf": null
+    },
+    "F": {
+     "gamma": 0.5,
+     "beta": 0.75,
+     "W": 64,
+     "w": 0.0,
+     "prf": null
+    }
+   },
+   "params": 149014272,
+   "width": 768,
+   "recipes": {
+    "V": {
+     "setting": {
+      "gamma": 0.5,
+      "beta": 0.0,
+      "W": null,
+      "w": 0.0,
+      "prf": null
+     },
+     "won_back": {
+      "squad": {
+       "pts": -0.16,
+       "ci": [
+        -0.44,
+        0.11
+       ],
+       "call": "LEVEL"
+      },
+      "musique": {
+       "pts": 0.91,
+       "ci": [
+        0.48,
+        1.36
+       ],
+       "call": "ABOVE"
+      }
+     },
+     "call": "MIXED",
+     "gap_to_frozen": {
+      "squad": {
+       "pts": -4.77,
+       "ci": [
+        -5.35,
+        -4.21
+       ],
+       "call": "BELOW"
+      },
+      "musique": {
+       "pts": -0.54,
+       "ci": [
+        -1.49,
+        0.35
+       ],
+       "call": "LEVEL"
+      }
+     },
+     "recall": {
+      "squad": {
+       "d5": 82.93,
+       "d20": 91.55,
+       "d1000": 99.42,
+       "rrf5": 88.41
+      },
+      "musique": {
+       "d5": 45.18,
+       "d20": 57.06,
+       "d1000": 83.87,
+       "rrf5": 47.97
+      }
+     },
+     "loo": {
+      "gamma": {
+       "squad": {
+        "pts": -0.16,
+        "ci": [
+         -0.44,
+         0.11
+        ],
+        "call": "LEVEL"
+       },
+       "musique": {
+        "pts": 0.91,
+        "ci": [
+         0.48,
+         1.36
+        ],
+        "call": "ABOVE"
+       }
+      }
+     },
+     "beside": {
+      "qwen3e06 V": {
+       "squad": {
+        "pts": 0.92,
+        "ci": [
+         0.32,
+         1.46
+        ],
+        "call": "ABOVE"
+       },
+       "musique": {
+        "pts": 2.68,
+        "ci": [
+         1.81,
+         3.54
+        ],
+        "call": "ABOVE"
+       }
+      },
+      "frozen V": {
+       "squad": {
+        "pts": -4.82,
+        "ci": [
+         -5.4,
+         -4.27
+        ],
+        "call": "BELOW"
+       },
+       "musique": {
+        "pts": -2.45,
+        "ci": [
+         -3.35,
+         -1.59
+        ],
+        "call": "BELOW"
+       }
+      }
+     },
+     "clears": {
+      "mpnet": "zrckpn",
+      "qwen3e06": null
+     },
+     "gate": "NEAR",
+     "mean_gap_to_frozen": -2.65
+    },
+    "F": {
+     "setting": {
+      "gamma": 0.5,
+      "beta": 0.75,
+      "W": 64,
+      "w": 0.0,
+      "prf": null
+     },
+     "won_back": {
+      "squad": {
+       "pts": 5.06,
+       "ci": [
+        4.59,
+        5.54
+       ],
+       "call": "ABOVE"
+      },
+      "musique": {
+       "pts": 1.68,
+       "ci": [
+        1.03,
+        2.3
+       ],
+       "call": "ABOVE"
+      }
+     },
+     "call": "IMPROVES",
+     "gap_to_frozen": {
+      "squad": {
+       "pts": 0.45,
+       "ci": [
+        -0.08,
+        0.99
+       ],
+       "call": "LEVEL"
+      },
+      "musique": {
+       "pts": 0.23,
+       "ci": [
+        -0.69,
+        1.13
+       ],
+       "call": "LEVEL"
+      }
+     },
+     "recall": {
+      "squad": {
+       "d5": 88.15,
+       "d20": 94.66,
+       "d1000": 99.72,
+       "rrf5": 90.8
+      },
+      "musique": {
+       "d5": 45.95,
+       "d20": 58.25,
+       "d1000": 84.21,
+       "rrf5": 48.18
+      }
+     },
+     "loo": {
+      "gamma": {
+       "squad": {
+        "pts": 0.14,
+        "ci": [
+         -0.08,
+         0.38
+        ],
+        "call": "LEVEL"
+       },
+       "musique": {
+        "pts": 1.32,
+        "ci": [
+         0.89,
+         1.75
+        ],
+        "call": "ABOVE"
+       }
+      },
+      "beta": {
+       "squad": {
+        "pts": 5.22,
+        "ci": [
+         4.74,
+         5.69
+        ],
+        "call": "ABOVE"
+       },
+       "musique": {
+        "pts": 0.77,
+        "ci": [
+         0.19,
+         1.36
+        ],
+        "call": "ABOVE"
+       }
+      }
+     },
+     "beside": {
+      "qwen3e06 F": {
+       "squad": {
+        "pts": 1.07,
+        "ci": [
+         0.55,
+         1.54
+        ],
+        "call": "ABOVE"
+       },
+       "musique": {
+        "pts": 2.18,
+        "ci": [
+         1.33,
+         3.04
+        ],
+        "call": "ABOVE"
+       }
+      },
+      "frozen F": {
+       "squad": {
+        "pts": -2.3,
+        "ci": [
+         -2.75,
+         -1.83
+        ],
+        "call": "BELOW"
+       },
+       "musique": {
+        "pts": -2.62,
+        "ci": [
+         -3.5,
+         -1.67
+        ],
+        "call": "BELOW"
+       }
+      }
+     },
+     "clears": {
+      "mpnet": "zrckpn",
+      "qwen3e06": "zrckpn"
+     },
+     "mean_gap_to_frozen": 0.34
+    }
+   }
+  },
+  "gtemodern+granite": {
+   "chosen": {
+    "V": {
+     "gamma": 0.5,
+     "beta": 0.0,
+     "W": null,
+     "w": 0.5,
+     "prf": null
+    },
+    "F": {
+     "gamma": 0.5,
+     "beta": 0.75,
+     "W": 64,
+     "w": 0.5,
+     "prf": null
+    }
+   },
+   "params": 298028544,
+   "width": 1536,
+   "recipes": {
+    "V": {
+     "setting": {
+      "gamma": 0.5,
+      "beta": 0.0,
+      "W": null,
+      "w": 0.5,
+      "prf": null
+     },
+     "won_back": {
+      "squad": {
+       "pts": 0.44,
+       "ci": [
+        0.0,
+        0.88
+       ],
+       "call": "LEVEL"
+      },
+      "musique": {
+       "pts": 4.73,
+       "ci": [
+        4.05,
+        5.4
+       ],
+       "call": "ABOVE"
+      }
+     },
+     "call": "MIXED",
+     "gap_to_frozen": {
+      "squad": {
+       "pts": -4.17,
+       "ci": [
+        -4.72,
+        -3.63
+       ],
+       "call": "BELOW"
+      },
+      "musique": {
+       "pts": 3.28,
+       "ci": [
+        2.38,
+        4.18
+       ],
+       "call": "ABOVE"
+      }
+     },
+     "recall": {
+      "squad": {
+       "d5": 83.53,
+       "d20": 91.89,
+       "d1000": 99.5,
+       "rrf5": 88.07
+      },
+      "musique": {
+       "d5": 49.0,
+       "d20": 60.51,
+       "d1000": 86.81,
+       "rrf5": 48.02
+      }
+     },
+     "loo": {
+      "gamma": {
+       "squad": {
+        "pts": -0.3,
+        "ci": [
+         -0.54,
+         -0.06
+        ],
+        "call": "BELOW"
+       },
+       "musique": {
+        "pts": 1.02,
+        "ci": [
+         0.56,
+         1.47
+        ],
+        "call": "ABOVE"
+       }
+      },
+      "w": {
+       "squad": {
+        "pts": 0.6,
+        "ci": [
+         0.19,
+         1.03
+        ],
+        "call": "ABOVE"
+       },
+       "musique": {
+        "pts": 3.82,
+        "ci": [
+         3.19,
+         4.47
+        ],
+        "call": "ABOVE"
+       }
+      }
+     },
+     "beside": {
+      "qwen3e06 V": {
+       "squad": {
+        "pts": 1.52,
+        "ci": [
+         0.99,
+         2.04
+        ],
+        "call": "ABOVE"
+       },
+       "musique": {
+        "pts": 6.5,
+        "ci": [
+         5.66,
+         7.37
+        ],
+        "call": "ABOVE"
+       }
+      },
+      "frozen V": {
+       "squad": {
+        "pts": -4.22,
+        "ci": [
+         -4.78,
+         -3.67
+        ],
+        "call": "BELOW"
+       },
+       "musique": {
+        "pts": 1.37,
+        "ci": [
+         0.52,
+         2.22
+        ],
+        "call": "ABOVE"
+       }
+      }
+     },
+     "clears": {
+      "mpnet": "zrckpn",
+      "qwen3e06": "gnx"
+     },
+     "gate": "ADVANCE",
+     "mean_gap_to_frozen": -0.45
+    },
+    "F": {
+     "setting": {
+      "gamma": 0.5,
+      "beta": 0.75,
+      "W": 64,
+      "w": 0.5,
+      "prf": null
+     },
+     "won_back": {
+      "squad": {
+       "pts": 5.62,
+       "ci": [
+        5.12,
+        6.12
+       ],
+       "call": "ABOVE"
+      },
+      "musique": {
+       "pts": 4.82,
+       "ci": [
+        4.1,
+        5.57
+       ],
+       "call": "ABOVE"
+      }
+     },
+     "call": "IMPROVES",
+     "gap_to_frozen": {
+      "squad": {
+       "pts": 1.01,
+       "ci": [
+        0.49,
+        1.54
+       ],
+       "call": "ABOVE"
+      },
+      "musique": {
+       "pts": 3.37,
+       "ci": [
+        2.43,
+        4.29
+       ],
+       "call": "ABOVE"
+      }
+     },
+     "recall": {
+      "squad": {
+       "d5": 88.71,
+       "d20": 95.01,
+       "d1000": 99.78,
+       "rrf5": 90.56
+      },
+      "musique": {
+       "d5": 49.09,
+       "d20": 61.92,
+       "d1000": 86.94,
+       "rrf5": 48.47
+      }
+     },
+     "loo": {
+      "gamma": {
+       "squad": {
+        "pts": -0.06,
+        "ci": [
+         -0.29,
+         0.17
+        ],
+        "call": "LEVEL"
+       },
+       "musique": {
+        "pts": 0.76,
+        "ci": [
+         0.3,
+         1.18
+        ],
+        "call": "ABOVE"
+       }
+      },
+      "beta": {
+       "squad": {
+        "pts": 5.18,
+        "ci": [
+         4.7,
+         5.64
+        ],
+        "call": "ABOVE"
+       },
+       "musique": {
+        "pts": 0.09,
+        "ci": [
+         -0.43,
+         0.61
+        ],
+        "call": "LEVEL"
+       }
+      },
+      "w": {
+       "squad": {
+        "pts": 0.56,
+        "ci": [
+         0.23,
+         0.88
+        ],
+        "call": "ABOVE"
+       },
+       "musique": {
+        "pts": 3.14,
+        "ci": [
+         2.52,
+         3.76
+        ],
+        "call": "ABOVE"
+       }
+      }
+     },
+     "beside": {
+      "qwen3e06 F": {
+       "squad": {
+        "pts": 1.63,
+        "ci": [
+         1.14,
+         2.09
+        ],
+        "call": "ABOVE"
+       },
+       "musique": {
+        "pts": 5.32,
+        "ci": [
+         4.48,
+         6.14
+        ],
+        "call": "ABOVE"
+       }
+      },
+      "frozen F": {
+       "squad": {
+        "pts": -1.74,
+        "ci": [
+         -2.21,
+         -1.3
+        ],
+        "call": "BELOW"
+       },
+       "musique": {
+        "pts": 0.52,
+        "ci": [
+         -0.41,
+         1.39
+        ],
+        "call": "LEVEL"
+       }
+      }
+     },
+     "clears": {
+      "mpnet": "zrckpn",
+      "qwen3e06": "zrckpn"
+     },
+     "mean_gap_to_frozen": 2.19
+    }
+   }
+  },
+  "gtemodern+granitesm": {
+   "chosen": {
+    "V": {
+     "gamma": 0.5,
+     "beta": 0.0,
+     "W": null,
+     "w": 0.5,
+     "prf": null
+    },
+    "F": {
+     "gamma": 0.5,
+     "beta": 0.75,
+     "W": 64,
+     "w": 0.5,
+     "prf": null
+    }
+   },
+   "params": 196676736,
+   "width": 1152,
+   "recipes": {
+    "V": {
+     "setting": {
+      "gamma": 0.5,
+      "beta": 0.0,
+      "W": null,
+      "w": 0.5,
+      "prf": null
+     },
+     "won_back": {
+      "squad": {
+       "pts": 0.59,
+       "ci": [
+        0.19,
+        0.99
+       ],
+       "call": "ABOVE"
+      },
+      "musique": {
+       "pts": 3.88,
+       "ci": [
+        3.23,
+        4.47
+       ],
+       "call": "ABOVE"
+      }
+     },
+     "call": "IMPROVES",
+     "gap_to_frozen": {
+      "squad": {
+       "pts": -4.02,
+       "ci": [
+        -4.57,
+        -3.49
+       ],
+       "call": "BELOW"
+      },
+      "musique": {
+       "pts": 2.43,
+       "ci": [
+        1.53,
+        3.29
+       ],
+       "call": "ABOVE"
+      }
+     },
+     "recall": {
+      "squad": {
+       "d5": 83.68,
+       "d20": 92.07,
+       "d1000": 99.5,
+       "rrf5": 88.29
+      },
+      "musique": {
+       "d5": 48.15,
+       "d20": 59.8,
+       "d1000": 86.29,
+       "rrf5": 48.01
+      }
+     },
+     "loo": {
+      "gamma": {
+       "squad": {
+        "pts": -0.03,
+        "ci": [
+         -0.24,
+         0.19
+        ],
+        "call": "LEVEL"
+       },
+       "musique": {
+        "pts": 0.43,
+        "ci": [
+         0.08,
+         0.79
+        ],
+        "call": "ABOVE"
+       }
+      },
+      "w": {
+       "squad": {
+        "pts": 0.75,
+        "ci": [
+         0.37,
+         1.13
+        ],
+        "call": "ABOVE"
+       },
+       "musique": {
+        "pts": 2.97,
+        "ci": [
+         2.38,
+         3.51
+        ],
+        "call": "ABOVE"
+       }
+      }
+     },
+     "beside": {
+      "qwen3e06 V": {
+       "squad": {
+        "pts": 1.67,
+        "ci": [
+         1.12,
+         2.19
+        ],
+        "call": "ABOVE"
+       },
+       "musique": {
+        "pts": 5.65,
+        "ci": [
+         4.79,
+         6.49
+        ],
+        "call": "ABOVE"
+       }
+      },
+      "frozen V": {
+       "squad": {
+        "pts": -4.07,
+        "ci": [
+         -4.63,
+         -3.53
+        ],
+        "call": "BELOW"
+       },
+       "musique": {
+        "pts": 0.52,
+        "ci": [
+         -0.37,
+         1.35
+        ],
+        "call": "LEVEL"
+       }
+      }
+     },
+     "clears": {
+      "mpnet": "zrckpn",
+      "qwen3e06": "gnx"
+     },
+     "gate": "ADVANCE",
+     "mean_gap_to_frozen": -0.79
+    },
+    "F": {
+     "setting": {
+      "gamma": 0.5,
+      "beta": 0.75,
+      "W": 64,
+      "w": 0.5,
+      "prf": null
+     },
+     "won_back": {
+      "squad": {
+       "pts": 5.85,
+       "ci": [
+        5.35,
+        6.33
+       ],
+       "call": "ABOVE"
+      },
+      "musique": {
+       "pts": 4.35,
+       "ci": [
+        3.63,
+        5.07
+       ],
+       "call": "ABOVE"
+      }
+     },
+     "call": "IMPROVES",
+     "gap_to_frozen": {
+      "squad": {
+       "pts": 1.24,
+       "ci": [
+        0.7,
+        1.77
+       ],
+       "call": "ABOVE"
+      },
+      "musique": {
+       "pts": 2.91,
+       "ci": [
+        1.96,
+        3.83
+       ],
+       "call": "ABOVE"
+      }
+     },
+     "recall": {
+      "squad": {
+       "d5": 88.93,
+       "d20": 95.12,
+       "d1000": 99.76,
+       "rrf5": 90.6
+      },
+      "musique": {
+       "d5": 48.62,
+       "d20": 61.15,
+       "d1000": 86.58,
+       "rrf5": 48.41
+      }
+     },
+     "loo": {
+      "gamma": {
+       "squad": {
+        "pts": -0.11,
+        "ci": [
+         -0.29,
+         0.06
+        ],
+        "call": "LEVEL"
+       },
+       "musique": {
+        "pts": 0.49,
+        "ci": [
+         0.12,
+         0.87
+        ],
+        "call": "ABOVE"
+       }
+      },
+      "beta": {
+       "squad": {
+        "pts": 5.26,
+        "ci": [
+         4.78,
+         5.74
+        ],
+        "call": "ABOVE"
+       },
+       "musique": {
+        "pts": 0.48,
+        "ci": [
+         -0.07,
+         1.06
+        ],
+        "call": "LEVEL"
+       }
+      },
+      "w": {
+       "squad": {
+        "pts": 0.78,
+        "ci": [
+         0.49,
+         1.08
+        ],
+        "call": "ABOVE"
+       },
+       "musique": {
+        "pts": 2.68,
+        "ci": [
+         2.05,
+         3.28
+        ],
+        "call": "ABOVE"
+       }
+      }
+     },
+     "beside": {
+      "qwen3e06 F": {
+       "squad": {
+        "pts": 1.85,
+        "ci": [
+         1.36,
+         2.32
+        ],
+        "call": "ABOVE"
+       },
+       "musique": {
+        "pts": 4.86,
+        "ci": [
+         4.02,
+         5.68
+        ],
+        "call": "ABOVE"
+       }
+      },
+      "frozen F": {
+       "squad": {
+        "pts": -1.52,
+        "ci": [
+         -1.96,
+         -1.07
+        ],
+        "call": "BELOW"
+       },
+       "musique": {
+        "pts": 0.06,
+        "ci": [
+         -0.84,
+         0.94
+        ],
+        "call": "LEVEL"
+       }
+      }
+     },
+     "clears": {
+      "mpnet": "zrckpn",
+      "qwen3e06": "zrckpn"
+     },
+     "mean_gap_to_frozen": 2.08
+    }
+   }
+  },
+  "granitesm": {
+   "chosen": {
+    "V": {
+     "gamma": 0.0,
+     "beta": 0.0,
+     "W": null,
+     "w": 0.0,
+     "prf": null
+    },
+    "F": {
+     "gamma": 0.0,
+     "beta": 0.5,
+     "W": 64,
+     "w": 0.0,
+     "prf": null
+    }
+   },
+   "params": 47662464,
+   "width": 384,
+   "recipes": {
+    "V": {
+     "setting": {
+      "gamma": 0.0,
+      "beta": 0.0,
+      "W": null,
+      "w": 0.0,
+      "prf": null
+     },
+     "won_back": {
+      "squad": {
+       "pts": 0.0,
+       "ci": [
+        0.0,
+        0.0
+       ],
+       "call": "LEVEL"
+      },
+      "musique": {
+       "pts": 0.0,
+       "ci": [
+        0.0,
+        0.0
+       ],
+       "call": "LEVEL"
+      }
+     },
+     "call": "NO",
+     "gap_to_frozen": {
+      "squad": {
+       "pts": -11.57,
+       "ci": [
+        -12.26,
+        -10.9
+       ],
+       "call": "BELOW"
+      },
+      "musique": {
+       "pts": -1.82,
+       "ci": [
+        -2.81,
+        -0.87
+       ],
+       "call": "BELOW"
+      }
+     },
+     "recall": {
+      "squad": {
+       "d5": 76.12,
+       "d20": 87.25,
+       "d1000": 98.91,
+       "rrf5": 84.22
+      },
+      "musique": {
+       "d5": 43.89,
+       "d20": 56.15,
+       "d1000": 84.27,
+       "rrf5": 46.21
+      }
+     },
+     "loo": {},
+     "beside": {
+      "qwen3e06 V": {
+       "squad": {
+        "pts": -5.89,
+        "ci": [
+         -6.54,
+         -5.26
+        ],
+        "call": "BELOW"
+       },
+       "musique": {
+        "pts": 1.4,
+        "ci": [
+         0.57,
+         2.23
+        ],
+        "call": "ABOVE"
+       }
+      },
+      "frozen V": {
+       "squad": {
+        "pts": -11.62,
+        "ci": [
+         -12.31,
+         -10.93
+        ],
+        "call": "BELOW"
+       },
+       "musique": {
+        "pts": -3.73,
+        "ci": [
+         -4.67,
+         -2.85
+        ],
+        "call": "BELOW"
+       }
+      }
+     },
+     "clears": {
+      "mpnet": null,
+      "qwen3e06": null
+     },
+     "gate": "SHORT",
+     "mean_gap_to_frozen": -6.7
+    },
+    "F": {
+     "setting": {
+      "gamma": 0.0,
+      "beta": 0.5,
+      "W": 64,
+      "w": 0.0,
+      "prf": null
+     },
+     "won_back": {
+      "squad": {
+       "pts": 6.47,
+       "ci": [
+        5.95,
+        6.97
+       ],
+       "call": "ABOVE"
+      },
+      "musique": {
+       "pts": 0.72,
+       "ci": [
+        0.24,
+        1.2
+       ],
+       "call": "ABOVE"
+      }
+     },
+     "call": "IMPROVES",
+     "gap_to_frozen": {
+      "squad": {
+       "pts": -5.1,
+       "ci": [
+        -5.69,
+        -4.49
+       ],
+       "call": "BELOW"
+      },
+      "musique": {
+       "pts": -1.1,
+       "ci": [
+        -2.1,
+        -0.13
+       ],
+       "call": "BELOW"
+      }
+     },
+     "recall": {
+      "squad": {
+       "d5": 82.59,
+       "d20": 91.63,
+       "d1000": 99.46,
+       "rrf5": 87.75
+      },
+      "musique": {
+       "d5": 44.62,
+       "d20": 57.52,
+       "d1000": 85.12,
+       "rrf5": 46.6
+      }
+     },
+     "loo": {
+      "beta": {
+       "squad": {
+        "pts": 6.47,
+        "ci": [
+         5.95,
+         6.97
+        ],
+        "call": "ABOVE"
+       },
+       "musique": {
+        "pts": 0.72,
+        "ci": [
+         0.24,
+         1.2
+        ],
+        "call": "ABOVE"
+       }
+      }
+     },
+     "beside": {
+      "qwen3e06 F": {
+       "squad": {
+        "pts": -4.49,
+        "ci": [
+         -5.06,
+         -3.9
+        ],
+        "call": "BELOW"
+       },
+       "musique": {
+        "pts": 0.86,
+        "ci": [
+         -0.05,
+         1.7
+        ],
+        "call": "LEVEL"
+       }
+      },
+      "frozen F": {
+       "squad": {
+        "pts": -7.86,
+        "ci": [
+         -8.45,
+         -7.24
+        ],
+        "call": "BELOW"
+       },
+       "musique": {
+        "pts": -3.95,
+        "ci": [
+         -4.93,
+         -3.02
+        ],
+        "call": "BELOW"
+       }
+      }
+     },
+     "clears": {
+      "mpnet": "zrckpn",
+      "qwen3e06": null
+     },
+     "mean_gap_to_frozen": -3.1
+    }
+   }
+  }
+ },
+ "next": {
+  "call": "ADVANCE",
+  "best": "gtemodern+granite",
+  "smaller_within_0.5": "gtemodern+granitesm"
+ },
+ "maps": {
+  "gtemodern": {
+   "npz": "gtemodern.npz",
+   "sha256": "4b45cece2e43e2e48d2c4947169c7e388ff48dd4ea15f78a9b15a8d1f31e0cc2",
+   "best_epoch": 1,
+   "pairs": {
+    "squad": {
+     "train_questions": 130319,
+     "kept_questions": 118903,
+     "pairs": 118903,
+     "dropped": {
+      "in_s1sel": 1498,
+      "shares_s1sel_gold": 9918,
+      "no_gold": 0
+     },
+     "kept_sharing_a_nontrain_gold": 0
+    },
+    "musique": {
+     "train_questions": 19938,
+     "kept_questions": 16091,
+     "pairs": 36564,
+     "dropped": {
+      "in_s1sel": 1534,
+      "shares_s1sel_gold": 2313,
+      "no_gold": 0
+     },
+     "kept_sharing_a_nontrain_gold": 0
+    }
+   },
+   "seconds": 112.7
+  },
+  "granite": {
+   "npz": "granite.npz",
+   "sha256": "1d439fbe81daab60974770b7d35d8fa2d45e292feaed0d5bb013904121cfe6e3",
+   "best_epoch": 6,
+   "pairs": {
+    "squad": {
+     "train_questions": 130319,
+     "kept_questions": 118903,
+     "pairs": 118903,
+     "dropped": {
+      "in_s1sel": 1498,
+      "shares_s1sel_gold": 9918,
+      "no_gold": 0
+     },
+     "kept_sharing_a_nontrain_gold": 0
+    },
+    "musique": {
+     "train_questions": 19938,
+     "kept_questions": 16091,
+     "pairs": 36564,
+     "dropped": {
+      "in_s1sel": 1534,
+      "shares_s1sel_gold": 2313,
+      "no_gold": 0
+     },
+     "kept_sharing_a_nontrain_gold": 0
+    }
+   },
+   "seconds": 112.2
+  },
+  "granitesm": {
+   "npz": "granitesm.npz",
+   "sha256": "8a4685e607f458ac5bf30b3da40d022eb5f578f469d882c23103849ae52ceab6",
+   "best_epoch": 0,
+   "pairs": {
+    "squad": {
+     "train_questions": 130319,
+     "kept_questions": 118903,
+     "pairs": 118903,
+     "dropped": {
+      "in_s1sel": 1498,
+      "shares_s1sel_gold": 9918,
+      "no_gold": 0
+     },
+     "kept_sharing_a_nontrain_gold": 0
+    },
+    "musique": {
+     "train_questions": 19938,
+     "kept_questions": 16091,
+     "pairs": 36564,
+     "dropped": {
+      "in_s1sel": 1534,
+      "shares_s1sel_gold": 2313,
+      "no_gold": 0
+     },
+     "kept_sharing_a_nontrain_gold": 0
+    }
+   },
+   "seconds": 90.3
+  }
+ },
+ "code_sha256": {
+  "outputs/mp_unified/zenc2b.py": "f15a7afc4d3442895ac17d1c1bbef40e5a7c0a12be4bb4d29f21828f8690c4c4",
+  "outputs/mp_unified/zenc.py": "0416ecefcb9a803549d2dfa9aef844d66f4c05e2a5b26821930c7f701f32eeb7",
+  "outputs/mp_unified/zenc2m.py": "cf5bd755f39a8149924ae1f42ddf88617979b2e8d2cd1c7161d1964da654cf4f",
+  "outputs/mp_unified/zenc2s.py": "432b8873a55f6f1e7a47f42ed84ad27cc359868985c8aa6b74178f1387a48205",
+  "outputs/mp_unified/zenc2n.py": "21e856aafea20532bfb999632bc424606b0c10da055a0cef2c97f00157e703b3",
+  "outputs/mp_unified/zenc3b.py": "7954e0984d86c0628aced26b6a5c830321c8d5e608eab602d2e929c7d4581cbd",
+  "outputs/mp_unified/zenc3.py": "b60460b505d72cd3737760d4f4493b6e4c37962f0a9edba905436e78da05ff0a"
+ },
+ "utc": "2026-11-20T08:57:19Z"
+}

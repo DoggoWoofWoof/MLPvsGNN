@@ -1,0 +1,105 @@
+{
+ "stage": "ENC E3B",
+ "enc": "gtemodern",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 18",
+ "device": "cuda",
+ "sets": {
+  "squad_w64": {
+   "windows": 86113,
+   "docs": 20233,
+   "stats": {
+    "tokens": 5779892,
+    "cut": 0,
+    "max_len": 130,
+    "limit": 8192,
+    "ooms": 0,
+    "budget_end": 65536
+   },
+   "sha256": "aea9c7160c81f1b165a9c322a1e9533165b24b1d6c9d58e094758d932145b99a",
+   "seconds": 48.6
+  },
+  "squad_w126": {
+   "windows": 39407,
+   "docs": 20233,
+   "stats": {
+    "tokens": 4905750,
+    "cut": 0,
+    "max_len": 200,
+    "limit": 8192,
+    "ooms": 0,
+    "budget_end": 65536
+   },
+   "sha256": "9387629690cf18e36397ec9a07c5bc7c6075194f48f356dcd3ca9fb3a9a4f8e5",
+   "seconds": 51.5
+  },
+  "musique_w64": {
+   "windows": 301495,
+   "docs": 117534,
+   "stats": {
+    "tokens": 19745693,
+    "cut": 0,
+    "max_len": 279,
+    "limit": 8192,
+    "ooms": 0,
+    "budget_end": 65536
+   },
+   "sha256": "48787fd975d5e0761b2ac49d750454c733c6dfa8f65d017570a5a5521b143ab4",
+   "seconds": 212.1
+  },
+  "musique_w126": {
+   "windows": 159298,
+   "docs": 117534,
+   "stats": {
+    "tokens": 15852624,
+    "cut": 0,
+    "max_len": 471,
+    "limit": 8192,
+    "ooms": 0,
+    "budget_end": 65536
+   },
+   "sha256": "705623e3bf8433921358e0e98e876b5b87a06bf2f7abc610814d885f79d400a4",
+   "seconds": 156.7
+  }
+ },
+ "g2": {
+  "squad_w64": {
+   "one_window_docs": 1199,
+   "share_ge": 1.0,
+   "min_cos": 0.999998,
+   "median_cos": 1.0,
+   "pass": true
+  },
+  "squad_w126": {
+   "one_window_docs": 7789,
+   "share_ge": 1.0,
+   "min_cos": 0.999998,
+   "median_cos": 1.0,
+   "pass": true
+  },
+  "musique_w64": {
+   "one_window_docs": 42772,
+   "share_ge": 1.0,
+   "min_cos": 0.999997,
+   "median_cos": 1.0,
+   "pass": true
+  },
+  "musique_w126": {
+   "one_window_docs": 89306,
+   "share_ge": 1.0,
+   "min_cos": 0.999997,
+   "median_cos": 1.0,
+   "pass": true
+  }
+ },
+ "code_sha256": {
+  "outputs/mp_unified/zenc2b.py": "f15a7afc4d3442895ac17d1c1bbef40e5a7c0a12be4bb4d29f21828f8690c4c4",
+  "outputs/mp_unified/zenc.py": "0416ecefcb9a803549d2dfa9aef844d66f4c05e2a5b26821930c7f701f32eeb7",
+  "outputs/mp_unified/zenc2m.py": "cf5bd755f39a8149924ae1f42ddf88617979b2e8d2cd1c7161d1964da654cf4f",
+  "outputs/mp_unified/zenc2s.py": "432b8873a55f6f1e7a47f42ed84ad27cc359868985c8aa6b74178f1387a48205",
+  "outputs/mp_unified/zenc2n.py": "21e856aafea20532bfb999632bc424606b0c10da055a0cef2c97f00157e703b3",
+  "outputs/mp_unified/zenc3b.py": "7954e0984d86c0628aced26b6a5c830321c8d5e608eab602d2e929c7d4581cbd",
+  "outputs/mp_unified/zenc3.py": "b60460b505d72cd3737760d4f4493b6e4c37962f0a9edba905436e78da05ff0a"
+ },
+ "seconds": 476.5,
+ "utc": "2026-11-20T08:20:35Z"
+}

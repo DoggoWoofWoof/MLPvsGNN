@@ -1,0 +1,2568 @@
+{
+ "stage": "ENC E3B",
+ "arm": "gtemodern+granitesm",
+ "encoders": [
+  "gtemodern",
+  "granitesm"
+ ],
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 18",
+ "step_a": [
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.834446,
+    "musique": 0.440189
+   },
+   "mean": 0.6373174880718837
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.837116,
+    "musique": 0.466319
+   },
+   "mean": 0.6517175733079424
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.843792,
+    "musique": 0.486039
+   },
+   "mean": 0.6649152005658421
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.832443,
+    "musique": 0.491525
+   },
+   "mean": 0.661984340702858
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.0,
+    "W": null,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.769693,
+    "musique": 0.449587
+   },
+   "mean": 0.6096400299631727
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.25,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.851802,
+    "musique": 0.44535
+   },
+   "mean": 0.6485761255482466
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.25,
+    "W": 64,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.859146,
+    "musique": 0.466862
+   },
+   "mean": 0.6630038805906063
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.25,
+    "W": 64,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.862483,
+    "musique": 0.488103
+   },
+   "mean": 0.6752931548888305
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.25,
+    "W": 64,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.849132,
+    "musique": 0.49196
+   },
+   "mean": 0.6705460968093631
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.25,
+    "W": 64,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.805741,
+    "musique": 0.450782
+   },
+   "mean": 0.6282616282814287
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.25,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.843792,
+    "musique": 0.444481
+   },
+   "mean": 0.6441361914393753
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.25,
+    "W": 126,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.843124,
+    "musique": 0.466971
+   },
+   "mean": 0.6550475238895959
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.25,
+    "W": 126,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.848465,
+    "musique": 0.487179
+   },
+   "mean": 0.667822053336072
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.25,
+    "W": 126,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.841121,
+    "musique": 0.493264
+   },
+   "mean": 0.6671926468378234
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.25,
+    "W": 126,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.787049,
+    "musique": 0.449044
+   },
+   "mean": 0.6180466465790401
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.5,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.869159,
+    "musique": 0.448229
+   },
+   "mean": 0.6586939546804111
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.5,
+    "W": 64,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.883845,
+    "musique": 0.469959
+   },
+   "mean": 0.6769019202192812
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.5,
+    "W": 64,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.88251,
+    "musique": 0.488266
+   },
+   "mean": 0.6853879923339768
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.5,
+    "W": 64,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.864486,
+    "musique": 0.489896
+   },
+   "mean": 0.6771908394156136
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.5,
+    "W": 64,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.825768,
+    "musique": 0.450511
+   },
+   "mean": 0.6381391688991087
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.5,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.845794,
+    "musique": 0.444426
+   },
+   "mean": 0.6451103644494267
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.5,
+    "W": 126,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.853805,
+    "musique": 0.467786
+   },
+   "mean": 0.66079540937968
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.5,
+    "W": 126,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.85781,
+    "musique": 0.490765
+   },
+   "mean": 0.6742876493589308
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.5,
+    "W": 126,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.842457,
+    "musique": 0.49158
+   },
+   "mean": 0.6670181783737146
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.5,
+    "W": 126,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.795728,
+    "musique": 0.44774
+   },
+   "mean": 0.6217338749217413
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.875167,
+    "musique": 0.443123
+   },
+   "mean": 0.6591447222981359
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.885848,
+    "musique": 0.464363
+   },
+   "mean": 0.675105558679137
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.883845,
+    "musique": 0.482562
+   },
+   "mean": 0.6832035282158044
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.871829,
+    "musique": 0.485332
+   },
+   "mean": 0.6785807848099944
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.75,
+    "W": 64,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.832443,
+    "musique": 0.443503
+   },
+   "mean": 0.6379730412678297
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.75,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.851135,
+    "musique": 0.44611
+   },
+   "mean": 0.6486226166251511
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.75,
+    "W": 126,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.85514,
+    "musique": 0.467134
+   },
+   "mean": 0.6611370208808036
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.75,
+    "W": 126,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.864486,
+    "musique": 0.486419
+   },
+   "mean": 0.6754524647958832
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.75,
+    "W": 126,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.848465,
+    "musique": 0.488157
+   },
+   "mean": 0.6683109711978712
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.75,
+    "W": 126,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.805073,
+    "musique": 0.449098
+   },
+   "mean": 0.6270858247038351
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 1.0,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.867156,
+    "musique": 0.429542
+   },
+   "mean": 0.6483488559858748
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 1.0,
+    "W": 64,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.87984,
+    "musique": 0.452629
+   },
+   "mean": 0.6662345389970924
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 1.0,
+    "W": 64,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.883178,
+    "musique": 0.468438
+   },
+   "mean": 0.6758076029519876
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 1.0,
+    "W": 64,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.867824,
+    "musique": 0.467623
+   },
+   "mean": 0.6677232688637726
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 1.0,
+    "W": 64,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.824433,
+    "musique": 0.423837
+   },
+   "mean": 0.6241350193710402
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 1.0,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.84713,
+    "musique": 0.438668
+   },
+   "mean": 0.6428987382278211
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 1.0,
+    "W": 126,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.858478,
+    "musique": 0.461321
+   },
+   "mean": 0.6598995676692493
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 1.0,
+    "W": 126,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.861148,
+    "musique": 0.478705
+   },
+   "mean": 0.6699265542525482
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 1.0,
+    "W": 126,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.85247,
+    "musique": 0.482562
+   },
+   "mean": 0.6675159447712117
+  },
+  {
+   "setting": {
+    "gamma": 0.0,
+    "beta": 1.0,
+    "W": 126,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.803738,
+    "musique": 0.442905
+   },
+   "mean": 0.623321788170117
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.837116,
+    "musique": 0.4598
+   },
+   "mean": 0.6484581208959476
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.842457,
+    "musique": 0.48153
+   },
+   "mean": 0.661993189238556
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.84713,
+    "musique": 0.49359
+   },
+   "mean": 0.6703596247988771
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.834446,
+    "musique": 0.497338
+   },
+   "mean": 0.6658920208837047
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.0,
+    "W": null,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.769693,
+    "musique": 0.449587
+   },
+   "mean": 0.6096400299631727
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.25,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.853805,
+    "musique": 0.4642
+   },
+   "mean": 0.6590027105530828
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.25,
+    "W": 64,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.863151,
+    "musique": 0.482942
+   },
+   "mean": 0.6730465334338295
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.25,
+    "W": 64,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.866489,
+    "musique": 0.496741
+   },
+   "mean": 0.6816145995616929
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.25,
+    "W": 64,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.849132,
+    "musique": 0.498588
+   },
+   "mean": 0.6738598734282244
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.25,
+    "W": 64,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.805741,
+    "musique": 0.450782
+   },
+   "mean": 0.6282616282814287
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.25,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.842457,
+    "musique": 0.460452
+   },
+   "mean": 0.6514542931064395
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.25,
+    "W": 126,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.848465,
+    "musique": 0.481095
+   },
+   "mean": 0.6647798977515436
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.25,
+    "W": 126,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.851802,
+    "musique": 0.494622
+   },
+   "mean": 0.6732121533622405
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.25,
+    "W": 126,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.839786,
+    "musique": 0.496849
+   },
+   "mean": 0.6683177889220975
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.25,
+    "W": 126,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.787049,
+    "musique": 0.449044
+   },
+   "mean": 0.6180466465790401
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.5,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.873164,
+    "musique": 0.463603
+   },
+   "mean": 0.6683835001790015
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.5,
+    "W": 64,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.87984,
+    "musique": 0.485658
+   },
+   "mean": 0.6827490978845328
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.5,
+    "W": 64,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.881842,
+    "musique": 0.495926
+   },
+   "mean": 0.6888840705469091
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.5,
+    "W": 64,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.869826,
+    "musique": 0.495002
+   },
+   "mean": 0.6824143041076353
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.5,
+    "W": 64,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.825768,
+    "musique": 0.450511
+   },
+   "mean": 0.6381391688991087
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.5,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.845127,
+    "musique": 0.46105
+   },
+   "mean": 0.6530881897288519
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.5,
+    "W": 126,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.85247,
+    "musique": 0.481856
+   },
+   "mean": 0.667162837426579
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.5,
+    "W": 126,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.859146,
+    "musique": 0.496034
+   },
+   "mean": 0.677589930134283
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.5,
+    "W": 126,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.846462,
+    "musique": 0.497555
+   },
+   "mean": 0.6720086799783458
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.5,
+    "W": 126,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.795728,
+    "musique": 0.44774
+   },
+   "mean": 0.6217338749217413
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.879172,
+    "musique": 0.461919
+   },
+   "mean": 0.6705454803130235
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.88518,
+    "musique": 0.479465
+   },
+   "mean": 0.68232284506243
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.88785,
+    "musique": 0.490059
+   },
+   "mean": 0.6889545687165678
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.873164,
+    "musique": 0.490602
+   },
+   "mean": 0.6818830655853466
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.75,
+    "W": 64,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.832443,
+    "musique": 0.443503
+   },
+   "mean": 0.6379730412678297
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.75,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.8498,
+    "musique": 0.458007
+   },
+   "mean": 0.6539035605347184
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.75,
+    "W": 126,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.856475,
+    "musique": 0.480552
+   },
+   "mean": 0.6685136171711493
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.75,
+    "W": 126,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.861816,
+    "musique": 0.492286
+   },
+   "mean": 0.6770508584820323
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.75,
+    "W": 126,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.851802,
+    "musique": 0.494676
+   },
+   "mean": 0.6732393154656737
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.75,
+    "W": 126,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.805073,
+    "musique": 0.449098
+   },
+   "mean": 0.6270858247038351
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 1.0,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.872497,
+    "musique": 0.451108
+   },
+   "mean": 0.6618024380181833
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 1.0,
+    "W": 64,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.879172,
+    "musique": 0.467188
+   },
+   "mean": 0.6731802043460526
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 1.0,
+    "W": 64,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.88251,
+    "musique": 0.476858
+   },
+   "mean": 0.6796839506129859
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 1.0,
+    "W": 64,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.873832,
+    "musique": 0.478107
+   },
+   "mean": 0.6759695601668515
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 1.0,
+    "W": 64,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.824433,
+    "musique": 0.423837
+   },
+   "mean": 0.6241350193710402
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 1.0,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.847797,
+    "musique": 0.455997
+   },
+   "mean": 0.6518972275942021
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 1.0,
+    "W": 126,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.857143,
+    "musique": 0.479357
+   },
+   "mean": 0.6682498292667785
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 1.0,
+    "W": 126,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.863151,
+    "musique": 0.491199
+   },
+   "mean": 0.6771751731556895
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 1.0,
+    "W": 126,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.853138,
+    "musique": 0.488918
+   },
+   "mean": 0.6710276892440682
+  },
+  {
+   "setting": {
+    "gamma": 0.5,
+    "beta": 1.0,
+    "W": 126,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.803071,
+    "musique": 0.442905
+   },
+   "mean": 0.6229880097989555
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.826435,
+    "musique": 0.460452
+   },
+   "mean": 0.6434436121985623
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.835113,
+    "musique": 0.479031
+   },
+   "mean": 0.6570721703978476
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.841789,
+    "musique": 0.493644
+   },
+   "mean": 0.667716559933018
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.831776,
+    "musique": 0.496306
+   },
+   "mean": 0.664040827433826
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.0,
+    "W": null,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.769693,
+    "musique": 0.449587
+   },
+   "mean": 0.6096400299631727
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.25,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.84713,
+    "musique": 0.466428
+   },
+   "mean": 0.6567785730822322
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.25,
+    "W": 64,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.853138,
+    "musique": 0.479954
+   },
+   "mean": 0.6665459421775753
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.25,
+    "W": 64,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.863818,
+    "musique": 0.495056
+   },
+   "mean": 0.6794374608706146
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.25,
+    "W": 64,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.8498,
+    "musique": 0.499131
+   },
+   "mean": 0.6744652728337188
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.25,
+    "W": 64,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.805741,
+    "musique": 0.450782
+   },
+   "mean": 0.6282616282814287
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.25,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.836449,
+    "musique": 0.461919
+   },
+   "mean": 0.6491836645586844
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.25,
+    "W": 126,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.841121,
+    "musique": 0.48028
+   },
+   "mean": 0.6607009041172671
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.25,
+    "W": 126,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.845127,
+    "musique": 0.492829
+   },
+   "mean": 0.6689780202373264
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.25,
+    "W": 126,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.839119,
+    "musique": 0.495328
+   },
+   "mean": 0.6672234716548038
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.25,
+    "W": 126,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.787049,
+    "musique": 0.449044
+   },
+   "mean": 0.6180466465790401
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.5,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.864486,
+    "musique": 0.46784
+   },
+   "mean": 0.666163025421698
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.5,
+    "W": 64,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.870494,
+    "musique": 0.484681
+   },
+   "mean": 0.6775872828264717
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.5,
+    "W": 64,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.877837,
+    "musique": 0.496306
+   },
+   "mean": 0.6870715350439729
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.5,
+    "W": 64,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.872497,
+    "musique": 0.497664
+   },
+   "mean": 0.6850803606605127
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.5,
+    "W": 64,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.825768,
+    "musique": 0.450511
+   },
+   "mean": 0.6381391688991087
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.5,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.841121,
+    "musique": 0.460887
+   },
+   "mean": 0.6510040331915827
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.5,
+    "W": 126,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.84713,
+    "musique": 0.481041
+   },
+   "mean": 0.6640851789057872
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.5,
+    "W": 126,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.851802,
+    "musique": 0.492884
+   },
+   "mean": 0.6723429660523752
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.5,
+    "W": 126,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.84713,
+    "musique": 0.495056
+   },
+   "mean": 0.671093001591576
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.5,
+    "W": 126,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.795728,
+    "musique": 0.44774
+   },
+   "mean": 0.6217338749217413
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.872497,
+    "musique": 0.466645
+   },
+   "mean": 0.6695707996001042
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.875834,
+    "musique": 0.481367
+   },
+   "mean": 0.6786006214863335
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.88251,
+    "musique": 0.491037
+   },
+   "mean": 0.6867732596090746
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.877837,
+    "musique": 0.494242
+   },
+   "mean": 0.6860393751135079
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.75,
+    "W": 64,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.832443,
+    "musique": 0.443503
+   },
+   "mean": 0.6379730412678297
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.75,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.844459,
+    "musique": 0.460615
+   },
+   "mean": 0.652537114530224
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.75,
+    "W": 126,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.851135,
+    "musique": 0.478922
+   },
+   "mean": 0.6650285270988582
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.75,
+    "W": 126,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.851135,
+    "musique": 0.490385
+   },
+   "mean": 0.6707597309232823
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.75,
+    "W": 126,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.850467,
+    "musique": 0.49435
+   },
+   "mean": 0.6724087861027509
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 0.75,
+    "W": 126,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.805073,
+    "musique": 0.449098
+   },
+   "mean": 0.6270858247038351
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 1.0,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.871829,
+    "musique": 0.458007
+   },
+   "mean": 0.6649182467830496
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 1.0,
+    "W": 64,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.878505,
+    "musique": 0.471806
+   },
+   "mean": 0.6751552047667206
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 1.0,
+    "W": 64,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.880507,
+    "musique": 0.481856
+   },
+   "mean": 0.681181529015364
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 1.0,
+    "W": 64,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.871829,
+    "musique": 0.479737
+   },
+   "mean": 0.6757830881563656
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 1.0,
+    "W": 64,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.824433,
+    "musique": 0.423837
+   },
+   "mean": 0.6241350193710402
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 1.0,
+    "W": 126,
+    "w": 0.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.841789,
+    "musique": 0.458225
+   },
+   "mean": 0.6500068684945131
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 1.0,
+    "W": 126,
+    "w": 0.25,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.848465,
+    "musique": 0.475174
+   },
+   "mean": 0.6618192284773149
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 1.0,
+    "W": 126,
+    "w": 0.5,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.851135,
+    "musique": 0.487451
+   },
+   "mean": 0.6692929773378846
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 1.0,
+    "W": 126,
+    "w": 0.75,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.848465,
+    "musique": 0.491037
+   },
+   "mean": 0.6697505626798356
+  },
+  {
+   "setting": {
+    "gamma": 1.0,
+    "beta": 1.0,
+    "W": 126,
+    "w": 1.0,
+    "prf": null
+   },
+   "s1sel_r5": {
+    "squad": 0.803071,
+    "musique": 0.442905
+   },
+   "mean": 0.6229880097989555
+  }
+ ],
+ "base": {
+  "V": {
+   "gamma": 0.5,
+   "beta": 0.0,
+   "W": null,
+   "w": 0.5,
+   "prf": null
+  },
+  "F": {
+   "gamma": 0.5,
+   "beta": 0.75,
+   "W": 64,
+   "w": 0.5,
+   "prf": null
+  }
+ },
+ "step_b": {
+  "V": [
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.0,
+     "W": null,
+     "w": 0.5,
+     "prf": null
+    },
+    "s1sel_r5": {
+     "squad": 0.84713,
+     "musique": 0.49359
+    },
+    "mean": 0.6703596247988771
+   },
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.0,
+     "W": null,
+     "w": 0.5,
+     "prf": [
+      3,
+      0.25
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.835781,
+     "musique": 0.480009
+    },
+    "mean": 0.6578948666308083
+   },
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.0,
+     "W": null,
+     "w": 0.5,
+     "prf": [
+      3,
+      0.5
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.834446,
+     "musique": 0.475717
+    },
+    "mean": 0.6550815037172554
+   },
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.0,
+     "W": null,
+     "w": 0.5,
+     "prf": [
+      3,
+      1.0
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.827103,
+     "musique": 0.470339
+    },
+    "mean": 0.6487208933945826
+   },
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.0,
+     "W": null,
+     "w": 0.5,
+     "prf": [
+      10,
+      0.25
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.837116,
+     "musique": 0.455346
+    },
+    "mean": 0.6462308284144178
+   },
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.0,
+     "W": null,
+     "w": 0.5,
+     "prf": [
+      10,
+      0.5
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.8251,
+     "musique": 0.42085
+    },
+    "mean": 0.6229748820533709
+   },
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.0,
+     "W": null,
+     "w": 0.5,
+     "prf": [
+      10,
+      1.0
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.796395,
+     "musique": 0.372175
+    },
+    "mean": 0.5842851674171966
+   }
+  ],
+  "F": [
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.75,
+     "W": 64,
+     "w": 0.5,
+     "prf": null
+    },
+    "s1sel_r5": {
+     "squad": 0.88785,
+     "musique": 0.490059
+    },
+    "mean": 0.6889545687165678
+   },
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.75,
+     "W": 64,
+     "w": 0.5,
+     "prf": [
+      3,
+      0.25
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.881842,
+     "musique": 0.473598
+    },
+    "mean": 0.677720446035827
+   },
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.75,
+     "W": 64,
+     "w": 0.5,
+     "prf": [
+      3,
+      0.5
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.879172,
+     "musique": 0.469252
+    },
+    "mean": 0.6742123642765177
+   },
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.75,
+     "W": 64,
+     "w": 0.5,
+     "prf": [
+      3,
+      1.0
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.872497,
+     "musique": 0.464907
+    },
+    "mean": 0.668701612290239
+   },
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.75,
+     "W": 64,
+     "w": 0.5,
+     "prf": [
+      10,
+      0.25
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.875834,
+     "musique": 0.46018
+    },
+    "mean": 0.6680074011473505
+   },
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.75,
+     "W": 64,
+     "w": 0.5,
+     "prf": [
+      10,
+      0.5
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.860481,
+     "musique": 0.424055
+    },
+    "mean": 0.6422676998274971
+   },
+   {
+    "setting": {
+     "gamma": 0.5,
+     "beta": 0.75,
+     "W": 64,
+     "w": 0.5,
+     "prf": [
+      10,
+      1.0
+     ]
+    },
+    "s1sel_r5": {
+     "squad": 0.835113,
+     "musique": 0.369133
+    },
+    "mean": 0.6021232351523021
+   }
+  ]
+ },
+ "chosen": {
+  "V": {
+   "gamma": 0.5,
+   "beta": 0.0,
+   "W": null,
+   "w": 0.5,
+   "prf": null
+  },
+  "F": {
+   "gamma": 0.5,
+   "beta": 0.75,
+   "W": 64,
+   "w": 0.5,
+   "prf": null
+  }
+ },
+ "g1": {
+  "raw__squad": {
+   "equal_share": {
+    "d5": 1.0,
+    "d20": 1.0,
+    "d1000": 1.0,
+    "rrf5": 1.0
+   },
+   "pass": true
+  },
+  "raw__musique": {
+   "equal_share": {
+    "d5": 1.0,
+    "d20": 1.0,
+    "d1000": 1.0,
+    "rrf5": 1.0
+   },
+   "pass": true
+  }
+ },
+ "g2": {
+  "gtemodern": {
+   "squad_w64": {
+    "one_window_docs": 1199,
+    "share_ge": 1.0,
+    "min_cos": 0.999998,
+    "median_cos": 1.0,
+    "pass": true
+   },
+   "squad_w126": {
+    "one_window_docs": 7789,
+    "share_ge": 1.0,
+    "min_cos": 0.999998,
+    "median_cos": 1.0,
+    "pass": true
+   },
+   "musique_w64": {
+    "one_window_docs": 42772,
+    "share_ge": 1.0,
+    "min_cos": 0.999997,
+    "median_cos": 1.0,
+    "pass": true
+   },
+   "musique_w126": {
+    "one_window_docs": 89306,
+    "share_ge": 1.0,
+    "min_cos": 0.999997,
+    "median_cos": 1.0,
+    "pass": true
+   }
+  },
+  "granitesm": {
+   "squad_w64": {
+    "one_window_docs": 1199,
+    "share_ge": 1.0,
+    "min_cos": 1.0,
+    "median_cos": 1.0,
+    "pass": true
+   },
+   "squad_w126": {
+    "one_window_docs": 7789,
+    "share_ge": 1.0,
+    "min_cos": 1.0,
+    "median_cos": 1.0,
+    "pass": true
+   },
+   "musique_w64": {
+    "one_window_docs": 42772,
+    "share_ge": 1.0,
+    "min_cos": 0.999999,
+    "median_cos": 1.0,
+    "pass": true
+   },
+   "musique_w126": {
+    "one_window_docs": 89306,
+    "share_ge": 1.0,
+    "min_cos": 0.999999,
+    "median_cos": 1.0,
+    "pass": true
+   }
+  }
+ },
+ "maps": {
+  "gtemodern": {
+   "npz": "gtemodern.npz",
+   "sha256": "4b45cece2e43e2e48d2c4947169c7e388ff48dd4ea15f78a9b15a8d1f31e0cc2"
+  },
+  "granitesm": {
+   "npz": "granitesm.npz",
+   "sha256": "8a4685e607f458ac5bf30b3da40d022eb5f578f469d882c23103849ae52ceab6"
+  }
+ },
+ "reads": {
+  "gtemodern+granitesm-V__squad": {
+   "npz": "gtemodern+granitesm-V__squad.npz",
+   "sha256": "78a0f074cad48db17a1a74bcf05617611faef21e3c3a4c61e6c41c35f271209e",
+   "recall": {
+    "d5": 0.836773,
+    "d20": 0.920745,
+    "d1000": 0.995031,
+    "rrf5": 0.882928
+   },
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.5,
+    "prf": null
+   }
+  },
+  "gtemodern+granitesm-V-no-gamma__squad": {
+   "npz": "gtemodern+granitesm-V-no-gamma__squad.npz",
+   "sha256": "4ddf5f032ad2dab6d8ee3beb45f42860142da7a2542715dd9aeeb5ff6332d6ff",
+   "recall": {
+    "d5": 0.837025,
+    "d20": 0.920492,
+    "d1000": 0.994525,
+    "rrf5": 0.882085
+   },
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.5,
+    "prf": null
+   }
+  },
+  "gtemodern+granitesm-V-no-w__squad": {
+   "npz": "gtemodern+granitesm-V-no-w__squad.npz",
+   "sha256": "6ac39ad7a462ae3cc1218140bd95e89493cac40e914e44746ac1da37ec29f9d2",
+   "recall": {
+    "d5": 0.829277,
+    "d20": 0.915523,
+    "d1000": 0.994188,
+    "rrf5": 0.884107
+   },
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.0,
+    "prf": null
+   }
+  },
+  "gtemodern+granitesm-F__squad": {
+   "npz": "gtemodern+granitesm-F__squad.npz",
+   "sha256": "e307865a39d54008907ec0a1e25b2f0f087099b4741440e191e74f239381ec24",
+   "recall": {
+    "d5": 0.889329,
+    "d20": 0.951234,
+    "d1000": 0.997557,
+    "rrf5": 0.906005
+   },
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.5,
+    "prf": null
+   }
+  },
+  "gtemodern+granitesm-F-no-gamma__squad": {
+   "npz": "gtemodern+granitesm-F-no-gamma__squad.npz",
+   "sha256": "fd65737ff6fbab816db801b9d1d287fc6954bf6a38c26aa9e68eed98e42d36cc",
+   "recall": {
+    "d5": 0.890424,
+    "d20": 0.950139,
+    "d1000": 0.997389,
+    "rrf5": 0.907016
+   },
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.5,
+    "prf": null
+   }
+  },
+  "gtemodern+granitesm-F-no-beta__squad": {
+   "npz": "gtemodern+granitesm-V__squad.npz",
+   "sha256": "78a0f074cad48db17a1a74bcf05617611faef21e3c3a4c61e6c41c35f271209e",
+   "recall": {
+    "d5": 0.836773,
+    "d20": 0.920745,
+    "d1000": 0.995031,
+    "rrf5": 0.882928
+   },
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.5,
+    "prf": null
+   },
+   "same_as": "gtemodern+granitesm-V"
+  },
+  "gtemodern+granitesm-F-no-w__squad": {
+   "npz": "gtemodern+granitesm-F-no-w__squad.npz",
+   "sha256": "83b2c67a4cd8c92d9237e91d5b770689b56eaa128c31701f024c78d9afca62d3",
+   "recall": {
+    "d5": 0.881496,
+    "d20": 0.946602,
+    "d1000": 0.997221,
+    "rrf5": 0.908027
+   },
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   }
+  },
+  "gtemodern+granitesm-V__musique": {
+   "npz": "gtemodern+granitesm-V__musique.npz",
+   "sha256": "36dac0060cd9c99c780cf663f39935a11f62b0345586d3b0148f515265daede6",
+   "recall": {
+    "d5": 0.481451,
+    "d20": 0.597986,
+    "d1000": 0.862915,
+    "rrf5": 0.480141
+   },
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.5,
+    "prf": null
+   }
+  },
+  "gtemodern+granitesm-V-no-gamma__musique": {
+   "npz": "gtemodern+granitesm-V-no-gamma__musique.npz",
+   "sha256": "0210d9980eca51493405e44ff3adcc97313b247923c15d72e42d51c2c82a87d5",
+   "recall": {
+    "d5": 0.477176,
+    "d20": 0.595056,
+    "d1000": 0.853813,
+    "rrf5": 0.477279
+   },
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.5,
+    "prf": null
+   }
+  },
+  "gtemodern+granitesm-V-no-w__musique": {
+   "npz": "gtemodern+granitesm-V-no-w__musique.npz",
+   "sha256": "95d835236190306f7d7bb3b3d445916b4fe11aef07b2d4f01b6c0fabba423574",
+   "recall": {
+    "d5": 0.451765,
+    "d20": 0.570576,
+    "d1000": 0.838746,
+    "rrf5": 0.479658
+   },
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.0,
+    "prf": null
+   }
+  },
+  "gtemodern+granitesm-F__musique": {
+   "npz": "gtemodern+granitesm-F__musique.npz",
+   "sha256": "be4faea8c97a0ba8e919603c7c1474a093098685b26b6a217d43d86a50b98bef",
+   "recall": {
+    "d5": 0.486243,
+    "d20": 0.611502,
+    "d1000": 0.865846,
+    "rrf5": 0.484071
+   },
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.5,
+    "prf": null
+   }
+  },
+  "gtemodern+granitesm-F-no-gamma__musique": {
+   "npz": "gtemodern+granitesm-F-no-gamma__musique.npz",
+   "sha256": "3ef0da3a336175d4b22bb71a32035b4ffbc7ab85a5f7dd239807a1796df71e1f",
+   "recall": {
+    "d5": 0.481382,
+    "d20": 0.605779,
+    "d1000": 0.858261,
+    "rrf5": 0.483554
+   },
+   "setting": {
+    "gamma": 0.0,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.5,
+    "prf": null
+   }
+  },
+  "gtemodern+granitesm-F-no-beta__musique": {
+   "npz": "gtemodern+granitesm-V__musique.npz",
+   "sha256": "36dac0060cd9c99c780cf663f39935a11f62b0345586d3b0148f515265daede6",
+   "recall": {
+    "d5": 0.481451,
+    "d20": 0.597986,
+    "d1000": 0.862915,
+    "rrf5": 0.480141
+   },
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.0,
+    "W": null,
+    "w": 0.5,
+    "prf": null
+   },
+   "same_as": "gtemodern+granitesm-V"
+  },
+  "gtemodern+granitesm-F-no-w__musique": {
+   "npz": "gtemodern+granitesm-F-no-w__musique.npz",
+   "sha256": "b533507f2b9bba418da4a19edcd32f8b49c9c4bd46daa3c29252125ac8a1d6ff",
+   "recall": {
+    "d5": 0.459454,
+    "d20": 0.582471,
+    "d1000": 0.842056,
+    "rrf5": 0.481761
+   },
+   "setting": {
+    "gamma": 0.5,
+    "beta": 0.75,
+    "W": 64,
+    "w": 0.0,
+    "prf": null
+   }
+  }
+ },
+ "plan": {
+  "gtemodern+granitesm-V": {
+   "gamma": 0.5,
+   "beta": 0.0,
+   "W": null,
+   "w": 0.5,
+   "prf": null
+  },
+  "gtemodern+granitesm-V-no-gamma": {
+   "gamma": 0.0,
+   "beta": 0.0,
+   "W": null,
+   "w": 0.5,
+   "prf": null
+  },
+  "gtemodern+granitesm-V-no-w": {
+   "gamma": 0.5,
+   "beta": 0.0,
+   "W": null,
+   "w": 0.0,
+   "prf": null
+  },
+  "gtemodern+granitesm-F": {
+   "gamma": 0.5,
+   "beta": 0.75,
+   "W": 64,
+   "w": 0.5,
+   "prf": null
+  },
+  "gtemodern+granitesm-F-no-gamma": {
+   "gamma": 0.0,
+   "beta": 0.75,
+   "W": 64,
+   "w": 0.5,
+   "prf": null
+  },
+  "gtemodern+granitesm-F-no-beta": {
+   "gamma": 0.5,
+   "beta": 0.0,
+   "W": null,
+   "w": 0.5,
+   "prf": null
+  },
+  "gtemodern+granitesm-F-no-w": {
+   "gamma": 0.5,
+   "beta": 0.75,
+   "W": 64,
+   "w": 0.0,
+   "prf": null
+  }
+ },
+ "threads": 8,
+ "code_sha256": {
+  "outputs/mp_unified/zenc2b.py": "f15a7afc4d3442895ac17d1c1bbef40e5a7c0a12be4bb4d29f21828f8690c4c4",
+  "outputs/mp_unified/zenc.py": "0416ecefcb9a803549d2dfa9aef844d66f4c05e2a5b26821930c7f701f32eeb7",
+  "outputs/mp_unified/zenc2m.py": "cf5bd755f39a8149924ae1f42ddf88617979b2e8d2cd1c7161d1964da654cf4f",
+  "outputs/mp_unified/zenc2s.py": "432b8873a55f6f1e7a47f42ed84ad27cc359868985c8aa6b74178f1387a48205",
+  "outputs/mp_unified/zenc2n.py": "21e856aafea20532bfb999632bc424606b0c10da055a0cef2c97f00157e703b3",
+  "outputs/mp_unified/zenc3b.py": "7954e0984d86c0628aced26b6a5c830321c8d5e608eab602d2e929c7d4581cbd",
+  "outputs/mp_unified/zenc3.py": "b60460b505d72cd3737760d4f4493b6e4c37962f0a9edba905436e78da05ff0a"
+ },
+ "seconds": 1190.5,
+ "utc": "2026-11-20T08:50:55Z"
+}

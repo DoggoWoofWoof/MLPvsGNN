@@ -1,0 +1,413 @@
+{
+ "stage": "ENC E3B",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 18",
+ "form": "linear",
+ "lr": 0.0001,
+ "maps": {
+  "gtemodern": {
+   "npz": "gtemodern.npz",
+   "sha256": "4b45cece2e43e2e48d2c4947169c7e388ff48dd4ea15f78a9b15a8d1f31e0cc2",
+   "best_epoch": 1,
+   "curve": [
+    {
+     "epoch": 0,
+     "sel": {
+      "squad": 0.834446,
+      "musique": 0.440189
+     },
+     "score": 0.6373174880718837,
+     "loss": null
+    },
+    {
+     "epoch": 1,
+     "sel": {
+      "squad": 0.826435,
+      "musique": 0.460452
+     },
+     "score": 0.6434436121985623,
+     "loss": 2.168492
+    },
+    {
+     "epoch": 2,
+     "sel": {
+      "squad": 0.823097,
+      "musique": 0.456649
+     },
+     "score": 0.6398733731024242,
+     "loss": 1.958466
+    },
+    {
+     "epoch": 3,
+     "sel": {
+      "squad": 0.820427,
+      "musique": 0.453987
+     },
+     "score": 0.6372073165495469,
+     "loss": 1.884197
+    },
+    {
+     "epoch": 4,
+     "sel": {
+      "squad": 0.821762,
+      "musique": 0.452466
+     },
+     "score": 0.6371143343957378,
+     "loss": 1.851019
+    },
+    {
+     "epoch": 5,
+     "sel": {
+      "squad": 0.820427,
+      "musique": 0.451054
+     },
+     "score": 0.6357405629641492,
+     "loss": 1.831207
+    },
+    {
+     "epoch": 6,
+     "sel": {
+      "squad": 0.819092,
+      "musique": 0.451488
+     },
+     "score": 0.6352903030492925,
+     "loss": 1.815271
+    },
+    {
+     "epoch": 7,
+     "sel": {
+      "squad": 0.819092,
+      "musique": 0.44937
+     },
+     "score": 0.6342309810153941,
+     "loss": 1.803897
+    },
+    {
+     "epoch": 8,
+     "sel": {
+      "squad": 0.817089,
+      "musique": 0.450402
+     },
+     "score": 0.633745725867142,
+     "loss": 1.794961
+    },
+    {
+     "epoch": 9,
+     "sel": {
+      "squad": 0.81976,
+      "musique": 0.448446
+     },
+     "score": 0.6341030036281897,
+     "loss": 1.787969
+    },
+    {
+     "epoch": 10,
+     "sel": {
+      "squad": 0.819092,
+      "musique": 0.449098
+     },
+     "score": 0.6340951704982277,
+     "loss": 1.781358
+    }
+   ],
+   "pairs": {
+    "squad": {
+     "train_questions": 130319,
+     "kept_questions": 118903,
+     "pairs": 118903,
+     "dropped": {
+      "in_s1sel": 1498,
+      "shares_s1sel_gold": 9918,
+      "no_gold": 0
+     },
+     "kept_sharing_a_nontrain_gold": 0
+    },
+    "musique": {
+     "train_questions": 19938,
+     "kept_questions": 16091,
+     "pairs": 36564,
+     "dropped": {
+      "in_s1sel": 1534,
+      "shares_s1sel_gold": 2313,
+      "no_gold": 0
+     },
+     "kept_sharing_a_nontrain_gold": 0
+    }
+   },
+   "seconds": 112.7
+  },
+  "granite": {
+   "npz": "granite.npz",
+   "sha256": "1d439fbe81daab60974770b7d35d8fa2d45e292feaed0d5bb013904121cfe6e3",
+   "best_epoch": 6,
+   "curve": [
+    {
+     "epoch": 0,
+     "sel": {
+      "squad": 0.789052,
+      "musique": 0.463711
+     },
+     "score": 0.626381749619513,
+     "loss": null
+    },
+    {
+     "epoch": 1,
+     "sel": {
+      "squad": 0.779039,
+      "musique": 0.458388
+     },
+     "score": 0.6187131879156273,
+     "loss": 2.613944
+    },
+    {
+     "epoch": 2,
+     "sel": {
+      "squad": 0.783712,
+      "musique": 0.467949
+     },
+     "score": 0.6258301667180172,
+     "loss": 2.292168
+    },
+    {
+     "epoch": 3,
+     "sel": {
+      "squad": 0.781709,
+      "musique": 0.46985
+     },
+     "score": 0.6257795052246977,
+     "loss": 2.24625
+    },
+    {
+     "epoch": 4,
+     "sel": {
+      "squad": 0.784379,
+      "musique": 0.469252
+     },
+     "score": 0.6268158355715776,
+     "loss": 2.223145
+    },
+    {
+     "epoch": 5,
+     "sel": {
+      "squad": 0.781041,
+      "musique": 0.471371
+     },
+     "score": 0.6262062657496683,
+     "loss": 2.208601
+    },
+    {
+     "epoch": 6,
+     "sel": {
+      "squad": 0.784379,
+      "musique": 0.472349
+     },
+     "score": 0.6283640754672752,
+     "loss": 2.196078
+    },
+    {
+     "epoch": 7,
+     "sel": {
+      "squad": 0.781041,
+      "musique": 0.469633
+     },
+     "score": 0.625337078439803,
+     "loss": 2.187402
+    },
+    {
+     "epoch": 8,
+     "sel": {
+      "squad": 0.781709,
+      "musique": 0.472458
+     },
+     "score": 0.6270832861894956,
+     "loss": 2.180354
+    },
+    {
+     "epoch": 9,
+     "sel": {
+      "squad": 0.778371,
+      "musique": 0.471969
+     },
+     "score": 0.6251699354027882,
+     "loss": 2.17477
+    },
+    {
+     "epoch": 10,
+     "sel": {
+      "squad": 0.780374,
+      "musique": 0.473164
+     },
+     "score": 0.6267688367918053,
+     "loss": 2.169075
+    }
+   ],
+   "pairs": {
+    "squad": {
+     "train_questions": 130319,
+     "kept_questions": 118903,
+     "pairs": 118903,
+     "dropped": {
+      "in_s1sel": 1498,
+      "shares_s1sel_gold": 9918,
+      "no_gold": 0
+     },
+     "kept_sharing_a_nontrain_gold": 0
+    },
+    "musique": {
+     "train_questions": 19938,
+     "kept_questions": 16091,
+     "pairs": 36564,
+     "dropped": {
+      "in_s1sel": 1534,
+      "shares_s1sel_gold": 2313,
+      "no_gold": 0
+     },
+     "kept_sharing_a_nontrain_gold": 0
+    }
+   },
+   "seconds": 112.2
+  },
+  "granitesm": {
+   "npz": "granitesm.npz",
+   "sha256": "8a4685e607f458ac5bf30b3da40d022eb5f578f469d882c23103849ae52ceab6",
+   "best_epoch": 0,
+   "curve": [
+    {
+     "epoch": 0,
+     "sel": {
+      "squad": 0.769693,
+      "musique": 0.449587
+     },
+     "score": 0.6096400299631727,
+     "loss": null
+    },
+    {
+     "epoch": 1,
+     "sel": {
+      "squad": 0.759012,
+      "musique": 0.420958
+     },
+     "score": 0.5899851475152441,
+     "loss": 3.027893
+    },
+    {
+     "epoch": 2,
+     "sel": {
+      "squad": 0.754339,
+      "musique": 0.426119
+     },
+     "score": 0.5902290987432759,
+     "loss": 2.669952
+    },
+    {
+     "epoch": 3,
+     "sel": {
+      "squad": 0.757677,
+      "musique": 0.431877
+     },
+     "score": 0.5947771735630123,
+     "loss": 2.498609
+    },
+    {
+     "epoch": 4,
+     "sel": {
+      "squad": 0.76235,
+      "musique": 0.437527
+     },
+     "score": 0.5999384809182053,
+     "loss": 2.411839
+    },
+    {
+     "epoch": 5,
+     "sel": {
+      "squad": 0.76502,
+      "musique": 0.440189
+     },
+     "score": 0.6026045374710827,
+     "loss": 2.375463
+    },
+    {
+     "epoch": 6,
+     "sel": {
+      "squad": 0.76235,
+      "musique": 0.441764
+     },
+     "score": 0.602057124986002,
+     "loss": 2.358028
+    },
+    {
+     "epoch": 7,
+     "sel": {
+      "squad": 0.761682,
+      "musique": 0.443774
+     },
+     "score": 0.6027283444418721,
+     "loss": 2.348566
+    },
+    {
+     "epoch": 8,
+     "sel": {
+      "squad": 0.76235,
+      "musique": 0.443937
+     },
+     "score": 0.6031436091233335,
+     "loss": 2.341812
+    },
+    {
+     "epoch": 9,
+     "sel": {
+      "squad": 0.76235,
+      "musique": 0.444046
+     },
+     "score": 0.6031979333302001,
+     "loss": 2.336549
+    },
+    {
+     "epoch": 10,
+     "sel": {
+      "squad": 0.763017,
+      "musique": 0.445621
+     },
+     "score": 0.604319412700927,
+     "loss": 2.331801
+    }
+   ],
+   "pairs": {
+    "squad": {
+     "train_questions": 130319,
+     "kept_questions": 118903,
+     "pairs": 118903,
+     "dropped": {
+      "in_s1sel": 1498,
+      "shares_s1sel_gold": 9918,
+      "no_gold": 0
+     },
+     "kept_sharing_a_nontrain_gold": 0
+    },
+    "musique": {
+     "train_questions": 19938,
+     "kept_questions": 16091,
+     "pairs": 36564,
+     "dropped": {
+      "in_s1sel": 1534,
+      "shares_s1sel_gold": 2313,
+      "no_gold": 0
+     },
+     "kept_sharing_a_nontrain_gold": 0
+    }
+   },
+   "seconds": 90.3
+  }
+ },
+ "threads": 8,
+ "code_sha256": {
+  "outputs/mp_unified/zenc2b.py": "f15a7afc4d3442895ac17d1c1bbef40e5a7c0a12be4bb4d29f21828f8690c4c4",
+  "outputs/mp_unified/zenc.py": "0416ecefcb9a803549d2dfa9aef844d66f4c05e2a5b26821930c7f701f32eeb7",
+  "outputs/mp_unified/zenc2m.py": "cf5bd755f39a8149924ae1f42ddf88617979b2e8d2cd1c7161d1964da654cf4f",
+  "outputs/mp_unified/zenc2s.py": "432b8873a55f6f1e7a47f42ed84ad27cc359868985c8aa6b74178f1387a48205",
+  "outputs/mp_unified/zenc2n.py": "21e856aafea20532bfb999632bc424606b0c10da055a0cef2c97f00157e703b3",
+  "outputs/mp_unified/zenc3b.py": "7954e0984d86c0628aced26b6a5c830321c8d5e608eab602d2e929c7d4581cbd",
+  "outputs/mp_unified/zenc3.py": "b60460b505d72cd3737760d4f4493b6e4c37962f0a9edba905436e78da05ff0a"
+ },
+ "seconds": 317.0,
+ "utc": "2026-11-20T07:51:15Z"
+}
