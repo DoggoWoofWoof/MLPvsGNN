@@ -1290,3 +1290,110 @@ a gold among those questions' golds ("seen"). Every R@1000 read was exact (the s
   right. Feedback as noisy as raw mpnet's top 1 is not enough. Between the two sit the deciding models' own top picks
   (hit@1 about 87 to 91 on B1's HotpotQA settings in D83's reads, with the frozen encoder); they were not read here.
 - Nothing is declared after E2N (15.5). The user sets the next step.
+
+## 16. E2B: the best vectors per encoder, before the encoder is chosen (declared 20 Nov 2026, 11:50 IST, before any E2B number)
+
+Code: outputs/mp_unified/zenc2b.py (selftest, winenc, maps, grid, hotpot, report). Outputs: outputs/enc/e2b/. The user, 20
+Nov, after 14.8 and 15.7: "do vectors find the best ways only then we can say if we can take a particular encoder". E2B
+combines the parts per encoder, picks each encoder's best combination on s1sel, and reads it once on s1eval. D101 waits
+for it. No encoder's weights change.
+
+### 16.1 Why
+
+- E2S read each part alone, on mpnet only. win and fuse IMPROVE; adapt helps MuSiQue and the unseen HotpotQA but costs
+  SQuAD 0.88. Each helps a different place. Their combination was not read, and none was read on qwen3e06.
+- E2's cells (12.4) show where the loss enters. On SQuAD, mpnet's pools hold almost every gold (96.88 against frozen's
+  97.98), yet GNX loses 2.62 points. The loss comes through the vectors the models read, not through the pools. So a
+  part counts for the models only if it leaves one vector per question and one per document.
+
+### 16.2 The arms
+
+- **mpnet** (109M), with mpnetqa (109M) as its fusion partner: 218M if fusion is chosen.
+- **qwen3e06** (596M).
+- **frozen** (1.5B), beside: the same parts on the record's encoder. It shows whether the parts close the gap or lift
+  both.
+
+### 16.3 The parts (per encoder of the arm)
+
+- **q-map:** f(x) = unit(x + gamma g(x)) on the question vector, with gamma 0, 0.5 or 1 (1 is the map as trained).
+  - mpnet's and frozen's maps are E2S's (adapt.npz, adapt-frozen.npz, checked by sha).
+  - qwen3e06's and mpnetqa's are trained by `maps` with E2S's recipe: 14.2's pairs and loss, hard negatives from the
+    encoder's own top 50, linear, learning rate 1e-4, the epoch (0 to 10) by the s1sel mean, as E2S's frozen map. The
+    run stops if a pair's document is an s1eval gold.
+- **fuse (the mpnet arm only):** (1 - w) S_mpnet + w S_mpnetqa, w from 0, 0.25, 0.5, 0.75 or 1. As one vector,
+  [sqrt(1 - w) v_mpnet ; sqrt(w) v_mpnetqa] (1,536 wide) gives the same score.
+- **prf (the question side, no labels):** after a first pass, q' = unit(q + alpha unit(mean of the first pass's top k
+  documents' vectors)), per encoder, with k 3 or 10 and alpha 0.25, 0.5 or 1. The second pass scores with q' in every
+  term.
+- **win (several vectors per document):** S = (1 - beta) cos(q, d) + beta max over d's windows cos(q, w), with W 64 or
+  126 and beta 0 to 1 in steps of 0.25.
+  - The windows are E2S's spans (mpnet's tokenizer), the same texts for every encoder. `winenc` encodes them as
+    documents (no prompt). mpnet's are E2S's.
+- **Two recipes per arm:**
+  - **V** uses q-map, fuse and prf only. It keeps one vector per question and per document, so the models can read it.
+  - **F** adds win. F's windows can change the first-stage lists, but they are not a vector.
+
+### 16.4 Selection (per arm, on s1sel: the mean of SQuAD's and MuSiQue's dense R@5, exact over the whole corpus)
+
+- **Step A:** every (gamma, W, beta, w) without prf. mpnet has 3 x 9 x 5 = 135 settings; qwen3e06 and frozen have 27.
+  V's setting is the best with beta 0; F's is the best of all.
+- **Step B:** for V and for F, prf off or one of the six (k, alpha), on step A's setting.
+- Ties go to the setting nearest raw: the smaller gamma, beta and w, then W; prf off, then the smaller alpha and k.
+
+### 16.5 Reads (E0's s1eval carves: SQuAD 11,873 questions, MuSiQue 2,417)
+
+- V and F per arm, exact over the whole corpus, top 1,000: dense R@5, R@20 and R@1000, and RRF@5 with the record's SPLADE
+  list.
+- **Leave one out:** each recipe with one of its chosen parts set back to raw.
+- **G1:** each arm's raw setting equals E0's read of that encoder (mpnetqa's too) on at least 99.5% of the questions at
+  every k.
+- **G2 (winenc):** each one-window document's window vector against its document vector, cosine 0.99 or more on at
+  least 99.5% of them. This is E0's G0 bar; 14.4's 0.999 was for mpnet's own encode, and frozen's document vectors come
+  from the record's encode. The window index must equal E2S's.
+- A failed gate stops the report.
+
+### 16.6 HotpotQA, beside (no call)
+
+- mpnet and frozen only. qwen3e06 and mpnetqa have no HotpotQA vectors, and windows would need a new encode of 5.2M
+  documents.
+- The reads use V's gamma and prf (mpnet's w is set to 0), with and without E2N's gold memory (15.2, at its lambda:
+  mpnet 1.0, frozen 0.5).
+- Exact as in 15.3: the top 2,000 over the whole index, with every changed document rescored. With memory, prf's first
+  pass takes the memory vectors of changed documents.
+- **G4:** the run's raw-plus-memory read equals E2N's on at least 99.5% of the questions at every k.
+
+### 16.7 The call (per small arm; s1eval dense R@5; paired 95% bootstrap over questions, 2,000, seed 0)
+
+- **The recipe:** won back against E0's raw read of the arm, in 14.5's words (IMPROVES, MIXED or NO), for V and for F.
+- **The gate, on V:** the gap to E0's frozen read against the arm's bars. A bar is -1 point divided by the model's E2
+  ratio of model gap to first-stage gap on the carve (13.5), taken from E2's report for that arm.
+  - mpnet's bars are 13.5's: zrckpn -5.12 (SQuAD) and -3.11 (MuSiQue), GNX -5.41 and -2.31.
+  - qwen3e06's come from 12.11's cells: about zrckpn -3.79 and -1.14, GNX -4.25 and -1.25 (the report computes them).
+  - **ADVANCE:** both carves clear one deciding model's bars.
+  - **PARTIAL:** not ADVANCE, and V's won back starts above 0 on both carves.
+  - **STOP:** otherwise.
+- **Beside, with no call:**
+  - F against the bars, as a pointer;
+  - each small arm's gap to frozen's own V and F (whether the gap closes or both rise);
+  - the leave-one-out drops;
+  - R@20, R@1000 and RRF@5;
+  - the cost: parameters, vector width, windows per document, and prf's second search.
+- One read per arm and recipe on s1eval. Every setting is chosen on s1sel.
+
+### 16.8 What follows
+
+- **ADVANCE:** stage 2 is declared on this page and put to the user before it runs. The arm's E2 world would be rebuilt
+  on V (12.2's view serving V's vectors), and GNX and zrckpn refit and read as in 12.4.
+- **PARTIAL or STOP:** nothing is trained. The result goes beside E2's for D101.
+- Either way, the user decides D101.
+
+### 16.9 Rows and cost (estimates; the host's measured numbers replace them)
+
+- e2b-selftest (CPU).
+- e2b-winenc-mpnetqa, then -qwen3e06, then -frozen (GPU). Each encodes 586,313 windows over both W, in about 5 min,
+  30 min and 1 h.
+- e2b-maps (CPU, about 15 min).
+- e2b-grid-mpnet, -qwen3e06 and -frozen (CPU, 8 threads, about 30 to 60 min each).
+- e2b-hotpot (CPU, about 2 h), then e2b-report.
+- **Disk:** the windows take about 3.9 GB under outputs/enc/e2b/win/. They can be rebuilt, and are kept until D101,
+  since stage 2 would need them. The maps and reads take under 100 MB. The host had 59 GB free at declaration.
