@@ -1511,3 +1511,78 @@ the whole corpus. Dense R@5, R@20 and R@1000, and RRF@5 with the record's SPLADE
   / 43.76, and its one-vector V 82.01 / 42.50. Windows took qwen3e06 within 0.61 points of frozen on SQuAD.
 - **What follows (17.6):** E2B's recipe search on the new arms, gtemodern first, is declared next (section 18). Nothing
   was trained. The user decides D101.
+
+## 18. E3B: E2B's recipe search on E0N's encoders (declared 20 Nov 2026, 13:13 IST, before any E3B number)
+
+Code: `outputs/mp_unified/zenc3b.py`. It runs E2B's code (zenc2b.py, unchanged) with its output folder, arms, window and
+map encoders and stage name set for this stage, and with fusion for every two-encoder arm. Records: `outputs/enc/e3b/`.
+
+### 18.1 Why
+
+- The user, 20 Nov: "we will try to improve from there if the scores are workable". E0N (17.8) called all three
+  encoders STRONG.
+- E2B's grid for qwen3e06 showed that windows can close most of a SQuAD gap: its F read 87.08, against frozen's 87.69.
+- granite and granitesm come within 1.1 and 1.8 points of frozen on MuSiQue, and gtemodern within 4.6 on SQuAD. Fusing
+  gtemodern with one of them may combine the two strengths.
+
+### 18.2 The arms
+
+| arm | encoders (first, second) | params | vector width |
+|---|---|---|---|
+| `gtemodern` | gtemodern | 149M | 768 |
+| `gtemodern+granite` | gtemodern, granite | 298M | 1,536 |
+| `gtemodern+granitesm` | gtemodern, granitesm | 197M | 1,152 |
+| `granitesm` | granitesm | 48M | 384 |
+
+- granite alone is not an arm: it trails gtemodern by 5.7 points on SQuAD and leads it by 0.4 on MuSiQue. Fused,
+  w = 1 is granite alone, so the fused arm's grid holds it.
+
+### 18.3 The parts and recipes: 16.3's, with three changes
+
+- **fuse** applies to both two-encoder arms: (1 - w) S_first + w S_second, w from 0 to 1 in steps of 0.25. As one vector
+  it is [sqrt(1 - w) v_first ; sqrt(w) v_second].
+- **q-map:** each new encoder gets its own map from `maps`, with 16.3's recipe (E2S's pairs and loss, hard negatives
+  from its own top 50, linear, learning rate 1e-4, the epoch by the s1sel mean). The run stops if a pair's document is an
+  s1eval gold.
+- **win:** each new encoder encodes E2S's windows (`winenc`, G2 as 16.5).
+- prf, the recipes V and F, selection (16.4), the reads, leave one out, and G1 and G2 (16.5) are E2B's. Step A has 135
+  settings for a two-encoder arm and 27 for one. HotpotQA is not read: the new encoders have no HotpotQA vectors.
+
+### 18.4 The recipe call (per arm and recipe)
+
+14.5's words, on won back against E0N's raw read of the arm's first encoder: **IMPROVES**, **MIXED** or **NO**.
+
+### 18.5 The gate (per arm, on V; the gap to E0's frozen read in points)
+
+- **ADVANCE:** both carves clear qwen3e06's bars for one deciding model (zrckpn -3.79 / -1.14 or GNX -4.25 / -1.25). They
+  are the bars of the closest encoder whose models were measured, and the tighter set.
+- **NEAR:** not ADVANCE, but both carves clear mpnet's bars for one deciding model (zrckpn -5.12 / -3.11 or GNX -5.41 /
+  -2.31).
+- **SHORT:** otherwise.
+- The bars are pointers. No new encoder's models have been measured, so the share of the first-stage gap the models
+  win back is assumed from qwen3e06 and mpnet.
+
+### 18.6 Beside, with no call
+
+- F against both sets of bars.
+- V and F against E2B's qwen3e06 V and F, and against frozen's own V and F (E2B's frozen grid).
+- The leave-one-out drops; R@20, R@1000 and RRF@5; the cost (parameters, vector width, windows).
+
+### 18.7 What follows
+
+- The arm with the best gate, by the mean of its two V gaps to frozen, is named. If an arm with fewer parameters has the
+  same gate and is within 0.5 points of that mean, it is named too ("the smallest possible encoder which doesnt lose
+  much", the user, 18 Nov).
+- **ADVANCE or NEAR:** that arm's E2 stage is declared on this page and put to the user before it runs. It would rebuild
+  the arm's world on V (12.2's view serving V's vectors) and refit and read GNX and zrckpn as in 12.4.
+- **SHORT:** nothing is trained.
+- The user decides D101.
+
+### 18.8 Rows and cost (estimates; the host's measured numbers replace them)
+
+- e3b-selftest (CPU). e3b-winenc-gtemodern, -granite and -granitesm (GPU, 0.29 of the card; 586,313 windows each,
+  minutes each). They queue after E2B's frozen windows.
+- e3b-maps (CPU, about 10 minutes for three maps), then four grids (CPU, 8 threads, 10 to 20 minutes each), then
+  e3b-report. The report waits for E2B's frozen grid, whose V and F it reads beside.
+- **Disk:** windows about 0.9 GB for each 768-wide encoder and 0.45 GB for granitesm (2.3 GB), kept until D101. Maps and
+  reads take under 100 MB.
