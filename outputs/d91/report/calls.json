@@ -1,0 +1,41 @@
+{
+ "declared_in": "docs/D91_D83_WITHOUT_LABELS.md",
+ "call_L": "HELP",
+ "call_A": "ADOPT",
+ "call_D83": "ADOPT",
+ "carries": "D83",
+ "calls_L": {
+  "zg6r musique in-domain": "LEVEL",
+  "zg6r hotpotqa in-domain": "LEVEL",
+  "zg6r 2wiki in-domain": "LEVEL",
+  "zg6r musique held-out": "LEVEL",
+  "zg6r hotpotqa held-out": "LEVEL",
+  "gnx musique in-domain": "LEVEL",
+  "gnx hotpotqa in-domain": "LEVEL",
+  "gnx 2wiki in-domain": "LEVEL",
+  "gnx musique held-out": "LEVEL",
+  "gnx hotpotqa held-out": "LEVEL",
+  "zrckpn musique in-domain": "LEVEL",
+  "zrckpn hotpotqa in-domain": "LEVEL",
+  "zrckpn 2wiki in-domain": "LEVEL",
+  "zrckpn musique held-out": "ABOVE",
+  "zrckpn hotpotqa held-out": "LEVEL"
+ },
+ "calls_A": {
+  "zg6r musique in-domain": "LEVEL",
+  "zg6r hotpotqa in-domain": "LEVEL",
+  "zg6r 2wiki in-domain": "LEVEL",
+  "zg6r musique held-out": "ABOVE",
+  "zg6r hotpotqa held-out": "LEVEL",
+  "gnx musique in-domain": "LEVEL",
+  "gnx hotpotqa in-domain": "LEVEL",
+  "gnx 2wiki in-domain": "ABOVE",
+  "gnx musique held-out": "LEVEL",
+  "gnx hotpotqa held-out": "LEVEL",
+  "zrckpn musique in-domain": "LEVEL",
+  "zrckpn hotpotqa in-domain": "LEVEL",
+  "zrckpn 2wiki in-domain": "ABOVE",
+  "zrckpn musique held-out": "ABOVE",
+  "zrckpn hotpotqa held-out": "LEVEL"
+ }
+}

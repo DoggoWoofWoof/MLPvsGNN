@@ -159,4 +159,19 @@ files it.
 
 ## 9. Results
 
-(Not yet filed.)
+Filed 20 Nov 2026, 07:06 IST, from `outputs/mp_unified/zd91rep.py report` (outputs/d91/report/report.md, report.json,
+calls.json; the reads fetched with `zd91rep.py files`). Call L's and Call A's 15 cells read; G6 found no problem. D83's call,
+recomputed from the same reads, is ADOPT, as filed.
+
+- **Call L (D83 minus D91, the rule names): HELP.** One cell is ABOVE, zrckpn MuSiQue held-out +1.7 (+1.1, +2.3); the other
+  14 are LEVEL. The GNNs' MuSiQue held-out cells lean the other way, within their intervals: zg6r -0.7 (-1.4, +0.1), GNX
+  +0.4 (-0.3, +1.0).
+- **Call A (D91 minus the record): ADOPT.** No cell BELOW; ABOVE: zg6r MuSiQue held-out +1.5 (+0.8, +2.3), zrckpn MuSiQue
+  held-out +1.0 (+0.4, +1.6), GNX 2Wiki in-domain +0.3 (+0.0, +0.5), zrckpn 2Wiki in-domain +0.4 (+0.1, +0.7).
+- **What carries: D83** (rule 3: both ADOPT and L is HELP). The labels stay on the edges.
+- Beside: without the labels, the GNNs keep more of their lead over the MLP on MuSiQue held-out. GNX minus zrckpn is
+  +0.9 (+0.1, +1.7) at D91 against -0.5 (-1.2, +0.3) at D83; zg6r minus zrckpn is -0.5 against -2.9. The labels help the
+  MLP read the links more than they help the GNNs. Every other table is in report.md.
+
+D91's own folders (outputs/abl/D91F, D91E, D91B and the d91world tree) now hold only this filed result; deleting them needs
+the user's OK (about 11 GB logical; less on disk, since much of it is hard-linked with D83's folders).

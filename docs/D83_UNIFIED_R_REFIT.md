@@ -283,4 +283,30 @@ into no paper sentence before section 12 files them.
 
 ## 12. Results
 
-(Not yet filed.)
+Filed 20 Nov 2026, 07:06 IST, from `outputs/mp_unified/zd83rep.py report` (outputs/d83/report/report.md, report.json,
+calls.json; the reads fetched with `zd83rep.py files`). 15 of 15 deciding cells read; G6 found no problem.
+
+**Call: ADOPT.** No cell is BELOW; 4 are ABOVE and 11 LEVEL (D83 minus the record, R@5 points, 95% interval, three seeds):
+
+- ABOVE: zrckpn MuSiQue held-out +2.7 (+2.0, +3.4); GNX MuSiQue held-out +1.0 (+0.2, +1.8); zg6r MuSiQue held-out
+  +0.8 (+0.2, +1.6); zrckpn 2Wiki in-domain +0.3 (+0.0, +0.6).
+- LEVEL, the lowest points: zg6r MuSiQue in-domain -0.5 (-1.2, +0.2); GNX MuSiQue in-domain -0.5 (-1.3, +0.2); GNX
+  HotpotQA held-out -0.3 (-0.8, +0.2); zg6r HotpotQA in-domain -0.3 (-0.7, +0.1).
+
+Beside, deciding nothing (report.md has every table):
+
+- **The six s1eval carves.** Held out, the change is up for every model on MetaQA (zg6r +3.8, GNX +2.9, zrckpn +1.6) and
+  MuSiQue (+0.7, +1.7, +2.2), and on HotpotQA for the GNNs (+0.4 each; zrckpn -0.2 (-0.4, +0.0)). In-domain every change
+  is within 0.2 points except two: zrckpn MuSiQue +0.5 (+0.1, +0.9), and WebQSP, where both GNNs are lower (zg6r -0.6
+  (-1.1, -0.1), GNX -0.5 (-1.0, -0.1); zrckpn -0.2 (-0.6, +0.3)).
+- **By hops.** zg6r's in-domain MuSiQue 4-hop questions -1.6 (-2.9, -0.3) (166 questions); its held-out 2-hop +1.2
+  (+0.1, +2.4).
+- **The gaps between the models.** The MLP gains more than the GNNs on MuSiQue, so GNX minus zrckpn narrows there: b1v
+  held-out from +1.2 to -0.5 (change -1.7 (-2.6, -0.8)), in-domain from +1.7 to +0.7; s1eval in-domain from +1.5 to +0.9.
+  On MetaQA held-out the GNNs gain more: GNX minus zrckpn from -3.6 to -2.3.
+- **Links per label** are in report.md's last section (unique pairs per question, gold-touching, gold-gold).
+
+What follows (section 9): the journal program's runs read the D83 fits. D91, run on the user's word, carries D83
+(docs/D91_D83_WITHOUT_LABELS.md section 9). **D89** (the with-S layout fit) is the next refit. It waits for the encoder
+decision (D101) and joins HFO's hub family H in one unified training, so the models are trained once. D90 stays closed
+unless the user names A2.
