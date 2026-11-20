@@ -1093,3 +1093,131 @@ Per arm, on 'both': R@5 minus E0's frozen R@5 in points per carve, paired 95% bo
   information in its vectors. There is no stage 2. The result sits beside E2's for D101.
 - What it does not test: a map trained on retrieval itself (questions against their gold documents). That is in-domain
   supervised training on top of mpnet, the job the E2 models already do (they win back 6.75 to 11.59 points).
+
+## 14. E2S: can mpnet's vectors be improved without touching mpnet? (declared 20 Nov 2026, 06:40 IST, before any E2S number)
+
+Code: outputs/mp_unified/zenc2s.py (selftest, fuse, adapt, winenc, win, report). Outputs: outputs/enc/e2s/. The user,
+20 Nov: "first we should test all this directly if the vectors can even be improved then see the next steps". Each arm
+asks one question at the first stage, and nothing is declared after it. No arm changes mpnet's weights.
+
+### 14.1 Why
+
+- E0 (mpnet minus frozen, points): dense R@5 -14.18 on SQuAD and -11.89 on MuSiQue; dense R@1000 -1.03 and -7.29. On
+  SQuAD, mpnet's top 1,000 holds the gold almost as often as the frozen encoder's: the loss is the order at the top.
+- Ruled out already: truncation (mpnet's encode cut 167 of SQuAD's 20,233 documents and 214 of MuSiQue's 117,534);
+  smoothing the vectors over the links (SEM1, below its base for mpnet); a map into the frozen space (E2M, 13.8).
+
+### 14.2 The arms
+
+- **win (several vectors per document).** mpnet's model card: "The sequence length was limited to 128 tokens" in
+  training, and input "longer than 384 word pieces is truncated". Each document is cut into windows of W content tokens
+  at stride W/2, at the character offsets of mpnet's fast tokenizer; a document of W tokens or fewer is one window (its
+  whole text). W is 64 or 126. On the host's count, 61.5% of SQuAD's documents and 24.0% of MuSiQue's are longer than
+  126 tokens (94.1% and 63.6% longer than 64): 39,407 and 159,298 windows at 126, and 86,113 and 301,495 at 64. The
+  windows are encoded by zenc.encode_texts (mpnet, GPU, fp16, as E1). A document scores
+  (1 - beta) cos(q, d) + beta max over its windows cos(q, w), beta from 0, 0.25, 0.5, 0.75 or 1.
+- **fuse (mpnet with mpnetqa).** E1's whole-document vectors of both 110M models: (1 - w) cos_mpnet + w cos_mpnetqa,
+  w from 0, 0.25, 0.5, 0.75 or 1.
+- **adapt (a learned map on the question vector; the documents untouched).** f(x) = unit(x + g(x)) on mpnet's question
+  vector. g is linear (768 to 768) or a residual MLP (768 to 2,048, GELU, to 768). g's last layer starts at zero, so
+  epoch 0 is raw mpnet. The document index stays mpnet's.
+  - Pairs: SQuAD's and MuSiQue's train-split questions, one pair per gold. Left out: the s1sel questions, and every
+    question that shares a gold with an s1sel question. No dev or test question enters (no dev gold of either dataset
+    is a train question's gold).
+  - Loss: softmax cross-entropy at temperature 0.05 over the batch's gold documents and the question's 16 highest-ranked
+    non-gold documents in raw mpnet's top 50 (mined once); the question's other golds are masked. AdamW, weight decay
+    0.01, batch 512, 10 epochs, seed 0. Each batch holds one dataset's pairs.
+  - The setting: g's form, the learning rate (1e-4, 3e-4 or 1e-3) and the epoch (0 to 10), by s1sel (14.3).
+  - Beside, with the chosen form and learning rate: maps trained on SQuAD alone (read on MuSiQue) and on MuSiQue alone
+    (read on SQuAD), each epoch by its own dataset's s1sel; and the same recipe on the frozen vectors (1,536 wide, hard
+    negatives from the record's dense list), read on SQuAD and MuSiQue.
+  - **Unseen read:** the chosen map on HotpotQA's s1eval (7,405 questions), a dataset it never saw, over mpnet's whole
+    5.2M-document HotpotQA index.
+
+### 14.3 Selection
+
+One setting per arm, by the mean of SQuAD's and MuSiQue's s1sel dense R@5 (1,498 and 1,534 train-side questions, the
+carves SEM1 chose on; no s1eval question). Ties go to the setting nearest raw mpnet: the smaller beta, w or epoch, then
+the smaller W, the linear form and the smaller learning rate. If raw mpnet's own setting wins, the arm reads as raw
+mpnet.
+
+### 14.4 Reads
+
+- On E0's s1eval carves (SQuAD 11,873, MuSiQue 2,417): exact float32 search over the whole corpus, top 1,000; dense
+  R@5, R@20 and R@1000, and RRF@5 with the record's SPLADE list (E0's measure).
+- **G1:** the run's raw mpnet read (raw mpnetqa as well for fuse; raw mpnet on HotpotQA for adapt) equals E0's hits on
+  at least 99.5% of the questions at every k. Otherwise the report stops.
+- **G2 (win):** each one-window document's window vector against E1's vector of that document: cosine 0.999 or more on
+  at least 99.5% of them, per dataset. Otherwise the report stops.
+
+### 14.5 The call
+
+Per arm, on s1eval dense R@5: won back is the read minus E0's raw mpnet read, in points, paired 95% bootstrap over
+questions (2,000, seed 0).
+- **IMPROVES:** won back's interval starts above 0 on both carves.
+- **MIXED:** above 0 on one carve, and not below 0 on the other.
+- **NO:** otherwise.
+- adapt must also hold on HotpotQA: if its won back there is BELOW (the interval under 0), the call is **IN-DOMAIN
+  ONLY**, whatever the two carves say.
+- Beside, with no call: the gap to E0's frozen read and the share of it won back; that gap against E2M's bars (13.5)
+  as a pointer only; R@20, R@1000 and RRF@5; the cross reads, the frozen map's reads and the selection curves. Three
+  arms are read, so the chance that one passes by luck is above 5%.
+
+### 14.6 What follows
+
+Nothing is declared. The calls go to the user, who sets the next step.
+
+### 14.7 Rows and cost
+
+- e2s-selftest (CPU); e2s-fuse (CPU, 8 threads, minutes); e2s-adapt (CPU, 8 threads, about 1 to 2 h with HotpotQA's
+  search); e2s-winenc (GPU 0.29, behind qwen3e06's fits in the GPU queue, minutes); e2s-win (CPU); e2s-report.
+- The window vectors take about 0.9 GB under outputs/enc/e2s/win/ (rebuildable). The maps take a few MB.
+
+## 15. E2N: node memory on HotpotQA (declared 20 Nov 2026, 06:40 IST, before any E2N number)
+
+Code: outputs/mp_unified/zenc2n.py (selftest, run, report). Outputs: outputs/enc/e2n/. The user, 20 Nov: "if we are able
+to improve pools eventually each nodes vectors would be better over the course of multiple questions". E2N asks whether
+a document's vector improves from the questions that reached it.
+
+### 15.1 Why HotpotQA alone
+
+A document can learn only from questions that reach it. Dev questions with a gold that some train-split question also
+has: SQuAD 0 of 11,873; MuSiQue 0 of 2,417; HotpotQA 6,026 of 7,405 (81.4%; 41.6% have every gold seen, and 59.6% of
+HotpotQA's dev golds are train golds). On SQuAD and MuSiQue the answer is 0 by construction, so they are not read.
+
+### 15.2 The forms
+
+A document d with a feedback set Q_d becomes unit(d + lambda unit(mean of Q_d's question vectors)). Documents with no
+feedback are unchanged. lambda is 0.25, 0.5, 1 or 2.
+- **gold:** Q_d = HotpotQA's train-split questions with d among their golds: what a perfect ranker of the pools would
+  feed back.
+- **self:** Q_d = the train-split questions whose raw dense top 1 is d. No labels.
+- s1sel's questions (train-side) are left out of every feedback set. No validation or test question enters one.
+- Encoders: mpnet (decides) and frozen (beside: whether memory closes the gap or lifts both). frozen's top 1 is the
+  record's dense list.
+
+### 15.3 Selection and reads
+
+- lambda per form and encoder, by HotpotQA's s1sel dense R@5 (1,508 questions; 18.2% hold a fit-carve gold, as 18.3%
+  of s1eval's do). Ties go to the smaller lambda.
+- Reads on HotpotQA's s1eval (7,405): dense R@5, R@20 and R@1000, and RRF@5 with the record's SPLADE list. Exact: the
+  raw top 2,000 over the whole index, with every changed document rescored. R@5 and R@20 are exact. R@1000 is exact
+  where at least 1,000 unchanged documents sit in the raw top 2,000; the share is reported.
+- **G1:** the run's raw reads equal E0's HotpotQA hits (mpnet's and frozen's) on at least 99.5% of the questions at
+  every k. Otherwise the report stops.
+
+### 15.4 The call
+
+Per form, on mpnet's s1eval dense R@5 against E0's raw mpnet read, paired 95% bootstrap (2,000, seed 0): **HELPS**
+(the interval above 0), **LEVEL** or **HURTS**. Beside, with no call: the share of mpnet's 23.14-point HotpotQA gap to
+frozen won back; the split by whether a question has a gold seen in training (any gain should sit with that 81.4%);
+frozen's own won back; R@20, R@1000 and RRF@5.
+
+### 15.5 What follows
+
+Nothing is declared. The calls go to the user.
+
+### 15.6 Rows and cost
+
+e2n-selftest, e2n-run (CPU, 8 threads, about 2 to 3 h: the self form searches the 5.2M documents for HotpotQA's 90,447
+train questions, and frozen's reads search its 1,536-wide index), e2n-report. The output is a few MB.
