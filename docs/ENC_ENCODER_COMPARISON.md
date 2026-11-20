@@ -2006,3 +2006,90 @@ free and PCA-768 + int8 near free. This stage reads all six datasets, as the use
 - Six e5-read rows (8 CPU threads each); each waits for all six moments (the loo fits) and for its dataset's E0 read.
 - e5-report.
 - CPU only; it runs beside E4's GPU encodes.
+
+## 22. E6: e3v's windows as a rescoring of the first stage, on every dataset (declared 21 Nov 2026, 04:45 IST, before any E6 number)
+
+Code: outputs/mp_unified/zenc6.py. Outputs: outputs/enc/e6/. Nothing trains, and no model reads anything.
+
+### 22.1 Why
+
+- D101 (19.9) takes e3v "with better links and preprocessing" to close the gap. E3W's SQuAD loss sits in the first
+  stage: -4.00 points of dense R@5 against frozen, of which the models win back 2.25 to 2.66 (19.8).
+- E3B's windows (F, 18.3 and 18.9) are that preprocessing. e3v has no q-map (19.2), so its form is E3B's F with
+  gamma 0: W 64, beta 0.75, w 0.5. E3B read exactly this setting as its leave-one-out row `F-no-gamma`, so nothing is
+  selected again.
+  - From E3B's filed reads (outputs/enc/e3b/reads), s1eval dense R@5 without and with the windows: SQuAD 83.70 and
+    89.04; MuSiQue 47.72 and 48.14. Frozen's raw read is 87.69 and 45.72.
+- **One form for every dataset:** only nodes longer than one window change. A node of one window keeps its dense
+  score exactly.
+
+### 22.2 The score
+
+- F(q, d) = 0.25 <q, d> + 0.75 (max_w <q_1, w_1> + max_w <q_2, w_2>).
+  - q and d are e3v's fused vectors; q_1 and q_2 are q's gtemodern (768) and granitesm (384) halves.
+  - w_e = sqrt(1/2) unit(encoder e on window w), so each term is half the encoder's cosine. This is E2B's
+    (1 - w) part_1 + w part_2 with part_e = (1 - beta) cos(q_e, d_e) + beta max_w cos(q_e, w_e), at w 0.5.
+  - The self-test checks the identity on a toy.
+- **The windows are E2S's** (14.2): 64 tokens of all-mpnet-base-v2's tokenizer at stride 32 (zenc2s.window_spans).
+  Both encoders read the same window texts, with the pinned revisions of 17.2.
+- **A node of one window** (64 tokens or fewer) has F = <q, d>, because its window is its whole text, which is its
+  document vector. So only nodes of two or more windows are encoded. E2S's and E3B's G2 found cosines of 0.99999 or
+  more between such a window and its document.
+
+### 22.3 Depth: a rescoring of the top 1000
+
+- F reorders each question's e3v top 1000 from E0's and E4's first-stage reads (outputs/enc/e0/e3v/<ds>.npz).
+  E3B searched the whole corpus.
+- The set is the dense list's, so hits at 1000 do not move. Hits at 5 and 20, and RRF's top 5, can move.
+- **Why a rescoring:**
+  - Stored, the windows of HotpotQA and 2Wiki would take about 15-30 GB of the host's disk (millions of windows at
+    2.3 KB each). The rescoring encodes the windows of each listed node of two or more windows on the GPU and keeps
+    only the maxima per (question, node) pair.
+  - The pools already start from the dense top 1000, so a reorder inside it is the form a world reads.
+- **Kept:** the pairs' maxima and the reads (MB). The windows themselves are never stored.
+
+### 22.4 Gates
+
+- **VS:** each listed pair's float32 score, recomputed from e3v's document shards, is within 1e-3 of E0's stored
+  float16 score.
+- **G0** (SQuAD, MuSiQue): the window count of every listed node equals E2S's window index
+  (outputs/enc/e2s/win/<ds>_w64_doc.npy).
+- **GW** (SQuAD, MuSiQue): F against E3B's `gtemodern+granitesm-F-no-gamma` read under GV's rule (19.3, zenc3v.gv_check):
+  hits at 5 equal on at least 99.5% of the questions, and R@5 within 0.10 points.
+  - It is computed on the questions whose E3B top 5 lies inside the dense top 1000.
+  - Those outside may be at most 1% of the questions; their share and the all-question reading are recorded.
+- **D1000:** F's hits at 1000 equal the dense list's.
+- A failed gate stops that dataset's read.
+
+### 22.5 The call (declared now)
+
+- Per dataset: F - V on d5, d20 and rrf5, paired 95% bootstrap over questions (2,000, seed 0, zenc5.paired). F minus
+  frozen's E0 read is beside, with no call.
+- **ADOPT_F:** no cell BELOW and at least one ABOVE. The unified world's first stage is then F on every dataset (one
+  form).
+- **NO_GAIN:** every cell LEVEL. V stays.
+- **HOLD:** any cell BELOW. V stays, the BELOW cells are named, and the choice goes to the user.
+- A dataset none of whose listed nodes has two windows (the KBs' name-only nodes, if so) has F = V by construction.
+  Its cells are LEVEL, and the read records the count.
+
+### 22.6 What follows
+
+- **ADOPT_F:**
+  - The unified world computes F at depth 1000 for every query set it uses, with this code (wenc over those lists),
+    and its dense score is F.
+  - The UL2 layout's pools and the one refit read F's lists.
+- **MultiHop-RAG** joins under the same rule once MHR1 has filed its package and e3v vectors. Its nodes are whole
+  articles, so most of them have many windows. No number is read before then.
+- **E5's storage forms** apply to the document vectors only; the windows are not stored.
+
+### 22.7 Rows and cost (estimates; the host's measured numbers replace them)
+
+- e6-selftest (CPU).
+- Per dataset:
+  - e6-vtop-<ds> (CPU, 4 threads): the pairs' scores, the spans, VS and G0.
+  - e6-wenc-<ds>: the GPU at 0.29 of the card, as E4's encodes; the KBs on the CPU.
+  - e6-read-<ds> (CPU): F, the reorder, GW and D1000.
+- e6-report.
+- SQuAD and MuSiQue run first, for GW. HotpotQA, 2Wiki, WebQSP and MetaQA wait on E4's first-stage read of e3v.
+- **Estimates:** minutes for SQuAD and MuSiQue. For HotpotQA and 2Wiki, 1-2 h of GPU each (a few million windows per
+  encoder). Memory up to 16 GB.
