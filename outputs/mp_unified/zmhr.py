@@ -9,6 +9,7 @@ zenc1b2, zd84, zul1, zap1 and zu2b are imported and, in this process only, point
     python outputs/mp_unified/zmhr.py frozen [--threads 4]         host GPU: the frozen arm into the package
     python outputs/mp_unified/zmhr.py vectors [--threads 1]        host CPU: zenc3v's fusion
     python outputs/mp_unified/zmhr.py fc [--threads 1]             host CPU: FC on every row
+    python outputs/mp_unified/zmhr.py cuts [--threads 1]           host CPU: which articles each window cut
     python outputs/mp_unified/zmhr.py first [--threads 4]          laptop: section 4
     python outputs/mp_unified/zmhr.py links [--threads 4]          laptop: section 5's families and stores
     python outputs/mp_unified/zmhr.py grade                        laptop: section 5's measures and call
@@ -398,6 +399,42 @@ def cmd_fc(a):
     return 0 if r["verdict"] == "PASS" else 3
 
 
+def cmd_cuts(a):
+    """Section 3's windows, per article: which articles each encoder cut. Token counts as zenc.encode_texts counts them
+    (the model's tokenizer, special tokens added, no truncation, against its max_seq_length); each count must equal the
+    encode's recorded `cut`. Host CPU (the parts' tokenizers are cached on the host only)."""
+    from transformers import AutoTokenizer
+    Z3, V = zmods()
+    point_zenc()
+    root = mhr_root()
+    texts = [x["text"] for x in nodes_of(root)]
+    rec = {"stage": "MHR1 cut articles", "declared_in": DOC + " section 3", "dataset": DS, "nodes": len(texts),
+           "cut_positions": {}, "limit": {}, "max_tokens": {}, "encode_cut": {}}
+    for enc in ("gtemodern", "granitesm", "frozen"):
+        if enc == "frozen":
+            from huggingface_hub import snapshot_download
+            rev = Path(snapshot_download(E.ENCODERS["frozen"]["repo"], local_files_only=True)).name
+            if rev != FROZEN_REV:
+                stop(f"the cached frozen snapshot is {rev}, not {FROZEN_REV}")
+            man = json.loads((root / DS / "embeddings" / "dense" / "docs" / "manifest.json").read_text(encoding="utf-8"))
+        else:
+            rev = Z3.pinned(enc)
+            man = json.loads((E.OUT / enc / DS / "docs" / "manifest.json").read_text(encoding="utf-8"))
+        tok = AutoTokenizer.from_pretrained(E.ENCODERS[enc]["repo"], revision=rev, local_files_only=True,
+                                            trust_remote_code=E.ENCODERS[enc].get("trust", False))
+        lim = int(man["encoder"]["max_seq_length"])
+        lens = np.asarray([len(x) for x in tok(texts, add_special_tokens=True, truncation=False)["input_ids"]], np.int64)
+        cp = np.flatnonzero(lens > lim)
+        if int(cp.size) != int(man["cut"]):
+            stop(f"{enc}: {cp.size} articles over {lim} tokens, its encode recorded {man['cut']} cut")
+        rec["cut_positions"][enc] = cp.tolist()
+        rec["limit"][enc], rec["max_tokens"][enc], rec["encode_cut"][enc] = lim, int(lens.max()), int(man["cut"])
+        log(f"{enc}: {cp.size} of {len(texts)} articles over {lim} tokens (max {lens.max()})")
+    rec.update({"utc": utc(), **code_sha()})
+    E.wjson(OUT / "cuts.json", rec)
+    return 0
+
+
 # ── section 4: the first stage ───────────────────────────────────────────────
 
 def coverage(top, golds, k):
@@ -476,7 +513,7 @@ def cmd_first(a):
         Q = np.concatenate([np.load(p).astype(np.float32) for p in E.vec_shards(root, arm, DS, "queries")])
         ids, sc, _ = E.search(Q, E.vec_shards(root, arm, DS, "docs"), k=n)
         lists[arm], scores[arm] = ids, sc
-        lists[f"{arm}+splade"] = E.rrf_top(ids, lists["splade"], 10)
+        lists[f"{arm}+splade"] = E.rrf_top(ids, lists["splade"], max(COV_K))      # every list n deep; RRF top 20
     import zap1 as Z
     types = np.asarray([q["question_type"] for q in qs])
     nby = json.loads((root / DS / "DATASET.json").read_text(encoding="utf-8"))["queries_by_split"]
@@ -490,15 +527,24 @@ def cmd_first(a):
         per[name] = m
     for arm in ARMS:
         per[arm]["rrf5"] = per[f"{arm}+splade"]["d5"]
-    # cut articles (e3v's window): from the parts' encode records
+    # cut articles (section 3's windows): outputs/mhr1/cuts.json, `zmhr.py cuts` (its counts equal the encodes')
+    cr = json.loads((OUT / "cuts.json").read_text(encoding="utf-8"))
+    cpos = {"e3v": sorted(set(cr["cut_positions"]["gtemodern"]) | set(cr["cut_positions"]["granitesm"])),
+            "frozen": cr["cut_positions"]["frozen"], "splade": list(range(n))}
     cut = {}
-    for e in ("gtemodern", "granitesm"):
-        mp = E.OUT / e / DS / "docs" / "shard_00000.json"
-        cut[e] = json.loads(mp.read_text(encoding="utf-8")).get("cut") if mp.is_file() else None
-    fman = json.loads((root / DS / "embeddings" / "dense" / "docs" / "manifest.json").read_text(encoding="utf-8"))
-    cut["frozen"] = fman.get("cut")
+    on_cut = {}
+    for arm, cp in cpos.items():
+        isc = np.zeros(n, bool)
+        isc[np.asarray(cp, np.int64)] = True
+        slots = isc[flat]
+        on_cut[arm] = np.asarray([isc[g].any() for g in golds])
+        cut[arm] = {"articles": int(isc.sum()), "gold_slots": int(slots.sum()), "gold_slots_pct": Z.pct(slots.mean()),
+                    "questions_with_a_cut_gold": int(on_cut[arm].sum())}
+    cut["cuts_json_sha256"] = E.sha256(OUT / "cuts.json")
     sel = {"all": np.ones(len(qs), bool), "test": split == "test",
-           **{t: types == t for t in sorted(set(types.tolist()))}, **{f"golds{k}": gt == k for k in (2, 3, 4)}}
+           **{t: types == t for t in sorted(set(types.tolist()))}, **{f"golds{k}": gt == k for k in (2, 3, 4)},
+           "a_gold_cut_by_e3v": on_cut["e3v"], "no_gold_cut_by_e3v": ~on_cut["e3v"]}
+    sel = {k: v for k, v in sel.items() if v.sum() > 0}
 
     def tab(mask):
         out = {}
@@ -508,7 +554,7 @@ def cmd_first(a):
                                    for k in per["e3v"] if k in per["frozen"]}
         return out
 
-    res ={s: {"questions": int(m.sum()), **tab(m)} for s, m in sel.items()}
+    res = {s: {"questions": int(m.sum()), **tab(m)} for s, m in sel.items()}
     head = res["all"]["e3v_minus_frozen"]
     fails = [{"cell": c, **head[c]} for c in ("d5", "rrf5") if head[c]["call"] == "BELOW"]
     call = "e3v HOLDS ON MULTIHOP-RAG" if not fails else "e3v LOSES ON MULTIHOP-RAG"
@@ -814,7 +860,7 @@ def selftest():
 
 def main(argv=None):
     p = argparse.ArgumentParser()
-    p.add_argument("cmd", choices=["selftest", "package", "splade", "encode", "frozen", "vectors", "fc", "first", "links",
+    p.add_argument("cmd", choices=["selftest", "package", "splade", "encode", "frozen", "vectors", "fc", "cuts", "first", "links",
                                    "grade", "report"])
     p.add_argument("--enc")
     p.add_argument("--threads", type=int, default=E.THREADS)
@@ -822,7 +868,7 @@ def main(argv=None):
     if a.cmd == "selftest":
         return selftest()
     return {"package": cmd_package, "splade": cmd_splade, "encode": cmd_encode, "frozen": cmd_frozen,
-            "vectors": cmd_vectors, "fc": cmd_fc, "first": cmd_first, "links": cmd_links, "grade": cmd_grade,
+            "vectors": cmd_vectors, "fc": cmd_fc, "cuts": cmd_cuts, "first": cmd_first, "links": cmd_links, "grade": cmd_grade,
             "report": cmd_report}[a.cmd](a)
 
 
