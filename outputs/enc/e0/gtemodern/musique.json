@@ -1,0 +1,21 @@
+{
+ "stage": "ENC E0",
+ "page": "docs/ENC_ENCODER_COMPARISON.md section 4",
+ "enc": "gtemodern",
+ "dataset": "musique",
+ "questions": 2417,
+ "read": {
+  "path": "outputs/screen/fits/scr-gnx-nx-s0/reads/musique__s1eval.npz",
+  "sha256": "3913f245512181735f1b4d38a5b4744c3934ca5d8bab190d47fc3aa71c0e36c7"
+ },
+ "threads": 8,
+ "search_s": 2.7,
+ "seconds": 7.4,
+ "recall": {
+  "d5": 0.442698,
+  "d20": 0.559681,
+  "d1000": 0.826886,
+  "rrf5": 0.476624
+ },
+ "npz_sha256": "a010406856dc71e8ec5d142a235a1908cdd9c7a64b2ddf0868e337d364ead836"
+}

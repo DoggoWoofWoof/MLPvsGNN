@@ -1481,3 +1481,33 @@ the whole corpus. Dense R@5, R@20 and R@1000, and RRF@5 with the record's SPLADE
   some minutes each). The GPU queue keeps the file's order, so they run after E2B's window encodes.
 - e0n-first-<arm>-<ds> (CPU, 8 threads; six rows), then e0n-report.
 - **Disk:** about 1.2 GB of vectors and 1.4 GB of downloads. The host had about 59 GB free at declaration.
+
+### 17.8 Report (20 Nov 2026, 13:15 IST): all three STRONG
+
+- **Gates:** GP passed for all three: the lowest float32-to-float16 cosine was 0.99999 or higher. G0c passed on every
+  shard, and no row was cut at 8,192 tokens. GR passed.
+- Encode time on the host GPU, all four sets: gtemodern 319 s, granite 320 s, granitesm 67 s.
+
+| arm | params / dim | SQuAD R@5 | MuSiQue R@5 | vs raw mpnet | vs mpnet V | vs qwen3e06 raw | vs frozen | call |
+|---|---|---|---|---|---|---|---|---|
+| gtemodern | 149M / 768 | 83.09 | 44.27 | +9.57 / +10.44 | +7.66 / +4.96 | +1.72 / +3.01 | -4.61 [-5.19, -4.02] / -1.45 [-2.38, -0.57] | STRONG |
+| granite | 149M / 768 | 77.38 | 44.63 | +3.86 / +10.80 | +1.95 / +5.32 | -3.99 / +3.37 | -10.32 [-10.97, -9.65] / -1.09 [-2.12, -0.13] | STRONG |
+| granitesm | 47M / 384 | 76.12 | 43.89 | +2.60 / +10.06 | +0.69 / +4.59 | -5.25 / +2.63 | -11.57 [-12.26, -10.90] / -1.82 [-2.81, -0.87] | STRONG |
+
+- Points, SQuAD / MuSiQue. Every interval against raw mpnet and against mpnet V starts above 0 (granitesm against V on
+  SQuAD: [+0.02, +1.36]). References: frozen 87.69 / 45.72, raw mpnet 73.52 / 33.83, qwen3e06 81.37 / 41.26, mpnet V
+  75.43 / 39.31.
+- **gtemodern beats qwen3e06 on both carves** at a quarter of its parameters (149M against 596M). Its raw gap to frozen
+  (-4.61 / -1.45) clears mpnet's bars for both deciding models (zrckpn -5.12 / -3.11, GNX -5.41 / -2.31), as a pointer
+  only. It does not clear qwen3e06's tighter MuSiQue bars (-1.14 and -1.25).
+- **On MuSiQue all three come close to frozen:** -1.09 to -1.82 points. By hop count, gtemodern is above frozen on
+  4-hop questions (25.93 against 23.58), and granite is level on 3-hop (41.40 against 41.45).
+- **The SQuAD gap is order, as for mpnet:** 90 to 93% of the gold gap at 5 is inside the top 1,000 (gtemodern: 547 golds
+  at 5, 57 at 1,000). On MuSiQue the gap at 1,000 is larger than at 5 (gtemodern 308 against 63; granite 97 against 52):
+  the deep reach still trails frozen's (R@1000 82.69, 85.49 and 84.27, against 87.25).
+- Beside: RRF@5 gtemodern 88.39 / 47.66. That is above frozen on MuSiQue (47.34), and 2.14 points under it on SQuAD
+  (90.53).
+- **For comparison, from E2B (section 16, its grid read, before E2B's report):** qwen3e06's windows recipe F reads 87.08
+  / 43.76, and its one-vector V 82.01 / 42.50. Windows took qwen3e06 within 0.61 points of frozen on SQuAD.
+- **What follows (17.6):** E2B's recipe search on the new arms, gtemodern first, is declared next (section 18). Nothing
+  was trained. The user decides D101.

@@ -1,0 +1,21 @@
+{
+ "stage": "ENC E0",
+ "page": "docs/ENC_ENCODER_COMPARISON.md section 4",
+ "enc": "granitesm",
+ "dataset": "squad",
+ "questions": 11873,
+ "read": {
+  "path": "outputs/screen/fits/scr-gnx-nx-s0/reads/squad__s1eval.npz",
+  "sha256": "9629d9a85aa3fafb2a5bed389429e770d912445a6b35d7a288f3f3d965865e85"
+ },
+ "threads": 8,
+ "search_s": 2.8,
+ "seconds": 24.2,
+ "recall": {
+  "d5": 0.761223,
+  "d20": 0.872484,
+  "d1000": 0.989051,
+  "rrf5": 0.842163
+ },
+ "npz_sha256": "b61c77a17673beab0815eab314d867d4cf776511e76cbc81c651102d08b55367"
+}

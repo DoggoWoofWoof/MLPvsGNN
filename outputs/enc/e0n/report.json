@@ -1,0 +1,563 @@
+{
+ "stage": "ENC E0N",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 17",
+ "arms": {
+  "gtemodern": {
+   "call": "STRONG",
+   "vs": {
+    "mpnet": {
+     "squad": {
+      "pts": 9.57,
+      "ci": [
+       8.89,
+       10.28
+      ],
+      "call": "ABOVE"
+     },
+     "musique": {
+      "pts": 10.44,
+      "ci": [
+       9.39,
+       11.48
+      ],
+      "call": "ABOVE"
+     }
+    },
+    "mpnet-V": {
+     "squad": {
+      "pts": 7.66,
+      "ci": [
+       7.01,
+       8.32
+      ],
+      "call": "ABOVE"
+     },
+     "musique": {
+      "pts": 4.96,
+      "ci": [
+       3.97,
+       6.0
+      ],
+      "call": "ABOVE"
+     }
+    },
+    "qwen3e06": {
+     "squad": {
+      "pts": 1.72,
+      "ci": [
+       1.12,
+       2.28
+      ],
+      "call": "ABOVE"
+     },
+     "musique": {
+      "pts": 3.01,
+      "ci": [
+       2.12,
+       3.88
+      ],
+      "call": "ABOVE"
+     }
+    },
+    "frozen": {
+     "squad": {
+      "pts": -4.61,
+      "ci": [
+       -5.19,
+       -4.02
+      ],
+      "call": "BELOW"
+     },
+     "musique": {
+      "pts": -1.45,
+      "ci": [
+       -2.38,
+       -0.57
+      ],
+      "call": "BELOW"
+     }
+    }
+   },
+   "recall": {
+    "squad": {
+     "d5": 83.09,
+     "d20": 91.43,
+     "d1000": 99.28,
+     "rrf5": 88.39
+    },
+    "musique": {
+     "d5": 44.27,
+     "d20": 55.97,
+     "d1000": 82.69,
+     "rrf5": 47.66
+    }
+   },
+   "order": {
+    "squad": {
+     "gold_gap_5": 547,
+     "gold_gap_1000": 57,
+     "order_share": 0.896
+    },
+    "musique": {
+     "gold_gap_5": 63,
+     "gold_gap_1000": 308,
+     "order_share": -3.889
+    }
+   },
+   "hops_musique": {
+    "2": 52.88,
+    "3": 39.87,
+    "4": 25.93
+   },
+   "mean_gap_to_frozen": -3.03,
+   "clears_bars": {
+    "mpnet": {
+     "zrckpn": true,
+     "gnx": true
+    },
+    "qwen3e06": {
+     "zrckpn": false,
+     "gnx": false
+    }
+   },
+   "cost": {
+    "encode_seconds": 319.1,
+    "cut": 0
+   },
+   "params": 149014272,
+   "dim": 768
+  },
+  "granite": {
+   "call": "STRONG",
+   "vs": {
+    "mpnet": {
+     "squad": {
+      "pts": 3.86,
+      "ci": [
+       3.18,
+       4.53
+      ],
+      "call": "ABOVE"
+     },
+     "musique": {
+      "pts": 10.8,
+      "ci": [
+       9.78,
+       11.8
+      ],
+      "call": "ABOVE"
+     }
+    },
+    "mpnet-V": {
+     "squad": {
+      "pts": 1.95,
+      "ci": [
+       1.3,
+       2.59
+      ],
+      "call": "ABOVE"
+     },
+     "musique": {
+      "pts": 5.32,
+      "ci": [
+       4.35,
+       6.26
+      ],
+      "call": "ABOVE"
+     }
+    },
+    "qwen3e06": {
+     "squad": {
+      "pts": -3.99,
+      "ci": [
+       -4.62,
+       -3.38
+      ],
+      "call": "BELOW"
+     },
+     "musique": {
+      "pts": 3.37,
+      "ci": [
+       2.46,
+       4.27
+      ],
+      "call": "ABOVE"
+     }
+    },
+    "frozen": {
+     "squad": {
+      "pts": -10.32,
+      "ci": [
+       -10.97,
+       -9.65
+      ],
+      "call": "BELOW"
+     },
+     "musique": {
+      "pts": -1.09,
+      "ci": [
+       -2.12,
+       -0.13
+      ],
+      "call": "BELOW"
+     }
+    }
+   },
+   "recall": {
+    "squad": {
+     "d5": 77.38,
+     "d20": 87.9,
+     "d1000": 98.97,
+     "rrf5": 85.16
+    },
+    "musique": {
+     "d5": 44.63,
+     "d20": 58.03,
+     "d1000": 85.49,
+     "rrf5": 46.49
+    }
+   },
+   "order": {
+    "squad": {
+     "gold_gap_5": 1225,
+     "gold_gap_1000": 93,
+     "order_share": 0.924
+    },
+    "musique": {
+     "gold_gap_5": 52,
+     "gold_gap_1000": 97,
+     "order_share": -0.865
+    }
+   },
+   "hops_musique": {
+    "2": 53.35,
+    "3": 41.4,
+    "4": 23.7
+   },
+   "mean_gap_to_frozen": -5.71,
+   "clears_bars": {
+    "mpnet": {
+     "zrckpn": false,
+     "gnx": false
+    },
+    "qwen3e06": {
+     "zrckpn": false,
+     "gnx": false
+    }
+   },
+   "cost": {
+    "encode_seconds": 320.2,
+    "cut": 0
+   },
+   "params": 149014272,
+   "dim": 768
+  },
+  "granitesm": {
+   "call": "STRONG",
+   "vs": {
+    "mpnet": {
+     "squad": {
+      "pts": 2.6,
+      "ci": [
+       1.9,
+       3.34
+      ],
+      "call": "ABOVE"
+     },
+     "musique": {
+      "pts": 10.06,
+      "ci": [
+       9.02,
+       11.07
+      ],
+      "call": "ABOVE"
+     }
+    },
+    "mpnet-V": {
+     "squad": {
+      "pts": 0.69,
+      "ci": [
+       0.02,
+       1.36
+      ],
+      "call": "ABOVE"
+     },
+     "musique": {
+      "pts": 4.59,
+      "ci": [
+       3.66,
+       5.52
+      ],
+      "call": "ABOVE"
+     }
+    },
+    "qwen3e06": {
+     "squad": {
+      "pts": -5.25,
+      "ci": [
+       -5.9,
+       -4.62
+      ],
+      "call": "BELOW"
+     },
+     "musique": {
+      "pts": 2.63,
+      "ci": [
+       1.79,
+       3.44
+      ],
+      "call": "ABOVE"
+     }
+    },
+    "frozen": {
+     "squad": {
+      "pts": -11.57,
+      "ci": [
+       -12.26,
+       -10.9
+      ],
+      "call": "BELOW"
+     },
+     "musique": {
+      "pts": -1.82,
+      "ci": [
+       -2.81,
+       -0.87
+      ],
+      "call": "BELOW"
+     }
+    }
+   },
+   "recall": {
+    "squad": {
+     "d5": 76.12,
+     "d20": 87.25,
+     "d1000": 98.91,
+     "rrf5": 84.22
+    },
+    "musique": {
+     "d5": 43.89,
+     "d20": 56.15,
+     "d1000": 84.27,
+     "rrf5": 46.21
+    }
+   },
+   "order": {
+    "squad": {
+     "gold_gap_5": 1374,
+     "gold_gap_1000": 101,
+     "order_share": 0.926
+    },
+    "musique": {
+     "gold_gap_5": 98,
+     "gold_gap_1000": 166,
+     "order_share": -0.694
+    }
+   },
+   "hops_musique": {
+    "2": 52.8,
+    "3": 39.96,
+    "4": 23.77
+   },
+   "mean_gap_to_frozen": -6.7,
+   "clears_bars": {
+    "mpnet": {
+     "zrckpn": false,
+     "gnx": false
+    },
+    "qwen3e06": {
+     "zrckpn": false,
+     "gnx": false
+    }
+   },
+   "cost": {
+    "encode_seconds": 67.0,
+    "cut": 0
+   },
+   "params": 47662464,
+   "dim": 384
+  }
+ },
+ "refs": {
+  "frozen": {
+   "squad": {
+    "d5": 87.69,
+    "d20": 94.7,
+    "d1000": 99.76,
+    "rrf5": 90.53
+   },
+   "musique": {
+    "d5": 45.72,
+    "d20": 59.91,
+    "d1000": 87.25,
+    "rrf5": 47.34
+   }
+  },
+  "mpnet": {
+   "squad": {
+    "d5": 73.52,
+    "d20": 86.45,
+    "d1000": 98.73,
+    "rrf5": 83.98
+   },
+   "musique": {
+    "d5": 33.83,
+    "d20": 47.07,
+    "d1000": 79.97,
+    "rrf5": 41.24
+   }
+  },
+  "qwen3e06": {
+   "squad": {
+    "d5": 81.37,
+    "d20": 90.52,
+    "d1000": 99.15,
+    "rrf5": 87.17
+   },
+   "musique": {
+    "d5": 41.26,
+    "d20": 53.98,
+    "d1000": 83.6,
+    "rrf5": 44.98
+   }
+  },
+  "mpnet-V": {
+   "squad": {
+    "d5": 75.43,
+    "d20": 86.97,
+    "d1000": 98.85,
+    "rrf5": 84.57
+   },
+   "musique": {
+    "d5": 39.31,
+    "d20": 51.66,
+    "d1000": 81.08,
+    "rrf5": 43.92
+   }
+  }
+ },
+ "bars": {
+  "mpnet": {
+   "zrckpn": {
+    "squad": -5.12,
+    "musique": -3.11
+   },
+   "gnx": {
+    "squad": -5.41,
+    "musique": -2.31
+   }
+  },
+  "qwen3e06": {
+   "zrckpn": {
+    "squad": -3.79,
+    "musique": -1.14
+   },
+   "gnx": {
+    "squad": -4.25,
+    "musique": -1.25
+   }
+  }
+ },
+ "refs_hops_musique": {
+  "frozen": {
+   "2": 55.47,
+   "3": 41.45,
+   "4": 23.58
+  },
+  "mpnet": {
+   "2": 43.97,
+   "3": 27.98,
+   "4": 13.46
+  },
+  "qwen3e06": {
+   "2": 50.2,
+   "3": 37.76,
+   "4": 20.19
+  },
+  "mpnet-V": {
+   "2": 47.48,
+   "3": 36.62,
+   "4": 19.07
+  }
+ },
+ "order_of_next": [
+  "gtemodern",
+  "granite",
+  "granitesm"
+ ],
+ "gp": {
+  "gtemodern": {
+   "squad docs": {
+    "rows": 256,
+    "min_cos": 0.999997,
+    "mean_cos": 0.999999
+   },
+   "squad queries": {
+    "rows": 256,
+    "min_cos": 0.999998,
+    "mean_cos": 0.999999
+   },
+   "musique docs": {
+    "rows": 256,
+    "min_cos": 0.999998,
+    "mean_cos": 0.999999
+   },
+   "musique queries": {
+    "rows": 256,
+    "min_cos": 0.999997,
+    "mean_cos": 0.999999
+   }
+  },
+  "granite": {
+   "squad docs": {
+    "rows": 256,
+    "min_cos": 0.999997,
+    "mean_cos": 0.999999
+   },
+   "squad queries": {
+    "rows": 256,
+    "min_cos": 0.99999,
+    "mean_cos": 0.999999
+   },
+   "musique docs": {
+    "rows": 256,
+    "min_cos": 0.999997,
+    "mean_cos": 0.999999
+   },
+   "musique queries": {
+    "rows": 256,
+    "min_cos": 0.999996,
+    "mean_cos": 0.999999
+   }
+  },
+  "granitesm": {
+   "squad docs": {
+    "rows": 256,
+    "min_cos": 0.999999,
+    "mean_cos": 1.0
+   },
+   "squad queries": {
+    "rows": 256,
+    "min_cos": 0.999999,
+    "mean_cos": 1.0
+   },
+   "musique docs": {
+    "rows": 256,
+    "min_cos": 0.999999,
+    "mean_cos": 1.0
+   },
+   "musique queries": {
+    "rows": 256,
+    "min_cos": 0.999999,
+    "mean_cos": 1.0
+   }
+  }
+ },
+ "code_sha256": {
+  "outputs/mp_unified/zenc.py": "0416ecefcb9a803549d2dfa9aef844d66f4c05e2a5b26821930c7f701f32eeb7",
+  "outputs/mp_unified/zenc2m.py": "cf5bd755f39a8149924ae1f42ddf88617979b2e8d2cd1c7161d1964da654cf4f",
+  "outputs/mp_unified/zenc2b.py": "f15a7afc4d3442895ac17d1c1bbef40e5a7c0a12be4bb4d29f21828f8690c4c4",
+  "outputs/mp_unified/zenc3.py": "b60460b505d72cd3737760d4f4493b6e4c37962f0a9edba905436e78da05ff0a"
+ },
+ "utc": "2026-11-20T07:33:54Z"
+}

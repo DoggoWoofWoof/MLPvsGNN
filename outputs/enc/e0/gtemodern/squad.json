@@ -1,0 +1,21 @@
+{
+ "stage": "ENC E0",
+ "page": "docs/ENC_ENCODER_COMPARISON.md section 4",
+ "enc": "gtemodern",
+ "dataset": "squad",
+ "questions": 11873,
+ "read": {
+  "path": "outputs/screen/fits/scr-gnx-nx-s0/reads/squad__s1eval.npz",
+  "sha256": "9629d9a85aa3fafb2a5bed389429e770d912445a6b35d7a288f3f3d965865e85"
+ },
+ "threads": 8,
+ "search_s": 3.3,
+ "seconds": 23.4,
+ "recall": {
+  "d5": 0.830877,
+  "d20": 0.914259,
+  "d1000": 0.992757,
+  "rrf5": 0.883854
+ },
+ "npz_sha256": "bf22def1b2b033d985764f15b37184d59845dfa58f0cf33ceed4559cdac576c4"
+}

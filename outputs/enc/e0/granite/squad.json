@@ -1,0 +1,21 @@
+{
+ "stage": "ENC E0",
+ "page": "docs/ENC_ENCODER_COMPARISON.md section 4",
+ "enc": "granite",
+ "dataset": "squad",
+ "questions": 11873,
+ "read": {
+  "path": "outputs/screen/fits/scr-gnx-nx-s0/reads/squad__s1eval.npz",
+  "sha256": "9629d9a85aa3fafb2a5bed389429e770d912445a6b35d7a288f3f3d965865e85"
+ },
+ "threads": 8,
+ "search_s": 4.2,
+ "seconds": 26.6,
+ "recall": {
+  "d5": 0.773772,
+  "d20": 0.878969,
+  "d1000": 0.989725,
+  "rrf5": 0.851596
+ },
+ "npz_sha256": "d4cdf825834dc962640b6170eafe3128e6a70984691072606ce268cb4e96c8ad"
+}

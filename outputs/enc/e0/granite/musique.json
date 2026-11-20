@@ -1,0 +1,21 @@
+{
+ "stage": "ENC E0",
+ "page": "docs/ENC_ENCODER_COMPARISON.md section 4",
+ "enc": "granite",
+ "dataset": "musique",
+ "questions": 2417,
+ "read": {
+  "path": "outputs/screen/fits/scr-gnx-nx-s0/reads/musique__s1eval.npz",
+  "sha256": "3913f245512181735f1b4d38a5b4744c3934ca5d8bab190d47fc3aa71c0e36c7"
+ },
+ "threads": 8,
+ "search_s": 3.3,
+ "seconds": 10.3,
+ "recall": {
+  "d5": 0.446283,
+  "d20": 0.580334,
+  "d1000": 0.854917,
+  "rrf5": 0.464901
+ },
+ "npz_sha256": "ab50e3c724ab9168cdfb478a7ba4e680b5362cadec18ccb7d598ff46d67be78c"
+}

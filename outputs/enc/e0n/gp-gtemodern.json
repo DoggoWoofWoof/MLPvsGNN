@@ -1,0 +1,36 @@
+{
+ "stage": "ENC E0N",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 17",
+ "enc": "gtemodern",
+ "revision": "e7f32e3c00f91d699e8c43b53106206bcc72bb22",
+ "min_cos_bar": 0.99,
+ "cells": {
+  "squad docs": {
+   "rows": 256,
+   "min_cos": 0.999997,
+   "mean_cos": 0.999999
+  },
+  "squad queries": {
+   "rows": 256,
+   "min_cos": 0.999998,
+   "mean_cos": 0.999999
+  },
+  "musique docs": {
+   "rows": 256,
+   "min_cos": 0.999998,
+   "mean_cos": 0.999999
+  },
+  "musique queries": {
+   "rows": 256,
+   "min_cos": 0.999997,
+   "mean_cos": 0.999999
+  }
+ },
+ "pass": true,
+ "code_sha256": {
+  "outputs/mp_unified/zenc.py": "0416ecefcb9a803549d2dfa9aef844d66f4c05e2a5b26821930c7f701f32eeb7",
+  "outputs/mp_unified/zenc2m.py": "cf5bd755f39a8149924ae1f42ddf88617979b2e8d2cd1c7161d1964da654cf4f",
+  "outputs/mp_unified/zenc2b.py": "f15a7afc4d3442895ac17d1c1bbef40e5a7c0a12be4bb4d29f21828f8690c4c4",
+  "outputs/mp_unified/zenc3.py": "b60460b505d72cd3737760d4f4493b6e4c37962f0a9edba905436e78da05ff0a"
+ }
+}
