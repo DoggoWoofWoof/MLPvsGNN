@@ -2093,3 +2093,7 @@ Code: outputs/mp_unified/zenc6.py. Outputs: outputs/enc/e6/. Nothing trains, and
 - SQuAD and MuSiQue run first, for GW. HotpotQA, 2Wiki, WebQSP and MetaQA wait on E4's first-stage read of e3v.
 - **Estimates:** minutes for SQuAD and MuSiQue. For HotpotQA and 2Wiki, 1-2 h of GPU each (a few million windows per
   encoder). Memory up to 16 GB.
+- **Rows changed (04:54 IST, before any F number):** WebQSP's nodes are not all one window. Its vtop listed
+  673,032 nodes, 21,339 of them with two or more windows (48,099 windows), so its CPU wenc stopped as built
+  ("no GPU"). It runs again as `e6-wenc-webqsp-g` at 0.29 of the card, and e6-read-webqsp waits on it. MetaQA's
+  listed nodes are all one window (43,133 of 43,133), so F = V there by construction.
