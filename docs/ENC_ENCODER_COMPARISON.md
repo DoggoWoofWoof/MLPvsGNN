@@ -1482,7 +1482,7 @@ the whole corpus. Dense R@5, R@20 and R@1000, and RRF@5 with the record's SPLADE
 - e0n-first-<arm>-<ds> (CPU, 8 threads; six rows), then e0n-report.
 - **Disk:** about 1.2 GB of vectors and 1.4 GB of downloads. The host had about 59 GB free at declaration.
 
-### 17.8 Report (20 Nov 2026, 13:15 IST): all three STRONG
+### 17.8 Report (20 Nov 2026, 13:08 IST): all three STRONG
 
 - **Gates:** GP passed for all three: the lowest float32-to-float16 cosine was 0.99999 or higher. G0c passed on every
   shard, and no row was cut at 8,192 tokens. GR passed.
