@@ -1,0 +1,44 @@
+{
+ "dataset": "squad",
+ "enc": "e3v",
+ "declared_in": "docs/UL2_LAYOUT_ON_E3V.md",
+ "nodes": 20233,
+ "nodes_sha256": "34ac47757e0080f0e2eb6c679009a6090ca97be39d576307ba7281db730c1a8b",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "win": 8,
+ "cap": 25,
+ "dfmax": 100000,
+ "knn": {
+  "file": "outputs/enc/e2/knn/e3v/squad.npz",
+  "npz_sha256": "ee1a8df023af0705d89dbb09f739f3f298e0053da36b802169ed97b801c1cae4"
+ },
+ "vectors": {
+  "shards": 1,
+  "dim": 1152,
+  "dtype": "float16",
+  "manifest_sha256": "dc9bda57edde0b4440c8f8b1cfbe3ab28e7aeffa3b5079f2984db4c23e2435d6"
+ },
+ "inputs": {
+  "ner_npz_sha256": "e8b061c3dc417d7c481e57d9f360dd98c825049d62c61958ca0fed655fa57a22",
+  "knn_npz_sha256": "fee9cca5435668378d2a139614cec141d0b4977991801a004c8ca43ee8ad796f",
+  "w2_s_npz_sha256": "3f44314052d91556d6d694cb97fc5319dcf84e80ef68790ec9a33800286880c5",
+  "f0t_npz_sha256": "04703c6d42e9d2717fc1a3e659d9ef6d376d85dd2bd2e410904a7573b09157e0",
+  "names_npz_sha256": "082a4c61f0563178da69802dc029008ba39becf12993bd6156ec66a1bd73f906"
+ },
+ "written_entries": 140771,
+ "keys_written": 12720,
+ "ntc_keys": 11375,
+ "nt1_keys": 1345,
+ "ntc_pairs": 100108,
+ "nt1_pairs": 55061,
+ "npz_sha256": "d75072266d61b9fb201337872140df98438274002db4be33404b9c58600e5d19",
+ "seconds": 13.7,
+ "build_sha256": "dd4687d4708b4bf2889788ba64749dc6bd5050e23c3a32ebc64dbfd7b2fec404",
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+ "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}

@@ -1,0 +1,1371 @@
+{
+ "dataset": "musique",
+ "declared_in": "docs/UL2_LAYOUT_ON_E3V.md",
+ "nodes": 117534,
+ "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "kb": false,
+ "versions": [
+  "RK"
+ ],
+ "inputs": {
+  "ner_npz_sha256": "f294708600750c48eae9e32d0895d517ac3a8b5d048c736a70e9a566af2fe9c6",
+  "knn_npz_sha256": "6020ac7e0b6773e64866b5e942dc0e02c3b704615ced8de4d557aa543221ef5b",
+  "w2_s_npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+  "f0t_npz_sha256": "a0cea3c450f4a8364d202d7f21fe949e288f2ed0ca325aadea199f7ed2a4eebc",
+  "names_npz_sha256": "279d4b6ff3a2d5e3fbbab9071bcc93328167da1c5d19e805c3a9c5ad7a8f9cda"
+ },
+ "knn_e3v": {
+  "file": "outputs/enc/e1b2/knn/e3v/musique.npz",
+  "npz_sha256": "cab52dd1bfb99a908fbb7c020174b7803f611f178e748068b2c0bd15a303c6fd"
+ },
+ "h": {
+  "frozen": {
+   "npz_sha256": "d22234c635c083cc13ffe9d647d8c501611db8317c54f123ddeacd7567339f68",
+   "sizes": {
+    "H3": 269034,
+    "H5": 433566,
+    "H10": 833094,
+    "HM10": 258798,
+    "HK1": 280098,
+    "HK2": 525427
+   },
+   "flagged_rows": {
+    "RK": {
+     "rows": 117534,
+     "flagged": 0
+    }
+   },
+   "pass": {
+    "keys": 3017,
+    "skip_le": 25,
+    "keys_skipped": 83957,
+    "entries": 404849,
+    "sum_df2": 858549467,
+    "hub_keys": 3017,
+    "keys_over_dfmax": 0,
+    "threads": 8,
+    "offered": 9414509,
+    "merges": 1,
+    "seconds_pass": 20.0,
+    "hk_rows": 398805,
+    "truncated_rows": 108632
+   },
+   "gate_GH": {
+    "union_pairs": 3387597,
+    "cells": [
+     {
+      "carve": "s1sel",
+      "kind": "GP",
+      "k": 3,
+      "H_new": 23,
+      "hfo_H_new": 23,
+      "near_ties": 8,
+      "pass": true
+     },
+     {
+      "carve": "s1sel",
+      "kind": "GP",
+      "k": 5,
+      "H_new": 33,
+      "hfo_H_new": 33,
+      "near_ties": 7,
+      "pass": true
+     },
+     {
+      "carve": "s1sel",
+      "kind": "GP",
+      "k": 10,
+      "H_new": 59,
+      "hfo_H_new": 59,
+      "near_ties": 10,
+      "pass": true
+     },
+     {
+      "carve": "s1sel",
+      "kind": "CH",
+      "k": 3,
+      "H_new": 15,
+      "hfo_H_new": 15,
+      "near_ties": 5,
+      "pass": true
+     },
+     {
+      "carve": "s1sel",
+      "kind": "CH",
+      "k": 5,
+      "H_new": 25,
+      "hfo_H_new": 25,
+      "near_ties": 6,
+      "pass": true
+     },
+     {
+      "carve": "s1sel",
+      "kind": "CH",
+      "k": 10,
+      "H_new": 46,
+      "hfo_H_new": 46,
+      "near_ties": 7,
+      "pass": true
+     },
+     {
+      "carve": "s1eval",
+      "kind": "GP",
+      "k": 3,
+      "H_new": 62,
+      "hfo_H_new": 62,
+      "near_ties": 30,
+      "pass": true
+     },
+     {
+      "carve": "s1eval",
+      "kind": "GP",
+      "k": 5,
+      "H_new": 91,
+      "hfo_H_new": 91,
+      "near_ties": 20,
+      "pass": true
+     },
+     {
+      "carve": "s1eval",
+      "kind": "GP",
+      "k": 10,
+      "H_new": 215,
+      "hfo_H_new": 215,
+      "near_ties": 67,
+      "pass": true
+     },
+     {
+      "carve": "s1eval",
+      "kind": "CH",
+      "k": 3,
+      "H_new": 58,
+      "hfo_H_new": 58,
+      "near_ties": 29,
+      "pass": true
+     },
+     {
+      "carve": "s1eval",
+      "kind": "CH",
+      "k": 5,
+      "H_new": 83,
+      "hfo_H_new": 83,
+      "near_ties": 17,
+      "pass": true
+     },
+     {
+      "carve": "s1eval",
+      "kind": "CH",
+      "k": 10,
+      "H_new": 169,
+      "hfo_H_new": 169,
+      "near_ties": 60,
+      "pass": true
+     }
+    ],
+    "verdict": "PASS"
+   }
+  },
+  "e3v": {
+   "npz_sha256": "1f2a2c70fd28ac3f72a721d2e7112f5c245876555318a8e9bb52b14331cca7d6",
+   "sizes": {
+    "H3": 266647,
+    "H5": 429747,
+    "H10": 826642,
+    "HM10": 265292,
+    "HK1": 281823,
+    "HK2": 529407
+   },
+   "flagged_rows": {
+    "RK": {
+     "rows": 117534,
+     "flagged": 0
+    }
+   },
+   "pass": {
+    "keys": 3017,
+    "skip_le": 25,
+    "keys_skipped": 83957,
+    "entries": 404849,
+    "sum_df2": 858549467,
+    "hub_keys": 3017,
+    "keys_over_dfmax": 0,
+    "threads": 8,
+    "offered": 9414810,
+    "merges": 1,
+    "seconds_pass": 20.9,
+    "hk_rows": 398809,
+    "truncated_rows": 108631
+   }
+  }
+ },
+ "families": {
+  "K": 265366,
+  "W2_S": 2343920,
+  "CN_all": 931069,
+  "F0T": 973013,
+  "TITLE": 41944,
+  "K_e3v": 263122,
+  "H5_frozen": 433566,
+  "H5_e3v": 429747
+ },
+ "sizes": {
+  "D83": {
+   "RK": 3387597
+  },
+  "REC": {
+   "RK": 3387597
+  },
+  "L2f": {
+   "RK": 3821163
+  },
+  "L2e": {
+   "RK": 3818331
+  }
+ },
+ "held": {
+  "D83": {
+   "RK": {
+    "R_parts": {
+     "W2_S": 2343920,
+     "F0T": 973013
+    },
+    "K_in": 265366,
+    "S": 0,
+    "R": 3209654,
+    "K": 177943,
+    "K_removed_in_R": 87423,
+    "union": 3387597
+   }
+  },
+  "REC": {
+   "RK": {
+    "R_parts": {
+     "W2_S": 2343920,
+     "F0T": 973013
+    },
+    "K_in": 265366,
+    "S": 0,
+    "R": 3209654,
+    "K": 177943,
+    "K_removed_in_R": 87423,
+    "union": 3387597
+   }
+  },
+  "L2e": {
+   "RK": {
+    "R_parts": {
+     "W2_S": 2343920,
+     "F0T": 973013,
+     "H": 429747
+    },
+    "K_in": 263122,
+    "S": 0,
+    "R": 3639401,
+    "K": 178930,
+    "K_removed_in_R": 84192,
+    "union": 3818331
+   }
+  }
+ },
+ "carves": {
+  "s1sel": {
+   "questions": 1534,
+   "questions_npz_sha256": "0c3d07208f7cbfe263038ce65600020068e91b083e7a1a84a8b22a5f1e1187e6",
+   "slots": {
+    "GP": 3783,
+    "CH": 2530
+   },
+   "RK": {
+    "GP": {
+     "arms": {
+      "D83": {
+       "linked": 1120,
+       "share": 29.61
+      },
+      "REC": {
+       "linked": 1120,
+       "share": 29.61
+      },
+      "L2f": {
+       "linked": 1153,
+       "share": 30.48
+      },
+      "L2e": {
+       "linked": 1165,
+       "share": 30.8
+      }
+     },
+     "contrasts": {
+      "L2e-REC": {
+       "diff": 1.19,
+       "lo": 0.85,
+       "hi": 1.57,
+       "call": "ABOVE"
+      },
+      "L2f-REC": {
+       "diff": 0.87,
+       "lo": 0.59,
+       "hi": 1.17,
+       "call": "ABOVE"
+      },
+      "L2e-L2f": {
+       "diff": 0.32,
+       "lo": 0.03,
+       "hi": 0.64,
+       "call": "ABOVE"
+      },
+      "L2e-D83": {
+       "diff": 1.19,
+       "lo": 0.85,
+       "hi": 1.57,
+       "call": "ABOVE"
+      },
+      "REC-D83": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      }
+     },
+     "price_vs_REC": {
+      "D83": null,
+      "L2f": 13138.4,
+      "L2e": 9571.9
+     },
+     "labels_L2e": [
+      {
+       "label": "R.name_comention",
+       "pairs": 931069,
+       "slots": 694,
+       "alone": 417
+      },
+      {
+       "label": "R.mention",
+       "pairs": 2343920,
+       "slots": 626,
+       "alone": 353
+      },
+      {
+       "label": "K.knn",
+       "pairs": 263122,
+       "slots": 222,
+       "alone": 26
+      },
+      {
+       "label": "R.hub",
+       "pairs": 429747,
+       "slots": 37,
+       "alone": 37
+      },
+      {
+       "label": "R.title_comention",
+       "pairs": 41944,
+       "slots": 37,
+       "alone": 0
+      }
+     ],
+     "H_e3v": {
+      "new": 37,
+      "pairs_added": 429747
+     },
+     "part_b": {
+      "H10": {
+       "new": 27,
+       "pairs_added": 396895,
+       "price": 14699.8,
+       "gain": {
+        "diff": 0.71,
+        "lo": 0.46,
+        "hi": 0.99,
+        "call": "ABOVE"
+       }
+      },
+      "HM": {
+       "new": 6,
+       "pairs_added": 46404,
+       "price": 7734.0,
+       "gain": {
+        "diff": 0.16,
+        "lo": 0.05,
+        "hi": 0.3,
+        "call": "ABOVE"
+       }
+      },
+      "HK1": {
+       "new": 11,
+       "pairs_added": 101748,
+       "price": 9249.8,
+       "gain": {
+        "diff": 0.29,
+        "lo": 0.13,
+        "hi": 0.48,
+        "call": "ABOVE"
+       }
+      },
+      "HK2": {
+       "new": 31,
+       "pairs_added": 247459,
+       "price": 7982.5,
+       "gain": {
+        "diff": 0.82,
+        "lo": 0.55,
+        "hi": 1.12,
+        "call": "ABOVE"
+       }
+      },
+      "NTc": {
+       "new": 24,
+       "pairs_added": 484010,
+       "price": 20167.1,
+       "gain": {
+        "diff": 0.63,
+        "lo": 0.39,
+        "hi": 0.91,
+        "call": "ABOVE"
+       }
+      },
+      "NT1": {
+       "new": 24,
+       "pairs_added": 376603,
+       "price": 15691.8,
+       "gain": {
+        "diff": 0.63,
+        "lo": 0.39,
+        "hi": 0.91,
+        "call": "ABOVE"
+       }
+      }
+     }
+    },
+    "CC": {
+     "D83": {
+      "2": {
+       "questions": 795,
+       "connected": 255,
+       "share": 32.08
+      },
+      "3": {
+       "questions": 482,
+       "connected": 98,
+       "share": 20.33
+      },
+      "4": {
+       "questions": 257,
+       "connected": 19,
+       "share": 7.39
+      },
+      "all": {
+       "questions": 1534,
+       "connected": 372,
+       "share": 24.25
+      }
+     },
+     "REC": {
+      "2": {
+       "questions": 795,
+       "connected": 255,
+       "share": 32.08
+      },
+      "3": {
+       "questions": 482,
+       "connected": 98,
+       "share": 20.33
+      },
+      "4": {
+       "questions": 257,
+       "connected": 19,
+       "share": 7.39
+      },
+      "all": {
+       "questions": 1534,
+       "connected": 372,
+       "share": 24.25
+      }
+     },
+     "L2f": {
+      "2": {
+       "questions": 795,
+       "connected": 265,
+       "share": 33.33
+      },
+      "3": {
+       "questions": 482,
+       "connected": 102,
+       "share": 21.16
+      },
+      "4": {
+       "questions": 257,
+       "connected": 19,
+       "share": 7.39
+      },
+      "all": {
+       "questions": 1534,
+       "connected": 386,
+       "share": 25.16
+      }
+     },
+     "L2e": {
+      "2": {
+       "questions": 795,
+       "connected": 270,
+       "share": 33.96
+      },
+      "3": {
+       "questions": 482,
+       "connected": 102,
+       "share": 21.16
+      },
+      "4": {
+       "questions": 257,
+       "connected": 19,
+       "share": 7.39
+      },
+      "all": {
+       "questions": 1534,
+       "connected": 391,
+       "share": 25.49
+      }
+     },
+     "L2e-REC": {
+      "diff": 1.24,
+      "lo": 0.72,
+      "hi": 1.83,
+      "call": "ABOVE"
+     }
+    },
+    "CH": {
+     "arms": {
+      "D83": {
+       "linked": 1083,
+       "share": 42.81
+      },
+      "REC": {
+       "linked": 1083,
+       "share": 42.81
+      },
+      "L2f": {
+       "linked": 1108,
+       "share": 43.79
+      },
+      "L2e": {
+       "linked": 1121,
+       "share": 44.31
+      }
+     },
+     "contrasts": {
+      "L2e-REC": {
+       "diff": 1.5,
+       "lo": 1.03,
+       "hi": 2.03,
+       "call": "ABOVE"
+      },
+      "L2f-REC": {
+       "diff": 0.99,
+       "lo": 0.63,
+       "hi": 1.38,
+       "call": "ABOVE"
+      },
+      "L2e-L2f": {
+       "diff": 0.51,
+       "lo": 0.04,
+       "hi": 0.99,
+       "call": "ABOVE"
+      },
+      "L2e-D83": {
+       "diff": 1.5,
+       "lo": 1.03,
+       "hi": 2.03,
+       "call": "ABOVE"
+      },
+      "REC-D83": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      }
+     },
+     "price_vs_REC": {
+      "D83": null,
+      "L2f": 17342.6,
+      "L2e": 11335.1
+     },
+     "labels_L2e": [
+      {
+       "label": "R.name_comention",
+       "pairs": 931069,
+       "slots": 681,
+       "alone": 405
+      },
+      {
+       "label": "R.mention",
+       "pairs": 2343920,
+       "slots": 603,
+       "alone": 330
+      },
+      {
+       "label": "K.knn",
+       "pairs": 263122,
+       "slots": 217,
+       "alone": 22
+      },
+      {
+       "label": "R.title_comention",
+       "pairs": 41944,
+       "slots": 37,
+       "alone": 0
+      },
+      {
+       "label": "R.hub",
+       "pairs": 429747,
+       "slots": 33,
+       "alone": 33
+      }
+     ],
+     "H_e3v": {
+      "new": 33,
+      "pairs_added": 429747
+     },
+     "part_b": {
+      "H10": {
+       "new": 22,
+       "pairs_added": 396895,
+       "price": 18040.7,
+       "gain": {
+        "diff": 0.87,
+        "lo": 0.52,
+        "hi": 1.24,
+        "call": "ABOVE"
+       }
+      },
+      "HM": {
+       "new": 6,
+       "pairs_added": 46404,
+       "price": 7734.0,
+       "gain": {
+        "diff": 0.24,
+        "lo": 0.08,
+        "hi": 0.44,
+        "call": "ABOVE"
+       }
+      },
+      "HK1": {
+       "new": 11,
+       "pairs_added": 101748,
+       "price": 9249.8,
+       "gain": {
+        "diff": 0.43,
+        "lo": 0.2,
+        "hi": 0.71,
+        "call": "ABOVE"
+       }
+      },
+      "HK2": {
+       "new": 30,
+       "pairs_added": 247459,
+       "price": 8248.6,
+       "gain": {
+        "diff": 1.19,
+        "lo": 0.79,
+        "hi": 1.63,
+        "call": "ABOVE"
+       }
+      },
+      "NTc": {
+       "new": 15,
+       "pairs_added": 484010,
+       "price": 32267.3,
+       "gain": {
+        "diff": 0.59,
+        "lo": 0.32,
+        "hi": 0.94,
+        "call": "ABOVE"
+       }
+      },
+      "NT1": {
+       "new": 23,
+       "pairs_added": 376603,
+       "price": 16374.0,
+       "gain": {
+        "diff": 0.91,
+        "lo": 0.56,
+        "hi": 1.31,
+        "call": "ABOVE"
+       }
+      }
+     }
+    }
+   }
+  },
+  "s1eval": {
+   "questions": 2417,
+   "questions_npz_sha256": "48579db05059b7b0faa92fa7ac1a949e6669b4b91776da3cffbf690a5f48fdde",
+   "slots": {
+    "GP": 5962,
+    "CH": 3987
+   },
+   "RK": {
+    "GP": {
+     "arms": {
+      "D83": {
+       "linked": 2005,
+       "share": 33.63
+      },
+      "REC": {
+       "linked": 2005,
+       "share": 33.63
+      },
+      "L2f": {
+       "linked": 2096,
+       "share": 35.16
+      },
+      "L2e": {
+       "linked": 2106,
+       "share": 35.32
+      }
+     },
+     "contrasts": {
+      "L2e-REC": {
+       "diff": 1.69,
+       "lo": 1.34,
+       "hi": 2.05,
+       "call": "ABOVE"
+      },
+      "L2f-REC": {
+       "diff": 1.53,
+       "lo": 1.2,
+       "hi": 1.84,
+       "call": "ABOVE"
+      },
+      "L2e-L2f": {
+       "diff": 0.17,
+       "lo": -0.15,
+       "hi": 0.46,
+       "call": "LEVEL"
+      },
+      "L2e-D83": {
+       "diff": 1.69,
+       "lo": 1.34,
+       "hi": 2.05,
+       "call": "ABOVE"
+      },
+      "REC-D83": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      }
+     },
+     "price_vs_REC": {
+      "D83": null,
+      "L2f": 4764.5,
+      "L2e": 4264.7
+     },
+     "labels_L2e": [
+      {
+       "label": "R.name_comention",
+       "pairs": 931069,
+       "slots": 1326,
+       "alone": 713
+      },
+      {
+       "label": "R.mention",
+       "pairs": 2343920,
+       "slots": 1094,
+       "alone": 495
+      },
+      {
+       "label": "K.knn",
+       "pairs": 263122,
+       "slots": 422,
+       "alone": 39
+      },
+      {
+       "label": "R.title_comention",
+       "pairs": 41944,
+       "slots": 112,
+       "alone": 34
+      },
+      {
+       "label": "R.hub",
+       "pairs": 429747,
+       "slots": 93,
+       "alone": 93
+      }
+     ],
+     "H_e3v": {
+      "new": 93,
+      "pairs_added": 429747
+     },
+     "part_b": {
+      "H10": {
+       "new": 81,
+       "pairs_added": 396895,
+       "price": 4899.9,
+       "gain": {
+        "diff": 1.36,
+        "lo": 1.08,
+        "hi": 1.65,
+        "call": "ABOVE"
+       }
+      },
+      "HM": {
+       "new": 6,
+       "pairs_added": 46404,
+       "price": 7734.0,
+       "gain": {
+        "diff": 0.1,
+        "lo": 0.03,
+        "hi": 0.18,
+        "call": "ABOVE"
+       }
+      },
+      "HK1": {
+       "new": 35,
+       "pairs_added": 101748,
+       "price": 2907.1,
+       "gain": {
+        "diff": 0.59,
+        "lo": 0.41,
+        "hi": 0.79,
+        "call": "ABOVE"
+       }
+      },
+      "HK2": {
+       "new": 57,
+       "pairs_added": 247459,
+       "price": 4341.4,
+       "gain": {
+        "diff": 0.96,
+        "lo": 0.72,
+        "hi": 1.21,
+        "call": "ABOVE"
+       }
+      },
+      "NTc": {
+       "new": 146,
+       "pairs_added": 484010,
+       "price": 3315.1,
+       "gain": {
+        "diff": 2.45,
+        "lo": 2.06,
+        "hi": 2.86,
+        "call": "ABOVE"
+       }
+      },
+      "NT1": {
+       "new": 47,
+       "pairs_added": 376603,
+       "price": 8012.8,
+       "gain": {
+        "diff": 0.79,
+        "lo": 0.57,
+        "hi": 1.01,
+        "call": "ABOVE"
+       }
+      }
+     }
+    },
+    "CC": {
+     "D83": {
+      "2": {
+       "questions": 1252,
+       "connected": 881,
+       "share": 70.37
+      },
+      "3": {
+       "questions": 760,
+       "connected": 107,
+       "share": 14.08
+      },
+      "4": {
+       "questions": 405,
+       "connected": 34,
+       "share": 8.4
+      },
+      "all": {
+       "questions": 2417,
+       "connected": 1022,
+       "share": 42.28
+      }
+     },
+     "REC": {
+      "2": {
+       "questions": 1252,
+       "connected": 881,
+       "share": 70.37
+      },
+      "3": {
+       "questions": 760,
+       "connected": 107,
+       "share": 14.08
+      },
+      "4": {
+       "questions": 405,
+       "connected": 34,
+       "share": 8.4
+      },
+      "all": {
+       "questions": 2417,
+       "connected": 1022,
+       "share": 42.28
+      }
+     },
+     "L2f": {
+      "2": {
+       "questions": 1252,
+       "connected": 900,
+       "share": 71.88
+      },
+      "3": {
+       "questions": 760,
+       "connected": 129,
+       "share": 16.97
+      },
+      "4": {
+       "questions": 405,
+       "connected": 34,
+       "share": 8.4
+      },
+      "all": {
+       "questions": 2417,
+       "connected": 1063,
+       "share": 43.98
+      }
+     },
+     "L2e": {
+      "2": {
+       "questions": 1252,
+       "connected": 904,
+       "share": 72.2
+      },
+      "3": {
+       "questions": 760,
+       "connected": 134,
+       "share": 17.63
+      },
+      "4": {
+       "questions": 405,
+       "connected": 34,
+       "share": 8.4
+      },
+      "all": {
+       "questions": 2417,
+       "connected": 1072,
+       "share": 44.35
+      }
+     },
+     "L2e-REC": {
+      "diff": 2.07,
+      "lo": 1.49,
+      "hi": 2.69,
+      "call": "ABOVE"
+     }
+    },
+    "CH": {
+     "arms": {
+      "D83": {
+       "linked": 1982,
+       "share": 49.71
+      },
+      "REC": {
+       "linked": 1982,
+       "share": 49.71
+      },
+      "L2f": {
+       "linked": 2065,
+       "share": 51.79
+      },
+      "L2e": {
+       "linked": 2070,
+       "share": 51.92
+      }
+     },
+     "contrasts": {
+      "L2e-REC": {
+       "diff": 2.21,
+       "lo": 1.72,
+       "hi": 2.71,
+       "call": "ABOVE"
+      },
+      "L2f-REC": {
+       "diff": 2.08,
+       "lo": 1.63,
+       "hi": 2.51,
+       "call": "ABOVE"
+      },
+      "L2e-L2f": {
+       "diff": 0.13,
+       "lo": -0.29,
+       "hi": 0.51,
+       "call": "LEVEL"
+      },
+      "L2e-D83": {
+       "diff": 2.21,
+       "lo": 1.72,
+       "hi": 2.71,
+       "call": "ABOVE"
+      },
+      "REC-D83": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      }
+     },
+     "price_vs_REC": {
+      "D83": null,
+      "L2f": 5223.7,
+      "L2e": 4894.7
+     },
+     "labels_L2e": [
+      {
+       "label": "R.name_comention",
+       "pairs": 931069,
+       "slots": 1315,
+       "alone": 702
+      },
+      {
+       "label": "R.mention",
+       "pairs": 2343920,
+       "slots": 1082,
+       "alone": 483
+      },
+      {
+       "label": "K.knn",
+       "pairs": 263122,
+       "slots": 416,
+       "alone": 33
+      },
+      {
+       "label": "R.title_comention",
+       "pairs": 41944,
+       "slots": 112,
+       "alone": 34
+      },
+      {
+       "label": "R.hub",
+       "pairs": 429747,
+       "slots": 86,
+       "alone": 86
+      }
+     ],
+     "H_e3v": {
+      "new": 86,
+      "pairs_added": 429747
+     },
+     "part_b": {
+      "H10": {
+       "new": 53,
+       "pairs_added": 396895,
+       "price": 7488.6,
+       "gain": {
+        "diff": 1.33,
+        "lo": 0.99,
+        "hi": 1.7,
+        "call": "ABOVE"
+       }
+      },
+      "HM": {
+       "new": 6,
+       "pairs_added": 46404,
+       "price": 7734.0,
+       "gain": {
+        "diff": 0.15,
+        "lo": 0.05,
+        "hi": 0.28,
+        "call": "ABOVE"
+       }
+      },
+      "HK1": {
+       "new": 30,
+       "pairs_added": 101748,
+       "price": 3391.6,
+       "gain": {
+        "diff": 0.75,
+        "lo": 0.5,
+        "hi": 1.04,
+        "call": "ABOVE"
+       }
+      },
+      "HK2": {
+       "new": 49,
+       "pairs_added": 247459,
+       "price": 5050.2,
+       "gain": {
+        "diff": 1.23,
+        "lo": 0.89,
+        "hi": 1.58,
+        "call": "ABOVE"
+       }
+      },
+      "NTc": {
+       "new": 140,
+       "pairs_added": 484010,
+       "price": 3457.2,
+       "gain": {
+        "diff": 3.51,
+        "lo": 2.97,
+        "hi": 4.09,
+        "call": "ABOVE"
+       }
+      },
+      "NT1": {
+       "new": 47,
+       "pairs_added": 376603,
+       "price": 8012.8,
+       "gain": {
+        "diff": 1.18,
+        "lo": 0.85,
+        "hi": 1.52,
+        "call": "ABOVE"
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "ratio_L2e_REC": {
+  "RK": 1.1272
+ },
+ "labels": {
+  "RK": {
+   "pairs": {
+    "R.mention": 2343920,
+    "R.name_comention": 931069,
+    "R.title_comention": 41944,
+    "R.hub": 429747,
+    "K.knn": 263122
+   },
+   "overlaps": {
+    "R.mention&R.name_comention": 87857,
+    "R.mention&R.title_comention": 19422,
+    "R.mention&R.hub": 0,
+    "R.mention&K.knn": 45294,
+    "R.name_comention&R.title_comention": 0,
+    "R.name_comention&R.hub": 0,
+    "R.name_comention&K.knn": 61346,
+    "R.title_comention&R.hub": 0,
+    "R.title_comention&K.knn": 3257,
+    "R.hub&K.knn": 0
+   }
+  }
+ },
+ "part_b_sizes": {
+  "H10": {
+   "RK": 396895,
+   "pairs": 826642
+  },
+  "HM": {
+   "RK": 46404,
+   "pairs": 265292
+  },
+  "HK1": {
+   "RK": 101748,
+   "pairs": 281823
+  },
+  "HK2": {
+   "RK": 247459,
+   "pairs": 529407
+  },
+  "NTc": {
+   "RK": 484010,
+   "pairs": 573098
+  },
+  "NT1": {
+   "RK": 376603,
+   "pairs": 417521
+  }
+ },
+ "part_b_chain": {
+  "P_star": 4997.1,
+  "H5e_new": 86,
+  "H5e_pairs_added": 429747,
+  "steps": [
+   {
+    "form": "HM",
+    "new": 6,
+    "pairs_added": 46404,
+    "price": 7734.0,
+    "gain": {
+     "diff": 0.15,
+     "lo": 0.05,
+     "hi": 0.28,
+     "call": "ABOVE"
+    },
+    "carried": false
+   },
+   {
+    "form": "HK1",
+    "new": 30,
+    "pairs_added": 101748,
+    "price": 3391.6,
+    "gain": {
+     "diff": 0.75,
+     "lo": 0.5,
+     "hi": 1.04,
+     "call": "ABOVE"
+    },
+    "carried": true,
+    "ratio_to_REC": 1.1572
+   },
+   {
+    "form": "NTc",
+    "new": 138,
+    "pairs_added": 482638,
+    "price": 3497.4,
+    "gain": {
+     "diff": 3.46,
+     "lo": 2.93,
+     "hi": 4.03,
+     "call": "ABOVE"
+    },
+    "carried": true,
+    "ratio_to_REC": 1.2997
+   },
+   {
+    "form": "NT1",
+    "new": 19,
+    "pairs_added": 363832,
+    "price": 19149.1,
+    "gain": {
+     "diff": 0.48,
+     "lo": 0.27,
+     "hi": 0.71,
+     "call": "ABOVE"
+    },
+    "carried": false
+   },
+   {
+    "form": "HK2",
+    "new": 14,
+    "pairs_added": 144072,
+    "price": 10290.9,
+    "gain": {
+     "diff": 0.35,
+     "lo": 0.18,
+     "hi": 0.55,
+     "call": "ABOVE"
+    },
+    "carried": false
+   },
+   {
+    "form": "H10",
+    "new": 49,
+    "pairs_added": 358675,
+    "price": 7319.9,
+    "gain": {
+     "diff": 1.23,
+     "lo": 0.91,
+     "hi": 1.58,
+     "call": "ABOVE"
+    },
+    "carried": false
+   }
+  ],
+  "carried": [
+   "HK1",
+   "NTc"
+  ],
+  "gain_over_L2e": {
+   "diff": 4.21,
+   "lo": 3.64,
+   "hi": 4.85,
+   "call": "ABOVE"
+  },
+  "new_over_L2e": 168,
+  "pairs_added": 584386
+ },
+ "part_b_carried": {
+  "applies": true,
+  "carried": [
+   "HK1",
+   "NTc"
+  ],
+  "missing": [],
+  "prefixes": [
+   {
+    "forms": [
+     "HK1"
+    ],
+    "ratio_to_REC": {
+     "RK": 1.1572
+    },
+    "pairs_added": {
+     "RK": 101748
+    }
+   },
+   {
+    "forms": [
+     "HK1",
+     "NTc"
+    ],
+    "ratio_to_REC": {
+     "RK": 1.2997
+    },
+    "pairs_added": {
+     "RK": 584386
+    }
+   }
+  ],
+  "carves": {
+   "s1sel": {
+    "RK": {
+     "GP": {
+      "new": 34,
+      "price": 17187.8,
+      "gain": {
+       "diff": 0.9,
+       "lo": 0.63,
+       "hi": 1.22,
+       "call": "ABOVE"
+      }
+     },
+     "CH": {
+      "new": 25,
+      "price": 23375.4,
+      "gain": {
+       "diff": 0.99,
+       "lo": 0.64,
+       "hi": 1.41,
+       "call": "ABOVE"
+      }
+     }
+    }
+   },
+   "s1eval": {
+    "RK": {
+     "GP": {
+      "new": 179,
+      "price": 3264.7,
+      "gain": {
+       "diff": 3.0,
+       "lo": 2.59,
+       "hi": 3.46,
+       "call": "ABOVE"
+      }
+     },
+     "CH": {
+      "new": 168,
+      "price": 3478.5,
+      "gain": {
+       "diff": 4.21,
+       "lo": 3.64,
+       "hi": 4.85,
+       "call": "ABOVE"
+      }
+     }
+    }
+   }
+  }
+ },
+ "seconds": 33.0,
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+ "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}

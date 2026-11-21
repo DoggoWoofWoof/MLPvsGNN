@@ -1,0 +1,341 @@
+{
+ "dataset": "metaqa",
+ "declared_in": "docs/UL2_LAYOUT_ON_E3V.md",
+ "nodes": 43234,
+ "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "kb": true,
+ "versions": [
+  "SRK"
+ ],
+ "inputs": {
+  "ner_npz_sha256": "93065a2311c2b445cc14ce6458457c9e14ec0d3c641a4bc573ef4b175a374cb8",
+  "knn_npz_sha256": "f7c59640e816951148fee791bc8790e026461ee52a5b6741c63859244b5a4a16",
+  "structural_npz_sha256": "1b2027c64b2e62b5cf122f09a246ed4cb485841bf0823fcee246e8bf45bf8570",
+  "w2_s_npz_sha256": "3f2b97d1474552dae2fea1f7f8be5e83f7960950b38c0ca41bd3a78025aa7dd5",
+  "f0t_npz_sha256": "499e8c70d3d7d1375a77a609819aacdd40c8753ac2bf6f3d1ea277c5ae62a7fe",
+  "names_npz_sha256": "0ccad8b4b6a55c2bec41bfd36e6fa83f48dc448964e170cf15a2c191f517d720"
+ },
+ "knn_e3v": {
+  "file": "outputs/enc/e4/knn/e3v/metaqa.npz",
+  "npz_sha256": "2fa9040cc60acbb1e89649a1c6b70cb124f9a74afb94580e228a694704b005f1"
+ },
+ "h": {},
+ "families": {
+  "K": 97920,
+  "S": 124669,
+  "W2_S": 245144,
+  "CN_all": 12605,
+  "F0T": 12605,
+  "TITLE": 0,
+  "K_e3v": 96650
+ },
+ "sizes": {
+  "D83": {
+   "SRK": 231791
+  },
+  "REC": {
+   "SRK": 351892
+  },
+  "L2f": {
+   "SRK": 351892
+  },
+  "L2e": {
+   "SRK": 349818
+  }
+ },
+ "held": {
+  "D83": {
+   "SRK": {
+    "R_parts": {
+     "F0T": 12605
+    },
+    "K_in": 97920,
+    "S": 124669,
+    "R": 12579,
+    "K": 94543,
+    "R_removed_in_S": {
+     "F0T": 26
+    },
+    "K_removed_in_S": 484,
+    "K_removed_in_R": 2893,
+    "union": 231791
+   }
+  },
+  "REC": {
+   "SRK": {
+    "R_parts": {
+     "W2_S": 245144,
+     "F0T": 12605
+    },
+    "K_in": 97920,
+    "S": 124669,
+    "R": 133077,
+    "K": 94146,
+    "R_removed_in_S": {
+     "W2_S": 124579,
+     "F0T": 26
+    },
+    "K_removed_in_S": 484,
+    "K_removed_in_R": 3290,
+    "union": 351892
+   }
+  },
+  "L2e": {
+   "SRK": {
+    "R_parts": {
+     "W2_S": 245144,
+     "F0T": 12605
+    },
+    "K_in": 96650,
+    "S": 124669,
+    "R": 133077,
+    "K": 92072,
+    "R_removed_in_S": {
+     "W2_S": 124579,
+     "F0T": 26
+    },
+    "K_removed_in_S": 737,
+    "K_removed_in_R": 3841,
+    "union": 349818
+   }
+  }
+ },
+ "carves": {
+  "s1sel": {
+   "questions": 1497,
+   "questions_npz_sha256": "a8119a120171b1527a99ef0f1a6e234de3a710f148b976e8fd59b97f8f2ef8e4",
+   "slots": {
+    "GP": 6074
+   },
+   "SRK": {
+    "GP": {
+     "arms": {
+      "D83": {
+       "linked": 248,
+       "share": 4.08
+      },
+      "REC": {
+       "linked": 925,
+       "share": 15.23
+      },
+      "L2f": {
+       "linked": 925,
+       "share": 15.23
+      },
+      "L2e": {
+       "linked": 851,
+       "share": 14.01
+      }
+     },
+     "contrasts": {
+      "L2e-REC": {
+       "diff": -1.22,
+       "lo": -1.74,
+       "hi": -0.75,
+       "call": "BELOW"
+      },
+      "L2f-REC": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      },
+      "L2e-L2f": {
+       "diff": -1.22,
+       "lo": -1.74,
+       "hi": -0.75,
+       "call": "BELOW"
+      },
+      "L2e-D83": {
+       "diff": 9.93,
+       "lo": 7.62,
+       "hi": 12.37,
+       "call": "ABOVE"
+      },
+      "REC-D83": {
+       "diff": 11.15,
+       "lo": 8.87,
+       "hi": 13.5,
+       "call": "ABOVE"
+      }
+     },
+     "price_vs_REC": {
+      "D83": null,
+      "L2f": null,
+      "L2e": null
+     },
+     "labels_L2e": [
+      {
+       "label": "R.mention",
+       "pairs": 245144,
+       "slots": 718,
+       "alone": 678
+      },
+      {
+       "label": "K.knn",
+       "pairs": 96650,
+       "slots": 138,
+       "alone": 121
+      },
+      {
+       "label": "S",
+       "pairs": 124669,
+       "slots": 35,
+       "alone": 0
+      },
+      {
+       "label": "R.name_comention",
+       "pairs": 12605,
+       "slots": 12,
+       "alone": 0
+      },
+      {
+       "label": "R.title_comention",
+       "pairs": 0,
+       "slots": 0,
+       "alone": 0
+      }
+     ]
+    }
+   }
+  },
+  "s1eval": {
+   "questions": 9785,
+   "questions_npz_sha256": "fcb6c401d7ed3e93b1ba8aa4db0400a62ed4bc3a851f6b8324bf8e9baa00248d",
+   "slots": {
+    "GP": 37446
+   },
+   "SRK": {
+    "GP": {
+     "arms": {
+      "D83": {
+       "linked": 1117,
+       "share": 2.98
+      },
+      "REC": {
+       "linked": 5173,
+       "share": 13.81
+      },
+      "L2f": {
+       "linked": 5173,
+       "share": 13.81
+      },
+      "L2e": {
+       "linked": 4912,
+       "share": 13.12
+      }
+     },
+     "contrasts": {
+      "L2e-REC": {
+       "diff": -0.7,
+       "lo": -0.86,
+       "hi": -0.55,
+       "call": "BELOW"
+      },
+      "L2f-REC": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      },
+      "L2e-L2f": {
+       "diff": -0.7,
+       "lo": -0.86,
+       "hi": -0.55,
+       "call": "BELOW"
+      },
+      "L2e-D83": {
+       "diff": 10.13,
+       "lo": 9.22,
+       "hi": 11.04,
+       "call": "ABOVE"
+      },
+      "REC-D83": {
+       "diff": 10.83,
+       "lo": 9.98,
+       "hi": 11.71,
+       "call": "ABOVE"
+      }
+     },
+     "price_vs_REC": {
+      "D83": null,
+      "L2f": null,
+      "L2e": null
+     },
+     "labels_L2e": [
+      {
+       "label": "R.mention",
+       "pairs": 245144,
+       "slots": 4280,
+       "alone": 4060
+      },
+      {
+       "label": "K.knn",
+       "pairs": 96650,
+       "slots": 669,
+       "alone": 607
+      },
+      {
+       "label": "S",
+       "pairs": 124669,
+       "slots": 183,
+       "alone": 0
+      },
+      {
+       "label": "R.name_comention",
+       "pairs": 12605,
+       "slots": 25,
+       "alone": 0
+      },
+      {
+       "label": "R.title_comention",
+       "pairs": 0,
+       "slots": 0,
+       "alone": 0
+      }
+     ]
+    }
+   }
+  }
+ },
+ "ratio_L2e_REC": {
+  "SRK": 0.9941
+ },
+ "labels": {
+  "SRK": {
+   "pairs": {
+    "S": 124669,
+    "R.mention": 245144,
+    "R.name_comention": 12605,
+    "R.title_comention": 0,
+    "K.knn": 96650
+   },
+   "overlaps": {
+    "S&R.mention": 124579,
+    "S&R.name_comention": 26,
+    "S&R.title_comention": 0,
+    "S&K.knn": 737,
+    "R.mention&R.name_comention": 93,
+    "R.mention&R.title_comention": 0,
+    "R.mention&K.knn": 1227,
+    "R.name_comention&R.title_comention": 0,
+    "R.name_comention&K.knn": 3405,
+    "R.title_comention&K.knn": 0
+   }
+  }
+ },
+ "part_b_sizes": {},
+ "part_b_carried": {
+  "applies": false,
+  "why": "the KBs: R.hub and Part B's forms are passage-name rules (section 4)"
+ },
+ "seconds": 2.1,
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+ "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}

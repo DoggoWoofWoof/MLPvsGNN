@@ -235,4 +235,91 @@ Read beside, never deciding:
 
 ## 11. Results
 
-Not filed yet.
+### 11.1 Part filed 21 November 2026 (MuSiQue, SQuAD, MetaQA); the calls wait on HotpotQA, 2Wiki and WebQSP
+
+Code: zul2.py at f809831. Host rows, prefix ul2-. Records: outputs/ul2/<d>/h_<enc>.json, nt_e3v.json and grade.json.
+Graph level, no model. Differences are in points, paired over questions, with 95% intervals (2,000 resamples, seed 0).
+Neither call (sections 6 and 7) is read yet: Part A needs HotpotQA and 2Wiki, and Part B's size bound needs both.
+
+**Gates.**
+- **G-H PASS on all three slot datasets.** The frozen H reproduces HFO's filed H_new in every cell:
+  - MuSiQue: all 12 cells (k = 3, 5 and 10; GP and CH; s1sel and s1eval), e.g. s1eval CH at k = 5: 83 = 83;
+  - HotpotQA: all 6 GP cells, e.g. s1eval at k = 5: 11 = 11;
+  - 2Wiki: all 6 GP cells, e.g. s1eval at k = 5: 51 = 51.
+- **G-C PASS.** No pair of a skipped key (df ≤ 25) falls outside F0T:
+  - MuSiQue: 83,957 keys, 1,056,651 pairs checked;
+  - SQuAD: 15,750 keys, 189,832 pairs;
+  - HotpotQA: 1,721,802 keys, 25,606,892 pairs;
+  - 2Wiki: 2,678,351 keys, 42,423,204 pairs.
+- **Near ties, recomputed exactly.**
+  - MuSiQue and SQuAD flagged no rows, under either encoder.
+  - HotpotQA's frozen build flagged 2,694 rows (RK) and 17 of the 3,091 SRK slot ends.
+  - 2Wiki's flagged 2,532 (RK) and 26 of 15,301.
+- **H_5 on frozen.** HotpotQA 19,369,321 pairs; 2Wiki 22,176,462. The builds took 72 and 110 min on 8 host CPUs, with
+  measured peaks of 24.8 and 31.9 GB.
+- **G-U PASS** on MuSiQue and MetaQA: REC links exactly UL1's filed count in every cell.
+- **Fix to a row (no number changed).** The first SQuAD grade row failed because SQuAD's s1eval questions file was
+  missing on the host (the laptop's copy matches its record). It ran again as ul2-grade-squad-b, with the file pushed.
+
+**MuSiQue (RK).** Shares are linked slots over slots, in %.
+
+| arm | pairs | s1eval GP (5,962) | s1eval CH (3,987) | s1sel GP (3,783) | s1sel CH (2,530) |
+|---|---:|---:|---:|---:|---:|
+| D83 = REC | 3,387,597 | 33.63 | 49.71 | 29.61 | 42.81 |
+| L2f (frozen H and K) | 3,821,163 | 35.16 | 51.79 | 30.48 | 43.79 |
+| L2e (e3v H and K) | 3,818,331 | 35.32 | 51.92 | 30.80 | 44.31 |
+
+- **L2e − REC:** ABOVE in all four cells.
+  - s1eval: GP +1.69 [+1.34, +2.05], CH +2.21 [+1.72, +2.71].
+  - s1sel: GP +1.19 [+0.85, +1.57], CH +1.50 [+1.03, +2.03].
+- **L2e − L2f** (e3v against frozen, for H and K):
+  - s1eval: LEVEL (GP +0.17 [−0.15, +0.46], CH +0.13 [−0.29, +0.51]);
+  - s1sel: ABOVE (GP +0.32 [+0.03, +0.64], CH +0.51 [+0.04, +0.99]).
+- **Size and price.** |L2e| / |REC| = 1.1272. On s1eval CH, L2e costs 4,894.7 union pairs per slot gained over REC.
+- **Chain connectivity (s1eval).** REC 42.28% → L2e 44.35%, +2.07 [+1.49, +2.69] ABOVE (s1sel +1.24 [+0.72, +1.83]).
+  - 2 hops: 70.37 → 72.20;
+  - 3 hops: 14.08 → 17.63;
+  - 4 hops: 8.40 → 8.40.
+- **Dedup (L2e).** R holds 3,639,401 pairs: W2_S 2,343,920, F0T 973,013 and R.hub 429,747. R.hub meets no other
+  family, by construction. K holds 178,930: 84,192 of e3v's 263,122 kNN pairs are already in R.
+- **Labels on s1eval CH** (slots linked, and in brackets those linked by that label alone):
+  R.name_comention 1,315 (702), R.mention 1,082 (483), K.knn 416 (33), R.title_comention 112 (34), R.hub 86 (86).
+
+**Part B's chain (MuSiQue, s1eval CH, RK).** P\* = 429,747 / 86 = 4,997.1 union pairs per chain slot.
+
+| form | new slots | pairs added | price | gain over the running base | carried |
+|---|---:|---:|---:|---|---|
+| HM | 6 | 46,404 | 7,734.0 | +0.15 [+0.05, +0.28] ABOVE | no (under 20 slots) |
+| HK1 | 30 | 101,748 | 3,391.6 | +0.75 [+0.50, +1.04] ABOVE | yes |
+| NTc | 138 | 482,638 | 3,497.4 | +3.46 [+2.93, +4.03] ABOVE | yes |
+| NT1 | 19 | 363,832 | 19,149.1 | +0.48 [+0.27, +0.71] ABOVE | no |
+| HK2 | 14 | 144,072 | 10,290.9 | +0.35 [+0.18, +0.55] ABOVE | no |
+| H10 | 49 | 358,675 | 7,319.9 | +1.23 [+0.91, +1.58] ABOVE | no (price) |
+
+- **The carried forms {HK1, NTc} over L2e:**
+  - s1eval CH: +4.21 [+3.64, +4.85] ABOVE. That is 168 slots, so 51.92% → 56.13%; REC was 49.71%.
+  - s1eval GP: +3.00 [+2.59, +3.46] (179 slots).
+  - s1sel, read beside: CH +0.99 [+0.64, +1.41], GP +0.90 [+0.63, +1.22].
+- **Size.** The forms add 584,386 pairs on MuSiQue.
+  - Union over REC: MuSiQue 1.2997 (the bound is 1.30); SQuAD 1.143.
+  - HotpotQA and 2Wiki are not built yet, so Part B's verdict is open.
+- **Part B's gap.** NTc, the written-name form aimed at B4, does most of the gain. HK1 (each hub's best partner,
+  aimed at B1) adds 30 slots.
+
+**SQuAD (RK; no slots, sizes only).**
+- REC has 997,652 pairs and L2e 1,056,550 (1.059 × REC); with HK1 and NTc, 1.143.
+- 36,852 of e3v's 43,350 kNN pairs (85%) are already in R.
+- NTc has 100,108 pairs and NT1 55,061.
+
+**MetaQA (SRK, one layout; its GP is read beside and decides nothing).**
+- REC has 351,892 pairs and L2e 349,818 (0.9941).
+- s1eval GP: 13.81 → 13.12, L2e − REC −0.70 [−0.86, −0.55] BELOW. s1sel: −1.22 [−1.74, −0.75] BELOW.
+- On the KBs, L2e differs from REC only in K. e3v's kNN links fewer KB gold pairs than the frozen kNN does, and the
+  refit's KB layout should know this.
+
+**Still to come (queued).**
+- **HotpotQA and 2Wiki.** First the e3v builds, then NT on both, then their grades. The rows are now
+  ul2-h-<d>-e3v-s, ul2-nt-<d>-s and ul2-grade-<d>-s. They wait for E4's K as rebuilt in ENC section 20.10 (34b5bf5),
+  which runs as e4s-knn-<d>. The first e3v K on HotpotQA failed its gate, and 2Wiki's was cancelled.
+- **WebQSP's grade**, after e4g-knn-webqsp (running again since the host restarted).
+- **ul2-report-s**, which reads all six and writes both calls.

@@ -1,0 +1,44 @@
+{
+ "dataset": "musique",
+ "enc": "e3v",
+ "declared_in": "docs/UL2_LAYOUT_ON_E3V.md",
+ "nodes": 117534,
+ "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "win": 8,
+ "cap": 25,
+ "dfmax": 100000,
+ "knn": {
+  "file": "outputs/enc/e1b2/knn/e3v/musique.npz",
+  "npz_sha256": "cab52dd1bfb99a908fbb7c020174b7803f611f178e748068b2c0bd15a303c6fd"
+ },
+ "vectors": {
+  "shards": 3,
+  "dim": 1152,
+  "dtype": "float16",
+  "manifest_sha256": "48ccb700e4baf00235fc67190011b70245f923cdbd11e2bf9d178ba51064c81e"
+ },
+ "inputs": {
+  "ner_npz_sha256": "f294708600750c48eae9e32d0895d517ac3a8b5d048c736a70e9a566af2fe9c6",
+  "knn_npz_sha256": "6020ac7e0b6773e64866b5e942dc0e02c3b704615ced8de4d557aa543221ef5b",
+  "w2_s_npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+  "f0t_npz_sha256": "a0cea3c450f4a8364d202d7f21fe949e288f2ed0ca325aadea199f7ed2a4eebc",
+  "names_npz_sha256": "279d4b6ff3a2d5e3fbbab9071bcc93328167da1c5d19e805c3a9c5ad7a8f9cda"
+ },
+ "written_entries": 1573082,
+ "keys_written": 68689,
+ "ntc_keys": 60018,
+ "nt1_keys": 8671,
+ "ntc_pairs": 573098,
+ "nt1_pairs": 417521,
+ "npz_sha256": "01ba30015774f9eb9afc7bac0ab1b38767f29b521c86ca7b0236a66f55d63314",
+ "seconds": 58.5,
+ "build_sha256": "dd4687d4708b4bf2889788ba64749dc6bd5050e23c3a32ebc64dbfd7b2fec404",
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+ "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}

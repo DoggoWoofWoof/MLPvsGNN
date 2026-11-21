@@ -1,0 +1,197 @@
+{
+ "dataset": "musique",
+ "enc": "frozen",
+ "declared_in": "docs/UL2_LAYOUT_ON_E3V.md",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "nodes": 117534,
+ "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+ "R": 24,
+ "ks": [
+  3,
+  5,
+  10
+ ],
+ "eps": 1e-06,
+ "dfmax": 100000,
+ "hub_lo": 25,
+ "exclusion_pairs": 3387597,
+ "knn": {
+  "file": "package graph/knn.npz",
+  "npz_sha256": "6020ac7e0b6773e64866b5e942dc0e02c3b704615ced8de4d557aa543221ef5b"
+ },
+ "vectors": {
+  "shards": 3,
+  "dim": 1536,
+  "dtype": "float16"
+ },
+ "inputs": {
+  "ner_npz_sha256": "f294708600750c48eae9e32d0895d517ac3a8b5d048c736a70e9a566af2fe9c6",
+  "knn_npz_sha256": "6020ac7e0b6773e64866b5e942dc0e02c3b704615ced8de4d557aa543221ef5b",
+  "w2_s_npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+  "f0t_npz_sha256": "a0cea3c450f4a8364d202d7f21fe949e288f2ed0ca325aadea199f7ed2a4eebc",
+  "names_npz_sha256": "279d4b6ff3a2d5e3fbbab9071bcc93328167da1c5d19e805c3a9c5ad7a8f9cda"
+ },
+ "gate_GC": {
+  "keys": 83957,
+  "pairs_checked": 1056651,
+  "missing": 0,
+  "verdict": "PASS"
+ },
+ "pass": {
+  "keys": 3017,
+  "skip_le": 25,
+  "keys_skipped": 83957,
+  "entries": 404849,
+  "sum_df2": 858549467,
+  "hub_keys": 3017,
+  "keys_over_dfmax": 0,
+  "threads": 8,
+  "offered": 9414509,
+  "merges": 1,
+  "seconds_pass": 20.0,
+  "hk_rows": 398805,
+  "truncated_rows": 108632
+ },
+ "flagged_rows": {
+  "RK": {
+   "rows": 117534,
+   "flagged": 0
+  }
+ },
+ "variants": [
+  "RK"
+ ],
+ "sizes": {
+  "H3": 269034,
+  "H5": 433566,
+  "H10": 833094,
+  "HM10": 258798,
+  "HK1": 280098,
+  "HK2": 525427
+ },
+ "gate_GH": {
+  "union_pairs": 3387597,
+  "cells": [
+   {
+    "carve": "s1sel",
+    "kind": "GP",
+    "k": 3,
+    "H_new": 23,
+    "hfo_H_new": 23,
+    "near_ties": 8,
+    "pass": true
+   },
+   {
+    "carve": "s1sel",
+    "kind": "GP",
+    "k": 5,
+    "H_new": 33,
+    "hfo_H_new": 33,
+    "near_ties": 7,
+    "pass": true
+   },
+   {
+    "carve": "s1sel",
+    "kind": "GP",
+    "k": 10,
+    "H_new": 59,
+    "hfo_H_new": 59,
+    "near_ties": 10,
+    "pass": true
+   },
+   {
+    "carve": "s1sel",
+    "kind": "CH",
+    "k": 3,
+    "H_new": 15,
+    "hfo_H_new": 15,
+    "near_ties": 5,
+    "pass": true
+   },
+   {
+    "carve": "s1sel",
+    "kind": "CH",
+    "k": 5,
+    "H_new": 25,
+    "hfo_H_new": 25,
+    "near_ties": 6,
+    "pass": true
+   },
+   {
+    "carve": "s1sel",
+    "kind": "CH",
+    "k": 10,
+    "H_new": 46,
+    "hfo_H_new": 46,
+    "near_ties": 7,
+    "pass": true
+   },
+   {
+    "carve": "s1eval",
+    "kind": "GP",
+    "k": 3,
+    "H_new": 62,
+    "hfo_H_new": 62,
+    "near_ties": 30,
+    "pass": true
+   },
+   {
+    "carve": "s1eval",
+    "kind": "GP",
+    "k": 5,
+    "H_new": 91,
+    "hfo_H_new": 91,
+    "near_ties": 20,
+    "pass": true
+   },
+   {
+    "carve": "s1eval",
+    "kind": "GP",
+    "k": 10,
+    "H_new": 215,
+    "hfo_H_new": 215,
+    "near_ties": 67,
+    "pass": true
+   },
+   {
+    "carve": "s1eval",
+    "kind": "CH",
+    "k": 3,
+    "H_new": 58,
+    "hfo_H_new": 58,
+    "near_ties": 29,
+    "pass": true
+   },
+   {
+    "carve": "s1eval",
+    "kind": "CH",
+    "k": 5,
+    "H_new": 83,
+    "hfo_H_new": 83,
+    "near_ties": 17,
+    "pass": true
+   },
+   {
+    "carve": "s1eval",
+    "kind": "CH",
+    "k": 10,
+    "H_new": 169,
+    "hfo_H_new": 169,
+    "near_ties": 60,
+    "pass": true
+   }
+  ],
+  "verdict": "PASS"
+ },
+ "npz_sha256": "d22234c635c083cc13ffe9d647d8c501611db8317c54f123ddeacd7567339f68",
+ "seconds": 48.6,
+ "utc": "2026-11-20T23:39:58Z",
+ "build_sha256": "48695f416aa023141cbb3d34f62e703435f1e104d9253dd2101a7b8f0b67f84a",
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+ "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}
