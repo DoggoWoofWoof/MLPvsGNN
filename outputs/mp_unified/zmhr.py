@@ -631,7 +631,8 @@ def cmd_first(a):
 # ── section 5: the links ─────────────────────────────────────────────────────
 
 def w2s_keys(titles, texts, X):
-    """U2b's rule `new`, variant W2, form S, with the arm's float32 rows for the choice among same-named targets."""
+    """U2b's rule `new`, variant W2, form S, with the given float32 rows (the frozen ones, section 5.1) for the choice among
+    same-named targets."""
     import zu2b as U
     import zul1 as UL
     n = len(titles)
@@ -691,14 +692,21 @@ def cmd_links(a):
     F, st = D.rule_forms([{"title": t, "body": x} for t, x in zip(titles, texts)])
     f0, f0t = F["CN_all"], F["F0T"]
     lt_only = np.setdiff1d(f0t, f0)
-    rec = {"stage": "MHR1 links", "declared_in": DOC + " section 5", "dataset": DS, "nodes": n,
+    # section 5.1: W2_S is built once, with the frozen rows choosing among same-named targets (as U2b built the six's),
+    # and the same pairs serve both arms; K is built on each arm's rows
+    XF = np.concatenate([np.load(p).astype(np.float32) for p in E.vec_shards(root, "frozen", DS, "docs")])
+    if XF.shape[0] != n:
+        stop(f"frozen: {XF.shape[0]} rows for {n} nodes")
+    w2, w2st = w2s_keys(titles, texts, XF)
+    del XF
+    rec = {"stage": "MHR1 links", "declared_in": DOC + " sections 5 and 5.1", "dataset": DS, "nodes": n,
            "dataset_json_sha256": E.sha256(root / DS / "DATASET.json"), "rule_build": st,
-           "F0": int(f0.size), "F0T": int(f0t.size), "title_only": int(lt_only.size), "arms": {}}
+           "F0": int(f0.size), "F0T": int(f0t.size), "title_only": int(lt_only.size),
+           "W2_S": {"tie_break_rows": "frozen (section 5.1)", **w2st}, "arms": {}}
     rec["files"] = {"F0": save(OUT / "links" / "rule" / "F0.npz", keys=f0),
-                    "F0T": save(OUT / "links" / "rule" / "F0T.npz", keys=f0t)}
+                    "F0T": save(OUT / "links" / "rule" / "F0T.npz", keys=f0t),
+                    "W2_S": save(OUT / "links" / "rule" / "W2_S.npz", keys=w2)}
     for arm in ARMS:
-        X = np.concatenate([np.load(p).astype(np.float32) for p in E.vec_shards(root, arm, DS, "docs")])
-        w2, w2st = w2s_keys(titles, texts, X)
         ks, kd, kw, kst = k_family(root, arm, texts)
         kk = ks.astype(np.int64) * n + kd.astype(np.int64)
         r = np.union1d(w2, f0t)
@@ -713,7 +721,8 @@ def cmd_links(a):
                  "store": save(base / "store.npz", keys=allk, labels=lab, family=fam,
                                label_names=np.asarray(LABELS), family_names=np.asarray(["R", "K"]))}
         per_label = {LABELS[b]: int(((lab >> b) & 1).sum()) for b in range(len(LABELS))}
-        rec["arms"][arm] = {"W2_S": w2st, "K": kst, "R": int(r.size), "K_pairs": int(np.unique(kk).size),
+        rec["arms"][arm] = {"W2_S": "links/rule/W2_S.npz (one build, section 5.1)", "K": kst, "R": int(r.size),
+                            "K_pairs": int(np.unique(kk).size),
                             "K_in_R": int(np.unique(kk).size - k_store.size), "K_store": int(k_store.size),
                             "RK": int(allk.size), "per_label": per_label, "files": files,
                             "vectors_manifest_sha256": E.sha256(E.vec_dir(root, arm, DS, "docs") / "manifest.json")}
@@ -792,8 +801,8 @@ def cmd_grade(a):
     res["by_gold_count"] = {str(k): {"GP": gp_rows(F, golds, n, gc == k), "GS": gs_rows(F, golds, n, gc == k)}
                             for k in (2, 3, 4)}
     c = res["GP"]["RK@e3v - RK@frozen"]
-    call = "e3v's LINKS CARRY ON MULTIHOP-RAG" if c["call"] != "BELOW" else "NOT_CARRIED"
-    rec = {"stage": "MHR1 link grade", "declared_in": DOC + " section 5", "dataset": DS, "nodes": n, "questions": len(qs),
+    call = ("e3v's LINKS CARRY ON MULTIHOP-RAG (before H)" if c["call"] != "BELOW" else "NOT_CARRIED (before H)")
+    rec = {"stage": "MHR1 link grade", "declared_in": DOC + " sections 5 and 5.1", "dataset": DS, "nodes": n, "questions": len(qs),
            "call": call, "deciding_cell": {"RK@e3v - RK@frozen (GP)": c},
            "links_sha256": E.sha256(OUT / "links.json"), **res, "seconds": round(time.time() - t0, 1), "utc": utc(),
            **code_sha()}
@@ -839,10 +848,10 @@ def cmd_report(a):
         g, s = gr["GP"][k], gr["GS"][k]
         L.append(f"| {k} | {g['diff']:+.2f} [{g['lo']:+.2f}, {g['hi']:+.2f}] {g['call']} | {s['diff']:+.2f} "
                  f"[{s['lo']:+.2f}, {s['hi']:+.2f}] {s['call']} |")
-    L += ["", "Stores (R > K):"]
+    L += ["", f"W2_S (one build on the frozen rows, section 5.1): {json.dumps(lk['W2_S'])}", "", "Stores (R > K):"]
     for arm, v in lk["arms"].items():
         L.append(f"- {arm}: R {v['R']:,}; K {v['K_pairs']:,} ({v['K_in_R']:,} already in R, {v['K_store']:,} in K's store); "
-                 f"RK {v['RK']:,}; labels {json.dumps(v['per_label'])}; W2_S {json.dumps(v['W2_S'])}; K {json.dumps(v['K'])}")
+                 f"RK {v['RK']:,}; labels {json.dumps(v['per_label'])}; K {json.dumps(v['K'])}")
     (OUT / "report.md").write_text("\n".join(L) + "\n", encoding="utf-8", newline="\n")
     log(f"wrote {rel(OUT / 'report.md')}")
     return 0

@@ -151,6 +151,30 @@ MultiHop-RAG's domain is R + K: news articles ship no structure, so S is absent 
 - These files are the inputs the unified link stage (UL2) reads for this corpus. It owns any further family (H's hub names,
   typed links) and the comparison across datasets.
 
+### 5.1 Amendment (21 Nov, 14:55 IST, before any link number): the universal rule set
+
+The user's ruling ("we need to have universal rules"): MultiHop-RAG's links are the same rule set as the other six, with the
+same code and constants. Section 5 differed from that in three places, and this amendment brings it in line. Nothing in it
+is tuned or switched for this corpus.
+
+- **The layout of record on MultiHop-RAG** is the universal one (UL2, docs/UL2_LAYOUT_ON_E3V.md, sections 2 and 9.3): RK,
+  with R = W2_S + F0T + H_5 (R.hub) + whichever Part B forms UL2's record carries, and K = e3v's kNN-3. Dedup R > K;
+  every pair labelled by its rule.
+- **Difference 1: W2_S is built once, on the frozen rows.** The six's W2_S were built that way (U2b's recorded builds: the
+  choice among same-named targets by the record's frozen dense vectors), and UL2's L2e reuses them under e3v. So W2_S here
+  is built once with the frozen rows, and the same pairs serve both arms. The record states its ambiguous count (the
+  choices the vectors made). Section 5's "W2_S built on each arm's vectors" is withdrawn; K is still built on each arm.
+- **Difference 2: H_5 and Part B's forms.** Section 5 had none. They are built by zul2's code (UL2 sections 4 and 7),
+  unedited, from this package and MHR1's files: N = W2_S ∪ F0T ∪ K_arm, k = 5, 1e-6, the same key band (df 2 to
+  100,000) and the same Part B constants. That build is UL2's (its section 9.3: "RK, with H_5 built by this code"); MHR1
+  builds no H or Part B form with its own code. MHR1's files are its inputs (section 9 names the paths).
+- **Difference 3: the call.** Section 5's rule is narrowed to **before H**: RK_e3v − RK_frozen, where the two arms now differ
+  only through K. In UL2's terms that is L2e without H minus REC (on this corpus REC = D83 = W2_S + F0T + K_frozen). Its
+  name becomes **e3v's LINKS CARRY ON MULTIHOP-RAG (before H)**, or NOT_CARRIED (before H), naming the cell. The call on
+  the full layout is UL2's contrast, L2e − REC, once H_5 is built here.
+- **Unchanged:** F0T (D84's filed rule, zul1 via zd84, CN_all df 2 to 25 plus the title runs), K (the record's kNN-3 code),
+  the dedup, the labels, the measures, the differences (R − F0T now reads the same on both arms) and sections 6 to 8.
+
 ## 6. Expectations, written before any number
 
 1. The first stage is easier than the benchmark's chunk task, because there are 609 whole articles. Both arms' Hits@10 are
@@ -162,7 +186,7 @@ MultiHop-RAG's domain is R + K: news articles ship no structure, so S is absent 
 4. Comparison questions are the hardest at the first stage. They name two sources on one event, and the two articles share an
    event but few words.
 5. W2_S is nearly empty (fewer than 1% of F0T's pairs): news headlines are seldom quoted verbatim inside other articles, and W2
-   reads exact titles only. The tie-break never decides a W2 link (headlines are distinct), so W2_S is the same on both arms.
+   reads exact titles only. The tie-break never decides a W2 link (headlines are distinct). (Under 5.1 one W2_S serves both arms.)
 6. K adds little reach over R: F0T already links about 85% of the gold pairs at 13.5% density. RK minus R is under +3 GP points
    for each arm, and most of K's pairs are already in R.
 7. K_e3v is LEVEL with K_frozen on GP.
@@ -198,7 +222,7 @@ Under 50 MB in all.
   - chunk nodes at e3v's window (the benchmark's granularity);
   - the title written into `text`;
   - SPLADE max-pooled over 256-token windows of the whole article;
-  - H's hub names (UL2).
+  - H's hub names: no longer an option. H_5 and Part B's carried forms are part of the layout of record (5.1), built by UL2.
 
 ## 9. Result
 
