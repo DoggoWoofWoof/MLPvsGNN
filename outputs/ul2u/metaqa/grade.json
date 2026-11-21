@@ -1,0 +1,656 @@
+{
+ "dataset": "metaqa",
+ "declared_in": "docs/UL2_LAYOUT_ON_E3V.md, section 12",
+ "nodes": 43234,
+ "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "kb": true,
+ "versions": [
+  "SRK"
+ ],
+ "inputs": {
+  "ner_npz_sha256": "93065a2311c2b445cc14ce6458457c9e14ec0d3c641a4bc573ef4b175a374cb8",
+  "knn_npz_sha256": "f7c59640e816951148fee791bc8790e026461ee52a5b6741c63859244b5a4a16",
+  "structural_npz_sha256": "1b2027c64b2e62b5cf122f09a246ed4cb485841bf0823fcee246e8bf45bf8570",
+  "w2_s_npz_sha256": "3f2b97d1474552dae2fea1f7f8be5e83f7960950b38c0ca41bd3a78025aa7dd5",
+  "f0t_npz_sha256": "499e8c70d3d7d1375a77a609819aacdd40c8753ac2bf6f3d1ea277c5ae62a7fe",
+  "names_npz_sha256": "0ccad8b4b6a55c2bec41bfd36e6fa83f48dc448964e170cf15a2c191f517d720"
+ },
+ "knn_e3v": {
+  "file": "outputs/enc/e4/knn/e3v/metaqa.npz",
+  "npz_sha256": "2fa9040cc60acbb1e89649a1c6b70cb124f9a74afb94580e228a694704b005f1"
+ },
+ "tables": {
+  "frozen": {
+   "npz_sha256": "409dd1f5bbebeaa75c84cb7f4727e56d42f6a2cb55c13417cf2e01b6a3e53889",
+   "sizes": {
+    "H3": 52665,
+    "H5": 85341,
+    "H10": 165593,
+    "HM10": 47583,
+    "HK1": 37429,
+    "HK2": 70211
+   },
+   "flagged_rows": {
+    "RK": {
+     "rows": 43234,
+     "flagged": 0
+    }
+   },
+   "build_sha256": "aaa5b026b65148fe95e841c4fbb333520ad7acd461361dca2b25c328aeff6633"
+  },
+  "e3v": {
+   "npz_sha256": "3bc68c57b2ec1054719b75f2237d50dfe7123f90eb21dbf637f18ad8c1198d60",
+   "sizes": {
+    "H3": 52962,
+    "H5": 86189,
+    "H10": 168883,
+    "HM10": 44272,
+    "HK1": 37512,
+    "HK2": 70226
+   },
+   "flagged_rows": {
+    "RK": {
+     "rows": 43234,
+     "flagged": 0
+    }
+   },
+   "build_sha256": "aaa5b026b65148fe95e841c4fbb333520ad7acd461361dca2b25c328aeff6633"
+  }
+ },
+ "kbtext": {
+  "npz_sha256": "441d77ff371eaf1527cd187562fe367d8b6b9bdcf98a11a484bb891b365da7ef",
+  "f0t_u_pairs": 706154,
+  "f0t_filed_pairs": 12605,
+  "keys": 37910,
+  "gate_GF": {
+   "keys": 37914,
+   "ul1_keys": 37914,
+   "f0t_pairs": 12605,
+   "ul1_f0t_pairs": 12605,
+   "same_pairs": true,
+   "verdict": "PASS"
+  },
+  "gate_GT": {
+   "recipe_sha256": "b1871bb379801ffae997393ddf71acfc6af995cc8ba5b3267f86bf5c40aa67b7",
+   "abl_u_w2_s_npz_sha256": "3f2b97d1474552dae2fea1f7f8be5e83f7960950b38c0ca41bd3a78025aa7dd5",
+   "verdict": "PASS"
+  }
+ },
+ "form_pairs": {
+  "H5": 86189,
+  "HM": 44272,
+  "HK1": 37512,
+  "NTc": 89882,
+  "NT1": 54134,
+  "HK2": 70226,
+  "H10": 168883
+ },
+ "h5_frozen_pairs": 85341,
+ "sizes": {
+  "REC": {
+   "SRK": 351892
+  },
+  "U": {
+   "SRK": 914567
+  },
+  "N": {
+   "SRK": 349818
+  },
+  "L2f": {
+   "SRK": 1001450
+  }
+ },
+ "hist": {
+  "U": {
+   "SRK": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    73895,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    51225,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    341,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    8815,
+    0,
+    0,
+    0,
+    6667,
+    0,
+    0,
+    0,
+    100,
+    0,
+    0,
+    0,
+    88,
+    0,
+    0,
+    0,
+    281,
+    0,
+    0,
+    0,
+    418,
+    0,
+    0,
+    0,
+    47,
+    0,
+    0,
+    0,
+    95,
+    0,
+    0,
+    0,
+    69304,
+    27889,
+    6184,
+    11256,
+    0,
+    0,
+    0,
+    0,
+    103,
+    37,
+    3,
+    9,
+    0,
+    0,
+    0,
+    0,
+    207,
+    91,
+    30,
+    56,
+    0,
+    0,
+    0,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    3282,
+    10582,
+    483,
+    8826,
+    2326,
+    10051,
+    365,
+    16369,
+    14,
+    13,
+    1,
+    7,
+    19,
+    19,
+    3,
+    14,
+    70,
+    85,
+    10,
+    75,
+    183,
+    264,
+    54,
+    459,
+    14,
+    3,
+    0,
+    4,
+    29,
+    23,
+    8,
+    55
+   ]
+  },
+  "N": {
+   "SRK": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    82323,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    51219,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    341,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    8782,
+    0,
+    0,
+    0,
+    6647,
+    0,
+    0,
+    0,
+    100,
+    0,
+    0,
+    0,
+    88,
+    0,
+    0,
+    0,
+    281,
+    0,
+    0,
+    0,
+    418,
+    0,
+    0,
+    0,
+    47,
+    0,
+    0,
+    0,
+    95,
+    0,
+    0,
+    0,
+    68095,
+    27379,
+    5764,
+    10432,
+    0,
+    0,
+    0,
+    0,
+    103,
+    37,
+    3,
+    9,
+    0,
+    0,
+    0,
+    0,
+    205,
+    91,
+    29,
+    49,
+    0,
+    0,
+    0,
+    0,
+    2,
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    3219,
+    10311,
+    435,
+    8056,
+    2300,
+    9819,
+    347,
+    14824,
+    14,
+    13,
+    1,
+    7,
+    19,
+    19,
+    3,
+    14,
+    69,
+    85,
+    9,
+    69,
+    183,
+    262,
+    54,
+    453,
+    14,
+    3,
+    0,
+    4,
+    29,
+    23,
+    8,
+    55
+   ]
+  }
+ },
+ "against_zul2": {
+  "zul2_grade_sha256": "cdf58c110c7811e405cd3f4045ad1bc6eba885f317e70f6b9ba90749d21d9fd3",
+  "REC": "same",
+  "N_is_zul2_L2e": true
+ },
+ "ratio_to_REC": {
+  "U": {
+   "SRK": 2.599
+  },
+  "N": {
+   "SRK": 0.9941
+  },
+  "L2f": {
+   "SRK": 2.8459
+  }
+ },
+ "cells": {
+  "s1sel": {
+   "GP": {
+    "questions": 1497,
+    "slots": 6074,
+    "questions_npz_sha256": "a8119a120171b1527a99ef0f1a6e234de3a710f148b976e8fd59b97f8f2ef8e4",
+    "SRK": {
+     "linked": {
+      "REC": 925,
+      "U": 4159,
+      "N": 851,
+      "L2f": 4336,
+      "U+H5": 4314
+     },
+     "share": {
+      "REC": 15.23,
+      "U": 68.47,
+      "N": 14.01,
+      "L2f": 71.39,
+      "U+H5": 71.02
+     },
+     "contrasts": {
+      "U-REC": {
+       "diff": 53.24,
+       "lo": 49.66,
+       "hi": 56.91,
+       "call": "ABOVE"
+      },
+      "U+H5-REC": {
+       "diff": 55.8,
+       "lo": 52.35,
+       "hi": 59.38,
+       "call": "ABOVE"
+      },
+      "L2f-REC": {
+       "diff": 56.16,
+       "lo": 52.87,
+       "hi": 59.76,
+       "call": "ABOVE"
+      },
+      "U-N": {
+       "diff": 54.46,
+       "lo": 50.87,
+       "hi": 58.1,
+       "call": "ABOVE"
+      }
+     },
+     "each_form_over_U": {
+      "H5": {
+       "new": 155,
+       "pairs_added": 86189,
+       "price": 556.1,
+       "gain": {
+        "diff": 2.55,
+        "lo": 1.87,
+        "hi": 3.31,
+        "call": "ABOVE"
+       }
+      },
+      "HM": {
+       "new": 151,
+       "pairs_added": 44272,
+       "price": 293.2,
+       "gain": {
+        "diff": 2.49,
+        "lo": 1.8,
+        "hi": 3.27,
+        "call": "ABOVE"
+       }
+      },
+      "HK1": {
+       "new": 261,
+       "pairs_added": 37509,
+       "price": 143.7,
+       "gain": {
+        "diff": 4.3,
+        "lo": 3.18,
+        "hi": 5.54,
+        "call": "ABOVE"
+       }
+      },
+      "NTc": {
+       "new": 105,
+       "pairs_added": 74948,
+       "price": 713.8,
+       "gain": {
+        "diff": 1.73,
+        "lo": 1.23,
+        "hi": 2.35,
+        "call": "ABOVE"
+       }
+      },
+      "NT1": {
+       "new": 303,
+       "pairs_added": 54131,
+       "price": 178.7,
+       "gain": {
+        "diff": 4.99,
+        "lo": 3.7,
+        "hi": 6.38,
+        "call": "ABOVE"
+       }
+      },
+      "HK2": {
+       "new": 325,
+       "pairs_added": 70221,
+       "price": 216.1,
+       "gain": {
+        "diff": 5.35,
+        "lo": 3.95,
+        "hi": 6.92,
+        "call": "ABOVE"
+       }
+      },
+      "H10": {
+       "new": 233,
+       "pairs_added": 168883,
+       "price": 724.8,
+       "gain": {
+        "diff": 3.84,
+        "lo": 2.88,
+        "hi": 4.96,
+        "call": "ABOVE"
+       }
+      }
+     }
+    }
+   }
+  },
+  "s1eval": {
+   "GP": {
+    "questions": 9785,
+    "slots": 37446,
+    "questions_npz_sha256": "fcb6c401d7ed3e93b1ba8aa4db0400a62ed4bc3a851f6b8324bf8e9baa00248d",
+    "SRK": {
+     "linked": {
+      "REC": 5173,
+      "U": 24478,
+      "N": 4912,
+      "L2f": 25586,
+      "U+H5": 25409
+     },
+     "share": {
+      "REC": 13.81,
+      "U": 65.37,
+      "N": 13.12,
+      "L2f": 68.33,
+      "U+H5": 67.86
+     },
+     "contrasts": {
+      "U-REC": {
+       "diff": 51.55,
+       "lo": 50.1,
+       "hi": 53.08,
+       "call": "ABOVE"
+      },
+      "U+H5-REC": {
+       "diff": 54.04,
+       "lo": 52.65,
+       "hi": 55.53,
+       "call": "ABOVE"
+      },
+      "L2f-REC": {
+       "diff": 54.51,
+       "lo": 53.13,
+       "hi": 55.98,
+       "call": "ABOVE"
+      },
+      "U-N": {
+       "diff": 52.25,
+       "lo": 50.77,
+       "hi": 53.79,
+       "call": "ABOVE"
+      }
+     },
+     "each_form_over_U": {
+      "H5": {
+       "new": 931,
+       "pairs_added": 86189,
+       "price": 92.6,
+       "gain": {
+        "diff": 2.49,
+        "lo": 2.22,
+        "hi": 2.78,
+        "call": "ABOVE"
+       }
+      },
+      "HM": {
+       "new": 850,
+       "pairs_added": 44272,
+       "price": 52.1,
+       "gain": {
+        "diff": 2.27,
+        "lo": 2.0,
+        "hi": 2.56,
+        "call": "ABOVE"
+       }
+      },
+      "HK1": {
+       "new": 1549,
+       "pairs_added": 37509,
+       "price": 24.2,
+       "gain": {
+        "diff": 4.14,
+        "lo": 3.69,
+        "hi": 4.59,
+        "call": "ABOVE"
+       }
+      },
+      "NTc": {
+       "new": 688,
+       "pairs_added": 74948,
+       "price": 108.9,
+       "gain": {
+        "diff": 1.84,
+        "lo": 1.61,
+        "hi": 2.09,
+        "call": "ABOVE"
+       }
+      },
+      "NT1": {
+       "new": 1727,
+       "pairs_added": 54131,
+       "price": 31.3,
+       "gain": {
+        "diff": 4.61,
+        "lo": 4.08,
+        "hi": 5.18,
+        "call": "ABOVE"
+       }
+      },
+      "HK2": {
+       "new": 1903,
+       "pairs_added": 70221,
+       "price": 36.9,
+       "gain": {
+        "diff": 5.08,
+        "lo": 4.55,
+        "hi": 5.65,
+        "call": "ABOVE"
+       }
+      },
+      "H10": {
+       "new": 1476,
+       "pairs_added": 168883,
+       "price": 114.4,
+       "gain": {
+        "diff": 3.94,
+        "lo": 3.53,
+        "hi": 4.38,
+        "call": "ABOVE"
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "masks_npz_sha256": "93dd66ace014cc58d645e2798ccd3579913f80bdf40da511bbf72de473d1b95b",
+ "seconds": 7.0,
+ "utc": "2026-11-21T09:53:15Z",
+ "zul2u_sha256": "bf41636269905d1a4c4f7a6f704dc723fbce152ef5c4e9852ee1e2621ab9cb6e",
+ "zabl_u_sha256": "dafde17682eec75cbcb14c45428e4f02068d71db4a2450d896fa4fa4a0fd2451",
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+ "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}
