@@ -74,6 +74,28 @@ Root `outputs/mhr1/package/` (gitignored, never committed), dataset folder `mult
   (so SPLADE reads an article's lead only).
 - The parts' shards stay (a few MB in all; FC can be rerun).
 
+### 3.1 Amendment (21 Nov, 14:40 IST, before any vector): the three encodes move to the host CPU
+
+- **Why.** None of the three GPU rows had been sent by the time the host restarted (10:33 IST). Since 13:03, another
+  user's virtual machine has held 20.7 GB of the card's 24.6 GB and about 97% of its engines, and the GPU guard has
+  yielded since then. E4's and E6's GPU rows are queued ahead of these rows. The host CPU is idle. These are small
+  encodes (609 articles and 2,255 questions), so they run there.
+- **What changes:**
+  - the device is the CPU, with the weights in float32 (zenc's `load_model` on the CPU), for both e3v parts and the frozen
+    arm. Rows are still stored as float16 unit rows;
+  - the token budget per batch is 8,192 for all three encoders, so that one long article goes alone and attention memory
+    stays bounded on the CPU;
+  - GP is not run. It compares float16 against float32 on the GPU, and float32 is its reference. Its record in
+    outputs/mhr1/gp/ says "not run (CPU float32)";
+  - each run records its seconds and its peak working set, so later CPU asks are measured.
+- **What does not change:** the models, revisions, windows (8,192 and 32,768), prompts, normalization, the fusion, FC on
+  every row, the cut check, and every rule in sections 4 and 5.
+- **The feed:** the three GPU rows are withdrawn, unsent. CPU rows go in under new names (`mhr1-cenc-gtemodern`,
+  `mhr1-cenc-granitesm`, `mhr1-cfrozen`), and the fuse, FC and cut rows follow them (`mhr1-cvec`, `mhr1-cfc`,
+  `mhr1-ccuts`).
+- **Beside, not a rule:** the six datasets' e3v rows were encoded in float16 on the GPU. These are float32 on the CPU. GP
+  bounds that difference on the six (minimum cosine at or above its bar).
+
 ## 4. The first stage (zero-shot; each arm alone and fused with SPLADE)
 
 Exact float32 inner products of the stored float16 rows against all 609 articles, ranked by score and then position (zenc's
@@ -154,15 +176,16 @@ MultiHop-RAG's domain is R + K: news articles ship no structure, so S is absent 
 | `selftest` | laptop | the split rule, the benchmark's measures against a brute-force copy of its loop, the K and W2_S calls on a toy |
 | `package` | laptop | section 2 with P1 to P4; `outputs/mhr1/package.json` |
 | `splade` | laptop CPU | section 3's SPLADE |
-| `encode --enc gtemodern\|granitesm` | host GPU | GP to outputs/mhr1/gp/, then zenc's encode |
-| `frozen` | host GPU | the frozen arm into the package |
+| `encode --enc gtemodern\|granitesm [--cpu]` | host GPU; host CPU with `--cpu` (3.1) | GP to outputs/mhr1/gp/ (not run on the CPU), then zenc's encode |
+| `frozen [--cpu]` | host GPU; host CPU with `--cpu` (3.1) | the frozen arm into the package |
 | `vectors` | host CPU | zenc3v's fusion; `fc` (host CPU): FC on every row, outputs/mhr1/fc.json |
+| `cuts` | host CPU | the articles each window cut (each encoder's tokenizer, as zenc counts), checked against the encodes' counts; outputs/mhr1/cuts.json |
 | `first` | laptop | section 4 (reads the fetched vectors); outputs/mhr1/first/ and the package's retrieval_cache |
 | `links` | laptop | section 5's families and stores; outputs/mhr1/links/ and the package's graph/knn.npz |
 | `grade` | laptop | section 5's measures and call; outputs/mhr1/grade.json |
 | `report` | laptop | outputs/mhr1/report.md, filed in section 9 |
 
-Compute and space: about 10 GPU minutes on the host for the three encodes, and seconds to minutes on the laptop for the rest.
+Compute and space: about 10 GPU minutes on the host for the three encodes (on the CPU under 3.1: minutes for the parts, one to three hours for the frozen arm), and seconds to minutes on the laptop for the rest.
 Under 50 MB in all.
 
 ## 8. What follows (named here, not run)

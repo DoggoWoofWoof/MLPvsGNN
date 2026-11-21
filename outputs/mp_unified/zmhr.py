@@ -5,8 +5,9 @@ zenc1b2, zd84, zul1, zap1 and zu2b are imported and, in this process only, point
     python outputs/mp_unified/zmhr.py selftest                     laptop
     python outputs/mp_unified/zmhr.py package                      laptop: section 2 with P1-P4
     python outputs/mp_unified/zmhr.py splade [--threads 4]         laptop CPU: the record's SPLADE contract
-    python outputs/mp_unified/zmhr.py encode --enc gtemodern|granitesm [--threads 4]   host GPU: GP, then zenc's encode
-    python outputs/mp_unified/zmhr.py frozen [--threads 4]         host GPU: the frozen arm into the package
+    python outputs/mp_unified/zmhr.py encode --enc gtemodern|granitesm [--threads 4] [--cpu]   host GPU: GP, then zenc's encode
+    python outputs/mp_unified/zmhr.py frozen [--threads 4] [--cpu] host GPU: the frozen arm into the package
+                                       (--cpu: section 3.1, the host CPU, float32 weights, 8,192 tokens a batch)
     python outputs/mp_unified/zmhr.py vectors [--threads 1]        host CPU: zenc3v's fusion
     python outputs/mp_unified/zmhr.py fc [--threads 1]             host CPU: FC on every row
     python outputs/mp_unified/zmhr.py cuts [--threads 1]           host CPU: which articles each window cut
@@ -22,6 +23,9 @@ HERE = Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
 sys.dont_write_bytecode = True
+if "--cpu" in sys.argv:                          # section 3.1: hide the card before anything imports torch
+    import os as _os
+    _os.environ["CUDA_VISIBLE_DEVICES"] = ""
 import zenc as E  # noqa: E402  (reads --threads from sys.argv before numpy loads)
 
 import argparse  # noqa: E402
@@ -329,21 +333,57 @@ def zmods():
     return Z3, V
 
 
+CPU_BUDGET = 8192                                 # section 3.1: tokens per batch on the CPU (one long article alone)
+
+
+def peak_gb():
+    try:
+        import psutil
+        mi = psutil.Process().memory_info()
+        return round(getattr(mi, "peak_wset", getattr(mi, "rss", 0)) / 2 ** 30, 2)
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def cpu_guard(a):
+    """Section 3.1: with --cpu the card is hidden (CUDA_VISIBLE_DEVICES set before torch loads); refuse if it shows."""
+    import torch
+    if not a.cpu:
+        return "cuda"
+    if torch.cuda.is_available():
+        stop("--cpu, but torch still sees a GPU")
+    torch.set_num_threads(int(a.threads))
+    return "cpu"
+
+
 def cmd_encode(a):
     Z3, V = zmods()
     point_zenc()
     if a.enc not in V.PARTS:
         stop(f"--enc must be one of e3v's parts {V.PARTS}")
+    dev = cpu_guard(a)
     rev = Z3.pinned(a.enc)
-    Z3.DS = (DS,)
-    old = Z3.OUT
-    Z3.OUT = GP_DIR                               # GP's record goes to outputs/mhr1/gp/, not over E0N's
-    try:
-        Z3.gp_check(a.enc, rev)
-    finally:
-        Z3.OUT = old
-    log(f"GP passed for {a.enc}")
-    E.cmd_encode(argparse.Namespace(enc=a.enc, ds=DS, kinds="queries,docs", cpu=False))
+    t0 = time.time()
+    if dev == "cuda":
+        Z3.DS = (DS,)
+        old = Z3.OUT
+        Z3.OUT = GP_DIR                           # GP's record goes to outputs/mhr1/gp/, not over E0N's
+        try:
+            Z3.gp_check(a.enc, rev)
+        finally:
+            Z3.OUT = old
+        log(f"GP passed for {a.enc}")
+    else:
+        E.wjson(GP_DIR / f"gp-{a.enc}.json", {"stage": "MHR1 GP", "declared_in": DOC + " section 3.1", "enc": a.enc,
+                                              "revision": rev, "pass": None,
+                                              "not_run": "CPU float32 (section 3.1): float32 is GP's reference",
+                                              "utc": utc(), **code_sha()})
+        E.ENCODERS[a.enc]["budget"] = CPU_BUDGET  # this process only
+        log(f"{a.enc} on the CPU ({a.threads} threads, budget {CPU_BUDGET}); GP not run (section 3.1)")
+    E.cmd_encode(argparse.Namespace(enc=a.enc, ds=DS, kinds="queries,docs", cpu=dev == "cpu"))
+    E.wjson(OUT / f"run-{a.enc}.json", {"enc": a.enc, "device": dev, "threads": int(a.threads),
+                                        "budget": int(E.ENCODERS[a.enc]["budget"]), "seconds": round(time.time() - t0, 1),
+                                        "peak_working_set_gb": peak_gb(), "utc": utc(), **code_sha()})
     return 0
 
 
@@ -352,18 +392,20 @@ def cmd_frozen(a):
     from huggingface_hub import snapshot_download
     point_zenc()
     root = mhr_root()
-    if not torch.cuda.is_available():
+    dev = cpu_guard(a)
+    if dev == "cuda" and not torch.cuda.is_available():
         stop("no GPU")
     rev = Path(snapshot_download(E.ENCODERS["frozen"]["repo"], local_files_only=True)).name
     if rev != FROZEN_REV:
         stop(f"the cached frozen snapshot is {rev}, not {FROZEN_REV}")
     t0 = time.time()
-    m = E.load_model("frozen", "cuda")
+    m = E.load_model("frozen", dev)
     load_s = round(time.time() - t0, 1)
+    budget = CPU_BUDGET if dev == "cpu" else None
     texts = {"docs": [x["text"] for x in nodes_of(root)], "queries": [q["question"] for q in queries_of(root)]}
     for kind in ("queries", "docs"):
         t1 = time.time()
-        v, st = E.encode_texts(m, "frozen", texts[kind], kind)
+        v, st = E.encode_texts(m, "frozen", texts[kind], kind, budget=budget)
         bad = E.damaged(v)
         if bad:
             stop(f"frozen {kind}: {bad} damaged rows")
@@ -374,10 +416,13 @@ def cmd_frozen(a):
         man = json.loads((base / "manifest.json").read_text(encoding="utf-8"))
         man["shards"] = [{"shard": 0, "rows": int(v.shape[0]), "file": npy.name, "bytes": npy.stat().st_size,
                           "sha256": E.sha256(npy)}]
-        man["encoder"].update({"device": "cuda", "max_seq_length": int(m.max_seq_length), "load_s": load_s,
+        man["encoder"].update({"device": dev, "weights_dtype": "float32" if dev == "cpu" else "float16",
+                               "threads": int(a.threads) if dev == "cpu" else None,
+                               "max_seq_length": int(m.max_seq_length), "load_s": load_s,
                                "query_prompt": E.query_prompt(m, "frozen") if kind == "queries" else "",
                                "document_prompt": "", "path": "zenc.load_model + zenc.encode_texts (G0's)"})
-        man.update({"status": "vectors written", "seconds": round(time.time() - t1, 1), **st, "utc": utc(), **code_sha()})
+        man.update({"status": "vectors written", "seconds": round(time.time() - t1, 1), **st,
+                    "peak_working_set_gb": peak_gb(), "utc": utc(), **code_sha()})
         E.wjson(base / "manifest.json", man)
         log(f"frozen {kind}: {v.shape[0]} rows, cut {st['cut']}, max_len {st['max_len']} ({time.time() - t1:.0f} s)")
     return 0
@@ -866,6 +911,7 @@ def main(argv=None):
     p.add_argument("cmd", choices=["selftest", "package", "splade", "encode", "frozen", "vectors", "fc", "cuts", "first", "links",
                                    "grade", "report"])
     p.add_argument("--enc")
+    p.add_argument("--cpu", action="store_true", help="section 3.1: encode on the CPU, float32 weights")
     p.add_argument("--threads", type=int, default=E.THREADS)
     a = p.parse_args(argv)
     if a.cmd == "selftest":
