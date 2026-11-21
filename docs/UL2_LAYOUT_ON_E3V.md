@@ -323,3 +323,138 @@ Neither call (sections 6 and 7) is read yet: Part A needs HotpotQA and 2Wiki, an
   which runs as e4s-knn-<d>. The first e3v K on HotpotQA failed its gate, and 2Wiki's was cancelled.
 - **WebQSP's grade**, after e4g-knn-webqsp (running again since the host restarted).
 - **ul2-report-s**, which reads all six and writes both calls.
+
+## 12. Universal rules (declared 21 November 2026, 15:05 IST, 09:35 UTC)
+
+The user ruled on 21 November, verbatim: "we need to have universal rules".
+
+This section is declared before any e3v number on HotpotQA, 2Wiki or WebQSP, and before any number of the KBs' new
+families (F0T on the rule text, R.hub and Part B's forms on a KB). It does not change sections 3-11 or their filed
+numbers. Sections 6 and 7 stay as the record of what was declared first. Section 12's call is the one the refit's
+layout takes.
+
+**What had been seen when it was written.**
+- MuSiQue's whole grade (section 11.1), including Part B's chain on MuSiQue. So this section comes after MuSiQue's
+  Part B numbers were seen.
+- SQuAD's sizes and MetaQA's REC and L2e arms (section 11.1).
+- On HotpotQA and 2Wiki: the frozen H_5 sizes and the gate G-H cells. Those cells reproduce HFO's filed numbers.
+- Two cost readings taken from the KB degree counts while this section was written; no rule text was built.
+  - Pairs of entities that share one KB neighbour of degree at most 25, counted with repeats: at most 7.6e5 on MetaQA
+    and 1.63e7 on WebQSP. MetaQA's REC has 351,892 pairs.
+  - WebQSP's key pass would score about 3.1e10 pairs (this sized the rows).
+- Nothing else of HotpotQA's, 2Wiki's or WebQSP's, and nothing of e3v there.
+
+### 12.1 The rule: one rule set, seven datasets
+
+1. **Same code, same constants on every dataset.** These are the R rules:
+   - W2_S and F0T;
+   - H_5 (section 4: k = 5, table depth 24, keys of df 26 to 100,000, EPS 1e-6);
+   - Part B's forms (section 7): HM, HK1, HK2, NTc, NT1 and H10 (window 8, cap 25, df at most 100,000).
+
+   This removes "R.hub is a passage-name family" (section 4) and "The KBs take no passage-name form" (section 7).
+   MultiHop-RAG takes the same set when MHR1 files its package.
+2. **Each rule reads that dataset's rule text.**
+   - On a passage dataset, the rule text is the passage's own text, as filed.
+   - On a KB, it is ABL-U's rule text (docs/ABL_LINK_FAMILY_ABLATION.md, section 8; zabl_u.texts_of):
+     - the names of the entity's distinct KB neighbours, both directions, in node-id order, joined by "; ";
+     - its own name is left out;
+     - an entity with no neighbour keeps its own name;
+     - names are as ABL-U reads them (u1b.read_nodes), so a WebQSP CVT mediator's name is its package text.
+   - On the KBs every R rule reads that text:
+     - W2_S already does (ABL-U, filed).
+     - F0T is rebuilt on it, as **F0T_u**. This is UL1's build unedited (zul1.build_entries and forms_from_entries).
+     - R.hub's names and the written names read it (zmhb.build_entries_keep, zul2.written_entries).
+3. **Unchanged.**
+   - S follows the 10 November ruling and the 21 November rulings: 2Wiki and HotpotQA have RK and SRK; the KBs have
+     SRK; MuSiQue, SQuAD and MultiHop-RAG have RK.
+   - K is e3v's kNN-3 everywhere.
+   - The dedup is S > R > K. Labels are by rule (section 8); Part B's labels are as in section 7, and H_5 is R.hub.
+   - REC is still the record (section 3), checked by gate G-U. The bound reads REC.
+
+### 12.2 What is judged
+
+- **The base, B0** (per dataset and version) = S (SRK only) ∪ W2_S ∪ F0T ∪ K_e3v.
+  - On the KBs, F0T is F0T_u.
+  - On the passage datasets, B0 is section 7's "L2e without H".
+- **The forms, in the chain's order:** H5, HM, HK1, NTc, NT1, HK2, H10.
+  - H5, HM, HK1, HK2 and H10 come from e3v's R.hub table on that dataset's rule text. Its exclusion is
+    N = W2_S ∪ F0T ∪ K_e3v, as section 4 (on the KBs, F0T_u). S is never read, as on the passage datasets.
+  - NTc and NT1 are built on e3v's rows.
+  - The passage tables are zul2's, already declared and partly built, read by zul2's build identity.
+- **The judged cells.** s1eval decides; s1sel is read beside. The cells are:
+  - MuSiQue: CH and GP (RK);
+  - HotpotQA and 2Wiki: GP, both RK and SRK;
+  - WebQSP and MetaQA: GP (SRK). KB GP counts questions with 2 to 10 golds only, as UL1 does.
+  - SQuAD has no slot. It enters through the size condition only.
+
+### 12.3 The decision: one decision, all datasets
+
+The forms are judged one at a time, in the order above. Each is judged over the running base: B0 and the forms carried
+before it.
+
+**A form is carried on every dataset, or on none.** It is carried when all three conditions hold:
+- **(a) Gain.** The paired difference over questions is ABOVE in at least one judged cell and BELOW in none. This uses
+  zap1.boot_diff with 2,000 resamples, seed 0. At graph level a form only adds links, so BELOW cannot occur; the
+  condition is stated as given.
+- **(b) Price.** In every judged cell where the form adds new slots, the pairs it adds to that version's union, divided
+  by the new slots, are at most P* = 4,997.1.
+  - P* is H_5e's price on MuSiQue s1eval CH, from section 7, filed in 61fca78. The report checks it against
+    outputs/ul2/musique/grade.json.
+  - The coordinator's reading carries no minimum count of new slots, so section 7's 20 is not part of this rule.
+- **(c) Size.** The running base with the form is at most 1.30 × |REC| on every dataset and version, SQuAD included.
+
+**H_5 is the chain's first form.** If it fails, H is carried nowhere, and every later form is judged over B0 without it.
+If HotpotQA's roughly 19 million R.hub pairs break (b) or (c) there, H is carried nowhere.
+
+**If the base itself is over the bound.** If B0 alone is over 1.30 × |REC| on some dataset or version, no form can meet
+(c), and the verdict is BASE_OVER_BOUND.
+- The chain still runs, and every form's (a) and (b) are recorded.
+- The call goes back to the user.
+- The MetaQA cost reading above makes this possible there, through F0T_u.
+
+**The verdicts:** CARRIED (the forms), NONE_CARRIED, BASE_OVER_BOUND, or REFUSED (a grade missing, or not this code's).
+
+**Read beside, never deciding:**
+1. MuSiQue's own chain verdict as filed in section 11.1 ({HK1, NTc}), kept as it is.
+2. **U-name:** the same chain with the KBs' F0T as filed by UL1 (the name text) in place of F0T_u. One run then shows
+   what the rule text does to F0T.
+3. Every step's s1sel cells, at the s1eval chain's running base.
+4. **A scale-free price per cell:** (pairs added / |REC|) ÷ (new slots / the cell's slots), set beside H_5e's on
+   MuSiQue CH.
+   - It is shown because P* counts pairs per slot.
+   - HotpotQA's and 2Wiki's graphs are many times MuSiQue's: frozen H_5 adds 19.4M and 22.2M pairs there
+     (section 11.1).
+5. L2f, frozen H_5 with frozen K, on every dataset.
+
+**MultiHop-RAG** joins when MHR1 files its package. The chain then runs again over the seven datasets, and that call
+replaces this one.
+
+### 12.4 Gates (a failure stops that dataset)
+
+- **G-T, the KB rule text.** zabl_u's recipe identity (the sha256 ABL-U's build computes) and the nodes' sha256 must
+  equal ABL-U's filed build record. ABL-U's W2_S is read as UL1 reads it (zul1.rule_part).
+- **G-F, F0T's code on the KBs.** Run on the KB's filed name text (zu2r.corpus), the same build path must reproduce
+  UL1's filed F0T exactly: the same pairs, and the same key count as UL1's build record. Only then is F0T_u built on
+  the rule text.
+- **G-C on the rule text.** The keys the key pass skips (df 2 to 25) must hold only F0T_u's pairs (zul2.gate_gc).
+- **G-U and G-H** are unchanged: REC must link exactly UL1's filed counts in every cell, and G-H must pass on the frozen
+  passage tables.
+- **Builds are read by their build identity** (functions and constants), as in zul2.
+
+### 12.5 Code, rows and outputs
+
+**Code.** outputs/mp_unified/zul2u.py is new. It imports zul2, zul1, zmhb, zabl_u, zu2r and zap1, and edits none of
+them. Its commands:
+- `kbtext --ds metaqa|webqsp`: G-T, G-F, then F0T_u. Writes outputs/ul2u/<d>/f0t_u.npz and kbtext.json.
+- `hbuild --ds metaqa|webqsp --enc frozen|e3v`: R.hub's table on the rule text, using zul2's key pass, exact rows and
+  picks. Writes outputs/ul2u/<d>/h_<enc>.npz and .json.
+- `nbuild --ds metaqa|webqsp`: the written-name forms on the rule text. Writes outputs/ul2u/<d>/nt_e3v.npz and .json.
+- `grade --ds D` (all six): REC, B0, U-name's base and L2f; each form's pairs over each base (a histogram of form
+  masks, so that any carried set's union size is exact); each judged cell's slot masks. Writes
+  outputs/ul2u/<d>/grade.json and masks.npz.
+- `report`: the chain of section 12.3. Writes outputs/ul2u/report.json and report.md.
+
+**Rows.** The host rows are named ul2u-*. The KB builds and the MuSiQue, SQuAD and MetaQA grades run now on the host
+CPU. WebQSP's e3v builds wait for e4g-knn-webqsp. HotpotQA's and 2Wiki's grades wait for zul2's -s rows.
+
+**Outputs.** The json records are committed. The arrays (npz) are not.
