@@ -1,0 +1,29 @@
+{
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 20.10",
+ "dataset": "metaqa",
+ "nodes": 43234,
+ "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "pointer_index_file": "_history/materialize/metaqa__pointer_index__dense.npz",
+ "pointer_index_sha256": "2551b902901e5b22eb6cfb9ab08060e8a9ecacf8e7fcc9abb267a06f830a43a3",
+ "pointer_index": "data/final_canonical/metaqa/pointer_index/dense.npz",
+ "vectors_distinct_source_rows": 43234,
+ "knn_distinct_source_rows": null,
+ "source_row_groups": 43234,
+ "text_groups": 43234,
+ "text_groups_sha256": "628fb8310cb9ba862b285a5f6901a49087e594544702faa5a270c05a2e5484c0",
+ "text_groups_split": 0,
+ "split_text_groups": [],
+ "positions_whose_group_spans_texts": 0,
+ "G_SR": "PASS",
+ "G_T": "PASS",
+ "npz_sha256": "36a2c87a2f949df318adfcefe30f495fb44f12aca7c0a2fd10f6498dd581121e",
+ "code_sha256": {
+  "zenc4s.py": "3d13fabf08d022f41b9fce9ab1cfc4324f81dc0d5ccd4e657442242c28bf5852",
+  "zenc4g.py": "5591fb495a26fc9dcdd06aa4ea17bc3cd0f60de6a0d2317d3eeb4e3b53bb0bc9",
+  "zenc1.py": "88285cb77949a90977e3f35159ae1f5a2f1b591a368e3dc4cbbe404d2a717841",
+  "zenc1b2.py": "14b4746511bf323338c8fb2a2917a57b8939ee292636b3bd47cc781fb41e2795"
+ },
+ "seconds": 0.8,
+ "utc": "2026-11-21T09:11:06Z"
+}

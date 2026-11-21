@@ -1955,6 +1955,65 @@ shas). Report: outputs/enc/e4/report.md.
 - **GPU:** 0.15 of the card for the two checks, 0.50 for the large ones. Estimate: about 1 h for 2Wiki's frozen GK-G,
   less for the others and for e3v.
 
+### 20.10 K's groups as the record's source rows (added 21 Nov 2026, 14:43 IST, before any e3v K number on HotpotQA or 2Wiki)
+
+- **What happened:**
+  - GK-G failed on HotpotQA (`e4g-gk-hotpotqa`, 15,008 s of search on half the card). Of the record's 11,946,289
+    pairs, 11,946,215 were rebuilt.
+  - 87 pairs were found only by the rebuild (61 outside tie rows), and 74 only in the record (53 outside tie rows).
+    The common pairs' weights agreed within 7.1e-5.
+  - Under 20.9 that FAIL stops HotpotQA's e3v K. The feeder's retry of the row was lost in the host's restart, and the
+    chain behind it was dropped.
+- **Why (from the package, before any new number):**
+  - The record searches over distinct source rows (9.2). zenc1 stands in for a source row with a text group, because
+    "the package carries no pointer index".
+  - It does carry one. Frozen's vector manifest names the pointer index it was materialised from
+    (`materialised.pointer_index`, with its sha256). The file is in the package under `_history/materialize/`, which
+    the host mirror does not copy.
+  - On HotpotQA the index has 5,220,748 distinct source rows, the manifests' count, against 5,220,732 text groups.
+  - Six text groups hold more than one source row, which makes 16 extra rows:
+    - Three are split by their stored rows (positions 3979, 3983 and 3997).
+    - Three have identical stored rows but separate source rows (1783803, 2791038 and 3210908). In the record such
+      rows can be each other's neighbours at score 1.
+  - Every source row lies inside one text group. On MuSiQue the two counts are equal (9.2), and GK-G passed there, on
+    MetaQA and on WebQSP.
+  - 2Wiki's GK-G row was cancelled after 4 minutes, before this cause was found. On 2Wiki the source-row groups turn
+    out to equal its text groups (the table below), so its GK-S is 20.9's GK-G run again, under the one code path.
+- **What changes:** only the groups. A source-row group is a set of positions with the same (src, row) in that pointer
+  index. Its vector is still its lowest position's row; all of a group's stored rows are identical (the manifest's
+  proof, new[i] == old[row[i]]). Each position still inherits its group's neighbours. The search (zenc4g's
+  nn_top_torch), out_positions, scores_at, k_edges and tie_rows are unedited. The code is
+  outputs/mp_unified/zenc4s.py; zenc4g has run rows and stays unedited.
+- **Two new gates, from `groups` (run on the laptop, where the index is; the groups file is pushed):**
+  - **G-SR:** the index's sha256 must equal the vector manifest's pin, and the group count must equal both of the
+    package's source-row counts (the vector manifest's and the kNN manifest's).
+  - **G-T:** no source-row group spans two texts.
+  - The host re-checks the pin and the counts before every search.
+
+| dataset | source-row groups | text groups | text groups split |
+|---|---|---|---|
+| HotpotQA | 5,220,748 | 5,220,732 | 6 |
+| 2Wiki | 5,982,725 | 5,982,725 | 0 |
+| WebQSP | 1,791,533 | 1,791,533 | 0 |
+| MuSiQue | 117,533 | 117,533 | 0 |
+| MetaQA | 43,234 | 43,234 | 0 |
+| SQuAD | 20,233 | 20,233 | 0 |
+
+- **GK-S:** GK-G's test, unchanged (tie rows, weights within 1e-3), with the source-row groups, on HotpotQA and
+  2Wiki. It writes outputs/enc/e4/gks_<ds>.json and keeps up to 500 unexplained pairs of each kind. A FAIL stops that
+  dataset's e3v K.
+- **e3v's K on HotpotQA and 2Wiki:** the same search with the same groups, once GK-S and E4's FC have passed. It goes
+  to the same path, outputs/enc/e4/knn/e3v/<ds>.npz, so UL2's reader is unchanged. Where the two counts are equal, a
+  dataset's K already built with text groups stands.
+- **Rows:**
+  - e4s-selftest;
+  - e4s-gk-hotpotqa and e4s-gk-2wiki (half the card, about 4 h and 5 h, as HotpotQA measured);
+  - then e4s-knn-hotpotqa and e4s-knn-2wiki.
+  - UL2's HotpotQA and 2Wiki rows behind the old K rows run again under new names and wait on these.
+- **The self-test passed.** The toy has one text holding two source rows with identical stored rows. Against a
+  brute-force record over source rows, the text groups FAIL (3 pairs found only by the rebuild, 2 only in the
+  record), and the source-row groups reproduce the record exactly.
+
 ## 21. E5: how small e3v's vectors can be stored (declared 21 Nov 2026, 03:52 IST, before any E5 number)
 
 Code: outputs/mp_unified/zenc5.py. Report: outputs/enc/e5/report.md.
