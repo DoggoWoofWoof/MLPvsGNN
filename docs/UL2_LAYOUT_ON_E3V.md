@@ -458,3 +458,113 @@ them. Its commands:
 CPU. WebQSP's e3v builds wait for e4g-knn-webqsp. HotpotQA's and 2Wiki's grades wait for zul2's -s rows.
 
 **Outputs.** The json records are committed. The arrays (npz) are not.
+
+### 12.6 Carrying by budget (declared 21 November 2026, 17:43 IST, 12:13 UTC)
+
+The user ruled on section 12's BASE_OVER_BOUND, 21 November, verbatim: "what? somehow make it carry".
+
+This subsection replaces section 12.3's base on the KBs and its size condition (c). Everything else in sections 12.1 to
+12.5 stands. It is numbered 12.6 because 12.4 already holds the gates. It is declared before any judged form number on
+HotpotQA, 2Wiki or WebQSP.
+
+**What had been seen when it was written.**
+- The user's "make it carry".
+- MuSiQue's Part B numbers (section 11.1).
+- Section 12's records filed in 3a0f788 (MuSiQue, SQuAD, MetaQA). Only their gates, sizes and form pair counts were
+  read: MetaQA's F0T_u holds 706,154 pairs against the filed F0T's 12,605, so B0 = 2.599 × |REC|. U-name's base is
+  0.994 × |REC| on MetaQA, 1.0003 on MuSiQue and 0.998 on SQuAD. The per-form gains in those records were not read.
+- Nothing of e3v on HotpotQA, 2Wiki or WebQSP.
+
+#### 12.6.1 The base: F0T reads the node's own text
+
+- **F0T reads a node's own text.** That is a passage's body, and a KB entity's name.
+- So on the KBs the deciding base takes UL1's filed F0T (section 12's U-name reading):
+  B0 = S ∪ W2_S ∪ F0T ∪ K_e3v on every dataset, with F0T as UL1 filed it. On the passage datasets nothing changes.
+- **Why F0T_u moves beside.** ABL-U's rule text appends the names of the entity's KB neighbours. Those are its facts,
+  and S already links them. F0T on that text pairs entities that share a neighbour's name; that is what made MetaQA's
+  F0T_u 56 times the filed F0T.
+- **The KBs' other R rules stay as section 12 built them.**
+  - W2_S is ABL-U's, as filed.
+  - R.hub's table and the written names read the rule text.
+  - Their exclusion stays N = W2_S ∪ F0T_u ∪ K_e3v. The key pass skips the keys of df 2 to 25, whose pairs F0T on the
+    same text holds (gate G-C), so its exclusion must hold F0T on that text.
+  - So F0T_u's pairs enter the layout neither through the base nor through H: H never picks them.
+- **Beside:** section 12's U (F0T_u) readings, from zul2u's grades and report.
+
+#### 12.6.2 The budget: a form keeps its highest-ranked pairs
+
+**The room.** On each dataset and version, the room is ⌊1.30 × |REC|⌋ minus the running union (B0 and the kept parts of
+the forms carried so far). It is read in integers: a union U fits when 100 × U ≤ 130 × |REC|.
+
+**The cut.** A form is cut, on each dataset, to the longest prefix of its ranked list whose new pairs fit the room in
+every version of that dataset.
+- One cut per dataset, so R is the same family in both versions (2Wiki, HotpotQA).
+- A pair already in the running union takes no room. In SRK, a pair in S takes no room there.
+- On a dataset where the room is enough, the whole form is kept.
+- On a dataset whose base alone is over the bound, the forms keep nothing, and the record names it.
+- So condition (c) holds by construction. The report checks it.
+
+**Each form's ranked list.** The order is the build's own score. No gold is read, and no constant or weighting is added.
+- **H5, H10** (R.hub's table on e3v): the table's score. That is the exact float32 dot product of the two nodes' stored
+  e3v rows (tab_s, and the exact list's ov_s on flagged rows). A pair picked from both ends keeps the higher of its
+  stored scores.
+- **HM** (H10's pairs picked from both ends): the same score.
+- **HK1, HK2** (a hub key's best one and two): the hub key's score (hk_s1, hk_s2). A pair from several hub keys keeps its
+  highest.
+- **NT1** (a namer's best writer): the build's own score, the namer-writer dot product of the stored e3v rows. NT1 stores
+  only its pairs, so the ntrank row recomputes the score in float32 from the same rows.
+- **NTc has no score in its build.** It takes every namer-writer pair of a key whose namers plus writers are at most 25.
+  - Its order is that count, the group size its cap reads, smallest first.
+  - A pair from several keys keeps its smallest group.
+  - The ntrank row recomputes the groups from the same names and written entries.
+- **Ties** in every list go to the lower pair key (lo × n + hi) first, as the builds break ties to the lower id.
+
+#### 12.6.3 The decision
+
+- It is section 12.3's chain, with conditions (a) and (b) read on what each form keeps.
+- The order is H5, HM, HK1, NTc, NT1, HK2, H10. Each form is judged over the running base.
+- (a) and (b) are unchanged:
+  - (a) ABOVE in at least one judged s1eval cell, and BELOW in none;
+  - (b) a price of at most P* = 4,997.1 in every judged cell where the form adds slots.
+- A form that is not carried takes no room.
+- If a form fails (b), the record names each cell and its price over P*. (b) is not loosened.
+- **Verdicts:**
+  - CARRIED, with each carried form's cut on each dataset: the rank kept, the pairs kept of its new pairs, and the score
+    at the cut;
+  - NONE_CARRIED;
+  - REFUSED, when a grade is missing or is not this code's.
+- **Read beside, never deciding:**
+  1. Each step's uncut reading: the whole form over the same running base, as section 12.3 read it.
+  2. s1sel at each step.
+  3. The scale-free price.
+  4. Section 12's U and U-name verdicts (zul2u's report, once filed).
+  5. MuSiQue's chain as filed in section 11.1.
+- **MultiHop-RAG** joins when MHR1 files its package. The chain then runs again over seven datasets, and that call
+  replaces this one.
+
+#### 12.6.4 Gates (a failure stops that dataset)
+
+- **G-R:** each ranked list holds exactly the pairs zul2 derives for that form (h_pairs, mutual_pairs, hk_pairs).
+- **G-N:** the recomputed NTc pairs are exactly the filed NTc, and the scored NT1 pairs exactly the filed NT1.
+- **G-U and G-H** are unchanged. The frozen passage tables are read from their records.
+- **Sizes against the filed grades,** where they exist: REC and U-name's base must equal zul2u's REC and N, and zul2's
+  REC (and, on a KB, zul2's L2e).
+- **Builds are read by their build identity,** so a change to the report alone does not stale a grade.
+
+#### 12.6.5 Code, rows and outputs
+
+**Code.** outputs/mp_unified/zul2c.py is new. It imports zul2u, zul2, zul1, zmhb, zap1 and zenc, and edits none of them.
+Its commands:
+- `ntrank --ds D`: NTc's groups and NT1's scores; gate G-N. Writes outputs/ul2c/<d>/ntrank.npz and .json.
+- `grade --ds D`: each form's ranked pairs beyond B0, their ranks and scores; S membership; each judged cell's slot
+  ranks and B0 cover; the sizes. No union is built: sizes are counted pairwise. Writes outputs/ul2c/<d>/ranks.npz and
+  grade.json.
+- `report`: the chain of 12.6.3. Writes outputs/ul2c/report.json and report.md, and outputs/ul2c/<d>/carried.npz (the
+  kept pairs beyond B0, each with the carried forms that keep it, for the labels).
+
+Each record holds its own process's peak working set and peak commit. The next rows' memory asks are read from those.
+
+**Rows.** The host rows are named ul2c-*. Each waits for its tables: zul2's on the passage datasets (HotpotQA and 2Wiki:
+the -s rows), zul2u's on the KBs.
+
+**Outputs.** The json records are committed. The arrays (npz) are not.
