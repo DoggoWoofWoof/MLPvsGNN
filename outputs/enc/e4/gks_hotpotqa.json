@@ -1,0 +1,41 @@
+{
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 20.10",
+ "dataset": "hotpotqa",
+ "enc": "frozen",
+ "nodes": 5233329,
+ "nodes_sha256": "c777ab4b7a64eaaa5af852265daf6ba9f9debb4658a67f0c96595662e43f182a",
+ "groups": 5220748,
+ "groups_kind": "the record's source rows (pointer index, 20.10)",
+ "groups_sha256": "bb4cc74e0b10c3108d4c18e712fceb2bba0b1bd1714610cf220b231a328cf742",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "edges": 11946289,
+ "tie_rows": 528335,
+ "device": "NVIDIA RTX 4500 Ada Generation",
+ "tf32": false,
+ "seg_rows": 1223338,
+ "gpu_peak_gb": 9.5,
+ "search_seconds": 85759.8,
+ "code_sha256": {
+  "zenc4s.py": "3d13fabf08d022f41b9fce9ab1cfc4324f81dc0d5ccd4e657442242c28bf5852",
+  "zenc4g.py": "5591fb495a26fc9dcdd06aa4ea17bc3cd0f60de6a0d2317d3eeb4e3b53bb0bc9",
+  "zenc1.py": "88285cb77949a90977e3f35159ae1f5a2f1b591a368e3dc4cbbe404d2a717841",
+  "zenc1b2.py": "14b4746511bf323338c8fb2a2917a57b8939ee292636b3bd47cc781fb41e2795"
+ },
+ "threads": 4,
+ "stage": "ENC E4: GK-S (frozen on the GPU, the record's source rows)",
+ "gk": {
+  "record_pairs": 11946289,
+  "rebuilt_pairs": 11946289,
+  "common": 11946273,
+  "rebuilt_only": 16,
+  "record_only": 16,
+  "rebuilt_only_unexplained": 0,
+  "record_only_unexplained": 0,
+  "weight_max_abs_diff": 1.3113021850585938e-06,
+  "verdict": "PASS",
+  "rebuilt_only_unexplained_pairs": [],
+  "record_only_unexplained_pairs": []
+ },
+ "seconds": 86288.2,
+ "utc": "2026-11-22T10:33:43Z"
+}

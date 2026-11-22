@@ -1,0 +1,70 @@
+{
+ "stage": "ENC E5: read",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 21",
+ "dataset": "squad",
+ "questions": 11873,
+ "fs": {
+  "d5": true,
+  "d20": true,
+  "d1000": true,
+  "rrf5": true,
+  "ids": true
+ },
+ "fs_call": "PASS",
+ "variance_kept": {
+  "own": 0.985,
+  "loo": 0.9834
+ },
+ "recall": {
+  "fp16": {
+   "d5": 83.69,
+   "d20": 92.05,
+   "d1000": 99.45,
+   "rrf5": 88.25
+  },
+  "int8": {
+   "d5": 83.67,
+   "d20": 92.07,
+   "d1000": 99.44,
+   "rrf5": 88.26
+  },
+  "pca768-own": {
+   "d5": 83.33,
+   "d20": 91.89,
+   "d1000": 99.45,
+   "rrf5": 87.98
+  },
+  "pca768-own+int8": {
+   "d5": 83.34,
+   "d20": 91.89,
+   "d1000": 99.45,
+   "rrf5": 88.03
+  },
+  "pca768-loo": {
+   "d5": 83.19,
+   "d20": 91.84,
+   "d1000": 99.44,
+   "rrf5": 87.96
+  },
+  "pca768-loo+int8": {
+   "d5": 83.21,
+   "d20": 91.82,
+   "d1000": 99.44,
+   "rrf5": 87.97
+  }
+ },
+ "npz_sha256": "97490390d62ddb230f844ec15fce94cfec3bea32cf66324fd14fb4a8d137f5d3",
+ "e0_read_sha256": "f86c31c6cd66c1375948d5b3533bf62a7a8d5cc52320d5a70a8ca71e306feec1",
+ "moments": {
+  "squad": "21998e7cf88909cf956aa4f7e6c8864823d2da866f7e1b48392246d2a46fe9a4",
+  "musique": "b6fbd311817b163d985b36f46a03c78902b40d5ad2e364b9734441477c81c7be",
+  "hotpotqa": "326e87785545bae0f04ba8fc157670df4fa6b1832c6ad41df3f2461a49e3df44",
+  "2wiki": "b4c305ad68c4622756397d271a140dbd3c03a948038f81039c45bbe8b43e5dd9",
+  "metaqa": "44c5bf31161e272f844c4361efed7f7a636f413041aaccb31657c501161dad6f",
+  "webqsp": "aaf13da7f851d23d486b8006f02c1f57a83179bf4b72606b3e83b10f4bfc9c9d"
+ },
+ "code_sha256": "4b0b470b4a886d0858b99e3f66a29de3d5c5ba65aa8cb74a98b35ecac7438120",
+ "threads": 8,
+ "seconds": 168.6,
+ "utc": "2026-11-21T04:54:14Z"
+}

@@ -2014,6 +2014,39 @@ shas). Report: outputs/enc/e4/report.md.
   brute-force record over source rows, the text groups FAIL (3 pairs found only by the rebuild, 2 only in the
   record), and the source-row groups reproduce the record exactly.
 
+### 20.11 Results so far (filed 22 Nov 2026, 22:25 IST)
+
+- **The read (20.5, beside, no call):** outputs/enc/e4/report.md. FC passed on all four new datasets.
+
+| dataset | questions | frozen R@5 | e3v R@5 | R@5 gap | R@20 gap | R@1000 gap |
+|---|---|---|---|---|---|---|
+| SQuAD | 11,873 | 87.69 | 83.69 | -4.00 [-4.56, -3.46] BELOW | -2.65 [-3.06, -2.26] BELOW | -0.30 [-0.44, -0.18] BELOW |
+| MuSiQue | 2,417 | 45.72 | 47.69 | +1.97 [+1.01, +2.88] ABOVE | -0.40 [-1.28, +0.43] LEVEL | -1.89 [-2.55, -1.24] BELOW |
+| HotpotQA | 7,405 | 65.77 | 65.35 | -0.43 [-0.96, +0.13] LEVEL | -1.26 [-1.75, -0.76] BELOW | -0.68 [-1.06, -0.30] BELOW |
+| 2Wiki | 12,576 | 51.71 | 62.55 | +10.85 [+10.41, +11.29] ABOVE | +6.82 [+6.46, +7.23] ABOVE | +0.20 [-0.07, +0.48] LEVEL |
+| WebQSP | 1,503 | 10.95 | 6.73 | -4.22 [-5.32, -3.17] BELOW | -6.22 [-7.63, -4.91] BELOW | -14.12 [-16.08, -12.18] BELOW |
+| MetaQA | 9,785 | 0.87 | 0.65 | -0.22 [-0.38, -0.04] BELOW | -0.49 [-0.75, -0.23] BELOW | +4.94 [+4.15, +5.75] ABOVE |
+
+- Where e3v stands before the link work:
+  - ABOVE frozen at R@5 on 2Wiki (+10.85) and MuSiQue (+1.97), LEVEL on HotpotQA.
+  - BELOW on SQuAD (-4.00), WebQSP (-4.22) and MetaQA (-0.22).
+  - WebQSP's R@1000 gap (-14.12) is the largest: its pools start from fewer golds, so the KB links and the
+    vectors' semantic-space work matter most there.
+- **GK-S on HotpotQA: PASS** (outputs/enc/e4/gks_hotpotqa.json, 20.10). With the source-row groups the GPU search
+  rebuilds the record's frozen K:
+  - 11,946,273 of 11,946,289 pairs are common; 16 are found only by the rebuild and 16 only in the record, all of
+    them explained by ties (0 unexplained of each kind).
+  - The common pairs' weights agree within 1.3e-6.
+  - So HotpotQA's e3v K goes ahead (e4s-knn-hotpotqa).
+- **Time:** the search took 85,760 s against 20.10's estimate of about 4 h.
+  - The first of its five segments ran in 1,499 s, at the expected rate (about 62 ms per 4,096 x 65,536 block).
+  - The second took 2,923 s. From its end (17:20 IST on 21 Nov) segments 3 to 5 ran 23 to 32 times slower than the
+    first. In the same hours the host dropped off the network and its rx agent's calls timed out.
+  - The card at 22:20 IST on 22 Nov (P2, at its 210 W power cap, 87 C) does not explain such a factor. The host was
+    degraded, not the search.
+  - E5's 2Wiki read (21.6) ran in the same hours and took 51,347 s, against HotpotQA's 4,164 s.
+  - 2Wiki's GK-S (e4s-gk-2wiki) started at 22:10 IST on 22 Nov.
+
 ## 21. E5: how small e3v's vectors can be stored (declared 21 Nov 2026, 03:52 IST, before any E5 number)
 
 Code: outputs/mp_unified/zenc5.py. Report: outputs/enc/e5/report.md.
@@ -2065,6 +2098,32 @@ free and PCA-768 + int8 near free. This stage reads all six datasets, as the use
 - Six e5-read rows (8 CPU threads each); each waits for all six moments (the loo fits) and for its dataset's E0 read.
 - e5-report.
 - CPU only; it runs beside E4's GPU encodes.
+
+### 21.6 Results (filed 22 Nov 2026, 22:25 IST)
+
+- outputs/enc/e5/report.md, report.json and the six read_<ds>.json. FS passed on all six datasets (the report stops
+  on any FAIL).
+- **The call: int8** (1,152 bytes a document, 0.38 of frozen's). It is FREE on all six datasets: every gap is
+  LEVEL, and the largest point drop is -0.18 (WebQSP's R@1000).
+
+| dataset | int8 R@5 gap | int8 R@1000 gap | int8 RRF R@5 gap |
+|---|---|---|---|
+| SQuAD | -0.03 [-0.15, +0.08] | -0.01 [-0.03, +0.00] | +0.01 [-0.08, +0.10] |
+| MuSiQue | +0.06 [-0.08, +0.19] | +0.07 [-0.06, +0.21] | +0.03 [-0.15, +0.21] |
+| HotpotQA | -0.06 [-0.16, +0.04] | -0.02 [-0.09, +0.05] | -0.05 [-0.14, +0.04] |
+| 2Wiki | +0.04 [-0.02, +0.10] | -0.02 [-0.07, +0.03] | +0.01 [-0.05, +0.06] |
+| WebQSP | -0.01 [-0.07, +0.03] | -0.18 [-0.47, +0.10] | +0.06 [-0.15, +0.32] |
+| MetaQA | -0.01 [-0.03, +0.00] | -0.03 [-0.17, +0.10] | +0.01 [-0.01, +0.03] |
+
+- **No smaller form is FREE on all six:**
+  - pca768-own and pca768-own+int8 are FREE only on MuSiQue and WebQSP.
+  - Their R@5 drops 0.35 to 0.52 points (BELOW) on SQuAD, HotpotQA and 2Wiki, and their R@1000 drops 4.7 to 4.8
+    points on MetaQA.
+  - The loo forms (a projection fitted on the other five datasets) are FREE on none: on the KBs their R@1000 drops
+    3.7 (WebQSP) and 5.3 (MetaQA) points.
+- Beside, no call: on MuSiQue every PCA form raises R@1000 by 1.0 to 1.2 points (ABOVE) while R@5 stays LEVEL.
+- **What follows (21.4):** the unified world may store int8. Before any fit there, it grades int8's pools beside
+  fp16's on every dataset, and any BELOW keeps fp16.
 
 ## 22. E6: e3v's windows as a rescoring of the first stage, on every dataset (declared 21 Nov 2026, 04:45 IST, before any E6 number)
 
