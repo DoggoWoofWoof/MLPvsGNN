@@ -1,0 +1,180 @@
+{
+ "dataset": "squad",
+ "declared_in": "docs/UL2_LAYOUT_ON_E3V.md, section 12.6",
+ "nodes": 20233,
+ "nodes_sha256": "34ac47757e0080f0e2eb6c679009a6090ca97be39d576307ba7281db730c1a8b",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "kb": false,
+ "versions": [
+  "RK"
+ ],
+ "inputs": {
+  "ner_npz_sha256": "e8b061c3dc417d7c481e57d9f360dd98c825049d62c61958ca0fed655fa57a22",
+  "knn_npz_sha256": "fee9cca5435668378d2a139614cec141d0b4977991801a004c8ca43ee8ad796f",
+  "w2_s_npz_sha256": "3f44314052d91556d6d694cb97fc5319dcf84e80ef68790ec9a33800286880c5",
+  "f0t_npz_sha256": "04703c6d42e9d2717fc1a3e659d9ef6d376d85dd2bd2e410904a7573b09157e0",
+  "names_npz_sha256": "082a4c61f0563178da69802dc029008ba39becf12993bd6156ec66a1bd73f906"
+ },
+ "knn_e3v": {
+  "file": "outputs/enc/e2/knn/e3v/squad.npz",
+  "npz_sha256": "ee1a8df023af0705d89dbb09f739f3f298e0053da36b802169ed97b801c1cae4"
+ },
+ "table": {
+  "gate_GH": null,
+  "npz_sha256": "cf29799a083fea44167af669e6f2177ff69cd0eb2150fced0cb7af749ad6953b",
+  "sizes": {
+   "H3": 37564,
+   "H5": 60681,
+   "H10": 116928,
+   "HM10": 34187,
+   "HK1": 38713,
+   "HK2": 72729
+  },
+  "flagged_rows": {
+   "RK": {
+    "rows": 20233,
+    "flagged": 0
+   }
+  },
+  "build_sha256": "48695f416aa023141cbb3d34f62e703435f1e104d9253dd2101a7b8f0b67f84a",
+  "exclusion_pairs": 995869
+ },
+ "ntrank": {
+  "npz_sha256": "9315244a6325cb54accfc712df35a3cfa30ffebc967a40f1aa53253aed496487",
+  "gate_GN": {
+   "ntc_pairs": 100108,
+   "ntc_recomputed": 100108,
+   "ntc_keys": 11375,
+   "ntc_same": true,
+   "nt1_pairs": 55061,
+   "nt1_scored": 55061,
+   "nt1_same": true,
+   "verdict": "PASS"
+  }
+ },
+ "gate_GR": {
+  "H5": {
+   "pairs": 60681,
+   "verdict": "PASS"
+  },
+  "H10": {
+   "pairs": 116928,
+   "verdict": "PASS"
+  },
+  "HM": {
+   "pairs": 34187,
+   "verdict": "PASS"
+  },
+  "HK1": {
+   "pairs": 38713,
+   "verdict": "PASS"
+  },
+  "HK2": {
+   "pairs": 72729,
+   "verdict": "PASS"
+  }
+ },
+ "order": {
+  "H5": "R.hub table score: float32 dot of the two stored e3v rows (tab_s; ov_s on flagged rows), a pair's highest",
+  "H10": "as H5",
+  "HM": "as H5 (H10's pairs picked from both ends)",
+  "HK1": "the hub key's score (hk_s1), a pair's highest",
+  "HK2": "the hub key's scores (hk_s1, hk_s2), a pair's highest",
+  "NTc": "no score in its build: the group size (a key's namers + writers, at most 25), smallest first; stored as minus the size",
+  "NT1": "its build's score: the namer-writer float32 dot of the stored e3v rows (recomputed by ntrank)"
+ },
+ "form_pairs": {
+  "H5": 60681,
+  "HM": 34187,
+  "HK1": 38713,
+  "NTc": 100108,
+  "NT1": 55061,
+  "HK2": 72729,
+  "H10": 116928
+ },
+ "score_range": {
+  "H5": {
+   "first": 0.8363858461380005,
+   "last": 0.4993346929550171
+  },
+  "HM": {
+   "first": 0.8363858461380005,
+   "last": 0.5561336278915405
+  },
+  "HK1": {
+   "first": 0.8363858461380005,
+   "last": 0.4742480218410492
+  },
+  "NTc": {
+   "first": -2.0,
+   "last": -25.0
+  },
+  "NT1": {
+   "first": 0.8418248295783997,
+   "last": 0.5087778568267822
+  },
+  "HK2": {
+   "first": 0.8363858461380005,
+   "last": 0.4742480218410492
+  },
+  "H10": {
+   "first": 0.8363858461380005,
+   "last": 0.4898821711540222
+  }
+ },
+ "pairs_beyond_B0": {
+  "any": 253274,
+  "H5": 60681,
+  "HM": 34187,
+  "HK1": 38713,
+  "NTc": 72853,
+  "NT1": 55061,
+  "HK2": 72729,
+  "H10": 116928
+ },
+ "in_S": 0,
+ "sizes": {
+  "REC": {
+   "RK": 997652
+  },
+  "B0": {
+   "RK": 995869
+  }
+ },
+ "ratio_to_REC": {
+  "RK": 0.9982
+ },
+ "room": {
+  "RK": 301078
+ },
+ "against": {
+  "zul2u": {
+   "grade_sha256": "fa79efc75abf8eb1f899a546acd8a385d5312df41a8f3f1054d71b5b2b53978a",
+   "REC": "same",
+   "N": "same as B0"
+  },
+  "zul2": {
+   "grade_sha256": "9215a03a936133840be5e293a85962e1ac63450fb3723924b9773de432d54b35",
+   "REC": "same"
+  }
+ },
+ "cells": {},
+ "ranks_npz_sha256": "79cd3de5ffd7deacc502ef17315de47b0eeb30e01af245a9f1074efe1a2998ca",
+ "seconds": 2.2,
+ "utc": "2026-11-22T16:52:05Z",
+ "memory": {
+  "peak_working_set_gb": 0.09,
+  "peak_commit_gb": 0.08
+ },
+ "build_sha256": "8c3081396b95443621cd6e081b43efc0884bef134f4180e3fc5685d66c8edec0",
+ "zul2c_sha256": "fb4a3356931308cba6333fde66d55d9b23d0c973fffe219b92ce21dcb25e533e",
+ "zul2u_sha256": "bf41636269905d1a4c4f7a6f704dc723fbce152ef5c4e9852ee1e2621ab9cb6e",
+ "zabl_u_sha256": "dafde17682eec75cbcb14c45428e4f02068d71db4a2450d896fa4fa4a0fd2451",
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+ "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}

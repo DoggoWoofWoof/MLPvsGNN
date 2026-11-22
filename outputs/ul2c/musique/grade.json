@@ -1,0 +1,253 @@
+{
+ "dataset": "musique",
+ "declared_in": "docs/UL2_LAYOUT_ON_E3V.md, section 12.6",
+ "nodes": 117534,
+ "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "kb": false,
+ "versions": [
+  "RK"
+ ],
+ "inputs": {
+  "ner_npz_sha256": "f294708600750c48eae9e32d0895d517ac3a8b5d048c736a70e9a566af2fe9c6",
+  "knn_npz_sha256": "6020ac7e0b6773e64866b5e942dc0e02c3b704615ced8de4d557aa543221ef5b",
+  "w2_s_npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+  "f0t_npz_sha256": "a0cea3c450f4a8364d202d7f21fe949e288f2ed0ca325aadea199f7ed2a4eebc",
+  "names_npz_sha256": "279d4b6ff3a2d5e3fbbab9071bcc93328167da1c5d19e805c3a9c5ad7a8f9cda"
+ },
+ "knn_e3v": {
+  "file": "outputs/enc/e1b2/knn/e3v/musique.npz",
+  "npz_sha256": "cab52dd1bfb99a908fbb7c020174b7803f611f178e748068b2c0bd15a303c6fd"
+ },
+ "table": {
+  "gate_GH": "PASS",
+  "npz_sha256": "1f2a2c70fd28ac3f72a721d2e7112f5c245876555318a8e9bb52b14331cca7d6",
+  "sizes": {
+   "H3": 266647,
+   "H5": 429747,
+   "H10": 826642,
+   "HM10": 265292,
+   "HK1": 281823,
+   "HK2": 529407
+  },
+  "flagged_rows": {
+   "RK": {
+    "rows": 117534,
+    "flagged": 0
+   }
+  },
+  "build_sha256": "48695f416aa023141cbb3d34f62e703435f1e104d9253dd2101a7b8f0b67f84a",
+  "exclusion_pairs": 3388584
+ },
+ "ntrank": {
+  "npz_sha256": "6be4a4d3557a1f7ff442236adfda71234aa0e4bb5eb94b913be349341bc53863",
+  "gate_GN": {
+   "ntc_pairs": 573098,
+   "ntc_recomputed": 573098,
+   "ntc_keys": 60018,
+   "ntc_same": true,
+   "nt1_pairs": 417521,
+   "nt1_scored": 417521,
+   "nt1_same": true,
+   "verdict": "PASS"
+  }
+ },
+ "gate_GR": {
+  "H5": {
+   "pairs": 429747,
+   "verdict": "PASS"
+  },
+  "H10": {
+   "pairs": 826642,
+   "verdict": "PASS"
+  },
+  "HM": {
+   "pairs": 265292,
+   "verdict": "PASS"
+  },
+  "HK1": {
+   "pairs": 281823,
+   "verdict": "PASS"
+  },
+  "HK2": {
+   "pairs": 529407,
+   "verdict": "PASS"
+  }
+ },
+ "order": {
+  "H5": "R.hub table score: float32 dot of the two stored e3v rows (tab_s; ov_s on flagged rows), a pair's highest",
+  "H10": "as H5",
+  "HM": "as H5 (H10's pairs picked from both ends)",
+  "HK1": "the hub key's score (hk_s1), a pair's highest",
+  "HK2": "the hub key's scores (hk_s1, hk_s2), a pair's highest",
+  "NTc": "no score in its build: the group size (a key's namers + writers, at most 25), smallest first; stored as minus the size",
+  "NT1": "its build's score: the namer-writer float32 dot of the stored e3v rows (recomputed by ntrank)"
+ },
+ "form_pairs": {
+  "H5": 429747,
+  "HM": 265292,
+  "HK1": 281823,
+  "NTc": 573098,
+  "NT1": 417521,
+  "HK2": 529407,
+  "H10": 826642
+ },
+ "score_range": {
+  "H5": {
+   "first": 0.9999595284461975,
+   "last": 0.46894410252571106
+  },
+  "HM": {
+   "first": 0.9999595284461975,
+   "last": 0.5759170651435852
+  },
+  "HK1": {
+   "first": 0.9999595284461975,
+   "last": 0.46894410252571106
+  },
+  "NTc": {
+   "first": -2.0,
+   "last": -25.0
+  },
+  "NT1": {
+   "first": 0.9312578439712524,
+   "last": 0.47690048813819885
+  },
+  "HK2": {
+   "first": 0.9999595284461975,
+   "last": 0.46894410252571106
+  },
+  "H10": {
+   "first": 0.9999595284461975,
+   "last": 0.46894410252571106
+  }
+ },
+ "pairs_beyond_B0": {
+  "any": 1825682,
+  "H5": 429747,
+  "HM": 265292,
+  "HK1": 281823,
+  "NTc": 493720,
+  "NT1": 417521,
+  "HK2": 529407,
+  "H10": 826642
+ },
+ "in_S": 0,
+ "sizes": {
+  "REC": {
+   "RK": 3387597
+  },
+  "B0": {
+   "RK": 3388584
+  }
+ },
+ "ratio_to_REC": {
+  "RK": 1.0003
+ },
+ "room": {
+  "RK": 1015292
+ },
+ "against": {
+  "zul2u": {
+   "grade_sha256": "e6ec4fd5abc37d7298d8b75ddb2a5812f4e9f873e44b6f86ec0b62418d696e8f",
+   "REC": "same",
+   "N": "same as B0"
+  },
+  "zul2": {
+   "grade_sha256": "47ad0e7c030877e0fec42836b0a900063118e59300a9656de0b8458ac10d08bd",
+   "REC": "same"
+  }
+ },
+ "cells": {
+  "s1sel": {
+   "GP": {
+    "questions": 1534,
+    "slots": 3783,
+    "questions_npz_sha256": "0c3d07208f7cbfe263038ce65600020068e91b083e7a1a84a8b22a5f1e1187e6",
+    "RK": {
+     "linked": {
+      "REC": 1120,
+      "B0": 1128
+     },
+     "B0-REC": {
+      "diff": 0.21,
+      "lo": 0.03,
+      "hi": 0.41,
+      "call": "ABOVE"
+     }
+    }
+   },
+   "CH": {
+    "questions": 1534,
+    "slots": 2530,
+    "questions_npz_sha256": "0c3d07208f7cbfe263038ce65600020068e91b083e7a1a84a8b22a5f1e1187e6",
+    "RK": {
+     "linked": {
+      "REC": 1083,
+      "B0": 1088
+     },
+     "B0-REC": {
+      "diff": 0.2,
+      "lo": -0.04,
+      "hi": 0.44,
+      "call": "LEVEL"
+     }
+    }
+   }
+  },
+  "s1eval": {
+   "GP": {
+    "questions": 2417,
+    "slots": 5962,
+    "questions_npz_sha256": "48579db05059b7b0faa92fa7ac1a949e6669b4b91776da3cffbf690a5f48fdde",
+    "RK": {
+     "linked": {
+      "REC": 2005,
+      "B0": 2013
+     },
+     "B0-REC": {
+      "diff": 0.13,
+      "lo": -0.03,
+      "hi": 0.32,
+      "call": "LEVEL"
+     }
+    }
+   },
+   "CH": {
+    "questions": 2417,
+    "slots": 3987,
+    "questions_npz_sha256": "48579db05059b7b0faa92fa7ac1a949e6669b4b91776da3cffbf690a5f48fdde",
+    "RK": {
+     "linked": {
+      "REC": 1982,
+      "B0": 1984
+     },
+     "B0-REC": {
+      "diff": 0.05,
+      "lo": -0.15,
+      "hi": 0.28,
+      "call": "LEVEL"
+     }
+    }
+   }
+  }
+ },
+ "ranks_npz_sha256": "5c7589dd66c356ebcb8a00f925e03f378d92e76c41aaf427ba9d3993fa2d7ca3",
+ "seconds": 19.6,
+ "utc": "2026-11-22T16:53:38Z",
+ "memory": {
+  "peak_working_set_gb": 0.28,
+  "peak_commit_gb": 0.28
+ },
+ "build_sha256": "8c3081396b95443621cd6e081b43efc0884bef134f4180e3fc5685d66c8edec0",
+ "zul2c_sha256": "fb4a3356931308cba6333fde66d55d9b23d0c973fffe219b92ce21dcb25e533e",
+ "zul2u_sha256": "bf41636269905d1a4c4f7a6f704dc723fbce152ef5c4e9852ee1e2621ab9cb6e",
+ "zabl_u_sha256": "dafde17682eec75cbcb14c45428e4f02068d71db4a2450d896fa4fa4a0fd2451",
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+ "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}

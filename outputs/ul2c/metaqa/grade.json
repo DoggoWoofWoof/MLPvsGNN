@@ -1,0 +1,221 @@
+{
+ "dataset": "metaqa",
+ "declared_in": "docs/UL2_LAYOUT_ON_E3V.md, section 12.6",
+ "nodes": 43234,
+ "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "kb": true,
+ "versions": [
+  "SRK"
+ ],
+ "inputs": {
+  "ner_npz_sha256": "93065a2311c2b445cc14ce6458457c9e14ec0d3c641a4bc573ef4b175a374cb8",
+  "knn_npz_sha256": "f7c59640e816951148fee791bc8790e026461ee52a5b6741c63859244b5a4a16",
+  "structural_npz_sha256": "1b2027c64b2e62b5cf122f09a246ed4cb485841bf0823fcee246e8bf45bf8570",
+  "w2_s_npz_sha256": "3f2b97d1474552dae2fea1f7f8be5e83f7960950b38c0ca41bd3a78025aa7dd5",
+  "f0t_npz_sha256": "499e8c70d3d7d1375a77a609819aacdd40c8753ac2bf6f3d1ea277c5ae62a7fe",
+  "names_npz_sha256": "0ccad8b4b6a55c2bec41bfd36e6fa83f48dc448964e170cf15a2c191f517d720"
+ },
+ "knn_e3v": {
+  "file": "outputs/enc/e4/knn/e3v/metaqa.npz",
+  "npz_sha256": "2fa9040cc60acbb1e89649a1c6b70cb124f9a74afb94580e228a694704b005f1"
+ },
+ "table": {
+  "gate_GH": null,
+  "npz_sha256": "3bc68c57b2ec1054719b75f2237d50dfe7123f90eb21dbf637f18ad8c1198d60",
+  "sizes": {
+   "H3": 52962,
+   "H5": 86189,
+   "H10": 168883,
+   "HM10": 44272,
+   "HK1": 37512,
+   "HK2": 70226
+  },
+  "flagged_rows": {
+   "RK": {
+    "rows": 43234,
+    "flagged": 0
+   }
+  },
+  "build_sha256": "aaa5b026b65148fe95e841c4fbb333520ad7acd461361dca2b25c328aeff6633",
+  "exclusion_pairs": 914517
+ },
+ "ntrank": {
+  "npz_sha256": "be0252da70b9ff4f1e2513c3b3eba2e134c9a2a93d5ac9dcc9b9e20f10b0d225",
+  "gate_GN": {
+   "ntc_pairs": 89882,
+   "ntc_recomputed": 89882,
+   "ntc_keys": 2335,
+   "ntc_same": true,
+   "nt1_pairs": 54134,
+   "nt1_scored": 54134,
+   "nt1_same": true,
+   "verdict": "PASS"
+  }
+ },
+ "gate_GR": {
+  "H5": {
+   "pairs": 86189,
+   "verdict": "PASS"
+  },
+  "H10": {
+   "pairs": 168883,
+   "verdict": "PASS"
+  },
+  "HM": {
+   "pairs": 44272,
+   "verdict": "PASS"
+  },
+  "HK1": {
+   "pairs": 37512,
+   "verdict": "PASS"
+  },
+  "HK2": {
+   "pairs": 70226,
+   "verdict": "PASS"
+  }
+ },
+ "order": {
+  "H5": "R.hub table score: float32 dot of the two stored e3v rows (tab_s; ov_s on flagged rows), a pair's highest",
+  "H10": "as H5",
+  "HM": "as H5 (H10's pairs picked from both ends)",
+  "HK1": "the hub key's score (hk_s1), a pair's highest",
+  "HK2": "the hub key's scores (hk_s1, hk_s2), a pair's highest",
+  "NTc": "no score in its build: the group size (a key's namers + writers, at most 25), smallest first; stored as minus the size",
+  "NT1": "its build's score: the namer-writer float32 dot of the stored e3v rows (recomputed by ntrank)"
+ },
+ "form_pairs": {
+  "H5": 86189,
+  "HM": 44272,
+  "HK1": 37512,
+  "NTc": 89882,
+  "NT1": 54134,
+  "HK2": 70226,
+  "H10": 168883
+ },
+ "score_range": {
+  "H5": {
+   "first": 0.9008989930152893,
+   "last": 0.5494033098220825
+  },
+  "HM": {
+   "first": 0.9008989930152893,
+   "last": 0.6110551357269287
+  },
+  "HK1": {
+   "first": 0.9008989930152893,
+   "last": 0.5108611583709717
+  },
+  "NTc": {
+   "first": -3.0,
+   "last": -25.0
+  },
+  "NT1": {
+   "first": 0.8944228887557983,
+   "last": 0.5341396331787109
+  },
+  "HK2": {
+   "first": 0.9008989930152893,
+   "last": 0.5108611583709717
+  },
+  "H10": {
+   "first": 0.9008989930152893,
+   "last": 0.5412983894348145
+  }
+ },
+ "pairs_beyond_B0": {
+  "any": 313271,
+  "H5": 82016,
+  "HM": 40626,
+  "HK1": 35663,
+  "NTc": 83377,
+  "NT1": 54102,
+  "HK2": 67184,
+  "H10": 162921
+ },
+ "in_S": 9,
+ "sizes": {
+  "REC": {
+   "SRK": 351892
+  },
+  "B0": {
+   "SRK": 349818
+  }
+ },
+ "ratio_to_REC": {
+  "SRK": 0.9941
+ },
+ "room": {
+  "SRK": 107641
+ },
+ "against": {
+  "zul2u": {
+   "grade_sha256": "324eb74cd5e2ac372774bf6ba074677425f0ccaeb42bfcb28b797bf75d2e1078",
+   "REC": "same",
+   "N": "same as B0"
+  },
+  "zul2": {
+   "grade_sha256": "cdf58c110c7811e405cd3f4045ad1bc6eba885f317e70f6b9ba90749d21d9fd3",
+   "REC": "same",
+   "L2e": "same as B0"
+  }
+ },
+ "cells": {
+  "s1sel": {
+   "GP": {
+    "questions": 1497,
+    "slots": 6074,
+    "questions_npz_sha256": "a8119a120171b1527a99ef0f1a6e234de3a710f148b976e8fd59b97f8f2ef8e4",
+    "SRK": {
+     "linked": {
+      "REC": 925,
+      "B0": 851
+     },
+     "B0-REC": {
+      "diff": -1.22,
+      "lo": -1.74,
+      "hi": -0.75,
+      "call": "BELOW"
+     }
+    }
+   }
+  },
+  "s1eval": {
+   "GP": {
+    "questions": 9785,
+    "slots": 37446,
+    "questions_npz_sha256": "fcb6c401d7ed3e93b1ba8aa4db0400a62ed4bc3a851f6b8324bf8e9baa00248d",
+    "SRK": {
+     "linked": {
+      "REC": 5173,
+      "B0": 4912
+     },
+     "B0-REC": {
+      "diff": -0.7,
+      "lo": -0.86,
+      "hi": -0.55,
+      "call": "BELOW"
+     }
+    }
+   }
+  }
+ },
+ "ranks_npz_sha256": "51d7a31be52decb56b88131c80b774757a3bd4eaa4f89b826605dfaf0953bab2",
+ "seconds": 2.9,
+ "utc": "2026-11-22T16:53:22Z",
+ "memory": {
+  "peak_working_set_gb": 0.36,
+  "peak_commit_gb": 0.35
+ },
+ "build_sha256": "8c3081396b95443621cd6e081b43efc0884bef134f4180e3fc5685d66c8edec0",
+ "zul2c_sha256": "fb4a3356931308cba6333fde66d55d9b23d0c973fffe219b92ce21dcb25e533e",
+ "zul2u_sha256": "bf41636269905d1a4c4f7a6f704dc723fbce152ef5c4e9852ee1e2621ab9cb6e",
+ "zabl_u_sha256": "dafde17682eec75cbcb14c45428e4f02068d71db4a2450d896fa4fa4a0fd2451",
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+ "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}
