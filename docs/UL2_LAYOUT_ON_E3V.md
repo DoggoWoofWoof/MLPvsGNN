@@ -568,3 +568,70 @@ Each record holds its own process's peak working set and peak commit. The next r
 the -s rows), zul2u's on the KBs.
 
 **Outputs.** The json records are committed. The arrays (npz) are not.
+
+## 13. MultiHop-RAG joins the chain (declared 23 November 2026, 13:30 IST, 08:00 UTC)
+
+Sections 9.3, 12.1, 12.3 and 12.6.3 say MultiHop-RAG joins when MHR1 files its package, with the same rule, and that
+the chain then runs again over seven datasets. MHR1 filed (ac2b538). This section fixes how, before any R.hub,
+hub-key or written-name form is built on MultiHop-RAG. It changes nothing in sections 3-12 or their filed numbers.
+
+**What had been seen when it was written.**
+- MHR1's filed records: the package, the first stage, and the links (F0T 25,080 pairs; W2_S 2; K on each arm;
+  RK@e3v 25,343 and RK@frozen 25,304 pairs; GP over all 2,255 questions, where RK@e3v - RK@frozen is BELOW).
+- Section 12's and 12.6's records filed in 3a0f788 and 32ae84a (MuSiQue, SQuAD, MetaQA: gates, sizes and bases).
+- E6's point values on SQuAD, MuSiQue, WebQSP and MetaQA (another stage; no link number).
+- Nothing of H, HK, NT or any chain step on HotpotQA, 2Wiki, WebQSP or MultiHop-RAG.
+
+### 13.1 The layout on MultiHop-RAG
+
+- **RK** (no S: section 12.1.3). Its R and K are MHR1's filed builds, read by their sha256 in outputs/mhr1/links.json:
+  - W2_S: U2b's rule, one build with the frozen rows choosing among same-named targets (MHR1 section 5.1);
+  - F0T: UL1's build on each article's own text (zd84.rule_forms);
+  - K: kNN-3 on each arm's rows (zenc1's and zenc1b2's pieces).
+- **REC** = W2_S | F0T | K_frozen (MHR1's RK@frozen). **B0** = W2_S | F0T | K_e3v (MHR1's RK@e3v). The bound reads REC.
+- **The forms** are section 12.1's, with the same code and constants: H5, HM, HK1, NTc, NT1, HK2 and H10, from
+  zul2's key pass, overrides, picks and written names (zul2.key_pass, overrides, h_pairs, mutual_pairs, hk_pairs,
+  written_entries, nt_forms), and ranked as section 12.6.2 (zul2c.table_forms, nt_groups, ranked).
+  - Names: zmhb.build_entries_keep over (title, text) in node order, the same entries F0T's build reads.
+  - The exclusion is N = W2_S | F0T | K_arm (section 4). H is built on e3v (judged) and on frozen (L2f, beside).
+- **Labels and dedup** as section 8: R > K; R.mention, R.name_comention, R.title_comention, R.hub, R.hub_key,
+  R.written, K.knn.
+
+### 13.2 Slots and carves
+
+- **GP** is the only slot kind (every pair of a question's golds; zul1.gp_slots). MultiHop-RAG has no chain record.
+- **The carves are MHR1's splits** (section 2's split rule, fixed before any number): **s1eval = the test split**
+  (1,130 questions), **s1sel = the dev split** (224). The train split (901) is not read here; it stays for the refit.
+- JUDGED gains `multihoprag: GP`. DECIDE and BESIDE stay s1eval and s1sel.
+
+### 13.3 Gates (a failure stops MultiHop-RAG's numbers)
+
+- **G-L:** MHR1's link files hash to links.json's sha256s; F0T, W2_S and both K equal its counts; REC and B0 equal
+  MHR1's RK@frozen and RK@e3v pair counts.
+- **G1:** the name entries' key count equals MHR1's F0T build (26,532 keys).
+- **G-C:** every pair of every skipped key (df 2 to 25) is in F0T (zul2.gate_gc).
+- **G-U:** over all 2,255 questions, REC's and B0's linked GP slots equal MHR1's filed RK@frozen and RK@e3v counts.
+- **G-R and G-N:** as section 12.6.4 (each ranked list holds exactly zul2's derived pairs; NTc's groups and NT1's
+  scores recomputed equal the built NTc and NT1).
+- No G-H: HFO has no record on MultiHop-RAG.
+
+### 13.4 The decision
+
+- Section 12.6.3's chain, unchanged, over seven datasets: the six's zul2c grades and MultiHop-RAG's. Its verdict
+  replaces section 12.6's six-dataset call (as 12.6.3 says). It is read when all seven grades exist.
+- **Beside, never deciding:** MultiHop-RAG's cells alone at each step (cut and uncut), its s1sel cells, all its
+  questions, its three question types, and L2f (frozen H5 with frozen K).
+
+### 13.5 Code, rows and outputs
+
+**Code.** outputs/mp_unified/zul2m.py is new. It imports zul2c, zul2u, zul2, zul1, zmhb, zap1, zenc and zmhr, and
+edits none of them. Its commands:
+- `hbuild --enc e3v|frozen`, `nbuild`, `ntrank`, `grade`: MultiHop-RAG only (the laptop: 609 articles).
+- `report7`: the chain over the seven grades. Writes outputs/ul2m/report.json and report.md. JUDGED gains
+  multihoprag in that process only.
+
+**Rows.** MultiHop-RAG's builds and grade run on the laptop now. report7 runs on the host after the six ul2c grades
+(row ul2m-report7, waiting on ul2c-grade-*), with MultiHop-RAG's grade pushed there.
+
+**Outputs.** outputs/ul2m/multihoprag/ and outputs/ul2m/report.*. The json records are committed. The arrays (npz)
+are not.
