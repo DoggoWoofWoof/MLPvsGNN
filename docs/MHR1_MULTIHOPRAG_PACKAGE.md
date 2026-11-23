@@ -226,4 +226,50 @@ Under 50 MB in all.
 
 ## 9. Result
 
-(filed below once the report exists)
+Filed 23 November 2026, 11:35 IST. Records: outputs/mhr1/package.json, fc.json, cuts.json, first.json, links.json,
+grade.json, gp/, run-*.json and report.md (json and the report only; first/lists.npz, links/*.npz and the package's vectors
+and caches stay uncommitted).
+
+**Runs.** The three encodes ran on the host CPU under 3.1. The frozen arm took 142,371 s for the documents (10 threads, no
+article cut, the longest 16,447 tokens of 32,768, no OOM) and 1,198 s for the questions. Section 7's estimate was one to
+three hours: most of the run fell in the hours the host sat in Modern Standby (21 Nov 16:55 to 23 Nov 10:16 IST). FC passed
+on every row (609 articles, 2,255 questions). e3v's windows cut 13 articles (169 gold slots, 2.86%; 164 questions have a cut
+gold); frozen cut none; each count equals its encode's record.
+
+**First stage (section 4): e3v LOSES ON MULTIHOP-RAG.**
+
+- All 2,255 questions: d5 e3v 64.29, frozen 66.91, **-2.62 [-3.70, -1.56] BELOW**; rrf5 -1.56 [-2.30, -0.84] BELOW.
+- Other cells: d2 -0.61 LEVEL, d4 -2.18 BELOW, d10 -2.18 BELOW, d20 -1.00 BELOW; hits@4 -2.26 BELOW, hits@10 98.31 against
+  98.54 (-0.22 LEVEL), MAP@10 -0.67 BELOW, MRR@10 -0.64 LEVEL.
+- The test carve (1,130): d5 -2.19 [-3.79, -0.61] BELOW.
+- By type: comparison -2.88 BELOW, inference -3.75 BELOW, temporal -0.66 LEVEL.
+- The cut articles do not carry the gap. The 164 questions with a gold article e3v cut read d5 -0.30 [-4.52, +4.07] LEVEL
+  (rrf5 +3.61 ABOVE); the other 2,091 read d5 -2.80 [-3.87, -1.65] BELOW.
+- SPLADE alone: d5 57.46.
+
+**Links (sections 5 and 5.1): NOT_CARRIED (before H).** The deciding cell, GP over all questions: RK_e3v minus RK_frozen
+**-1.88 [-2.27, -1.49] BELOW** (GS -1.77 BELOW).
+
+- K_e3v minus K_frozen: -0.75 [-1.64, +0.13] LEVEL.
+- F0T holds 25,080 pairs (13.55% density) and links 84.67% of the gold pairs. W2_S holds 2 pairs (one build, on the frozen
+  rows), so R equals F0T (R minus F0T +0.00).
+- K over R: +0.43 [+0.26, +0.61] on e3v and +2.31 [+1.93, +2.73] on frozen. e3v's K has 1,366 pairs (263 outside R) and
+  frozen's 1,339 (224 outside R): frozen's fewer new pairs reach more gold pairs.
+- Labels (both arms): R.name_comention 25,005, R.title_comention 75, R.mention 2, S 0, K.knn 1,366 (e3v) and 1,339 (frozen).
+
+**Expectations (section 6).**
+
+1. Held: both arms' hits@10 are about 98, against about 75 at chunk level in the benchmark's paper.
+2. Failed: e3v is BELOW, and not on the long articles. The questions whose gold e3v cut read LEVEL; the gap is on the rest.
+3. Held: SPLADE d5 57.46; RRF5 is below each arm's d5.
+4. Failed: inference questions are the hardest at the first stage (d5 57.0 e3v, 60.8 frozen), then comparison (67.0, 69.9),
+   then temporal (70.5, 71.1).
+5. Held: W2_S has 2 pairs.
+6. Held: RK minus R is +0.43 and +2.31, both under +3.
+7. Held: K_e3v is LEVEL with K_frozen.
+
+**What this changes.** Nothing trains, and no filed graph, pool, fit or record changes. MultiHop-RAG now has its package,
+its e3v vectors and its links, so it joins UL2's chain as the seventh dataset (UL2 section 9.3: RK, with H_5 built by UL2's
+code), and its pools (section 8) follow the unified layout. Beside E4's reads, it is the fourth dataset where e3v's first
+stage reads BELOW frozen (with SQuAD, WebQSP and MetaQA; ABOVE on 2Wiki and MuSiQue, LEVEL on HotpotQA). D101 stands: e3v is
+the encoder and frozen the comparison, and the gap is for the links, the preprocessing and the semantic-space work to close.

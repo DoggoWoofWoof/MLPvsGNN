@@ -1,0 +1,56 @@
+{
+ "stage": "MHR1 cut articles",
+ "declared_in": "docs/MHR1_MULTIHOPRAG_PACKAGE.md section 3",
+ "dataset": "multihoprag",
+ "nodes": 609,
+ "cut_positions": {
+  "gtemodern": [
+   48,
+   49,
+   58,
+   94,
+   115,
+   136,
+   149,
+   165,
+   213,
+   222,
+   244,
+   520,
+   576
+  ],
+  "granitesm": [
+   48,
+   49,
+   58,
+   94,
+   115,
+   136,
+   149,
+   165,
+   213,
+   222,
+   244,
+   520,
+   576
+  ],
+  "frozen": []
+ },
+ "limit": {
+  "gtemodern": 8192,
+  "granitesm": 8192,
+  "frozen": 32768
+ },
+ "max_tokens": {
+  "gtemodern": 17049,
+  "granitesm": 17049,
+  "frozen": 16447
+ },
+ "encode_cut": {
+  "gtemodern": 13,
+  "granitesm": 13,
+  "frozen": 0
+ },
+ "utc": "2026-11-23T04:36:26Z",
+ "zmhr.py": "a7b76d4aa6c3ff91f607a0d6a21fe8013ecdf043ec52df80ee2696b6f65ad839"
+}

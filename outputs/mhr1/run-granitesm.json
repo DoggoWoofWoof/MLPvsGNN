@@ -1,0 +1,10 @@
+{
+ "enc": "granitesm",
+ "device": "cpu",
+ "threads": 4,
+ "budget": 8192,
+ "seconds": 1697.6,
+ "peak_working_set_gb": 2.94,
+ "utc": "2026-11-21T09:39:55Z",
+ "zmhr.py": "eb34e1f7e75ce36dd25789d04671e9d2afcc00877fb2f8a5f0668ebe76a33d46"
+}

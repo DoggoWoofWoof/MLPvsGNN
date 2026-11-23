@@ -1,0 +1,92 @@
+{
+ "stage": "MHR1 links",
+ "declared_in": "docs/MHR1_MULTIHOPRAG_PACKAGE.md sections 5 and 5.1",
+ "dataset": "multihoprag",
+ "nodes": 609,
+ "dataset_json_sha256": "0fff110d09c4c2447ba9d5304682a8c982d53bb4786e020d813d0cc2660467cc",
+ "rule_build": {
+  "keys": 26532,
+  "name_entries": 44495,
+  "title_run_entries": 233,
+  "articles_with_a_title_run": 163,
+  "lt_pairs": 25077
+ },
+ "F0": 25005,
+ "F0T": 25080,
+ "title_only": 75,
+ "W2_S": {
+  "tie_break_rows": "frozen (section 5.1)",
+  "mention_links": 3,
+  "sibling_links": 0,
+  "pairs": 2,
+  "descriptive_nodes": 609,
+  "surfaces": 2578,
+  "common_forms": 166,
+  "W2_surface_links": 3,
+  "W2_ambiguous": 0
+ },
+ "arms": {
+  "e3v": {
+   "W2_S": "links/rule/W2_S.npz (one build, section 5.1)",
+   "K": {
+    "groups": 609,
+    "edges": 1366,
+    "tie_rows": 62
+   },
+   "R": 25080,
+   "K_pairs": 1366,
+   "K_in_R": 1103,
+   "K_store": 263,
+   "RK": 25343,
+   "per_label": {
+    "S": 0,
+    "R.mention": 2,
+    "R.name_comention": 25005,
+    "R.title_comention": 75,
+    "K.knn": 1366
+   },
+   "files": {
+    "W2_S": "00b5b57909411d1ffae9a23fad257f5294731cc97845625d58b4e1ca254a940a",
+    "K": "869d2c49cee5cc41369dbd6600cda6ee5d0c4ac1ad95c0e6ef2f619fdcc1dea1",
+    "store": "dc50f736f22e19b71775094f426c8c4c924ef42aafc03b9f5beae4dbbffbc4de"
+   },
+   "vectors_manifest_sha256": "29722959d04395f0b9dc396bc549e192f090d184d42f4318b20e0ecfdff6d6c3"
+  },
+  "frozen": {
+   "W2_S": "links/rule/W2_S.npz (one build, section 5.1)",
+   "K": {
+    "groups": 609,
+    "edges": 1339,
+    "tie_rows": 39
+   },
+   "R": 25080,
+   "K_pairs": 1339,
+   "K_in_R": 1115,
+   "K_store": 224,
+   "RK": 25304,
+   "per_label": {
+    "S": 0,
+    "R.mention": 2,
+    "R.name_comention": 25005,
+    "R.title_comention": 75,
+    "K.knn": 1339
+   },
+   "files": {
+    "W2_S": "00b5b57909411d1ffae9a23fad257f5294731cc97845625d58b4e1ca254a940a",
+    "K": "10f06ca3f634b97a8c0cc6cc4b3c594672c69791dc4627adde0dbeb5dcb1d055",
+    "store": "48273ccb319ea3c8be6b6dec385a603ad2fc81044b9185511b9fa20aff2ea256"
+   },
+   "vectors_manifest_sha256": "cd76d032350a4d99707a9c792c15d97ae0f96ba4ff383b648cc9477271faa163"
+  }
+ },
+ "files": {
+  "F0": "345d21c15bfda50834613b27b72bee5122e4e85a258e65973867c762b217305c",
+  "F0T": "2e884936ec9398f4ce1395021d63cc68580b77c1ce4ec39ad7bdb231109406ec",
+  "W2_S": "00b5b57909411d1ffae9a23fad257f5294731cc97845625d58b4e1ca254a940a"
+ },
+ "package_knn_sha256": "10f06ca3f634b97a8c0cc6cc4b3c594672c69791dc4627adde0dbeb5dcb1d055",
+ "seconds": 9.7,
+ "utc": "2026-11-23T06:00:45Z",
+ "threads": 8,
+ "zmhr.py": "a7b76d4aa6c3ff91f607a0d6a21fe8013ecdf043ec52df80ee2696b6f65ad839"
+}

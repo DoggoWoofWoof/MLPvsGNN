@@ -1,0 +1,10 @@
+{
+ "enc": "gtemodern",
+ "device": "cpu",
+ "threads": 6,
+ "budget": 8192,
+ "seconds": 3438.3,
+ "peak_working_set_gb": 3.28,
+ "utc": "2026-11-21T10:08:56Z",
+ "zmhr.py": "a7b76d4aa6c3ff91f607a0d6a21fe8013ecdf043ec52df80ee2696b6f65ad839"
+}

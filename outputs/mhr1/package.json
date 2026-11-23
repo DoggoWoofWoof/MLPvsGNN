@@ -1,0 +1,107 @@
+{
+ "stage": "MHR1 package",
+ "declared_in": "docs/MHR1_MULTIHOPRAG_PACKAGE.md",
+ "dataset": "multihoprag",
+ "nodes": 609,
+ "queries": 2255,
+ "dropped_null": 301,
+ "by_split_and_type": {
+  "train": {
+   "comparison_query": 342,
+   "inference_query": 326,
+   "temporal_query": 233
+  },
+  "dev": {
+   "comparison_query": 85,
+   "inference_query": 81,
+   "temporal_query": 58
+  },
+  "test": {
+   "comparison_query": 429,
+   "inference_query": 409,
+   "temporal_query": 292
+  }
+ },
+ "P1": "pass",
+ "P2": {
+  "F0T": 25080,
+  "CN_all": 25005,
+  "d84_F0T": 25080,
+  "d84_CN_all": 25005,
+  "kept": 2255,
+  "d84_kept": 2255,
+  "gold_counts": {
+   "1": 0,
+   "2": 1169,
+   "3": 774,
+   "4": 312
+  },
+  "d84_gold_counts": {
+   "2": 1169,
+   "3": 774,
+   "4": 312
+  },
+  "pass": true
+ },
+ "P3": {
+  "facts": 6084,
+  "inside_named_article": 6084,
+  "facts_inside_more_than_one_article": 3,
+  "pass": true
+ },
+ "P4": {
+  "query_rows": 2255,
+  "doc_shards": 1,
+  "doc_rows": 609,
+  "first_question_equal": true,
+  "texts_equal": true,
+  "pass": true
+ },
+ "rule_build": {
+  "keys": 26532,
+  "name_entries": 44495,
+  "title_run_entries": 233,
+  "articles_with_a_title_run": 163,
+  "lt_pairs": 25077
+ },
+ "files": {
+  "nodes": {
+   "file": "outputs/mhr1/package/multihoprag/nodes.jsonl",
+   "bytes": 6721963,
+   "sha256": "4cf1f51f9af49c4c1312d933985e1608808a2517bcd941919eb225170bdb79cf",
+   "n": 609
+  },
+  "queries/train": {
+   "file": "outputs/mhr1/package/multihoprag/queries/train.jsonl",
+   "bytes": 1793913,
+   "sha256": "c26fe4721c56f8f5a5741cb99c7f6684608000fc156542da76b9878ac931df4b",
+   "n": 901
+  },
+  "queries/dev": {
+   "file": "outputs/mhr1/package/multihoprag/queries/dev.jsonl",
+   "bytes": 439950,
+   "sha256": "d082b39ef9693b177105158083b05016701b20358495a529c306f6618971243c",
+   "n": 224
+  },
+  "queries/test": {
+   "file": "outputs/mhr1/package/multihoprag/queries/test.jsonl",
+   "bytes": 2272335,
+   "sha256": "5e76f4aff2f3d9e303677d66ad0f00599706d5e4db86b04e8fc3e89caffc792e",
+   "n": 1130
+  },
+  "query_ids": {
+   "file": "outputs/mhr1/package/multihoprag/queries/query_ids.json",
+   "sha256": "63b0e24d89dfa6a134254e97c1c784ba140770a860f50692c7864e697996387e",
+   "n": 2255
+  }
+ },
+ "dataset_json_sha256": "0fff110d09c4c2447ba9d5304682a8c982d53bb4786e020d813d0cc2660467cc",
+ "body_chars": {
+  "min": 4770,
+  "median": 7836,
+  "max": 71034
+ },
+ "seconds": 40.6,
+ "utc": "2026-11-20T23:15:10Z",
+ "zmhr.py": "e768f96d5e2c14e09010670312ce0dd98b8a3a00d2cef75a02b9638f1d9140e1"
+}

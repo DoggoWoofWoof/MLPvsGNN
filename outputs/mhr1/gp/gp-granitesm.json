@@ -1,0 +1,10 @@
+{
+ "stage": "MHR1 GP",
+ "declared_in": "docs/MHR1_MULTIHOPRAG_PACKAGE.md section 3.1",
+ "enc": "granitesm",
+ "revision": "2ab6fa8ea2d674564defd37171ae19079b864b33",
+ "pass": null,
+ "not_run": "CPU float32 (section 3.1): float32 is GP's reference",
+ "utc": "2026-11-21T09:11:37Z",
+ "zmhr.py": "eb34e1f7e75ce36dd25789d04671e9d2afcc00877fb2f8a5f0668ebe76a33d46"
+}

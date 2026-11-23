@@ -1,0 +1,27 @@
+{
+ "dataset": "multihoprag",
+ "kinds": {
+  "docs": {
+   "shards": 1,
+   "rows": 609,
+   "bad_sha": [],
+   "bad_source": [],
+   "bad_rows": [],
+   "verdict": "PASS"
+  },
+  "queries": {
+   "shards": 1,
+   "rows": 2255,
+   "bad_sha": [],
+   "bad_source": [],
+   "bad_rows": [],
+   "verdict": "PASS"
+  }
+ },
+ "verdict": "PASS",
+ "stage": "MHR1: FC (every row)",
+ "declared_in": "docs/MHR1_MULTIHOPRAG_PACKAGE.md section 3",
+ "seconds": 0.0,
+ "utc": "2026-11-21T10:11:10Z",
+ "zmhr.py": "a7b76d4aa6c3ff91f607a0d6a21fe8013ecdf043ec52df80ee2696b6f65ad839"
+}
