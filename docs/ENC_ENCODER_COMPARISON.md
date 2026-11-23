@@ -2295,3 +2295,177 @@ only, points zenc at MHR1's package as zmhr does; edits none). Outputs: outputs/
 held by another account). MultiHop-RAG's cells are ABOVE, so they cannot make it HOLD.
 
 **Records.** outputs/mhr1/e6/wenc.json, read.json, gm_ties.json and report.md. The arrays (npz) stay uncommitted.
+
+## 23. E7: storing E6's windows (declared 23 Nov 2026, 17:11 IST, before any E7 number)
+
+Code: outputs/mp_unified/zenc7.py (new; imports zenc, zenc3, zenc3v, zenc5, zenc6, zenc2s, zmhr and zmhr6 and edits
+none). Outputs: outputs/enc/e7/<ds>/. The window arrays and the maxima (npz) stay uncommitted.
+
+### 23.1 Why
+
+- E6 (section 22) is ADOPT_F on SQuAD and MultiHop-RAG, with a small gain on MuSiQue.
+- E6's reads kept only the per-pair maxima of the questions they read. A live index has to store the window vectors
+  themselves, so E6's storage cost is open.
+- E7 asks how small the windows can be stored without moving F. It is a check of storage forms against the exact
+  windows of the same run, in the manner of E5 (section 21) for the document vectors.
+
+### 23.2 The reference and what is free by construction
+
+- **The reference, F_exact.** zenc.encode_texts returns float16 rows, and E6's F multiplies them by sqrt(1/2) in
+  float32. So the exact windows are 1,152 float16 values (768 gtemodern + 384 granitesm): 2,304 bytes a window, the size
+  of one e3v document vector. Every form below is compared with F_exact from the same run, never with another run.
+- **Lossless by construction (recorded only).** A node of one window has F = <q, d>, and its document vector serves
+  as its window. It stores no window. From E6's vtop records, the listed single-window nodes are:
+
+  | dataset | single-window listed nodes |
+  |---|---|
+  | SQuAD | 1,199 of 20,233 |
+  | MuSiQue | 41,411 of 114,873 |
+  | MultiHop-RAG | 0 of 609 |
+
+- **Beside: a token-level multi-vector index.**
+  - E6's windows are 64 tokens at stride 32, about one vector per 32 tokens.
+  - The run counts the listed nodes' tokens (all-mpnet-base-v2's tokenizer, E2S's) and records tokens per window.
+  - It also records the bytes a ColBERTv2-style index would take for the same text: one 128-dimension vector a token,
+    stored as 2-bit residuals plus a 4-byte centroid id, so 36 bytes a token.
+  - This is storage arithmetic only. No ColBERT model runs.
+
+### 23.3 The forms
+
+Compressions (what each stored window holds):
+
+| form | per window | bytes a window | shared per dataset |
+|---|---|---|---|
+| exact | float16, both halves | 2,304 | none |
+| int8 | E5's scheme (zenc5.quant): per-dimension scales, max abs over the dataset's scaled windows / 127, per encoder | 1,152 | 1,152 float32 scales (4,608 bytes) |
+| res2 | ColBERTv2 residuals: a 2-byte centroid id per encoder and 2 bits a dimension | 292 | the centroids (C x 1,152 x 2 bytes) and 2 x 4 bucket weights |
+| res1 | the same at 1 bit a dimension | 148 | the centroids and 2 x 2 bucket weights |
+
+Selections (which windows a node of n >= 2 windows keeps):
+
+- **s64 (stride 64).** Windows 0, 2, 4, ... and always the last. zenc2s.window_spans puts the last window at the text's
+  end, so keeping it keeps the tail. That is ceil(n / 2) windows, plus one when n is even.
+- **med4 (per-node medoids).**
+  - k-means++ on the node's windows, both halves concatenated and scaled, so one kept window is one text span.
+  - The seed is numpy's default_rng((0, node row)), so it does not depend on the order of the run.
+  - m = min(4, n) centers. At most 20 Lloyd iterations (L2), stopping early when the assignment does not change; an
+    empty cluster keeps its center.
+  - Each center keeps the real window nearest to it, and a window chosen twice is kept once. A node of 4 windows or
+    fewer keeps every window.
+- **Combinations: s64+int8, s64+res2, med4+int8, med4+res2.** Select first, then store the kept windows compressed.
+  The compression's tables (scales, centroids, buckets) are fit on all of the dataset's windows.
+
+The ten forms are exact, int8, res2, res1, s64, s64+int8, s64+res2, med4, med4+int8 and med4+res2.
+
+ColBERTv2's residuals, in detail:
+
+- **The centroid count.** Per dataset and encoder, C = 2^floor(log2(16 sqrt(n_windows))). This is ColBERTv2's own
+  rule for its partition count. Every C is at most 2^16, so an id fits in 2 bytes.
+
+  | dataset | windows | C |
+  |---|---|---|
+  | SQuAD | 84,914 | 4,096 |
+  | MuSiQue | 254,195 | 4,096 |
+  | MultiHop-RAG | 43,850 | 2,048 |
+
+- **The centroids.** L2 k-means on the encoder's unit windows: C distinct windows drawn at seed 0, 10 Lloyd iterations,
+  and an empty cluster keeps its centroid. The centroids are then normalized, as ColBERTv2 does.
+- **The codes.** A window's code is the argmax of <u, c>, and its residual is u - c.
+- **The buckets.** The cutoffs are the (1 .. 2^b - 1) / 2^b quantiles of all residual entries, all dimensions together
+  (ColBERTv2's _compute_avg_residual). The weights are the (i + 0.5) / 2^b quantiles. Both come from a seed-0 sample of
+  min(n, 65,536) windows.
+- **Decompression.** c + weight[bucket], normalized to unit (ColBERTv2's decompress), times sqrt(1/2).
+
+Bytes:
+
+- A node's bytes are its kept windows times the bytes a window. A single-window node stores none.
+- The run reports, per form, the mean bytes per listed node and per multi-window node, and the listed set's total with
+  the shared tables included.
+- At E6's window counts, with every window kept (the selections' counts are the run's):
+
+  | form | SQuAD per multi-window node | SQuAD listed set | MuSiQue per multi-window node | MuSiQue listed set | MultiHop-RAG per article | MultiHop-RAG set |
+  |---|---|---|---|---|---|---|
+  | exact | 10,279 | 195.6 MB | 7,972 | 585.7 MB | 165,896 | 101.0 MB |
+  | int8 | 5,139 | 97.8 MB | 3,986 | 292.8 MB | 82,948 | 50.5 MB |
+  | res2 | 1,303 | 24.8 MB + 9.4 MB centroids | 1,010 | 74.2 MB + 9.4 MB | 21,025 | 12.8 MB + 4.7 MB |
+  | res1 | 660 | 12.6 MB + 9.4 MB | 512 | 37.6 MB + 9.4 MB | 10,656 | 6.5 MB + 4.7 MB |
+
+  The windows per multi-window node are 4.461 on SQuAD, 3.460 on MuSiQue and 72.0 on MultiHop-RAG.
+
+### 23.4 The run
+
+- **wenc (host CPU, float32 weights, 8 threads, the card hidden as in 22.8):**
+  - The nodes and spans are E6's: vtop_<ds>.npz for SQuAD and MuSiQue; for MultiHop-RAG, 22.8's articles with
+    zenc6.spans_of.
+  - The windows are encoded in blocks of whole nodes, about 4,096 windows each (zmhr6's blocks), each window times
+    sqrt(1/2). They are stored in float16 (windows.npz).
+  - Then every form is built, and with it each form's maxima per (question, multi-window node).
+  - The maxima are exact float32 inner products over the form's windows (zmhr6.node_max, by blocks of questions).
+    SQuAD and MuSiQue keep E6's listed pairs (zenc6.pair_layout); MultiHop-RAG keeps every (question, article).
+- **read: F per form, by zenc6.f_scores and zenc6.reorder.**
+  - SQuAD and MuSiQue, on the host: E6's read path (E6's lists, its moved questions, and zenc6.dense_hits with the
+    carve's SPLADE).
+  - MultiHop-RAG, on the laptop, because its SPLADE is laptop-only: zmhr6.read's path (the full score matrix S of
+    22.8's wenc.npz, zmhr.coverage, and rrf over SPLADE).
+- **Times,** from 22.8's measured 13.6 windows a second for both encoders, plus minutes for the forms: MultiHop-RAG
+  54 minutes, SQuAD 1.7 hours, MuSiQue 5.2 hours.
+
+### 23.5 Gates
+
+- **G-S (self-test on a toy):**
+  - int8 equals zenc5.quant.
+  - s64's indices are as declared.
+  - med4 keeps real windows, min(4, n) of them at most.
+  - The residual decompression is within its bucket error.
+  - The blocked maxima equal zenc6.pair_max and zmhr6.node_max.
+  - F and the reorder are zenc6's.
+  - The call's order is by bytes.
+- **G-N (as 22.8):**
+  - Every node's window count follows E2S's rule (zenc2s.windows_of).
+  - The spans equal the windows.
+  - No maximum is NaN.
+- **G-R: F_exact reproduces E6's filed F.**
+  - MultiHop-RAG ran E6 on this same CPU path (22.8). The exact maxima must be within 1e-5 of 22.8's wenc.npz.
+    F_exact's d5, d20 and rrf5 must be within 0.05 points of 22.8's filed 69.23, 97.14 and 64.29.
+  - SQuAD and MuSiQue ran E6 on the GPU with float16 weights (zenc.load_model). This run uses float32 weights on the
+    CPU, and both round the windows to float16, so the maxima differ slightly. The tolerance:
+    - per encoder, the 99th percentile of |max_exact - max_E6| is at most 5e-3, and the largest is at most 0.05;
+    - F_exact's d5, d20 and rrf5 are within 0.30 points of E6's filed F (SQuAD 89.01, 94.97, 90.68; MuSiQue 48.15,
+      60.57, 48.35).
+  - G-R is recorded either way. A failure stops the read after its json is written.
+- **G-D:** every form keeps each question's listed set, so its hits at 1000 equal V's (SQuAD, MuSiQue).
+
+### 23.6 The call (declared now)
+
+- **E5's rule per form and dataset (zenc5.free).**
+  - The gaps are F_form - F_exact on d5, d20 and rrf5, paired bootstrap over questions (zenc5.paired, 2,000, seed 0).
+  - A form is FREE on a dataset when every gap is LEVEL or ABOVE and every point gap is at least -0.30.
+- **The call names the smallest form that is FREE on all three datasets.** Smallest means the least summed bytes over
+  the three listed sets, shared tables included. If no form is FREE on all three, the call is exact (float16 windows).
+- **Beside:**
+  - the bytes per node and for the listed set;
+  - the query-time cost: the windows dotted per question when rescoring E6's top 1000 (the mean);
+  - the token-level comparison (23.2).
+
+### 23.7 What follows
+
+- The unified world stores the called form.
+- HotpotQA and 2Wiki get the form's FREE check when their GPU windows run (the e6-wenc rows). A form that fails there
+  is recorded, and the call reopens on five datasets.
+- E7 does not change E6's filed reads.
+- E5's call (int8 document vectors) is separate. E7 keeps <q, d> exact.
+
+### 23.8 Rows
+
+| row | where | cpus | memory | after |
+|---|---|---|---|---|
+| e7-wenc-multihoprag | host | 8 | 12 GB | |
+| e7-wenc-squad | host | 8 | 12 GB | e7-wenc-multihoprag |
+| e7-wenc-musique | host | 8 | 12 GB | |
+| e7-read-squad | host | 2 | 8 GB | e7-wenc-squad |
+| e7-read-musique | host | 2 | 8 GB | e7-wenc-musique |
+
+- The two lanes keep the asks at 24 GB beside WebQSP's 48 GB chain.
+- The memory follows E6's measured peaks: 7.31 GB on MultiHop-RAG's CPU wenc and 3.29 GB on MuSiQue's, plus the
+  stored windows (MuSiQue's are 0.59 GB in float16).
+- MultiHop-RAG's read and the report run on the laptop after a fetch.
