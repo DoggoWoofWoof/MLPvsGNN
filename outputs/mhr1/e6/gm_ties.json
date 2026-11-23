@@ -1,0 +1,16 @@
+{
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 22.8 (G-M as declared)",
+ "rows_differing": 16,
+ "questions": 2255,
+ "first_differing_rank_min": 42,
+ "same_article_sets": true,
+ "top20_equal_and_mhr1": true,
+ "tie_gap_max": 1.1920928955078125e-07,
+ "tie_bound": 1e-06,
+ "laptop_vs_host_score_max_abs": 4.76837158203125e-07,
+ "near_bound": 1e-05,
+ "wenc_npz_sha256": "7e71338e119d90c2a6b0e00266d51eec7ce3324b9e60858e8462c0eff5aa77f1",
+ "zmhr6_sha256": "2a1f0435e3d5c5adc7ca6bc1415c0c418d3d0803ba32fb9d4135e0ecf71c5a77",
+ "zmhr6r_sha256": "ab3b7ec504f5cf54787c8d1f93622db23916941012752d67646f3f4e82c69c92",
+ "verdict": "PASS"
+}

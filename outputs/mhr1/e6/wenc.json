@@ -1,0 +1,46 @@
+{
+ "stage": "ENC E6 on MultiHop-RAG: wenc",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 22.8",
+ "dataset": "multihoprag",
+ "questions": 2255,
+ "articles": 609,
+ "multi_window_articles": 609,
+ "windows": 43850,
+ "device": "cpu",
+ "threads": 8,
+ "search_vs_matrix_max_abs": 4.76837158203125e-07,
+ "g_n_counts_differ": 0,
+ "span_tokenizer": {
+  "repo": "sentence-transformers/all-mpnet-base-v2",
+  "revision": "e8c3b32edf5434bc2275fc9bab85f82640a19130"
+ },
+ "encoders": {
+  "gtemodern": {
+   "revision": "e7f32e3c00f91d699e8c43b53106206bcc72bb22",
+   "scale": 0.7071067690849304,
+   "seconds": 2486.2
+  },
+  "granitesm": {
+   "revision": "2ab6fa8ea2d674564defd37171ae19079b864b33",
+   "scale": 0.7071067690849304,
+   "seconds": 727.5
+  }
+ },
+ "g_n": "PASS",
+ "npz_sha256": "7e71338e119d90c2a6b0e00266d51eec7ce3324b9e60858e8462c0eff5aa77f1",
+ "e3v_docs_manifest_sha256": "29722959d04395f0b9dc396bc549e192f090d184d42f4318b20e0ecfdff6d6c3",
+ "dataset_json_sha256": "0fff110d09c4c2447ba9d5304682a8c982d53bb4786e020d813d0cc2660467cc",
+ "peak_working_set_gb": 7.31,
+ "seconds": 3234.0,
+ "utc": "2026-11-23T08:50:17Z",
+ "code_sha256": {
+  "zmhr6.py": "2a1f0435e3d5c5adc7ca6bc1415c0c418d3d0803ba32fb9d4135e0ecf71c5a77",
+  "zmhr.py": "a7b76d4aa6c3ff91f607a0d6a21fe8013ecdf043ec52df80ee2696b6f65ad839",
+  "zenc.py": "0416ecefcb9a803549d2dfa9aef844d66f4c05e2a5b26821930c7f701f32eeb7",
+  "zenc3.py": "b60460b505d72cd3737760d4f4493b6e4c37962f0a9edba905436e78da05ff0a",
+  "zenc3v.py": "f8f7601a94c4d69fc2cf9e6c7e111b7898ea7f0da3ff770c78437076c2417741",
+  "zenc5.py": "4b0b470b4a886d0858b99e3f66a29de3d5c5ba65aa8cb74a98b35ecac7438120",
+  "zenc6.py": "ddd1bf537fba8958652c8a06edde8fef2d9fa36d08ebb954c3fa888a08886bdb",
+  "zenc2s.py": "432b8873a55f6f1e7a47f42ed84ad27cc359868985c8aa6b74178f1387a48205"
+ }
+}

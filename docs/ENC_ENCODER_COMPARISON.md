@@ -2253,3 +2253,45 @@ only, points zenc at MHR1's package as zmhr does; edits none). Outputs: outputs/
 - **Rows:** e6m-wenc (host CPU, 8 threads; e3v's lists, the spans, about 43,000 windows estimated from word counts,
   the maxima per question and article; estimate 1 h, peak under 8 GB). e6m-read (laptop: needs MHR1's SPLADE shards,
   which only the laptop holds; minutes).
+
+#### 22.8.1 Result: MultiHop-RAG under E6 (filed 23 Nov 2026)
+
+**Call: ADOPT_F on MultiHop-RAG.** Over all 2,255 questions F - V is ABOVE on all three cells:
+
+| cell | V (e3v) | F | frozen | F - V | F - frozen (beside) |
+|---|---|---|---|---|---|
+| d5 | 64.29 | 69.23 | 66.91 | +4.94 [+3.96, +5.95] ABOVE | +2.32 [+1.30, +3.37] ABOVE |
+| d20 | 92.14 | 97.14 | 93.14 | +5.00 [+4.41, +5.61] ABOVE | +4.01 [+3.36, +4.60] ABOVE |
+| rrf5 | 61.87 | 64.29 | 63.43 | +2.42 [+1.71, +3.10] ABOVE | +0.86 [+0.12, +1.56] ABOVE |
+
+- **F turns MHR1's first-stage loss around.** V - frozen is -2.62 d5 BELOW (MHR1's filed read); F - frozen is +2.32
+  ABOVE on d5 and ABOVE on d20 and rrf5.
+- **Benchmark measures (beside):** hits@4 V 89.58, F 91.97, frozen 91.84; hits@10 98.31, 99.20, 98.54; MAP@10 42.26,
+  46.09, 42.93; MRR@10 74.55, 78.82, 75.19. F - frozen is ABOVE on hits@10, MAP@10 and MRR@10 and LEVEL on hits@4.
+- **The articles e3v cut (beside).**
+  - The 164 questions with a gold article that e3v cut read F - V +12.65 d5 ABOVE.
+  - The other 2,091 read +4.34 ABOVE.
+  - Reading each long article's windows recovers what the 512-token cut lost, and helps the rest as well.
+- **Types (beside), F - V d5:** comparison +9.05, inference +2.75, temporal +1.97 (all ABOVE). F - frozen is ABOVE on
+  comparison (+6.17) and LEVEL on inference (-1.00) and temporal (+1.32).
+
+**Gates.**
+- G-N PASS: 43,850 windows over all 609 articles, every count E2S's rule; no NaN.
+  - The search scores match Q x D within 4.8e-7.
+  - wenc took 3,234 s on the host CPU (8 threads), peak 7.31 GB.
+- G-M PASS as declared: V and frozen reproduce MHR1's filed d5, d20 and rrf5 exactly, and their top 20 equal MHR1's
+  stored lists.
+- **Disclosure: zmhr6.read checks more than G-M declares.**
+  - It also requires the laptop's whole e3v list (609 articles) to equal the host's. That stopped the first read.
+  - 16 to 39 questions (it varied between laptop runs) order tied articles differently. The first difference is past
+    rank 28. The score gaps are under 2e-7, and the article sets are the same.
+  - zmhr6.py is pinned by wenc.json, so it was not edited. outputs/mp_unified/zmhr6r.py applies G-M as declared,
+    checks that every difference is a tie (gap <= 1e-6 by the host's scores; the laptop's scores within 1e-5), and
+    records it in outputs/mhr1/e6/gm_ties.json. It then runs zmhr6.read unchanged on the host's order, which F was
+    built against.
+  - No measure reads past rank 20 except F's own rescoring, which uses every article's score and not V's order.
+
+**What follows.** E6's seven-dataset call (22.5's rule) waits for HotpotQA's and 2Wiki's windows (e6-wenc rows; GPU,
+held by another account). MultiHop-RAG's cells are ABOVE, so they cannot make it HOLD.
+
+**Records.** outputs/mhr1/e6/wenc.json, read.json, gm_ties.json and report.md. The arrays (npz) stay uncommitted.
