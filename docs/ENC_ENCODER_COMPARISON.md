@@ -2469,3 +2469,51 @@ Bytes:
 - The memory follows E6's measured peaks: 7.31 GB on MultiHop-RAG's CPU wenc and 3.29 GB on MuSiQue's, plus the
   stored windows (MuSiQue's are 0.59 GB in float16).
 - MultiHop-RAG's read and the report run on the laptop after a fetch.
+
+### 23.9 A storage call that tolerates a small loss (23 November 2026, 20:42 IST, 15:12 UTC)
+
+The user's ruling after MultiHop-RAG's read: if a smaller form loses barely a point, its savings are worth it, unless it
+makes the vectors harder to train or improve.
+
+**What was seen first.**
+- MultiHop-RAG's read (19:50 IST) was seen before this was written. Only exact is FREE there, so 23.6's call can only
+  be exact.
+- SQuAD's read is running on the host and has not been looked at. MuSiQue's has not run.
+
+**23.6 stays as declared** and its call is filed as it reads.
+
+**Beside it, the storage call (declared now):**
+- **TOLERABLE.** A form is TOLERABLE on a dataset when, on each of d5, d20 and rrf5, the lower end of the 95% interval
+  of its gap to F_exact is at least -1.00 point. The gaps and intervals are 23.6's, unchanged (zenc5.paired, 2,000,
+  seed 0).
+- **Why the lower end, not the point.** The lower end bounds the loss the read can rule out. MultiHop-RAG's intervals
+  are about 0.6 points either side (2,255 questions), so a rule on the point alone would admit a form that may lose 1.5.
+- **The storage call** names the smallest form TOLERABLE on all three datasets, by 23.6's bytes: the summed listed-set
+  bytes, shared tables included, ties by name. If no form is TOLERABLE on all three, it is exact.
+- **On MultiHop-RAG alone** (already seen), exact, int8 and res2 are TOLERABLE. The lower ends rule out the others:
+
+  | form | lowest lower end on MultiHop-RAG |
+  |---|---|
+  | s64 | -1.60 |
+  | s64+int8 | -1.68 |
+  | s64+res2 | -1.45 |
+  | res1 | -2.18 |
+  | med4 forms | -6.71 to -7.83 |
+
+**What it changes.**
+- 23.7's first bullet becomes: the unified world stores the storage call's form.
+- HotpotQA and 2Wiki get its TOLERABLE check when their windows run. A form that fails there is recorded, and the
+  storage call reopens on five datasets.
+
+**Training and improving the vectors.**
+- The windows enter only E6's F, through the max-window term. The node vectors that SEM2's operators and the refit read
+  are not touched: <q, d> stays exact (23.7).
+- The encoder is frozen, so exact windows can always be re-encoded from the text for any fit. That takes hours on the
+  host CPU (SQuAD's took 2.2 hours). The stored form is the live index's, not the training data.
+- int8's scales and res2's centroids and buckets are fit on the dataset's windows. If the windows change (another
+  encoder, or a map applied to them), they are refit on the new windows. For res2 that is 23.3's k-means, which took
+  31 seconds on MultiHop-RAG's 43,850 windows.
+
+**Code.** zenc7.py has run rows and is not edited. zenc7c.py reads the three read.json files, records each one's
+sha256, applies this rule and writes outputs/enc/e7/storage_call.json and .md. It runs on the laptop after 23.6's
+report.
