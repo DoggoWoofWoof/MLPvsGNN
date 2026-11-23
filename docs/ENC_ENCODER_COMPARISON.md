@@ -2215,3 +2215,41 @@ Code: outputs/mp_unified/zenc6.py. Outputs: outputs/enc/e6/. Nothing trains, and
   673,032 nodes, 21,339 of them with two or more windows (48,099 windows), so its CPU wenc stopped as built
   ("no GPU"). It runs again as `e6-wenc-webqsp-g` at 0.29 of the card, and e6-read-webqsp waits on it. MetaQA's
   listed nodes are all one window (43,133 of 43,133), so F = V there by construction.
+
+### 22.8 MultiHop-RAG under E6 (declared 23 Nov 2026, 13:21 IST, before any E6 number on it)
+
+Code: outputs/mp_unified/zmhr6.py (new; imports zenc, zenc3, zenc3v, zenc5, zenc6 and zmhr and, in its own process
+only, points zenc at MHR1's package as zmhr does; edits none). Outputs: outputs/mhr1/e6/.
+
+- **Why now:** 22.6 says MultiHop-RAG joins under E6's rule once MHR1 has filed. MHR1 filed (ac2b538): e3v's d5 is 2.62
+  points below frozen's, and 13 articles are longer than e3v's encoders read, so their document vectors are cut. The
+  windows cover every article in full.
+- **Disclosed:** written after E6's reads on SQuAD, MuSiQue, WebQSP and MetaQA were seen (point values; no interval and
+  no call yet) and after MHR1's filed reads. The rule is 22.2-22.5's, unchanged; nothing is selected again.
+- **Lists:** MultiHop-RAG has 609 articles, fewer than E6's depth of 1000. So F rescores every article for each of the
+  2,255 questions. V is MHR1's e3v list over the whole corpus (zenc.search, k = 609; ties to the lower id), and F
+  reorders it by F, then node id (zenc6.reorder). The set is the corpus, so D1000 holds trivially.
+- **The score and the windows:** 22.2 exactly: F = 0.25 <q, d> + 0.75 (max_w <q_1, w_1> + max_w <q_2, w_2>), E2S's
+  windows (64 tokens of all-mpnet-base-v2's tokenizer at stride 32, zenc6.spans_of), both encoders at 17.2's pinned
+  revisions, each window scaled by e3v's sqrt(1/2). A node of one window keeps <q, d>.
+- **Device:** the host's CPU in float32, 8 threads (the card is held by another account; float32 is GP's reference,
+  as MHR1's section 3.1). Each node's maxima are exact float32 inner products over all of its windows.
+- **Gates:**
+  - **G-M:** V's d5, d20 and rrf5 equal MHR1's filed e3v reads (first.json: 64.29, 92.14, 61.87), and V's and
+    frozen's top 20 equal MHR1's stored lists (outputs/mhr1/first/lists.npz). rrf5 is MHR1's: RRF of the list with
+    SPLADE's (zenc.rrf_top, top 20), its coverage at 5.
+  - **G-N:** every rescored pair has both maxima (no NaN), and the window count of each article equals E2S's rule.
+  - The self-test checks the window maxima against zenc6.pair_max and F against zenc6.f_scores on a toy.
+  - A failed gate stops the read.
+- **The call (22.5's rule on MultiHop-RAG's cells):** F - V on d5, d20 and rrf5, paired 95% bootstrap over the 2,255
+  questions (zenc5.paired, 2,000, seed 0). ADOPT_F: no cell BELOW and at least one ABOVE. NO_GAIN: every cell LEVEL.
+  HOLD: any cell BELOW (named; the choice goes to the user).
+- **Beside, no call:** F - frozen (MHR1's frozen list) on the same cells; MHR1's benchmark measures (hits@4, hits@10,
+  MAP@10, MRR@10) on V, F and frozen; the 164 questions with a gold article that e3v cut, and the other 2,091; the three
+  question types.
+- **What follows:** E6's seven-dataset call is 22.5's rule over the six datasets' cells (e6-report) and MultiHop-RAG's.
+  If it is ADOPT_F, the unified world's first stage is F on all seven (22.6). If MultiHop-RAG's cells alone are
+  BELOW, HOLD names them.
+- **Rows:** e6m-wenc (host CPU, 8 threads; e3v's lists, the spans, about 43,000 windows estimated from word counts,
+  the maxima per question and article; estimate 1 h, peak under 8 GB). e6m-read (laptop: needs MHR1's SPLADE shards,
+  which only the laptop holds; minutes).
