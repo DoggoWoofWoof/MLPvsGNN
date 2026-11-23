@@ -1,0 +1,239 @@
+{
+ "stage": "ENC E7: wenc",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 23",
+ "dataset": "musique",
+ "device": "cpu",
+ "threads": 8,
+ "span_tokenizer": {
+  "repo": "sentence-transformers/all-mpnet-base-v2",
+  "revision": "e8c3b32edf5434bc2275fc9bab85f82640a19130"
+ },
+ "questions": 2417,
+ "listed_nodes": 114873,
+ "pairs": 1806353,
+ "vtop_sha256": "2b57152dca7d736c859c353c78685f450034c2a552b0156cd8d37a498698a697",
+ "g_n": "PASS",
+ "g_n_detail": {
+  "windows": 254195,
+  "spans": 254195,
+  "spans_equal": true,
+  "e2s_counts_differ": 0
+ },
+ "multi_window_nodes": 73462,
+ "windows": 254195,
+ "single_window_listed_nodes": 41411,
+ "encoders": {
+  "gtemodern": {
+   "revision": "e7f32e3c00f91d699e8c43b53106206bcc72bb22",
+   "scale": 0.7071067811865476,
+   "seconds": 16488.8
+  },
+  "granitesm": {
+   "revision": "2ab6fa8ea2d674564defd37171ae19079b864b33",
+   "scale": 0.7071067811865476,
+   "seconds": 4224.8
+  }
+ },
+ "forms_info": {
+  "med4_seconds": 8.7,
+  "centroids": {
+   "gtemodern": 4096,
+   "granitesm": 4096
+  },
+  "buckets": {
+   "res2": {
+    "gtemodern": {
+     "cutoffs": [
+      -0.015043623745441437,
+      -0.0001160595566034317,
+      0.014848792925477028
+     ],
+     "weights": [
+      -0.0257417019456625,
+      -0.007145221810787916,
+      0.006932660937309265,
+      0.02555888518691063
+     ]
+    },
+    "granitesm": {
+     "cutoffs": [
+      -0.01561882346868515,
+      -0.00018785276915878057,
+      0.015267745591700077
+     ],
+     "weights": [
+      -0.026625793427228928,
+      -0.0074645280838012695,
+      0.00708567351102829,
+      0.0263687614351511
+     ]
+    }
+   },
+   "res1": {
+    "gtemodern": {
+     "cutoffs": [
+      -0.0001160595566034317
+     ],
+     "weights": [
+      -0.015043623745441437,
+      0.014848792925477028
+     ]
+    },
+    "granitesm": {
+     "cutoffs": [
+      -0.00018785276915878057
+     ],
+     "weights": [
+      -0.01561882346868515,
+      0.015267745591700077
+     ]
+    }
+   }
+  },
+  "seconds": 380.2
+ },
+ "tokens": {
+  "multi_window_nodes": 9249173,
+  "listed_nodes": 11132592,
+  "tokens_per_window": 36.39,
+  "token_index_bytes": 400773312
+ },
+ "storage": {
+  "exact": {
+   "selection": "all",
+   "compression": "exact",
+   "bytes_per_window": 2304,
+   "kept_windows": 254195,
+   "bytes_windows": 585665280,
+   "bytes_shared": 0,
+   "bytes_set": 585665280,
+   "bytes_per_multi_node": 7972.4,
+   "bytes_per_listed_node": 5098.4,
+   "windows_dotted_per_question": 2788.6
+  },
+  "int8": {
+   "selection": "all",
+   "compression": "int8",
+   "bytes_per_window": 1152,
+   "kept_windows": 254195,
+   "bytes_windows": 292832640,
+   "bytes_shared": 4608,
+   "bytes_set": 292837248,
+   "bytes_per_multi_node": 3986.2,
+   "bytes_per_listed_node": 2549.2,
+   "windows_dotted_per_question": 2788.6
+  },
+  "res2": {
+   "selection": "all",
+   "compression": "res2",
+   "bytes_per_window": 292,
+   "kept_windows": 254195,
+   "bytes_windows": 74224940,
+   "bytes_shared": 9437216,
+   "bytes_set": 83662156,
+   "bytes_per_multi_node": 1010.4,
+   "bytes_per_listed_node": 728.3,
+   "windows_dotted_per_question": 2788.6
+  },
+  "res1": {
+   "selection": "all",
+   "compression": "res1",
+   "bytes_per_window": 148,
+   "kept_windows": 254195,
+   "bytes_windows": 37620860,
+   "bytes_shared": 9437200,
+   "bytes_set": 47058060,
+   "bytes_per_multi_node": 512.1,
+   "bytes_per_listed_node": 409.7,
+   "windows_dotted_per_question": 2788.6
+  },
+  "s64": {
+   "selection": "s64",
+   "compression": "exact",
+   "bytes_per_window": 2304,
+   "kept_windows": 186210,
+   "bytes_windows": 429027840,
+   "bytes_shared": 0,
+   "bytes_set": 429027840,
+   "bytes_per_multi_node": 5840.1,
+   "bytes_per_listed_node": 3734.8,
+   "windows_dotted_per_question": 1984.7
+  },
+  "s64+int8": {
+   "selection": "s64",
+   "compression": "int8",
+   "bytes_per_window": 1152,
+   "kept_windows": 186210,
+   "bytes_windows": 214513920,
+   "bytes_shared": 4608,
+   "bytes_set": 214518528,
+   "bytes_per_multi_node": 2920.1,
+   "bytes_per_listed_node": 1867.4,
+   "windows_dotted_per_question": 1984.7
+  },
+  "s64+res2": {
+   "selection": "s64",
+   "compression": "res2",
+   "bytes_per_window": 292,
+   "kept_windows": 186210,
+   "bytes_windows": 54373320,
+   "bytes_shared": 9437216,
+   "bytes_set": 63810536,
+   "bytes_per_multi_node": 740.2,
+   "bytes_per_listed_node": 555.5,
+   "windows_dotted_per_question": 1984.7
+  },
+  "med4": {
+   "selection": "med4",
+   "compression": "exact",
+   "bytes_per_window": 2304,
+   "kept_windows": 219604,
+   "bytes_windows": 505967616,
+   "bytes_shared": 0,
+   "bytes_set": 505967616,
+   "bytes_per_multi_node": 6887.5,
+   "bytes_per_listed_node": 4404.6,
+   "windows_dotted_per_question": 2337.7
+  },
+  "med4+int8": {
+   "selection": "med4",
+   "compression": "int8",
+   "bytes_per_window": 1152,
+   "kept_windows": 219604,
+   "bytes_windows": 252983808,
+   "bytes_shared": 4608,
+   "bytes_set": 252988416,
+   "bytes_per_multi_node": 3443.7,
+   "bytes_per_listed_node": 2202.3,
+   "windows_dotted_per_question": 2337.7
+  },
+  "med4+res2": {
+   "selection": "med4",
+   "compression": "res2",
+   "bytes_per_window": 292,
+   "kept_windows": 219604,
+   "bytes_windows": 64124368,
+   "bytes_shared": 9437216,
+   "bytes_set": 73561584,
+   "bytes_per_multi_node": 872.9,
+   "bytes_per_listed_node": 640.4,
+   "windows_dotted_per_question": 2337.7
+  }
+ },
+ "windows_npz_sha256": "c4fe7b9a79e0d78a978a1e5573425f4e63f569906992bb9ad8f4ec72bf0df175",
+ "npz_sha256": "ab9d3cab2975d34327ba6dffa4daeaeb7eea41588fd9840dc9a111e88709a2a8",
+ "peak_working_set_gb": 10.69,
+ "seconds": 21140.8,
+ "utc": "2026-11-23T17:43:19Z",
+ "code_sha256": {
+  "zenc7.py": "6b759fbbc2b3dfcb7597f889079fd9358c28c7553f1b0116c6312136f0742cf1",
+  "zmhr.py": "a7b76d4aa6c3ff91f607a0d6a21fe8013ecdf043ec52df80ee2696b6f65ad839",
+  "zenc.py": "0416ecefcb9a803549d2dfa9aef844d66f4c05e2a5b26821930c7f701f32eeb7",
+  "zenc3.py": "b60460b505d72cd3737760d4f4493b6e4c37962f0a9edba905436e78da05ff0a",
+  "zenc3v.py": "f8f7601a94c4d69fc2cf9e6c7e111b7898ea7f0da3ff770c78437076c2417741",
+  "zenc5.py": "4b0b470b4a886d0858b99e3f66a29de3d5c5ba65aa8cb74a98b35ecac7438120",
+  "zenc6.py": "ddd1bf537fba8958652c8a06edde8fef2d9fa36d08ebb954c3fa888a08886bdb",
+  "zenc2s.py": "432b8873a55f6f1e7a47f42ed84ad27cc359868985c8aa6b74178f1387a48205",
+  "zmhr6.py": "2a1f0435e3d5c5adc7ca6bc1415c0c418d3d0803ba32fb9d4135e0ecf71c5a77"
+ }
+}

@@ -1,0 +1,134 @@
+{
+ "stage": "ENC E7: storage call",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 23.9",
+ "tolerance_pts": -1.0,
+ "measures": [
+  "d5",
+  "d20",
+  "rrf5"
+ ],
+ "call": "int8",
+ "set_bytes_three": {
+  "exact": 882337536,
+  "int8": 441182592,
+  "res2": 135417084,
+  "res1": 80270940,
+  "s64": 610848000,
+  "s64+int8": 305437824,
+  "s64+res2": 101009556,
+  "med4": 667335168,
+  "med4+int8": 333681408,
+  "med4+res2": 108168520
+ },
+ "tolerable": {
+  "exact": {
+   "squad": true,
+   "musique": true,
+   "multihoprag": true
+  },
+  "int8": {
+   "squad": true,
+   "musique": true,
+   "multihoprag": true
+  },
+  "res2": {
+   "squad": false,
+   "musique": false,
+   "multihoprag": true
+  },
+  "res1": {
+   "squad": false,
+   "musique": false,
+   "multihoprag": false
+  },
+  "s64": {
+   "squad": false,
+   "musique": true,
+   "multihoprag": false
+  },
+  "s64+int8": {
+   "squad": false,
+   "musique": true,
+   "multihoprag": false
+  },
+  "s64+res2": {
+   "squad": false,
+   "musique": false,
+   "multihoprag": false
+  },
+  "med4": {
+   "squad": false,
+   "musique": true,
+   "multihoprag": false
+  },
+  "med4+int8": {
+   "squad": false,
+   "musique": true,
+   "multihoprag": false
+  },
+  "med4+res2": {
+   "squad": false,
+   "musique": false,
+   "multihoprag": false
+  }
+ },
+ "lowest_lower_end": {
+  "exact": {
+   "squad": 0.0,
+   "musique": 0.0,
+   "multihoprag": 0.0
+  },
+  "int8": {
+   "squad": -0.22,
+   "musique": -0.19,
+   "multihoprag": -0.3
+  },
+  "res2": {
+   "squad": -1.85,
+   "musique": -2.5,
+   "multihoprag": -0.62
+  },
+  "res1": {
+   "squad": -4.72,
+   "musique": -5.59,
+   "multihoprag": -2.18
+  },
+  "s64": {
+   "squad": -1.25,
+   "musique": -0.54,
+   "multihoprag": -1.6
+  },
+  "s64+int8": {
+   "squad": -1.29,
+   "musique": -0.66,
+   "multihoprag": -1.68
+  },
+  "s64+res2": {
+   "squad": -2.75,
+   "musique": -2.41,
+   "multihoprag": -1.45
+  },
+  "med4": {
+   "squad": -1.23,
+   "musique": -0.79,
+   "multihoprag": -7.7
+  },
+  "med4+int8": {
+   "squad": -1.26,
+   "musique": -0.81,
+   "multihoprag": -7.83
+  },
+  "med4+res2": {
+   "squad": -2.63,
+   "musique": -2.84,
+   "multihoprag": -6.71
+  }
+ },
+ "reads": {
+  "squad": "525c4867a81147070c22650118468041baa1202969abebeb01d0257a9abbe2d0",
+  "musique": "0488d0f4cafb63a68381884f4b46bdb8569c1983984729bb2a099b1b6d824495",
+  "multihoprag": "5a0a7f56f52b36b341ffa4dbb7a2568ba8db460ce46f269cb07cfc6f17d7003b"
+ },
+ "code_sha256": "b1fd2274d550a19358a027cba890a806737a1487bb310567d66bb9cd7dbad78c",
+ "utc": "2026-11-23T17:46:53Z"
+}

@@ -1,0 +1,242 @@
+{
+ "stage": "ENC E7: wenc",
+ "declared_in": "docs/ENC_ENCODER_COMPARISON.md section 23",
+ "dataset": "multihoprag",
+ "device": "cpu",
+ "threads": 8,
+ "span_tokenizer": {
+  "repo": "sentence-transformers/all-mpnet-base-v2",
+  "revision": "e8c3b32edf5434bc2275fc9bab85f82640a19130"
+ },
+ "questions": 2255,
+ "listed_nodes": 609,
+ "dataset_json_sha256": "0fff110d09c4c2447ba9d5304682a8c982d53bb4786e020d813d0cc2660467cc",
+ "g_n": "PASS",
+ "g_n_detail": {
+  "windows": 43850,
+  "spans": 43850,
+  "spans_equal": true,
+  "e2s_counts_differ": 0
+ },
+ "multi_window_nodes": 609,
+ "windows": 43850,
+ "single_window_listed_nodes": 0,
+ "encoders": {
+  "gtemodern": {
+   "revision": "e7f32e3c00f91d699e8c43b53106206bcc72bb22",
+   "scale": 0.7071067811865476,
+   "seconds": 3098.7
+  },
+  "granitesm": {
+   "revision": "2ab6fa8ea2d674564defd37171ae19079b864b33",
+   "scale": 0.7071067811865476,
+   "seconds": 801.6
+  }
+ },
+ "forms_info": {
+  "med4_seconds": 1.7,
+  "centroids": {
+   "gtemodern": 2048,
+   "granitesm": 2048
+  },
+  "buckets": {
+   "res2": {
+    "gtemodern": {
+     "cutoffs": [
+      -0.012535379268229008,
+      -3.789551556110382e-05,
+      0.012438231147825718
+     ],
+     "weights": [
+      -0.02170756831765175,
+      -0.005895446520298719,
+      0.005791203584522009,
+      0.02160855010151863
+     ]
+    },
+    "granitesm": {
+     "cutoffs": [
+      -0.013031023554503918,
+      -9.791180491447449e-05,
+      0.012795880436897278
+     ],
+     "weights": [
+      -0.02239016443490982,
+      -0.006175399757921696,
+      0.005926087498664856,
+      0.022234603762626648
+     ]
+    }
+   },
+   "res1": {
+    "gtemodern": {
+     "cutoffs": [
+      -3.789551556110382e-05
+     ],
+     "weights": [
+      -0.012535379268229008,
+      0.012438231147825718
+     ]
+    },
+    "granitesm": {
+     "cutoffs": [
+      -9.791180491447449e-05
+     ],
+     "weights": [
+      -0.013031023554503918,
+      0.012795880436897278
+     ]
+    }
+   }
+  },
+  "seconds": 40.1,
+  "gr_preview_max_abs": {
+   "gtemodern": 3.5762786865234375e-07,
+   "granitesm": 1.7881393432617188e-07
+  }
+ },
+ "tokens": {
+  "multi_window_nodes": 1412921,
+  "listed_nodes": 1412921,
+  "tokens_per_window": 32.22,
+  "token_index_bytes": 50865156
+ },
+ "storage": {
+  "exact": {
+   "selection": "all",
+   "compression": "exact",
+   "bytes_per_window": 2304,
+   "kept_windows": 43850,
+   "bytes_windows": 101030400,
+   "bytes_shared": 0,
+   "bytes_set": 101030400,
+   "bytes_per_multi_node": 165895.6,
+   "bytes_per_listed_node": 165895.6,
+   "windows_dotted_per_question": 43850.0
+  },
+  "int8": {
+   "selection": "all",
+   "compression": "int8",
+   "bytes_per_window": 1152,
+   "kept_windows": 43850,
+   "bytes_windows": 50515200,
+   "bytes_shared": 4608,
+   "bytes_set": 50519808,
+   "bytes_per_multi_node": 82947.8,
+   "bytes_per_listed_node": 82955.3,
+   "windows_dotted_per_question": 43850.0
+  },
+  "res2": {
+   "selection": "all",
+   "compression": "res2",
+   "bytes_per_window": 292,
+   "kept_windows": 43850,
+   "bytes_windows": 12804200,
+   "bytes_shared": 4718624,
+   "bytes_set": 17522824,
+   "bytes_per_multi_node": 21025.0,
+   "bytes_per_listed_node": 28773.1,
+   "windows_dotted_per_question": 43850.0
+  },
+  "res1": {
+   "selection": "all",
+   "compression": "res1",
+   "bytes_per_window": 148,
+   "kept_windows": 43850,
+   "bytes_windows": 6489800,
+   "bytes_shared": 4718608,
+   "bytes_set": 11208408,
+   "bytes_per_multi_node": 10656.5,
+   "bytes_per_listed_node": 18404.6,
+   "windows_dotted_per_question": 43850.0
+  },
+  "s64": {
+   "selection": "s64",
+   "compression": "exact",
+   "bytes_per_window": 2304,
+   "kept_windows": 22394,
+   "bytes_windows": 51595776,
+   "bytes_shared": 0,
+   "bytes_set": 51595776,
+   "bytes_per_multi_node": 84722.1,
+   "bytes_per_listed_node": 84722.1,
+   "windows_dotted_per_question": 22394.0
+  },
+  "s64+int8": {
+   "selection": "s64",
+   "compression": "int8",
+   "bytes_per_window": 1152,
+   "kept_windows": 22394,
+   "bytes_windows": 25797888,
+   "bytes_shared": 4608,
+   "bytes_set": 25802496,
+   "bytes_per_multi_node": 42361.1,
+   "bytes_per_listed_node": 42368.6,
+   "windows_dotted_per_question": 22394.0
+  },
+  "s64+res2": {
+   "selection": "s64",
+   "compression": "res2",
+   "bytes_per_window": 292,
+   "kept_windows": 22394,
+   "bytes_windows": 6539048,
+   "bytes_shared": 4718624,
+   "bytes_set": 11257672,
+   "bytes_per_multi_node": 10737.4,
+   "bytes_per_listed_node": 18485.5,
+   "windows_dotted_per_question": 22394.0
+  },
+  "med4": {
+   "selection": "med4",
+   "compression": "exact",
+   "bytes_per_window": 2304,
+   "kept_windows": 2429,
+   "bytes_windows": 5596416,
+   "bytes_shared": 0,
+   "bytes_set": 5596416,
+   "bytes_per_multi_node": 9189.5,
+   "bytes_per_listed_node": 9189.5,
+   "windows_dotted_per_question": 2429.0
+  },
+  "med4+int8": {
+   "selection": "med4",
+   "compression": "int8",
+   "bytes_per_window": 1152,
+   "kept_windows": 2429,
+   "bytes_windows": 2798208,
+   "bytes_shared": 4608,
+   "bytes_set": 2802816,
+   "bytes_per_multi_node": 4594.8,
+   "bytes_per_listed_node": 4602.3,
+   "windows_dotted_per_question": 2429.0
+  },
+  "med4+res2": {
+   "selection": "med4",
+   "compression": "res2",
+   "bytes_per_window": 292,
+   "kept_windows": 2429,
+   "bytes_windows": 709268,
+   "bytes_shared": 4718624,
+   "bytes_set": 5427892,
+   "bytes_per_multi_node": 1164.6,
+   "bytes_per_listed_node": 8912.8,
+   "windows_dotted_per_question": 2429.0
+  }
+ },
+ "windows_npz_sha256": "5b103ea4afaf1f2ece5b0975574a4c9fd774f0c84063caf88b02849426112f38",
+ "npz_sha256": "dc957333dfa1cd09772dad3c8a71a6ce59318b3ddd2d1ad2b1d9056f2e2c7e64",
+ "peak_working_set_gb": 8.01,
+ "seconds": 3957.0,
+ "utc": "2026-11-23T12:56:56Z",
+ "code_sha256": {
+  "zenc7.py": "6b759fbbc2b3dfcb7597f889079fd9358c28c7553f1b0116c6312136f0742cf1",
+  "zmhr.py": "a7b76d4aa6c3ff91f607a0d6a21fe8013ecdf043ec52df80ee2696b6f65ad839",
+  "zenc.py": "0416ecefcb9a803549d2dfa9aef844d66f4c05e2a5b26821930c7f701f32eeb7",
+  "zenc3.py": "b60460b505d72cd3737760d4f4493b6e4c37962f0a9edba905436e78da05ff0a",
+  "zenc3v.py": "f8f7601a94c4d69fc2cf9e6c7e111b7898ea7f0da3ff770c78437076c2417741",
+  "zenc5.py": "4b0b470b4a886d0858b99e3f66a29de3d5c5ba65aa8cb74a98b35ecac7438120",
+  "zenc6.py": "ddd1bf537fba8958652c8a06edde8fef2d9fa36d08ebb954c3fa888a08886bdb",
+  "zenc2s.py": "432b8873a55f6f1e7a47f42ed84ad27cc359868985c8aa6b74178f1387a48205",
+  "zmhr6.py": "2a1f0435e3d5c5adc7ca6bc1415c0c418d3d0803ba32fb9d4135e0ecf71c5a77"
+ }
+}

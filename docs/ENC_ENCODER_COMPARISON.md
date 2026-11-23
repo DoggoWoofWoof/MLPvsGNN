@@ -2517,3 +2517,62 @@ makes the vectors harder to train or improve.
 **Code.** zenc7.py has run rows and is not edited. zenc7c.py reads the three read.json files, records each one's
 sha256, applies this rule and writes outputs/enc/e7/storage_call.json and .md. It runs on the laptop after 23.6's
 report.
+
+### 23.10 Filed (23 November 2026, 23:17 IST, 17:47 UTC)
+
+**23.6's call: exact.** No compressed form is FREE on all three datasets.
+- The closest is int8. It is FREE on SQuAD and MuSiQue: every gap is LEVEL, and the largest drop is -0.10.
+- It misses on MultiHop-RAG by one interval: d20 -0.07 [-0.14, -0.01], BELOW.
+
+**23.9's storage call: int8.**
+- 1,152 bytes a window: 441,182,592 bytes over the three listed sets, 50.0% of exact's
+  882,337,536.
+- The lowest lower ends of its intervals are -0.22 on SQuAD, -0.19 on MuSiQue and
+  -0.30 on MultiHop-RAG. All are within the 1-point tolerance.
+- No smaller form is TOLERABLE on all three.
+
+The forms, largest first. Each cell is the worst point gap of d5, d20 and rrf5; the calls use the intervals.
+
+| form | % of exact's bytes | SQuAD | MuSiQue | MultiHop-RAG | FREE on all | TOLERABLE on all |
+|---|---|---|---|---|---|---|
+| exact | 100.0 | +0.00 | +0.00 | +0.00 | yes | yes |
+| med4 | 75.6 | -0.98 | -0.48 | -6.67 | no | no |
+| s64 | 69.2 | -1.00 | -0.22 | -0.96 | no | no |
+| int8 | 50.0 | -0.10 | -0.05 | -0.07 | no | yes |
+| med4+int8 | 37.8 | -1.01 | -0.49 | -6.76 | no | no |
+| s64+int8 | 34.6 | -1.03 | -0.31 | -1.04 | no | no |
+| res2 | 15.3 | -1.58 | -1.95 | -0.37 | no | no |
+| med4+res2 | 12.3 | -2.28 | -2.26 | -5.66 | no | no |
+| s64+res2 | 11.4 | -2.43 | -1.85 | -0.85 | no | no |
+| res1 | 9.1 | -4.32 | -4.84 | -1.44 | no | no |
+
+**What else the reads show (descriptive, no call):**
+- **res2 depends on the dataset.** It loses 1.6 to 2.0 points on SQuAD and MuSiQue, where a multi-window node has 3.5
+  to 4.5 windows. On MultiHop-RAG (72 windows an article) it is LEVEL on d5 and rrf5.
+- **s64 is mixed.** It is FREE on MuSiQue but loses 1.00 on SQuAD's d5 and 0.96 on MultiHop-RAG's. med4 loses 0.5 to
+  6.7.
+- **Against a ColBERTv2-style token index** (36 bytes a token, storage arithmetic only, 23.2), int8 windows take
+  0.88 of such an index on SQuAD, 0.73 on MuSiQue and
+  0.99 on MultiHop-RAG. Exact windows take 1.76,
+  1.46 and 1.99.
+- **The query-time cost** is the windows dotted per question when rescoring E6's top 1,000: 4,299 on
+  SQuAD and 2,789 on MuSiQue. MultiHop-RAG dots all 43,850, since it scores every
+  article.
+
+**The gates.**
+- G-S, G-N, G-R and G-D PASS.
+- **G-R on SQuAD and MuSiQue:** the maxima's 99th percentile of |max_exact - max_E6| is at most 3.2e-4 and the largest
+  9.5e-4, against the tolerances of 5e-3 and 0.05. F_exact is within 0.04 points of E6's filed F.
+- **G-R on MultiHop-RAG:** the maxima equal 22.8's to 3.6e-7, and F_exact equals 69.23, 97.14 and 64.29.
+
+**Times (wenc):** SQuAD 2.16 h, MuSiQue 5.87 h, MultiHop-RAG 1.10 h,
+against the declared 1.7, 5.2 and 0.9 h.
+
+**What follows (23.7, with 23.9):**
+- The unified world stores E6's windows as int8 (zenc5.quant's per-dimension scales, per dataset and encoder). <q, d>
+  stays exact.
+- HotpotQA and 2Wiki get int8's TOLERABLE check when their GPU windows run (e6-wenc-hotpotqa, e6-wenc-2wiki). If it
+  fails there, the storage call reopens on five datasets.
+
+**Records** (outputs/enc/e7): report.json and .md, storage_call.json and .md, and each dataset's read.json and
+wenc.json. The windows and maxima (.npz) stay on the host and the laptop and are not committed.
