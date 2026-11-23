@@ -287,3 +287,35 @@ No free per-node parameter appears anywhere (section 2's lesson 3).
   - Memory: the largest rows are 2Wiki's frozen vectors (18.4 GB in float16) and WebQSP's W2_S (500 million pairs).
 - **Outputs:** outputs/sem2/r1/<ds>/<arm>.json, report.json and report.md. The json and md files are committed; the
   arrays (npz) are not.
+
+### 7.11 Amendments before any R1 number (23 November 2026, 17:21 IST, 11:51 UTC)
+
+zsem2.py's self-test found two places where the form of 7.4 could never move from the cosine. Both start points had
+zero gradient, so the fit would have read the cosine and called it LEVEL by construction. They are amended here, before
+any row runs.
+
+- **(a) The extra dimensions.** If P's 256 extra rows start at exactly 0, every node's extra coordinates are 0, and the
+  gradient of every score with respect to those rows is 0 in every form. They never move. They now start at
+  N(0, 1e-4^2) per entry (seed 0). The start still equals the cosine within G-0's tolerance: the self-test's largest
+  score change is 1.5e-7.
+- **(b) The undirected operator.** The symmetric part of a rotation weights plane i by cos(theta_r,i). At
+  theta = 0 its gradient, -sin(theta), is 0, so it never moves either. On undirected (R) labels the operator is now a
+  free weight per plane, w_r,i, starting at 1. Each label has D'/2 weights, the same count as the angles. At the start
+  it is the cosine. The weights are unbounded, so a label may also sharpen or flatten its scores; that does not change
+  any rank within the label. Directed (S) labels keep the rotation of 7.4.
+
+**The self-test after (a) and (b).** A toy of 4,000 nodes in 32 dimensions plants a rotation on one directed label and
+plane weights on one undirected label, with a margin (each tail is the moved source plus noise).
+- The cosine reads MRR 0.27, the rotation 97.24: +96.98 [+95.01, +98.64], LEARNS.
+- Translation reads 36.59 and the map alone 34.45.
+- Every rank the read computed equals a full sort's.
+- G-0 and G-S pass.
+
+**A smoke run, not a read.** One run on MetaQA's frozen vectors checked the real shapes on the laptop: the loaders,
+G-E, the split, the read groups, the left-out tails, the fit loop and the json. It used the smoke settings (one epoch
+of 4,024 edges, 60 test and 40 dev edges per label) and wrote only to a scratch folder. Its numbers are not R1's and
+are not read.
+
+- **What it showed about the shapes:**
+  - MetaQA reads 10 groups: R.mention, R.name_comention, 7 S relations, and S.other.
+  - Its F0T equals CN_all, so it has no R.title_comention.
