@@ -1,0 +1,575 @@
+{
+ "dataset": "multihoprag",
+ "declared_in": "docs/UL2_LAYOUT_ON_E3V.md, section 13",
+ "nodes": 609,
+ "nodes_sha256": "4cf1f51f9af49c4c1312d933985e1608808a2517bcd941919eb225170bdb79cf",
+ "kb": false,
+ "versions": [
+  "RK"
+ ],
+ "carves": {
+  "s1eval": "test",
+  "s1sel": "dev"
+ },
+ "gate_GL": {
+  "links_json_sha256": "97a1f768bae0e0256136220f1a6aa037ec71632918053e89b262a523b2455744",
+  "F0T": 25080,
+  "W2_S": 2,
+  "K_e3v": 1366,
+  "K_frozen": 1339,
+  "REC": 25304,
+  "B0": 25343,
+  "verdict": "PASS"
+ },
+ "gate_GR": {
+  "H5": {
+   "pairs": 2387,
+   "verdict": "PASS"
+  },
+  "H10": {
+   "pairs": 4588,
+   "verdict": "PASS"
+  },
+  "HM": {
+   "pairs": 1332,
+   "verdict": "PASS"
+  },
+  "HK1": {
+   "pairs": 2712,
+   "verdict": "PASS"
+  },
+  "HK2": {
+   "pairs": 4886,
+   "verdict": "PASS"
+  }
+ },
+ "gate_GU": {
+  "REC": 4665,
+  "B0": 4564,
+  "want_REC": 4665,
+  "want_B0": 4564,
+  "verdict": "PASS"
+ },
+ "table": {
+  "npz_sha256": "c4967462c158e4187f19f6f88b28ecbbc2defe51048ea79efef6c9d63e55a85a",
+  "sizes": {
+   "H3": 1477,
+   "H5": 2387,
+   "H10": 4588,
+   "HM10": 1332,
+   "HK1": 2712,
+   "HK2": 4886
+  },
+  "flagged_rows": {
+   "RK": {
+    "rows": 609,
+    "flagged": 0
+   }
+  },
+  "build_sha256": "48695f416aa023141cbb3d34f62e703435f1e104d9253dd2101a7b8f0b67f84a",
+  "exclusion_pairs": 25343
+ },
+ "ntrank": {
+  "npz_sha256": "92c05728b6d6ef021d73496a0cee9107a7f7e8b7c4388e695b7457c8771dcd2a",
+  "gate_GN": {
+   "ntc_pairs": 21991,
+   "ntc_recomputed": 21991,
+   "ntc_keys": 3900,
+   "ntc_same": true,
+   "nt1_pairs": 4604,
+   "nt1_scored": 4604,
+   "nt1_same": true,
+   "verdict": "PASS"
+  }
+ },
+ "order": {
+  "H5": "R.hub table score: float32 dot of the two stored e3v rows (tab_s; ov_s on flagged rows), a pair's highest",
+  "H10": "as H5",
+  "HM": "as H5 (H10's pairs picked from both ends)",
+  "HK1": "the hub key's score (hk_s1), a pair's highest",
+  "HK2": "the hub key's scores (hk_s1, hk_s2), a pair's highest",
+  "NTc": "no score in its build: the group size (a key's namers + writers, at most 25), smallest first; stored as minus the size",
+  "NT1": "its build's score: the namer-writer float32 dot of the stored e3v rows (recomputed by ntrank)"
+ },
+ "form_pairs": {
+  "H5": 2387,
+  "HM": 1332,
+  "HK1": 2712,
+  "NTc": 21991,
+  "NT1": 4604,
+  "HK2": 4886,
+  "H10": 4588
+ },
+ "pairs_beyond_B0": {
+  "any": 21418,
+  "H5": 2387,
+  "HM": 1332,
+  "HK1": 2712,
+  "NTc": 13668,
+  "NT1": 4604,
+  "HK2": 4886,
+  "H10": 4588
+ },
+ "in_S": 0,
+ "sizes": {
+  "REC": {
+   "RK": 25304
+  },
+  "B0": {
+   "RK": 25343
+  }
+ },
+ "ratio_to_REC": {
+  "RK": 1.0015
+ },
+ "room": {
+  "RK": 7552
+ },
+ "cells": {
+  "s1eval": {
+   "GP": {
+    "questions": 1130,
+    "slots": 2747,
+    "split": "test",
+    "RK": {
+     "linked": {
+      "REC": 2395,
+      "B0": 2350
+     },
+     "B0-REC": {
+      "diff": -1.64,
+      "lo": -2.16,
+      "hi": -1.15,
+      "call": "BELOW"
+     }
+    }
+   }
+  },
+  "s1sel": {
+   "GP": {
+    "questions": 224,
+    "slots": 504,
+    "split": "dev",
+    "RK": {
+     "linked": {
+      "REC": 440,
+      "B0": 425
+     },
+     "B0-REC": {
+      "diff": -2.98,
+      "lo": -4.44,
+      "hi": -1.59,
+      "call": "BELOW"
+     }
+    }
+   }
+  }
+ },
+ "beside": {
+  "s1eval": {
+   "questions": 1130,
+   "slots": 2747,
+   "B0": 2350,
+   "REC": 2395,
+   "H5 alone over B0": {
+    "new": 172,
+    "diff": 6.26,
+    "lo": 5.2,
+    "hi": 7.39,
+    "call": "ABOVE"
+   },
+   "HM alone over B0": {
+    "new": 152,
+    "diff": 5.53,
+    "lo": 4.51,
+    "hi": 6.58,
+    "call": "ABOVE"
+   },
+   "HK1 alone over B0": {
+    "new": 136,
+    "diff": 4.95,
+    "lo": 4.0,
+    "hi": 5.89,
+    "call": "ABOVE"
+   },
+   "NTc alone over B0": {
+    "new": 172,
+    "diff": 6.26,
+    "lo": 5.24,
+    "hi": 7.31,
+    "call": "ABOVE"
+   },
+   "NT1 alone over B0": {
+    "new": 64,
+    "diff": 2.33,
+    "lo": 1.77,
+    "hi": 2.93,
+    "call": "ABOVE"
+   },
+   "HK2 alone over B0": {
+    "new": 193,
+    "diff": 7.03,
+    "lo": 5.87,
+    "hi": 8.19,
+    "call": "ABOVE"
+   },
+   "H10 alone over B0": {
+    "new": 215,
+    "diff": 7.83,
+    "lo": 6.61,
+    "hi": 9.08,
+    "call": "ABOVE"
+   },
+   "L2f - REC": {
+    "new": 163,
+    "diff": 5.93,
+    "lo": 4.95,
+    "hi": 6.96,
+    "call": "ABOVE"
+   }
+  },
+  "s1sel": {
+   "questions": 224,
+   "slots": 504,
+   "B0": 425,
+   "REC": 440,
+   "H5 alone over B0": {
+    "new": 39,
+    "diff": 7.74,
+    "lo": 5.28,
+    "hi": 10.49,
+    "call": "ABOVE"
+   },
+   "HM alone over B0": {
+    "new": 39,
+    "diff": 7.74,
+    "lo": 5.28,
+    "hi": 10.5,
+    "call": "ABOVE"
+   },
+   "HK1 alone over B0": {
+    "new": 23,
+    "diff": 4.56,
+    "lo": 2.85,
+    "hi": 6.49,
+    "call": "ABOVE"
+   },
+   "NTc alone over B0": {
+    "new": 37,
+    "diff": 7.34,
+    "lo": 4.95,
+    "hi": 9.89,
+    "call": "ABOVE"
+   },
+   "NT1 alone over B0": {
+    "new": 23,
+    "diff": 4.56,
+    "lo": 2.64,
+    "hi": 6.54,
+    "call": "ABOVE"
+   },
+   "HK2 alone over B0": {
+    "new": 43,
+    "diff": 8.53,
+    "lo": 5.96,
+    "hi": 11.31,
+    "call": "ABOVE"
+   },
+   "H10 alone over B0": {
+    "new": 44,
+    "diff": 8.73,
+    "lo": 6.08,
+    "hi": 11.68,
+    "call": "ABOVE"
+   },
+   "L2f - REC": {
+    "new": 29,
+    "diff": 5.75,
+    "lo": 3.7,
+    "hi": 8.14,
+    "call": "ABOVE"
+   }
+  },
+  "all": {
+   "questions": 2255,
+   "slots": 5363,
+   "B0": 4564,
+   "REC": 4665,
+   "H5 alone over B0": {
+    "new": 350,
+    "diff": 6.53,
+    "lo": 5.74,
+    "hi": 7.31,
+    "call": "ABOVE"
+   },
+   "HM alone over B0": {
+    "new": 324,
+    "diff": 6.04,
+    "lo": 5.32,
+    "hi": 6.78,
+    "call": "ABOVE"
+   },
+   "HK1 alone over B0": {
+    "new": 266,
+    "diff": 4.96,
+    "lo": 4.31,
+    "hi": 5.61,
+    "call": "ABOVE"
+   },
+   "NTc alone over B0": {
+    "new": 351,
+    "diff": 6.54,
+    "lo": 5.79,
+    "hi": 7.29,
+    "call": "ABOVE"
+   },
+   "NT1 alone over B0": {
+    "new": 146,
+    "diff": 2.72,
+    "lo": 2.27,
+    "hi": 3.18,
+    "call": "ABOVE"
+   },
+   "HK2 alone over B0": {
+    "new": 396,
+    "diff": 7.38,
+    "lo": 6.58,
+    "hi": 8.2,
+    "call": "ABOVE"
+   },
+   "H10 alone over B0": {
+    "new": 446,
+    "diff": 8.32,
+    "lo": 7.43,
+    "hi": 9.21,
+    "call": "ABOVE"
+   },
+   "L2f - REC": {
+    "new": 313,
+    "diff": 5.84,
+    "lo": 5.13,
+    "hi": 6.58,
+    "call": "ABOVE"
+   }
+  },
+  "comparison_query": {
+   "questions": 856,
+   "slots": 1212,
+   "B0": 924,
+   "REC": 942,
+   "H5 alone over B0": {
+    "new": 83,
+    "diff": 6.85,
+    "lo": 5.37,
+    "hi": 8.39,
+    "call": "ABOVE"
+   },
+   "HM alone over B0": {
+    "new": 77,
+    "diff": 6.35,
+    "lo": 4.97,
+    "hi": 7.86,
+    "call": "ABOVE"
+   },
+   "HK1 alone over B0": {
+    "new": 63,
+    "diff": 5.2,
+    "lo": 3.98,
+    "hi": 6.45,
+    "call": "ABOVE"
+   },
+   "NTc alone over B0": {
+    "new": 83,
+    "diff": 6.85,
+    "lo": 5.33,
+    "hi": 8.36,
+    "call": "ABOVE"
+   },
+   "NT1 alone over B0": {
+    "new": 42,
+    "diff": 3.47,
+    "lo": 2.48,
+    "hi": 4.57,
+    "call": "ABOVE"
+   },
+   "HK2 alone over B0": {
+    "new": 96,
+    "diff": 7.92,
+    "lo": 6.33,
+    "hi": 9.52,
+    "call": "ABOVE"
+   },
+   "H10 alone over B0": {
+    "new": 105,
+    "diff": 8.66,
+    "lo": 7.01,
+    "hi": 10.48,
+    "call": "ABOVE"
+   },
+   "L2f - REC": {
+    "new": 70,
+    "diff": 5.78,
+    "lo": 4.46,
+    "hi": 7.07,
+    "call": "ABOVE"
+   }
+  },
+  "inference_query": {
+   "questions": 816,
+   "slots": 3094,
+   "B0": 2724,
+   "REC": 2775,
+   "H5 alone over B0": {
+    "new": 187,
+    "diff": 6.04,
+    "lo": 5.06,
+    "hi": 7.07,
+    "call": "ABOVE"
+   },
+   "HM alone over B0": {
+    "new": 171,
+    "diff": 5.53,
+    "lo": 4.54,
+    "hi": 6.49,
+    "call": "ABOVE"
+   },
+   "HK1 alone over B0": {
+    "new": 152,
+    "diff": 4.91,
+    "lo": 4.02,
+    "hi": 5.85,
+    "call": "ABOVE"
+   },
+   "NTc alone over B0": {
+    "new": 191,
+    "diff": 6.17,
+    "lo": 5.24,
+    "hi": 7.22,
+    "call": "ABOVE"
+   },
+   "NT1 alone over B0": {
+    "new": 74,
+    "diff": 2.39,
+    "lo": 1.8,
+    "hi": 2.99,
+    "call": "ABOVE"
+   },
+   "HK2 alone over B0": {
+    "new": 214,
+    "diff": 6.92,
+    "lo": 5.82,
+    "hi": 8.03,
+    "call": "ABOVE"
+   },
+   "H10 alone over B0": {
+    "new": 250,
+    "diff": 8.08,
+    "lo": 6.88,
+    "hi": 9.28,
+    "call": "ABOVE"
+   },
+   "L2f - REC": {
+    "new": 186,
+    "diff": 6.01,
+    "lo": 5.03,
+    "hi": 7.04,
+    "call": "ABOVE"
+   }
+  },
+  "temporal_query": {
+   "questions": 583,
+   "slots": 1057,
+   "B0": 916,
+   "REC": 948,
+   "H5 alone over B0": {
+    "new": 80,
+    "diff": 7.57,
+    "lo": 5.92,
+    "hi": 9.33,
+    "call": "ABOVE"
+   },
+   "HM alone over B0": {
+    "new": 76,
+    "diff": 7.19,
+    "lo": 5.53,
+    "hi": 8.97,
+    "call": "ABOVE"
+   },
+   "HK1 alone over B0": {
+    "new": 51,
+    "diff": 4.82,
+    "lo": 3.51,
+    "hi": 6.23,
+    "call": "ABOVE"
+   },
+   "NTc alone over B0": {
+    "new": 77,
+    "diff": 7.28,
+    "lo": 5.65,
+    "hi": 8.94,
+    "call": "ABOVE"
+   },
+   "NT1 alone over B0": {
+    "new": 30,
+    "diff": 2.84,
+    "lo": 1.83,
+    "hi": 3.95,
+    "call": "ABOVE"
+   },
+   "HK2 alone over B0": {
+    "new": 86,
+    "diff": 8.14,
+    "lo": 6.38,
+    "hi": 10.01,
+    "call": "ABOVE"
+   },
+   "H10 alone over B0": {
+    "new": 91,
+    "diff": 8.61,
+    "lo": 6.79,
+    "hi": 10.52,
+    "call": "ABOVE"
+   },
+   "L2f - REC": {
+    "new": 57,
+    "diff": 5.39,
+    "lo": 3.97,
+    "hi": 6.9,
+    "call": "ABOVE"
+   }
+  },
+  "L2f": {
+   "H5_frozen_pairs": 2336,
+   "table": {
+    "npz_sha256": "d28e141e13524d8404a0220c8a56bff4fe5f502722690c162fbc30201e856a65",
+    "sizes": {
+     "H3": 1441,
+     "H5": 2336,
+     "H10": 4507,
+     "HM10": 1413,
+     "HK1": 2694,
+     "HK2": 4846
+    }
+   }
+  }
+ },
+ "ranks_npz_sha256": "b0f98e6f178b4fd86638b13865fa3d750f1a4a7f5350236d3ea706223cf73dd9",
+ "seconds": 3.4,
+ "utc": "2026-11-23T09:39:50Z",
+ "memory": {
+  "peak_working_set_gb": 0.13,
+  "peak_commit_gb": 0.21
+ },
+ "build_sha256": "ec6f290cf946a02d461f14f2a83babe8a3299a37c2cd01ead7216611e9603d83",
+ "zul2m_sha256": "d177728484de03448995701b0cae1c3678ea694c54963de0d4d70e73df20f21c",
+ "zul2c_sha256": "fb4a3356931308cba6333fde66d55d9b23d0c973fffe219b92ce21dcb25e533e",
+ "zul2u_sha256": "bf41636269905d1a4c4f7a6f704dc723fbce152ef5c4e9852ee1e2621ab9cb6e",
+ "zabl_u_sha256": "dafde17682eec75cbcb14c45428e4f02068d71db4a2450d896fa4fa4a0fd2451",
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+ "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}

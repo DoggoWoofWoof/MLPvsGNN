@@ -569,7 +569,7 @@ the -s rows), zul2u's on the KBs.
 
 **Outputs.** The json records are committed. The arrays (npz) are not.
 
-## 13. MultiHop-RAG joins the chain (declared 23 November 2026, 13:30 IST, 08:00 UTC)
+## 13. MultiHop-RAG joins the chain (declared 23 November 2026, 13:28 IST, 07:58 UTC)
 
 Sections 9.3, 12.1, 12.3 and 12.6.3 say MultiHop-RAG joins when MHR1 files its package, with the same rule, and that
 the chain then runs again over seven datasets. MHR1 filed (ac2b538). This section fixes how, before any R.hub,
