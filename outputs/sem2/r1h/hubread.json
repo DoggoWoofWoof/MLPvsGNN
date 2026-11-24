@@ -1,0 +1,1356 @@
+{
+ "stage": "SEM2 R1h part A (hub read of R1)",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 8",
+ "rows": {
+  "multihoprag e3v": {
+   "forms": {
+    "cosine": {
+     "pooled_mrr": 17.36,
+     "mrr_t": 16.74
+    },
+    "rotation": {
+     "pooled_mrr": 24.12,
+     "mrr_t": 23.43
+    },
+    "translation": {
+     "pooled_mrr": 24.17,
+     "mrr_t": 23.11
+    },
+    "rotation_D": {
+     "pooled_mrr": 24.26,
+     "mrr_t": 23.57
+    },
+    "map_only": {
+     "pooled_mrr": 24.29,
+     "mrr_t": 23.61
+    }
+   },
+   "H0": {
+    "diff": 6.69,
+    "lo": 4.81,
+    "hi": 8.56,
+    "call": "LEARNS",
+    "groups": 458
+   },
+   "R1_pooled_call": {
+    "diff": 6.76,
+    "lo": 5.16,
+    "hi": 8.28,
+    "call": "LEARNS"
+   },
+   "per_group_H0": {
+    "R.name_comention": {
+     "diff": 6.69,
+     "lo": 4.81,
+     "hi": 8.56,
+     "call": "ABOVE",
+     "groups": 458
+    }
+   },
+   "hubs": {
+    "R.name_comention": {
+     "edges": 1000,
+     "targets": 458,
+     "largest_target_edges": 9,
+     "hub_edge_share": 0.0
+    }
+   },
+   "npz_sha256": "b2f120d341cbfb373cde2725ae901062c2ff958a4152b43c8ad1fb08ad8e4275"
+  },
+  "multihoprag frozen": {
+   "forms": {
+    "cosine": {
+     "pooled_mrr": 18.89,
+     "mrr_t": 18.38
+    },
+    "rotation": {
+     "pooled_mrr": 24.09,
+     "mrr_t": 23.55
+    },
+    "translation": {
+     "pooled_mrr": 22.82,
+     "mrr_t": 21.46
+    },
+    "rotation_D": {
+     "pooled_mrr": 24.17,
+     "mrr_t": 23.56
+    },
+    "map_only": {
+     "pooled_mrr": 24.26,
+     "mrr_t": 23.71
+    }
+   },
+   "H0": {
+    "diff": 5.17,
+    "lo": 3.2,
+    "hi": 7.05,
+    "call": "LEARNS",
+    "groups": 458
+   },
+   "R1_pooled_call": {
+    "diff": 5.2,
+    "lo": 3.59,
+    "hi": 6.81,
+    "call": "LEARNS"
+   },
+   "per_group_H0": {
+    "R.name_comention": {
+     "diff": 5.17,
+     "lo": 3.2,
+     "hi": 7.05,
+     "call": "ABOVE",
+     "groups": 458
+    }
+   },
+   "hubs": {
+    "R.name_comention": {
+     "edges": 1000,
+     "targets": 458,
+     "largest_target_edges": 9,
+     "hub_edge_share": 0.0
+    }
+   },
+   "npz_sha256": "1c199cafbca656764b6b00c6a1a74a5ac2d6094cf4bdc02f36e43a3ffacd7bc3"
+  },
+  "squad e3v": {
+   "forms": {
+    "cosine": {
+     "pooled_mrr": 12.04,
+     "mrr_t": 11.86
+    },
+    "rotation": {
+     "pooled_mrr": 28.28,
+     "mrr_t": 27.9
+    },
+    "translation": {
+     "pooled_mrr": 25.22,
+     "mrr_t": 24.53
+    },
+    "rotation_D": {
+     "pooled_mrr": 27.98,
+     "mrr_t": 27.85
+    },
+    "map_only": {
+     "pooled_mrr": 22.23,
+     "mrr_t": 22.38
+    }
+   },
+   "H0": {
+    "diff": 16.04,
+    "lo": 14.64,
+    "hi": 17.41,
+    "call": "LEARNS",
+    "groups": 2201
+   },
+   "R1_pooled_call": {
+    "diff": 16.23,
+    "lo": 14.95,
+    "hi": 17.54,
+    "call": "LEARNS"
+   },
+   "per_group_H0": {
+    "R.mention": {
+     "diff": 24.35,
+     "lo": 21.83,
+     "hi": 26.81,
+     "call": "ABOVE",
+     "groups": 955
+    },
+    "R.name_comention": {
+     "diff": 5.32,
+     "lo": 3.83,
+     "hi": 6.83,
+     "call": "ABOVE",
+     "groups": 956
+    },
+    "R.title_comention": {
+     "diff": 24.0,
+     "lo": 20.95,
+     "hi": 27.29,
+     "call": "ABOVE",
+     "groups": 290
+    }
+   },
+   "hubs": {
+    "R.mention": {
+     "edges": 1000,
+     "targets": 955,
+     "largest_target_edges": 2,
+     "hub_edge_share": 0.0
+    },
+    "R.name_comention": {
+     "edges": 1000,
+     "targets": 956,
+     "largest_target_edges": 4,
+     "hub_edge_share": 0.0
+    },
+    "R.title_comention": {
+     "edges": 505,
+     "targets": 290,
+     "largest_target_edges": 5,
+     "hub_edge_share": 0.0
+    }
+   },
+   "npz_sha256": "7d3a606053a6f11e4e1d7a47069a2df0a168dea548a86619ba5047eeae41cbab"
+  },
+  "squad frozen": {
+   "forms": {
+    "cosine": {
+     "pooled_mrr": 10.19,
+     "mrr_t": 9.92
+    },
+    "rotation": {
+     "pooled_mrr": 28.49,
+     "mrr_t": 28.54
+    },
+    "translation": {
+     "pooled_mrr": 24.65,
+     "mrr_t": 24.12
+    },
+    "rotation_D": {
+     "pooled_mrr": 28.57,
+     "mrr_t": 28.82
+    },
+    "map_only": {
+     "pooled_mrr": 22.12,
+     "mrr_t": 22.21
+    }
+   },
+   "H0": {
+    "diff": 18.61,
+    "lo": 17.22,
+    "hi": 20.0,
+    "call": "LEARNS",
+    "groups": 2201
+   },
+   "R1_pooled_call": {
+    "diff": 18.3,
+    "lo": 16.97,
+    "hi": 19.68,
+    "call": "LEARNS"
+   },
+   "per_group_H0": {
+    "R.mention": {
+     "diff": 30.84,
+     "lo": 28.24,
+     "hi": 33.43,
+     "call": "ABOVE",
+     "groups": 955
+    },
+    "R.name_comention": {
+     "diff": 6.42,
+     "lo": 4.91,
+     "hi": 8.06,
+     "call": "ABOVE",
+     "groups": 956
+    },
+    "R.title_comention": {
+     "diff": 18.52,
+     "lo": 15.97,
+     "hi": 21.19,
+     "call": "ABOVE",
+     "groups": 290
+    }
+   },
+   "hubs": {
+    "R.mention": {
+     "edges": 1000,
+     "targets": 955,
+     "largest_target_edges": 2,
+     "hub_edge_share": 0.0
+    },
+    "R.name_comention": {
+     "edges": 1000,
+     "targets": 956,
+     "largest_target_edges": 4,
+     "hub_edge_share": 0.0
+    },
+    "R.title_comention": {
+     "edges": 505,
+     "targets": 290,
+     "largest_target_edges": 5,
+     "hub_edge_share": 0.0
+    }
+   },
+   "npz_sha256": "fc9628676cc0712fa522f7d37190ff85d2943b9047a239464b45e5295698a4b2"
+  },
+  "musique e3v": {
+   "forms": {
+    "cosine": {
+     "pooled_mrr": 5.7,
+     "mrr_t": 5.81
+    },
+    "rotation": {
+     "pooled_mrr": 12.47,
+     "mrr_t": 12.1
+    },
+    "translation": {
+     "pooled_mrr": 9.68,
+     "mrr_t": 9.58
+    },
+    "rotation_D": {
+     "pooled_mrr": 12.28,
+     "mrr_t": 11.88
+    },
+    "map_only": {
+     "pooled_mrr": 9.03,
+     "mrr_t": 9.07
+    }
+   },
+   "H0": {
+    "diff": 6.29,
+    "lo": 5.5,
+    "hi": 7.14,
+    "call": "LEARNS",
+    "groups": 2883
+   },
+   "R1_pooled_call": {
+    "diff": 6.77,
+    "lo": 6.0,
+    "hi": 7.6,
+    "call": "LEARNS"
+   },
+   "per_group_H0": {
+    "R.mention": {
+     "diff": 12.72,
+     "lo": 10.85,
+     "hi": 14.66,
+     "call": "ABOVE",
+     "groups": 931
+    },
+    "R.name_comention": {
+     "diff": 1.98,
+     "lo": 1.04,
+     "hi": 2.88,
+     "call": "ABOVE",
+     "groups": 994
+    },
+    "R.title_comention": {
+     "diff": 4.51,
+     "lo": 3.46,
+     "hi": 5.6,
+     "call": "ABOVE",
+     "groups": 958
+    }
+   },
+   "hubs": {
+    "R.mention": {
+     "edges": 1000,
+     "targets": 931,
+     "largest_target_edges": 5,
+     "hub_edge_share": 0.0
+    },
+    "R.name_comention": {
+     "edges": 1000,
+     "targets": 994,
+     "largest_target_edges": 2,
+     "hub_edge_share": 0.0
+    },
+    "R.title_comention": {
+     "edges": 1000,
+     "targets": 958,
+     "largest_target_edges": 2,
+     "hub_edge_share": 0.0
+    }
+   },
+   "npz_sha256": "ddd4fd23c9cf724eb03de9c7320155d4fa0b9b286d071685ed30f0653bd94ca7"
+  },
+  "musique frozen": {
+   "forms": {
+    "cosine": {
+     "pooled_mrr": 6.0,
+     "mrr_t": 6.14
+    },
+    "rotation": {
+     "pooled_mrr": 13.87,
+     "mrr_t": 13.52
+    },
+    "translation": {
+     "pooled_mrr": 11.03,
+     "mrr_t": 10.88
+    },
+    "rotation_D": {
+     "pooled_mrr": 13.58,
+     "mrr_t": 13.24
+    },
+    "map_only": {
+     "pooled_mrr": 9.69,
+     "mrr_t": 9.8
+    }
+   },
+   "H0": {
+    "diff": 7.37,
+    "lo": 6.52,
+    "hi": 8.23,
+    "call": "LEARNS",
+    "groups": 2883
+   },
+   "R1_pooled_call": {
+    "diff": 7.87,
+    "lo": 7.04,
+    "hi": 8.74,
+    "call": "LEARNS"
+   },
+   "per_group_H0": {
+    "R.mention": {
+     "diff": 14.21,
+     "lo": 12.3,
+     "hi": 16.25,
+     "call": "ABOVE",
+     "groups": 931
+    },
+    "R.name_comention": {
+     "diff": 1.82,
+     "lo": 0.88,
+     "hi": 2.85,
+     "call": "ABOVE",
+     "groups": 994
+    },
+    "R.title_comention": {
+     "diff": 6.49,
+     "lo": 5.31,
+     "hi": 7.66,
+     "call": "ABOVE",
+     "groups": 958
+    }
+   },
+   "hubs": {
+    "R.mention": {
+     "edges": 1000,
+     "targets": 931,
+     "largest_target_edges": 5,
+     "hub_edge_share": 0.0
+    },
+    "R.name_comention": {
+     "edges": 1000,
+     "targets": 994,
+     "largest_target_edges": 2,
+     "hub_edge_share": 0.0
+    },
+    "R.title_comention": {
+     "edges": 1000,
+     "targets": 958,
+     "largest_target_edges": 2,
+     "hub_edge_share": 0.0
+    }
+   },
+   "npz_sha256": "c8f827f17c7b1744c7e462d564c5bebdb90de314bb7a4088aebf4ac681e882f0"
+  },
+  "metaqa e3v": {
+   "forms": {
+    "cosine": {
+     "pooled_mrr": 3.37,
+     "mrr_t": 4.6
+    },
+    "rotation": {
+     "pooled_mrr": 15.68,
+     "mrr_t": 10.23
+    },
+    "translation": {
+     "pooled_mrr": 16.91,
+     "mrr_t": 10.62
+    },
+    "rotation_D": {
+     "pooled_mrr": 14.97,
+     "mrr_t": 10.16
+    },
+    "map_only": {
+     "pooled_mrr": 6.34,
+     "mrr_t": 7.55
+    }
+   },
+   "H0": {
+    "diff": 5.63,
+    "lo": 5.11,
+    "hi": 6.14,
+    "call": "LEARNS",
+    "groups": 5201
+   },
+   "R1_pooled_call": {
+    "diff": 12.31,
+    "lo": 11.74,
+    "hi": 12.92,
+    "call": "LEARNS"
+   },
+   "per_group_H0": {
+    "R.mention": {
+     "diff": 0.76,
+     "lo": 0.36,
+     "hi": 1.25,
+     "call": "ABOVE",
+     "groups": 879
+    },
+    "R.name_comention": {
+     "diff": 27.63,
+     "lo": 25.13,
+     "hi": 30.2,
+     "call": "ABOVE",
+     "groups": 794
+    },
+    "S.starred_actors": {
+     "diff": 0.74,
+     "lo": 0.48,
+     "hi": 1.05,
+     "call": "ABOVE",
+     "groups": 877
+    },
+    "S.has_tags": {
+     "diff": 3.39,
+     "lo": 2.51,
+     "hi": 4.42,
+     "call": "ABOVE",
+     "groups": 721
+    },
+    "S.written_by": {
+     "diff": 1.0,
+     "lo": 0.55,
+     "hi": 1.54,
+     "call": "ABOVE",
+     "groups": 924
+    },
+    "S.release_year": {
+     "diff": 6.02,
+     "lo": 4.94,
+     "hi": 7.18,
+     "call": "ABOVE",
+     "groups": 96
+    },
+    "S.directed_by": {
+     "diff": 0.84,
+     "lo": 0.44,
+     "hi": 1.36,
+     "call": "ABOVE",
+     "groups": 846
+    },
+    "S.has_genre": {
+     "diff": 23.24,
+     "lo": 14.63,
+     "hi": 32.38,
+     "call": "ABOVE",
+     "groups": 21
+    },
+    "S.in_language": {
+     "diff": 20.31,
+     "lo": 13.11,
+     "hi": 29.1,
+     "call": "ABOVE",
+     "groups": 38
+    },
+    "S.other": {
+     "diff": 20.49,
+     "lo": 1.39,
+     "hi": 45.79,
+     "call": "ABOVE",
+     "groups": 5
+    }
+   },
+   "hubs": {
+    "R.mention": {
+     "edges": 1000,
+     "targets": 879,
+     "largest_target_edges": 12,
+     "hub_edge_share": 1.2
+    },
+    "R.name_comention": {
+     "edges": 1000,
+     "targets": 794,
+     "largest_target_edges": 5,
+     "hub_edge_share": 0.0
+    },
+    "S.starred_actors": {
+     "edges": 1000,
+     "targets": 877,
+     "largest_target_edges": 5,
+     "hub_edge_share": 0.0
+    },
+    "S.has_tags": {
+     "edges": 1000,
+     "targets": 721,
+     "largest_target_edges": 36,
+     "hub_edge_share": 7.4
+    },
+    "S.written_by": {
+     "edges": 1000,
+     "targets": 924,
+     "largest_target_edges": 3,
+     "hub_edge_share": 0.0
+    },
+    "S.release_year": {
+     "edges": 1000,
+     "targets": 96,
+     "largest_target_edges": 40,
+     "hub_edge_share": 72.6
+    },
+    "S.directed_by": {
+     "edges": 1000,
+     "targets": 846,
+     "largest_target_edges": 5,
+     "hub_edge_share": 0.0
+    },
+    "S.has_genre": {
+     "edges": 1000,
+     "targets": 21,
+     "largest_target_edges": 261,
+     "hub_edge_share": 98.1
+    },
+    "S.in_language": {
+     "edges": 376,
+     "targets": 38,
+     "largest_target_edges": 71,
+     "hub_edge_share": 81.12
+    },
+    "S.other": {
+     "edges": 42,
+     "targets": 5,
+     "largest_target_edges": 29,
+     "hub_edge_share": 69.05
+    }
+   },
+   "npz_sha256": "4fd92a218cbf2817185e78af24da5d89dbcf7df719ae1f9c6785b4f5e8b1bc59"
+  },
+  "metaqa frozen": {
+   "forms": {
+    "cosine": {
+     "pooled_mrr": 2.79,
+     "mrr_t": 3.88
+    },
+    "rotation": {
+     "pooled_mrr": 16.43,
+     "mrr_t": 10.89
+    },
+    "translation": {
+     "pooled_mrr": 18.59,
+     "mrr_t": 11.07
+    },
+    "rotation_D": {
+     "pooled_mrr": 16.35,
+     "mrr_t": 10.77
+    },
+    "map_only": {
+     "pooled_mrr": 6.19,
+     "mrr_t": 7.43
+    }
+   },
+   "H0": {
+    "diff": 7.01,
+    "lo": 6.48,
+    "hi": 7.56,
+    "call": "LEARNS",
+    "groups": 5201
+   },
+   "R1_pooled_call": {
+    "diff": 13.65,
+    "lo": 13.02,
+    "hi": 14.28,
+    "call": "LEARNS"
+   },
+   "per_group_H0": {
+    "R.mention": {
+     "diff": 0.58,
+     "lo": 0.17,
+     "hi": 1.01,
+     "call": "ABOVE",
+     "groups": 879
+    },
+    "R.name_comention": {
+     "diff": 29.71,
+     "lo": 27.04,
+     "hi": 32.21,
+     "call": "ABOVE",
+     "groups": 794
+    },
+    "S.starred_actors": {
+     "diff": 2.22,
+     "lo": 1.57,
+     "hi": 2.94,
+     "call": "ABOVE",
+     "groups": 877
+    },
+    "S.has_tags": {
+     "diff": 5.53,
+     "lo": 4.3,
+     "hi": 6.91,
+     "call": "ABOVE",
+     "groups": 721
+    },
+    "S.written_by": {
+     "diff": 2.23,
+     "lo": 1.54,
+     "hi": 3.03,
+     "call": "ABOVE",
+     "groups": 924
+    },
+    "S.release_year": {
+     "diff": 5.53,
+     "lo": 4.79,
+     "hi": 6.35,
+     "call": "ABOVE",
+     "groups": 96
+    },
+    "S.directed_by": {
+     "diff": 2.71,
+     "lo": 1.96,
+     "hi": 3.59,
+     "call": "ABOVE",
+     "groups": 846
+    },
+    "S.has_genre": {
+     "diff": 29.27,
+     "lo": 21.01,
+     "hi": 37.43,
+     "call": "ABOVE",
+     "groups": 21
+    },
+    "S.in_language": {
+     "diff": 21.88,
+     "lo": 14.85,
+     "hi": 29.85,
+     "call": "ABOVE",
+     "groups": 38
+    },
+    "S.other": {
+     "diff": 26.28,
+     "lo": 3.43,
+     "hi": 54.76,
+     "call": "ABOVE",
+     "groups": 5
+    }
+   },
+   "hubs": {
+    "R.mention": {
+     "edges": 1000,
+     "targets": 879,
+     "largest_target_edges": 12,
+     "hub_edge_share": 1.2
+    },
+    "R.name_comention": {
+     "edges": 1000,
+     "targets": 794,
+     "largest_target_edges": 5,
+     "hub_edge_share": 0.0
+    },
+    "S.starred_actors": {
+     "edges": 1000,
+     "targets": 877,
+     "largest_target_edges": 5,
+     "hub_edge_share": 0.0
+    },
+    "S.has_tags": {
+     "edges": 1000,
+     "targets": 721,
+     "largest_target_edges": 36,
+     "hub_edge_share": 7.4
+    },
+    "S.written_by": {
+     "edges": 1000,
+     "targets": 924,
+     "largest_target_edges": 3,
+     "hub_edge_share": 0.0
+    },
+    "S.release_year": {
+     "edges": 1000,
+     "targets": 96,
+     "largest_target_edges": 40,
+     "hub_edge_share": 72.6
+    },
+    "S.directed_by": {
+     "edges": 1000,
+     "targets": 846,
+     "largest_target_edges": 5,
+     "hub_edge_share": 0.0
+    },
+    "S.has_genre": {
+     "edges": 1000,
+     "targets": 21,
+     "largest_target_edges": 261,
+     "hub_edge_share": 98.1
+    },
+    "S.in_language": {
+     "edges": 376,
+     "targets": 38,
+     "largest_target_edges": 71,
+     "hub_edge_share": 81.12
+    },
+    "S.other": {
+     "edges": 42,
+     "targets": 5,
+     "largest_target_edges": 29,
+     "hub_edge_share": 69.05
+    }
+   },
+   "npz_sha256": "f9d6c3e2cf4acc1b18d9b09900da498e472a0467d00ec82631f64aa9d570b51f"
+  },
+  "webqsp e3v": {
+   "forms": {
+    "cosine": {
+     "pooled_mrr": 7.32,
+     "mrr_t": 13.87
+    },
+    "rotation": {
+     "pooled_mrr": 46.4,
+     "mrr_t": 49.3
+    },
+    "translation": {
+     "pooled_mrr": 47.2,
+     "mrr_t": 53.0
+    }
+   },
+   "H0": {
+    "diff": 35.43,
+    "lo": 34.42,
+    "hi": 36.38,
+    "call": "LEARNS",
+    "groups": 7722
+   },
+   "R1_pooled_call": {
+    "diff": 39.07,
+    "lo": 38.36,
+    "hi": 39.75,
+    "call": "LEARNS"
+   },
+   "per_group_H0": {
+    "R.mention": {
+     "diff": 14.07,
+     "lo": 12.05,
+     "hi": 16.34,
+     "call": "ABOVE",
+     "groups": 990
+    },
+    "R.name_comention": {
+     "diff": 2.03,
+     "lo": 0.57,
+     "hi": 3.48,
+     "call": "ABOVE",
+     "groups": 992
+    },
+    "R.title_comention": {
+     "diff": 3.85,
+     "lo": 1.44,
+     "hi": 6.24,
+     "call": "ABOVE",
+     "groups": 259
+    },
+    "S.topic notable types": {
+     "diff": 16.61,
+     "lo": 12.99,
+     "hi": 20.32,
+     "call": "ABOVE",
+     "groups": 180
+    },
+    "S.valuenotation is reviewed": {
+     "diff": 21.95,
+     "lo": 16.2,
+     "hi": 28.39,
+     "call": "ABOVE",
+     "groups": 116
+    },
+    "S.topic notable for": {
+     "diff": 64.81,
+     "lo": 62.89,
+     "hi": 66.7,
+     "call": "ABOVE",
+     "groups": 1000
+    },
+    "S.performance film": {
+     "diff": 84.1,
+     "lo": 81.85,
+     "hi": 86.14,
+     "call": "ABOVE",
+     "groups": 921
+    },
+    "S.film starring": {
+     "diff": 87.66,
+     "lo": 86.12,
+     "hi": 89.07,
+     "call": "ABOVE",
+     "groups": 1000
+    },
+    "S.valuenotation has value": {
+     "diff": 27.86,
+     "lo": 19.58,
+     "hi": 36.89,
+     "call": "ABOVE",
+     "groups": 75
+    },
+    "S.person profession": {
+     "diff": 2.77,
+     "lo": 1.84,
+     "hi": 3.92,
+     "call": "ABOVE",
+     "groups": 176
+    },
+    "S.location containedby": {
+     "diff": 6.63,
+     "lo": 5.1,
+     "hi": 8.29,
+     "call": "ABOVE",
+     "groups": 574
+    },
+    "S.person gender": {
+     "diff": 55.09,
+     "lo": 10.85,
+     "hi": 99.34,
+     "call": "ABOVE",
+     "groups": 2
+    },
+    "S.netflix title netflix genres": {
+     "diff": 7.03,
+     "lo": 5.08,
+     "hi": 9.24,
+     "call": "ABOVE",
+     "groups": 254
+    },
+    "S.person nationality": {
+     "diff": 30.52,
+     "lo": 24.54,
+     "hi": 36.58,
+     "call": "ABOVE",
+     "groups": 116
+    },
+    "S.film genre": {
+     "diff": 7.63,
+     "lo": 5.14,
+     "hi": 10.35,
+     "call": "ABOVE",
+     "groups": 124
+    },
+    "S.other": {
+     "diff": 8.94,
+     "lo": 7.41,
+     "hi": 10.53,
+     "call": "ABOVE",
+     "groups": 943
+    }
+   },
+   "hubs": {
+    "R.mention": {
+     "edges": 1000,
+     "targets": 990,
+     "largest_target_edges": 2,
+     "hub_edge_share": 0.0
+    },
+    "R.name_comention": {
+     "edges": 1000,
+     "targets": 992,
+     "largest_target_edges": 2,
+     "hub_edge_share": 0.0
+    },
+    "R.title_comention": {
+     "edges": 361,
+     "targets": 259,
+     "largest_target_edges": 4,
+     "hub_edge_share": 0.0
+    },
+    "S.topic notable types": {
+     "edges": 1000,
+     "targets": 180,
+     "largest_target_edges": 130,
+     "hub_edge_share": 63.2
+    },
+    "S.valuenotation is reviewed": {
+     "edges": 1000,
+     "targets": 116,
+     "largest_target_edges": 144,
+     "hub_edge_share": 79.1
+    },
+    "S.topic notable for": {
+     "edges": 1000,
+     "targets": 1000,
+     "largest_target_edges": 1,
+     "hub_edge_share": 0.0
+    },
+    "S.performance film": {
+     "edges": 1000,
+     "targets": 921,
+     "largest_target_edges": 3,
+     "hub_edge_share": 0.0
+    },
+    "S.film starring": {
+     "edges": 1000,
+     "targets": 1000,
+     "largest_target_edges": 1,
+     "hub_edge_share": 0.0
+    },
+    "S.valuenotation has value": {
+     "edges": 1000,
+     "targets": 75,
+     "largest_target_edges": 272,
+     "hub_edge_share": 86.3
+    },
+    "S.person profession": {
+     "edges": 1000,
+     "targets": 176,
+     "largest_target_edges": 173,
+     "hub_edge_share": 67.8
+    },
+    "S.location containedby": {
+     "edges": 1000,
+     "targets": 574,
+     "largest_target_edges": 102,
+     "hub_edge_share": 14.9
+    },
+    "S.person gender": {
+     "edges": 1000,
+     "targets": 2,
+     "largest_target_edges": 765,
+     "hub_edge_share": 100.0
+    },
+    "S.netflix title netflix genres": {
+     "edges": 1000,
+     "targets": 254,
+     "largest_target_edges": 70,
+     "hub_edge_share": 46.9
+    },
+    "S.person nationality": {
+     "edges": 1000,
+     "targets": 116,
+     "largest_target_edges": 505,
+     "hub_edge_share": 75.4
+    },
+    "S.film genre": {
+     "edges": 1000,
+     "targets": 124,
+     "largest_target_edges": 183,
+     "hub_edge_share": 76.3
+    },
+    "S.other": {
+     "edges": 1000,
+     "targets": 943,
+     "largest_target_edges": 11,
+     "hub_edge_share": 1.1
+    }
+   },
+   "npz_sha256": "6a7d1b0316fa4540e857c078fc4fa0d5a9c77814b4a17bf1ee7dc0319c425a62"
+  },
+  "webqsp frozen": {
+   "forms": {
+    "cosine": {
+     "pooled_mrr": 5.19,
+     "mrr_t": 9.87
+    },
+    "rotation": {
+     "pooled_mrr": 46.24,
+     "mrr_t": 49.89
+    },
+    "translation": {
+     "pooled_mrr": 47.5,
+     "mrr_t": 53.33
+    }
+   },
+   "H0": {
+    "diff": 40.02,
+    "lo": 38.98,
+    "hi": 41.05,
+    "call": "LEARNS",
+    "groups": 7722
+   },
+   "R1_pooled_call": {
+    "diff": 41.06,
+    "lo": 40.31,
+    "hi": 41.75,
+    "call": "LEARNS"
+   },
+   "per_group_H0": {
+    "R.mention": {
+     "diff": 15.56,
+     "lo": 13.4,
+     "hi": 17.88,
+     "call": "ABOVE",
+     "groups": 990
+    },
+    "R.name_comention": {
+     "diff": 3.64,
+     "lo": 2.3,
+     "hi": 5.02,
+     "call": "ABOVE",
+     "groups": 992
+    },
+    "R.title_comention": {
+     "diff": 9.76,
+     "lo": 7.14,
+     "hi": 12.53,
+     "call": "ABOVE",
+     "groups": 259
+    },
+    "S.topic notable types": {
+     "diff": 21.62,
+     "lo": 17.79,
+     "hi": 25.74,
+     "call": "ABOVE",
+     "groups": 180
+    },
+    "S.valuenotation is reviewed": {
+     "diff": 23.51,
+     "lo": 17.52,
+     "hi": 30.05,
+     "call": "ABOVE",
+     "groups": 116
+    },
+    "S.topic notable for": {
+     "diff": 89.86,
+     "lo": 88.55,
+     "hi": 91.09,
+     "call": "ABOVE",
+     "groups": 1000
+    },
+    "S.performance film": {
+     "diff": 87.65,
+     "lo": 85.82,
+     "hi": 89.29,
+     "call": "ABOVE",
+     "groups": 921
+    },
+    "S.film starring": {
+     "diff": 86.06,
+     "lo": 84.26,
+     "hi": 87.78,
+     "call": "ABOVE",
+     "groups": 1000
+    },
+    "S.valuenotation has value": {
+     "diff": 24.3,
+     "lo": 16.47,
+     "hi": 32.94,
+     "call": "ABOVE",
+     "groups": 75
+    },
+    "S.person profession": {
+     "diff": 9.02,
+     "lo": 6.43,
+     "hi": 11.99,
+     "call": "ABOVE",
+     "groups": 176
+    },
+    "S.location containedby": {
+     "diff": 9.99,
+     "lo": 7.99,
+     "hi": 11.99,
+     "call": "ABOVE",
+     "groups": 574
+    },
+    "S.person gender": {
+     "diff": 64.67,
+     "lo": 30.62,
+     "hi": 98.71,
+     "call": "ABOVE",
+     "groups": 2
+    },
+    "S.netflix title netflix genres": {
+     "diff": 10.08,
+     "lo": 7.7,
+     "hi": 12.75,
+     "call": "ABOVE",
+     "groups": 254
+    },
+    "S.person nationality": {
+     "diff": 35.39,
+     "lo": 29.52,
+     "hi": 41.22,
+     "call": "ABOVE",
+     "groups": 116
+    },
+    "S.film genre": {
+     "diff": 9.35,
+     "lo": 6.72,
+     "hi": 12.27,
+     "call": "ABOVE",
+     "groups": 124
+    },
+    "S.other": {
+     "diff": 7.56,
+     "lo": 6.33,
+     "hi": 8.8,
+     "call": "ABOVE",
+     "groups": 943
+    }
+   },
+   "hubs": {
+    "R.mention": {
+     "edges": 1000,
+     "targets": 990,
+     "largest_target_edges": 2,
+     "hub_edge_share": 0.0
+    },
+    "R.name_comention": {
+     "edges": 1000,
+     "targets": 992,
+     "largest_target_edges": 2,
+     "hub_edge_share": 0.0
+    },
+    "R.title_comention": {
+     "edges": 361,
+     "targets": 259,
+     "largest_target_edges": 4,
+     "hub_edge_share": 0.0
+    },
+    "S.topic notable types": {
+     "edges": 1000,
+     "targets": 180,
+     "largest_target_edges": 130,
+     "hub_edge_share": 63.2
+    },
+    "S.valuenotation is reviewed": {
+     "edges": 1000,
+     "targets": 116,
+     "largest_target_edges": 144,
+     "hub_edge_share": 79.1
+    },
+    "S.topic notable for": {
+     "edges": 1000,
+     "targets": 1000,
+     "largest_target_edges": 1,
+     "hub_edge_share": 0.0
+    },
+    "S.performance film": {
+     "edges": 1000,
+     "targets": 921,
+     "largest_target_edges": 3,
+     "hub_edge_share": 0.0
+    },
+    "S.film starring": {
+     "edges": 1000,
+     "targets": 1000,
+     "largest_target_edges": 1,
+     "hub_edge_share": 0.0
+    },
+    "S.valuenotation has value": {
+     "edges": 1000,
+     "targets": 75,
+     "largest_target_edges": 272,
+     "hub_edge_share": 86.3
+    },
+    "S.person profession": {
+     "edges": 1000,
+     "targets": 176,
+     "largest_target_edges": 173,
+     "hub_edge_share": 67.8
+    },
+    "S.location containedby": {
+     "edges": 1000,
+     "targets": 574,
+     "largest_target_edges": 102,
+     "hub_edge_share": 14.9
+    },
+    "S.person gender": {
+     "edges": 1000,
+     "targets": 2,
+     "largest_target_edges": 765,
+     "hub_edge_share": 100.0
+    },
+    "S.netflix title netflix genres": {
+     "edges": 1000,
+     "targets": 254,
+     "largest_target_edges": 70,
+     "hub_edge_share": 46.9
+    },
+    "S.person nationality": {
+     "edges": 1000,
+     "targets": 116,
+     "largest_target_edges": 505,
+     "hub_edge_share": 75.4
+    },
+    "S.film genre": {
+     "edges": 1000,
+     "targets": 124,
+     "largest_target_edges": 183,
+     "hub_edge_share": 76.3
+    },
+    "S.other": {
+     "edges": 1000,
+     "targets": 943,
+     "largest_target_edges": 11,
+     "hub_edge_share": 1.1
+    }
+   },
+   "npz_sha256": "5b3852aa4d7e659b83523eb10a8ffb482e1bebdae175ca7470f78feee81a6c3e"
+  },
+  "hotpotqa e3v": {
+   "forms": {
+    "cosine": {
+     "pooled_mrr": 7.31,
+     "mrr_t": 7.69
+    },
+    "rotation": {
+     "pooled_mrr": 10.95,
+     "mrr_t": 11.3
+    },
+    "translation": {
+     "pooled_mrr": 10.38,
+     "mrr_t": 10.63
+    }
+   },
+   "H0": {
+    "diff": 3.61,
+    "lo": 3.06,
+    "hi": 4.14,
+    "call": "LEARNS",
+    "groups": 3800
+   },
+   "R1_pooled_call": {
+    "diff": 3.64,
+    "lo": 3.13,
+    "hi": 4.17,
+    "call": "LEARNS"
+   },
+   "per_group_H0": {
+    "R.mention": {
+     "diff": 2.61,
+     "lo": 1.61,
+     "hi": 3.64,
+     "call": "ABOVE",
+     "groups": 912
+    },
+    "R.name_comention": {
+     "diff": 1.18,
+     "lo": 0.48,
+     "hi": 1.92,
+     "call": "ABOVE",
+     "groups": 999
+    },
+    "R.title_comention": {
+     "diff": 3.2,
+     "lo": 2.25,
+     "hi": 4.19,
+     "call": "ABOVE",
+     "groups": 997
+    },
+    "S.hyperlink": {
+     "diff": 7.79,
+     "lo": 6.34,
+     "hi": 9.26,
+     "call": "ABOVE",
+     "groups": 892
+    }
+   },
+   "hubs": {
+    "R.mention": {
+     "edges": 1000,
+     "targets": 912,
+     "largest_target_edges": 8,
+     "hub_edge_share": 0.0
+    },
+    "R.name_comention": {
+     "edges": 1000,
+     "targets": 999,
+     "largest_target_edges": 2,
+     "hub_edge_share": 0.0
+    },
+    "R.title_comention": {
+     "edges": 1000,
+     "targets": 997,
+     "largest_target_edges": 2,
+     "hub_edge_share": 0.0
+    },
+    "S.hyperlink": {
+     "edges": 1000,
+     "targets": 892,
+     "largest_target_edges": 14,
+     "hub_edge_share": 1.4
+    }
+   },
+   "npz_sha256": "2589d71fba21ef4ea1c62619397b22804fd81b389166241fcb391ee0488f152d"
+  }
+ },
+ "utc": "2026-11-24T09:28:46Z",
+ "script_sha256": "2588ab5f284d6f1dace715f9ccec1f0cbca664945619fba62ebcca0f05006a3f"
+}
