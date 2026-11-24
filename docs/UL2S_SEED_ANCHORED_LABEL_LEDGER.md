@@ -162,12 +162,78 @@ As UL2P section 5, unchanged: labels (each pair under every label it carries, th
 
 ## 10. Results
 
-(not filed; the runs have not been made)
+**Filed 25 Nov 2026 for MultiHop-RAG and SQuAD only (laptop).** MuSiQue, MetaQA, WebQSP, HotpotQA and 2Wiki are not read: their rows run on the host and `ul2s-report` has not been run on them. **Nothing below is a carry, an adoption or a rule change.** Every candidate in 10.5 waits for the other five (the universal rule). Declaration `3641b2c`, code `9b067ea` (committed before any number). The ledgers are `outputs/ul2p/seed/multihoprag/ledger.json` and `outputs/ul2p/seed/squad/ledger.json`; `report.md` holds every table. It prints percentages to two decimals, which hides SQuAD's precisions (0.04 [0.04, 0.04]); the numbers below are the ledgers' to three. Seeds are the rrf top five; the version is RK on both (S is empty on both: no S pairs). The numbers are percent unless a count.
+
+### 10.1 The runs
+
+- Gates G-P1..G-P3 and G-S1..G-S5 passed on both; the self-test had passed before either run.
+- **MultiHop-RAG** (n = 609): 1,130 test questions, 2,985 golds; dev (s1sel) 224 questions beside. The rrf top five finds 1,741 golds and misses 1,244 (783 questions); the dense top five finds 1,828 and misses 1,157. 55.8 s, 0.09 GB peak.
+- **SQuAD** (n = 20,233): 11,873 questions, one gold each. The rrf top five finds 10,478 and misses 1,395; the dense top five finds 9,937 and misses 1,936. 677 s, 0.7 GB peak. `found` and GOLD_LINKED are n/a (section 6): the `seed` and `top1` kinds are the whole read.
+
+### 10.2 The expectations (rrf list, seed kind; only the two datasets read)
+
+| id | call | reads | what decided it |
+|---|---|---|---|
+| E1 | HELD | 2 of 2 | the any-link unit and every B0 label with at least 20 targets POINTS on both (labels under 20 targets are not read: MultiHop-RAG R.mention 2, R.title_comention 10; SQuAD R.title_comention 0) |
+| E2 | HELD | 2 of 2 | multi minus single ABOVE: MultiHop-RAG +6.807 [6.248, 7.402] points; SQuAD +0.115 [0.099, 0.131]. MetaQA, the declared exception, is not read |
+| E3 | **NOT_HELD** | 8 of 14 | MultiHop-RAG: all 7 forms BELOW any-link. SQuAD: only NTc BELOW; H5, NT1, HK2, H10 LEVEL; HM and HK1 ABOVE |
+| E4 | NOT_READ | 0 | MetaQA and WebQSP are host rows |
+| E5 | NOT_READ | 0 | MuSiQue is a host row |
+| E6 | **NOT_HELD** | 0 of 1 | MultiHop-RAG: found 0.797 [0.739, 0.855] against top1 1.159 [1.084, 1.241]: found is BELOW top1, the opposite of AP4's pattern. The dev cell has the same direction (found 0.722 [0.603, 0.851], top1 1.067 [0.908, 1.245]). SQuAD n/a |
+| E7 | HELD | 1 of 1 | MultiHop-RAG GOLD_LINKED 0.00% (nearly vacuous, 10.6). SQuAD n/a |
+
+E3 was written from the MultiHop-RAG read and fails on SQuAD because SQuAD's any-link unit is dominated by R.mention at 0.042% precision, a low bar the forms clear or match. E6's miss is not explained by this stage.
+
+### 10.3 MultiHop-RAG
+
+- **Any-link:** 25,343 pairs, 478,732 candidates (84.7 per anchor), 5,274 targets, precision **1.102 [1.037, 1.169]**, lift 6.21 [5.99, 6.42], reach **97.83 [96.91, 98.66]** of the missed golds (question reach 97.8%).
+- **Labels:** R.name_comention holds 99.04% of the candidates (1.106 [1.040, 1.174], vs any +0.004 [0.001, 0.007]). **K.knn** holds 4.29%: precision **6.521 [6.038, 7.063]** (lift 34.3), vs any **+5.420 [4.965, 5.916]**, reach 55.55 [53.06, 58.02] at 2.0 pairs per gold reached (R.name_comention: 20.6). R.mention has 2 pairs and 2 targets (not read); R.title_comention 75 pairs, 10 targets, LEVEL. K-only pairs (group K, beyond R) are BELOW any-link: 0.623 [0.330, 0.944] on 3,371 candidates.
+- **Agreement:** the exact set R.name_comention + K.knn is 17,169 candidates (3.59% of the any-link candidates), 1,319 targets, precision **7.682 [7.114, 8.312]**; R.name_comention alone is 456,922 candidates at 0.858 [0.804, 0.916] (BELOW any-link). Agreement is about 9 times the single-label bulk. The first frontier tier alone reaches 54.58% of the missed golds; the single-label bulk adds the rest to 97.51%.
+- **Forms:** all seven BELOW any-link as wholes (H5 0.436, HM 0.681, HK1 0.381, NTc 0.114, NT1 0.187, HK2 0.285, H10 0.356). **NTc** holds 230,851 candidates (48.2% of the any-link count) at lift BELOW_BASE, and NT1 has NO_LIFT. Within a form the first rank quintile is ABOVE the last on six of seven (NTc LEVEL). **HM's first quintile 1.831 [1.444, 2.239] (115 targets) is ABOVE any-link**; the other forms' first quintiles are not. The pseudo-unit **all** (B0 + every form) has 1.83 times the candidates, precision 0.666 (BELOW any-link by 0.436 [0.404, 0.469] points) and reach 99.60: +1.77 points of reach for 398,077 more candidates.
+- **The classes of the 1,244 missed golds:** SEED_B0 97.83 (1,217), SEED_FORM 1.77 (22), LINKED_ELSE 0.40 (5), GOLD_LINKED 0, ISOLATED 0.
+- **Beside:** the dense list gives any-link 1.046 [0.977, 1.115], reach 97.41, K.knn 5.323 (core measures, within the rrf list's intervals). The dev cell: any-link 0.981 [0.846, 1.134], K.knn 5.367, multi minus single +5.470; no call reverses in direction, and three differ by one step (R.name_comention vs any-link: ABOVE by 0.004 on the test, LEVEL on dev; HM: BELOW on the test, LEVEL on dev; R.mention, with 0 to 2 targets). It does not contradict UL2P's MultiHop-RAG read (K.knn ABOVE, name co-mention the bulk).
+
+### 10.4 SQuAD, plainly
+
+One gold per question: the read says whether a retrieved wrong passage is one rule step from the answer passage and at what candidate price. It is a meaningful read (base about 0.0007%, lift 57.8), not a hop.
+
+- **Any-link:** 995,869 pairs, 4,985,869 candidates (84.0 per anchor, about 420 per question: 2% of the corpus before the five anchors' overlaps are removed), 2,138 targets, precision **0.043 [0.039, 0.046]**, lift 57.8 [53.7, 62.1], reach **51.83 [49.27, 54.43]** of the 1,395 missed golds, at 1,377 pairs per gold reached. At the top1 anchor the precision is 0.054 [0.049, 0.058].
+- **Labels:** R.mention holds 85.67% of the candidates at 0.042 [0.038, 0.045] (LEVEL vs any-link, as the bulk) and reaches 42.72, at 1,473.5 pairs per gold. R.name_comention holds 20.37% (labels overlap), precision 0.073 [0.065, 0.082], **ABOVE +0.030 [0.024, 0.038]**, reach 25.52. **K.knn** holds 4.31%: precision **0.206 [0.184, 0.230]** (lift 323), **ABOVE +0.164 [0.142, 0.185]**, reach 24.88 [22.70, 27.16] at **124.9 pairs per gold**. R.title_comention: 12,619 candidates, **0 targets**, BELOW_BASE, BELOW any-link. K-only pairs (group K): 0.176 [0.131, 0.224], ABOVE any-link (on MultiHop-RAG they are BELOW).
+- **Exact sets:** R.mention alone is 76.49% of the candidates (3,813,777) at 0.029 [0.027, 0.033], BELOW any-link, and 1,123 of the 2,138 targets. The multi-label sets: R.mention + R.name_comention + K.knn 59,757 candidates at **0.241 [0.198, 0.288]**; R.mention + K.knn 109,303 at 0.193; R.mention + R.name_comention 276,545 at 0.110; R.name_comention + K.knn 10,170 at 0.275. Keeping the two single-label bulk sets out (R.mention alone, R.name_comention alone) leaves 490,501 candidates (9.8%) at 0.152 (3.5 times any-link) with reach 31.61, i.e. 61% of the 51.83.
+- **Forms:** as wholes only NTc is BELOW any-link (0.027 [0.021, 0.034]); HM (0.068) and HK1 (0.057) are ABOVE; H5, NT1, HK2, H10 are LEVEL. The first rank quintile of **every** form except NTc is ABOVE any-link (0.081 to 0.129 against 0.043). **all** has 1.29 times the candidates, precision 0.040 (BELOW any-link by 0.003 [0.001, 0.004]) and reach 61.79: **+9.96 points of reach (139 golds)** that only a form reaches.
+- **The classes of the 1,395 missed golds:** SEED_B0 51.83 (723), SEED_FORM 9.96 (139), **LINKED_ELSE 38.21 [35.63, 40.79] (533)**, ISOLATED 0. Every gold has pairs; for 38% none of them touches the five seeds.
+- **Beside:** the dense list (1,936 missed) gives any-link 0.059 [0.055, 0.063], reach 51.65, K.knn 0.309, classes 51.65 / 10.49 / 37.86.
+
+### 10.5 What the two reads point to (named; none adopted; each waits for the other five)
+
+1. **Label count as a weight or a tier (agreement).** Pairs carrying two or more labels are about 9 times (MultiHop-RAG, 7.682 against 0.858) and about 8 times (SQuAD, 0.241 against 0.029) as precise as the bulk single-label pairs, on 2 of 2 datasets read. The dedup S > R > K keeps one label per pair for the walk store; the ledger shows the agreement it discards is the strongest signal either dataset has. Whether the model's edge features keep the count is to be checked in the code before any claim. As a cut that drops the single-label bulk it trades reach: MultiHop-RAG keeps the two multi-label sets (17,230 candidates, 7.667, reach 54.74 of 97.83); SQuAD keeps every set but R.mention alone and R.name_comention alone (490,501 candidates, 0.152, reach 31.61 of 51.83): 28 and 10 times fewer candidates. As a weight or a tier it loses none. A model read decides (section 6). **E2 carries; MetaQA is the declared exception.**
+2. **A K.knn weight** (ABOVE any-link and POINTS on 2 of 2 arms with at least 20 targets: UNIVERSAL so far). Points above any-link: +5.420 and +0.164. K is the cheapest label in graph price on both (2.0 and 124.9 pairs per gold, against 20.6 and 1,473.5 for R) and holds 4.3% of the candidates. K-only pairs are not universal (SQuAD ABOVE, MultiHop-RAG BELOW): on MultiHop-RAG K's precision is its agreement with R.name_comention.
+3. **An R.name_comention weight** (ABOVE on 2 of 2, UNIVERSAL by the declared rule). Read it with care: on MultiHop-RAG it is 99% of the candidates and +0.004 points above the unit it dominates, which has no content. On SQuAD the margin is real (+0.030).
+4. **A tighter cut: HM's first quintile** (HM BELOW any-link as a whole on MultiHop-RAG, first quintile 1.831 against 1.102). It meets the declared definition on MultiHop-RAG only; on SQuAD HM is ABOVE as a whole and its first quintile is ABOVE too (0.117 against 0.043). The first quintile of the other forms is ABOVE any-link on SQuAD and not on MultiHop-RAG. **No form tier is above on both except HM's.**
+5. **Cost without precision (the declared 5% flag): none.** R.mention is 85.7% of SQuAD's candidates but LEVEL with POINTS, not BELOW. Beside the flag, as observations: **NTc** is BELOW any-link on both and BELOW_BASE on MultiHop-RAG, so if forms are ever added to B0 it is the one that costs without precision; **R.title_comention** has no target among its 12,619 candidates on SQuAD and a LEVEL 10 targets on MultiHop-RAG, at 0.25% of the candidates on both: no case to keep it or drop it from these reads.
+6. **The rules' gap.** MultiHop-RAG: 0.40% of the missed golds are reached by no rule (5 golds): the rules reach what the five seeds' neighbourhoods contain; the gap is not a link gap. **SQuAD: 38.21% (533 golds) are linked to something but to no seed.** No rule family tested here reaches them from the five seeds; this stage does not measure a two-hop path (anchor to neighbour to gold), nor a deeper anchor set. No new family is named.
+
+### 10.6 What to distrust
+
+- **MultiHop-RAG's reach is a small-corpus effect.** Each anchor has 84.7 candidates in 604 other rows; five anchors cover up to 70% of the corpus before their overlaps are removed. 97.8% reach is therefore not an enrichment; the precision and lift (6.2 times base) are the reads. For the same reason E7 held almost vacuously: only 5 of the 1,244 missed golds have no seed link of any kind (B0 or form), and none of those is linked to another gold.
+- **SQuAD's R.mention is the bulk of everything** (76.5% of the candidates as an exact set), so every SQuAD comparison against any-link is a comparison against R.mention.
+- **Graph-level reach is not R@5** (section 6): a gold a model already ranks gains nothing from a link, and a weak link can help in combination.
+- **Two datasets of seven.** The universal rule needs the other five: MetaQA is the declared E2 exception, and MetaQA, WebQSP, HotpotQA and 2Wiki carry S pairs, which neither dataset read here has (S is empty on both).
+- **E6 is unexplained.** The found anchors are less precise than the top1 anchor on MultiHop-RAG, in both the test and the dev cell.
+
+### 10.7 Still to read
+
+The five host rows (`ul2s-musique`, `-metaqa`, `-webqsp`, `-hotpotqa`, `-2wiki`) and `ul2s-report`, which rewrites `report.json` and `report.md` over all seven (the laptop copies filed with this section cover two datasets and are replaced). E4, E5 and MuSiQue's hops are read there. HotpotQA and 2Wiki wait for their `ul2c-grade` rows. The universal test of 10.5 (every candidate carried everywhere or nowhere) is run on the seven, and nothing is adopted before it.
 
 ## 11. Development log (disclosed before any UL2S number)
 
 - No `zul2s` code existed before this page. Before it, only file shapes and sizes were inspected (the keys of E0's lists and gold caches, PL1 S0a's files, grade.json fields), and a probe that loaded SQuAD's and MuSiQue's families on the laptop printed counts of pairs and stopped at the missing K_e3v. No UL2S measure was computed.
 - UL2P's code (`zul2p.py`) and its filed numbers are unchanged.
+- `zul2s.py` was committed (`9b067ea`) before any number. Its self-test passed on its first run; slips found while assembling it (a malformed conditional in `list_record`, a convoluted one-way evaluator, a tuple argument in `exact_record`, a loose assertion in `universal`, a d5 expression) were fixed before that run.
+- SQuAD's inputs were copied from the host by `rx fetch` and checked by sha256 (`outputs/enc/e2/knn/e3v/squad.npz` and `.json`, `outputs/ul2c/squad/ranks.npz`); they are untracked local copies.
+- MultiHop-RAG's first stage is PL1 S0a's `first_e3v.npz` and `gold.npz` (sha256 against `first.json`) with the package's SPLADE list; the dense top five's hits must equal the filed d5 of 64.29 (an added gate). Its dev cell (s1sel) exists beside the test cell only there: E0's first stage holds s1eval alone for the six host datasets.
+- MuSiQue's hops are read on the rrf seed only.
+- After the runs `report` printed percentages to two decimals; the section 10 numbers come from the ledgers to three. No code changed after the numbers.
 
 ## 12. Files
 

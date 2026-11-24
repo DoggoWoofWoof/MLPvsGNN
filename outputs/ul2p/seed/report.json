@@ -1,0 +1,112 @@
+{
+ "declared_in": "docs/UL2S_SEED_ANCHORED_LABEL_LEDGER.md",
+ "datasets": [
+  "multihoprag",
+  "squad"
+ ],
+ "expectations": {
+  "E1": {
+   "call": "HELD",
+   "held": 2,
+   "reads": 2,
+   "detail": []
+  },
+  "E2": {
+   "call": "HELD",
+   "held": 2,
+   "reads": 2,
+   "detail": [
+    "multihoprag/RK: multi minus single ABOVE: held",
+    "squad/RK: multi minus single ABOVE: held"
+   ]
+  },
+  "E3": {
+   "call": "NOT_HELD",
+   "held": 8,
+   "reads": 14,
+   "detail": [
+    "squad/RK: H5 vs any LEVEL",
+    "squad/RK: HM vs any ABOVE",
+    "squad/RK: HK1 vs any ABOVE",
+    "squad/RK: NT1 vs any LEVEL",
+    "squad/RK: HK2 vs any LEVEL",
+    "squad/RK: H10 vs any LEVEL"
+   ]
+  },
+  "E4": {
+   "call": "NOT_READ",
+   "held": 0,
+   "reads": 0,
+   "detail": []
+  },
+  "E5": {
+   "call": "NOT_READ",
+   "held": 0,
+   "reads": 0,
+   "detail": []
+  },
+  "E6": {
+   "call": "NOT_HELD",
+   "held": 0,
+   "reads": 1,
+   "detail": [
+    "multihoprag/RK: found 0.00797 [0.00739, 0.00855], top1 0.01159 [0.01084, 0.01241]: not"
+   ]
+  },
+  "E7": {
+   "call": "HELD",
+   "held": 1,
+   "reads": 1,
+   "detail": [
+    "multihoprag/RK: GOLD_LINKED 0.0: held"
+   ]
+  }
+ },
+ "follows": {
+  "weights": [
+   "multihoprag/RK: label:R.name_comention",
+   "multihoprag/RK: label:K.knn",
+   "squad/RK: label:R.name_comention",
+   "squad/RK: label:K.knn"
+  ],
+  "universal": [
+   "label:K.knn: ABOVE and POINTS on 2 of 2 arms with at least 20 targets (UNIVERSAL)",
+   "label:R.mention: ABOVE and POINTS on 0 of 1 arms with at least 20 targets",
+   "label:R.name_comention: ABOVE and POINTS on 2 of 2 arms with at least 20 targets (UNIVERSAL)"
+  ],
+  "agreement": {
+   "above": 2,
+   "arms": 2,
+   "calls": {
+    "multihoprag/RK": "ABOVE",
+    "squad/RK": "ABOVE"
+   }
+  },
+  "cuts": [
+   "multihoprag/RK: HM"
+  ],
+  "flags": [],
+  "gap": [
+   {
+    "arm": "multihoprag/RK",
+    "no_rule_reaches": 0.00402,
+    "ISOLATED": 0.0,
+    "LINKED_ELSE": 0.00402,
+    "GOLD_LINKED": 0.0,
+    "SEED_B0": 0.9783,
+    "SEED_FORM": 0.01768
+   },
+   {
+    "arm": "squad/RK",
+    "no_rule_reaches": 0.38208,
+    "ISOLATED": 0.0,
+    "LINKED_ELSE": 0.38208,
+    "GOLD_LINKED": null,
+    "SEED_B0": 0.51828,
+    "SEED_FORM": 0.09964
+   }
+  ]
+ },
+ "utc": "2026-11-24T23:40:54Z",
+ "zul2s_sha256": "6d43c35928442a2998b5e2003aac2b4b73c8a9570e6493102abce124faa16bba"
+}
