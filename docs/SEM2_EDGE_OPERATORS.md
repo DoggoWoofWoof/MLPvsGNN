@@ -529,3 +529,64 @@ on none of the seven datasets.
   - sem2hc-report after the seven e3v rows, and sem2hc-report-all after all fourteen.
 - **Memory** as R1's rows.
 - **Outputs:** outputs/sem2/r1c/. The json and md files are committed; the npz files are not.
+
+### 8.11 The hub ceiling (R1k; 24 November 2026, 16:21 IST, 10:51 UTC), before any R1k number
+
+**What had been read when it was written:**
+- R1h, filed as 706425c. HB, the adjustment and the two together are all NOT_CARRIED. On MetaQA all three are BELOW,
+  and they lose most on its hub relations (has_genre: HB -23.44, the adjustment -22.58).
+- R1c on MetaQA, MultiHop-RAG, SQuAD and MuSiQue, both arms:
+  - Dev picks beta = 0 on every group but one (MetaQA e3v's S.written_by, 0.25).
+  - H3 is LEVEL on seven rows and BELOW on MetaQA e3v (-0.02). So 8.10's adjustment is NOT_CARRIED.
+  - X7 holds; X8 fails.
+
+**Why this read.** 8.9 asks for the next hub step to be declared from the per-label reads. Those reads show every
+degree penalty losing, even on the relations whose answers are hubs. Two explanations remain:
+- (a) Hubs do crowd out the right answer. But a penalty shared by every query of a group cannot remove them without
+  also pushing down the queries whose answer is a hub.
+- (b) Hubs seldom sit above a less popular right answer. Then MetaQA's gap between pooled MRR and MRR_T only means that
+  popular answers are easier to learn.
+
+The ceiling tells the two apart without a fit.
+
+**The ceiling (no fit, no parameter).**
+- Take any adjusted score s(y) - f(deg_L(y)) with f non-decreasing; 8.3's and 8.10's are of this form.
+- A node no more popular than the true target cannot move from above the target to below it.
+- So, per test edge, the rank counted only over the nodes with deg_L <= deg_L(target) is the best rank any such
+  adjustment can reach, even one chosen separately for each query.
+- **C** = MRR_T(ceiling) - MRR_T(R1's rotation), with 8.2's paired bootstrap.
+
+**The reading (e3v decides; the frozen arm is not run):**
+- **ROOM** on a dataset if C >= 1.0 MRR_T point. This uses the point estimate, which favours hubs, since C is already
+  an upper bound.
+- **If no dataset has ROOM,** hub work is closed. No degree-based score step can gain a point on any of the seven, and
+  R2 works on the operators themselves.
+- **If some do,** the next hub step is declared before any fit, on the labels of those datasets with the largest
+  per-group C. One example would be a gate that decides, per query, whether the answer is a hub.
+- **Beside:**
+  - the cosine's ceiling;
+  - C on pooled MRR;
+  - the share of test edges with any more popular node above the target ("crowded");
+  - the share of targets with degree 0.
+
+**Expectation, written before any number:** X9: no ROOM on SQuAD, MuSiQue or MultiHop-RAG.
+
+**Gates:**
+- **G-R** as in 8.5, on the test sample.
+- **G-B:**
+  - The one-pass raw ranks must equal R1's rotation ranks exactly. For the cosine, they must be at least 99.9%
+    identical to R1's saved cosine ranks.
+  - The ceiling is never worse than raw.
+- **G-C:** on the self-test, the raw and ceiling ranks equal a full sort, and the ceiling moves at least one rank.
+
+**Code, rows and outputs:**
+- **Code:** outputs/mp_unified/zsem2hk.py (new). It imports zsem2h and zsem2 and edits neither. Commands: `selftest`,
+  `r1k --ds D --arm A` and `report`. Its self-test passed on the laptop before this was committed.
+- **Rows:**
+  - sem2hk-selftest;
+  - sem2hk-r1k-<ds>-e3v for all seven datasets. MultiHop-RAG runs first as the real-path check, then MetaQA, SQuAD
+    and MuSiQue, then WebQSP, HotpotQA and 2Wiki;
+  - sem2hk-report after the seven.
+  - They are queued ahead of the R1c rows still waiting. Those still run as declared, and their report follows them.
+- **Memory** as R1's rows.
+- **Outputs:** outputs/sem2/r1k/. The json and md files are committed; the npz files are not.
