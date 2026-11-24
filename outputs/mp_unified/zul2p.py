@@ -545,6 +545,30 @@ def expectations(L):
     return E
 
 
+MIN_SHARE = 0.05                                   # section 6's flag: a label's share of the any-link candidates at the anchors
+
+
+def follows(L):
+    """Section 6's three named lists, from every read s1eval cell. They are names: they change no rule and decide nothing."""
+    out = {"weights": [], "cuts": [], "flags": []}
+    for d, v, kind, c in cells_of(L):
+        u = c["units"]
+        tag = f"{d}/{v}/{kind}"
+        anyc = u["any"]["candidates"]
+        for k, r in u.items():
+            if not k.startswith("label:"):
+                continue
+            call = (r.get("vs_any") or {}).get("call")
+            if r["lift_call"] == "POINTS" and call == "ABOVE":
+                out["weights"].append(f"{tag}: {k}")
+            if call == "BELOW" and anyc and r["candidates"] / anyc >= MIN_SHARE:
+                out["flags"].append(f"{tag}: {k} ({r['candidates'] / anyc:.1%} of the any-link candidates)")
+        for f in FORMS:
+            if u[f"form:{f}"]["vs_any"]["call"] == "BELOW" and u[f"form:{f}:q1"]["vs_any"]["call"] == "ABOVE":
+                out["cuts"].append(f"{tag}: {f}")
+    return out
+
+
 def ci(x, scale=100.0, nd=2):
     if not x:
         return "-"
@@ -563,12 +587,17 @@ def table(c, keys):
     return rows
 
 
-def render(L, E):
+def render(L, E, W):
     lines = ["# UL2P report: the label precision ledger on the e3v layout", "",
              f"Declared in {DECLARED}. Written {time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}. Decides nothing.", "",
              "## Expectations", "", "| id | call | reads | detail |", "|---|---|---|---|"]
     for k, e in E.items():
         lines.append(f"| {k} | {e['call']} | {e['held']} of {e['reads']} | {'; '.join(e['detail'][:6])}{' ...' if len(e['detail']) > 6 else ''} |")
+    lines += ["", "## What follows (section 6: names only; no rule changes)", ""]
+    for key, title in (("weights", "Candidate label weights (a label that POINTS and is ABOVE any link)"),
+                       ("cuts", "Candidate tighter cuts (a form BELOW any link whose first quintile is ABOVE it)"),
+                       ("flags", f"Flags (a label BELOW any link holding at least {MIN_SHARE:.0%} of the any-link candidates)")):
+        lines.append(f"- {title}: " + ("; ".join(W[key]) if W[key] else "none"))
     for d, led in L.items():
         lines += ["", f"## {d}", ""]
         if led.get("status") != "read":
@@ -594,11 +623,12 @@ def cmd_report(_a):
     if not L:
         stop("no ledger is written")
     E = expectations(L)
-    rec = {"declared_in": DECLARED, "datasets": sorted(L), "expectations": E, "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-           "zul2p_sha256": script_sha256()}
+    W = follows(L)
+    rec = {"declared_in": DECLARED, "datasets": sorted(L), "expectations": E, "follows": W,
+           "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "zul2p_sha256": script_sha256()}
     OUT.mkdir(parents=True, exist_ok=True)
     L2.wjson(OUT / "report.json", rec)
-    (OUT / "report.md").write_bytes(render(L, E).encode("utf-8"))
+    (OUT / "report.md").write_bytes(render(L, E, W).encode("utf-8"))
     log("report written: " + ", ".join(f"{k} {e['call']}" for k, e in E.items()))
     return 0
 
@@ -676,6 +706,23 @@ def selftest():
     assert p["call"] == "LEVEL" and p["diff"]["pt"] == 0.0
     ex = expectations({})
     assert all(e["call"] == "NOT_READ" for e in ex.values())
+    assert follows({}) == {"weights": [], "cuts": [], "flags": []}
+    # section 6's lists on a made-up ledger whose answers are known
+    def unit(lift, va, cand=10, tgt=30):
+        return {"lift_call": lift, "vs_any": {"call": va}, "candidates": cand, "targets": tgt}
+    fu = {"any": {"candidates": 100}, "label:A": unit("POINTS", "ABOVE"), "label:B": unit("POINTS", "LEVEL"),
+          "label:C": unit("NO_LIFT", "ABOVE"), "label:D": unit("POINTS", "BELOW", cand=5), "label:E": unit("POINTS", "BELOW", cand=4),
+          "group:R": unit("POINTS", "ABOVE")}
+    for f in FORMS:
+        fu[f"form:{f}"] = unit("POINTS", "BELOW")
+        fu[f"form:{f}:q1"] = unit("POINTS", "ABOVE" if f in ("H5", "NT1") else "LEVEL")
+    fu["form:HM"] = unit("POINTS", "LEVEL")
+    fu["form:HM:q1"] = unit("POINTS", "ABOVE")
+    fake = {"zz": {"status": "read", "versions": {"RK": {"cells": {DECIDE: {"GP": {"units": fu}}}}}}}
+    w = follows(fake)
+    assert w["weights"] == ["zz/RK/GP: label:A"], w
+    assert w["cuts"] == ["zz/RK/GP: H5", "zz/RK/GP: NT1"], w
+    assert len(w["flags"]) == 1 and w["flags"][0].startswith("zz/RK/GP: label:D"), w     # 5% flags, 4% does not
     # real shapes: MultiHop-RAG (laptop): the gates, then the engine against set loops on its own graph
     D = load_mhr()
     gates(D, D.g)
