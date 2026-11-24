@@ -917,3 +917,27 @@ The top 5 of v, then the top 5 of SPLADE not already among them: 5 to 10 seeds p
   - Estimates: minutes per selection row, and 1-3 h for each of the HotpotQA and 2Wiki reads.
 - **Outputs:** outputs/sem2/r2/sel/<arm>/<ds>.json, read/<arm>/<ds>.json and .npz, report.json and report.md. The json
   and md files are committed; the npz files are not.
+
+### 9.11 Amendment: memory only (24 November 2026, 23:34 IST, 18:04 UTC), before any WebQSP or HotpotQA read number
+
+**What happened:** the e3v reads on MultiHop-RAG, SQuAD, MuSiQue and MetaQA ran. The HotpotQA and WebQSP reads ran out
+of memory and wrote no number.
+- **WebQSP:** it has 791 operators. The traversal's batch of 128 questions builds a (128 questions, 10 seeds, 791
+  operators, D' 1,408) tensor of 5.7 GB per copy, and the host refused the allocation inside the traversal (9.3) with
+  40 GB asked.
+- **HotpotQA:** the dense search before the traversal could not get 312 MiB while the host was full (R1's 2Wiki row,
+  the WebQSP read and this row together). That is in zenc's search, not in R2.
+
+**What changes (memory only):**
+- **WebQSP's read** runs through outputs/mp_unified/zsem2tb.py (new), which sets the traversal's batch to 32 questions
+  and calls zsem2t.py's own main. zsem2t.py is not edited, so every record's script_sha256 stays zsem2t.py's.
+  - A question's list does not depend on its batch-mates. The MultiHop-RAG dev smoke with batch 32 gave the same
+    recall as with 128 on every key.
+  - The record carries traversal_batch and wrapper.
+  - If another read fails the same way (2Wiki has the next-largest tensors), it takes the same wrapper under a new
+    row name, with the batch in its row.
+- **WebQSP and HotpotQA ask 48 GB** instead of 40 and 32. The rows run again under new names (sem2t-read-webqsp-e3v-b,
+  sem2t-read-hotpotqa-e3v-b). sem2t-report and sem2t-report-all depend on those names.
+
+**What does not change:** the seeds, the operators, the attention, the lists, lambda's selection, the calls, the gates
+and the expectations. No R2 number has been read on either dataset.
