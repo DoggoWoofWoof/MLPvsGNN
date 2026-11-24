@@ -956,8 +956,12 @@ def cmd_gates(a):
         same["keys_equal"] = sorted(merged) == sorted(base_arrs[0])
         runs[tag] = {"shards": k, "plain": plain, "threads": th, "identical": all(same.values()), "per_array": same}
     gold_fields = sorted(set(base_arrs[0]) & set(PK.POOL_GOLD))
-    places_sep = (places_dir(base_main) / f"{k0}.npz").is_file() and not (set(np.load(places_dir(base_main) / f"{k0}.npz").files) & set(base_arrs[0]))
-    res["G_N"] = {"runs": runs, "pool_gold_fields": gold_fields, "places_are_a_separate_file": bool(places_sep),
+    # the places file is a separate file; the two keys it shares with the pools file (the question ids and the KT row lengths, for alignment)
+    # carry no gold, every other key of it is absent from the pools file
+    pf = places_dir(base_main) / f"{k0}.npz"
+    shared = sorted(set(np.load(pf).files) & set(base_arrs[0])) if pf.is_file() else None
+    places_sep = pf.is_file() and set(shared) <= {"ids", "kt_len"}
+    res["G_N"] = {"runs": runs, "pool_gold_fields": gold_fields, "places_are_a_separate_file": bool(places_sep), "places_keys_shared": shared,
                   "verdict": "PASS" if all(r["identical"] for r in runs.values()) and not gold_fields and places_sep else "FAIL"}
     res["verdict"] = "PASS" if all(res[k]["verdict"] == "PASS" for k in ("G_W_ii", "G_W_iii", "G_N")) else "FAIL"
     res["seconds"] = round(time.time() - t0, 1)
