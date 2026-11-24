@@ -71,7 +71,7 @@ work (section 7). It decides nothing about any model.
 
 | step | what | gate (a failure stops that dataset; none of its numbers is read) |
 | --- | --- | --- |
-| S1 | **Materialize the layout as walk stores:** one CSR per family and per version, from B0 and each dataset's `carved.npz`. New code only; nothing of UL2 is edited. | G-L: every family's pair count equals UL2's grade counts; dedup exact (no pair in two families); labels' bit counts equal the grade's |
+| S1 | **Materialize the layout as walk stores:** one CSR per family and per version, from B0 and each dataset's `outputs/ul2c/<d>/carried.npz` (the kept pairs beyond B0 with the carried forms' bit per pair, written by `zul2c.write_carried` when the call is filed). New code only; nothing of UL2 is edited. | G-L: every family's pair count equals UL2's grade counts; dedup exact (no pair in two families); labels' bit counts equal the grade's |
 | S2 | **The e3v first stage** for every question: the E0 lists. | G-E: R@5 and R@1000 equal E4's filed values (E6 for MultiHop-RAG) |
 | S3 | **The adapter reproduces the record.** The new world, fed the OLD graph and the frozen first stage, rebuilds one carve's pools of record (the identity check D83 used as G1). | G-I: B, |I_q|, the keep cut and I_q's sha256 equal the record's on one carve per dataset |
 | S4 | **Build the pools** on the new graph and the e3v first stage, all carves of section 2. | the build's own checks (zpko's); no gold is read to build a pool |
@@ -145,7 +145,7 @@ fixed end, decided now:
 ## 8. Code, rows, outputs
 
 - **New modules only** (they import, never edit): `outputs/mp_unified/zpl1m.py` (S1, materialize), `zpl1w.py` (the world
-  adapter: `zenc1b2.install`'s patches generalized to all seven datasets and the carved layout; S2 to S4),
+  adapter: `zenc1b2.install`'s patches generalized to all seven datasets and UL2's carried layout; S2 to S4),
   `zpl1g.py` (S5: COV's array-level functions, M2, M3, M4). Never edited here: zpko, zu2d_pools, zu2s, zu2c, zd83*,
   d83world, covdiag, zenc1b2, zul2*, zap4 and everything on the never-edit list.
 - **Rows** (host, prefix `pl1-`), inserted in the feed after the UL2 chain's reports: materialize and the first-stage gate
@@ -159,7 +159,7 @@ fixed end, decided now:
 - Written after a read-only survey of the pool code (25 Nov) and after the UL2 grades of MuSiQue, SQuAD, MetaQA and
   MultiHop-RAG were filed; no pool number and no PL1 number was read. The universal call (UL2 12.6 and 13) is not yet
   filed; PL1's rows wait for it.
-- No UL2 graph materializer exists yet (the only artifact is `outputs/ul2c/<d>/carved.npz`); S1 writes it.
+- No UL2 graph materializer exists yet. The one artifact S1 reads is `outputs/ul2c/<d>/carried.npz` (written by `zul2c.write_carried`; it does not exist before the call is filed); S1 writes the walk stores. An earlier line of this page called that file `carved.npz`, which was my wrong name; corrected 25 Nov before any number.
 - The e3v E0 first-stage lists are on the host; whether every dataset's exists is checked by G-E.
 - The closing rule's "one improvement round" and the 5% NOPATH line are mine, a default the user can change before the
   first PL1 number is read.
