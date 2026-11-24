@@ -3,14 +3,15 @@ the adopted layout and e3v's first stage, one (dataset, version) per process, wi
 
     python outputs/mp_unified/zpl1w.py first  --ds D [--version V]                              # S2: G-E, the first stage as E4 / E6 filed it
     python outputs/mp_unified/zpl1w.py types  --ds D --version V --view e3v|search [--host] --threads 2
-                                                                                                # S2b: EM types refit on the version's structural slot (+ G-T on search)
+                                                                                                # S2b: e3v = null types, no fit (2g); search = the refit G-T checks
     python outputs/mp_unified/zpl1w.py pools  --ds D --version V --view e3v|record|search --shard I K [--limit N] [--host] --threads 2
                                                                                                 # S4 (e3v) and S3's two views
     python outputs/mp_unified/zpl1w.py gates  --ds D                                            # S3: GV (record view) and GS (search view)
     python outputs/mp_unified/zpl1w.py selftest
 
 Views. e3v: the layout's ner and knn stores (zpl1m's layout.npz), e3v's document and query vectors, E0's e3v top-1000, the version's
-structural slot (R = W2_S on the passage datasets under RK, S under SRK and on the KBs), EM types refit on that slot. record: nothing
+structural slot (R = W2_S on the passage datasets under RK, S under SRK and on the KBs), no EM type and no score class (2g: the null type
+on every entry, weights of exactly 1). record: nothing
 swapped (PKO's own pass; GV: its part equals PKO's filed part, array by array). search: the frozen encoder through the same swaps (E0's
 frozen top-1000, EM types refit on frozen vectors, the record's slot, the package's ner and knn stores): GS (the golds held within 0.1
 point of the filed pools on part 0), GT (the refit types equal the filed ones).
@@ -471,6 +472,54 @@ def types_for(G, rec, d, slot):
     return out
 
 
+def null_type_arrays(entries, dim, k, bst=None, bln=None):
+    """2g's arrays, in the loaders' own shape: the null type k on every entry and zero type centres, so every omega over the types is
+    exp(0) = 1 and the null type's is 1 (zu2m_a.omega, zu2p.weights, zu2p.pair_weights: the weights are exactly 1)."""
+    arr = {"mu": np.zeros((int(k), int(dim)), np.float32), "cls": np.full(int(entries), int(k), np.int8)}
+    if bst is not None:
+        arr.update(bst=np.asarray(bst, np.int64), bln=np.asarray(bln, np.int32))
+    return arr
+
+
+def null_types_for(G, rec, d, slot):
+    """2g: the e3v views' types. Nothing is fit and no vector is read except one row, for the width of the type centres: every entry of
+    the slot's graph carries the null EM type and the null score class, in the files and records zabl_g's loaders read (so no pinned module
+    is edited), and the pool rule runs on weights of exactly 1. The EM record names zu2m_a_types.py's script sha because its loader
+    checks it; nothing was fit."""
+    import zu2p as P
+    AT, base, nodes = rec[0], rec[7], rec[6]
+    ip, col, typed, sdesc = G.graph_of(base, slot)
+    t0 = time.time()
+    od = G.OUT / d
+    emd = od / slot / "em"
+    k = int(AT.K_EM)
+    dim = int(np.asarray(nodes.read(np.zeros(1, np.int64))).shape[1])
+    bst = bln = None
+    if typed is not None:
+        bst, bln = G.blocks_allow_empty(ip, col, typed)
+    arr = null_type_arrays(int(col.size), dim, k, bst, bln)
+    sha_em = G.save_npz(emd / f"{d}.npz", **arr)
+    em_rec = {"declared_in": DECLARED, "stage": "PL1 null types (2g)", "dataset": d, "graph_detail": sdesc,
+              "script_sha256": AT.script_sha256(), "note": "script_sha256 is zu2m_a_types.py's because its loader checks it; nothing was fit",
+              "nodes": int(base.n), "entries": int(col.size), "typed": typed is not None, "k": k, "null": k, "fit_pairs": 0, "steps": 0,
+              "converged": None, "entry_sizes": [0] * k + [int(col.size)], "entries_null": int(col.size),
+              "mu_sha256": G.sha_arr(arr["mu"]), "cls_sha256": G.sha_arr(arr["cls"]), "file_sha256": sha_em, "weights": "off (2g)"}
+    G.write_json(emd / f"{d}.json", em_rec)
+    out = {"declared_in": DECLARED, "stage": "PL1 null types (2g)", "dataset": d, "slot": slot, "graph": sdesc, "entries": int(col.size),
+           "typed": typed is not None, "own_record_graph": False, "em_dir": G.rel(emd), "weights": "off (2g)",
+           "em_entries_non_null": int((arr["cls"] != k).sum()), "score_entries_non_null": 0}
+    if d in PASSAGE:
+        cls_slot = np.full(col.size, P.NULL, np.int8)
+        sha_sc = G.save_npz(od / slot / "score.npz", cls=cls_slot, zbar=np.zeros(P.NT))
+        out.update(score_record_file_sha256=None, score_cls_sha256=G.sha_arr(cls_slot), score_npz=G.rel(od / slot / "score.npz"),
+                   score_file_sha256=sha_sc, score_entries_with_a_class=0, score_null=int(col.size),
+                   score_entries_non_null=int((cls_slot != P.NULL).sum()))
+    out["seconds"] = round(time.time() - t0, 1)
+    G.write_json(od / slot / "types.json", out)
+    log(f"{d}/{slot}: {col.size:,} entries, typed {typed is not None}, every entry null (2g), no fit")
+    return out
+
+
 def cmd_types(a):
     d, v, view, t0 = a.ds, a.version, a.view, time.time()
     if view not in ("e3v", "search"):
@@ -489,7 +538,7 @@ def cmd_types(a):
             rec = G.open_record(d)
             if slot == "SR":                                  # ABL's own union builder, into this view's g folder (G.OUT is patched)
                 G.build_stage(d, rec)
-            types_for(G, rec, d, slot)
+            (null_types_for if view == "e3v" else types_for)(G, rec, d, slot)      # 2g: the e3v views fit no types
     finally:
         G.OUT = keep
     if view == "e3v" and not stats["served"]["embeddings"]:       # the fit read the package's own (frozen) vectors: not this view's types
@@ -497,6 +546,7 @@ def cmd_types(a):
         shutil.rmtree(gdir / d / slot)                            # PL1's own folder under outputs/pl1 (no junction in it)
         stop(f"{d}/{v}: the e3v vectors were never served to the types fit; {rel(gdir / d / slot)} removed")
     res = {"stage": "PL1 S2b", "declared_in": DECLARED, "dataset": d, "version": v, "view": view, "slot": slot, "stats": stats,
+           "weights": "off (2g)" if view == "e3v" else "fit on the record's slot (G-T)",
            "types": json.loads((gdir / d / slot / "types.json").read_text(encoding="utf-8")),
            "seconds": round(time.time() - t0, 1), "script_sha256": script_sha256()}
     if view == "search":                                     # G-T: the refit on the record's slot and the frozen vectors = the filed types
@@ -542,6 +592,11 @@ def cmd_pools(a):
     else:
         if not (gdir / d / slot / "types.json").exists():
             stop(f"no slot types for {d}/{slot} in {rel(gdir)}: run `zpl1w.py types` first")
+        if view == "e3v":                                     # G-W (i): the e3v pools read the null type only (2g)
+            tj = json.loads((gdir / d / slot / "types.json").read_text(encoding="utf-8"))
+            if tj.get("weights") != "off (2g)" or tj.get("em_entries_non_null") != 0 or tj.get("score_entries_non_null", 0) != 0:
+                stop(f"{d}/{v}: the e3v types are not the null types of 2g (weights {tj.get('weights')}, "
+                     f"em non-null {tj.get('em_entries_non_null')}, score non-null {tj.get('score_entries_non_null')})")
         with slot_ctx(M, d, slot, gdir) as A, world(M, d, view, stats, tab=tab) as W:
             out = PK.pools_pass(d, CARVE, threads=int(a.threads), limit=int(a.limit or 0), shard=(i, k), R=R, rule=rule)
             if view == "e3v":
@@ -552,6 +607,7 @@ def cmd_pools(a):
         if miss:
             stop(f"{d} {view}: the swaps {miss} never served (the view was not in force)")
     rec = {"stage": "PL1 pools" if view == "e3v" else f"PL1 S3 {view} view", "declared_in": DECLARED, "dataset": d, "version": v,
+           "weights": "off (2g)" if view == "e3v" else "as filed",
            "view": view, "carve": CARVE, "shard": [i, k], "limit": int(a.limit or 0), "slot": slot, "result": out, "stats": stats,
            "seconds": round(time.time() - t0, 1), "script_sha256": script_sha256()}
     st = PK.stem(d, CARVE, (i, k))
@@ -685,6 +741,20 @@ def selftest():
     # slots
     assert slot_of("musique", "RK", "e3v") == "R" and slot_of("2wiki", "SRK", "e3v") == "SR" and slot_of("metaqa", "SRK", "e3v") == "SR" and slot_of("2wiki", "RK", "e3v") == "R"
     assert slot_of("squad", "RK", "record") == "R" and slot_of("webqsp", "SRK", "search") == "S"
+    # 2g: the null types, in the loaders' shape, and the weights they give are exactly 1 through the walk's own functions
+    import zu2m_a as A2
+    import zu2p as P2
+    na = null_type_arrays(7, 5, 64)
+    assert na["mu"].shape == (64, 5) and not na["mu"].any() and na["cls"].dtype == np.int8 and (na["cls"] == 64).all() and "bst" not in na
+    nb = null_type_arrays(4, 3, 64, [0, 1, 2, 3], [1, 1, 1, 1])
+    assert nb["bst"].dtype == np.int64 and nb["bln"].dtype == np.int32 and nb["bst"].tolist() == [0, 1, 2, 3]
+    q2 = np.random.default_rng(3).normal(size=5)
+    wa2 = A2.omega(q2, na["mu"], 0.5, True)[0]
+    assert wa2.shape == (65,) and (wa2 == 1.0).all(), wa2[:3]
+    ws2 = P2.weights(np.zeros(P2.NT), 0.5)
+    pw2 = P2.pair_weights(wa2, ws2)
+    pt2 = P2.pair_types(na["cls"], np.full(7, P2.NULL, np.int8), 64)
+    assert (pw2[pt2] == 1.0).all() and (pw2 == 1.0).all()
     # classes
     pos = np.array([0, 1, 3, 4, -1, 2, -1, 9], np.int32)
     keep = np.array([3, 2, 0], np.int32)
