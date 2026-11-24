@@ -624,3 +624,30 @@ So the next step is declared after this split is read and before any fit.
 
 **Rows:** sem2hk2-split-<ds> for the seven datasets (e3v), each after its R1k row, with R1k's memory; then
 sem2hk2-report. **Outputs:** outputs/sem2/r1k/split/, committed.
+
+### 8.13 Amendment: WebQSP's gate stop, and R1c's remaining rows (24 November 2026, 17:18 IST, 11:48 UTC)
+
+**What happened.** sem2hk-r1k-webqsp-e3v stopped at 8.11's gate G-B:
+- Its one-pass raw ranks agreed with zsem2.rank_read's on 99.9609% of the rotation's test edges. The gate asks for
+  exact agreement.
+- It agreed with R1's saved cosine ranks on 99.7201% of edges. The gate asks for at least 99.9%.
+- Before the gate stopped the row, its log printed pooled MRR for the rotation raw and at the ceiling (46.40 and 47.64).
+  No MRR_T was computed and no record was written.
+
+**Why.** zsem2hk.rank_ceiling (and zsem2hc.rank_beta) block the nodes by 5e7 // Q; zsem2.rank_read blocks them by
+1e8 // Q. The scores are the same products, but different block shapes can round the last bit differently. On WebQSP's
+2.6 million nodes, that moves a few scores across the 1e-6 tie band. On the four smaller graphs the ranks were identical.
+
+**The gate stands as declared.** zsem2hkb.py (new) imports zsem2hk and replaces only rank_ceiling, with rank_read's
+block size. So the raw ranks are rank_read's own arithmetic in the same process, and G-B can be met exactly.
+- Its self-test (zsem2hk's, run through the wrapper) passed.
+- A check confirmed that r1k_core calls the replaced function.
+- Records written through it carry wrapper_sha256 and block_rule.
+
+**Rows:**
+- **R1k:** WebQSP runs again as sem2hk-r1k-webqsp-e3v-b through zsem2hkb.py. HotpotQA's and 2Wiki's rows, not yet
+  run, switch to zsem2hkb.py. sem2hk-report and the WebQSP split row point at the new row.
+- **R1c (8.10), the six rows not yet run** (WebQSP, HotpotQA and 2Wiki, both arms), are dropped:
+  - MetaQA's BELOW already makes 8.10's adjustment NOT_CARRIED, so they cannot change the verdict.
+  - zsem2hc.rank_beta has the same block size, so its exact G-B would likely stop them on the large graphs too.
+  - sem2hc-report and sem2hc-report-all run over the eight rows read, which list the rest as missing.
