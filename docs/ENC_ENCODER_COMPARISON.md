@@ -2576,3 +2576,45 @@ against the declared 1.7, 5.2 and 0.9 h.
 
 **Records** (outputs/enc/e7): report.json and .md, storage_call.json and .md, and each dataset's read.json and
 wenc.json. The windows and maxima (.npz) stay on the host and the laptop and are not committed.
+
+## 24. GK-S on 2Wiki as 20.8's sampled gate (declared 25 November 2026, 04:01 IST, 22:31 UTC, before any number of it)
+
+- **Why:** 20.10's GK-S rebuilds frozen's K on 2Wiki over all 5,982,725 source-row groups: about 3.3 h on the card
+  alone (five segments of about 40 min), and its first attempt died of a CUDA out-of-memory after 2 h 4 min.
+  20.8 already declared a sampled gate (GKs) for datasets where the full rebuild is slow. The user, 25 Nov, after a
+  plain-words description of the sample: "no do it, we know it already works from other datasets so it is fine, same
+  time like this wherever possible".
+- **What stays from 20.8's GKs:**
+  - the same sampler (numpy default_rng(0), choice without replacement, sorted);
+  - frozen's out-pairs by zenc1's and zenc1b2's own code (out_positions, scores_at, k_edges, tie_rows) must all be in
+    the package's graph/knn.npz, with weights within 1e-3;
+  - a miss counts only outside tie rows;
+  - a FAIL stops 2Wiki's e3v K.
+- **What differs (2Wiki only):**
+  1. The groups are 20.10's source-row groups.
+  2. The search is zenc4g's GPU search (exact float32, TF32 off, 8 candidates kept, score descending then group
+     ascending) with the sampled groups as queries and every group as a candidate: a copy of the original loop
+     (outputs/mp_unified/zenc4sq.py; no pinned module is edited). Its block, chunk and segment sizes are the
+     original's, so a sampled row meets the same candidates in the same segments.
+  3. The sample is 200,000 groups (3.3 % of 5,982,725), not 20,000.
+  4. A second check, two-sided, on the pairs the sample sees from both ends: every record pair whose two groups are
+     both in the sample must be in the rebuild (outside tie rows).
+- **What the gate does not assess:** a record pair that touches a sampled group only through the other end's list
+  (that end is not searched), and every pair between two unsampled groups. The record says "sampled" and counts both.
+  The full gate passed on HotpotQA (20.11: source-row groups, GPU) and on SQuAD, MuSiQue and MetaQA (20.8: text
+  groups). 2Wiki's sampled one is a declared deviation, the user's call.
+- **PASS:** zero unexplained rebuilt-only pairs, zero unexplained record-only pairs among those with both ends
+  sampled, weights within 1e-3. outputs/enc/e4/gks_2wiki.json says `"gate": "sampled"` and carries the sample size,
+  the seed and the counts; zenc4s's knn reads its `gk.verdict` as before.
+- **e3v's K on 2Wiki stays a full all-pairs search** (zenc4sr.py knn), after this gate and E4's FC.
+- **Resumable:** the search saves its running top 8 after every segment (outputs/enc/e4/ckpt/<key>, removed when
+  the search is done).
+- **Self-test (laptop, CPU):**
+  - the sampled search over all groups equals zenc4g's own function bit for bit;
+  - over a subset it gives that subset's rows;
+  - killed after a segment and resumed, it equals an uninterrupted run;
+  - a toy record built by brute force passes, and the same record with one pair dropped, one weight moved by 0.01
+    and one invented both-ends pair each FAIL.
+- **Row:** e4s-gk-2wiki-c's command becomes `python outputs/mp_unified/zenc4sq.py gk --ds 2wiki --threads 4` (the
+  card alone, gpu 0.80); e4s-knn-2wiki still waits on it. Estimate: 10 to 15 minutes on the card plus the vector
+  load (200,000 query rows against all 5,982,725 candidates is 3.3 % of the full search's multiplications).
