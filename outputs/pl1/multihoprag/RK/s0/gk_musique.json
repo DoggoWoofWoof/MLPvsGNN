@@ -1,0 +1,413 @@
+{
+ "stage": "PL1 G-K",
+ "declared_in": "docs/PL1_MHR_S0.md",
+ "dataset": "musique",
+ "questions": 2417,
+ "cells_filed": 31,
+ "cells_here": 31,
+ "missing_or_extra": [],
+ "max_abs_diff": 0.0,
+ "tolerance": 1e-09,
+ "construction_here": {
+  "base_pool": "equal_rrf_budget_200",
+  "regime": "FULL",
+  "setting": {
+   "name": "h2_c25",
+   "hops": 2,
+   "per_seed_cap": 25,
+   "per_frontier_cap": 25,
+   "visited_cap": 2000
+  }
+ },
+ "construction_filed": {
+  "base_pool": "equal_rrf_budget_200",
+  "regime": "FULL",
+  "setting": {
+   "name": "h2_c25",
+   "hops": 2,
+   "per_seed_cap": 25,
+   "per_frontier_cap": 25,
+   "visited_cap": 2000
+  }
+ },
+ "construction_equal": true,
+ "per_cell": [
+  {
+   "pool": "equal_rrf_budget_50",
+   "candidates_mean": [
+    50.0,
+    50.0
+   ],
+   "fraction_of_attainable@5": [
+    0.6887670666115019,
+    0.6887670666115019
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_50+KNN:h1_c25",
+   "candidates_mean": [
+    74.77575506826645,
+    74.77575506826645
+   ],
+   "fraction_of_attainable@5": [
+    0.7409322852020411,
+    0.7409322852020411
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_50+KNN:h1_c100",
+   "candidates_mean": [
+    74.8349193214729,
+    74.8349193214729
+   ],
+   "fraction_of_attainable@5": [
+    0.7409322852020411,
+    0.7409322852020411
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_100",
+   "candidates_mean": [
+    100.0,
+    100.0
+   ],
+   "fraction_of_attainable@5": [
+    0.7369673148531237,
+    0.7369673148531237
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_50+NER:h1_c25",
+   "candidates_mean": [
+    137.18535374431113,
+    137.18535374431113
+   ],
+   "fraction_of_attainable@5": [
+    0.7952351399806924,
+    0.7952351399806924
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_50+STRUCT:h1_c25",
+   "candidates_mean": [
+    138.10095159288375,
+    138.10095159288375
+   ],
+   "fraction_of_attainable@5": [
+    0.7617569990346158,
+    0.7617569990346158
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_50+KNN:h2_c25",
+   "candidates_mean": [
+    166.17128671907324,
+    166.17128671907324
+   ],
+   "fraction_of_attainable@5": [
+    0.7725141359812439,
+    0.7725141359812439
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_50+NER:h1_c100",
+   "candidates_mean": [
+    167.6139842780306,
+    167.6139842780306
+   ],
+   "fraction_of_attainable@5": [
+    0.8055440628878775,
+    0.8055440628878775
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "dense_top200",
+   "candidates_mean": [
+    200.0,
+    200.0
+   ],
+   "fraction_of_attainable@5": [
+    0.7788236105364776,
+    0.7788236105364776
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "splade_top200",
+   "candidates_mean": [
+    200.0,
+    200.0
+   ],
+   "fraction_of_attainable@5": [
+    0.7096262584471107,
+    0.7096262584471107
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_200",
+   "candidates_mean": [
+    200.0,
+    200.0
+   ],
+   "fraction_of_attainable@5": [
+    0.7809267687215556,
+    0.7809267687215556
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_200+KNN:h1_c25",
+   "candidates_mean": [
+    217.62060405461315,
+    217.62060405461315
+   ],
+   "fraction_of_attainable@5": [
+    0.8108191973520894,
+    0.8108191973520894
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_200+KNN:h1_c100",
+   "candidates_mean": [
+    217.66694249069093,
+    217.66694249069093
+   ],
+   "fraction_of_attainable@5": [
+    0.8108191973520894,
+    0.8108191973520894
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_50+FULL:h1_c25",
+   "candidates_mean": [
+    238.67687215556475,
+    238.67687215556475
+   ],
+   "fraction_of_attainable@5": [
+    0.8377120397186596,
+    0.8377120397186596
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_50+STRUCT:h1_c100",
+   "candidates_mean": [
+    246.52999586263962,
+    246.52999586263962
+   ],
+   "fraction_of_attainable@5": [
+    0.7859605571645291,
+    0.7859605571645291
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_200+NER:h1_c25",
+   "candidates_mean": [
+    279.2403806371535,
+    279.2403806371535
+   ],
+   "fraction_of_attainable@5": [
+    0.8592607916149495,
+    0.8592607916149495
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_200+STRUCT:h1_c25",
+   "candidates_mean": [
+    283.1928009929665,
+    283.1928009929665
+   ],
+   "fraction_of_attainable@5": [
+    0.8301613570541995,
+    0.8301613570541995
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_200+KNN:h2_c25",
+   "candidates_mean": [
+    297.46834919321475,
+    297.46834919321475
+   ],
+   "fraction_of_attainable@5": [
+    0.8280581988691216,
+    0.8280581988691216
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_200+NER:h1_c100",
+   "candidates_mean": [
+    307.773272652048,
+    307.773272652048
+   ],
+   "fraction_of_attainable@5": [
+    0.8663977382430008,
+    0.8663977382430008
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "frozen_union",
+   "candidates_mean": [
+    340.6553578816715,
+    340.6553578816715
+   ],
+   "fraction_of_attainable@5": [
+    0.8130602675493035,
+    0.8130602675493035
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_400",
+   "candidates_mean": [
+    340.6553578816715,
+    340.6553578816715
+   ],
+   "fraction_of_attainable@5": [
+    0.8130602675493035,
+    0.8130602675493035
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_50+FULL:h1_c100",
+   "candidates_mean": [
+    369.93835333057507,
+    369.93835333057507
+   ],
+   "fraction_of_attainable@5": [
+    0.8562956833540201,
+    0.8562956833540201
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_200+FULL:h1_c25",
+   "candidates_mean": [
+    372.3293338849814,
+    372.3293338849814
+   ],
+   "fraction_of_attainable@5": [
+    0.883602261756999,
+    0.883602261756999
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_200+STRUCT:h1_c100",
+   "candidates_mean": [
+    386.10674389739347,
+    386.10674389739347
+   ],
+   "fraction_of_attainable@5": [
+    0.8430216521859054,
+    0.8430216521859054
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_200+FULL:h1_c100",
+   "candidates_mean": [
+    498.27844435250313,
+    498.27844435250313
+   ],
+   "fraction_of_attainable@5": [
+    0.8950144807612743,
+    0.8950144807612743
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_50+STRUCT:h2_c25",
+   "candidates_mean": [
+    671.5163425734381,
+    671.5163425734381
+   ],
+   "fraction_of_attainable@5": [
+    0.7964763480899186,
+    0.7964763480899186
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_200+STRUCT:h2_c25",
+   "candidates_mean": [
+    808.7103847745138,
+    808.7103847745138
+   ],
+   "fraction_of_attainable@5": [
+    0.8495035167563095,
+    0.8495035167563095
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_50+NER:h2_c25",
+   "candidates_mean": [
+    986.28340918494,
+    986.28340918494
+   ],
+   "fraction_of_attainable@5": [
+    0.8393669838642945,
+    0.8393669838642945
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_200+NER:h2_c25",
+   "candidates_mean": [
+    1111.9304923458833,
+    1111.9304923458833
+   ],
+   "fraction_of_attainable@5": [
+    0.8843607778237484,
+    0.8843607778237484
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_50+FULL:h2_c25",
+   "candidates_mean": [
+    1985.360364087712,
+    1985.360364087712
+   ],
+   "fraction_of_attainable@5": [
+    0.8936698386429458,
+    0.8936698386429458
+   ],
+   "max_abs_diff": 0.0
+  },
+  {
+   "pool": "equal_rrf_budget_200+FULL:h2_c25",
+   "candidates_mean": [
+    2092.4435250310303,
+    2092.4435250310303
+   ],
+   "fraction_of_attainable@5": [
+    0.9207350710246862,
+    0.9207350710246862
+   ],
+   "max_abs_diff": 0.0
+  }
+ ],
+ "verdict": "PASS",
+ "seconds": 62.7,
+ "peak_gb": 0.41,
+ "utc": "2026-11-24T22:25:50Z",
+ "script_sha256": "38a5e39cfd6411141961c2bd49d136272cf312cd54a790794e34caf1a8f9ec38"
+}
