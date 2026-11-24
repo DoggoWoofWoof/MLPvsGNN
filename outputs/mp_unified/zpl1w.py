@@ -783,10 +783,14 @@ def main(argv=None):
     for s in (t, pl):
         s.add_argument("--host", action="store_true")
         s.add_argument("--threads", type=int, default=2)
+        s.add_argument("--smoke", action="store_true", help="plumbing run: layout and outputs under outputs/pl1/smoke (zpl1m smoke); never graded")
     g = sub.add_parser("gates")
     g.add_argument("--ds", required=True)
     sub.add_parser("selftest")
     a = p.parse_args(argv)
+    if getattr(a, "smoke", False):
+        global OUT
+        OUT = OUT / "smoke"
     return {"first": cmd_first, "types": cmd_types, "pools": cmd_pools, "gates": cmd_gates,
             "selftest": lambda _a: selftest()}[a.cmd](a)
 

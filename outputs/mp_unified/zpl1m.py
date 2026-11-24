@@ -375,18 +375,51 @@ def selftest_real(a):
     return 0
 
 
+def cmd_smoke(a):
+    """Plumbing only, never graded: one (dataset, version)'s layout with the package's frozen K and no carried pair, under
+    outputs/pl1/smoke/<d>/<v>/ (zpl1w's --smoke reads it). It stands in for the real layout while UL2's call is unfiled, so the
+    world adapter's e3v path can be run end to end; no number read from it enters any record."""
+    d, v, t0 = a.ds, a.version, time.time()
+    if d not in SIX or v not in L2C.VERSIONS[d]:
+        stop(f"{d} has the versions {L2C.VERSIONS.get(d)}")
+    served, freeze, n, nsha = L2.dataset_head(a)
+    F, shas, _slab = UL.families(served, d, n, nsha, freeze)
+    with np.load(served / d / "graph" / "knn.npz") as z:
+        K = knn_triple(z["src"], z["dst"], z["weight"], n)
+    kk = K[0].astype(np.int64) * n + K[1]
+    S = F.get("S") if v == "SRK" else None
+    tab, counts = tables(n, v, S, F["W2_S"], f0t_triple(d, n), K, None)
+    exp = expected_union(n, v, S, F["W2_S"], F["F0T"], kk, None)
+    gate = gates(tab, counts, n, v, exp)
+    od = ROOT / "outputs" / "pl1" / "smoke" / d / v
+    sha = None
+    if gate["verdict"] == "PASS":
+        flat = {f"ner_{k}": x for k, x in tab["ner"].items()}
+        flat.update({f"knn_{k}": x for k, x in tab["knn"].items()})
+        sha = L2.save_npz(od / "layout.npz", **flat)
+    rec = {"stage": "PL1 S1 smoke (plumbing only, never graded)", "declared_in": DECLARED, "dataset": d, "version": v, "nodes": n,
+           "smoke": True, "k": "the package's frozen K (not K_e3v)", "carried": "none", "counts": counts, "gate_GL": gate,
+           "layout_npz_sha256": sha, "seconds": round(time.time() - t0, 1), "script_sha256": script_sha256()}
+    L2.wjson(od / "layout.json", rec)
+    log(f"smoke {d}/{v}: G-L {gate['verdict']} {json.dumps(counts)[:300]}")
+    return 0 if gate["verdict"] == "PASS" else 3
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = p.add_subparsers(dest="cmd", required=True)
     b = sub.add_parser("build")
     b.add_argument("--ds", required=True)
     b.add_argument("--version", required=True)
-    for s in (b, sub.add_parser("selftest-real")):
+    sm = sub.add_parser("smoke")
+    sm.add_argument("--ds", required=True)
+    sm.add_argument("--version", required=True)
+    for s in (b, sm, sub.add_parser("selftest-real")):
         s.add_argument("--host", action="store_true")
         s.add_argument("--threads", type=int, default=2)
     sub.add_parser("selftest")
     a = p.parse_args(argv)
-    return {"selftest": lambda _a: selftest(), "selftest-real": selftest_real, "build": cmd_build}[a.cmd](a)
+    return {"selftest": lambda _a: selftest(), "selftest-real": selftest_real, "build": cmd_build, "smoke": cmd_smoke}[a.cmd](a)
 
 
 if __name__ == "__main__":
