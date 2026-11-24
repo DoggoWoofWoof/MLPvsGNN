@@ -427,3 +427,39 @@ knows only the hubs reads.
   - sem2h-report.
 - **Memory** as R1's rows.
 - **Outputs:** outputs/sem2/r1h/. The json and md files are committed; the npz files are not.
+
+### 8.9 Amendment: the carry rule (24 November 2026, 15:38 IST, 10:08 UTC), before any H1 or H2 number was read
+
+**The user, after part A:** "yeah so we have to find something that works with all datasets including metaqa".
+
+**What had been seen when it was written:**
+- Part A (8e64299) only:
+  - MetaQA's gain halves on MRR_T: +12.31 pooled, +5.63 MRR_T (e3v).
+  - WebQSP's barely moves: +39.07 pooled, +35.43 MRR_T.
+  - On the other four datasets read, the two agree within 0.5 points.
+- The sem2h-r1h rows had started (MultiHop-RAG e3v at 14:58). None of their output had been read.
+
+**Why the rule changes.** A hub fix can only help where hubs exist. On datasets where MRR_T and pooled MRR agree, LEVEL
+is the best it can do. So 8.6's "ABOVE on at least 4 of the 7" asks for gains that cannot exist.
+
+**The carry rule (replaces 8.6's).** HB and the adjustment are judged separately, on e3v, on MRR_T. Each is carried
+into R2 if:
+- it is ABOVE on MetaQA; and
+- it is BELOW on none of the seven datasets.
+
+Otherwise it is carried nowhere. WebQSP, the frozen arm and pooled MRR are read beside; they do not decide.
+
+**If both are carried:**
+- R2 uses HB with the adjustment (hb_la), provided hb_la against R1 raw is also ABOVE on MetaQA and BELOW on none.
+- If it is not, R2 uses whichever of the two has the larger MetaQA gain.
+
+**If neither is carried:**
+- No R2 is declared on hubs.
+- The next hub step is declared from the per-label reads (which labels move, which lose) before any new fit.
+
+**Order and code:**
+- The e3v rows of MetaQA and WebQSP run first, then the other e3v rows, then the frozen rows.
+- outputs/mp_unified/zsem2hr.py (new) writes outputs/sem2/r1h/report.json and report.md under this rule. It shows
+  8.6's rule beside it, marked superseded.
+- zsem2h.py has run rows and is not edited, and its own `report` command is not run. The sem2h-report row runs
+  zsem2hr.py.
