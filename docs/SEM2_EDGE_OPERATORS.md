@@ -728,3 +728,33 @@ the seven datasets.
   - then HotpotQA, WebQSP and 2Wiki e3v, each after its R1k row;
   - sem2hq-report after the seven e3v rows, and sem2hq-report-all after all eleven.
 - **Outputs:** outputs/sem2/r1q/. The json and md files are committed; the npz files are not.
+
+### 8.15 The hub line closes (24 November 2026, 18:11 IST, 12:41 UTC)
+
+**What had been read when it was written:** R1q (8.14) on MultiHop-RAG, MetaQA, SQuAD and MuSiQue, e3v (fe2f47c).
+- Dev chooses alpha = 0 in every read group except MetaQA's R.mention (0.25), and dev MRR_T falls as alpha grows.
+- H5 on MRR_T: +0.00 LEVEL on MultiHop-RAG, SQuAD and MuSiQue; MetaQA -0.02 [-0.03, +0.00] LEVEL.
+- 8.14's carry rule needs H5 ABOVE on MetaQA. MetaQA is LEVEL, so R1q is not carried, whatever HotpotQA, WebQSP and
+  2Wiki read. X10 and X11 fail. zsem2hq's report reads INCOMPLETE until the three large rows run; that label counts
+  missing rows only and does not change the call.
+- At the true targets the semantic degree is above the median node's in every group, for seen and unseen targets alike.
+  Popularity, from training links (R1c) or from the vectors (R1q), goes with being the answer.
+- Beside: the rotation beats the cosine on MRR_T on all four (+5.63 MetaQA, +6.29 MuSiQue, +6.69 MultiHop-RAG, +16.04
+  SQuAD; all ABOVE). R1's gain holds when each answer counts once, so it is not hub landing.
+
+**The decision (the user, 24 November 2026).** 8.14 left two ways on: declare the fitted per-query gate, or close the
+hub line. The user closed it. The per-query gate is not declared, and no hub step will be.
+
+**What this fixes:**
+- **No hub step enters R2:** not the hub-balanced fit or the logit adjustment (8.4, 8.3), not R1c's penalty, not R1q's
+  normalization, not a per-query gate. R2 uses R1's operator form as R1 trained it (7.9).
+- **R1's call is unchanged:** pooled MRR as in 7.7. Its filing reports MRR_T beside it, as 8.10 set.
+- **The hub rows still queued only complete records:** R1k on WebQSP and 2Wiki and sem2hk-report; R1q on HotpotQA,
+  WebQSP and 2Wiki, the four small frozen R1q rows, sem2hq-report and sem2hq-report-all. None of them can reopen the
+  line. R1k is a bound, not a method, and R1q's call is already set by MetaQA. They run on CPU that nothing else is
+  using, and R2's rows go ahead of them in the queue.
+- **8.12's post-hoc split is not extended:** its WebQSP, HotpotQA and 2Wiki rows are dropped. sem2hk2-report reads the
+  four splits that ran (MultiHop-RAG, MetaQA, SQuAD and MuSiQue).
+
+**What comes next:** R2, declared before any R2 number (7.9): the traversal of section 3 with the rotation, on all
+seven datasets.
