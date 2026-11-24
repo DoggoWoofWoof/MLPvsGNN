@@ -1,0 +1,264 @@
+{
+ "stage": "SEM2 R1c",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 8.10",
+ "dataset": "multihoprag",
+ "arm": "frozen",
+ "dim": 1536,
+ "config": {
+  "extra": 256,
+  "tau": 0.05,
+  "batch": 1024,
+  "neg": 4096,
+  "lr": 0.001,
+  "epoch": 200000,
+  "max_epochs": 10,
+  "patience": 2,
+  "min_op": 500,
+  "top_s": 12,
+  "n_test": 1000,
+  "n_dev": 500
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "F0": {
+     "pairs": 25005,
+     "record": 25005
+    },
+    "F0T": {
+     "pairs": 25080,
+     "record": 25080
+    },
+    "W2_S": {
+     "pairs": 2,
+     "record": 2
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-B": {
+   "rotation": {
+    "dev": true,
+    "test": true
+   },
+   "cosine": {
+    "dev": true,
+    "test_agreement_with_R1": 1.0,
+    "test": true
+   },
+   "verdict": "PASS"
+  }
+ },
+ "nodes": 609,
+ "operators": [
+  "R.name_comention"
+ ],
+ "read_groups": [
+  "R.name_comention"
+ ],
+ "betas_grid": [
+  0.0,
+  0.25,
+  0.5,
+  0.75,
+  1.0
+ ],
+ "betas": {
+  "rotation": {
+   "R.name_comention": {
+    "dev_mrr_t": {
+     "0.0": 28.54,
+     "0.25": 26.03,
+     "0.5": 22.5,
+     "0.75": 18.26,
+     "1.0": 15.18
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   }
+  },
+  "cosine": {
+   "R.name_comention": {
+    "dev_mrr_t": {
+     "0.0": 18.34,
+     "0.25": 17.13,
+     "0.5": 11.92,
+     "0.75": 7.99,
+     "1.0": 6.5
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   }
+  }
+ },
+ "hubs": {
+  "R.name_comention": {
+   "edges": 1000,
+   "targets": 458,
+   "largest_target_edges": 9,
+   "hub_edge_share": 0.0
+  }
+ },
+ "calls_mrr_t": {
+  "H3 rotation_cal - rotation": {
+   "diff": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "call": "LEVEL",
+   "groups": 458
+  },
+  "cosine_cal - cosine": {
+   "diff": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "call": "LEVEL",
+   "groups": 458
+  },
+  "rotation_cal - cosine": {
+   "diff": 5.17,
+   "lo": 3.2,
+   "hi": 7.05,
+   "call": "ABOVE",
+   "groups": 458
+  },
+  "rotation - cosine": {
+   "diff": 5.17,
+   "lo": 3.2,
+   "hi": 7.05,
+   "call": "ABOVE",
+   "groups": 458
+  }
+ },
+ "beside_pooled": {
+  "H3 rotation_cal - rotation": {
+   "diff": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "call": "LEVEL"
+  },
+  "cosine_cal - cosine": {
+   "diff": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "call": "LEVEL"
+  },
+  "rotation_cal - cosine": {
+   "diff": 5.2,
+   "lo": 3.59,
+   "hi": 6.81,
+   "call": "ABOVE"
+  },
+  "rotation - cosine": {
+   "diff": 5.2,
+   "lo": 3.59,
+   "hi": 6.81,
+   "call": "ABOVE"
+  }
+ },
+ "per_group_mrr_t": {
+  "H3 rotation_cal - rotation": {
+   "R.name_comention": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL",
+    "groups": 458
+   }
+  }
+ },
+ "read": {
+  "rotation": {
+   "pooled": {
+    "n": 1000,
+    "mrr": 24.09,
+    "h10": 35.7,
+    "h100": 65.2
+   },
+   "mrr_t": 23.55,
+   "per_group": {
+    "R.name_comention": {
+     "mrr": 24.09,
+     "mrr_t": 23.55
+    }
+   }
+  },
+  "rotation_cal": {
+   "pooled": {
+    "n": 1000,
+    "mrr": 24.09,
+    "h10": 35.7,
+    "h100": 65.2
+   },
+   "mrr_t": 23.55,
+   "per_group": {
+    "R.name_comention": {
+     "mrr": 24.09,
+     "mrr_t": 23.55
+    }
+   }
+  },
+  "cosine": {
+   "pooled": {
+    "n": 1000,
+    "mrr": 18.89,
+    "h10": 28.6,
+    "h100": 56.0
+   },
+   "mrr_t": 18.38,
+   "per_group": {
+    "R.name_comention": {
+     "mrr": 18.89,
+     "mrr_t": 18.38
+    }
+   }
+  },
+  "cosine_cal": {
+   "pooled": {
+    "n": 1000,
+    "mrr": 18.89,
+    "h10": 28.6,
+    "h100": 56.0
+   },
+   "mrr_t": 18.38,
+   "per_group": {
+    "R.name_comention": {
+     "mrr": 18.89,
+     "mrr_t": 18.38
+    }
+   }
+  }
+ },
+ "r1_record_sha256": "4e840a140964e4213fa1c9611457c3df0eccf547eecac7364f7f3cb50d7af683",
+ "r1_npz_sha256": "1c199cafbca656764b6b00c6a1a74a5ac2d6094cf4bdc02f36e43a3ffacd7bc3",
+ "inputs": {
+  "links_json_sha256": "97a1f768bae0e0256136220f1a6aa037ec71632918053e89b262a523b2455744",
+  "F0_npz_sha256": "345d21c15bfda50834613b27b72bee5122e4e85a258e65973867c762b217305c",
+  "F0T_npz_sha256": "2e884936ec9398f4ce1395021d63cc68580b77c1ce4ec39ad7bdb231109406ec",
+  "W2_S_npz_sha256": "00b5b57909411d1ffae9a23fad257f5294731cc97845625d58b4e1ca254a940a",
+  "vectors": {
+   "shards": 1,
+   "dim": 1536,
+   "dtype": "float16"
+  }
+ },
+ "threads": 8,
+ "seconds": 0.8,
+ "utc": "2026-11-24T10:40:53Z",
+ "script_sha256": "bd3cac4f9540859dba15469ce71492abf0f93f1c1f45cf0c6aaf681dc89461af",
+ "zsem2h_sha256": "2588ab5f284d6f1dace715f9ccec1f0cbca664945619fba62ebcca0f05006a3f",
+ "zsem2_sha256": "60208157465631a21f56731ffe90eb6df9367b722e6a479f889ee5f266f2474e",
+ "npz_sha256": "c489839928c2d3a1f090ede69d857a954bb5c21d03f18fc7e78478a7cbd4dfef"
+}

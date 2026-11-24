@@ -1,0 +1,373 @@
+{
+ "stage": "SEM2 R1c",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 8.10",
+ "dataset": "musique",
+ "arm": "frozen",
+ "dim": 1536,
+ "config": {
+  "extra": 256,
+  "tau": 0.05,
+  "batch": 1024,
+  "neg": 4096,
+  "lr": 0.001,
+  "epoch": 200000,
+  "max_epochs": 10,
+  "patience": 2,
+  "min_op": 500,
+  "top_s": 12,
+  "n_test": 1000,
+  "n_dev": 500
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 2343920,
+     "record": 2343920
+    },
+    "CN_all": {
+     "pairs": 931069,
+     "record": 931069
+    },
+    "F0T": {
+     "pairs": 973013,
+     "record": 973013
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-B": {
+   "rotation": {
+    "dev": true,
+    "test": true
+   },
+   "cosine": {
+    "dev": true,
+    "test_agreement_with_R1": 1.0,
+    "test": true
+   },
+   "verdict": "PASS"
+  }
+ },
+ "nodes": 117534,
+ "operators": [
+  "R.mention",
+  "R.name_comention",
+  "R.title_comention"
+ ],
+ "read_groups": [
+  "R.mention",
+  "R.name_comention",
+  "R.title_comention"
+ ],
+ "betas_grid": [
+  0.0,
+  0.25,
+  0.5,
+  0.75,
+  1.0
+ ],
+ "betas": {
+  "rotation": {
+   "R.mention": {
+    "dev_mrr_t": {
+     "0.0": 19.78,
+     "0.25": 13.16,
+     "0.5": 7.96,
+     "0.75": 5.07,
+     "1.0": 3.78
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   },
+   "R.name_comention": {
+    "dev_mrr_t": {
+     "0.0": 9.58,
+     "0.25": 8.64,
+     "0.5": 7.25,
+     "0.75": 6.15,
+     "1.0": 5.0
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   },
+   "R.title_comention": {
+    "dev_mrr_t": {
+     "0.0": 13.16,
+     "0.25": 11.88,
+     "0.5": 10.32,
+     "0.75": 9.35,
+     "1.0": 8.58
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   }
+  },
+  "cosine": {
+   "R.mention": {
+    "dev_mrr_t": {
+     "0.0": 2.18,
+     "0.25": 1.49,
+     "0.5": 0.79,
+     "0.75": 0.67,
+     "1.0": 0.57
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   },
+   "R.name_comention": {
+    "dev_mrr_t": {
+     "0.0": 7.48,
+     "0.25": 6.27,
+     "0.5": 5.13,
+     "0.75": 4.45,
+     "1.0": 3.85
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   },
+   "R.title_comention": {
+    "dev_mrr_t": {
+     "0.0": 6.45,
+     "0.25": 5.66,
+     "0.5": 5.05,
+     "0.75": 4.59,
+     "1.0": 4.02
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   }
+  }
+ },
+ "hubs": {
+  "R.mention": {
+   "edges": 1000,
+   "targets": 931,
+   "largest_target_edges": 5,
+   "hub_edge_share": 0.0
+  },
+  "R.name_comention": {
+   "edges": 1000,
+   "targets": 994,
+   "largest_target_edges": 2,
+   "hub_edge_share": 0.0
+  },
+  "R.title_comention": {
+   "edges": 1000,
+   "targets": 958,
+   "largest_target_edges": 2,
+   "hub_edge_share": 0.0
+  }
+ },
+ "calls_mrr_t": {
+  "H3 rotation_cal - rotation": {
+   "diff": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "call": "LEVEL",
+   "groups": 2883
+  },
+  "cosine_cal - cosine": {
+   "diff": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "call": "LEVEL",
+   "groups": 2883
+  },
+  "rotation_cal - cosine": {
+   "diff": 7.37,
+   "lo": 6.52,
+   "hi": 8.23,
+   "call": "ABOVE",
+   "groups": 2883
+  },
+  "rotation - cosine": {
+   "diff": 7.37,
+   "lo": 6.52,
+   "hi": 8.23,
+   "call": "ABOVE",
+   "groups": 2883
+  }
+ },
+ "beside_pooled": {
+  "H3 rotation_cal - rotation": {
+   "diff": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "call": "LEVEL"
+  },
+  "cosine_cal - cosine": {
+   "diff": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "call": "LEVEL"
+  },
+  "rotation_cal - cosine": {
+   "diff": 7.87,
+   "lo": 7.04,
+   "hi": 8.74,
+   "call": "ABOVE"
+  },
+  "rotation - cosine": {
+   "diff": 7.87,
+   "lo": 7.04,
+   "hi": 8.74,
+   "call": "ABOVE"
+  }
+ },
+ "per_group_mrr_t": {
+  "H3 rotation_cal - rotation": {
+   "R.mention": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL",
+    "groups": 931
+   },
+   "R.name_comention": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL",
+    "groups": 994
+   },
+   "R.title_comention": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL",
+    "groups": 958
+   }
+  }
+ },
+ "read": {
+  "rotation": {
+   "pooled": {
+    "n": 3000,
+    "mrr": 13.87,
+    "h10": 26.13,
+    "h100": 47.63
+   },
+   "mrr_t": 13.52,
+   "per_group": {
+    "R.mention": {
+     "mrr": 18.62,
+     "mrr_t": 17.78
+    },
+    "R.name_comention": {
+     "mrr": 9.67,
+     "mrr_t": 9.72
+    },
+    "R.title_comention": {
+     "mrr": 13.32,
+     "mrr_t": 13.32
+    }
+   }
+  },
+  "rotation_cal": {
+   "pooled": {
+    "n": 3000,
+    "mrr": 13.87,
+    "h10": 26.13,
+    "h100": 47.63
+   },
+   "mrr_t": 13.52,
+   "per_group": {
+    "R.mention": {
+     "mrr": 18.62,
+     "mrr_t": 17.78
+    },
+    "R.name_comention": {
+     "mrr": 9.67,
+     "mrr_t": 9.72
+    },
+    "R.title_comention": {
+     "mrr": 13.32,
+     "mrr_t": 13.32
+    }
+   }
+  },
+  "cosine": {
+   "pooled": {
+    "n": 3000,
+    "mrr": 6.0,
+    "h10": 11.33,
+    "h100": 26.53
+   },
+   "mrr_t": 6.14,
+   "per_group": {
+    "R.mention": {
+     "mrr": 3.42,
+     "mrr_t": 3.57
+    },
+    "R.name_comention": {
+     "mrr": 7.85,
+     "mrr_t": 7.9
+    },
+    "R.title_comention": {
+     "mrr": 6.73,
+     "mrr_t": 6.83
+    }
+   }
+  },
+  "cosine_cal": {
+   "pooled": {
+    "n": 3000,
+    "mrr": 6.0,
+    "h10": 11.33,
+    "h100": 26.53
+   },
+   "mrr_t": 6.14,
+   "per_group": {
+    "R.mention": {
+     "mrr": 3.42,
+     "mrr_t": 3.57
+    },
+    "R.name_comention": {
+     "mrr": 7.85,
+     "mrr_t": 7.9
+    },
+    "R.title_comention": {
+     "mrr": 6.73,
+     "mrr_t": 6.83
+    }
+   }
+  }
+ },
+ "r1_record_sha256": "23db3eeabdd858cb40fedc022a0ef7a0d8192be95140a98df4ec916ed2a0e9b2",
+ "r1_npz_sha256": "c8f827f17c7b1744c7e462d564c5bebdb90de314bb7a4088aebf4ac681e882f0",
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+  "ner_npz_sha256": "f294708600750c48eae9e32d0895d517ac3a8b5d048c736a70e9a566af2fe9c6",
+  "knn_npz_sha256": "6020ac7e0b6773e64866b5e942dc0e02c3b704615ced8de4d557aa543221ef5b",
+  "w2_s_npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+  "f0t_npz_sha256": "a0cea3c450f4a8364d202d7f21fe949e288f2ed0ca325aadea199f7ed2a4eebc",
+  "names_npz_sha256": "279d4b6ff3a2d5e3fbbab9071bcc93328167da1c5d19e805c3a9c5ad7a8f9cda",
+  "vectors": {
+   "shards": 3,
+   "dim": 1536,
+   "dtype": "float16"
+  }
+ },
+ "threads": 8,
+ "seconds": 44.1,
+ "utc": "2026-11-24T10:44:12Z",
+ "script_sha256": "bd3cac4f9540859dba15469ce71492abf0f93f1c1f45cf0c6aaf681dc89461af",
+ "zsem2h_sha256": "2588ab5f284d6f1dace715f9ccec1f0cbca664945619fba62ebcca0f05006a3f",
+ "zsem2_sha256": "60208157465631a21f56731ffe90eb6df9367b722e6a479f889ee5f266f2474e",
+ "npz_sha256": "974add77e9db2e4cbf1e2afdfc9ef65d0a7e509f88518019b6d31a18de60857d"
+}

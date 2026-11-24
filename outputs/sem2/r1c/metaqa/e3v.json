@@ -1,0 +1,755 @@
+{
+ "stage": "SEM2 R1c",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 8.10",
+ "dataset": "metaqa",
+ "arm": "e3v",
+ "dim": 1152,
+ "config": {
+  "extra": 256,
+  "tau": 0.05,
+  "batch": 1024,
+  "neg": 4096,
+  "lr": 0.001,
+  "epoch": 200000,
+  "max_epochs": 10,
+  "patience": 2,
+  "min_op": 500,
+  "top_s": 12,
+  "n_test": 1000,
+  "n_dev": 500
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 245144,
+     "record": 245144
+    },
+    "CN_all": {
+     "pairs": 12605,
+     "record": 12605
+    },
+    "F0T": {
+     "pairs": 12605,
+     "record": 12605
+    },
+    "S": {
+     "pairs": 124669,
+     "record": 124669
+    },
+    "S directed": {
+     "edges": 133571,
+     "pair_relation_rows": 133571,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-B": {
+   "rotation": {
+    "dev": true,
+    "test": true
+   },
+   "cosine": {
+    "dev": true,
+    "test_agreement_with_R1": 0.999881,
+    "test": true
+   },
+   "verdict": "PASS"
+  }
+ },
+ "nodes": 43234,
+ "operators": [
+  "R.mention",
+  "R.name_comention",
+  "S.directed_by",
+  "S.has_genre",
+  "S.rare",
+  "S.has_tags",
+  "S.in_language",
+  "S.release_year",
+  "S.starred_actors",
+  "S.written_by"
+ ],
+ "read_groups": [
+  "R.mention",
+  "R.name_comention",
+  "S.starred_actors",
+  "S.has_tags",
+  "S.written_by",
+  "S.release_year",
+  "S.directed_by",
+  "S.has_genre",
+  "S.in_language",
+  "S.other"
+ ],
+ "betas_grid": [
+  0.0,
+  0.25,
+  0.5,
+  0.75,
+  1.0
+ ],
+ "betas": {
+  "rotation": {
+   "R.mention": {
+    "dev_mrr_t": {
+     "0.0": 1.3,
+     "0.25": 0.94,
+     "0.5": 0.47,
+     "0.75": 0.32,
+     "1.0": 0.26
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   },
+   "R.name_comention": {
+    "dev_mrr_t": {
+     "0.0": 59.59,
+     "0.25": 54.02,
+     "0.5": 47.73,
+     "0.75": 40.78,
+     "1.0": 35.1
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   },
+   "S.starred_actors": {
+    "dev_mrr_t": {
+     "0.0": 1.23,
+     "0.25": 0.75,
+     "0.5": 0.61,
+     "0.75": 0.58,
+     "1.0": 0.46
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   },
+   "S.has_tags": {
+    "dev_mrr_t": {
+     "0.0": 5.55,
+     "0.25": 4.37,
+     "0.5": 3.8,
+     "0.75": 3.43,
+     "1.0": 3.17
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   },
+   "S.written_by": {
+    "dev_mrr_t": {
+     "0.0": 0.99,
+     "0.25": 1.05,
+     "0.5": 1.0,
+     "0.75": 0.85,
+     "1.0": 0.66
+    },
+    "beta": 0.25,
+    "dev_edges": 500
+   },
+   "S.release_year": {
+    "dev_mrr_t": {
+     "0.0": 6.65,
+     "0.25": 4.05,
+     "0.5": 2.84,
+     "0.75": 2.08,
+     "1.0": 1.63
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   },
+   "S.directed_by": {
+    "dev_mrr_t": {
+     "0.0": 0.56,
+     "0.25": 0.28,
+     "0.5": 0.21,
+     "0.75": 0.18,
+     "1.0": 0.16
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   },
+   "S.has_genre": {
+    "dev_mrr_t": {
+     "0.0": 25.48,
+     "0.25": 18.69,
+     "0.5": 7.59,
+     "0.75": 2.14,
+     "1.0": 0.94
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   },
+   "S.in_language": {
+    "dev_mrr_t": {
+     "0.0": 16.0,
+     "0.25": 15.55,
+     "0.5": 12.55,
+     "0.75": 10.44,
+     "1.0": 8.6
+    },
+    "beta": 0.0,
+    "dev_edges": 335
+   },
+   "S.other": {
+    "dev_mrr_t": {
+     "0.0": 26.89,
+     "0.25": 17.57,
+     "0.5": 6.21,
+     "0.75": 1.13,
+     "1.0": 0.21
+    },
+    "beta": 0.0,
+    "dev_edges": 39
+   }
+  },
+  "cosine": {
+   "R.mention": {
+    "dev_mrr_t": {
+     "0.0": 0.71,
+     "0.25": 0.58,
+     "0.5": 0.4,
+     "0.75": 0.17,
+     "1.0": 0.09
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   },
+   "R.name_comention": {
+    "dev_mrr_t": {
+     "0.0": 30.18,
+     "0.25": 20.02,
+     "0.5": 16.34,
+     "0.75": 14.21,
+     "1.0": 12.81
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   },
+   "S.starred_actors": {
+    "dev_mrr_t": {
+     "0.0": 0.02,
+     "0.25": 0.01,
+     "0.5": 0.01,
+     "0.75": 0.01,
+     "1.0": 0.01
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   },
+   "S.has_tags": {
+    "dev_mrr_t": {
+     "0.0": 1.56,
+     "0.25": 1.26,
+     "0.5": 1.17,
+     "0.75": 1.05,
+     "1.0": 0.99
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   },
+   "S.written_by": {
+    "dev_mrr_t": {
+     "0.0": 0.13,
+     "0.25": 0.1,
+     "0.5": 0.09,
+     "0.75": 0.07,
+     "1.0": 0.07
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   },
+   "S.release_year": {
+    "dev_mrr_t": {
+     "0.0": 0.03,
+     "0.25": 0.01,
+     "0.5": 0.0,
+     "0.75": 0.0,
+     "1.0": 0.0
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   },
+   "S.directed_by": {
+    "dev_mrr_t": {
+     "0.0": 0.03,
+     "0.25": 0.02,
+     "0.5": 0.01,
+     "0.75": 0.01,
+     "1.0": 0.01
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   },
+   "S.has_genre": {
+    "dev_mrr_t": {
+     "0.0": 0.53,
+     "0.25": 0.08,
+     "0.5": 0.06,
+     "0.75": 0.06,
+     "1.0": 0.06
+    },
+    "beta": 0.0,
+    "dev_edges": 500
+   },
+   "S.in_language": {
+    "dev_mrr_t": {
+     "0.0": 2.39,
+     "0.25": 1.15,
+     "0.5": 1.07,
+     "0.75": 1.04,
+     "1.0": 1.03
+    },
+    "beta": 0.0,
+    "dev_edges": 335
+   },
+   "S.other": {
+    "dev_mrr_t": {
+     "0.0": 0.1,
+     "0.25": 0.01,
+     "0.5": 0.0,
+     "0.75": 0.0,
+     "1.0": 0.0
+    },
+    "beta": 0.0,
+    "dev_edges": 39
+   }
+  }
+ },
+ "hubs": {
+  "R.mention": {
+   "edges": 1000,
+   "targets": 879,
+   "largest_target_edges": 12,
+   "hub_edge_share": 1.2
+  },
+  "R.name_comention": {
+   "edges": 1000,
+   "targets": 794,
+   "largest_target_edges": 5,
+   "hub_edge_share": 0.0
+  },
+  "S.starred_actors": {
+   "edges": 1000,
+   "targets": 877,
+   "largest_target_edges": 5,
+   "hub_edge_share": 0.0
+  },
+  "S.has_tags": {
+   "edges": 1000,
+   "targets": 721,
+   "largest_target_edges": 36,
+   "hub_edge_share": 7.4
+  },
+  "S.written_by": {
+   "edges": 1000,
+   "targets": 924,
+   "largest_target_edges": 3,
+   "hub_edge_share": 0.0
+  },
+  "S.release_year": {
+   "edges": 1000,
+   "targets": 96,
+   "largest_target_edges": 40,
+   "hub_edge_share": 72.6
+  },
+  "S.directed_by": {
+   "edges": 1000,
+   "targets": 846,
+   "largest_target_edges": 5,
+   "hub_edge_share": 0.0
+  },
+  "S.has_genre": {
+   "edges": 1000,
+   "targets": 21,
+   "largest_target_edges": 261,
+   "hub_edge_share": 98.1
+  },
+  "S.in_language": {
+   "edges": 376,
+   "targets": 38,
+   "largest_target_edges": 71,
+   "hub_edge_share": 81.12
+  },
+  "S.other": {
+   "edges": 42,
+   "targets": 5,
+   "largest_target_edges": 29,
+   "hub_edge_share": 69.05
+  }
+ },
+ "calls_mrr_t": {
+  "H3 rotation_cal - rotation": {
+   "diff": -0.02,
+   "lo": -0.03,
+   "hi": -0.0,
+   "call": "BELOW",
+   "groups": 5201
+  },
+  "cosine_cal - cosine": {
+   "diff": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "call": "LEVEL",
+   "groups": 5201
+  },
+  "rotation_cal - cosine": {
+   "diff": 5.61,
+   "lo": 5.1,
+   "hi": 6.13,
+   "call": "ABOVE",
+   "groups": 5201
+  },
+  "rotation - cosine": {
+   "diff": 5.63,
+   "lo": 5.11,
+   "hi": 6.14,
+   "call": "ABOVE",
+   "groups": 5201
+  }
+ },
+ "beside_pooled": {
+  "H3 rotation_cal - rotation": {
+   "diff": -0.02,
+   "lo": -0.03,
+   "hi": -0.0,
+   "call": "BELOW"
+  },
+  "cosine_cal - cosine": {
+   "diff": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "call": "LEVEL"
+  },
+  "rotation_cal - cosine": {
+   "diff": 12.3,
+   "lo": 11.72,
+   "hi": 12.91,
+   "call": "ABOVE"
+  },
+  "rotation - cosine": {
+   "diff": 12.31,
+   "lo": 11.74,
+   "hi": 12.92,
+   "call": "ABOVE"
+  }
+ },
+ "per_group_mrr_t": {
+  "H3 rotation_cal - rotation": {
+   "R.mention": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL",
+    "groups": 879
+   },
+   "R.name_comention": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL",
+    "groups": 794
+   },
+   "S.starred_actors": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL",
+    "groups": 877
+   },
+   "S.has_tags": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL",
+    "groups": 721
+   },
+   "S.written_by": {
+    "diff": -0.09,
+    "lo": -0.19,
+    "hi": -0.0,
+    "call": "BELOW",
+    "groups": 924
+   },
+   "S.release_year": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL",
+    "groups": 96
+   },
+   "S.directed_by": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL",
+    "groups": 846
+   },
+   "S.has_genre": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL",
+    "groups": 21
+   },
+   "S.in_language": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL",
+    "groups": 38
+   },
+   "S.other": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL",
+    "groups": 5
+   }
+  }
+ },
+ "read": {
+  "rotation": {
+   "pooled": {
+    "n": 8418,
+    "mrr": 15.68,
+    "h10": 25.99,
+    "h100": 43.82
+   },
+   "mrr_t": 10.23,
+   "per_group": {
+    "R.mention": {
+     "mrr": 1.65,
+     "mrr_t": 1.29
+    },
+    "R.name_comention": {
+     "mrr": 55.18,
+     "mrr_t": 54.85
+    },
+    "S.starred_actors": {
+     "mrr": 0.84,
+     "mrr_t": 0.81
+    },
+    "S.has_tags": {
+     "mrr": 5.45,
+     "mrr_t": 5.1
+    },
+    "S.written_by": {
+     "mrr": 1.59,
+     "mrr_t": 1.37
+    },
+    "S.release_year": {
+     "mrr": 6.89,
+     "mrr_t": 6.04
+    },
+    "S.directed_by": {
+     "mrr": 1.05,
+     "mrr_t": 0.93
+    },
+    "S.has_genre": {
+     "mrr": 43.77,
+     "mrr_t": 23.5
+    },
+    "S.in_language": {
+     "mrr": 35.47,
+     "mrr_t": 23.36
+    },
+    "S.other": {
+     "mrr": 54.11,
+     "mrr_t": 21.01
+    }
+   }
+  },
+  "rotation_cal": {
+   "pooled": {
+    "n": 8418,
+    "mrr": 15.67,
+    "h10": 25.92,
+    "h100": 43.7
+   },
+   "mrr_t": 10.21,
+   "per_group": {
+    "R.mention": {
+     "mrr": 1.65,
+     "mrr_t": 1.29
+    },
+    "R.name_comention": {
+     "mrr": 55.18,
+     "mrr_t": 54.85
+    },
+    "S.starred_actors": {
+     "mrr": 0.84,
+     "mrr_t": 0.81
+    },
+    "S.has_tags": {
+     "mrr": 5.45,
+     "mrr_t": 5.1
+    },
+    "S.written_by": {
+     "mrr": 1.44,
+     "mrr_t": 1.28
+    },
+    "S.release_year": {
+     "mrr": 6.89,
+     "mrr_t": 6.04
+    },
+    "S.directed_by": {
+     "mrr": 1.05,
+     "mrr_t": 0.93
+    },
+    "S.has_genre": {
+     "mrr": 43.77,
+     "mrr_t": 23.5
+    },
+    "S.in_language": {
+     "mrr": 35.47,
+     "mrr_t": 23.36
+    },
+    "S.other": {
+     "mrr": 54.11,
+     "mrr_t": 21.01
+    }
+   }
+  },
+  "cosine": {
+   "pooled": {
+    "n": 8418,
+    "mrr": 3.37,
+    "h10": 6.06,
+    "h100": 11.82
+   },
+   "mrr_t": 4.6,
+   "per_group": {
+    "R.mention": {
+     "mrr": 0.49,
+     "mrr_t": 0.54
+    },
+    "R.name_comention": {
+     "mrr": 25.1,
+     "mrr_t": 27.22
+    },
+    "S.starred_actors": {
+     "mrr": 0.07,
+     "mrr_t": 0.08
+    },
+    "S.has_tags": {
+     "mrr": 1.43,
+     "mrr_t": 1.71
+    },
+    "S.written_by": {
+     "mrr": 0.37,
+     "mrr_t": 0.37
+    },
+    "S.release_year": {
+     "mrr": 0.03,
+     "mrr_t": 0.03
+    },
+    "S.directed_by": {
+     "mrr": 0.13,
+     "mrr_t": 0.09
+    },
+    "S.has_genre": {
+     "mrr": 0.26,
+     "mrr_t": 0.27
+    },
+    "S.in_language": {
+     "mrr": 1.11,
+     "mrr_t": 3.05
+    },
+    "S.other": {
+     "mrr": 1.74,
+     "mrr_t": 0.52
+    }
+   }
+  },
+  "cosine_cal": {
+   "pooled": {
+    "n": 8418,
+    "mrr": 3.37,
+    "h10": 6.06,
+    "h100": 11.82
+   },
+   "mrr_t": 4.6,
+   "per_group": {
+    "R.mention": {
+     "mrr": 0.49,
+     "mrr_t": 0.54
+    },
+    "R.name_comention": {
+     "mrr": 25.1,
+     "mrr_t": 27.22
+    },
+    "S.starred_actors": {
+     "mrr": 0.07,
+     "mrr_t": 0.08
+    },
+    "S.has_tags": {
+     "mrr": 1.43,
+     "mrr_t": 1.71
+    },
+    "S.written_by": {
+     "mrr": 0.37,
+     "mrr_t": 0.37
+    },
+    "S.release_year": {
+     "mrr": 0.03,
+     "mrr_t": 0.03
+    },
+    "S.directed_by": {
+     "mrr": 0.13,
+     "mrr_t": 0.09
+    },
+    "S.has_genre": {
+     "mrr": 0.26,
+     "mrr_t": 0.27
+    },
+    "S.in_language": {
+     "mrr": 1.11,
+     "mrr_t": 3.05
+    },
+    "S.other": {
+     "mrr": 1.74,
+     "mrr_t": 0.52
+    }
+   }
+  }
+ },
+ "r1_record_sha256": "b2fd0a33e1ef601c591d8cf6e62e2b13229c11ac14fb0f34e05aa429ad1f016f",
+ "r1_npz_sha256": "4fd92a218cbf2817185e78af24da5d89dbcf7df719ae1f9c6785b4f5e8b1bc59",
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+  "ner_npz_sha256": "93065a2311c2b445cc14ce6458457c9e14ec0d3c641a4bc573ef4b175a374cb8",
+  "knn_npz_sha256": "f7c59640e816951148fee791bc8790e026461ee52a5b6741c63859244b5a4a16",
+  "structural_npz_sha256": "1b2027c64b2e62b5cf122f09a246ed4cb485841bf0823fcee246e8bf45bf8570",
+  "w2_s_npz_sha256": "3f2b97d1474552dae2fea1f7f8be5e83f7960950b38c0ca41bd3a78025aa7dd5",
+  "f0t_npz_sha256": "499e8c70d3d7d1375a77a609819aacdd40c8753ac2bf6f3d1ea277c5ae62a7fe",
+  "names_npz_sha256": "0ccad8b4b6a55c2bec41bfd36e6fa83f48dc448964e170cf15a2c191f517d720",
+  "vectors": {
+   "shards": 2,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "a1a7727a9128278299ee04c2d6ae4e8912bc44c3251fbbba4f76993720a53fc6"
+  }
+ },
+ "threads": 8,
+ "seconds": 26.4,
+ "utc": "2026-11-24T10:25:26Z",
+ "script_sha256": "bd3cac4f9540859dba15469ce71492abf0f93f1c1f45cf0c6aaf681dc89461af",
+ "zsem2h_sha256": "2588ab5f284d6f1dace715f9ccec1f0cbca664945619fba62ebcca0f05006a3f",
+ "zsem2_sha256": "60208157465631a21f56731ffe90eb6df9367b722e6a479f889ee5f266f2474e",
+ "npz_sha256": "6b61c8b61c4c5ca526e23468fc0db29038b5edfd8a612f1b47884321361142f0"
+}

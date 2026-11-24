@@ -1,0 +1,776 @@
+{
+ "stage": "SEM2 R1h report (8.9)",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 8.9",
+ "carry": {
+  "HB": {
+   "verdict": "NOT_CARRIED",
+   "metaqa": "BELOW",
+   "metaqa_diff": -3.71,
+   "below": [
+    "squad",
+    "metaqa"
+   ],
+   "missing": [
+    "musique",
+    "webqsp",
+    "hotpotqa",
+    "2wiki"
+   ],
+   "calls": {
+    "multihoprag": "LEVEL",
+    "squad": "BELOW",
+    "metaqa": "BELOW"
+   },
+   "rule_8_6_superseded": {
+    "verdict": "INCOMPLETE",
+    "above": 0
+   }
+  },
+  "adjustment": {
+   "verdict": "NOT_CARRIED",
+   "metaqa": "BELOW",
+   "metaqa_diff": -3.84,
+   "below": [
+    "multihoprag",
+    "squad",
+    "metaqa"
+   ],
+   "missing": [
+    "musique",
+    "webqsp",
+    "hotpotqa",
+    "2wiki"
+   ],
+   "calls": {
+    "multihoprag": "BELOW",
+    "squad": "BELOW",
+    "metaqa": "BELOW"
+   },
+   "rule_8_6_superseded": {
+    "verdict": "INCOMPLETE",
+    "above": 0
+   }
+  },
+  "HB + adjustment": {
+   "verdict": "NOT_CARRIED",
+   "metaqa": "BELOW",
+   "metaqa_diff": -6.31,
+   "below": [
+    "multihoprag",
+    "squad",
+    "metaqa"
+   ],
+   "missing": [
+    "musique",
+    "webqsp",
+    "hotpotqa",
+    "2wiki"
+   ],
+   "calls": {
+    "multihoprag": "BELOW",
+    "squad": "BELOW",
+    "metaqa": "BELOW"
+   },
+   "rule_8_6_superseded": {
+    "verdict": "INCOMPLETE",
+    "above": 0
+   }
+  }
+ },
+ "r2_form": "none: the next hub step is declared from the per-label reads",
+ "H0": {
+  "multihoprag e3v": "LEARNS",
+  "squad e3v": "LEARNS",
+  "metaqa e3v": "LEARNS"
+ },
+ "rows": {
+  "multihoprag e3v": {
+   "calls_mrr_t": {
+    "H0 rotation - cosine": {
+     "diff": 6.69,
+     "lo": 4.81,
+     "hi": 8.56,
+     "call": "ABOVE",
+     "groups": 458
+    },
+    "H1 hb - rotation": {
+     "diff": -0.24,
+     "lo": -1.05,
+     "hi": 0.63,
+     "call": "LEVEL",
+     "groups": 458
+    },
+    "H2 rotation_la - rotation": {
+     "diff": -7.28,
+     "lo": -9.03,
+     "hi": -5.63,
+     "call": "BELOW",
+     "groups": 458
+    },
+    "hb_la - rotation": {
+     "diff": -6.46,
+     "lo": -8.19,
+     "hi": -4.76,
+     "call": "BELOW",
+     "groups": 458
+    },
+    "cosine_la - cosine": {
+     "diff": -10.76,
+     "lo": -13.18,
+     "hi": -8.44,
+     "call": "BELOW",
+     "groups": 458
+    },
+    "rotation - popularity": {
+     "diff": 21.29,
+     "lo": 18.41,
+     "hi": 24.02,
+     "call": "ABOVE",
+     "groups": 458
+    },
+    "hb - popularity": {
+     "diff": 21.06,
+     "lo": 18.22,
+     "hi": 23.77,
+     "call": "ABOVE",
+     "groups": 458
+    }
+   },
+   "beside_pooled": {
+    "H0 rotation - cosine": {
+     "diff": 6.76,
+     "lo": 5.16,
+     "hi": 8.28,
+     "call": "ABOVE"
+    },
+    "H1 hb - rotation": {
+     "diff": -0.5,
+     "lo": -1.12,
+     "hi": 0.11,
+     "call": "LEVEL"
+    },
+    "H2 rotation_la - rotation": {
+     "diff": -7.54,
+     "lo": -8.95,
+     "hi": -6.1,
+     "call": "BELOW"
+    },
+    "hb_la - rotation": {
+     "diff": -6.99,
+     "lo": -8.41,
+     "hi": -5.5,
+     "call": "BELOW"
+    },
+    "cosine_la - cosine": {
+     "diff": -11.13,
+     "lo": -13.11,
+     "hi": -9.24,
+     "call": "BELOW"
+    },
+    "rotation - popularity": {
+     "diff": 20.54,
+     "lo": 18.03,
+     "hi": 23.02,
+     "call": "ABOVE"
+    },
+    "hb - popularity": {
+     "diff": 20.04,
+     "lo": 17.53,
+     "hi": 22.54,
+     "call": "ABOVE"
+    }
+   },
+   "mrr_t": {
+    "cosine": 16.74,
+    "rotation": 23.43,
+    "popularity": 2.13,
+    "cosine_la": 5.98,
+    "rotation_la": 16.15,
+    "hb": 23.19,
+    "hb_la": 16.96
+   },
+   "pooled": {
+    "cosine": 17.36,
+    "rotation": 24.12,
+    "popularity": 3.58,
+    "cosine_la": 6.23,
+    "rotation_la": 16.58,
+    "hb": 23.62,
+    "hb_la": 17.13
+   },
+   "per_group_mrr_t": {
+    "H1 hb - rotation": {
+     "R.name_comention": {
+      "diff": -0.24,
+      "lo": -1.05,
+      "hi": 0.63,
+      "call": "LEVEL",
+      "groups": 458
+     }
+    },
+    "H2 rotation_la - rotation": {
+     "R.name_comention": {
+      "diff": -7.28,
+      "lo": -9.03,
+      "hi": -5.63,
+      "call": "BELOW",
+      "groups": 458
+     }
+    }
+   },
+   "gates": {
+    "G-E": {
+     "families": {
+      "F0": {
+       "pairs": 25005,
+       "record": 25005
+      },
+      "F0T": {
+       "pairs": 25080,
+       "record": 25080
+      },
+      "W2_S": {
+       "pairs": 2,
+       "record": 2
+      }
+     },
+     "verdict": "PASS"
+    },
+    "G-R": {
+     "samples": {
+      "s": true,
+      "d": true,
+      "lab": true,
+      "grp": true,
+      "read groups": true,
+      "operators": true
+     },
+     "rank_agreement": 1.0,
+     "mrr_diff": 0.0,
+     "verdict": "PASS"
+    },
+    "G-0 hb": {
+     "max_score_diff": 4.172325134277344e-07,
+     "mrr_diff": 0.0,
+     "verdict": "PASS"
+    },
+    "G-S hb training": "PASS"
+   },
+   "sha256": "32c374ed4934e456712afdd651f0f5778f17b4ebad0e782fe7c93029642c0fda"
+  },
+  "squad e3v": {
+   "calls_mrr_t": {
+    "H0 rotation - cosine": {
+     "diff": 16.04,
+     "lo": 14.64,
+     "hi": 17.41,
+     "call": "ABOVE",
+     "groups": 2201
+    },
+    "H1 hb - rotation": {
+     "diff": -3.78,
+     "lo": -4.75,
+     "hi": -2.84,
+     "call": "BELOW",
+     "groups": 2201
+    },
+    "H2 rotation_la - rotation": {
+     "diff": -10.88,
+     "lo": -12.05,
+     "hi": -9.8,
+     "call": "BELOW",
+     "groups": 2201
+    },
+    "hb_la - rotation": {
+     "diff": -13.62,
+     "lo": -14.99,
+     "hi": -12.29,
+     "call": "BELOW",
+     "groups": 2201
+    },
+    "cosine_la - cosine": {
+     "diff": -7.19,
+     "lo": -8.27,
+     "hi": -6.16,
+     "call": "BELOW",
+     "groups": 2201
+    },
+    "rotation - popularity": {
+     "diff": 27.09,
+     "lo": 25.55,
+     "hi": 28.77,
+     "call": "ABOVE",
+     "groups": 2201
+    },
+    "hb - popularity": {
+     "diff": 23.31,
+     "lo": 21.8,
+     "hi": 24.79,
+     "call": "ABOVE",
+     "groups": 2201
+    }
+   },
+   "beside_pooled": {
+    "H0 rotation - cosine": {
+     "diff": 16.23,
+     "lo": 14.95,
+     "hi": 17.54,
+     "call": "ABOVE"
+    },
+    "H1 hb - rotation": {
+     "diff": -3.98,
+     "lo": -4.9,
+     "hi": -3.12,
+     "call": "BELOW"
+    },
+    "H2 rotation_la - rotation": {
+     "diff": -10.96,
+     "lo": -12.02,
+     "hi": -9.95,
+     "call": "BELOW"
+    },
+    "hb_la - rotation": {
+     "diff": -13.6,
+     "lo": -14.9,
+     "hi": -12.38,
+     "call": "BELOW"
+    },
+    "cosine_la - cosine": {
+     "diff": -7.46,
+     "lo": -8.44,
+     "hi": -6.55,
+     "call": "BELOW"
+    },
+    "rotation - popularity": {
+     "diff": 27.34,
+     "lo": 25.8,
+     "hi": 28.86,
+     "call": "ABOVE"
+    },
+    "hb - popularity": {
+     "diff": 23.36,
+     "lo": 21.94,
+     "hi": 24.73,
+     "call": "ABOVE"
+    }
+   },
+   "mrr_t": {
+    "cosine": 11.86,
+    "rotation": 27.9,
+    "popularity": 0.8,
+    "cosine_la": 4.67,
+    "rotation_la": 17.02,
+    "hb": 24.11,
+    "hb_la": 14.28
+   },
+   "pooled": {
+    "cosine": 12.04,
+    "rotation": 28.28,
+    "popularity": 0.93,
+    "cosine_la": 4.58,
+    "rotation_la": 17.32,
+    "hb": 24.29,
+    "hb_la": 14.68
+   },
+   "per_group_mrr_t": {
+    "H1 hb - rotation": {
+     "R.mention": {
+      "diff": -6.96,
+      "lo": -8.68,
+      "hi": -5.35,
+      "call": "BELOW",
+      "groups": 955
+     },
+     "R.name_comention": {
+      "diff": -0.99,
+      "lo": -2.16,
+      "hi": 0.16,
+      "call": "LEVEL",
+      "groups": 956
+     },
+     "R.title_comention": {
+      "diff": -2.53,
+      "lo": -4.51,
+      "hi": -0.41,
+      "call": "BELOW",
+      "groups": 290
+     }
+    },
+    "H2 rotation_la - rotation": {
+     "R.mention": {
+      "diff": -13.64,
+      "lo": -15.62,
+      "hi": -11.64,
+      "call": "BELOW",
+      "groups": 955
+     },
+     "R.name_comention": {
+      "diff": -6.89,
+      "lo": -8.38,
+      "hi": -5.49,
+      "call": "BELOW",
+      "groups": 956
+     },
+     "R.title_comention": {
+      "diff": -14.9,
+      "lo": -17.95,
+      "hi": -12.22,
+      "call": "BELOW",
+      "groups": 290
+     }
+    }
+   },
+   "gates": {
+    "G-E": {
+     "families": {
+      "W2_S": {
+       "pairs": 878200,
+       "record": 878200
+      },
+      "CN_all": {
+       "pairs": 173645,
+       "record": 173645
+      },
+      "F0T": {
+       "pairs": 176454,
+       "record": 176454
+      }
+     },
+     "verdict": "PASS"
+    },
+    "G-R": {
+     "samples": {
+      "s": true,
+      "d": true,
+      "lab": true,
+      "grp": true,
+      "read groups": true,
+      "operators": true
+     },
+     "rank_agreement": 1.0,
+     "mrr_diff": 0.0,
+     "verdict": "PASS"
+    },
+    "G-0 hb": {
+     "max_score_diff": 4.172325134277344e-07,
+     "mrr_diff": 1.087008770495057e-08,
+     "verdict": "PASS"
+    },
+    "G-S hb training": "PASS"
+   },
+   "sha256": "3e161da8de58061c4a9df04971e0034df5d5c7a308532e7ffcd2b4c20f464be3"
+  },
+  "metaqa e3v": {
+   "calls_mrr_t": {
+    "H0 rotation - cosine": {
+     "diff": 5.63,
+     "lo": 5.11,
+     "hi": 6.14,
+     "call": "ABOVE",
+     "groups": 5201
+    },
+    "H1 hb - rotation": {
+     "diff": -3.71,
+     "lo": -4.14,
+     "hi": -3.3,
+     "call": "BELOW",
+     "groups": 5201
+    },
+    "H2 rotation_la - rotation": {
+     "diff": -3.84,
+     "lo": -4.24,
+     "hi": -3.43,
+     "call": "BELOW",
+     "groups": 5201
+    },
+    "hb_la - rotation": {
+     "diff": -6.31,
+     "lo": -6.88,
+     "hi": -5.77,
+     "call": "BELOW",
+     "groups": 5201
+    },
+    "cosine_la - cosine": {
+     "diff": -2.31,
+     "lo": -2.64,
+     "hi": -2.02,
+     "call": "BELOW",
+     "groups": 5201
+    },
+    "rotation - popularity": {
+     "diff": 9.3,
+     "lo": 8.62,
+     "hi": 10.03,
+     "call": "ABOVE",
+     "groups": 5201
+    },
+    "hb - popularity": {
+     "diff": 5.59,
+     "lo": 5.01,
+     "hi": 6.2,
+     "call": "ABOVE",
+     "groups": 5201
+    }
+   },
+   "beside_pooled": {
+    "H0 rotation - cosine": {
+     "diff": 12.31,
+     "lo": 11.74,
+     "hi": 12.92,
+     "call": "ABOVE"
+    },
+    "H1 hb - rotation": {
+     "diff": -10.82,
+     "lo": -11.38,
+     "hi": -10.25,
+     "call": "BELOW"
+    },
+    "H2 rotation_la - rotation": {
+     "diff": -10.42,
+     "lo": -10.97,
+     "hi": -9.86,
+     "call": "BELOW"
+    },
+    "hb_la - rotation": {
+     "diff": -12.94,
+     "lo": -13.54,
+     "hi": -12.34,
+     "call": "BELOW"
+    },
+    "cosine_la - cosine": {
+     "diff": -1.84,
+     "lo": -2.07,
+     "hi": -1.62,
+     "call": "BELOW"
+    },
+    "rotation - popularity": {
+     "diff": 5.22,
+     "lo": 4.56,
+     "hi": 5.89,
+     "call": "ABOVE"
+    },
+    "hb - popularity": {
+     "diff": -5.6,
+     "lo": -6.3,
+     "hi": -4.91,
+     "call": "BELOW"
+    }
+   },
+   "mrr_t": {
+    "cosine": 4.6,
+    "rotation": 10.23,
+    "popularity": 0.93,
+    "cosine_la": 2.29,
+    "rotation_la": 6.39,
+    "hb": 6.52,
+    "hb_la": 3.92
+   },
+   "pooled": {
+    "cosine": 3.37,
+    "rotation": 15.68,
+    "popularity": 10.46,
+    "cosine_la": 1.53,
+    "rotation_la": 5.27,
+    "hb": 4.86,
+    "hb_la": 2.74
+   },
+   "per_group_mrr_t": {
+    "H1 hb - rotation": {
+     "R.mention": {
+      "diff": -0.73,
+      "lo": -1.19,
+      "hi": -0.37,
+      "call": "BELOW",
+      "groups": 879
+     },
+     "R.name_comention": {
+      "diff": -17.41,
+      "lo": -19.56,
+      "hi": -15.37,
+      "call": "BELOW",
+      "groups": 794
+     },
+     "S.starred_actors": {
+      "diff": -0.6,
+      "lo": -0.9,
+      "hi": -0.34,
+      "call": "BELOW",
+      "groups": 877
+     },
+     "S.has_tags": {
+      "diff": -1.52,
+      "lo": -2.23,
+      "hi": -0.92,
+      "call": "BELOW",
+      "groups": 721
+     },
+     "S.written_by": {
+      "diff": -0.72,
+      "lo": -1.21,
+      "hi": -0.3,
+      "call": "BELOW",
+      "groups": 924
+     },
+     "S.release_year": {
+      "diff": -5.99,
+      "lo": -7.15,
+      "hi": -4.91,
+      "call": "BELOW",
+      "groups": 96
+     },
+     "S.directed_by": {
+      "diff": -0.68,
+      "lo": -1.12,
+      "hi": -0.32,
+      "call": "BELOW",
+      "groups": 846
+     },
+     "S.has_genre": {
+      "diff": -23.44,
+      "lo": -32.53,
+      "hi": -14.87,
+      "call": "BELOW",
+      "groups": 21
+     },
+     "S.in_language": {
+      "diff": -21.57,
+      "lo": -30.23,
+      "hi": -14.43,
+      "call": "BELOW",
+      "groups": 38
+     },
+     "S.other": {
+      "diff": -20.24,
+      "lo": -45.21,
+      "hi": -1.34,
+      "call": "BELOW",
+      "groups": 5
+     }
+    },
+    "H2 rotation_la - rotation": {
+     "R.mention": {
+      "diff": -0.86,
+      "lo": -1.46,
+      "hi": -0.36,
+      "call": "BELOW",
+      "groups": 879
+     },
+     "R.name_comention": {
+      "diff": -20.09,
+      "lo": -22.15,
+      "hi": -18.18,
+      "call": "BELOW",
+      "groups": 794
+     },
+     "S.starred_actors": {
+      "diff": -0.26,
+      "lo": -0.53,
+      "hi": 0.01,
+      "call": "LEVEL",
+      "groups": 877
+     },
+     "S.has_tags": {
+      "diff": -1.18,
+      "lo": -1.85,
+      "hi": -0.63,
+      "call": "BELOW",
+      "groups": 721
+     },
+     "S.written_by": {
+      "diff": -0.49,
+      "lo": -0.86,
+      "hi": -0.18,
+      "call": "BELOW",
+      "groups": 924
+     },
+     "S.release_year": {
+      "diff": -3.15,
+      "lo": -5.02,
+      "hi": -1.11,
+      "call": "BELOW",
+      "groups": 96
+     },
+     "S.directed_by": {
+      "diff": -0.44,
+      "lo": -0.74,
+      "hi": -0.2,
+      "call": "BELOW",
+      "groups": 846
+     },
+     "S.has_genre": {
+      "diff": -22.58,
+      "lo": -32.03,
+      "hi": -13.65,
+      "call": "BELOW",
+      "groups": 21
+     },
+     "S.in_language": {
+      "diff": -12.63,
+      "lo": -20.79,
+      "hi": -5.29,
+      "call": "BELOW",
+      "groups": 38
+     },
+     "S.other": {
+      "diff": -20.82,
+      "lo": -47.03,
+      "hi": -1.26,
+      "call": "BELOW",
+      "groups": 5
+     }
+    }
+   },
+   "gates": {
+    "G-E": {
+     "families": {
+      "W2_S": {
+       "pairs": 245144,
+       "record": 245144
+      },
+      "CN_all": {
+       "pairs": 12605,
+       "record": 12605
+      },
+      "F0T": {
+       "pairs": 12605,
+       "record": 12605
+      },
+      "S": {
+       "pairs": 124669,
+       "record": 124669
+      },
+      "S directed": {
+       "edges": 133571,
+       "pair_relation_rows": 133571,
+       "verdict": "PASS"
+      }
+     },
+     "verdict": "PASS"
+    },
+    "G-R": {
+     "samples": {
+      "s": true,
+      "d": true,
+      "lab": true,
+      "grp": true,
+      "read groups": true,
+      "operators": true
+     },
+     "rank_agreement": 1.0,
+     "mrr_diff": 0.0,
+     "verdict": "PASS"
+    },
+    "G-0 hb": {
+     "max_score_diff": 4.76837158203125e-07,
+     "mrr_diff": 5.384537020425295e-08,
+     "verdict": "PASS"
+    },
+    "G-S hb training": "PASS"
+   },
+   "sha256": "a93e2890228d1e3cef948ddcf24d33e8b6e45f0ff5f3889ecf32cfdcb981cdf1"
+  }
+ },
+ "utc": "2026-11-24T10:39:26Z",
+ "script_sha256": "310662701f29f608de0dc4cade6588491110ec1d9bb751289aebf7ed7d4d58b5",
+ "zsem2h_sha256": "2588ab5f284d6f1dace715f9ccec1f0cbca664945619fba62ebcca0f05006a3f"
+}
