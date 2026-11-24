@@ -758,3 +758,162 @@ hub line. The user closed it. The per-query gate is not declared, and no hub ste
 
 **What comes next:** R2, declared before any R2 number (7.9): the traversal of section 3 with the rotation, on all
 seven datasets.
+
+## 9. R2a declared: the traversal in the first stage, parameter-free (24 November 2026, 18:37 IST, 13:07 UTC)
+
+**What had been read when it was written:**
+- R1 (section 7): the rotation LEARNS on e3v on all seven datasets, so 7.9's condition for R2 (HOLDS or PARTIAL on
+  e3v) is met. The frozen arm LEARNS on the five rows read; its HotpotQA and 2Wiki rows are still training. R1's
+  report has not run, and R1 is not filed.
+- 8.15: the hub line is closed, so R2 uses R1's rotation as R1 trained it.
+- SEM1's first-stage machinery (base, control, recall and bootstrap), which R2 reuses unchanged.
+- Code-path smokes only, no read-carve number: the self-test (9.7), and e3v on MultiHop-RAG's dev split (its
+  selection carve), with both lambdas fixed at 0.5. 9.9 gives what the smokes changed and what they showed.
+
+**The question.** Does following R1's operators from the first stage's seeds add documents the first stage misses?
+And is the gain the operators' and not the cosine neighbourhood's? Nothing is learned in R2a: alpha has no weights,
+and lambda is picked from a grid of five on the selection carves.
+
+### 9.1 Vectors, operators, questions and the first stage
+
+- **Arms.** e3v decides, on all seven datasets (the universal rule). The frozen arm is read beside on the four small
+  sets (MultiHop-RAG, SQuAD, MuSiQue and MetaQA), as R1q's was; it decides nothing.
+- **Operators.** R1's saved rotation for each dataset and arm (outputs/sem2/r1/<ds>/<arm>.npz), loaded as trained:
+  no refit, and no weight fit on questions. Gate G-R (9.7) checks that the loaded model is R1's.
+  - Labels as R1 planned them: R labels with an operator, followed in either direction; S labels in their stored
+    direction, rare S relations through R1's pooled operator. R labels that R1 gave no operator are not followed.
+- **Questions and golds:**
+  - Selection: s1sel (SEM1's selection carve) on SQuAD, MuSiQue, MetaQA, HotpotQA and 2Wiki; MultiHop-RAG's dev split
+    (224 questions).
+  - Read: s1eval (metaqa 9,785, squad 11,873, musique 2,417, hotpotqa 7,405, 2wiki 12,576, webqsp 1,503) and
+    MultiHop-RAG's test split (1,130).
+  - WebQSP has no selection carve. It is read only; its lambdas come from the other six.
+- **First stage, as SEM1:** v = zenc's exact dense top 1,000 on the arm's vectors; SPLADE's top 1,000; base =
+  RRF(v, SPLADE) with C = 60. MultiHop-RAG has 609 nodes, so its lists end early.
+
+### 9.2 Seeds
+
+The top 5 of v, then the top 5 of SPLADE not already among them: 5 to 10 seeds per question.
+
+### 9.3 The traversal
+
+- x = P v / |P v| for every node (R1's map, then unit length). m_r(s) = T_r x_s at unit length: seed s moved by
+  operator r, as R1's query moves a source.
+- **Attention, no weights.** ρ = x_q − (x_q · x_s) x_s is the question's residual beyond the seed.
+  - α_r(q, s) = softmax over r of (ρ̂ · m_r(s)) / τ, with τ = 0.05, R1's temperature. If |ρ| < 1e-6, α is uniform.
+  - The operator chosen is the edge that leads where the question points beyond the seed (9.9 gives why not
+    x_q · m_r(s)).
+  - mix(s) = Σ_r α_r m_r(s).
+- **Hop 1:** score(d) = max over seeds of mix(s) · x_d, plus λ x_q · x_d, over every node except the question's
+  seeds.
+  - Exact: blocked dense products in the raw space ((mix P) · v_d / |P v_d|). No approximate index.
+  - Ties go to the lower node id.
+- **The list (1,000 long):** the seeds (hop 0, in 9.2's order), then the hop-1 nodes by score.
+- **trav0:** the same traversal with every operator at its start: score(d) = max over seeds of v̂_s · v̂_d + λ q̂ · v̂_d,
+  with the same seeds first. It is the cosine neighbourhood of the seeds. T2 credits the operators only beyond it.
+- **oracle (a ceiling, not a method: it reads golds):**
+  - For a seed with a record edge to one of its question's golds (an R label in either direction, an S label from the
+    seed as stored), α is one-hot on the operator, among those edges' labels, whose m_r(s) scores the gold highest.
+    Ties go to the lower operator id.
+  - Other seeds keep their α. λ is trav's.
+  - It bounds what a better choice of operator could give with these operators and seeds.
+
+### 9.4 Selection of λ
+
+- Grid: {0, 0.25, 0.5, 1, 2}, for trav and trav0 separately.
+- For each read dataset: the λ with the highest mean selection R@5 of RRF(v, list, SPLADE) over the other selection
+  datasets of its arm. Leave-one-dataset-out, each dataset counting once. Ties go to the smaller λ.
+- e3v's selection datasets are the six with a selection carve, so WebQSP's λ uses all six. Frozen's are the four
+  small sets.
+
+### 9.5 The read
+
+- Per dataset and arm, on the read carve: fused = RRF(v, list, SPLADE), C = 60, top 20, for trav, trav0 and oracle.
+- Recall = min(hits, golds) / golds per question, averaged. **R@5 of fused is primary.** R@20 is beside.
+- Beside, also:
+  - each list alone at R@5 and R@1,000 against v alone;
+  - hop 1 alone at R@20;
+  - SEM1's control, RRF(v, v, SPLADE);
+  - oracle reach: the share of questions with at least one seed that has a record edge to a gold;
+  - the mean α per operator, and the mean number of seeds.
+
+### 9.6 The calls
+
+- **T1 = trav − base** and **T2 = trav − trav0**, both on fused R@5.
+  - Paired bootstrap over questions: 2,000 resamples, seed 0, 95% interval. ABOVE, LEVEL or BELOW.
+- **ADDS** on a dataset = T1 ABOVE and T2 ABOVE.
+  - T1 alone cannot credit the operators. Every list starts with the seeds, which repeats v's and SPLADE's tops in
+    the fusion; SEM1's control shows the size of that.
+  - trav0 has the same seeds first, so T2 isolates the operators.
+- **The e3v verdict:**
+  - HOLDS if ADDS on all seven;
+  - PARTIAL if ADDS on at least one and T1 BELOW on none;
+  - FAILS otherwise.
+  - INCOMPLETE while a row is missing. That label counts missing rows only.
+- **The ceiling:** C = oracle − trav on fused R@5. **ROOM** on a dataset if C ≥ 1 point.
+- **Beside, deciding nothing:** trav − control, trav0 − base, T1 and T2 at R@20, and trav alone − v alone at R@1,000.
+- **Expectations, written before any number** (a failed one is reported, not explained away):
+  - X12: T1 ABOVE on MuSiQue. Its golds are chained paragraphs, and a later hop's gold is one edge from an earlier
+    one.
+  - X13: T1 not ABOVE on SQuAD. Its answers sit in one paragraph, so there is little to traverse to.
+  - X14: ROOM on MetaQA. Its typed relations are many, and a parameter-free α can pick the wrong one.
+
+### 9.7 Gates (a failure stops that row)
+
+- **G-E:** as 7.8.
+- **G-R:** R1's test sample, read groups and operators are reproduced. The loaded rotation's test ranks agree with
+  R1's saved ranks on at least 99.9% of test edges, with MRR within 0.01.
+- **G2 (SEM1's):** base is SEM1's list.
+  - The six: hits equal to E0's h_rrf5 on at least 99.5% of questions, and R@5 within 0.0005 of E0's.
+  - MultiHop-RAG: the top-5 sets equal MHR1's first-stage lists (outputs/mhr1/first/lists.npz) on at least 99.5%.
+- **G-X:** no seed is among its own question's hop-1 nodes.
+- **Self-test** (a toy with planted tails: n 2,000, D 32, D' 40, 120 questions, two R labels and two directed S
+  labels):
+  - G-T: each list equals a float64 full sort on at least 99% of questions.
+  - G-X, and G-H0: each list is its seeds, then its hop-1 nodes.
+  - G-0: with every operator at its start (D' = D, angles 0, plane weights 1), trav's top 20 equals trav0's on at
+    least 99% of questions.
+  - Planted: the tail in the top 10 for trav at λ 0 on at least 80% of questions, above trav0, and oracle at or above
+    trav.
+
+### 9.8 What follows (fixed now)
+
+- **ROOM on any e3v dataset:** R2b, the learned α of section 3 (the small net on the question against each moved
+  seed, the label name's vector and the seed's degree per label).
+  - Cross-fitted leave-one-dataset-out, on the training carves' golds, stopped by P5b2's stop.
+  - Declared before any fit, and read against R2a's trav. It must close part of C.
+- **No ROOM anywhere:** α is not learned, and nothing is fit.
+- **HOLDS or PARTIAL:** R3's transfer reads (section 4) are declared on the form that carries (R2a's, or R2b's if it
+  is declared and carries).
+- **FAILS with no ROOM:** the traversal closes in the first stage, and SEM2 stands on R1 (link recovery).
+- No call here touches the journal's layout or pools.
+
+### 9.9 Changes made before this declaration (code-path smokes, not reads)
+
+1. **Attention.** The first version scored x_q · m_r(s). The seed comes from the question's own top list, so x_q is
+   close to x_s, and that score favours the operator that moves the seed least. It was replaced by the residual
+   (9.3) on reading the code, before any run.
+2. **The seeds head the list.** The first version's list held the hop-1 nodes only. In the MultiHop-RAG dev smoke
+   (e3v, λ 0.5), the fused R@5 fell from 0.640 (base) to 0.10 (trav0: 0.08).
+   - Left out of the list, the seeds lost the third list's vote in the fusion, which every other node could get.
+     98.5% of the fused top 5 were hop-1 nodes.
+   - The seeds now head every list (9.3), trav0 and oracle included.
+   - With that, the same smoke gave: base 0.640, control 0.649, trav 0.650, trav0 0.650.
+   - MultiHop-RAG has one operator (R.name_comention), so its α is always 1 and its oracle equals trav.
+   - These are selection-carve numbers on one dataset at one λ. The selection rows compute them again under 9.4.
+3. **The self-test's toy:** the angles were widened (±U(2, 3)) and the question's weight on the planted residual set
+   to 0.3, so that the planted tail is not itself a seed. This changes the test only.
+
+### 9.10 Code, rows and outputs
+
+- **Code:** outputs/mp_unified/zsem2t.py (new). It imports zsem2, zsem2h, zsem1, zap1, zul1, zmhr, zenc, zenc1 and
+  zenc3v, and edits none of them. Commands: `selftest`, `sel --ds D --arm A`, `read --ds D --arm A` and `report`.
+- **Rows:** host CPU, 8 threads, ahead of the remaining hub rows (8.15):
+  - sem2t-selftest;
+  - sem2t-sel-<ds>-e3v on the six selection datasets, and sem2t-sel-<ds>-frozen on the four small;
+  - sem2t-read-<ds>-<arm>, each after all of its arm's selection rows;
+  - sem2t-report.
+  - The MultiHop-RAG rows carry MHR1's first-stage lists and SPLADE cache as inputs; neither is on the host.
+  - Estimates: minutes per selection row, and 1-3 h for each of the HotpotQA and 2Wiki reads.
+- **Outputs:** outputs/sem2/r2/sel/<arm>/<ds>.json, read/<arm>/<ds>.json and .npz, report.json and report.md. The json
+  and md files are committed; the npz files are not.
