@@ -651,3 +651,80 @@ block size. So the raw ranks are rank_read's own arithmetic in the same process,
   - MetaQA's BELOW already makes 8.10's adjustment NOT_CARRIED, so they cannot change the verdict.
   - zsem2hc.rank_beta has the same block size, so its exact G-B would likely stop them on the large graphs too.
   - sem2hc-report and sem2hc-report-all run over the eight rows read, which list the rest as missing.
+
+### 8.14 The query-bank normalization (R1q; 24 November 2026, 17:51 IST, 12:21 UTC), before any R1q number
+
+**What had been read when it was written:**
+- R1k (8.11), e3v, C in MRR_T points: MultiHop-RAG +4.93, SQuAD +4.86, MuSiQue +2.16 and HotpotQA +1.13 (ROOM);
+  MetaQA +0.90 (no ROOM). WebQSP and 2Wiki had not been read. X9 fails.
+- 8.12's post-hoc split on four datasets (it decides nothing). C on unseen targets (test or dev nodes) against seen
+  targets (train nodes): MultiHop-RAG +8.52 vs +4.03, SQuAD +11.32 vs +3.21, MuSiQue +5.41 vs +1.33, MetaQA +1.67 vs
+  +0.71.
+- R1c's report (bd2f51c): NOT_CARRIED.
+
+**Why.** 8.11 asks for the next hub step to be declared before any fit, since some datasets have ROOM. Two things in the
+reads point to the same step:
+- **The room is two to four times larger on unseen targets.** No training edge touches a test or dev node, so their
+  train degree is 0 by construction. A score built on train degree cannot tell a new node from a rare one, and R1c's dev
+  choices found no strength that helps.
+- **On MetaQA's hub relations, the nodes above the right answer are more popular answers of the same kind** (has_genre:
+  +11.7 at the ceiling). A penalty on train degree pushes every genre below the nodes that are no genre at all (R1h:
+  -23 on has_genre).
+
+So popularity is measured in the vector space instead: how strongly the operator sends training queries towards a node.
+Every node has this number, seen or new. Among nodes of one kind, it is largest for the one most queries land near. With
+the full strength this is the inverted softmax (Smith et al., 2017, for orthogonal maps), which query-bank normalization
+(Bogolin et al., 2022) uses against hubs in retrieval.
+
+**The method (no fit):**
+- R1's saved rotation, as it is.
+- **The bank:** for each read group g, up to 4,096 training edges (both ends train nodes), drawn by zsem2.take with
+  seed 1 (R1's samples use seed 0). Each bank edge gives the query q_b of its source under its own label's operator.
+- **The semantic degree:** A_g(y) = tau log sum_b exp(q_b . x_y / tau), over g's bank queries whose source is not y,
+  with tau = 0.05 (R1's). A node that no bank query can count takes the group's smallest value.
+- **The score:** q . x_y - alpha_g A_g(y), with alpha_g in {0, 0.25, 0.5, 0.75, 1}, chosen per read group as in 8.10
+  (dev MRR_T; a larger alpha must beat every smaller one strictly). alpha = 0 is R1. alpha = 1 is the inverted softmax
+  at R1's temperature.
+- The test read uses each group's alpha_g.
+- **The cosine** gets its own bank and alphas, beside, on MultiHop-RAG, SQuAD, MuSiQue and MetaQA only. On the three
+  large graphs its bank pass would double the cost, and it decides nothing.
+
+**The call (per dataset; e3v decides, frozen is read beside on the four small datasets):**
+- **H5:** the normalized rotation against R1's rotation raw, on MRR_T, with 8.2's paired bootstrap.
+- **Beside** (declared here, so none of these is post hoc):
+  - H5 on pooled MRR;
+  - H5 on seen targets and on unseen targets, split as 8.12;
+  - the normalized rotation against the cosine, and the normalized cosine against the cosine;
+  - per group, the semantic degree's mean at seen and at unseen test targets.
+
+**Carry (as 8.9).** The normalization is carried into R2 if, on e3v and MRR_T, H5 is ABOVE on MetaQA and BELOW on none of
+the seven datasets.
+- If it is carried, R2 uses it, with a bank drawn from R2's own training edges and the alphas chosen again on R2's dev
+  sample (same grid, same tie rule).
+- If it is not, the one hub step left is the per-query gate that 8.11 named, which needs a fit. It is declared from
+  R1q's per-group reads before any fit, or the hub line closes and R2 works on the operators.
+
+**Gates:**
+- **G-R** as in 8.10.
+- **G-S:** every bank edge has both ends on train nodes.
+- **G-B:** at alpha = 0, the one-pass ranks equal zsem2.rank_read's exactly, on dev and on test, for the rotation. They
+  use rank_read's block size (8.13). The cosine is gated as in 8.10.
+- **G-C:** on the self-test, ranks with a different alpha per query equal a full sort, for the cosine and for a trained
+  rotation.
+- **G-L:** on the self-test, the blocked semantic degree equals a float64 sum within 1e-4.
+
+**Expectations, written before any number:**
+- X10: H5 is ABOVE on SQuAD and on MultiHop-RAG (e3v), where seen targets alone have at least 3 points at the ceiling.
+- X11: on SQuAD, H5 is larger on unseen targets than on seen targets.
+
+**Code, rows and outputs:**
+- **Code:** outputs/mp_unified/zsem2hq.py (new). It imports zsem2hc (for its dev choice over the same grid), zsem2h and
+  zsem2, and edits none of them. Commands: `selftest`, `r1q --ds D --arm A` and `report`. Its self-test passed on the
+  laptop before this was committed: G-R, G-S, G-B, G-C and G-L on the toy (largest bank difference 2.4e-7).
+- **Rows:**
+  - sem2hq-selftest;
+  - sem2hq-r1q-multihoprag-e3v first: it is small and checks the real path;
+  - then MetaQA, SQuAD and MuSiQue e3v, and the four small frozen rows;
+  - then HotpotQA, WebQSP and 2Wiki e3v, each after its R1k row;
+  - sem2hq-report after the seven e3v rows, and sem2hq-report-all after all eleven.
+- **Outputs:** outputs/sem2/r1q/. The json and md files are committed; the npz files are not.
