@@ -37,7 +37,9 @@ work (section 7). It decides nothing about any model.
 ## 2. What is fixed (nothing below is chosen after a number)
 
 - **Encoder and storage.** e3v is the encoder (D101); the frozen encoder stays as a comparison only. Document vectors are
-  read as int8 (E5's scheme, FREE on six datasets); windows are not read at all. The first stage is the e3v dense list
+  read as the host holds them (e3v's shards, fp16): no second copy is made for PL1. The int8 form (E5, FREE on six datasets)
+  is the form to keep after the pools are final; converting the shards is on section 7's space list, each step on the
+  user's OK. Windows are not read at all. The first stage is the e3v dense list
   (ENC's E0 lists) with SPLADE unchanged, 1,000 deep, as the pool chain already reads it. No second encoder, no new
   encode, no new storage form.
 - **The graph.** The layout UL2's universal call carries, per dataset and version: B0 = S | W2_S | F0T | K_e3v plus the
@@ -183,7 +185,14 @@ fixed end, decided now:
 - **Rows** (host, prefix `pl1-`), inserted in the feed after the UL2 chain's reports: materialize and the first-stage gate
   per dataset, the identity check per dataset, then the builds in a size order that keeps the memory cap (the old chain's
   lane sizes: zpko `LANE_GIB`, `SHARD_Q`), then the grades, then `pl1-report`.
-- **Outputs:** `outputs/pl1/<dataset>/` and `outputs/pl1/report.{json,md}`. Arrays stay uncommitted.
+- **Outputs** (`<d>` = the dataset, `<v>` = RK or SRK; MultiHop-RAG is RK). Arrays stay uncommitted; the json heads are filed.
+  - `outputs/pl1/<d>/<v>/layout.{npz,json}`: S1's pair tables and gate G-L (`zpl1m.py`, committed).
+  - `outputs/pl1/<d>/<v>/types/<d>.{npz,json}`: S2b's EM and score types.
+  - `outputs/pl1/<d>/<v>/pools/parts/<d>__s1eval__<i>of<k>.{npz,json}` and `.kt.npy`: zpko's own part format.
+  - `outputs/pl1/<d>/<v>/places/<d>__s1eval__<i>of<k>.npz`: the reach read, one row per gold. Per question: `ids`, `keep`
+    (the cut), `kt_len` (|kt_cos|), `g_ptr`. Per gold: `g_node`, `pos` (0 in B, p >= 1 the p-th node of kt_cos, -1 in no
+    order), `in_I` (in the incumbent pool), `one_link` (one link from a B node).
+  - `outputs/pl1/<d>/<v>/grade.json` and `outputs/pl1/report.{json,md}`: S5 and S6.
 - **Self-test on real-shape data** before any host row (a toy test passed once while eight real fits failed).
 
 ## 9. Disclosed
@@ -202,3 +211,6 @@ fixed end, decided now:
   pairs' order is a rule with no constant); that the EM and score types are refitted per (dataset, version) (step S2b); that
   E0's e3v lists exist for the s1eval rows only, so the build is the eval carves (fit and s1sel pools are the refit's);
   and that `pos = -1` means "in no order", not "no link path" (OUTSIDE, not NOPATH).
+- **Amendment 2c (25 Nov, before any number).** The first draft said the pools read the vectors as int8; the shards on the
+  host are fp16 and the pool code reads shards, so the pools read those and the int8 conversion is a space step after the
+  pools are final. The file names of every PL1 output are fixed in section 8.
