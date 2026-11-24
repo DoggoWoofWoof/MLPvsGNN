@@ -1,0 +1,114 @@
+{
+ "stage": "PL1 S0d",
+ "declared_in": "docs/PL1_MHR_S0.md",
+ "dataset": "multihoprag",
+ "version": "RK",
+ "pick": "own/kind_t/kt_cos:ada_f16_k0@0.85",
+ "pick_plan": {
+  "r": 0,
+  "o": 6,
+  "b": 83,
+  "kind": "ADA",
+  "prm": [
+   16,
+   0
+  ],
+  "tau": 0.85
+ },
+ "construction": {
+  "base_pool": "equal_rrf_budget_50",
+  "regime": "RETRIEVAL",
+  "setting": null
+ },
+ "construction_from": {
+  "file": "outputs/pl1/multihoprag/RK/s0/knee_e3v.json",
+  "sha256": "f5740306f6ab12eab4ef0f805e26044848bebda1e1e9470afa47891e19701a41"
+ },
+ "base_in_u2m_bases": true,
+ "cells": [
+  "rrf50+none",
+  "rrf50+FULL:h1_c25",
+  "rrf50+FULL:h2_c25",
+  "rrf50+FULL:h3_c25_v2000",
+  "rrf200+none",
+  "rrf200+FULL:h1_c25",
+  "rrf200+FULL:h2_c25",
+  "rrf200+FULL:h3_c25_v2000",
+  "dense200+none",
+  "dense200+FULL:h1_c25",
+  "dense200+FULL:h2_c25",
+  "dense200+FULL:h3_c25_v2000"
+ ],
+ "own_cell": 0,
+ "cell_base": 0,
+ "graph_detail": {
+  "graph": "MultiHop-RAG B0 (W2_S typed store, F0T ner store, K_e3v knn store after the S > R > K dedup)",
+  "layout": "outputs/pl1/multihoprag/RK/layout.npz",
+  "layout_npz_sha256": "521512f421f633acd1fec448db152c6e26598f04c31f253e8bf54e3a428f16d3"
+ },
+ "walk": "RWe@0.5 x LW@0.5",
+ "carried": {
+  "alpha": 0.5,
+  "eps": 1e-07,
+  "nmax": 7000,
+  "G": 0,
+  "pick": "own/kind_t/kt_cos:ada_f16_k300@0.85|G0|RWe@0.5|LW@0.5",
+  "beta": 0.5,
+  "walk": "RWe@0.5 x LW@0.5"
+ },
+ "types": {
+  "weights": "off (2g)",
+  "k": 64,
+  "entries": 4,
+  "em_entries_non_null": 0,
+  "score_entries_non_null": 0,
+  "mu_sha256": "b9c048de34d844a2381155656d249036a85a52b60cb9fd06bf1600e44d7aa3ae",
+  "cls_sha256": "e8151b2c92fd188cec72b573a289fefc9d06d3116ba4eb2c8a8719ebf15c1270"
+ },
+ "gate_GR": {
+  "against": "the U2s records of the four passage datasets",
+  "per_dataset": {
+   "musique": {
+    "alpha": true,
+    "eps": true,
+    "nmax": true,
+    "G": true,
+    "pick": true,
+    "beta": true,
+    "walk": true
+   },
+   "squad": {
+    "alpha": true,
+    "eps": true,
+    "nmax": true,
+    "G": true,
+    "pick": true,
+    "beta": true,
+    "walk": true
+   },
+   "hotpotqa": {
+    "alpha": true,
+    "eps": true,
+    "nmax": true,
+    "G": true,
+    "pick": true,
+    "beta": true,
+    "walk": true
+   },
+   "2wiki": {
+    "alpha": true,
+    "eps": true,
+    "nmax": true,
+    "G": true,
+    "pick": true,
+    "beta": true,
+    "walk": true
+   }
+  },
+  "verdict": "PASS"
+ },
+ "no_u2s_arrays": "U2s's stats stage is not re-run: the pick is carried (U2s's verdict, pick O) and the pool rule needs the own cell only",
+ "utc": "2026-11-24T22:27:22Z",
+ "seconds": 0.4,
+ "script_sha256": "38a5e39cfd6411141961c2bd49d136272cf312cd54a790794e34caf1a8f9ec38"
+}
