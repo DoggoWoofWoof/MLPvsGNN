@@ -1,0 +1,98 @@
+{
+ "stage": "PL1 S0a",
+ "declared_in": "docs/PL1_MHR_S0.md",
+ "dataset": "multihoprag",
+ "nodes": 609,
+ "questions": 2255,
+ "by_split": {
+  "train": 901,
+  "dev": 224,
+  "test": 1130
+ },
+ "depth": 609,
+ "lists": "complete rankings of the 609 nodes (no padding)",
+ "files": {
+  "first_e3v": {
+   "file": "outputs/pl1/multihoprag/RK/s0/first_e3v.npz",
+   "sha256": "ffa67f41b3d51f1fcdfdad186f965795ae61b192f7ca325a86b550305edf5e4f"
+  },
+  "gold": {
+   "file": "outputs/pl1/multihoprag/RK/s0/gold.npz",
+   "sha256": "6705327f4d2b29df447619c474fe302bd70a5c98b7d83de03b582aae2f0dc7d3"
+  }
+ },
+ "sources": {
+  "e3v_docs_manifest_sha256": "29722959d04395f0b9dc396bc549e192f090d184d42f4318b20e0ecfdff6d6c3",
+  "e3v_queries_manifest_sha256": "7929511c8adedf3b5af18241984b2164f633360c1a92561b229211b10be55de3",
+  "splade_top1000_sha256": "11ba765983a8c667e69dcc1d907ec5a4899b4768936231f0b31d8968e2170945",
+  "frozen_top1000_sha256": "b683a4130f6964c6491276333944d3a8c35d3e0298b60ff261de1f396c281dea",
+  "mhr1_first_json_sha256": "0265d2f576bce8913c32048d8f09e75874c05ca768d556e4e785df7fef2b98fb",
+  "mhr1_lists_sha256": "363a8c90b94fa1696d620f5ce1a55dc616f1e6277b770b8e7028320fc7a8af48",
+  "dataset_json_sha256": "0fff110d09c4c2447ba9d5304682a8c982d53bb4786e020d813d0cc2660467cc"
+ },
+ "gate_GE": {
+  "e3v_top20_equal": true,
+  "splade_top20_equal": true,
+  "frozen_top20_equal": true,
+  "gold_flat_equal": true,
+  "gold_off_equal": true,
+  "measures": {
+   "e3v": {
+    "recomputed": {
+     "d2": 41.8,
+     "d4": 58.9,
+     "d5": 64.29,
+     "d10": 79.41,
+     "d20": 92.14
+    },
+    "filed": {
+     "d2": 41.8,
+     "d4": 58.9,
+     "d5": 64.29,
+     "d10": 79.41,
+     "d20": 92.14
+    },
+    "equal": true
+   },
+   "splade": {
+    "recomputed": {
+     "d2": 36.68,
+     "d4": 52.1,
+     "d5": 57.46,
+     "d10": 71.19,
+     "d20": 83.92
+    },
+    "filed": {
+     "d2": 36.68,
+     "d4": 52.1,
+     "d5": 57.46,
+     "d10": 71.19,
+     "d20": 83.92
+    },
+    "equal": true
+   },
+   "frozen": {
+    "recomputed": {
+     "d2": 42.41,
+     "d4": 61.07,
+     "d5": 66.91,
+     "d10": 81.59,
+     "d20": 93.14
+    },
+    "filed": {
+     "d2": 42.41,
+     "d4": 61.07,
+     "d5": 66.91,
+     "d10": 81.59,
+     "d20": 93.14
+    },
+    "equal": true
+   }
+  },
+  "verdict": "PASS"
+ },
+ "seconds": 2.4,
+ "utc": "2026-11-24T22:23:56Z",
+ "threads": 8,
+ "script_sha256": "38a5e39cfd6411141961c2bd49d136272cf312cd54a790794e34caf1a8f9ec38"
+}
