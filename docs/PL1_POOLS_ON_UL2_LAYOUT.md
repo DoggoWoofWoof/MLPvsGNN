@@ -12,6 +12,8 @@ where they are and are the comparison.
 - 25 Nov, second (to the question whether to override the 11 Nov rule): "yeah do it we can reclaim space also after it
   and the plans arent dataset specific all the datasets can be compared with oracle and reach diagnosis and can be
   improved do for everything, link improvement with precision is all we need".
+- 25 Nov, third (on the closing rule): "i dont want to freeze pools for the sake of it, make sure we freeze when we know
+  it is the best for that specific arm etc". Section 7 follows it (amendment 2d).
 - **Amendment A6** of docs/CANONICAL_LINK_AND_POOL_LAYOUT.md (a9fb5f2) records the ruling: A2's pool standard is
   superseded for this one stage, and only once the universal call of docs/UL2_LAYOUT_ON_E3V.md (sections 12.6 and 13) is
   filed. Earlier rulings that bind: universal rules ("we need to have universal rules": every rule on all seven
@@ -31,8 +33,8 @@ where they are and are the comparison.
 | MultiHop-RAG | has no pick-O pools | builds them with the same rule (section 5) |
 | the refit | waits on the pools (UL2 section 9) | PL1's pools are the refit's pools |
 
-**What PL1 decides:** whether the new pools replace the pools of record as the standard, and the end of the link and pool
-work (section 7). It decides nothing about any model.
+**What PL1 decides:** whether the new pools replace the pools of record as the standard, and, arm by arm, when the link and
+pool work for that arm is finished (section 7). It decides nothing about any model.
 
 ## 2. What is fixed (nothing below is chosen after a number)
 
@@ -157,24 +159,42 @@ first stage at equal rows). The call itself is ONE call over all of them (sectio
   fixed default is the first clause; the second only keeps a dataset's gain from being judged as its cost.)
 - **Where it fails** the diagnosis names why (M3, M4), and section 7 applies.
 
-## 7. The closing rule: no reopening
+## 7. The closing rule: an arm is frozen when it is known best, not before
 
-The user: "finalize pools step by step until we are completely finished and dont need to reopen it". So the stage has a
-fixed end, decided now:
+The user, 25 Nov: "finalize pools step by step until we are completely finished and dont need to reopen it", and then: "i
+dont want to freeze pools for the sake of it, make sure we freeze when we know it is the best for that specific arm etc".
+So the stage ends arm by arm, on evidence, and has no cap on rounds. (The first draft of this section capped the work at one
+improvement round and froze "whatever the numbers"; that was my default and the user's word replaces it.)
 
-1. **PL1's report** files M1 to M4 and the call for all seven datasets.
-2. **At most ONE improvement round (PL2).** It runs only if the call is NOT_ADOPTED somewhere, or a dataset's OUTSIDE
-   share is above 5% of its golds and M4 names a link form already declared in UL2 (sections 6 and 7), AP or MHB that
-   would reach them at precision above the base rate (POINTS). Any form must pass UL2's universal rule (ABOVE somewhere,
-   BELOW nowhere, one price bound, carried everywhere or nowhere). No hub step (UL2 8.15). PL2 is declared as its own page
-   before it runs.
-3. **After PL2, or at once if it is not needed, the pools are frozen** whatever the numbers: the layout, the pools and the
-   residual (every OUTSIDE and BEYOND share, named by label) are filed as the standard, and the refit reads them. The link
-   and pool work is then closed. A later reopening needs the user's explicit word.
-4. **Space.** Only after the closing record is filed: a list of what can be reclaimed (the other encoders' vectors, the
-   frozen-pool intermediates the new pools replace, arm worlds nothing reads) is written for the user, each delete on the
-   user's OK, after outputs/host_cleanup/deleted_*.json is checked. The pools of record are kept until the user says
-   otherwise.
+**An arm** is one (dataset, version) pair: MuSiQue RK, SQuAD RK, MultiHop-RAG RK, MetaQA SRK, WebQSP SRK, and 2Wiki and
+HotpotQA each under RK and SRK. Nine arms.
+
+1. **PL1's report** files M1 to M4 and the call (section 6) for all nine arms, with each arm's residual: every OUTSIDE and
+   BEYOND share, by label (M3), and the M4 reading of the links that placed the KEPT golds.
+2. **Improvement rounds PL2, PL3, ... with no cap on their number.** A round is declared on its own page before it runs. It
+   names the arms whose residual it targets and the one change it tries: a link form or a pool change that M3 and M4 point
+   to (a form with POINTS at a residual label; for BEYOND, a pool change). It enters by UL2's universal rule (ABOVE somewhere,
+   BELOW nowhere, one price bound, carried everywhere or nowhere), so it is graded on all nine arms, never one. No hub step
+   (UL2 8.15). A change that is not already a declared form (UL2, AP, MHB) is a design step: it goes to the user first.
+3. **The freeze test, per arm.** An arm is FROZEN when its own record shows both:
+   - PL1's grade and the residual named by label are filed for it, and
+   - the candidate list for that arm is empty: every change M3 or M4 says could reach its residual has been graded under
+     the universal rule and was carried (the arm was rebuilt with it and graded again) or NOT_CARRIED, or the residual holds
+     no gold.
+   The freeze record names the evidence files. It is not a share threshold: the 5% OUTSIDE line of the first draft is
+   dropped as a trigger and stays in the report as a flag. An arm with a non-empty candidate list is OPEN, and the report
+   says which candidate is next.
+4. **Rules are universal, freezes are per arm.** A frozen arm never gets its own rule, form or constant (section 2a). When a
+   later round carries a form, it carries to every arm at once; the frozen arms are rebuilt with it and graded again (a
+   carried form is BELOW nowhere, so no arm is worse), and each arm's freeze record is filed again. So "frozen" means "no
+   declared candidate is left that could improve this arm", and it holds until a carried form changes the layout for all.
+5. **When the pools are final.** The refit reads the frozen arms. Its start is the user's call; the report says how many
+   arms are frozen and what keeps any other open. A frozen arm is reopened only on the user's explicit word, or by item 4's
+   rebuild.
+6. **Space.** A list of what can be reclaimed (the other encoders' vectors, the frozen-pool intermediates the new pools
+   replace, arm worlds nothing reads) is written for the user when the last arm is frozen, or sooner for items that only
+   frozen arms used. Each delete is on the user's OK, after outputs/host_cleanup/deleted_*.json is checked. The pools of
+   record are kept until the user says otherwise.
 
 ## 8. Code, rows, outputs
 
@@ -202,8 +222,9 @@ fixed end, decided now:
   filed; PL1's rows wait for it.
 - No UL2 graph materializer exists yet. The one artifact S1 reads is `outputs/ul2c/<d>/carried.npz` (written by `zul2c.write_carried`; it does not exist before the call is filed); S1 writes the walk stores. An earlier line of this page called that file `carved.npz`, which was my wrong name; corrected 25 Nov before any number.
 - The e3v E0 first-stage lists are on the host; whether every dataset's exists is checked by G-E.
-- The closing rule's "one improvement round" and the 5% OUTSIDE line are mine, a default the user can change before the
-  first PL1 number is read.
+- The closing rule's first draft (one improvement round, a 5% OUTSIDE line, frozen "whatever the numbers") was my default;
+  the user replaced it on 25 Nov (amendment 2d, section 7). What is still mine in the new rule: the unit of an arm
+  (dataset and version), and that an arm's freeze test is an empty candidate list and not a share threshold.
 - This page decides nothing about the models, the paper's numbers, the encoder or the hub line.
 - **Amendment 2b (25 Nov, after the survey, before any number).** Five things the first draft left out or got wrong, now
   declared: which links each walk family holds per version (2b; the SRK structural slot is S, with W2_S moved into the ner
@@ -214,3 +235,9 @@ fixed end, decided now:
 - **Amendment 2c (25 Nov, before any number).** The first draft said the pools read the vectors as int8; the shards on the
   host are fp16 and the pool code reads shards, so the pools read those and the int8 conversion is a space step after the
   pools are final. The file names of every PL1 output are fixed in section 8.
+- **Amendment 2d (25 Nov, before any number).** The user: "i dont want to freeze pools for the sake of it, make sure we
+  freeze when we know it is the best for that specific arm". Section 7 now freezes per arm (nine arms), by an empty
+  candidate list with its evidence named, with no cap on the number of improvement rounds. One tension is named, not
+  hidden: the rules stay universal (section 2a), so an improvement round is graded and carried on all arms at once, and a
+  frozen arm is rebuilt and graded again when one carries; a per-arm freeze is of the diagnosis, not a per-arm rule. The
+  one-call ADOPT_POOLS of section 6 is unchanged (it asks whether the new layout's pools replace the pools of record).
