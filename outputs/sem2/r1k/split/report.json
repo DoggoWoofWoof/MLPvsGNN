@@ -1,0 +1,283 @@
+{
+ "stage": "SEM2 R1k split report",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 8.12",
+ "rows": {
+  "metaqa_e3v": {
+   "all": {
+    "edges": 8418,
+    "targets": 5201,
+    "target_share_pct": 100.0,
+    "rotation": 10.23,
+    "ceiling": 11.13,
+    "C": {
+     "diff": 0.9,
+     "lo": 0.78,
+     "hi": 1.02,
+     "call": "ABOVE",
+     "groups": 5201
+    }
+   },
+   "seen target (train node)": {
+    "edges": 6846,
+    "targets": 4155,
+    "target_share_pct": 79.89,
+    "rotation": 10.77,
+    "ceiling": 11.47,
+    "C": {
+     "diff": 0.71,
+     "lo": 0.59,
+     "hi": 0.83,
+     "call": "ABOVE",
+     "groups": 4155
+    }
+   },
+   "unseen target (test or dev node)": {
+    "edges": 1572,
+    "targets": 1046,
+    "target_share_pct": 20.11,
+    "rotation": 8.09,
+    "ceiling": 9.75,
+    "C": {
+     "diff": 1.67,
+     "lo": 1.32,
+     "hi": 2.08,
+     "call": "ABOVE",
+     "groups": 1046
+    }
+   },
+   "seen, degree > 0": {
+    "edges": 5998,
+    "targets": 3321,
+    "target_share_pct": 63.85,
+    "rotation": 12.24,
+    "ceiling": 13.01,
+    "C": {
+     "diff": 0.77,
+     "lo": 0.64,
+     "hi": 0.91,
+     "call": "ABOVE",
+     "groups": 3321
+    }
+   },
+   "seen, degree 0": {
+    "edges": 848,
+    "targets": 834,
+    "target_share_pct": 16.04,
+    "rotation": 4.88,
+    "ceiling": 5.36,
+    "C": {
+     "diff": 0.48,
+     "lo": 0.24,
+     "hi": 0.76,
+     "call": "ABOVE",
+     "groups": 834
+    }
+   }
+  },
+  "multihoprag_e3v": {
+   "all": {
+    "edges": 1000,
+    "targets": 458,
+    "target_share_pct": 100.0,
+    "rotation": 23.43,
+    "ceiling": 28.35,
+    "C": {
+     "diff": 4.93,
+     "lo": 4.06,
+     "hi": 5.81,
+     "call": "ABOVE",
+     "groups": 458
+    }
+   },
+   "seen target (train node)": {
+    "edges": 804,
+    "targets": 367,
+    "target_share_pct": 80.13,
+    "rotation": 23.71,
+    "ceiling": 27.74,
+    "C": {
+     "diff": 4.03,
+     "lo": 3.17,
+     "hi": 5.05,
+     "call": "ABOVE",
+     "groups": 367
+    }
+   },
+   "unseen target (test or dev node)": {
+    "edges": 196,
+    "targets": 91,
+    "target_share_pct": 19.87,
+    "rotation": 22.3,
+    "ceiling": 30.82,
+    "C": {
+     "diff": 8.52,
+     "lo": 6.23,
+     "hi": 11.0,
+     "call": "ABOVE",
+     "groups": 91
+    }
+   },
+   "seen, degree > 0": {
+    "edges": 804,
+    "targets": 367,
+    "target_share_pct": 80.13,
+    "rotation": 23.71,
+    "ceiling": 27.74,
+    "C": {
+     "diff": 4.03,
+     "lo": 3.17,
+     "hi": 5.05,
+     "call": "ABOVE",
+     "groups": 367
+    }
+   },
+   "seen, degree 0": null
+  },
+  "musique_e3v": {
+   "all": {
+    "edges": 3000,
+    "targets": 2883,
+    "target_share_pct": 100.0,
+    "rotation": 12.1,
+    "ceiling": 14.27,
+    "C": {
+     "diff": 2.16,
+     "lo": 1.85,
+     "hi": 2.5,
+     "call": "ABOVE",
+     "groups": 2883
+    }
+   },
+   "seen target (train node)": {
+    "edges": 2390,
+    "targets": 2295,
+    "target_share_pct": 79.6,
+    "rotation": 12.86,
+    "ceiling": 14.19,
+    "C": {
+     "diff": 1.33,
+     "lo": 1.09,
+     "hi": 1.63,
+     "call": "ABOVE",
+     "groups": 2295
+    }
+   },
+   "unseen target (test or dev node)": {
+    "edges": 610,
+    "targets": 588,
+    "target_share_pct": 20.4,
+    "rotation": 9.16,
+    "ceiling": 14.57,
+    "C": {
+     "diff": 5.41,
+     "lo": 4.31,
+     "hi": 6.55,
+     "call": "ABOVE",
+     "groups": 588
+    }
+   },
+   "seen, degree > 0": {
+    "edges": 2216,
+    "targets": 2124,
+    "target_share_pct": 73.67,
+    "rotation": 13.15,
+    "ceiling": 14.35,
+    "C": {
+     "diff": 1.19,
+     "lo": 0.93,
+     "hi": 1.47,
+     "call": "ABOVE",
+     "groups": 2124
+    }
+   },
+   "seen, degree 0": {
+    "edges": 174,
+    "targets": 171,
+    "target_share_pct": 5.93,
+    "rotation": 9.16,
+    "ceiling": 12.23,
+    "C": {
+     "diff": 3.07,
+     "lo": 1.56,
+     "hi": 4.73,
+     "call": "ABOVE",
+     "groups": 171
+    }
+   }
+  },
+  "squad_e3v": {
+   "all": {
+    "edges": 2505,
+    "targets": 2201,
+    "target_share_pct": 100.0,
+    "rotation": 27.9,
+    "ceiling": 32.76,
+    "C": {
+     "diff": 4.86,
+     "lo": 4.33,
+     "hi": 5.43,
+     "call": "ABOVE",
+     "groups": 2201
+    }
+   },
+   "seen target (train node)": {
+    "edges": 2001,
+    "targets": 1753,
+    "target_share_pct": 79.65,
+    "rotation": 28.85,
+    "ceiling": 32.07,
+    "C": {
+     "diff": 3.21,
+     "lo": 2.73,
+     "hi": 3.73,
+     "call": "ABOVE",
+     "groups": 1753
+    }
+   },
+   "unseen target (test or dev node)": {
+    "edges": 504,
+    "targets": 448,
+    "target_share_pct": 20.35,
+    "rotation": 24.15,
+    "ceiling": 35.47,
+    "C": {
+     "diff": 11.32,
+     "lo": 9.52,
+     "hi": 13.2,
+     "call": "ABOVE",
+     "groups": 448
+    }
+   },
+   "seen, degree > 0": {
+    "edges": 1998,
+    "targets": 1750,
+    "target_share_pct": 79.51,
+    "rotation": 28.89,
+    "ceiling": 32.1,
+    "C": {
+     "diff": 3.21,
+     "lo": 2.74,
+     "hi": 3.72,
+     "call": "ABOVE",
+     "groups": 1750
+    }
+   },
+   "seen, degree 0": {
+    "edges": 3,
+    "targets": 3,
+    "target_share_pct": 0.14,
+    "rotation": 6.8,
+    "ceiling": 11.52,
+    "C": {
+     "diff": 4.72,
+     "lo": 0.03,
+     "hi": 13.33,
+     "call": "ABOVE",
+     "groups": 3
+    }
+   }
+  }
+ },
+ "utc": "2026-11-24T15:18:14Z",
+ "script_sha256": "2ca59cf4dcd4fe6502139b50c9eaf2952a117edbe615bb61e0245f7494b09d44"
+}

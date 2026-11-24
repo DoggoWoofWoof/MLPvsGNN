@@ -1,0 +1,376 @@
+{
+ "stage": "SEM2 R1q",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 8.14",
+ "dataset": "2wiki",
+ "arm": "e3v",
+ "dim": 1152,
+ "config": {
+  "extra": 256,
+  "tau": 0.05,
+  "batch": 1024,
+  "neg": 4096,
+  "lr": 0.001,
+  "epoch": 200000,
+  "max_epochs": 10,
+  "patience": 2,
+  "min_op": 500,
+  "top_s": 12,
+  "n_test": 1000,
+  "n_dev": 500
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 71483746,
+     "record": 71483746
+    },
+    "CN_all": {
+     "pairs": 38242751,
+     "record": 38242751
+    },
+    "F0T": {
+     "pairs": 39863302,
+     "record": 39863302
+    },
+    "S": {
+     "pairs": 28208857,
+     "record": 28208857
+    },
+    "S directed": {
+     "edges": 28963600,
+     "pair_relation_rows": 28208857,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-S bank": "PASS",
+  "G-B": {
+   "rotation": {
+    "dev": true,
+    "test": true
+   },
+   "verdict": "PASS"
+  }
+ },
+ "nodes": 5989847,
+ "operators": [
+  "R.mention",
+  "R.name_comention",
+  "R.title_comention",
+  "S.hyperlink"
+ ],
+ "read_groups": [
+  "R.mention",
+  "R.name_comention",
+  "R.title_comention",
+  "S.hyperlink"
+ ],
+ "alphas_grid": [
+  0.0,
+  0.25,
+  0.5,
+  0.75,
+  1.0
+ ],
+ "bank": {
+  "per_group_max": 4096,
+  "seed": 1,
+  "edges": 16384,
+  "per_group": {
+   "R.mention": 4096,
+   "R.name_comention": 4096,
+   "R.title_comention": 4096,
+   "S.hyperlink": 4096
+  },
+  "nodes_with_no_bank_query": {
+   "rotation": [
+    0,
+    0,
+    0,
+    0
+   ]
+  }
+ },
+ "alphas": {
+  "rotation": {
+   "R.mention": {
+    "dev_mrr_t": {
+     "0.0": 5.12,
+     "0.25": 4.6,
+     "0.5": 4.42,
+     "0.75": 4.23,
+     "1.0": 3.68
+    },
+    "dev_edges": 500,
+    "alpha": 0.0
+   },
+   "R.name_comention": {
+    "dev_mrr_t": {
+     "0.0": 7.93,
+     "0.25": 7.84,
+     "0.5": 7.79,
+     "0.75": 7.58,
+     "1.0": 7.2
+    },
+    "dev_edges": 500,
+    "alpha": 0.0
+   },
+   "R.title_comention": {
+    "dev_mrr_t": {
+     "0.0": 11.1,
+     "0.25": 10.71,
+     "0.5": 10.8,
+     "0.75": 10.59,
+     "1.0": 9.73
+    },
+    "dev_edges": 500,
+    "alpha": 0.0
+   },
+   "S.hyperlink": {
+    "dev_mrr_t": {
+     "0.0": 13.47,
+     "0.25": 11.49,
+     "0.5": 9.69,
+     "0.75": 8.57,
+     "1.0": 7.74
+    },
+    "dev_edges": 500,
+    "alpha": 0.0
+   }
+  }
+ },
+ "semantic_degree": {
+  "rotation": {
+   "R.mention": {
+    "all_nodes_q25_q50_q75": [
+     0.6547,
+     0.6957,
+     0.7338
+    ],
+    "targets_seen_mean": 0.7425,
+    "targets_unseen_mean": 0.7344
+   },
+   "R.name_comention": {
+    "all_nodes_q25_q50_q75": [
+     0.6657,
+     0.6988,
+     0.7336
+    ],
+    "targets_seen_mean": 0.732,
+    "targets_unseen_mean": 0.7324
+   },
+   "R.title_comention": {
+    "all_nodes_q25_q50_q75": [
+     0.6216,
+     0.6696,
+     0.7157
+    ],
+    "targets_seen_mean": 0.7408,
+    "targets_unseen_mean": 0.7397
+   },
+   "S.hyperlink": {
+    "all_nodes_q25_q50_q75": [
+     0.4636,
+     0.4869,
+     0.5127
+    ],
+    "targets_seen_mean": 0.5919,
+    "targets_unseen_mean": 0.5891
+   }
+  }
+ },
+ "hubs": {
+  "R.mention": {
+   "edges": 1000,
+   "targets": 930,
+   "largest_target_edges": 7,
+   "hub_edge_share": 0.0
+  },
+  "R.name_comention": {
+   "edges": 1000,
+   "targets": 1000,
+   "largest_target_edges": 1,
+   "hub_edge_share": 0.0
+  },
+  "R.title_comention": {
+   "edges": 1000,
+   "targets": 998,
+   "largest_target_edges": 2,
+   "hub_edge_share": 0.0
+  },
+  "S.hyperlink": {
+   "edges": 1000,
+   "targets": 940,
+   "largest_target_edges": 5,
+   "hub_edge_share": 0.0
+  }
+ },
+ "calls_mrr_t": {
+  "H5 rotation_q - rotation": {
+   "diff": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "call": "LEVEL",
+   "groups": 3868
+  }
+ },
+ "beside_pooled": {
+  "H5 rotation_q - rotation": {
+   "diff": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "call": "LEVEL"
+  }
+ },
+ "H5_by_target": {
+  "seen target (train node)": {
+   "edges": 3196,
+   "H5": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL",
+    "groups": 3092
+   }
+  },
+  "unseen target (test or dev node)": {
+   "edges": 804,
+   "H5": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL",
+    "groups": 776
+   }
+  }
+ },
+ "per_group_mrr_t": {
+  "H5 rotation_q - rotation": {
+   "R.mention": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL",
+    "groups": 930
+   },
+   "R.name_comention": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL",
+    "groups": 1000
+   },
+   "R.title_comention": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL",
+    "groups": 998
+   },
+   "S.hyperlink": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL",
+    "groups": 940
+   }
+  }
+ },
+ "read": {
+  "rotation": {
+   "pooled": {
+    "n": 4000,
+    "mrr": 9.36,
+    "h10": 17.0,
+    "h100": 32.35
+   },
+   "mrr_t": 9.55,
+   "per_group": {
+    "R.mention": {
+     "mrr": 5.6,
+     "mrr_t": 5.94
+    },
+    "R.name_comention": {
+     "mrr": 7.41,
+     "mrr_t": 7.41
+    },
+    "R.title_comention": {
+     "mrr": 12.07,
+     "mrr_t": 12.1
+    },
+    "S.hyperlink": {
+     "mrr": 12.37,
+     "mrr_t": 12.68
+    }
+   }
+  },
+  "rotation_q": {
+   "pooled": {
+    "n": 4000,
+    "mrr": 9.36,
+    "h10": 17.0,
+    "h100": 32.35
+   },
+   "mrr_t": 9.55,
+   "per_group": {
+    "R.mention": {
+     "mrr": 5.6,
+     "mrr_t": 5.94
+    },
+    "R.name_comention": {
+     "mrr": 7.41,
+     "mrr_t": 7.41
+    },
+    "R.title_comention": {
+     "mrr": 12.07,
+     "mrr_t": 12.1
+    },
+    "S.hyperlink": {
+     "mrr": 12.37,
+     "mrr_t": 12.68
+    }
+   }
+  }
+ },
+ "r1_record_sha256": "cdfb0be0cd96082b6ef6cb105d1e2d86aa8e3ca8e651b816e8aef2273c724187",
+ "r1_npz_sha256": "7684e6e3189933f664b56c90dd60a4029c28a78a0f0722f5bd8c47981342f92b",
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "73fb822f3e4dd255c2555af717f4664c78a01fec4b5dce892fdec25d5de2426a",
+  "ner_npz_sha256": "fd462a9c08740d57af79855efe37c1d77f30dc593ca6ad6242681c99b51a008a",
+  "knn_npz_sha256": "a7151f6bbebdb13d7e817abcc199fd5feae17585a955f781b0690d7ee1897f99",
+  "structural_npz_sha256": "1e380eaaa62b21eaf24f6dec8302d81482bf35695bfa6cdda2421fa90cfe9c85",
+  "w2_s_npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+  "f0t_npz_sha256": "d6c49214c935c6166fcaa9c3494827cf85aaeafdb1f84f9eb3679b84de52ad5e",
+  "names_npz_sha256": "56269a557dae67578c3c05c6b7c4350f82c28fe51edd44a024104a729d43c020",
+  "vectors": {
+   "shards": 150,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "97669fbeb024ccd647cf0ab3538e855783361b0d02ee2364b1e5bf75e56eaa96"
+  }
+ },
+ "threads": 8,
+ "seconds": 3394.4,
+ "utc": "2026-11-24T16:38:21Z",
+ "script_sha256": "60ccaf75cbb26047221eb9021ca8db744507c4df5998997ce4ee5c3e76eafa21",
+ "zsem2hc_sha256": "bd3cac4f9540859dba15469ce71492abf0f93f1c1f45cf0c6aaf681dc89461af",
+ "zsem2h_sha256": "2588ab5f284d6f1dace715f9ccec1f0cbca664945619fba62ebcca0f05006a3f",
+ "zsem2_sha256": "60208157465631a21f56731ffe90eb6df9367b722e6a479f889ee5f266f2474e",
+ "npz_sha256": "0ce660df45e5077d8f603c93add253c4ec8369edc909016f7f508287a9b463ab"
+}

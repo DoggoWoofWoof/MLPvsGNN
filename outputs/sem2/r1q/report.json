@@ -1,0 +1,1073 @@
+{
+ "stage": "SEM2 R1q report",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 8.14",
+ "carry": {
+  "verdict": "NOT_CARRIED",
+  "metaqa": "LEVEL",
+  "below": [],
+  "missing": [],
+  "calls": {
+   "multihoprag": "LEVEL",
+   "squad": "LEVEL",
+   "musique": "LEVEL",
+   "metaqa": "LEVEL",
+   "webqsp": "LEVEL",
+   "hotpotqa": "LEVEL",
+   "2wiki": "LEVEL"
+  }
+ },
+ "expectations": {
+  "X10": false,
+  "X11": false
+ },
+ "rows": {
+  "multihoprag e3v": {
+   "calls_mrr_t": {
+    "H5 rotation_q - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 458
+    },
+    "rotation_q - cosine": {
+     "diff": 6.69,
+     "lo": 4.81,
+     "hi": 8.56,
+     "call": "ABOVE",
+     "groups": 458
+    },
+    "rotation - cosine": {
+     "diff": 6.69,
+     "lo": 4.81,
+     "hi": 8.56,
+     "call": "ABOVE",
+     "groups": 458
+    },
+    "cosine_q - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 458
+    }
+   },
+   "beside_pooled": {
+    "H5 rotation_q - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "rotation_q - cosine": {
+     "diff": 6.76,
+     "lo": 5.16,
+     "hi": 8.28,
+     "call": "ABOVE"
+    },
+    "rotation - cosine": {
+     "diff": 6.76,
+     "lo": 5.16,
+     "hi": 8.28,
+     "call": "ABOVE"
+    },
+    "cosine_q - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    }
+   },
+   "H5_by_target": {
+    "seen target (train node)": {
+     "edges": 804,
+     "H5": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL",
+      "groups": 367
+     }
+    },
+    "unseen target (test or dev node)": {
+     "edges": 196,
+     "H5": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL",
+      "groups": 91
+     }
+    }
+   },
+   "alphas": {
+    "rotation": {
+     "R.name_comention": 0.0
+    },
+    "cosine": {
+     "R.name_comention": 0.0
+    }
+   },
+   "mrr_t": {
+    "rotation": 23.43,
+    "rotation_q": 23.43,
+    "cosine": 16.74,
+    "cosine_q": 16.74
+   },
+   "pooled": {
+    "rotation": 24.12,
+    "rotation_q": 24.12,
+    "cosine": 17.36,
+    "cosine_q": 17.36
+   },
+   "sha256": "dd39bc2507212bd14f91fe15af8283a08fa3bdffff6f9dd98b0b320843dc7486"
+  },
+  "multihoprag frozen": {
+   "calls_mrr_t": {
+    "H5 rotation_q - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 458
+    },
+    "rotation_q - cosine": {
+     "diff": 5.17,
+     "lo": 3.2,
+     "hi": 7.05,
+     "call": "ABOVE",
+     "groups": 458
+    },
+    "rotation - cosine": {
+     "diff": 5.17,
+     "lo": 3.2,
+     "hi": 7.05,
+     "call": "ABOVE",
+     "groups": 458
+    },
+    "cosine_q - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 458
+    }
+   },
+   "beside_pooled": {
+    "H5 rotation_q - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "rotation_q - cosine": {
+     "diff": 5.2,
+     "lo": 3.59,
+     "hi": 6.81,
+     "call": "ABOVE"
+    },
+    "rotation - cosine": {
+     "diff": 5.2,
+     "lo": 3.59,
+     "hi": 6.81,
+     "call": "ABOVE"
+    },
+    "cosine_q - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    }
+   },
+   "H5_by_target": {
+    "seen target (train node)": {
+     "edges": 804,
+     "H5": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL",
+      "groups": 367
+     }
+    },
+    "unseen target (test or dev node)": {
+     "edges": 196,
+     "H5": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL",
+      "groups": 91
+     }
+    }
+   },
+   "alphas": {
+    "rotation": {
+     "R.name_comention": 0.0
+    },
+    "cosine": {
+     "R.name_comention": 0.0
+    }
+   },
+   "mrr_t": {
+    "rotation": 23.55,
+    "rotation_q": 23.55,
+    "cosine": 18.38,
+    "cosine_q": 18.38
+   },
+   "pooled": {
+    "rotation": 24.09,
+    "rotation_q": 24.09,
+    "cosine": 18.89,
+    "cosine_q": 18.89
+   },
+   "sha256": "bb3dcab20b64e6bc720d6ef8b39c719875a521c4a86e11d49164878a15b4d49c"
+  },
+  "squad e3v": {
+   "calls_mrr_t": {
+    "H5 rotation_q - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 2201
+    },
+    "rotation_q - cosine": {
+     "diff": 16.04,
+     "lo": 14.64,
+     "hi": 17.41,
+     "call": "ABOVE",
+     "groups": 2201
+    },
+    "rotation - cosine": {
+     "diff": 16.04,
+     "lo": 14.64,
+     "hi": 17.41,
+     "call": "ABOVE",
+     "groups": 2201
+    },
+    "cosine_q - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 2201
+    }
+   },
+   "beside_pooled": {
+    "H5 rotation_q - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "rotation_q - cosine": {
+     "diff": 16.23,
+     "lo": 14.95,
+     "hi": 17.54,
+     "call": "ABOVE"
+    },
+    "rotation - cosine": {
+     "diff": 16.23,
+     "lo": 14.95,
+     "hi": 17.54,
+     "call": "ABOVE"
+    },
+    "cosine_q - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    }
+   },
+   "H5_by_target": {
+    "seen target (train node)": {
+     "edges": 2001,
+     "H5": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL",
+      "groups": 1753
+     }
+    },
+    "unseen target (test or dev node)": {
+     "edges": 504,
+     "H5": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL",
+      "groups": 448
+     }
+    }
+   },
+   "alphas": {
+    "rotation": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "R.title_comention": 0.0
+    },
+    "cosine": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "R.title_comention": 0.0
+    }
+   },
+   "mrr_t": {
+    "rotation": 27.9,
+    "rotation_q": 27.9,
+    "cosine": 11.86,
+    "cosine_q": 11.86
+   },
+   "pooled": {
+    "rotation": 28.28,
+    "rotation_q": 28.28,
+    "cosine": 12.04,
+    "cosine_q": 12.04
+   },
+   "sha256": "dfcd827f07054a54d3a5f8b4231fef4ba48ae569387e30a5f94c2e695296e72d"
+  },
+  "squad frozen": {
+   "calls_mrr_t": {
+    "H5 rotation_q - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 2201
+    },
+    "rotation_q - cosine": {
+     "diff": 18.61,
+     "lo": 17.22,
+     "hi": 20.0,
+     "call": "ABOVE",
+     "groups": 2201
+    },
+    "rotation - cosine": {
+     "diff": 18.61,
+     "lo": 17.22,
+     "hi": 20.0,
+     "call": "ABOVE",
+     "groups": 2201
+    },
+    "cosine_q - cosine": {
+     "diff": -0.28,
+     "lo": -0.57,
+     "hi": -0.02,
+     "call": "BELOW",
+     "groups": 2201
+    }
+   },
+   "beside_pooled": {
+    "H5 rotation_q - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "rotation_q - cosine": {
+     "diff": 18.3,
+     "lo": 16.97,
+     "hi": 19.68,
+     "call": "ABOVE"
+    },
+    "rotation - cosine": {
+     "diff": 18.3,
+     "lo": 16.97,
+     "hi": 19.68,
+     "call": "ABOVE"
+    },
+    "cosine_q - cosine": {
+     "diff": -0.25,
+     "lo": -0.51,
+     "hi": -0.02,
+     "call": "BELOW"
+    }
+   },
+   "H5_by_target": {
+    "seen target (train node)": {
+     "edges": 2001,
+     "H5": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL",
+      "groups": 1753
+     }
+    },
+    "unseen target (test or dev node)": {
+     "edges": 504,
+     "H5": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL",
+      "groups": 448
+     }
+    }
+   },
+   "alphas": {
+    "rotation": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "R.title_comention": 0.0
+    },
+    "cosine": {
+     "R.mention": 0.5,
+     "R.name_comention": 0.0,
+     "R.title_comention": 0.0
+    }
+   },
+   "mrr_t": {
+    "rotation": 28.54,
+    "rotation_q": 28.54,
+    "cosine": 9.92,
+    "cosine_q": 9.64
+   },
+   "pooled": {
+    "rotation": 28.49,
+    "rotation_q": 28.49,
+    "cosine": 10.19,
+    "cosine_q": 9.94
+   },
+   "sha256": "4a4f9d69ab614607fdae7f45d6dfcc6692a9ab9f27258be8c733fd5f63c95d01"
+  },
+  "musique e3v": {
+   "calls_mrr_t": {
+    "H5 rotation_q - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 2883
+    },
+    "rotation_q - cosine": {
+     "diff": 6.29,
+     "lo": 5.5,
+     "hi": 7.14,
+     "call": "ABOVE",
+     "groups": 2883
+    },
+    "rotation - cosine": {
+     "diff": 6.29,
+     "lo": 5.5,
+     "hi": 7.14,
+     "call": "ABOVE",
+     "groups": 2883
+    },
+    "cosine_q - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 2883
+    }
+   },
+   "beside_pooled": {
+    "H5 rotation_q - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "rotation_q - cosine": {
+     "diff": 6.77,
+     "lo": 6.0,
+     "hi": 7.6,
+     "call": "ABOVE"
+    },
+    "rotation - cosine": {
+     "diff": 6.77,
+     "lo": 6.0,
+     "hi": 7.6,
+     "call": "ABOVE"
+    },
+    "cosine_q - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    }
+   },
+   "H5_by_target": {
+    "seen target (train node)": {
+     "edges": 2390,
+     "H5": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL",
+      "groups": 2295
+     }
+    },
+    "unseen target (test or dev node)": {
+     "edges": 610,
+     "H5": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL",
+      "groups": 588
+     }
+    }
+   },
+   "alphas": {
+    "rotation": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "R.title_comention": 0.0
+    },
+    "cosine": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "R.title_comention": 0.0
+    }
+   },
+   "mrr_t": {
+    "rotation": 12.1,
+    "rotation_q": 12.1,
+    "cosine": 5.81,
+    "cosine_q": 5.81
+   },
+   "pooled": {
+    "rotation": 12.47,
+    "rotation_q": 12.47,
+    "cosine": 5.7,
+    "cosine_q": 5.7
+   },
+   "sha256": "91768a0cbe5f29da1f31b45efab4425ca4e7e1cbe97f0c38d8490009ad90adba"
+  },
+  "musique frozen": {
+   "calls_mrr_t": {
+    "H5 rotation_q - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 2883
+    },
+    "rotation_q - cosine": {
+     "diff": 7.37,
+     "lo": 6.52,
+     "hi": 8.23,
+     "call": "ABOVE",
+     "groups": 2883
+    },
+    "rotation - cosine": {
+     "diff": 7.37,
+     "lo": 6.52,
+     "hi": 8.23,
+     "call": "ABOVE",
+     "groups": 2883
+    },
+    "cosine_q - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 2883
+    }
+   },
+   "beside_pooled": {
+    "H5 rotation_q - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "rotation_q - cosine": {
+     "diff": 7.87,
+     "lo": 7.04,
+     "hi": 8.74,
+     "call": "ABOVE"
+    },
+    "rotation - cosine": {
+     "diff": 7.87,
+     "lo": 7.04,
+     "hi": 8.74,
+     "call": "ABOVE"
+    },
+    "cosine_q - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    }
+   },
+   "H5_by_target": {
+    "seen target (train node)": {
+     "edges": 2390,
+     "H5": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL",
+      "groups": 2295
+     }
+    },
+    "unseen target (test or dev node)": {
+     "edges": 610,
+     "H5": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL",
+      "groups": 588
+     }
+    }
+   },
+   "alphas": {
+    "rotation": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "R.title_comention": 0.0
+    },
+    "cosine": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "R.title_comention": 0.0
+    }
+   },
+   "mrr_t": {
+    "rotation": 13.52,
+    "rotation_q": 13.52,
+    "cosine": 6.14,
+    "cosine_q": 6.14
+   },
+   "pooled": {
+    "rotation": 13.87,
+    "rotation_q": 13.87,
+    "cosine": 6.0,
+    "cosine_q": 6.0
+   },
+   "sha256": "88ca34da5106045123e6f11f8beac82ad165c0ceea76ffd3b979a4736fac1d4c"
+  },
+  "metaqa e3v": {
+   "calls_mrr_t": {
+    "H5 rotation_q - rotation": {
+     "diff": -0.02,
+     "lo": -0.03,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 5201
+    },
+    "rotation_q - cosine": {
+     "diff": 5.61,
+     "lo": 5.09,
+     "hi": 6.12,
+     "call": "ABOVE",
+     "groups": 5201
+    },
+    "rotation - cosine": {
+     "diff": 5.63,
+     "lo": 5.11,
+     "hi": 6.14,
+     "call": "ABOVE",
+     "groups": 5201
+    },
+    "cosine_q - cosine": {
+     "diff": 0.14,
+     "lo": 0.09,
+     "hi": 0.21,
+     "call": "ABOVE",
+     "groups": 5201
+    }
+   },
+   "beside_pooled": {
+    "H5 rotation_q - rotation": {
+     "diff": -0.04,
+     "lo": -0.07,
+     "hi": -0.01,
+     "call": "BELOW"
+    },
+    "rotation_q - cosine": {
+     "diff": 12.27,
+     "lo": 11.71,
+     "hi": 12.88,
+     "call": "ABOVE"
+    },
+    "rotation - cosine": {
+     "diff": 12.31,
+     "lo": 11.74,
+     "hi": 12.92,
+     "call": "ABOVE"
+    },
+    "cosine_q - cosine": {
+     "diff": 0.09,
+     "lo": 0.06,
+     "hi": 0.13,
+     "call": "ABOVE"
+    }
+   },
+   "H5_by_target": {
+    "seen target (train node)": {
+     "edges": 6846,
+     "H5": {
+      "diff": -0.02,
+      "lo": -0.04,
+      "hi": -0.0,
+      "call": "BELOW",
+      "groups": 4155
+     }
+    },
+    "unseen target (test or dev node)": {
+     "edges": 1572,
+     "H5": {
+      "diff": 0.0,
+      "lo": -0.0,
+      "hi": 0.01,
+      "call": "LEVEL",
+      "groups": 1046
+     }
+    }
+   },
+   "alphas": {
+    "rotation": {
+     "R.mention": 0.25,
+     "R.name_comention": 0.0,
+     "S.starred_actors": 0.0,
+     "S.has_tags": 0.0,
+     "S.written_by": 0.0,
+     "S.release_year": 0.0,
+     "S.directed_by": 0.0,
+     "S.has_genre": 0.0,
+     "S.in_language": 0.0,
+     "S.other": 0.0
+    },
+    "cosine": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "S.starred_actors": 1.0,
+     "S.has_tags": 1.0,
+     "S.written_by": 1.0,
+     "S.release_year": 1.0,
+     "S.directed_by": 1.0,
+     "S.has_genre": 0.0,
+     "S.in_language": 0.0,
+     "S.other": 0.0
+    }
+   },
+   "mrr_t": {
+    "rotation": 10.23,
+    "rotation_q": 10.21,
+    "cosine": 4.6,
+    "cosine_q": 4.74
+   },
+   "pooled": {
+    "rotation": 15.68,
+    "rotation_q": 15.64,
+    "cosine": 3.37,
+    "cosine_q": 3.46
+   },
+   "sha256": "a0664d22d07cd6d5afde62aeaf57f4da9753c35eb98d0c5a0f46ce1979a7c47a"
+  },
+  "metaqa frozen": {
+   "calls_mrr_t": {
+    "H5 rotation_q - rotation": {
+     "diff": -0.05,
+     "lo": -0.1,
+     "hi": -0.02,
+     "call": "BELOW",
+     "groups": 5201
+    },
+    "rotation_q - cosine": {
+     "diff": 6.96,
+     "lo": 6.43,
+     "hi": 7.5,
+     "call": "ABOVE",
+     "groups": 5201
+    },
+    "rotation - cosine": {
+     "diff": 7.01,
+     "lo": 6.48,
+     "hi": 7.56,
+     "call": "ABOVE",
+     "groups": 5201
+    },
+    "cosine_q - cosine": {
+     "diff": 0.24,
+     "lo": 0.15,
+     "hi": 0.34,
+     "call": "ABOVE",
+     "groups": 5201
+    }
+   },
+   "beside_pooled": {
+    "H5 rotation_q - rotation": {
+     "diff": -0.05,
+     "lo": -0.09,
+     "hi": -0.02,
+     "call": "BELOW"
+    },
+    "rotation_q - cosine": {
+     "diff": 13.59,
+     "lo": 12.97,
+     "hi": 14.23,
+     "call": "ABOVE"
+    },
+    "rotation - cosine": {
+     "diff": 13.65,
+     "lo": 13.02,
+     "hi": 14.28,
+     "call": "ABOVE"
+    },
+    "cosine_q - cosine": {
+     "diff": 0.21,
+     "lo": 0.15,
+     "hi": 0.27,
+     "call": "ABOVE"
+    }
+   },
+   "H5_by_target": {
+    "seen target (train node)": {
+     "edges": 6846,
+     "H5": {
+      "diff": -0.07,
+      "lo": -0.12,
+      "hi": -0.02,
+      "call": "BELOW",
+      "groups": 4155
+     }
+    },
+    "unseen target (test or dev node)": {
+     "edges": 1572,
+     "H5": {
+      "diff": -0.0,
+      "lo": -0.01,
+      "hi": 0.01,
+      "call": "LEVEL",
+      "groups": 1046
+     }
+    }
+   },
+   "alphas": {
+    "rotation": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "S.starred_actors": 0.0,
+     "S.has_tags": 0.0,
+     "S.written_by": 0.25,
+     "S.release_year": 0.0,
+     "S.directed_by": 0.0,
+     "S.has_genre": 0.0,
+     "S.in_language": 0.0,
+     "S.other": 0.0
+    },
+    "cosine": {
+     "R.mention": 0.25,
+     "R.name_comention": 0.0,
+     "S.starred_actors": 0.75,
+     "S.has_tags": 1.0,
+     "S.written_by": 1.0,
+     "S.release_year": 1.0,
+     "S.directed_by": 1.0,
+     "S.has_genre": 0.25,
+     "S.in_language": 1.0,
+     "S.other": 0.0
+    }
+   },
+   "mrr_t": {
+    "rotation": 10.89,
+    "rotation_q": 10.84,
+    "cosine": 3.88,
+    "cosine_q": 4.11
+   },
+   "pooled": {
+    "rotation": 16.43,
+    "rotation_q": 16.38,
+    "cosine": 2.79,
+    "cosine_q": 3.0
+   },
+   "sha256": "cf8857cf15b4fb6acb7011e55019682ab4ea0073063fd5b4c59994066a5cf1c0"
+  },
+  "webqsp e3v": {
+   "calls_mrr_t": {
+    "H5 rotation_q - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 7722
+    }
+   },
+   "beside_pooled": {
+    "H5 rotation_q - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    }
+   },
+   "H5_by_target": {
+    "seen target (train node)": {
+     "edges": 12684,
+     "H5": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL",
+      "groups": 6206
+     }
+    },
+    "unseen target (test or dev node)": {
+     "edges": 2677,
+     "H5": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL",
+      "groups": 1516
+     }
+    }
+   },
+   "alphas": {
+    "rotation": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "R.title_comention": 0.0,
+     "S.topic notable types": 0.0,
+     "S.valuenotation is reviewed": 0.0,
+     "S.topic notable for": 0.0,
+     "S.performance film": 0.0,
+     "S.film starring": 0.0,
+     "S.valuenotation has value": 0.0,
+     "S.person profession": 0.0,
+     "S.location containedby": 0.0,
+     "S.person gender": 0.0,
+     "S.netflix title netflix genres": 0.0,
+     "S.person nationality": 0.0,
+     "S.film genre": 0.0,
+     "S.other": 0.0
+    }
+   },
+   "mrr_t": {
+    "rotation": 49.3,
+    "rotation_q": 49.3
+   },
+   "pooled": {
+    "rotation": 46.4,
+    "rotation_q": 46.4
+   },
+   "sha256": "4fa0a1efa56587f4d9a500772ce825c0db4cbc4ec9e93206bea1dd580e8464c8"
+  },
+  "hotpotqa e3v": {
+   "calls_mrr_t": {
+    "H5 rotation_q - rotation": {
+     "diff": -0.05,
+     "lo": -0.16,
+     "hi": 0.05,
+     "call": "LEVEL",
+     "groups": 3800
+    }
+   },
+   "beside_pooled": {
+    "H5 rotation_q - rotation": {
+     "diff": -0.06,
+     "lo": -0.17,
+     "hi": 0.05,
+     "call": "LEVEL"
+    }
+   },
+   "H5_by_target": {
+    "seen target (train node)": {
+     "edges": 3195,
+     "H5": {
+      "diff": -0.05,
+      "lo": -0.17,
+      "hi": 0.06,
+      "call": "LEVEL",
+      "groups": 3035
+     }
+    },
+    "unseen target (test or dev node)": {
+     "edges": 805,
+     "H5": {
+      "diff": -0.06,
+      "lo": -0.3,
+      "hi": 0.21,
+      "call": "LEVEL",
+      "groups": 765
+     }
+    }
+   },
+   "alphas": {
+    "rotation": {
+     "R.mention": 0.25,
+     "R.name_comention": 0.0,
+     "R.title_comention": 0.0,
+     "S.hyperlink": 0.0
+    }
+   },
+   "mrr_t": {
+    "rotation": 11.3,
+    "rotation_q": 11.24
+   },
+   "pooled": {
+    "rotation": 10.95,
+    "rotation_q": 10.89
+   },
+   "sha256": "64b2f5acd796e94ebfc5adf4395721c388a816466cc2886185e9b5806a645a36"
+  },
+  "2wiki e3v": {
+   "calls_mrr_t": {
+    "H5 rotation_q - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 3868
+    }
+   },
+   "beside_pooled": {
+    "H5 rotation_q - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    }
+   },
+   "H5_by_target": {
+    "seen target (train node)": {
+     "edges": 3196,
+     "H5": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL",
+      "groups": 3092
+     }
+    },
+    "unseen target (test or dev node)": {
+     "edges": 804,
+     "H5": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL",
+      "groups": 776
+     }
+    }
+   },
+   "alphas": {
+    "rotation": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "R.title_comention": 0.0,
+     "S.hyperlink": 0.0
+    }
+   },
+   "mrr_t": {
+    "rotation": 9.55,
+    "rotation_q": 9.55
+   },
+   "pooled": {
+    "rotation": 9.36,
+    "rotation_q": 9.36
+   },
+   "sha256": "f894a3ca54ca6944d6e6ae1fdde69ccad3a227dc069b2b7cf295891ac66ea236"
+  }
+ },
+ "utc": "2026-11-24T17:30:10Z",
+ "script_sha256": "60ccaf75cbb26047221eb9021ca8db744507c4df5998997ce4ee5c3e76eafa21"
+}

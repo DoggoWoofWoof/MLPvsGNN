@@ -941,3 +941,37 @@ of memory and wrote no number.
 
 **What does not change:** the seeds, the operators, the attention, the lists, lambda's selection, the calls, the gates
 and the expectations. No R2 number has been read on either dataset.
+
+### 8.16 Records completed after the closure (24 November 2026, 23:47 IST, 18:17 UTC): decides nothing
+
+8.15 closed the hub line with five rows still running. They have finished: R1k on WebQSP and 2Wiki, and R1q on
+HotpotQA, 2Wiki and WebQSP, with the reports over all seven datasets. Nothing here reopens the line, and no hub step
+follows.
+
+**R1k, the hub ceiling (8.11; e3v, MRR_T in points, ceiling minus rotation):**
+
+| dataset | C | verdict |
+| --- | --- | --- |
+| MultiHop-RAG | +4.93 [+4.06, +5.81] | ROOM |
+| SQuAD | +4.86 [+4.33, +5.43] | ROOM |
+| MuSiQue | +2.16 [+1.85, +2.50] | ROOM |
+| MetaQA | +0.90 [+0.78, +1.02] | NO_ROOM |
+| WebQSP | +0.68 [+0.57, +0.78] | NO_ROOM |
+| HotpotQA | +1.13 [+0.94, +1.32] | ROOM |
+| 2Wiki | +1.30 [+1.09, +1.50] | ROOM |
+
+The two new rows follow the pattern of the others: room exists on the text-linked graphs, and the ceiling is small on the
+two knowledge-base graphs. 8.12's seen/unseen split stays on the four datasets it ran on.
+
+**R1q, the query-bank normalization (8.14; e3v, H5 on MRR_T):**
+- H5 is LEVEL on HotpotQA (-0.05 [-0.16, +0.05]), and exactly 0.00 on 2Wiki and WebQSP, where the dev sample picks alpha
+  0 in every group.
+- MetaQA: -0.02 [-0.03, +0.00] LEVEL on the test groups and -0.04 [-0.07, -0.01] BELOW pooled; the frozen arm is BELOW
+  (-0.05 [-0.10, -0.02]).
+- The carry rule (8.9 form: ABOVE on MetaQA and BELOW on none) reads NOT_CARRIED. X10 and X11 are both False, as 8.15
+  said on the four small datasets.
+
+**Files** (json and md only; the npz stay on the host): outputs/sem2/r1k/2wiki/e3v.json, outputs/sem2/r1k/webqsp/e3v.json,
+outputs/sem2/r1q/hotpotqa/e3v.json, outputs/sem2/r1q/2wiki/e3v.json, outputs/sem2/r1q/webqsp/e3v.json, and the reports
+outputs/sem2/r1k/report.*, outputs/sem2/r1k/split/report.* and outputs/sem2/r1q/report.*. The laptop's rerun of each
+report matches the host's except the time stamp.

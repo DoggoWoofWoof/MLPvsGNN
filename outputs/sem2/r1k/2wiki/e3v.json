@@ -1,0 +1,308 @@
+{
+ "stage": "SEM2 R1k",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 8.11 (run through zsem2hkb.py: section 8.13)",
+ "dataset": "2wiki",
+ "arm": "e3v",
+ "dim": 1152,
+ "config": {
+  "extra": 256,
+  "tau": 0.05,
+  "batch": 1024,
+  "neg": 4096,
+  "lr": 0.001,
+  "epoch": 200000,
+  "max_epochs": 10,
+  "patience": 2,
+  "min_op": 500,
+  "top_s": 12,
+  "n_test": 1000,
+  "n_dev": 500
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 71483746,
+     "record": 71483746
+    },
+    "CN_all": {
+     "pairs": 38242751,
+     "record": 38242751
+    },
+    "F0T": {
+     "pairs": 39863302,
+     "record": 39863302
+    },
+    "S": {
+     "pairs": 28208857,
+     "record": 28208857
+    },
+    "S directed": {
+     "edges": 28963600,
+     "pair_relation_rows": 28208857,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-B": {
+   "rotation": {
+    "raw_agreement": 1.0,
+    "ceiling_never_worse": true
+   },
+   "cosine": {
+    "raw_agreement": 1.0,
+    "ceiling_never_worse": true
+   },
+   "verdict": "PASS"
+  }
+ },
+ "nodes": 5989847,
+ "operators": [
+  "R.mention",
+  "R.name_comention",
+  "R.title_comention",
+  "S.hyperlink"
+ ],
+ "read_groups": [
+  "R.mention",
+  "R.name_comention",
+  "R.title_comention",
+  "S.hyperlink"
+ ],
+ "room_points": 1.0,
+ "C": {
+  "diff": 1.3,
+  "lo": 1.09,
+  "hi": 1.5,
+  "call": "ABOVE",
+  "groups": 3868
+ },
+ "verdict": "ROOM",
+ "beside": {
+  "cosine ceiling - cosine": {
+   "diff": 0.75,
+   "lo": 0.59,
+   "hi": 0.91,
+   "call": "ABOVE",
+   "groups": 3868
+  },
+  "pooled C": {
+   "diff": 1.27,
+   "lo": 1.07,
+   "hi": 1.49,
+   "call": "ABOVE"
+  },
+  "crowded_share_pct": {
+   "rotation": 80.05,
+   "cosine": 81.25
+  },
+  "target_degree_zero_pct": 25.3
+ },
+ "per_group_C": {
+  "R.mention": {
+   "diff": 1.04,
+   "lo": 0.66,
+   "hi": 1.47,
+   "call": "ABOVE",
+   "groups": 930
+  },
+  "R.name_comention": {
+   "diff": 1.4,
+   "lo": 0.96,
+   "hi": 1.89,
+   "call": "ABOVE",
+   "groups": 1000
+  },
+  "R.title_comention": {
+   "diff": 0.95,
+   "lo": 0.62,
+   "hi": 1.33,
+   "call": "ABOVE",
+   "groups": 998
+  },
+  "S.hyperlink": {
+   "diff": 1.81,
+   "lo": 1.35,
+   "hi": 2.3,
+   "call": "ABOVE",
+   "groups": 940
+  }
+ },
+ "hubs": {
+  "R.mention": {
+   "edges": 1000,
+   "targets": 930,
+   "largest_target_edges": 7,
+   "hub_edge_share": 0.0
+  },
+  "R.name_comention": {
+   "edges": 1000,
+   "targets": 1000,
+   "largest_target_edges": 1,
+   "hub_edge_share": 0.0
+  },
+  "R.title_comention": {
+   "edges": 1000,
+   "targets": 998,
+   "largest_target_edges": 2,
+   "hub_edge_share": 0.0
+  },
+  "S.hyperlink": {
+   "edges": 1000,
+   "targets": 940,
+   "largest_target_edges": 5,
+   "hub_edge_share": 0.0
+  }
+ },
+ "read": {
+  "rotation": {
+   "pooled": {
+    "n": 4000,
+    "mrr": 9.36,
+    "h10": 17.0,
+    "h100": 32.35
+   },
+   "mrr_t": 9.55,
+   "per_group": {
+    "R.mention": {
+     "mrr": 5.6,
+     "mrr_t": 5.94
+    },
+    "R.name_comention": {
+     "mrr": 7.41,
+     "mrr_t": 7.41
+    },
+    "R.title_comention": {
+     "mrr": 12.07,
+     "mrr_t": 12.1
+    },
+    "S.hyperlink": {
+     "mrr": 12.37,
+     "mrr_t": 12.68
+    }
+   }
+  },
+  "rotation_ceiling": {
+   "pooled": {
+    "n": 4000,
+    "mrr": 10.63,
+    "h10": 18.27,
+    "h100": 34.7
+   },
+   "mrr_t": 10.84,
+   "per_group": {
+    "R.mention": {
+     "mrr": 6.59,
+     "mrr_t": 6.98
+    },
+    "R.name_comention": {
+     "mrr": 8.81,
+     "mrr_t": 8.81
+    },
+    "R.title_comention": {
+     "mrr": 13.02,
+     "mrr_t": 13.05
+    },
+    "S.hyperlink": {
+     "mrr": 14.11,
+     "mrr_t": 14.49
+    }
+   }
+  },
+  "cosine": {
+   "pooled": {
+    "n": 4000,
+    "mrr": 6.74,
+    "h10": 11.33,
+    "h100": 20.7
+   },
+   "mrr_t": 6.97,
+   "per_group": {
+    "R.mention": {
+     "mrr": 3.18,
+     "mrr_t": 3.41
+    },
+    "R.name_comention": {
+     "mrr": 7.84,
+     "mrr_t": 7.84
+    },
+    "R.title_comention": {
+     "mrr": 9.17,
+     "mrr_t": 9.19
+    },
+    "S.hyperlink": {
+     "mrr": 6.78,
+     "mrr_t": 7.21
+    }
+   }
+  },
+  "cosine_ceiling": {
+   "pooled": {
+    "n": 4000,
+    "mrr": 7.46,
+    "h10": 12.3,
+    "h100": 21.9
+   },
+   "mrr_t": 7.72,
+   "per_group": {
+    "R.mention": {
+     "mrr": 3.72,
+     "mrr_t": 4.0
+    },
+    "R.name_comention": {
+     "mrr": 8.6,
+     "mrr_t": 8.6
+    },
+    "R.title_comention": {
+     "mrr": 10.07,
+     "mrr_t": 10.09
+    },
+    "S.hyperlink": {
+     "mrr": 7.46,
+     "mrr_t": 7.93
+    }
+   }
+  }
+ },
+ "r1_record_sha256": "cdfb0be0cd96082b6ef6cb105d1e2d86aa8e3ca8e651b816e8aef2273c724187",
+ "r1_npz_sha256": "7684e6e3189933f664b56c90dd60a4029c28a78a0f0722f5bd8c47981342f92b",
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "73fb822f3e4dd255c2555af717f4664c78a01fec4b5dce892fdec25d5de2426a",
+  "ner_npz_sha256": "fd462a9c08740d57af79855efe37c1d77f30dc593ca6ad6242681c99b51a008a",
+  "knn_npz_sha256": "a7151f6bbebdb13d7e817abcc199fd5feae17585a955f781b0690d7ee1897f99",
+  "structural_npz_sha256": "1e380eaaa62b21eaf24f6dec8302d81482bf35695bfa6cdda2421fa90cfe9c85",
+  "w2_s_npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+  "f0t_npz_sha256": "d6c49214c935c6166fcaa9c3494827cf85aaeafdb1f84f9eb3679b84de52ad5e",
+  "names_npz_sha256": "56269a557dae67578c3c05c6b7c4350f82c28fe51edd44a024104a729d43c020",
+  "vectors": {
+   "shards": 150,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "97669fbeb024ccd647cf0ab3538e855783361b0d02ee2364b1e5bf75e56eaa96"
+  }
+ },
+ "threads": 8,
+ "seconds": 1300.1,
+ "utc": "2026-11-24T15:39:54Z",
+ "script_sha256": "337647514c8c8c1acf1d2a5d3c1f86c716ed22bb15e83bdcd9298dc7684a956e",
+ "zsem2h_sha256": "2588ab5f284d6f1dace715f9ccec1f0cbca664945619fba62ebcca0f05006a3f",
+ "zsem2_sha256": "60208157465631a21f56731ffe90eb6df9367b722e6a479f889ee5f266f2474e",
+ "npz_sha256": "c5c395cf685104ad7fb02d881962f78432ddbcb92249b52e3a400cdda0f15cb3",
+ "wrapper_sha256": "88b576fc4fd05af4a94b0cf3dd8fee34ee926f8b3ba9fd64c1e96c46b6c37a85",
+ "block_rule": "zsem2.rank_read's: max(1024, min(65536, 1e8 // Q))"
+}
