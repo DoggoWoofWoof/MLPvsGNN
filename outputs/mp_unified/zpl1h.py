@@ -829,8 +829,10 @@ def pools_run(M, spec, carve, base, shard, limit, threads, plain, stats):
         out = PK.pools_pass(DS, carve, threads=int(threads), limit=int(limit or 0), shard=shard, R=R, opener=opener, rule=rule)
         stats["source_diff"] = W.source_diff
     sv = stats["served"]
-    miss = [k for k in ("canonical", "embeddings", "cache", "opened", "open_dataset", "populations", "union_pools", "family_stores", "graph_csr",
-                        "stores", "open_carve") if not sv[k]]
+    need = ["canonical", "embeddings", "cache", "opened", "open_dataset", "populations", "union_pools", "family_stores", "graph_csr", "open_carve"]
+    if spec.construction["regime"] != "RETRIEVAL":      # a RETRIEVAL construction opens no regime store (step4e.open_dataset's own branch)
+        need.append("stores")
+    miss = [k for k in need if not sv[k]]
     if miss:
         stop(f"the swaps {miss} never served (the world was not in force)")
     return out, store, R
