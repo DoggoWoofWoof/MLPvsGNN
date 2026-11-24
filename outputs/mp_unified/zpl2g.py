@@ -568,7 +568,9 @@ def load_pop(op, ds, name, carve):
     flat = np.concatenate(golds).astype(np.int64)
     off = np.r_[0, np.cumsum([g.size for g in golds])].astype(np.int64)
     f.parent.mkdir(parents=True, exist_ok=True)
-    np.savez(f, ids=np.asarray(ids, dtype=str), idx=idx, flat=flat, off=off, digest=np.asarray(digest_ids(ids)))
+    tmp = f.with_name(f"{f.stem}.{os.getpid()}.tmp.npz")                  # parts of one grid may build this at the same time
+    np.savez(tmp, ids=np.asarray(ids, dtype=str), idx=idx, flat=flat, off=off, digest=np.asarray(digest_ids(ids)))
+    os.replace(tmp, f)
     return {"ids": ids, "idx": idx, "golds": golds, "digest": digest_ids(ids)}
 
 
@@ -891,6 +893,10 @@ def gates_passed(ds):
     p = PL2 / ("gk2_multihoprag.json" if ds == MHR else "gk_musique.json")
     if not p.is_file() or rjson(p)["verdict"] != "PASS":
         stop(f"{p.name} is not PASS: run `zpl2g.py gk --ds {'multihoprag' if ds == MHR else 'musique'}` first")
+    if HOST:                                               # a host run also needs the host's own G-K (the filed record is the laptop's)
+        h = p.with_name(p.stem + "_host.json")
+        if not h.is_file() or rjson(h)["verdict"] != "PASS":
+            stop(f"{h.name} is not PASS: run `zpl2g.py gk --ds {'multihoprag' if ds == MHR else 'musique'} --host` first")
     return rjson(p)
 
 
@@ -1301,7 +1307,7 @@ def main(argv=None):
     p.add_argument("--ds", required=True)
     p.add_argument("--n", type=int, default=40)
     p.add_argument("--chunk", type=int, default=64)
-    for name in ("gk", "grid", "confirm", "selftest", "gd"):
+    for name in ("gk", "grid", "select", "confirm", "selftest", "gd"):
         sub.choices[name].add_argument("--host", action="store_true", help="open the package as the lab host's mirror")
     a = ap.parse_args(argv)
     HOST = bool(getattr(a, "host", False))
