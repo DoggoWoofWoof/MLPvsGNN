@@ -1,0 +1,714 @@
+{
+ "stage": "SEM2 R1c report",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 8.10",
+ "carry": {
+  "verdict": "NOT_CARRIED",
+  "metaqa": "BELOW",
+  "below": [
+   "metaqa"
+  ],
+  "missing": [
+   "webqsp",
+   "hotpotqa",
+   "2wiki"
+  ],
+  "calls": {
+   "multihoprag": "LEVEL",
+   "squad": "LEVEL",
+   "musique": "LEVEL",
+   "metaqa": "BELOW"
+  }
+ },
+ "expectations": {
+  "X7": true,
+  "X8": false
+ },
+ "rows": {
+  "multihoprag e3v": {
+   "calls_mrr_t": {
+    "H3 rotation_cal - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 458
+    },
+    "cosine_cal - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 458
+    },
+    "rotation_cal - cosine": {
+     "diff": 6.69,
+     "lo": 4.81,
+     "hi": 8.56,
+     "call": "ABOVE",
+     "groups": 458
+    },
+    "rotation - cosine": {
+     "diff": 6.69,
+     "lo": 4.81,
+     "hi": 8.56,
+     "call": "ABOVE",
+     "groups": 458
+    }
+   },
+   "beside_pooled": {
+    "H3 rotation_cal - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "cosine_cal - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "rotation_cal - cosine": {
+     "diff": 6.76,
+     "lo": 5.16,
+     "hi": 8.28,
+     "call": "ABOVE"
+    },
+    "rotation - cosine": {
+     "diff": 6.76,
+     "lo": 5.16,
+     "hi": 8.28,
+     "call": "ABOVE"
+    }
+   },
+   "betas": {
+    "rotation": {
+     "R.name_comention": 0.0
+    },
+    "cosine": {
+     "R.name_comention": 0.0
+    }
+   },
+   "mrr_t": {
+    "rotation": 23.43,
+    "rotation_cal": 23.43,
+    "cosine": 16.74,
+    "cosine_cal": 16.74
+   },
+   "pooled": {
+    "rotation": 24.12,
+    "rotation_cal": 24.12,
+    "cosine": 17.36,
+    "cosine_cal": 17.36
+   },
+   "sha256": "08db2ba552d13413dae63391e477be64936baf27b6b1ba4d503aa7ea6d9276d8"
+  },
+  "multihoprag frozen": {
+   "calls_mrr_t": {
+    "H3 rotation_cal - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 458
+    },
+    "cosine_cal - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 458
+    },
+    "rotation_cal - cosine": {
+     "diff": 5.17,
+     "lo": 3.2,
+     "hi": 7.05,
+     "call": "ABOVE",
+     "groups": 458
+    },
+    "rotation - cosine": {
+     "diff": 5.17,
+     "lo": 3.2,
+     "hi": 7.05,
+     "call": "ABOVE",
+     "groups": 458
+    }
+   },
+   "beside_pooled": {
+    "H3 rotation_cal - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "cosine_cal - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "rotation_cal - cosine": {
+     "diff": 5.2,
+     "lo": 3.59,
+     "hi": 6.81,
+     "call": "ABOVE"
+    },
+    "rotation - cosine": {
+     "diff": 5.2,
+     "lo": 3.59,
+     "hi": 6.81,
+     "call": "ABOVE"
+    }
+   },
+   "betas": {
+    "rotation": {
+     "R.name_comention": 0.0
+    },
+    "cosine": {
+     "R.name_comention": 0.0
+    }
+   },
+   "mrr_t": {
+    "rotation": 23.55,
+    "rotation_cal": 23.55,
+    "cosine": 18.38,
+    "cosine_cal": 18.38
+   },
+   "pooled": {
+    "rotation": 24.09,
+    "rotation_cal": 24.09,
+    "cosine": 18.89,
+    "cosine_cal": 18.89
+   },
+   "sha256": "61a05fa1615ba28410b4a9a02c66ee3fd941c0fd7f9545eb73885cf7f792a91c"
+  },
+  "squad e3v": {
+   "calls_mrr_t": {
+    "H3 rotation_cal - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 2201
+    },
+    "cosine_cal - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 2201
+    },
+    "rotation_cal - cosine": {
+     "diff": 16.04,
+     "lo": 14.64,
+     "hi": 17.41,
+     "call": "ABOVE",
+     "groups": 2201
+    },
+    "rotation - cosine": {
+     "diff": 16.04,
+     "lo": 14.64,
+     "hi": 17.41,
+     "call": "ABOVE",
+     "groups": 2201
+    }
+   },
+   "beside_pooled": {
+    "H3 rotation_cal - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "cosine_cal - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "rotation_cal - cosine": {
+     "diff": 16.23,
+     "lo": 14.95,
+     "hi": 17.54,
+     "call": "ABOVE"
+    },
+    "rotation - cosine": {
+     "diff": 16.23,
+     "lo": 14.95,
+     "hi": 17.54,
+     "call": "ABOVE"
+    }
+   },
+   "betas": {
+    "rotation": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "R.title_comention": 0.0
+    },
+    "cosine": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "R.title_comention": 0.0
+    }
+   },
+   "mrr_t": {
+    "rotation": 27.9,
+    "rotation_cal": 27.9,
+    "cosine": 11.86,
+    "cosine_cal": 11.86
+   },
+   "pooled": {
+    "rotation": 28.28,
+    "rotation_cal": 28.28,
+    "cosine": 12.04,
+    "cosine_cal": 12.04
+   },
+   "sha256": "61a0961e2d58cfbbf9aae3d03e324d6be8baab9e052d1a56a22f52f8e36e27c7"
+  },
+  "squad frozen": {
+   "calls_mrr_t": {
+    "H3 rotation_cal - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 2201
+    },
+    "cosine_cal - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 2201
+    },
+    "rotation_cal - cosine": {
+     "diff": 18.61,
+     "lo": 17.22,
+     "hi": 20.0,
+     "call": "ABOVE",
+     "groups": 2201
+    },
+    "rotation - cosine": {
+     "diff": 18.61,
+     "lo": 17.22,
+     "hi": 20.0,
+     "call": "ABOVE",
+     "groups": 2201
+    }
+   },
+   "beside_pooled": {
+    "H3 rotation_cal - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "cosine_cal - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "rotation_cal - cosine": {
+     "diff": 18.3,
+     "lo": 16.97,
+     "hi": 19.68,
+     "call": "ABOVE"
+    },
+    "rotation - cosine": {
+     "diff": 18.3,
+     "lo": 16.97,
+     "hi": 19.68,
+     "call": "ABOVE"
+    }
+   },
+   "betas": {
+    "rotation": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "R.title_comention": 0.0
+    },
+    "cosine": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "R.title_comention": 0.0
+    }
+   },
+   "mrr_t": {
+    "rotation": 28.54,
+    "rotation_cal": 28.54,
+    "cosine": 9.92,
+    "cosine_cal": 9.92
+   },
+   "pooled": {
+    "rotation": 28.49,
+    "rotation_cal": 28.49,
+    "cosine": 10.19,
+    "cosine_cal": 10.19
+   },
+   "sha256": "42f2911a75953272444da80f041625c98c81af30340938f2980db308c14cb51f"
+  },
+  "musique e3v": {
+   "calls_mrr_t": {
+    "H3 rotation_cal - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 2883
+    },
+    "cosine_cal - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 2883
+    },
+    "rotation_cal - cosine": {
+     "diff": 6.29,
+     "lo": 5.5,
+     "hi": 7.14,
+     "call": "ABOVE",
+     "groups": 2883
+    },
+    "rotation - cosine": {
+     "diff": 6.29,
+     "lo": 5.5,
+     "hi": 7.14,
+     "call": "ABOVE",
+     "groups": 2883
+    }
+   },
+   "beside_pooled": {
+    "H3 rotation_cal - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "cosine_cal - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "rotation_cal - cosine": {
+     "diff": 6.77,
+     "lo": 6.0,
+     "hi": 7.6,
+     "call": "ABOVE"
+    },
+    "rotation - cosine": {
+     "diff": 6.77,
+     "lo": 6.0,
+     "hi": 7.6,
+     "call": "ABOVE"
+    }
+   },
+   "betas": {
+    "rotation": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "R.title_comention": 0.0
+    },
+    "cosine": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "R.title_comention": 0.0
+    }
+   },
+   "mrr_t": {
+    "rotation": 12.1,
+    "rotation_cal": 12.1,
+    "cosine": 5.81,
+    "cosine_cal": 5.81
+   },
+   "pooled": {
+    "rotation": 12.47,
+    "rotation_cal": 12.47,
+    "cosine": 5.7,
+    "cosine_cal": 5.7
+   },
+   "sha256": "640546d66d7fd3ff6a1f586b1fce2dd29aa861e241f41af1344426dec6c94e4d"
+  },
+  "musique frozen": {
+   "calls_mrr_t": {
+    "H3 rotation_cal - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 2883
+    },
+    "cosine_cal - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 2883
+    },
+    "rotation_cal - cosine": {
+     "diff": 7.37,
+     "lo": 6.52,
+     "hi": 8.23,
+     "call": "ABOVE",
+     "groups": 2883
+    },
+    "rotation - cosine": {
+     "diff": 7.37,
+     "lo": 6.52,
+     "hi": 8.23,
+     "call": "ABOVE",
+     "groups": 2883
+    }
+   },
+   "beside_pooled": {
+    "H3 rotation_cal - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "cosine_cal - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "rotation_cal - cosine": {
+     "diff": 7.87,
+     "lo": 7.04,
+     "hi": 8.74,
+     "call": "ABOVE"
+    },
+    "rotation - cosine": {
+     "diff": 7.87,
+     "lo": 7.04,
+     "hi": 8.74,
+     "call": "ABOVE"
+    }
+   },
+   "betas": {
+    "rotation": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "R.title_comention": 0.0
+    },
+    "cosine": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "R.title_comention": 0.0
+    }
+   },
+   "mrr_t": {
+    "rotation": 13.52,
+    "rotation_cal": 13.52,
+    "cosine": 6.14,
+    "cosine_cal": 6.14
+   },
+   "pooled": {
+    "rotation": 13.87,
+    "rotation_cal": 13.87,
+    "cosine": 6.0,
+    "cosine_cal": 6.0
+   },
+   "sha256": "8b0af0eb60b9a6b715d06c1487f3cef6e2549fd4d973bafd9b9a009aa35fda25"
+  },
+  "metaqa e3v": {
+   "calls_mrr_t": {
+    "H3 rotation_cal - rotation": {
+     "diff": -0.02,
+     "lo": -0.03,
+     "hi": -0.0,
+     "call": "BELOW",
+     "groups": 5201
+    },
+    "cosine_cal - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 5201
+    },
+    "rotation_cal - cosine": {
+     "diff": 5.61,
+     "lo": 5.1,
+     "hi": 6.13,
+     "call": "ABOVE",
+     "groups": 5201
+    },
+    "rotation - cosine": {
+     "diff": 5.63,
+     "lo": 5.11,
+     "hi": 6.14,
+     "call": "ABOVE",
+     "groups": 5201
+    }
+   },
+   "beside_pooled": {
+    "H3 rotation_cal - rotation": {
+     "diff": -0.02,
+     "lo": -0.03,
+     "hi": -0.0,
+     "call": "BELOW"
+    },
+    "cosine_cal - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "rotation_cal - cosine": {
+     "diff": 12.3,
+     "lo": 11.72,
+     "hi": 12.91,
+     "call": "ABOVE"
+    },
+    "rotation - cosine": {
+     "diff": 12.31,
+     "lo": 11.74,
+     "hi": 12.92,
+     "call": "ABOVE"
+    }
+   },
+   "betas": {
+    "rotation": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "S.starred_actors": 0.0,
+     "S.has_tags": 0.0,
+     "S.written_by": 0.25,
+     "S.release_year": 0.0,
+     "S.directed_by": 0.0,
+     "S.has_genre": 0.0,
+     "S.in_language": 0.0,
+     "S.other": 0.0
+    },
+    "cosine": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "S.starred_actors": 0.0,
+     "S.has_tags": 0.0,
+     "S.written_by": 0.0,
+     "S.release_year": 0.0,
+     "S.directed_by": 0.0,
+     "S.has_genre": 0.0,
+     "S.in_language": 0.0,
+     "S.other": 0.0
+    }
+   },
+   "mrr_t": {
+    "rotation": 10.23,
+    "rotation_cal": 10.21,
+    "cosine": 4.6,
+    "cosine_cal": 4.6
+   },
+   "pooled": {
+    "rotation": 15.68,
+    "rotation_cal": 15.67,
+    "cosine": 3.37,
+    "cosine_cal": 3.37
+   },
+   "sha256": "5b3390ec78ec176fdb8f7ab28744f7ffaaa7f68b28b005cdff283c5c398b4c42"
+  },
+  "metaqa frozen": {
+   "calls_mrr_t": {
+    "H3 rotation_cal - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 5201
+    },
+    "cosine_cal - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL",
+     "groups": 5201
+    },
+    "rotation_cal - cosine": {
+     "diff": 7.01,
+     "lo": 6.48,
+     "hi": 7.56,
+     "call": "ABOVE",
+     "groups": 5201
+    },
+    "rotation - cosine": {
+     "diff": 7.01,
+     "lo": 6.48,
+     "hi": 7.56,
+     "call": "ABOVE",
+     "groups": 5201
+    }
+   },
+   "beside_pooled": {
+    "H3 rotation_cal - rotation": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "cosine_cal - cosine": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "rotation_cal - cosine": {
+     "diff": 13.65,
+     "lo": 13.02,
+     "hi": 14.28,
+     "call": "ABOVE"
+    },
+    "rotation - cosine": {
+     "diff": 13.65,
+     "lo": 13.02,
+     "hi": 14.28,
+     "call": "ABOVE"
+    }
+   },
+   "betas": {
+    "rotation": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "S.starred_actors": 0.0,
+     "S.has_tags": 0.0,
+     "S.written_by": 0.0,
+     "S.release_year": 0.0,
+     "S.directed_by": 0.0,
+     "S.has_genre": 0.0,
+     "S.in_language": 0.0,
+     "S.other": 0.0
+    },
+    "cosine": {
+     "R.mention": 0.0,
+     "R.name_comention": 0.0,
+     "S.starred_actors": 0.0,
+     "S.has_tags": 0.0,
+     "S.written_by": 0.0,
+     "S.release_year": 0.0,
+     "S.directed_by": 0.0,
+     "S.has_genre": 0.0,
+     "S.in_language": 0.0,
+     "S.other": 0.0
+    }
+   },
+   "mrr_t": {
+    "rotation": 10.89,
+    "rotation_cal": 10.89,
+    "cosine": 3.88,
+    "cosine_cal": 3.88
+   },
+   "pooled": {
+    "rotation": 16.43,
+    "rotation_cal": 16.43,
+    "cosine": 2.79,
+    "cosine_cal": 2.79
+   },
+   "sha256": "b41f7733685b7b44f80843eff4dfc885a4872dfbd94d84642132fc60fb0c9a8f"
+  }
+ },
+ "utc": "2026-11-24T11:54:31Z",
+ "script_sha256": "bd3cac4f9540859dba15469ce71492abf0f93f1c1f45cf0c6aaf681dc89461af"
+}
