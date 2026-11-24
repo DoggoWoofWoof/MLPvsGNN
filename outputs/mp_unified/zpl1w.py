@@ -550,7 +550,13 @@ def cmd_pools(a):
            "seconds": round(time.time() - t0, 1), "script_sha256": script_sha256()}
     st = PK.stem(d, CARVE, (i, k))
     if a.limit:
-        log(f"{d}/{v} {view} {i}of{k}: {len(store)} questions placed, nothing written; {json.dumps(out)[:200]}")
+        pos = np.concatenate([s["pos"] for s in store.values()] or [np.zeros(0, np.int32)])
+        keep_ = np.asarray([s["keep"] for s in store.values()], np.int32)
+        gp = np.concatenate([[0], np.cumsum([s["g"].size for s in store.values()])]).astype(np.int64)
+        cl = classes(pos, keep_, gp)
+        log(f"{d}/{v} {view} {i}of{k}: {len(store)} questions placed ({pos.size} golds: "
+            + ", ".join(f"{n_} {int((cl == c).sum())}" for c, n_ in enumerate(("IN_B", "KEPT", "BEYOND", "OUTSIDE")))
+            + f"), nothing written; {json.dumps(out)[:200]}")
         return 0
     ids = [str(x) for x in np.load(R.parts / f"{st}.npz", allow_pickle=False)["ids"]]
     sha, arr = write_places(places_dir(view, d, v) / f"{st}.npz", ids, store)
