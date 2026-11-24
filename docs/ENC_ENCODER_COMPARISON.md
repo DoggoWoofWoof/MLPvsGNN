@@ -2618,3 +2618,18 @@ wenc.json. The windows and maxima (.npz) stay on the host and the laptop and are
 - **Row:** e4s-gk-2wiki-c's command becomes `python outputs/mp_unified/zenc4sq.py gk --ds 2wiki --threads 4` (the
   card alone, gpu 0.80); e4s-knn-2wiki still waits on it. Estimate: 10 to 15 minutes on the card plus the vector
   load (200,000 query rows against all 5,982,725 candidates is 3.3 % of the full search's multiplications).
+
+### 24.1 Filed (25 November 2026, 04:24 IST)
+
+- **GK-S on 2Wiki, sampled: PASS** (outputs/enc/e4/gks_2wiki.json; row e4s-gks-2wiki).
+  - The sample is 200,000 of 5,982,725 source-row groups (3.34 %), seed 0;
+    20,842 of them are tie rows.
+  - The rebuild made 596,755 pairs. All are in the package's
+    graph/knn.npz (0 rebuilt-only), with weights within 7.2e-07 (tolerance 1e-3).
+  - The record has 897,765 pairs that touch a sampled group. 15,736 have both
+    ends sampled, and all of them are in the rebuild (0 record-only). The other
+    882,029 touch the sample at one end only and are not assessed (24).
+  - Cost: the search took 281 s and the row 332 s on the card alone (peak 9.05 GB), against about
+    3.3 h for the full rebuild.
+- **What follows:** e4s-knn-2wiki, the full all-pairs e3v K on 2Wiki through the resumable wrapper (zenc4sr.py), started at
+  04:17 IST on 25 Nov. HotpotQA's K was built on 25 Nov after its full GK-S (20.11).
