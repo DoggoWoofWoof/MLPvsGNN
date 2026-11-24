@@ -1,0 +1,94 @@
+{
+ "stage": "PL1 S0b",
+ "declared_in": "docs/PL1_MHR_S0.md",
+ "dataset": "multihoprag",
+ "version": "RK",
+ "layout_kind": "B0",
+ "nodes": 609,
+ "nodes_sha256": "4cf1f51f9af49c4c1312d933985e1608808a2517bcd941919eb225170bdb79cf",
+ "inputs": {
+  "links_json_sha256": "97a1f768bae0e0256136220f1a6aa037ec71632918053e89b262a523b2455744",
+  "W2_S_sha256": "00b5b57909411d1ffae9a23fad257f5294731cc97845625d58b4e1ca254a940a",
+  "F0T_sha256": "2e884936ec9398f4ce1395021d63cc68580b77c1ce4ec39ad7bdb231109406ec",
+  "F0_sha256": "345d21c15bfda50834613b27b72bee5122e4e85a258e65973867c762b217305c",
+  "K_e3v_sha256": "869d2c49cee5cc41369dbd6600cda6ee5d0c4ac1ad95c0e6ef2f619fdcc1dea1"
+ },
+ "note": "B0 only: no carried forms (UL2's call for MultiHop-RAG is not filed); the layout and the pools are rebuilt once as a new declared block when it is",
+ "counts": {
+  "version": "RK",
+  "F0T_pairs": 25080,
+  "W2_S_pairs": 2,
+  "S_pairs": null,
+  "K_pairs_in": 1366,
+  "carried_pairs": 0,
+  "ner_pairs_in": 25080,
+  "ner_removed_in_S": 0,
+  "knn_removed_in_SR": 1103,
+  "knn_pairs_out": 263,
+  "ner_pairs_out": 25080,
+  "structural_pairs": 2,
+  "structural_S": 0,
+  "structural_R": 2,
+  "tiers": {
+   "F0T": 25080,
+   "carried": 0
+  },
+  "union": 25343
+ },
+ "gate_GF": {
+  "F0T_keys_equal": true,
+  "CN_all_keys_equal": true,
+  "F0T_pairs": 25080,
+  "CN_all_pairs": 25005,
+  "weights_positive": true,
+  "triple_keys_equal": true,
+  "verdict": "PASS"
+ },
+ "gate_GL": {
+  "knn_disjoint_from_structural": true,
+  "knn_disjoint_from_ner": true,
+  "ner_disjoint_from_S": true,
+  "labels": {
+   "S": 0,
+   "R": 2,
+   "S_expected": 0,
+   "equal": true
+  },
+  "union": {
+   "stores": 25343,
+   "layout": 25343,
+   "equal": true
+  },
+  "verdict": "PASS",
+  "counts_vs_links_json": {
+   "W2_S_pairs": {
+    "here": 2,
+    "mhr1": 2,
+    "equal": true
+   },
+   "R": {
+    "here": 25080,
+    "mhr1": 25080,
+    "equal": true
+   },
+   "K_store": {
+    "here": 263,
+    "mhr1": 263,
+    "equal": true
+   },
+   "RK": {
+    "here": 25343,
+    "mhr1": 25343,
+    "equal": true
+   }
+  },
+  "row_order_equals_FamilyCSR": {
+   "ner": true,
+   "knn": true
+  }
+ },
+ "layout_npz_sha256": "521512f421f633acd1fec448db152c6e26598f04c31f253e8bf54e3a428f16d3",
+ "seconds": 7.2,
+ "utc": "2026-11-24T22:24:18Z",
+ "script_sha256": "38a5e39cfd6411141961c2bd49d136272cf312cd54a790794e34caf1a8f9ec38"
+}
