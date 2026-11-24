@@ -97,9 +97,10 @@ hold. The layout file records each typed-store pair's label (S or R), so no coun
 
 **All weights are kept (2e: "we will keep all weights").** Every pair keeps the weight its own rule gave it: S and W2_S their EM
 relation type and (W2_S, on the passage datasets) score class, F0T its 1/df, a carried pair its form's score and rank, K its
-cosine. Nothing is dropped from the layout. The base pool rule is PKO's pick O exactly as filed and reads what it reads (above
-all the typed store's types and classes, and the other two stores' order); a walk that also reads the ner or knn weights, or
-walks R in some other way, is a candidate for an improvement round (section 7), declared with its evidence before it is built.
+cosine. Nothing is dropped from the layout. The base pool rule is PKO's pick O as filed, less the two scores that 2g
+removes (the EM relation type and the score class): the walk reads the steer and each store's row order and no per-link weight.
+A walk that reads each family's own weights, or walks R in some other way, is a candidate for an improvement round
+(section 7), declared with its evidence before it is built.
 
 **Row order, not weight.** The survey (zu2m_a, step4_pool_reach) found that the walk does not read a family's weight: a ner or
 knn edge counts 1 times the steer, and the structural edge counts the EM and score type's weight. A store's weight only
@@ -109,7 +110,8 @@ pairs by 1/df weight (D83's), then the carried pairs by the form's own score, ti
 K_e3v's weight is the cosine, the larger of the two ends (zenc1b2's `k_edges`). A pair is held by one family only (dedup)
 except inside R.
 
-**Types.** The EM and score types are fitted on the typed store's CSR (zpko checks the entries equal the adjacency's). So the
+**Types (withdrawn for the e3v pools by 2g: the e3v views fit nothing and carry the null type on every entry; what follows is
+what the search view's refit does, as G-T's check of the adapter against the record).** The EM and score types are fitted on the typed store's CSR (zpko checks the entries equal the adjacency's). So the
 types are refitted on every (dataset, version) typed-store CSR (under SRK the SR union of S and W2_S), on e3v's vectors, by
 `zu2m_a_types.types_stage` as ENC E1b part 2 did for its arms; on the union a pair's score class is its class in W2_S's list
 (`zabl_g.lookup_classes`, as ABL filed it) and null where only S holds it. An unsupervised fit on the family's pairs; no question, no gold. One process serves one (dataset,
@@ -121,7 +123,7 @@ version).
 | --- | --- | --- |
 | S1 | **Materialize the layout as walk stores:** one CSR per family and per version, from B0 and each dataset's `outputs/ul2c/<d>/carried.npz` (the kept pairs beyond B0 with the carried forms' bit per pair, written by `zul2c.write_carried` when the call is filed). New code only; nothing of UL2 is edited. | G-L: every family's pair count equals UL2's grade counts; dedup exact (no pair in two families); labels' bit counts equal the grade's |
 | S2 | **The e3v first stage** for every question: the E0 lists. | G-E: R@5 and R@1000 equal E4's filed values (E6 for MultiHop-RAG) |
-| S2b | **Refit the EM and score types** on each (dataset, version) structural CSR with e3v's vectors (`types_stage`). | G-T: the same code on the OLD structural CSR with the frozen vectors reproduces the filed types array for array (E1b2's GT) |
+| S2b | **No types (2g).** The e3v pools carry no EM relation type and no score class: the files hold the null type on every entry, in the loaders' own form, and fit nothing. The refit with the frozen vectors on the record's slot stays on the search view, as G-T's check of the adapter. | G-T: the same code on the OLD structural CSR with the frozen vectors reproduces the filed types array for array (E1b2's GT) |
 | S3 | **The adapter reproduces the record.** ENC E1b part 2's two gates, on every dataset: GV (the record view: PKO's own pass through the adapter equals PKO's filed part, array by array, on one part per dataset) and GS (the search view: the frozen first stage through the new world's code path holds the golds as the filed pools do, within 0.1 point). | G-I = GV and GS |
 | S4 | **Build the pools** of the eval carves on the new graph and the e3v first stage, in one pass that also writes each gold's place (the reach read, section 4 M3) after the question's pool is final. | the build's own checks (zpko's); G-N: the pool arrays are identical with and without the placement code (no gold reaches the build) |
 | S5 | **Grade** M1 to M4 (section 4), on the eval carves. | G-C: the grade's pool-size and gold counts equal the build's |
@@ -227,7 +229,7 @@ HotpotQA each under RK and SRK. Nine arms.
   - `outputs/pl1/<d>/<v>/layout.{npz,json}`: S1's pair tables and gate G-L (`zpl1m.py`, committed). The typed store's pairs
     with their label (`struct_key`, `struct_label`: 0 S, 1 R), the ner store's with their tier and order key, the knn store's
     with their cosine.
-  - `outputs/pl1/<d>/<v>/types/<d>.{npz,json}`: S2b's EM and score types.
+  - `outputs/pl1/<d>/<v>/types/<d>.{npz,json}`: S2b's files (2g: the null type on every entry; the search view's own folder holds the refit G-T checks).
   - `outputs/pl1/<d>/<v>/pools/parts/<d>__s1eval__<i>of<k>.{npz,json}` and `.kt.npy`: zpko's own part format.
   - `outputs/pl1/<d>/<v>/places/<d>__s1eval__<i>of<k>.npz`: the reach read, one row per gold. Per question: `ids`, `keep`
     (the cut), `kt_len` (|kt_cos|), `g_ptr`. Per gold: `g_node`, `pos` (0 in B, p >= 1 the p-th node of kt_cos, -1 in no
@@ -264,6 +266,42 @@ HotpotQA each under RK and SRK. Nine arms.
   dev beside it. The modules written for six datasets are not edited (they stay pinned); the MultiHop-RAG record chain is
   new modules, declared as step S0 of this page after a read-only survey of what each module reads per dataset, before any
   number. What stays as 2a says: there is no pool of record to compare against, so its comparison is the first stage at equal rows.
+- **Amendment 2g (25 Nov, before any number): the EM relation type and the score class leave the pools.** The user, after
+  being shown what the two scores are, where the walk reads them and what they gained: "i dont think this scoring is even
+  helpful anywhere if it isnt having much gain i am on board with removing it, rather we should focus our time on the semantic
+  space and better vectors so that these scores wont even be necessary"; asked whether to drop only the class or both, they
+  chose both, and on the wording: "i wouldnt say every link is equal if you are scoring all links per family, and if we are
+  relying on improving the rules and precision i think this scoring problem itself would be solved so i think we should
+  simplify this".
+  - **What the record says (frozen encoder, development carves; docs/U2M_POOLS_THREE_FAMILIES.md section 18 and
+    docs/U2P_LINK_SCORE_WALK.md section 7; read, not recomputed).** ALL, the EM type (RWe, beta 0.5) against no weight at
+    the same point: MetaQA +0.0034, MuSiQue +0.0019, HotpotQA +0.0013, 2Wiki -0.0014, SQuAD 0, WebQSP's s1eval +0.0140 (a
+    read filed as beside, not deciding); the missed golds fell from 329 to 207 on MetaQA and from 2,077 to 2,011 on WebQSP's
+    s1eval; the mean pool shrank by 3 rows of 1,812.6. The score class (beta 0.5): MuSiQue +0.0014, HotpotQA +0.0007 (about one
+    question of 1,508), 2Wiki -0.0007, nothing on SQuAD (and no class on the KBs); it cleared U2p's 0.96 level by 0.0002.
+  - **The rule, one for all nine arms and every dataset.** The e3v pools use no EM relation type and no score class. The walk
+    reads the steer and each store's row order and no per-link weight; a typed-store link counts the way a ner or knn link
+    counts today (1 times the steer). That is the carried kernels (zu2m_a's self-test: every weight 1 equals them bit for
+    bit). Every link still keeps its label and its own family's weight on the layout (2e: S, W2_S, F0T's 1/df, a carried
+    form's score and rank, K's cosine); the walk does not read them yet, and the page does not call the links equal.
+    Reading each family's weights is the first candidate when section 7's improvement rounds start, with its evidence
+    declared first. Everything else of pick O is as filed: the walks, KIND_T, the orders, the budget (f 16, k0 0), the cut at
+    0.85 and the equal split of a node's mass among the stores that hold an edge of it.
+  - **What this changes on the page.** S2b is replaced (above): `zpl1w types --view e3v` writes the null-type files and
+    reads no vector, and the arrays are the loaders' own shape so no pinned module is edited. 2e's score-class lookup on the
+    SR union is not used by the e3v pools. Amendment 2f's step S0 for MultiHop-RAG builds no EM or score types, which ends
+    the question of a typed store of two pairs (a fit needs at least 32). The U2k scorer is not needed by any PL1 row.
+  - **What it does not touch.** The gate rows already queued (G-T, GV, GS and the gate row) stay: they check the adapter
+    against a record that had the weights, on the record and search views. The first stage, the models (which never read
+    these two scores) and the labels are untouched.
+  - **Disclosed.** The e3v pools differ from the pools of record in the graph, the encoder and now the weights, and M1 reports
+    them against the record without separating the weights' share. On the frozen encoder that share is at most 0.0034 of ALL
+    on five datasets and 0.0140 on WebQSP's s1eval, and the user ruled it not worth a separate read. Those dev gains are given
+    up. Reopened only on the user's word.
+  - **Gate G-W (declared now, run before any e3v row).** (i) Every entry of the e3v types files, EM and class, is the null
+    type (counted in types.json and checked again by the pools run); (ii) zu2m_a's own self-test, ω = 1 equals the carried
+    kernels bit for bit, passes at the commit the build runs; (iii) the e3v smoke runs end to end on the host with the
+    null-type files. The semantic-space line (SEM2's edge operators) is separate and enters no pool here.
 - **Amendment 2b (25 Nov, after the survey, before any number).** Five things the first draft left out or got wrong, now
   declared: which links each walk family holds per version (2b; the SRK structural slot is S, with W2_S moved into the ner
   family, which is A1's layout and the most arguable choice here); that the walk reads row order and not weight (the carried
