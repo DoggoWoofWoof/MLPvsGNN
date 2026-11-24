@@ -1,0 +1,95 @@
+{
+ "stage": "PL1 gates",
+ "declared_in": "docs/PL1_MHR_S0.md",
+ "dataset": "multihoprag",
+ "carve": "s1sel",
+ "utc": "2026-11-24T22:37:53Z",
+ "G_W_ii": {
+  "zu2m_a_selftest_rc": 0,
+  "verdict": "PASS"
+ },
+ "G_W_iii": {
+  "weights": "off (2g)",
+  "types_in_part_record": {
+   "em_types_sha256": "e8151b2c92fd188cec72b573a289fefc9d06d3116ba4eb2c8a8719ebf15c1270",
+   "score_types_sha256": "e8151b2c92fd188cec72b573a289fefc9d06d3116ba4eb2c8a8719ebf15c1270",
+   "weights": "off (2g)",
+   "entries": 4,
+   "em_entries_non_null": 0,
+   "score_entries_non_null": 0
+  },
+  "verdict": "PASS"
+ },
+ "G_N": {
+  "runs": {
+   "plain2_t1": {
+    "shards": 2,
+    "plain": true,
+    "threads": 1,
+    "identical": true,
+    "per_array": {
+     "ids": true,
+     "inc_size": true,
+     "inc_sha": true,
+     "bs_size": true,
+     "bs_ptr": true,
+     "bs_nodes": true,
+     "ptr": true,
+     "nodes": true,
+     "count": true,
+     "today_count": true,
+     "fill_want": true,
+     "fill_k": true,
+     "x_count": true,
+     "today_inc_size": true,
+     "budget": true,
+     "kt_len": true,
+     "entity": true,
+     "route": true,
+     "changed": true,
+     "kt": true,
+     "keys_equal": true
+    }
+   },
+   "rule3_t2": {
+    "shards": 3,
+    "plain": false,
+    "threads": 2,
+    "identical": true,
+    "per_array": {
+     "ids": true,
+     "inc_size": true,
+     "inc_sha": true,
+     "bs_size": true,
+     "bs_ptr": true,
+     "bs_nodes": true,
+     "ptr": true,
+     "nodes": true,
+     "count": true,
+     "today_count": true,
+     "fill_want": true,
+     "fill_k": true,
+     "x_count": true,
+     "today_inc_size": true,
+     "budget": true,
+     "kt_len": true,
+     "entity": true,
+     "route": true,
+     "changed": true,
+     "kt": true,
+     "keys_equal": true
+    }
+   }
+  },
+  "pool_gold_fields": [],
+  "places_are_a_separate_file": true,
+  "places_keys_shared": [
+   "ids",
+   "kt_len"
+  ],
+  "verdict": "PASS"
+ },
+ "verdict": "PASS",
+ "seconds": 33.8,
+ "script_sha256": "a125962ee01415b09e3229e55d12609514ffbfbce94a8ef035f7a9f84452e3b7"
+}
