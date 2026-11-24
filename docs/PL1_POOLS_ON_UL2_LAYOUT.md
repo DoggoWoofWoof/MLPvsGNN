@@ -47,9 +47,10 @@ work (section 7). It decides nothing about any model.
   D83 section 4 maps them, with the carried forms inside R's slot.
 - **The pick rule.** PKO's pick O exactly as filed (`own/kind_t/kt_cos:ada_f16_k0@0.85`, docs/PKO_PICK_O_POOLS_UNDER_WQ.md
   section 2). **This page adds no constant and changes none.**
-- **Questions.** Every carve the refit will read: the fit carves, the dev carves (s1sel) and the s1eval carves of the six
-  datasets, and MultiHop-RAG's train, dev and test. The measures below are read on the eval carves (s1eval; MultiHop-RAG
-  test); s1sel is read beside.
+- **Questions.** The s1eval carves of the six datasets and MultiHop-RAG's test split (dev beside it): the carves E0's e3v
+  first-stage lists exist for (E0 holds the s1eval rows only). Pools for the fit and s1sel carves are NOT built here: the
+  e3v first stage on those questions does not exist, and the refit's own declaration builds them with this same code once
+  the pools are adopted. The measures below are read on the eval carves.
 
 ### 2a. Universal (the user, 25 Nov: "the pools or the rules or links all should be universal")
 
@@ -67,18 +68,44 @@ work (section 7). It decides nothing about any model.
 - **Enforced in the grade.** `zpl1g` records one hash of the constants and the code path in every dataset's report, and
   `pl1-report` refuses to file when two datasets differ.
 
+### 2b. What each of the three walk families holds, per version (declared now; the survey found it was only implied)
+
+| version | structural family | ner family | knn family |
+| --- | --- | --- | --- |
+| RK (MuSiQue, SQuAD, MultiHop-RAG; 2Wiki and HotpotQA without S) | W2_S | F0T, then the carried forms | K_e3v |
+| SRK (MetaQA, WebQSP; 2Wiki and HotpotQA with S) | S | W2_S and F0T, then the carried forms | K_e3v |
+
+The rule, one for all datasets: **the structural family holds S where the version has S, else W2_S; the ner family holds the
+rest of R (W2_S when S holds the structural slot, F0T, the carried forms); the knn family holds K_e3v.** RK is D83 section 1's
+slot; SRK is A1's (S in the slot, the rule graph inside R). The S > R > K dedup is D83's `d83stores.dedup`: the ner store
+loses the pairs S holds where S exists, nothing is removed inside R, and the knn store loses every pair the other two hold.
+
+**Row order, not weight.** The survey (zu2m_a, step4_pool_reach) found that the walk does not read a family's weight: a ner or
+knn edge counts 1 times the steer, and the structural edge counts the EM and score type's weight. A store's weight only
+fixes the order of each row, which matters where the code reads a row prefix (`capped`, `capped_multi`, `expand_hops`, which
+build the incumbent pool I). So the order is declared, with no new constant: in the ner store each node's row lists the F0T
+pairs by 1/df weight (D83's), then the W2_S-only pairs (SRK), then the carried pairs by the form's own score, ties by node id.
+K_e3v's weight is the cosine, the larger of the two ends (zenc1b2's `k_edges`). A pair is held by one family only (dedup)
+except inside R.
+
+**Types.** The EM and score types are fitted on the structural CSR (zpko checks the entries equal the adjacency's). So the
+types are refitted on every (dataset, version) structural CSR, on e3v's vectors, by `zu2m_a_types.types_stage` as ENC E1b
+part 2 did for its arms. An unsupervised fit on the family's pairs; no question, no gold. One process serves one (dataset,
+version).
+
 ## 3. The steps (each step's record is filed, with its gates, before the next runs)
 
 | step | what | gate (a failure stops that dataset; none of its numbers is read) |
 | --- | --- | --- |
 | S1 | **Materialize the layout as walk stores:** one CSR per family and per version, from B0 and each dataset's `outputs/ul2c/<d>/carried.npz` (the kept pairs beyond B0 with the carried forms' bit per pair, written by `zul2c.write_carried` when the call is filed). New code only; nothing of UL2 is edited. | G-L: every family's pair count equals UL2's grade counts; dedup exact (no pair in two families); labels' bit counts equal the grade's |
 | S2 | **The e3v first stage** for every question: the E0 lists. | G-E: R@5 and R@1000 equal E4's filed values (E6 for MultiHop-RAG) |
-| S3 | **The adapter reproduces the record.** The new world, fed the OLD graph and the frozen first stage, rebuilds one carve's pools of record (the identity check D83 used as G1). | G-I: B, |I_q|, the keep cut and I_q's sha256 equal the record's on one carve per dataset |
-| S4 | **Build the pools** on the new graph and the e3v first stage, all carves of section 2. | the build's own checks (zpko's); no gold is read to build a pool |
+| S2b | **Refit the EM and score types** on each (dataset, version) structural CSR with e3v's vectors (`types_stage`). | G-T: the same code on the OLD structural CSR with the frozen vectors reproduces the filed types array for array (E1b2's GT) |
+| S3 | **The adapter reproduces the record.** ENC E1b part 2's two gates, on every dataset: GV (the record view: PKO's own pass through the adapter equals PKO's filed part, array by array, on one part per dataset) and GS (the search view: the frozen first stage through the new world's code path holds the golds as the filed pools do, within 0.1 point). | G-I = GV and GS |
+| S4 | **Build the pools** of the eval carves on the new graph and the e3v first stage, in one pass that also writes each gold's place (the reach read, section 4 M3) after the question's pool is final. | the build's own checks (zpko's); G-N: the pool arrays are identical with and without the placement code (no gold reaches the build) |
 | S5 | **Grade** M1 to M4 (section 4), on the eval carves. | G-C: the grade's pool-size and gold counts equal the build's |
 | S6 | **The call and the closing rule** (sections 6 and 7). | |
 
-Cost is not measured on the e3v graph. The pools of record cost about 30 to 39 lane-hours for all datasets (PKO's docs);
+Cost is not measured on the e3v graph. PKO's 30 to 39 lane-hours were for all 11 carves; PL1 builds the eval carves only.
 S4 is declared as host rows in the feeder's order, and its wall time is reported, not assumed.
 
 ## 4. The measures (the same code and constants on all seven datasets)
@@ -91,12 +118,17 @@ S4 is declared as host rows in the feeder's order, and its wall time is reported
   link inside the pool graph and inside the pool; MuSiQue's chain slots (CH) beside, by hops (2, 3, 4); the KBs' two to ten
   golds as UL1. **A dataset with no oracle pair stands on M3:** SQuAD (one gold per question) has no pair, so its oracle
   comparison is M3 alone. The same rule applies to any dataset that lacks pairs.
-- **M3, the reach diagnosis (new; built from zu2s's per-gold place `pos` and the build's `keep`).** Every gold outside the
-  first stage's top 5 is placed in one class:
+- **M3, the reach diagnosis (new; the per-gold place `pos` of zu2e.places, and the build's `keep`).** `pos` is 0 for a gold
+  in B, p >= 1 for the p-th node of an order, and -1 for a gold in no order. Every gold outside the first stage's top 5 is
+  placed in one class:
   - **IN_B**: already in the first-stage union B;
-  - **KEPT**: not in B, in a walk's order inside the keep cut (the pool reaches it);
-  - **BEYOND**: not in B, in a walk's order but beyond the keep cut (a link path exists; the row budget cut it);
-  - **NOPATH**: in no walk's order (no link path within the walk's depth from any seed).
+  - **KEPT**: not in B, 1 <= pos <= keep (the pool reaches it);
+  - **BEYOND**: not in B, pos > keep (the walks reach it; the row budget cut it);
+  - **OUTSIDE**: pos = -1, in no order: outside every source, the walks' depth and the NMAX = 7,000 cut included. This is
+    **not** claimed as "no link path"; where a path test is wanted, the grade reads `one_link` and `in_I` beside.
+
+  The orders are the whole of `question_orders`' (the survey: the kept prefix alone cannot separate BEYOND from OUTSIDE), so
+  S4 computes them for the golds in the same pass; the pools file does not hold them.
   
   Read per dataset, per hop on MuSiQue (2, 3, 4), and per label of the walk that placed the gold (KEPT and BEYOND). The
   counts are shares of golds, with paired intervals against the record's pools where the record has them.
@@ -129,13 +161,13 @@ The user: "finalize pools step by step until we are completely finished and dont
 fixed end, decided now:
 
 1. **PL1's report** files M1 to M4 and the call for all seven datasets.
-2. **At most ONE improvement round (PL2).** It runs only if the call is NOT_ADOPTED somewhere, or a dataset's NOPATH
+2. **At most ONE improvement round (PL2).** It runs only if the call is NOT_ADOPTED somewhere, or a dataset's OUTSIDE
    share is above 5% of its golds and M4 names a link form already declared in UL2 (sections 6 and 7), AP or MHB that
    would reach them at precision above the base rate (POINTS). Any form must pass UL2's universal rule (ABOVE somewhere,
    BELOW nowhere, one price bound, carried everywhere or nowhere). No hub step (UL2 8.15). PL2 is declared as its own page
    before it runs.
 3. **After PL2, or at once if it is not needed, the pools are frozen** whatever the numbers: the layout, the pools and the
-   residual (every NOPATH and BEYOND share, named by label) are filed as the standard, and the refit reads them. The link
+   residual (every OUTSIDE and BEYOND share, named by label) are filed as the standard, and the refit reads them. The link
    and pool work is then closed. A later reopening needs the user's explicit word.
 4. **Space.** Only after the closing record is filed: a list of what can be reclaimed (the other encoders' vectors, the
    frozen-pool intermediates the new pools replace, arm worlds nothing reads) is written for the user, each delete on the
@@ -161,6 +193,12 @@ fixed end, decided now:
   filed; PL1's rows wait for it.
 - No UL2 graph materializer exists yet. The one artifact S1 reads is `outputs/ul2c/<d>/carried.npz` (written by `zul2c.write_carried`; it does not exist before the call is filed); S1 writes the walk stores. An earlier line of this page called that file `carved.npz`, which was my wrong name; corrected 25 Nov before any number.
 - The e3v E0 first-stage lists are on the host; whether every dataset's exists is checked by G-E.
-- The closing rule's "one improvement round" and the 5% NOPATH line are mine, a default the user can change before the
+- The closing rule's "one improvement round" and the 5% OUTSIDE line are mine, a default the user can change before the
   first PL1 number is read.
 - This page decides nothing about the models, the paper's numbers, the encoder or the hub line.
+- **Amendment 2b (25 Nov, after the survey, before any number).** Five things the first draft left out or got wrong, now
+  declared: which links each walk family holds per version (2b; the SRK structural slot is S, with W2_S moved into the ner
+  family, which is A1's layout and the most arguable choice here); that the walk reads row order and not weight (the carried
+  pairs' order is a rule with no constant); that the EM and score types are refitted per (dataset, version) (step S2b); that
+  E0's e3v lists exist for the s1eval rows only, so the build is the eval carves (fit and s1sel pools are the refit's);
+  and that `pos = -1` means "in no order", not "no link path" (OUTSIDE, not NOPATH).
