@@ -476,10 +476,14 @@ class Source:
 
 
 _OP = {}
+HOST = False                                               # --host: the lab host's package mirror (zpkoh.apply_mirror), as every host job opens it
 
 
 def opened():
     if "op" not in _OP:
+        if HOST:
+            import zpkoh
+            zpkoh.apply_mirror(log)                        # S6.host_mode's checks and the in-memory package_root; no pool code reads it
         import step4_pool_reach as S4
         op = S4.Opened()
         op.S4 = S4
@@ -846,7 +850,7 @@ def cmd_gk(a):
     MC = op.m3b_contract
     names = filed_cells()
     plan = Plan(names)
-    out = {"stage": "PL2 G-K", "declared_in": DOC, "dataset": a.ds, "script_sha256": script_sha256(), "utc": utc()}
+    out = {"stage": "PL2 G-K", "declared_in": DOC, "dataset": a.ds, "script_sha256": script_sha256(), "utc": utc(), "host": HOST}
     if a.ds == MHR:
         arms = {}
         for arm in ("e3v", "frozen"):
@@ -859,7 +863,7 @@ def cmd_gk(a):
             arms[arm] = {**compare_cells(mine, filed), "questions": src.nq}
             log(f"G-K2 {MHR}/{arm}: {arms[arm]['verdict']}, {arms[arm]['cells_here']}/{arms[arm]['cells_filed']} cells, max |diff| {arms[arm]['max_abs_diff']:.3g}")
         out.update({"gate": "G-K2", "arms": arms, "verdict": "PASS" if all(v["verdict"] == "PASS" for v in arms.values()) else "FAIL"})
-        wjson(PL2 / "gk2_multihoprag.json", out)
+        wjson(PL2 / ("gk2_multihoprag_host.json" if HOST else "gk2_multihoprag.json"), out)
         return 0 if out["verdict"] == "PASS" else 3
     src = load_source(a.ds, "filed", "frozen")
     P, S = evaluate(op, src, plan, 0, src.nq)
@@ -878,7 +882,7 @@ def cmd_gk(a):
     if not all(csr.values()):
         res["verdict"] = "FAIL"
     out.update({"gate": "G-K", "questions": src.nq, "population_digest": src.pop_digest, **res, "seconds": round(time.time() - t0, 1), "peak_gb": peak_gb()})
-    wjson(PL2 / f"gk_{a.ds}.json", out)
+    wjson(PL2 / f"gk_{a.ds}{'_host' if HOST else ''}.json", out)
     log(f"G-K {a.ds}: {res['verdict']}, {res['cells_here']}/{res['cells_filed']} cells, max |diff| {res['max_abs_diff']:.3g}, csr {csr} ({out['seconds']} s)")
     return 0 if res["verdict"] == "PASS" else 3
 
@@ -925,7 +929,6 @@ def old_cell(op, ds):
 
 def cmd_select(a):
     gates_passed(a.ds)
-    op = opened()
     g = load_grid(a.ds, "dev", "frozen")
     names = g["names"]
     if cells_sha256(names) != EXPECT_CELLS_SHA256:
@@ -948,7 +951,7 @@ def cmd_select(a):
     out["bought"] = [{"nodes": n, "retrieval": front_at(fr["retrieval"], n), "graph": front_at(fr["graph"], n), "all": front_at(fr["all"], n),
                       "links_bought": (None if front_at(fr["graph"], n) is None or front_at(fr["retrieval"], n) is None
                                        else front_at(fr["graph"], n) - front_at(fr["retrieval"], n))} for n in grid_n]
-    old = old_cell(op, a.ds)
+    old = old_cell(None, a.ds)
     oc = next(t for t in table if t["name"] == old)
     out["old"] = {"name": old, **oc}
     out["table"] = table
@@ -1270,6 +1273,7 @@ def cmd_selftest(a):
 
 
 def main(argv=None):
+    global HOST
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("cells")
@@ -1297,7 +1301,10 @@ def main(argv=None):
     p.add_argument("--ds", required=True)
     p.add_argument("--n", type=int, default=40)
     p.add_argument("--chunk", type=int, default=64)
+    for name in ("gk", "grid", "confirm", "selftest", "gd"):
+        sub.choices[name].add_argument("--host", action="store_true", help="open the package as the lab host's mirror")
     a = ap.parse_args(argv)
+    HOST = bool(getattr(a, "host", False))
     return {"cells": cmd_cells, "gk": cmd_gk, "grid": cmd_grid, "select": cmd_select, "confirm": cmd_confirm, "call": cmd_call,
             "selftest": cmd_selftest, "gd": cmd_gd}[a.cmd](a)
 
