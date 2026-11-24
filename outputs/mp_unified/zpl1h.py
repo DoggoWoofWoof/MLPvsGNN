@@ -936,9 +936,11 @@ def cmd_gates(a):
     rc = A2._selftest()
     res["G_W_ii"] = {"zu2m_a_selftest_rc": rc, "verdict": "PASS" if rc in (0, None) else "FAIL"}
     view = rjson(base_main / "pools" / "parts" / f"{k0}.view.json")
-    tj = view["stats"]
-    res["G_W_iii"] = {"weights": view["weights"], "ctx_types": "built per question set; asserted at open (G-W i)",
-                      "verdict": "PASS" if view["weights"] == "off (2g)" and not view["plain"] else "FAIL"}
+    partj = rjson(base_main / "pools" / "parts" / f"{k0}.json")
+    ty = partj["types"]
+    res["G_W_iii"] = {"weights": view["weights"], "types_in_part_record": ty,
+                      "verdict": "PASS" if (view["weights"] == "off (2g)" and not view["plain"] and ty["weights"] == "off (2g)"
+                                            and ty["em_entries_non_null"] == 0 and ty["score_entries_non_null"] == 0) else "FAIL"}
     base_arrs, base_kt = part_files(base_main, "s1sel", 1)
     runs = {}
     for tag, plain, k, th in (("plain2_t1", True, 2, 1), ("rule3_t2", False, 3, 2)):
