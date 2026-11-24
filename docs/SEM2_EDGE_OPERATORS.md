@@ -463,3 +463,69 @@ Otherwise it is carried nowhere. WebQSP, the frozen arm and pooled MRR are read 
   8.6's rule beside it, marked superseded.
 - zsem2h.py has run rows and is not edited, and its own `report` command is not run. The sem2h-report row runs
   zsem2hr.py.
+
+### 8.10 The calibrated adjustment (R1c; 24 November 2026, 15:47 IST, 10:17 UTC), before any R1c number
+
+**What had been read when it was written:**
+- Part A (8e64299).
+- R1h on two datasets, e3v, MRR_T:
+  - MultiHop-RAG: H1 -0.24 LEVEL; H2 -7.28 BELOW.
+  - SQuAD: H1 -3.78 BELOW (R.mention -6.96); H2 -10.88 BELOW; HB with the adjustment -13.62 BELOW.
+- So under 8.9, HB, the adjustment and the two together are all NOT_CARRIED, whatever the other rows read. No other
+  R1h output had been read (MuSiQue e3v was at HB epoch 1).
+
+**Why.** On the co-mention labels (R.*), a node's degree goes with being a true target. The rotation holds no popularity
+prior there to remove, so the full penalty takes signal away. On MetaQA's hub relations, the same penalty is what part A
+asks for. One fixed strength cannot serve both. So the strength is chosen per read group, on dev, and zero is always one
+of the choices.
+
+**The method (no fit):**
+- R1's saved rotation and the cosine, each as it is.
+- For each read group g, a strength beta_g in {0, 0.25, 0.5, 0.75, 1}. The score is
+  q . x_y - beta_g tau log(1 + deg_L(y)), with tau = 0.05 and deg_L as in 8.3.
+- beta_g is the one with the largest MRR_T on R1's dev sample. A larger beta must beat every smaller one strictly, so
+  ties go to the smaller. beta is never negative: hubs are never pushed up.
+- The test read uses each group's beta_g. beta = 0 everywhere is R1 itself.
+- The cosine gets its own betas, chosen the same way (beside).
+
+**The call (per dataset; e3v decides, frozen is read beside):**
+- **H3:** the calibrated rotation against R1's rotation raw, on MRR_T, with 8.2's paired bootstrap.
+- **Beside:** the calibrated cosine against the cosine; the calibrated rotation against the cosine; the rotation against
+  the cosine; and every one of these on pooled MRR.
+
+**Carry (as 8.9).** The calibrated adjustment is carried into R2 if, on e3v and MRR_T, H3 is ABOVE on MetaQA and BELOW
+on none of the seven datasets.
+- If it is carried, R2 uses it, with the betas chosen again on R2's own dev sample (same grid, same tie rule).
+- If it is not, R2 carries no hub step, and R1's filing reports MRR_T beside pooled MRR. Any further hub step is
+  declared from R1c's per-group reads before any fit.
+
+**Gates:**
+- **G-R** as in 8.5. The dev sample must also be rebuilt from the same graph and seed.
+- **G-B:** at beta = 0, the one-pass ranks must equal zsem2's own rank read exactly, on dev and on test, for the
+  rotation. For the cosine: exactly on dev, and at least 99.9% identical to R1's saved cosine ranks on test.
+- **G-C:** on the self-test, ranks with a different beta per query must equal a full sort, for the cosine and for a
+  trained rotation.
+
+**Expectations, written before any number:**
+- X7: beta = 0 on every R group of SQuAD, MuSiQue and MultiHop-RAG (e3v, rotation).
+- X8: H3 is ABOVE on MetaQA (e3v).
+
+**R1h rows dropped (they cannot change 8.9's verdict):**
+- Not yet run: WebQSP, HotpotQA and 2Wiki e3v, and all seven frozen rows.
+- MuSiQue e3v was running (HB at epoch 1). It is cancelled.
+- MetaQA e3v still runs. Its H1 tells whether a fitted hub fix helps where the hubs are, for the step after this one.
+  It decides nothing here.
+- sem2h-report runs over the rows present. SQuAD's BELOW already sets its verdict.
+
+**Code, rows and outputs:**
+- **Code:** outputs/mp_unified/zsem2hc.py (new). It imports zsem2h and zsem2 and edits neither. Commands: `selftest`,
+  `r1c --ds D --arm A` and `report`. The self-test passed on the laptop before this was committed: G-R, G-B and G-C on
+  the toy.
+- **Rows:**
+  - sem2hc-selftest;
+  - sem2hc-r1c-multihoprag-e3v first: it is small and checks the real path;
+  - then the other e3v rows, MetaQA and WebQSP first, each after its R1 row;
+  - then the frozen rows;
+  - sem2hc-report after the seven e3v rows, and sem2hc-report-all after all fourteen.
+- **Memory** as R1's rows.
+- **Outputs:** outputs/sem2/r1c/. The json and md files are committed; the npz files are not.
