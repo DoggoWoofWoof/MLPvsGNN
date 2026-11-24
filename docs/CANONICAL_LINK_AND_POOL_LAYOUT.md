@@ -75,6 +75,35 @@ ablations we just remove edge families and reuse stuff as much as possible".
   delete; SRK, the arms SWP read (RK, NK, SNK), SWP's training carves (SNKF, NKF), the slot graphs, `u` and every fit
   stay.
 
+## Amendment A6 (25 November 2026, 01:16 IST, 19:46 UTC): the pools are rebuilt on the adopted layout, on all seven datasets
+
+The user, 25 November 2026 (night, IST), in their words. First: "we have our proper encoders frozen and what form are we
+storing then use those do not waste time or memory if we dont have to, finalize pools step by step until we are
+completely finished and dont need to reopen it, check according to the after paper plan if wehave missed out something".
+Then, to the question "Override the 11 Nov rule and rebuild the pools on the final layout?" (the rule is A2 above):
+"yeah do it we can reclaim space also after it and the plans arent dataset specific all the datasets can be compared
+with oracle and reach diagnosis and can be improved do for everything, link improvement with precision is all we need".
+
+- **What this changes.** A2's pool standard (the pools of record stay) is superseded for ONE stage: the pools are rebuilt
+  on the adopted UL2 layout (docs/UL2_LAYOUT_ON_E3V.md; the layout is adopted when the universal call of its sections
+  12.6 and 13 is filed). The stage has its own page, declared before any pool is built (PL1). Until that page is
+  committed and the call is filed, nothing changes: the pools of record stay the standard and the comparison.
+- **What it does not change.** A2's other rule stands (ablations remove edge families and reuse). The pick rule (PKO's
+  pick O) and its constants are not touched here: the page may not add a constant. The models of record and the paper's
+  numbers do not change.
+- **Universal.** The user's words: the plans are not dataset specific. The stage reads the same measures with the same
+  code on all seven datasets: the oracle comparison, the reach diagnosis (section 6, item 3, which asked for it on
+  MuSiQue and WebQSP only), COV's coverage and row measures and the label precision (AP4's form, the ul2p ledger). Where
+  a dataset has no oracle pairs the page says what stands in, and it is the same stand-in rule for every dataset that
+  lacks them.
+- **Improvement.** The user: "link improvement with precision is all we need". Link improvement is judged by precision at
+  the pools' reach, on all seven datasets alike. The page fixes the rule (what counts as an improvement, and the
+  stopping point at which the link and pool work is closed) before any number.
+- **Space.** After the stage's records are filed, space may be reclaimed. Every permanent delete needs the user's OK per
+  action, after the check of outputs/host_cleanup/deleted_*.json and a written record.
+- **Disclosed:** the user's reply answers the question above, which names the 11 November rule; the amendment's wording
+  is mine.
+
 ## 1. The three families
 
 | family | name in older records | what it holds | per dataset |
