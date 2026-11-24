@@ -1,0 +1,492 @@
+{
+ "stage": "SEM2 R1k",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 8.11",
+ "dataset": "metaqa",
+ "arm": "e3v",
+ "dim": 1152,
+ "config": {
+  "extra": 256,
+  "tau": 0.05,
+  "batch": 1024,
+  "neg": 4096,
+  "lr": 0.001,
+  "epoch": 200000,
+  "max_epochs": 10,
+  "patience": 2,
+  "min_op": 500,
+  "top_s": 12,
+  "n_test": 1000,
+  "n_dev": 500
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 245144,
+     "record": 245144
+    },
+    "CN_all": {
+     "pairs": 12605,
+     "record": 12605
+    },
+    "F0T": {
+     "pairs": 12605,
+     "record": 12605
+    },
+    "S": {
+     "pairs": 124669,
+     "record": 124669
+    },
+    "S directed": {
+     "edges": 133571,
+     "pair_relation_rows": 133571,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-B": {
+   "rotation": {
+    "raw_agreement": 1.0,
+    "ceiling_never_worse": true
+   },
+   "cosine": {
+    "raw_agreement": 0.999881,
+    "ceiling_never_worse": true
+   },
+   "verdict": "PASS"
+  }
+ },
+ "nodes": 43234,
+ "operators": [
+  "R.mention",
+  "R.name_comention",
+  "S.directed_by",
+  "S.has_genre",
+  "S.rare",
+  "S.has_tags",
+  "S.in_language",
+  "S.release_year",
+  "S.starred_actors",
+  "S.written_by"
+ ],
+ "read_groups": [
+  "R.mention",
+  "R.name_comention",
+  "S.starred_actors",
+  "S.has_tags",
+  "S.written_by",
+  "S.release_year",
+  "S.directed_by",
+  "S.has_genre",
+  "S.in_language",
+  "S.other"
+ ],
+ "room_points": 1.0,
+ "C": {
+  "diff": 0.9,
+  "lo": 0.78,
+  "hi": 1.02,
+  "call": "ABOVE",
+  "groups": 5201
+ },
+ "verdict": "NO_ROOM",
+ "beside": {
+  "cosine ceiling - cosine": {
+   "diff": 0.12,
+   "lo": 0.08,
+   "hi": 0.16,
+   "call": "ABOVE",
+   "groups": 5201
+  },
+  "pooled C": {
+   "diff": 2.35,
+   "lo": 2.15,
+   "hi": 2.55,
+   "call": "ABOVE"
+  },
+  "crowded_share_pct": {
+   "rotation": 79.06,
+   "cosine": 79.46
+  },
+  "target_degree_zero_pct": 28.75
+ },
+ "per_group_C": {
+  "R.mention": {
+   "diff": 0.25,
+   "lo": 0.12,
+   "hi": 0.43,
+   "call": "ABOVE",
+   "groups": 879
+  },
+  "R.name_comention": {
+   "diff": 2.68,
+   "lo": 2.06,
+   "hi": 3.32,
+   "call": "ABOVE",
+   "groups": 794
+  },
+  "S.starred_actors": {
+   "diff": 0.45,
+   "lo": 0.25,
+   "hi": 0.71,
+   "call": "ABOVE",
+   "groups": 877
+  },
+  "S.has_tags": {
+   "diff": 0.72,
+   "lo": 0.48,
+   "hi": 1.0,
+   "call": "ABOVE",
+   "groups": 721
+  },
+  "S.written_by": {
+   "diff": 0.17,
+   "lo": 0.1,
+   "hi": 0.25,
+   "call": "ABOVE",
+   "groups": 924
+  },
+  "S.release_year": {
+   "diff": 6.99,
+   "lo": 5.8,
+   "hi": 8.25,
+   "call": "ABOVE",
+   "groups": 96
+  },
+  "S.directed_by": {
+   "diff": 0.08,
+   "lo": 0.05,
+   "hi": 0.12,
+   "call": "ABOVE",
+   "groups": 846
+  },
+  "S.has_genre": {
+   "diff": 11.72,
+   "lo": 7.66,
+   "hi": 15.96,
+   "call": "ABOVE",
+   "groups": 21
+  },
+  "S.in_language": {
+   "diff": 7.46,
+   "lo": 5.42,
+   "hi": 9.64,
+   "call": "ABOVE",
+   "groups": 38
+  },
+  "S.other": {
+   "diff": 0.08,
+   "lo": 0.0,
+   "hi": 0.25,
+   "call": "ABOVE",
+   "groups": 5
+  }
+ },
+ "hubs": {
+  "R.mention": {
+   "edges": 1000,
+   "targets": 879,
+   "largest_target_edges": 12,
+   "hub_edge_share": 1.2
+  },
+  "R.name_comention": {
+   "edges": 1000,
+   "targets": 794,
+   "largest_target_edges": 5,
+   "hub_edge_share": 0.0
+  },
+  "S.starred_actors": {
+   "edges": 1000,
+   "targets": 877,
+   "largest_target_edges": 5,
+   "hub_edge_share": 0.0
+  },
+  "S.has_tags": {
+   "edges": 1000,
+   "targets": 721,
+   "largest_target_edges": 36,
+   "hub_edge_share": 7.4
+  },
+  "S.written_by": {
+   "edges": 1000,
+   "targets": 924,
+   "largest_target_edges": 3,
+   "hub_edge_share": 0.0
+  },
+  "S.release_year": {
+   "edges": 1000,
+   "targets": 96,
+   "largest_target_edges": 40,
+   "hub_edge_share": 72.6
+  },
+  "S.directed_by": {
+   "edges": 1000,
+   "targets": 846,
+   "largest_target_edges": 5,
+   "hub_edge_share": 0.0
+  },
+  "S.has_genre": {
+   "edges": 1000,
+   "targets": 21,
+   "largest_target_edges": 261,
+   "hub_edge_share": 98.1
+  },
+  "S.in_language": {
+   "edges": 376,
+   "targets": 38,
+   "largest_target_edges": 71,
+   "hub_edge_share": 81.12
+  },
+  "S.other": {
+   "edges": 42,
+   "targets": 5,
+   "largest_target_edges": 29,
+   "hub_edge_share": 69.05
+  }
+ },
+ "read": {
+  "rotation": {
+   "pooled": {
+    "n": 8418,
+    "mrr": 15.68,
+    "h10": 25.99,
+    "h100": 43.82
+   },
+   "mrr_t": 10.23,
+   "per_group": {
+    "R.mention": {
+     "mrr": 1.65,
+     "mrr_t": 1.29
+    },
+    "R.name_comention": {
+     "mrr": 55.18,
+     "mrr_t": 54.85
+    },
+    "S.starred_actors": {
+     "mrr": 0.84,
+     "mrr_t": 0.81
+    },
+    "S.has_tags": {
+     "mrr": 5.45,
+     "mrr_t": 5.1
+    },
+    "S.written_by": {
+     "mrr": 1.59,
+     "mrr_t": 1.37
+    },
+    "S.release_year": {
+     "mrr": 6.89,
+     "mrr_t": 6.04
+    },
+    "S.directed_by": {
+     "mrr": 1.05,
+     "mrr_t": 0.93
+    },
+    "S.has_genre": {
+     "mrr": 43.77,
+     "mrr_t": 23.5
+    },
+    "S.in_language": {
+     "mrr": 35.47,
+     "mrr_t": 23.36
+    },
+    "S.other": {
+     "mrr": 54.11,
+     "mrr_t": 21.01
+    }
+   }
+  },
+  "rotation_ceiling": {
+   "pooled": {
+    "n": 8418,
+    "mrr": 18.03,
+    "h10": 29.46,
+    "h100": 45.45
+   },
+   "mrr_t": 11.13,
+   "per_group": {
+    "R.mention": {
+     "mrr": 1.91,
+     "mrr_t": 1.54
+    },
+    "R.name_comention": {
+     "mrr": 57.59,
+     "mrr_t": 57.53
+    },
+    "S.starred_actors": {
+     "mrr": 1.27,
+     "mrr_t": 1.26
+    },
+    "S.has_tags": {
+     "mrr": 6.18,
+     "mrr_t": 5.82
+    },
+    "S.written_by": {
+     "mrr": 1.77,
+     "mrr_t": 1.54
+    },
+    "S.release_year": {
+     "mrr": 12.56,
+     "mrr_t": 13.04
+    },
+    "S.directed_by": {
+     "mrr": 1.14,
+     "mrr_t": 1.01
+    },
+    "S.has_genre": {
+     "mrr": 51.02,
+     "mrr_t": 35.23
+    },
+    "S.in_language": {
+     "mrr": 42.77,
+     "mrr_t": 30.83
+    },
+    "S.other": {
+     "mrr": 54.12,
+     "mrr_t": 21.09
+    }
+   }
+  },
+  "cosine": {
+   "pooled": {
+    "n": 8418,
+    "mrr": 3.37,
+    "h10": 6.06,
+    "h100": 11.82
+   },
+   "mrr_t": 4.6,
+   "per_group": {
+    "R.mention": {
+     "mrr": 0.49,
+     "mrr_t": 0.54
+    },
+    "R.name_comention": {
+     "mrr": 25.1,
+     "mrr_t": 27.22
+    },
+    "S.starred_actors": {
+     "mrr": 0.07,
+     "mrr_t": 0.08
+    },
+    "S.has_tags": {
+     "mrr": 1.43,
+     "mrr_t": 1.71
+    },
+    "S.written_by": {
+     "mrr": 0.37,
+     "mrr_t": 0.37
+    },
+    "S.release_year": {
+     "mrr": 0.03,
+     "mrr_t": 0.03
+    },
+    "S.directed_by": {
+     "mrr": 0.13,
+     "mrr_t": 0.09
+    },
+    "S.has_genre": {
+     "mrr": 0.26,
+     "mrr_t": 0.27
+    },
+    "S.in_language": {
+     "mrr": 1.11,
+     "mrr_t": 3.05
+    },
+    "S.other": {
+     "mrr": 1.74,
+     "mrr_t": 0.52
+    }
+   }
+  },
+  "cosine_ceiling": {
+   "pooled": {
+    "n": 8418,
+    "mrr": 3.46,
+    "h10": 6.3,
+    "h100": 12.16
+   },
+   "mrr_t": 4.72,
+   "per_group": {
+    "R.mention": {
+     "mrr": 0.65,
+     "mrr_t": 0.72
+    },
+    "R.name_comention": {
+     "mrr": 25.67,
+     "mrr_t": 27.77
+    },
+    "S.starred_actors": {
+     "mrr": 0.09,
+     "mrr_t": 0.1
+    },
+    "S.has_tags": {
+     "mrr": 1.44,
+     "mrr_t": 1.72
+    },
+    "S.written_by": {
+     "mrr": 0.37,
+     "mrr_t": 0.37
+    },
+    "S.release_year": {
+     "mrr": 0.03,
+     "mrr_t": 0.03
+    },
+    "S.directed_by": {
+     "mrr": 0.13,
+     "mrr_t": 0.09
+    },
+    "S.has_genre": {
+     "mrr": 0.26,
+     "mrr_t": 0.27
+    },
+    "S.in_language": {
+     "mrr": 1.13,
+     "mrr_t": 3.06
+    },
+    "S.other": {
+     "mrr": 1.74,
+     "mrr_t": 0.52
+    }
+   }
+  }
+ },
+ "r1_record_sha256": "b2fd0a33e1ef601c591d8cf6e62e2b13229c11ac14fb0f34e05aa429ad1f016f",
+ "r1_npz_sha256": "4fd92a218cbf2817185e78af24da5d89dbcf7df719ae1f9c6785b4f5e8b1bc59",
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+  "ner_npz_sha256": "93065a2311c2b445cc14ce6458457c9e14ec0d3c641a4bc573ef4b175a374cb8",
+  "knn_npz_sha256": "f7c59640e816951148fee791bc8790e026461ee52a5b6741c63859244b5a4a16",
+  "structural_npz_sha256": "1b2027c64b2e62b5cf122f09a246ed4cb485841bf0823fcee246e8bf45bf8570",
+  "w2_s_npz_sha256": "3f2b97d1474552dae2fea1f7f8be5e83f7960950b38c0ca41bd3a78025aa7dd5",
+  "f0t_npz_sha256": "499e8c70d3d7d1375a77a609819aacdd40c8753ac2bf6f3d1ea277c5ae62a7fe",
+  "names_npz_sha256": "0ccad8b4b6a55c2bec41bfd36e6fa83f48dc448964e170cf15a2c191f517d720",
+  "vectors": {
+   "shards": 2,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "a1a7727a9128278299ee04c2d6ae4e8912bc44c3251fbbba4f76993720a53fc6"
+  }
+ },
+ "threads": 8,
+ "seconds": 13.6,
+ "utc": "2026-11-24T10:56:28Z",
+ "script_sha256": "337647514c8c8c1acf1d2a5d3c1f86c716ed22bb15e83bdcd9298dc7684a956e",
+ "zsem2h_sha256": "2588ab5f284d6f1dace715f9ccec1f0cbca664945619fba62ebcca0f05006a3f",
+ "zsem2_sha256": "60208157465631a21f56731ffe90eb6df9367b722e6a479f889ee5f266f2474e",
+ "npz_sha256": "8a2ca25e95a0d4998ea13553f7bbaa7c6875d8b93bbd02cee7a339196dc37a30"
+}

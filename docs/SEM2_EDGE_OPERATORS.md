@@ -590,3 +590,37 @@ The ceiling tells the two apart without a fit.
   - They are queued ahead of the R1c rows still waiting. Those still run as declared, and their report follows them.
 - **Memory** as R1's rows.
 - **Outputs:** outputs/sem2/r1k/. The json and md files are committed; the npz files are not.
+
+### 8.12 Post hoc: the ceiling over seen and unseen targets (24 November 2026, 16:56 IST, 11:26 UTC)
+
+This section is written after reading 8.11's first four rows. It decides nothing, and 8.11's verdict stands as read.
+
+**What had been read (R1k, e3v; C in MRR_T points):**
+- MultiHop-RAG +4.93, ROOM. SQuAD +4.86, ROOM. MuSiQue +2.16, ROOM. So X9 fails.
+- MetaQA +0.90, NO_ROOM. Its hub relations are far above that: has_genre +11.72, in_language +7.46,
+  release_year +6.99.
+- On the co-mention datasets, the room is on labels with no hubs in the test sample (hub share 0.0).
+
+**Why a split.** 7.3's test edges start at a test node and may end at any node. So about a fifth of the targets are test
+or dev nodes, whose training degree is 0 by construction. For those, the ceiling ranks the target only among the nodes of
+degree 0, and so removes every training node with an edge of that label. That measures knowing that the answer is an
+unseen node, not hubs. 8.11's form did not separate the two.
+
+**The read (zsem2hk2.py, new; no ranking is recomputed):**
+- From each R1k npz (sha checked against its record) and the graph, it computes C over:
+  - all test edges (gate G-A: this must equal the record's C exactly);
+  - the edges whose target is a training node ("seen"), and the rest ("unseen");
+  - the seen ones split again by whether the target's degree is above 0.
+- It reports each subset's share of the (read group, target) pairs, and does the same per read group.
+- A toy check on zsem2hk's own self-test output passed before this was committed: G-A holds, the subsets partition the
+  edges, and every unseen target has degree 0.
+
+**What follows.** 8.11 asks for the next hub step on the labels with room. Where that step points depends on where the
+room is:
+- in seen targets: the popularity of training nodes;
+- in unseen targets: the split's unseen nodes, which is an inductive question rather than a hub one.
+
+So the next step is declared after this split is read and before any fit.
+
+**Rows:** sem2hk2-split-<ds> for the seven datasets (e3v), each after its R1k row, with R1k's memory; then
+sem2hk2-report. **Outputs:** outputs/sem2/r1k/split/, committed.
