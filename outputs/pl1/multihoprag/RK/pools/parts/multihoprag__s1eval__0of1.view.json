@@ -1,0 +1,76 @@
+{
+ "stage": "PL1 S0f",
+ "declared_in": "docs/PL1_MHR_S0.md",
+ "dataset": "multihoprag",
+ "version": "RK",
+ "carve": "s1eval",
+ "shard": [
+  0,
+  1
+ ],
+ "limit": 0,
+ "plain": false,
+ "threads": 2,
+ "weights": "off (2g)",
+ "result": {
+  "seconds": 100.52914619445801,
+  "questions": 1130,
+  "check": null
+ },
+ "stats": {
+  "carve": "s1eval",
+  "dataset": "multihoprag",
+  "served": {
+   "canonical": 1,
+   "embeddings": 3,
+   "cache": 2,
+   "opened": 1,
+   "open_dataset": 1,
+   "populations": 1,
+   "union_pools": 1,
+   "family_stores": 1,
+   "graph_csr": 1,
+   "stores": 0,
+   "open_carve": 1
+  },
+  "source_diff": [
+   "-    if prep.dense_ids.shape[1] < 1000 or prep.splade_ids.shape[1] < 1000:",
+   "+    if prep.dense_ids.shape[1] < min(1000, n) or prep.splade_ids.shape[1] < min(1000, n):"
+  ]
+ },
+ "gate_GP": {
+  "s1sel": {
+   "split": "dev",
+   "questions": 224,
+   "n_before": 224,
+   "zero_gold_excluded": 0,
+   "digest": "63f5a2fffabab51620851ada4c4f9fdc7355fff2efc3b5ee9842a2782f5bad79",
+   "ok": true
+  },
+  "s1eval": {
+   "split": "test",
+   "questions": 1130,
+   "n_before": 1130,
+   "zero_gold_excluded": 0,
+   "digest": "dfd1eb644374d0a42bdc69a8d71ed9a16f19debcd320a5e6c3f87085f33664a9",
+   "ok": true
+  },
+  "verdict": "PASS"
+ },
+ "seconds": 112.5,
+ "script_sha256": "a125962ee01415b09e3229e55d12609514ffbfbce94a8ef035f7a9f84452e3b7",
+ "peak_gb": 0.59,
+ "utc": "2026-11-24T22:40:31Z",
+ "places": {
+  "file": "outputs/pl1/multihoprag/RK/places/multihoprag__s1eval__0of1.npz",
+  "sha256": "7c92e2bc8ddeac69b7797e94c7e3c3e3b3c9e0bda17e407cdbd4168be59a1db6",
+  "questions": 1130,
+  "golds": 2985,
+  "classes": {
+   "IN_B": 2925,
+   "KEPT": 0,
+   "BEYOND": 60,
+   "OUTSIDE": 0
+  }
+ }
+}
