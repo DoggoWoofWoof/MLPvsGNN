@@ -1,0 +1,20 @@
+{
+ "dataset": "squad",
+ "declared_in": "docs/UL2P_LABEL_PRECISION_E3V.md",
+ "status": "n/a",
+ "reason": "one gold per question: no gold pair, so the gold-anchored ledger has no cell (section 9, D-P1)",
+ "label_pairs_L2e": {
+  "R.mention": 878200,
+  "R.name_comention": 173645,
+  "R.title_comention": 2809,
+  "R.hub": 60681,
+  "K.knn": 43350
+ },
+ "ul2_grade_sha256": "9215a03a936133840be5e293a85962e1ac63450fb3723924b9773de432d54b35",
+ "seconds": 0.0,
+ "utc": "2026-11-24T20:00:05Z",
+ "zul2p_sha256": "ba7a5d5af124e0af13306a75502239a421f9f4557555a015e0e65fc31e802c8a",
+ "zul2c_sha256": "fb4a3356931308cba6333fde66d55d9b23d0c973fffe219b92ce21dcb25e533e",
+ "zul2u_sha256": "bf41636269905d1a4c4f7a6f704dc723fbce152ef5c4e9852ee1e2621ab9cb6e",
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136"
+}

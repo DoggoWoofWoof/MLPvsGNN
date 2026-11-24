@@ -149,7 +149,111 @@ So UL2P changes the anchor, not the idea:
 
 ## 10. Results
 
-(not filed; the runs have not been made)
+Filed 25 November 2026. Commits: the declaration e51076c; the code ec07431, then 5fef6ff (the report's section-6 lists, added before filing; the engine and every ledger number unchanged). **One dataset is read of seven: MultiHop-RAG, on the laptop.** SQuAD is n/a. The other five need host rows (10.6). Numbers are from `outputs/ul2p/multihoprag/ledger.json` and `report.md`.
+
+**Development log (disclosed).** The self-test on random graphs and on MultiHop-RAG's real shapes printed no measure. The MultiHop-RAG ledger was first run before the REC covered-slot gate and the section-6 lists were in the code; it was re-run with the committed code and its numbers are the same. Nothing else was read.
+
+### 10.1 What was read, and the gates
+
+| dataset | status | cells |
+|---|---|---|
+| MultiHop-RAG | read (RK) | GP: s1eval 1,130 questions and 2,747 slots decides; s1sel 224 questions and 504 slots beside |
+| SQuAD | n/a | no gold pair (D-P1); only 12.6's label sizes |
+| MuSiQue, MetaQA, WebQSP, HotpotQA, 2Wiki | NOT READ | host rows, 10.6 |
+
+**Gates pass on MultiHop-RAG.** G-P1: B0 = 25,343 pairs = S 0 + R 25,080 + K 263, the grade's. G-P2: every form's pairs beyond B0 equal the grade's (H5 2,387; HM 1,332; HK1 2,712; NTc 13,668; NT1 4,604; HK2 4,886; H10 4,588). G-P3: slots, questions and the cover arrays equal the grade's.
+
+### 10.2 MultiHop-RAG, RK, GP, s1eval (precision, reach and "vs any" in points; intervals are 95%)
+
+The graph has 609 nodes, so the any-link graph holds 13.7% of all node pairs. The any-link unit has 89 candidates per anchor, and the uniform-partner base is 0.30%.
+
+| unit | pairs | precision % | reach % | graph price | lift call | vs any |
+|---|---|---|---|---|---|---|
+| label R.mention | 2 | 0.00 [0.00, 0.00] | 0.00 | - | BELOW_BASE | -1.77 BELOW |
+| label R.name_comention | 25,005 | 1.77 [1.70, 1.84] | 84.89 [83.13, 86.73] | 10.7 | POINTS | 0.01 [-0.00, 0.01] LEVEL |
+| label R.title_comention | 75 | 2.08 [0.80, 3.70] | 0.29 [0.11, 0.52] | 9.4 | POINTS | 0.32 [-0.97, 1.94] LEVEL |
+| label K.knn | 1,366 | **9.96 [9.26, 10.72]** | 28.14 [26.25, 30.28] | **1.8** | POINTS | **8.19 [7.51, 8.93] ABOVE** |
+| group R | 25,080 | 1.77 [1.71, 1.85] | 85.18 [83.46, 86.99] | 10.7 | POINTS | 0.01 [0.00, 0.01] ABOVE |
+| group K | 263 | 0.98 [0.47, 1.62] | 0.36 [0.18, 0.61] | 26.3 | POINTS | -0.79 [-1.32, -0.14] BELOW |
+| **any link** | 25,343 | 1.77 [1.70, 1.84] | 85.55 [83.86, 87.32] | 10.8 | POINTS | - |
+| form H5 | 2,387 | 1.05 [0.87, 1.24] | 6.26 [5.20, 7.39] | 13.9 | POINTS | -0.72 [-0.92, -0.50] BELOW |
+| form HM | 1,332 | 1.85 [1.53, 2.19] | 5.53 [4.50, 6.58] | 8.8 | POINTS | 0.09 [-0.27, 0.44] LEVEL |
+| form HK1 | 2,712 | 0.75 [0.61, 0.90] | 4.95 [4.00, 5.89] | 19.9 | POINTS | -1.02 [-1.20, -0.84] BELOW |
+| form NTc | 13,668 | 0.27 [0.22, 0.31] | 6.26 [5.24, 7.31] | 79.5 | NO_LIFT | -1.50 [-1.59, -1.41] BELOW |
+| form NT1 | 4,604 | 0.29 [0.22, 0.36] | 2.33 [1.77, 2.93] | 71.9 | NO_LIFT | -1.48 [-1.59, -1.38] BELOW |
+| form HK2 | 4,886 | 0.60 [0.50, 0.71] | 7.03 [5.87, 8.19] | 25.3 | POINTS | -1.17 [-1.30, -1.03] BELOW |
+| form H10 | 4,588 | 0.71 [0.61, 0.83] | 7.83 [6.61, 9.08] | 21.3 | POINTS | -1.05 [-1.20, -0.90] BELOW |
+
+Reach of a form is beyond B0 (the forms' pairs are the tail), so it is small beside the any-link unit's.
+
+**Exact label sets** (the any-link pairs by the labels they carry):
+
+| labels | share of candidates | precision % | reach % | vs any |
+|---|---|---|---|---|
+| R.name_comention only | 93.9% | 1.26 [1.19, 1.33] | 57.12 | BELOW |
+| R.name_comention and K.knn | 5.1% | **11.32 [10.54, 12.17]** | 27.78 | ABOVE |
+| K.knn only | 0.8% | 0.98 [0.47, 1.62] (20 targets) | 0.36 | BELOW |
+
+**Multi minus single:** +10.03 [9.23, 10.90] points, ABOVE.
+
+**Rank quintiles of each form** (precision %, first and last of five; the paired call is on the difference):
+
+| form | first | last | call | first quintile vs any |
+|---|---|---|---|---|
+| H5 | 3.01 [2.45, 3.61] (266 targets) | 0.06 (2 targets) | ABOVE | ABOVE |
+| HM | 4.58 [3.64, 5.67] (216) | 0.39 (6) | ABOVE | ABOVE |
+| HK1 | 1.93 [1.52, 2.36] (190) | 0.04 (2) | ABOVE | LEVEL |
+| NTc | 0.12 [0.06, 0.19] (28) | 0.08 (24) | LEVEL | BELOW |
+| NT1 | 0.90 [0.67, 1.15] (112) | 0.03 (2) | ABOVE | BELOW |
+| HK2 | 1.93 [1.61, 2.27] (354) | 0.00 (0) | ABOVE | LEVEL |
+| H10 | 1.99 [1.63, 2.35] (326) | 0.00 (0) | ABOVE | LEVEL |
+
+**s1sel beside** (224 questions, 504 slots) agrees on every main call: K.knn 9.41 [7.87, 11.02] ABOVE any; R.name_comention 1.72 LEVEL; any 1.71 [1.56, 1.86]; multi minus single +9.39 [7.56, 11.28] ABOVE. Five small-count units differ in a call: R.title_comention lift (NO_LIFT), group R vs any (LEVEL), group K lift (NO_LIFT) and vs any (LEVEL), form H5 vs any (LEVEL, not BELOW) and form NT1 lift (POINTS, not NO_LIFT).
+
+### 10.3 The expectations (written before any number; decide nothing)
+
+| id | call | reads | detail |
+|---|---|---|---|
+| E1 | HELD | 1 of 1 | MultiHop-RAG's two labels with 20 or more targets (R.name_comention, K.knn) both POINT |
+| E2 | NOT_READ | 0 | HotpotQA, 2Wiki, MuSiQue are not read |
+| E3 | NOT_READ | 0 | MetaQA, WebQSP are not read |
+| E4 | NOT_HELD | 6 of 7 | HM is LEVEL with the any-link unit, not BELOW |
+| E5 | NOT_HELD | 0 of 1 | only NTc has 20 or more targets in both its first and last quintile, and it is LEVEL; the other six forms' last quintiles have 0 to 6 targets, so the declared bar leaves them uncalled, though their paired calls above are ABOVE |
+| E6 | HELD | 1 of 1 | multi minus single +10.03 ABOVE |
+| E7 | NOT_READ | 0 | MuSiQue is not read |
+
+### 10.4 What the MultiHop-RAG read shows (a reading, not a decision)
+
+- **The any-link unit is R.name_comention.** It is 25,005 of 25,343 pairs and gives the any-link reach (85.55%) at 89 candidates per anchor and 1.77% precision, 5.84 [5.69, 5.99] times the uniform base. About one candidate in 56 is the partner.
+- **K.knn is the most precise label and the cheapest to read: 9.96% at 5.2 candidates per anchor, 1.8 pairs per covered slot.** It reaches 28%. **Its precision lives where it agrees with the name co-mention:** R.name_comention and K.knn together give 11.32%, K.knn alone 0.98% (20 targets), R.name_comention alone 1.26%. So the label is a sign of agreement, and a weight on it would be a weight on agreement.
+- **R.mention (2 pairs) and R.title_comention (75 pairs, 0.29% reach) are too small to read on this dataset.** Neither has 20 targets. E2 needs MuSiQue, HotpotQA and 2Wiki.
+- **All seven forms are the tail, as E4 expected, except HM, which is level.** NTc and NT1 (the written forms) are NO_LIFT: 0.27% and 0.29% precision at 72 to 80 pairs per covered slot. The five hub forms POINT, at 0.60% to 1.85%.
+- **The build's rank order carries signal in the hub forms and in NT1, and not in NTc.** Cutting H5 or HM to its first quintile gives 3.01% or 4.58% precision against the any-link unit's 1.77%, both ABOVE it (paired). NTc's first quintile is not above its last.
+
+### 10.5 What follows (names only; no rule, carry or weight changes)
+
+- **Candidate label weight:** K.knn on MultiHop-RAG (POINTS, ABOVE any). Named, not adopted; AP4's D92 stays default no. It is the only label that qualifies on this read.
+- **Candidate tighter cut:** H5 (BELOW any as a whole, its first quintile ABOVE). HM's first quintile is also ABOVE any, but HM is LEVEL as a whole, so the declared rule does not name it.
+- **Flags:** none (no label BELOW any link holds 5% of the any-link candidates; group K is BELOW at 1% of the pairs).
+- **Not read yet:** the S labels (MetaQA, WebQSP, HotpotQA and 2Wiki SRK), E2, E3, E7, and every MuSiQue, MetaQA, WebQSP, HotpotQA and 2Wiki number.
+
+### 10.6 Host rows needed (not in the feed; this stage's author does not edit it)
+
+`ul2p_host_rows.txt` in the sessions' notes folder holds the exact lines (format `line|x|deps|name|cpus|mem|inputs|command`). One row per dataset, 1 CPU, no GPU:
+
+| row | deps | mem (GB, estimate) | command |
+|---|---|---|---|
+| ul2p-musique | ul2c-grade-musique | 8 | `python outputs/host_ops/retry_cmd.py --tries 2 --wait 90 -- python outputs/mp_unified/zul2p.py ledger --ds musique --host --threads 1` |
+| ul2p-metaqa | ul2c-grade-metaqa | 4 | the same with `--ds metaqa` |
+| ul2p-webqsp | ul2c-grade-webqsp | 16 | the same with `--ds webqsp` |
+| ul2p-hotpotqa | ul2c-grade-hotpotqa | 16 | the same with `--ds hotpotqa` |
+| ul2p-2wiki | ul2c-grade-2wiki | 16 | the same with `--ds 2wiki` |
+| ul2p-report | the five rows above | 2 | `python outputs/mp_unified/zul2p.py report` |
+
+- **Inputs:** each ledger row takes its grade row's 29 inputs plus `zap4.py`, `zd83rep.py`, `zul2p.py` and this page. They are new files that exist only on the laptop, so `rx push --inputs` goes first (the feeder never pushes inputs). The report row also takes MultiHop-RAG's and SQuAD's ledger files from the laptop.
+- **Memory is an estimate, to be re-asked at the first measured peak.** 12.6's grade measured 0.28 GB (MuSiQue), 0.36 GB (MetaQA) and 11.73 GB (WebQSP) for the same loads plus its builds.
+- **HotpotQA and 2Wiki** wait behind their e3v K through their grade rows. Their ledgers read both versions (RK and SRK).
+- The pool-anchored ledger on the same units runs after the pools are rebuilt (section 8).
 
 ## 11. Files
 

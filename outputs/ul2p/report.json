@@ -1,0 +1,68 @@
+{
+ "declared_in": "docs/UL2P_LABEL_PRECISION_E3V.md",
+ "datasets": [
+  "multihoprag",
+  "squad"
+ ],
+ "expectations": {
+  "E1": {
+   "call": "HELD",
+   "held": 1,
+   "reads": 1,
+   "detail": []
+  },
+  "E2": {
+   "call": "NOT_READ",
+   "held": 0,
+   "reads": 0,
+   "detail": []
+  },
+  "E3": {
+   "call": "NOT_READ",
+   "held": 0,
+   "reads": 0,
+   "detail": []
+  },
+  "E4": {
+   "call": "NOT_HELD",
+   "held": 6,
+   "reads": 7,
+   "detail": [
+    "multihoprag/RK/GP: HM vs any LEVEL"
+   ]
+  },
+  "E5": {
+   "call": "NOT_HELD",
+   "held": 0,
+   "reads": 1,
+   "detail": [
+    "multihoprag/RK/GP: NTc first vs last quintile LEVEL"
+   ]
+  },
+  "E6": {
+   "call": "HELD",
+   "held": 1,
+   "reads": 1,
+   "detail": [
+    "multihoprag/RK: multi minus single ABOVE: held"
+   ]
+  },
+  "E7": {
+   "call": "NOT_READ",
+   "held": 0,
+   "reads": 0,
+   "detail": []
+  }
+ },
+ "follows": {
+  "weights": [
+   "multihoprag/RK/GP: label:K.knn"
+  ],
+  "cuts": [
+   "multihoprag/RK/GP: H5"
+  ],
+  "flags": []
+ },
+ "utc": "2026-11-24T20:00:06Z",
+ "zul2p_sha256": "ba7a5d5af124e0af13306a75502239a421f9f4557555a015e0e65fc31e802c8a"
+}

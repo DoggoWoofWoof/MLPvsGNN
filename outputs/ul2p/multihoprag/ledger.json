@@ -1,0 +1,4818 @@
+{
+ "dataset": "multihoprag",
+ "declared_in": "docs/UL2P_LABEL_PRECISION_E3V.md",
+ "status": "read",
+ "nodes": 609,
+ "nodes_sha256": "4cf1f51f9af49c4c1312d933985e1608808a2517bcd941919eb225170bdb79cf",
+ "sources": {
+  "grade_json_sha256": "f1e9ef955cd200dac108322a6e25c1a5c8fe11417f9bf26edd008591984671a0",
+  "ranks_npz_sha256": "b0f98e6f178b4fd86638b13865fa3d750f1a4a7f5350236d3ea706223cf73dd9",
+  "links_json_sha256": "97a1f768bae0e0256136220f1a6aa037ec71632918053e89b262a523b2455744"
+ },
+ "gates": {
+  "G-P1": {
+   "RK": {
+    "S": 0,
+    "R": 25080,
+    "K": 263,
+    "B0": 25343
+   }
+  },
+  "G-P2": {
+   "H5": 2387,
+   "HM": 1332,
+   "HK1": 2712,
+   "NTc": 13668,
+   "NT1": 4604,
+   "HK2": 4886,
+   "H10": 4588
+  },
+  "G-P3": {
+   "s1eval/GP": {
+    "slots": 2747,
+    "questions": 1130
+   },
+   "s1sel/GP": {
+    "slots": 504,
+    "questions": 224
+   }
+  }
+ },
+ "anchor_nodes": 541,
+ "versions": {
+  "RK": {
+   "b0": {
+    "S": 0,
+    "R": 25080,
+    "K": 263,
+    "B0": 25343
+   },
+   "cells": {
+    "s1eval": {
+     "GP": {
+      "questions": 1130,
+      "slots": 2747,
+      "units": {
+       "label:R.mention": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 37,
+        "targets": 0,
+        "covered": 0,
+        "price_per_anchor": 0.0124,
+        "reach": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "precision": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01768,
+          "ci": [
+           -0.01838,
+           -0.01701
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 2,
+        "graph_price": null
+       },
+       "label:R.name_comention": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 263060,
+        "targets": 4664,
+        "covered": 2332,
+        "price_per_anchor": 88.1273,
+        "reach": {
+         "pt": 0.84893,
+         "ci": [
+          0.83127,
+          0.86726
+         ]
+        },
+        "precision": {
+         "pt": 0.01773,
+         "ci": [
+          0.01705,
+          0.01844
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 5.85683,
+         "ci": [
+          5.70774,
+          6.00471
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 5e-05,
+          "ci": [
+           -1e-05,
+           0.00011
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 25005,
+        "graph_price": 10.7
+       },
+       "label:R.title_comention": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 768,
+        "targets": 16,
+        "covered": 8,
+        "price_per_anchor": 0.2573,
+        "reach": {
+         "pt": 0.00291,
+         "ci": [
+          0.0011,
+          0.00516
+         ]
+        },
+        "precision": {
+         "pt": 0.02083,
+         "ci": [
+          0.00799,
+          0.03704
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 6.88205,
+         "ci": [
+          2.66715,
+          12.1389
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 0.00316,
+          "ci": [
+           -0.00973,
+           0.01936
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 75,
+        "graph_price": 9.4
+       },
+       "label:K.knn": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 15530,
+        "targets": 1546,
+        "covered": 773,
+        "price_per_anchor": 5.2027,
+        "reach": {
+         "pt": 0.2814,
+         "ci": [
+          0.26254,
+          0.30278
+         ]
+        },
+        "precision": {
+         "pt": 0.09955,
+         "ci": [
+          0.09259,
+          0.10723
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 32.88496,
+         "ci": [
+          30.60906,
+          35.47215
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 0.08187,
+          "ci": [
+           0.07507,
+           0.08933
+          ]
+         },
+         "call": "ABOVE"
+        },
+        "pairs": 1366,
+        "graph_price": 1.8
+       },
+       "group:R": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 263828,
+        "targets": 4680,
+        "covered": 2340,
+        "price_per_anchor": 88.3846,
+        "reach": {
+         "pt": 0.85184,
+         "ci": [
+          0.83462,
+          0.86986
+         ]
+        },
+        "precision": {
+         "pt": 0.01774,
+         "ci": [
+          0.01706,
+          0.01845
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 5.85982,
+         "ci": [
+          5.70922,
+          6.00811
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 6e-05,
+          "ci": [
+           1e-05,
+           0.0001
+          ]
+         },
+         "call": "ABOVE"
+        },
+        "pairs": 25080,
+        "graph_price": 10.7
+       },
+       "group:K": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 2048,
+        "targets": 20,
+        "covered": 10,
+        "price_per_anchor": 0.6861,
+        "reach": {
+         "pt": 0.00364,
+         "ci": [
+          0.00176,
+          0.00614
+         ]
+        },
+        "precision": {
+         "pt": 0.00977,
+         "ci": [
+          0.00469,
+          0.01622
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 3.22596,
+         "ci": [
+          1.52534,
+          5.37411
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.00791,
+          "ci": [
+           -0.01324,
+           -0.00135
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 263,
+        "graph_price": 26.3
+       },
+       "any": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 265876,
+        "targets": 4700,
+        "covered": 2350,
+        "price_per_anchor": 89.0707,
+        "reach": {
+         "pt": 0.85548,
+         "ci": [
+          0.83859,
+          0.87321
+         ]
+        },
+        "precision": {
+         "pt": 0.01768,
+         "ci": [
+          0.01701,
+          0.01838
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 5.83953,
+         "ci": [
+          5.69481,
+          5.98684
+         ]
+        },
+        "lift_call": "POINTS",
+        "pairs": 25343,
+        "graph_price": 10.8
+       },
+       "form:H5": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 32762,
+        "targets": 344,
+        "covered": 172,
+        "price_per_anchor": 10.9755,
+        "reach": {
+         "pt": 0.06261,
+         "ci": [
+          0.05201,
+          0.07386
+         ]
+        },
+        "precision": {
+         "pt": 0.0105,
+         "ci": [
+          0.0087,
+          0.01241
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 3.46854,
+         "ci": [
+          2.8827,
+          4.0983
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.00718,
+          "ci": [
+           -0.00923,
+           -0.00495
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 2387,
+        "graph_price": 13.9
+       },
+       "form:H5:q1": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 8841,
+        "targets": 266,
+        "covered": 133,
+        "price_per_anchor": 2.9618,
+        "reach": {
+         "pt": 0.04842,
+         "ci": [
+          0.03909,
+          0.05841
+         ]
+        },
+        "precision": {
+         "pt": 0.03009,
+         "ci": [
+          0.02451,
+          0.0361
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 9.93893,
+         "ci": [
+          8.13219,
+          11.86713
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 0.01241,
+          "ci": [
+           0.00661,
+           0.01854
+          ]
+         },
+         "call": "ABOVE"
+        },
+        "pairs": 477,
+        "graph_price": 3.6
+       },
+       "form:H5:q2": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 8037,
+        "targets": 52,
+        "covered": 26,
+        "price_per_anchor": 2.6925,
+        "reach": {
+         "pt": 0.00946,
+         "ci": [
+          0.00591,
+          0.01314
+         ]
+        },
+        "precision": {
+         "pt": 0.00647,
+         "ci": [
+          0.00406,
+          0.00897
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 2.13732,
+         "ci": [
+          1.34558,
+          2.98031
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01121,
+          "ci": [
+           -0.01377,
+           -0.00847
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 477,
+        "graph_price": 18.3
+       },
+       "form:H5:q3": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 7172,
+        "targets": 8,
+        "covered": 4,
+        "price_per_anchor": 2.4027,
+        "reach": {
+         "pt": 0.00146,
+         "ci": [
+          0.00035,
+          0.00294
+         ]
+        },
+        "precision": {
+         "pt": 0.00112,
+         "ci": [
+          0.00027,
+          0.00226
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.36848,
+         "ci": [
+          0.08836,
+          0.74762
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01656,
+          "ci": [
+           -0.01778,
+           -0.0152
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 478,
+        "graph_price": 119.5
+       },
+       "form:H5:q4": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 5184,
+        "targets": 16,
+        "covered": 8,
+        "price_per_anchor": 1.7367,
+        "reach": {
+         "pt": 0.00291,
+         "ci": [
+          0.00109,
+          0.00512
+         ]
+        },
+        "precision": {
+         "pt": 0.00309,
+         "ci": [
+          0.00116,
+          0.00537
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 1.01956,
+         "ci": [
+          0.38452,
+          1.78759
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01459,
+          "ci": [
+           -0.01655,
+           -0.01211
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 477,
+        "graph_price": 59.6
+       },
+       "form:H5:q5": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 3528,
+        "targets": 2,
+        "covered": 1,
+        "price_per_anchor": 1.1819,
+        "reach": {
+         "pt": 0.00036,
+         "ci": [
+          0.0,
+          0.00112
+         ]
+        },
+        "precision": {
+         "pt": 0.00057,
+         "ci": [
+          0.0,
+          0.00176
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.18727,
+         "ci": [
+          0.0,
+          0.5862
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01711,
+          "ci": [
+           -0.01821,
+           -0.01556
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 478,
+        "graph_price": 478.0
+       },
+       "form:HM": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 16403,
+        "targets": 304,
+        "covered": 152,
+        "price_per_anchor": 5.4951,
+        "reach": {
+         "pt": 0.05533,
+         "ci": [
+          0.04505,
+          0.06581
+         ]
+        },
+        "precision": {
+         "pt": 0.01853,
+         "ci": [
+          0.01527,
+          0.02191
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 6.12223,
+         "ci": [
+          5.01617,
+          7.24525
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 0.00086,
+          "ci": [
+           -0.00273,
+           0.00444
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 1332,
+        "graph_price": 8.8
+       },
+       "form:HM:q1": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 4713,
+        "targets": 216,
+        "covered": 108,
+        "price_per_anchor": 1.5789,
+        "reach": {
+         "pt": 0.03932,
+         "ci": [
+          0.03081,
+          0.04847
+         ]
+        },
+        "precision": {
+         "pt": 0.04583,
+         "ci": [
+          0.03638,
+          0.05666
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 15.13964,
+         "ci": [
+          12.00401,
+          18.61357
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 0.02815,
+          "ci": [
+           0.01864,
+           0.03903
+          ]
+         },
+         "call": "ABOVE"
+        },
+        "pairs": 266,
+        "graph_price": 2.5
+       },
+       "form:HM:q2": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 3938,
+        "targets": 16,
+        "covered": 8,
+        "price_per_anchor": 1.3193,
+        "reach": {
+         "pt": 0.00291,
+         "ci": [
+          0.00108,
+          0.00515
+         ]
+        },
+        "precision": {
+         "pt": 0.00406,
+         "ci": [
+          0.00152,
+          0.00714
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 1.34216,
+         "ci": [
+          0.50229,
+          2.3641
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01361,
+          "ci": [
+           -0.01635,
+           -0.0104
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 266,
+        "graph_price": 33.2
+       },
+       "form:HM:q3": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 3409,
+        "targets": 56,
+        "covered": 28,
+        "price_per_anchor": 1.142,
+        "reach": {
+         "pt": 0.01019,
+         "ci": [
+          0.00662,
+          0.01424
+         ]
+        },
+        "precision": {
+         "pt": 0.01643,
+         "ci": [
+          0.01082,
+          0.02249
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 5.42651,
+         "ci": [
+          3.56238,
+          7.47667
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.00125,
+          "ci": [
+           -0.00712,
+           0.00495
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 267,
+        "graph_price": 9.5
+       },
+       "form:HM:q4": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 2792,
+        "targets": 10,
+        "covered": 5,
+        "price_per_anchor": 0.9353,
+        "reach": {
+         "pt": 0.00182,
+         "ci": [
+          0.00037,
+          0.00362
+         ]
+        },
+        "precision": {
+         "pt": 0.00358,
+         "ci": [
+          0.00073,
+          0.00701
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 1.18316,
+         "ci": [
+          0.24191,
+          2.31906
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.0141,
+          "ci": [
+           -0.01689,
+           -0.01061
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 266,
+        "graph_price": 53.2
+       },
+       "form:HM:q5": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 1551,
+        "targets": 6,
+        "covered": 3,
+        "price_per_anchor": 0.5196,
+        "reach": {
+         "pt": 0.00109,
+         "ci": [
+          0.0,
+          0.0025
+         ]
+        },
+        "precision": {
+         "pt": 0.00387,
+         "ci": [
+          0.0,
+          0.00854
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 1.27791,
+         "ci": [
+          0.0,
+          2.83658
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01381,
+          "ci": [
+           -0.01753,
+           -0.00905
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 267,
+        "graph_price": 89.0
+       },
+       "form:HK1": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 36211,
+        "targets": 272,
+        "covered": 136,
+        "price_per_anchor": 12.131,
+        "reach": {
+         "pt": 0.04951,
+         "ci": [
+          0.04003,
+          0.05891
+         ]
+        },
+        "precision": {
+         "pt": 0.00751,
+         "ci": [
+          0.00607,
+          0.00895
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 2.48135,
+         "ci": [
+          2.00266,
+          2.96097
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01017,
+          "ci": [
+           -0.01195,
+           -0.0084
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 2712,
+        "graph_price": 19.9
+       },
+       "form:HK1:q1": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 9835,
+        "targets": 190,
+        "covered": 95,
+        "price_per_anchor": 3.2948,
+        "reach": {
+         "pt": 0.03458,
+         "ci": [
+          0.02699,
+          0.04225
+         ]
+        },
+        "precision": {
+         "pt": 0.01932,
+         "ci": [
+          0.01522,
+          0.0236
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 6.38173,
+         "ci": [
+          5.03437,
+          7.80399
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 0.00164,
+          "ci": [
+           -0.00268,
+           0.00621
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 542,
+        "graph_price": 5.7
+       },
+       "form:HK1:q2": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 8561,
+        "targets": 64,
+        "covered": 32,
+        "price_per_anchor": 2.868,
+        "reach": {
+         "pt": 0.01165,
+         "ci": [
+          0.00771,
+          0.01598
+         ]
+        },
+        "precision": {
+         "pt": 0.00748,
+         "ci": [
+          0.00496,
+          0.01026
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 2.46953,
+         "ci": [
+          1.64379,
+          3.39178
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.0102,
+          "ci": [
+           -0.01298,
+           -0.00712
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 542,
+        "graph_price": 16.9
+       },
+       "form:HK1:q3": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 7429,
+        "targets": 8,
+        "covered": 4,
+        "price_per_anchor": 2.4888,
+        "reach": {
+         "pt": 0.00146,
+         "ci": [
+          0.00035,
+          0.00295
+         ]
+        },
+        "precision": {
+         "pt": 0.00108,
+         "ci": [
+          0.00026,
+          0.00217
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.35573,
+         "ci": [
+          0.08564,
+          0.72322
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.0166,
+          "ci": [
+           -0.01775,
+           -0.01522
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 543,
+        "graph_price": 135.8
+       },
+       "form:HK1:q4": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 5402,
+        "targets": 8,
+        "covered": 4,
+        "price_per_anchor": 1.8097,
+        "reach": {
+         "pt": 0.00146,
+         "ci": [
+          0.00036,
+          0.00294
+         ]
+        },
+        "precision": {
+         "pt": 0.00148,
+         "ci": [
+          0.00036,
+          0.00298
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.48921,
+         "ci": [
+          0.11896,
+          0.98981
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.0162,
+          "ci": [
+           -0.01767,
+           -0.01447
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 542,
+        "graph_price": 135.5
+       },
+       "form:HK1:q5": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 4984,
+        "targets": 2,
+        "covered": 1,
+        "price_per_anchor": 1.6697,
+        "reach": {
+         "pt": 0.00036,
+         "ci": [
+          0.0,
+          0.00113
+         ]
+        },
+        "precision": {
+         "pt": 0.0004,
+         "ci": [
+          0.0,
+          0.00124
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.13256,
+         "ci": [
+          0.0,
+          0.41505
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01728,
+          "ci": [
+           -0.01825,
+           -0.01612
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 543,
+        "graph_price": 543.0
+       },
+       "form:NTc": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 129677,
+        "targets": 344,
+        "covered": 172,
+        "price_per_anchor": 43.4429,
+        "reach": {
+         "pt": 0.06261,
+         "ci": [
+          0.05241,
+          0.07308
+         ]
+        },
+        "precision": {
+         "pt": 0.00265,
+         "ci": [
+          0.00224,
+          0.00308
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.8763,
+         "ci": [
+          0.73615,
+          1.01768
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01502,
+          "ci": [
+           -0.01595,
+           -0.0141
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 13668,
+        "graph_price": 79.5
+       },
+       "form:NTc:q1": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 23246,
+        "targets": 28,
+        "covered": 14,
+        "price_per_anchor": 7.7876,
+        "reach": {
+         "pt": 0.0051,
+         "ci": [
+          0.00255,
+          0.00805
+         ]
+        },
+        "precision": {
+         "pt": 0.0012,
+         "ci": [
+          0.0006,
+          0.00187
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.3979,
+         "ci": [
+          0.19988,
+          0.61873
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01647,
+          "ci": [
+           -0.01741,
+           -0.01551
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 2733,
+        "graph_price": 195.2
+       },
+       "form:NTc:q2": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 27991,
+        "targets": 276,
+        "covered": 138,
+        "price_per_anchor": 9.3772,
+        "reach": {
+         "pt": 0.05024,
+         "ci": [
+          0.04124,
+          0.05985
+         ]
+        },
+        "precision": {
+         "pt": 0.00986,
+         "ci": [
+          0.00809,
+          0.01173
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 3.25724,
+         "ci": [
+          2.68188,
+          3.87047
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.00782,
+          "ci": [
+           -0.00989,
+           -0.00567
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 2734,
+        "graph_price": 19.8
+       },
+       "form:NTc:q3": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 25682,
+        "targets": 10,
+        "covered": 5,
+        "price_per_anchor": 8.6037,
+        "reach": {
+         "pt": 0.00182,
+         "ci": [
+          0.00037,
+          0.00365
+         ]
+        },
+        "precision": {
+         "pt": 0.00039,
+         "ci": [
+          8e-05,
+          0.00078
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.12863,
+         "ci": [
+          0.0261,
+          0.25759
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01729,
+          "ci": [
+           -0.01809,
+           -0.01649
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 2733,
+        "graph_price": 546.6
+       },
+       "form:NTc:q4": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 23252,
+        "targets": 6,
+        "covered": 3,
+        "price_per_anchor": 7.7896,
+        "reach": {
+         "pt": 0.00109,
+         "ci": [
+          0.0,
+          0.00255
+         ]
+        },
+        "precision": {
+         "pt": 0.00026,
+         "ci": [
+          0.0,
+          0.00059
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.08524,
+         "ci": [
+          0.0,
+          0.19807
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01742,
+          "ci": [
+           -0.01817,
+           -0.01665
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 2734,
+        "graph_price": 911.3
+       },
+       "form:NTc:q5": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 29506,
+        "targets": 24,
+        "covered": 12,
+        "price_per_anchor": 9.8848,
+        "reach": {
+         "pt": 0.00437,
+         "ci": [
+          0.00214,
+          0.00692
+         ]
+        },
+        "precision": {
+         "pt": 0.00081,
+         "ci": [
+          0.0004,
+          0.00128
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.2687,
+         "ci": [
+          0.13065,
+          0.4266
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01686,
+          "ci": [
+           -0.01769,
+           -0.01603
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 2734,
+        "graph_price": 227.8
+       },
+       "form:NT1": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 44958,
+        "targets": 128,
+        "covered": 64,
+        "price_per_anchor": 15.0613,
+        "reach": {
+         "pt": 0.0233,
+         "ci": [
+          0.01772,
+          0.02934
+         ]
+        },
+        "precision": {
+         "pt": 0.00285,
+         "ci": [
+          0.00216,
+          0.00359
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.94051,
+         "ci": [
+          0.7172,
+          1.18566
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01483,
+          "ci": [
+           -0.01592,
+           -0.01377
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 4604,
+        "graph_price": 71.9
+       },
+       "form:NT1:q1": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 12411,
+        "targets": 112,
+        "covered": 56,
+        "price_per_anchor": 4.1578,
+        "reach": {
+         "pt": 0.02039,
+         "ci": [
+          0.01507,
+          0.02604
+         ]
+        },
+        "precision": {
+         "pt": 0.00902,
+         "ci": [
+          0.00667,
+          0.01146
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 2.98106,
+         "ci": [
+          2.19924,
+          3.79123
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.00865,
+          "ci": [
+           -0.01119,
+           -0.00594
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 920,
+        "graph_price": 16.4
+       },
+       "form:NT1:q2": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 9072,
+        "targets": 10,
+        "covered": 5,
+        "price_per_anchor": 3.0392,
+        "reach": {
+         "pt": 0.00182,
+         "ci": [
+          0.00037,
+          0.00362
+         ]
+        },
+        "precision": {
+         "pt": 0.0011,
+         "ci": [
+          0.00022,
+          0.00217
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.36413,
+         "ci": [
+          0.07371,
+          0.71799
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01658,
+          "ci": [
+           -0.01771,
+           -0.0153
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 921,
+        "graph_price": 184.2
+       },
+       "form:NT1:q3": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 7403,
+        "targets": 4,
+        "covered": 2,
+        "price_per_anchor": 2.4801,
+        "reach": {
+         "pt": 0.00073,
+         "ci": [
+          0.0,
+          0.00183
+         ]
+        },
+        "precision": {
+         "pt": 0.00054,
+         "ci": [
+          0.0,
+          0.00136
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.17849,
+         "ci": [
+          0.0,
+          0.4469
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01714,
+          "ci": [
+           -0.01812,
+           -0.01608
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 921,
+        "graph_price": 460.5
+       },
+       "form:NT1:q4": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 8446,
+        "targets": 0,
+        "covered": 0,
+        "price_per_anchor": 2.8295,
+        "reach": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "precision": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01768,
+          "ci": [
+           -0.01838,
+           -0.01701
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 921,
+        "graph_price": null
+       },
+       "form:NT1:q5": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 7626,
+        "targets": 2,
+        "covered": 1,
+        "price_per_anchor": 2.5548,
+        "reach": {
+         "pt": 0.00036,
+         "ci": [
+          0.0,
+          0.00112
+         ]
+        },
+        "precision": {
+         "pt": 0.00026,
+         "ci": [
+          0.0,
+          0.00082
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.08663,
+         "ci": [
+          0.0,
+          0.27113
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01742,
+          "ci": [
+           -0.01824,
+           -0.0165
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 921,
+        "graph_price": 921.0
+       },
+       "form:HK2": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 64039,
+        "targets": 386,
+        "covered": 193,
+        "price_per_anchor": 21.4536,
+        "reach": {
+         "pt": 0.07026,
+         "ci": [
+          0.05874,
+          0.0819
+         ]
+        },
+        "precision": {
+         "pt": 0.00603,
+         "ci": [
+          0.00503,
+          0.00706
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 1.99114,
+         "ci": [
+          1.66652,
+          2.32693
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01165,
+          "ci": [
+           -0.01302,
+           -0.01029
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 4886,
+        "graph_price": 25.3
+       },
+       "form:HK2:q1": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 18300,
+        "targets": 354,
+        "covered": 177,
+        "price_per_anchor": 6.1307,
+        "reach": {
+         "pt": 0.06443,
+         "ci": [
+          0.05307,
+          0.0757
+         ]
+        },
+        "precision": {
+         "pt": 0.01934,
+         "ci": [
+          0.01609,
+          0.02267
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 6.39016,
+         "ci": [
+          5.30257,
+          7.48287
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 0.00167,
+          "ci": [
+           -0.00188,
+           0.00529
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 977,
+        "graph_price": 5.5
+       },
+       "form:HK2:q2": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 14596,
+        "targets": 8,
+        "covered": 4,
+        "price_per_anchor": 4.8898,
+        "reach": {
+         "pt": 0.00146,
+         "ci": [
+          0.00036,
+          0.00322
+         ]
+        },
+        "precision": {
+         "pt": 0.00055,
+         "ci": [
+          0.00013,
+          0.00121
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.18106,
+         "ci": [
+          0.04377,
+          0.39662
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01713,
+          "ci": [
+           -0.01801,
+           -0.01618
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 977,
+        "graph_price": 244.2
+       },
+       "form:HK2:q3": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 12719,
+        "targets": 16,
+        "covered": 8,
+        "price_per_anchor": 4.261,
+        "reach": {
+         "pt": 0.00291,
+         "ci": [
+          0.00108,
+          0.0051
+         ]
+        },
+        "precision": {
+         "pt": 0.00126,
+         "ci": [
+          0.00047,
+          0.0022
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.41555,
+         "ci": [
+          0.155,
+          0.72941
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01642,
+          "ci": [
+           -0.01751,
+           -0.01525
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 977,
+        "graph_price": 122.1
+       },
+       "form:HK2:q4": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 9584,
+        "targets": 8,
+        "covered": 4,
+        "price_per_anchor": 3.2107,
+        "reach": {
+         "pt": 0.00146,
+         "ci": [
+          0.00035,
+          0.00298
+         ]
+        },
+        "precision": {
+         "pt": 0.00083,
+         "ci": [
+          0.0002,
+          0.00169
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.27574,
+         "ci": [
+          0.06682,
+          0.56773
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01684,
+          "ci": [
+           -0.01789,
+           -0.01572
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 977,
+        "graph_price": 244.2
+       },
+       "form:HK2:q5": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 8840,
+        "targets": 0,
+        "covered": 0,
+        "price_per_anchor": 2.9615,
+        "reach": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "precision": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01768,
+          "ci": [
+           -0.01838,
+           -0.01701
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 978,
+        "graph_price": null
+       },
+       "form:H10": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 60126,
+        "targets": 430,
+        "covered": 215,
+        "price_per_anchor": 20.1427,
+        "reach": {
+         "pt": 0.07827,
+         "ci": [
+          0.0661,
+          0.09078
+         ]
+        },
+        "precision": {
+         "pt": 0.00715,
+         "ci": [
+          0.00608,
+          0.00831
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 2.36247,
+         "ci": [
+          2.00489,
+          2.74995
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01053,
+          "ci": [
+           -0.01201,
+           -0.00899
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 4588,
+        "graph_price": 21.3
+       },
+       "form:H10:q1": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 16395,
+        "targets": 326,
+        "covered": 163,
+        "price_per_anchor": 5.4925,
+        "reach": {
+         "pt": 0.05934,
+         "ci": [
+          0.04797,
+          0.07021
+         ]
+        },
+        "precision": {
+         "pt": 0.01988,
+         "ci": [
+          0.01633,
+          0.02349
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 6.56849,
+         "ci": [
+          5.37285,
+          7.75543
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 0.00221,
+          "ci": [
+           -0.00156,
+           0.0061
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 917,
+        "graph_price": 5.6
+       },
+       "form:H10:q2": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 15785,
+        "targets": 66,
+        "covered": 33,
+        "price_per_anchor": 5.2881,
+        "reach": {
+         "pt": 0.01201,
+         "ci": [
+          0.00799,
+          0.01649
+         ]
+        },
+        "precision": {
+         "pt": 0.00418,
+         "ci": [
+          0.00278,
+          0.00574
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 1.38121,
+         "ci": [
+          0.91923,
+          1.89615
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.0135,
+          "ci": [
+           -0.01519,
+           -0.01164
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 918,
+        "graph_price": 27.8
+       },
+       "form:H10:q3": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 12173,
+        "targets": 20,
+        "covered": 10,
+        "price_per_anchor": 4.0781,
+        "reach": {
+         "pt": 0.00364,
+         "ci": [
+          0.00177,
+          0.00601
+         ]
+        },
+        "precision": {
+         "pt": 0.00164,
+         "ci": [
+          0.0008,
+          0.0027
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.54274,
+         "ci": [
+          0.2629,
+          0.89904
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01603,
+          "ci": [
+           -0.01719,
+           -0.01472
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 917,
+        "graph_price": 91.7
+       },
+       "form:H10:q4": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 8434,
+        "targets": 18,
+        "covered": 9,
+        "price_per_anchor": 2.8255,
+        "reach": {
+         "pt": 0.00328,
+         "ci": [
+          0.00112,
+          0.0055
+         ]
+        },
+        "precision": {
+         "pt": 0.00213,
+         "ci": [
+          0.00074,
+          0.00355
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.70501,
+         "ci": [
+          0.24656,
+          1.178
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01554,
+          "ci": [
+           -0.01712,
+           -0.01392
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 918,
+        "graph_price": 102.0
+       },
+       "form:H10:q5": {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 7339,
+        "targets": 0,
+        "covered": 0,
+        "price_per_anchor": 2.4586,
+        "reach": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "precision": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01768,
+          "ci": [
+           -0.01838,
+           -0.01701
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 918,
+        "graph_price": null
+       }
+      },
+      "exact": [
+       {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 249542,
+        "targets": 3138,
+        "covered": 1569,
+        "price_per_anchor": 83.5987,
+        "reach": {
+         "pt": 0.57117,
+         "ci": [
+          0.54867,
+          0.59371
+         ]
+        },
+        "precision": {
+         "pt": 0.01258,
+         "ci": [
+          0.0119,
+          0.01326
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 4.15402,
+         "ci": [
+          3.97991,
+          4.32718
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.0051,
+          "ci": [
+           -0.00556,
+           -0.00469
+          ]
+         },
+         "call": "BELOW"
+        },
+        "labels": [
+         "R.name_comention"
+        ],
+        "share_of_candidates": 0.93857
+       },
+       {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 13481,
+        "targets": 1526,
+        "covered": 763,
+        "price_per_anchor": 4.5162,
+        "reach": {
+         "pt": 0.27776,
+         "ci": [
+          0.25895,
+          0.29878
+         ]
+        },
+        "precision": {
+         "pt": 0.1132,
+         "ci": [
+          0.10539,
+          0.12171
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 37.39312,
+         "ci": [
+          34.79866,
+          40.30511
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 0.09552,
+          "ci": [
+           0.08791,
+           0.10389
+          ]
+         },
+         "call": "ABOVE"
+        },
+        "labels": [
+         "R.name_comention",
+         "K.knn"
+        ],
+        "share_of_candidates": 0.0507
+       },
+       {
+        "questions": 1130,
+        "anchors": 2985,
+        "slots": 2747,
+        "candidates": 2048,
+        "targets": 20,
+        "covered": 10,
+        "price_per_anchor": 0.6861,
+        "reach": {
+         "pt": 0.00364,
+         "ci": [
+          0.00176,
+          0.00614
+         ]
+        },
+        "precision": {
+         "pt": 0.00977,
+         "ci": [
+          0.00469,
+          0.01622
+         ]
+        },
+        "base": 0.0030271973904610772,
+        "lift": {
+         "pt": 3.22596,
+         "ci": [
+          1.52534,
+          5.37411
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.00791,
+          "ci": [
+           -0.01324,
+           -0.00135
+          ]
+         },
+         "call": "BELOW"
+        },
+        "labels": [
+         "K.knn"
+        ],
+        "share_of_candidates": 0.0077
+       }
+      ],
+      "multi_minus_single": {
+       "diff": {
+        "pt": 0.10031,
+        "ci": [
+         0.09233,
+         0.10901
+        ]
+       },
+       "call": "ABOVE"
+      },
+      "q1_vs_q5": {
+       "H5": {
+        "diff": {
+         "pt": 0.02952,
+         "ci": [
+          0.02389,
+          0.03567
+         ]
+        },
+        "call": "ABOVE"
+       },
+       "HM": {
+        "diff": {
+         "pt": 0.04196,
+         "ci": [
+          0.0316,
+          0.05321
+         ]
+        },
+        "call": "ABOVE"
+       },
+       "HK1": {
+        "diff": {
+         "pt": 0.01892,
+         "ci": [
+          0.01476,
+          0.02315
+         ]
+        },
+        "call": "ABOVE"
+       },
+       "NTc": {
+        "diff": {
+         "pt": 0.00039,
+         "ci": [
+          -0.00037,
+          0.00118
+         ]
+        },
+        "call": "LEVEL"
+       },
+       "NT1": {
+        "diff": {
+         "pt": 0.00876,
+         "ci": [
+          0.00637,
+          0.01124
+         ]
+        },
+        "call": "ABOVE"
+       },
+       "HK2": {
+        "diff": {
+         "pt": 0.01934,
+         "ci": [
+          0.01609,
+          0.02267
+         ]
+        },
+        "call": "ABOVE"
+       },
+       "H10": {
+        "diff": {
+         "pt": 0.01988,
+         "ci": [
+          0.01633,
+          0.02349
+         ]
+        },
+        "call": "ABOVE"
+       }
+      }
+     }
+    },
+    "s1sel": {
+     "GP": {
+      "questions": 224,
+      "slots": 504,
+      "units": {
+       "label:R.mention": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 5,
+        "targets": 0,
+        "covered": 0,
+        "price_per_anchor": 0.0087,
+        "reach": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "precision": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01711,
+          "ci": [
+           -0.01863,
+           -0.01557
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 2,
+        "graph_price": null
+       },
+       "label:R.name_comention": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 49157,
+        "targets": 846,
+        "covered": 423,
+        "price_per_anchor": 85.4904,
+        "reach": {
+         "pt": 0.83929,
+         "ci": [
+          0.80078,
+          0.87475
+         ]
+        },
+        "precision": {
+         "pt": 0.01721,
+         "ci": [
+          0.01565,
+          0.01876
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 5.96892,
+         "ci": [
+          5.65157,
+          6.28895
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 0.0001,
+          "ci": [
+           -3e-05,
+           0.00019
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 25005,
+        "graph_price": 59.1
+       },
+       "label:R.title_comention": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 156,
+        "targets": 2,
+        "covered": 1,
+        "price_per_anchor": 0.2713,
+        "reach": {
+         "pt": 0.00198,
+         "ci": [
+          0.0,
+          0.00634
+         ]
+        },
+        "precision": {
+         "pt": 0.01282,
+         "ci": [
+          0.0,
+          0.04317
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 4.44648,
+         "ci": [
+          0.0,
+          15.29518
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.00429,
+          "ci": [
+           -0.01833,
+           0.02642
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 75,
+        "graph_price": 75.0
+       },
+       "label:K.knn": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 2954,
+        "targets": 278,
+        "covered": 139,
+        "price_per_anchor": 5.1374,
+        "reach": {
+         "pt": 0.27579,
+         "ci": [
+          0.23308,
+          0.32033
+         ]
+        },
+        "precision": {
+         "pt": 0.09411,
+         "ci": [
+          0.07867,
+          0.11021
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 32.63963,
+         "ci": [
+          27.33222,
+          38.4308
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 0.077,
+          "ci": [
+           0.06171,
+           0.09285
+          ]
+         },
+         "call": "ABOVE"
+        },
+        "pairs": 1366,
+        "graph_price": 9.8
+       },
+       "group:R": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 49313,
+        "targets": 848,
+        "covered": 424,
+        "price_per_anchor": 85.7617,
+        "reach": {
+         "pt": 0.84127,
+         "ci": [
+          0.8032,
+          0.87635
+         ]
+        },
+        "precision": {
+         "pt": 0.0172,
+         "ci": [
+          0.01564,
+          0.01874
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 5.96411,
+         "ci": [
+          5.64909,
+          6.28247
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 8e-05,
+          "ci": [
+           -1e-05,
+           0.00014
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 25080,
+        "graph_price": 59.2
+       },
+       "group:K": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 358,
+        "targets": 2,
+        "covered": 1,
+        "price_per_anchor": 0.6226,
+        "reach": {
+         "pt": 0.00198,
+         "ci": [
+          0.0,
+          0.00661
+         ]
+        },
+        "precision": {
+         "pt": 0.00559,
+         "ci": [
+          0.0,
+          0.01858
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 1.93757,
+         "ci": [
+          0.0,
+          6.61303
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01153,
+          "ci": [
+           -0.01828,
+           0.00179
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 263,
+        "graph_price": 263.0
+       },
+       "any": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 49671,
+        "targets": 850,
+        "covered": 425,
+        "price_per_anchor": 86.3843,
+        "reach": {
+         "pt": 0.84325,
+         "ci": [
+          0.80561,
+          0.87833
+         ]
+        },
+        "precision": {
+         "pt": 0.01711,
+         "ci": [
+          0.01557,
+          0.01863
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 5.93508,
+         "ci": [
+          5.61724,
+          6.25345
+         ]
+        },
+        "lift_call": "POINTS",
+        "pairs": 25343,
+        "graph_price": 59.6
+       },
+       "form:H5": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 5964,
+        "targets": 78,
+        "covered": 39,
+        "price_per_anchor": 10.3722,
+        "reach": {
+         "pt": 0.07738,
+         "ci": [
+          0.05285,
+          0.10494
+         ]
+        },
+        "precision": {
+         "pt": 0.01308,
+         "ci": [
+          0.00881,
+          0.01786
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 4.53595,
+         "ci": [
+          3.04987,
+          6.28596
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.00403,
+          "ci": [
+           -0.00898,
+           0.00147
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 2387,
+        "graph_price": 61.2
+       },
+       "form:H5:q1": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 1679,
+        "targets": 70,
+        "covered": 35,
+        "price_per_anchor": 2.92,
+        "reach": {
+         "pt": 0.06944,
+         "ci": [
+          0.04673,
+          0.09562
+         ]
+        },
+        "precision": {
+         "pt": 0.04169,
+         "ci": [
+          0.0282,
+          0.0564
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 14.45967,
+         "ci": [
+          9.75395,
+          19.75979
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 0.02458,
+          "ci": [
+           0.01069,
+           0.04008
+          ]
+         },
+         "call": "ABOVE"
+        },
+        "pairs": 477,
+        "graph_price": 13.6
+       },
+       "form:H5:q2": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 1394,
+        "targets": 4,
+        "covered": 2,
+        "price_per_anchor": 2.4243,
+        "reach": {
+         "pt": 0.00397,
+         "ci": [
+          0.0,
+          0.01033
+         ]
+        },
+        "precision": {
+         "pt": 0.00287,
+         "ci": [
+          0.0,
+          0.00761
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.99519,
+         "ci": [
+          0.0,
+          2.67353
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01424,
+          "ci": [
+           -0.01797,
+           -0.00895
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 477,
+        "graph_price": 238.5
+       },
+       "form:H5:q3": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 1248,
+        "targets": 4,
+        "covered": 2,
+        "price_per_anchor": 2.1704,
+        "reach": {
+         "pt": 0.00397,
+         "ci": [
+          0.0,
+          0.01018
+         ]
+        },
+        "precision": {
+         "pt": 0.00321,
+         "ci": [
+          0.0,
+          0.00831
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 1.11162,
+         "ci": [
+          0.0,
+          2.89685
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01391,
+          "ci": [
+           -0.01791,
+           -0.00845
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 478,
+        "graph_price": 239.0
+       },
+       "form:H5:q4": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 934,
+        "targets": 0,
+        "covered": 0,
+        "price_per_anchor": 1.6243,
+        "reach": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "precision": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01711,
+          "ci": [
+           -0.01863,
+           -0.01557
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 477,
+        "graph_price": null
+       },
+       "form:H5:q5": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 709,
+        "targets": 0,
+        "covered": 0,
+        "price_per_anchor": 1.233,
+        "reach": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "precision": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01711,
+          "ci": [
+           -0.01863,
+           -0.01557
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 478,
+        "graph_price": null
+       },
+       "form:HM": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 3180,
+        "targets": 78,
+        "covered": 39,
+        "price_per_anchor": 5.5304,
+        "reach": {
+         "pt": 0.07738,
+         "ci": [
+          0.05285,
+          0.10504
+         ]
+        },
+        "precision": {
+         "pt": 0.02453,
+         "ci": [
+          0.0169,
+          0.03266
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 8.50704,
+         "ci": [
+          5.84168,
+          11.39017
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 0.00742,
+          "ci": [
+           -0.00079,
+           0.01612
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 1332,
+        "graph_price": 34.2
+       },
+       "form:HM:q1": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 890,
+        "targets": 62,
+        "covered": 31,
+        "price_per_anchor": 1.5478,
+        "reach": {
+         "pt": 0.06151,
+         "ci": [
+          0.03937,
+          0.08631
+         ]
+        },
+        "precision": {
+         "pt": 0.06966,
+         "ci": [
+          0.04513,
+          0.09801
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 24.16087,
+         "ci": [
+          15.50238,
+          34.11143
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 0.05255,
+          "ci": [
+           0.02731,
+           0.08128
+          ]
+         },
+         "call": "ABOVE"
+        },
+        "pairs": 266,
+        "graph_price": 8.6
+       },
+       "form:HM:q2": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 795,
+        "targets": 6,
+        "covered": 3,
+        "price_per_anchor": 1.3826,
+        "reach": {
+         "pt": 0.00595,
+         "ci": [
+          0.0,
+          0.01352
+         ]
+        },
+        "precision": {
+         "pt": 0.00755,
+         "ci": [
+          0.0,
+          0.01665
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 2.61755,
+         "ci": [
+          0.0,
+          5.83609
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.00957,
+          "ci": [
+           -0.0172,
+           -3e-05
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 266,
+        "graph_price": 88.7
+       },
+       "form:HM:q3": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 670,
+        "targets": 6,
+        "covered": 3,
+        "price_per_anchor": 1.1652,
+        "reach": {
+         "pt": 0.00595,
+         "ci": [
+          0.0,
+          0.01392
+         ]
+        },
+        "precision": {
+         "pt": 0.00896,
+         "ci": [
+          0.0,
+          0.02027
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 3.1059,
+         "ci": [
+          0.0,
+          7.12089
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.00816,
+          "ci": [
+           -0.01745,
+           0.0038
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 267,
+        "graph_price": 89.0
+       },
+       "form:HM:q4": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 506,
+        "targets": 2,
+        "covered": 1,
+        "price_per_anchor": 0.88,
+        "reach": {
+         "pt": 0.00198,
+         "ci": [
+          0.0,
+          0.00632
+         ]
+        },
+        "precision": {
+         "pt": 0.00395,
+         "ci": [
+          0.0,
+          0.01258
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 1.37085,
+         "ci": [
+          0.0,
+          4.52407
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01316,
+          "ci": [
+           -0.01832,
+           -0.00375
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 266,
+        "graph_price": 266.0
+       },
+       "form:HM:q5": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 319,
+        "targets": 2,
+        "covered": 1,
+        "price_per_anchor": 0.5548,
+        "reach": {
+         "pt": 0.00198,
+         "ci": [
+          0.0,
+          0.00638
+         ]
+        },
+        "precision": {
+         "pt": 0.00627,
+         "ci": [
+          0.0,
+          0.0212
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 2.17445,
+         "ci": [
+          0.0,
+          7.36254
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01084,
+          "ci": [
+           -0.01843,
+           0.00419
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 267,
+        "graph_price": 267.0
+       },
+       "form:HK1": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 6412,
+        "targets": 46,
+        "covered": 23,
+        "price_per_anchor": 11.1513,
+        "reach": {
+         "pt": 0.04563,
+         "ci": [
+          0.02845,
+          0.06491
+         ]
+        },
+        "precision": {
+         "pt": 0.00717,
+         "ci": [
+          0.00445,
+          0.01029
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 2.48814,
+         "ci": [
+          1.54654,
+          3.57613
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.00994,
+          "ci": [
+           -0.01339,
+           -0.00615
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 2712,
+        "graph_price": 117.9
+       },
+       "form:HK1:q1": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 1797,
+        "targets": 36,
+        "covered": 18,
+        "price_per_anchor": 3.1252,
+        "reach": {
+         "pt": 0.03571,
+         "ci": [
+          0.02058,
+          0.05287
+         ]
+        },
+        "precision": {
+         "pt": 0.02003,
+         "ci": [
+          0.01144,
+          0.02962
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 6.94809,
+         "ci": [
+          3.93335,
+          10.38333
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 0.00292,
+          "ci": [
+           -0.00627,
+           0.01344
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 542,
+        "graph_price": 30.1
+       },
+       "form:HK1:q2": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 1467,
+        "targets": 4,
+        "covered": 2,
+        "price_per_anchor": 2.5513,
+        "reach": {
+         "pt": 0.00397,
+         "ci": [
+          0.0,
+          0.01029
+         ]
+        },
+        "precision": {
+         "pt": 0.00273,
+         "ci": [
+          0.0,
+          0.00711
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.94567,
+         "ci": [
+          0.0,
+          2.48713
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01439,
+          "ci": [
+           -0.01798,
+           -0.00951
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 542,
+        "graph_price": 271.0
+       },
+       "form:HK1:q3": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 1274,
+        "targets": 6,
+        "covered": 3,
+        "price_per_anchor": 2.2157,
+        "reach": {
+         "pt": 0.00595,
+         "ci": [
+          0.0,
+          0.01367
+         ]
+        },
+        "precision": {
+         "pt": 0.00471,
+         "ci": [
+          0.0,
+          0.01081
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 1.6334,
+         "ci": [
+          0.0,
+          3.73021
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.0124,
+          "ci": [
+           -0.01703,
+           -0.00639
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 543,
+        "graph_price": 181.0
+       },
+       "form:HK1:q4": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 936,
+        "targets": 0,
+        "covered": 0,
+        "price_per_anchor": 1.6278,
+        "reach": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "precision": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01711,
+          "ci": [
+           -0.01863,
+           -0.01557
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 542,
+        "graph_price": null
+       },
+       "form:HK1:q5": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 938,
+        "targets": 0,
+        "covered": 0,
+        "price_per_anchor": 1.6313,
+        "reach": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "precision": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01711,
+          "ci": [
+           -0.01863,
+           -0.01557
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 543,
+        "graph_price": null
+       },
+       "form:NTc": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 24801,
+        "targets": 74,
+        "covered": 37,
+        "price_per_anchor": 43.1322,
+        "reach": {
+         "pt": 0.07341,
+         "ci": [
+          0.04952,
+          0.09893
+         ]
+        },
+        "precision": {
+         "pt": 0.00298,
+         "ci": [
+          0.00204,
+          0.00398
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 1.03484,
+         "ci": [
+          0.70299,
+          1.38548
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01413,
+          "ci": [
+           -0.01613,
+           -0.01218
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 13668,
+        "graph_price": 369.4
+       },
+       "form:NTc:q1": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 4326,
+        "targets": 2,
+        "covered": 1,
+        "price_per_anchor": 7.5235,
+        "reach": {
+         "pt": 0.00198,
+         "ci": [
+          0.0,
+          0.00638
+         ]
+        },
+        "precision": {
+         "pt": 0.00046,
+         "ci": [
+          0.0,
+          0.00145
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.16034,
+         "ci": [
+          0.0,
+          0.51413
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01665,
+          "ci": [
+           -0.01843,
+           -0.0148
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 2733,
+        "graph_price": 2733.0
+       },
+       "form:NTc:q2": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 5255,
+        "targets": 66,
+        "covered": 33,
+        "price_per_anchor": 9.1391,
+        "reach": {
+         "pt": 0.06548,
+         "ci": [
+          0.04217,
+          0.09054
+         ]
+        },
+        "precision": {
+         "pt": 0.01256,
+         "ci": [
+          0.00824,
+          0.0173
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 4.35594,
+         "ci": [
+          2.86504,
+          6.00398
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.00455,
+          "ci": [
+           -0.00942,
+           0.00069
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 2734,
+        "graph_price": 82.8
+       },
+       "form:NTc:q3": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 4804,
+        "targets": 2,
+        "covered": 1,
+        "price_per_anchor": 8.3548,
+        "reach": {
+         "pt": 0.00198,
+         "ci": [
+          0.0,
+          0.00625
+         ]
+        },
+        "precision": {
+         "pt": 0.00042,
+         "ci": [
+          0.0,
+          0.00129
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.14439,
+         "ci": [
+          0.0,
+          0.45929
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.0167,
+          "ci": [
+           -0.01847,
+           -0.01482
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 2733,
+        "graph_price": 2733.0
+       },
+       "form:NTc:q4": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 4474,
+        "targets": 4,
+        "covered": 2,
+        "price_per_anchor": 7.7809,
+        "reach": {
+         "pt": 0.00397,
+         "ci": [
+          0.0,
+          0.01025
+         ]
+        },
+        "precision": {
+         "pt": 0.00089,
+         "ci": [
+          0.0,
+          0.00224
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.31008,
+         "ci": [
+          0.0,
+          0.78665
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01622,
+          "ci": [
+           -0.01823,
+           -0.01401
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 2734,
+        "graph_price": 1367.0
+       },
+       "form:NTc:q5": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 5942,
+        "targets": 0,
+        "covered": 0,
+        "price_per_anchor": 10.3339,
+        "reach": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "precision": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01711,
+          "ci": [
+           -0.01863,
+           -0.01557
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 2734,
+        "graph_price": null
+       },
+       "form:NT1": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 8587,
+        "targets": 46,
+        "covered": 23,
+        "price_per_anchor": 14.9339,
+        "reach": {
+         "pt": 0.04563,
+         "ci": [
+          0.02636,
+          0.06544
+         ]
+        },
+        "precision": {
+         "pt": 0.00536,
+         "ci": [
+          0.00308,
+          0.00771
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 1.85792,
+         "ci": [
+          1.06617,
+          2.69067
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01176,
+          "ci": [
+           -0.01481,
+           -0.00873
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 4604,
+        "graph_price": 200.2
+       },
+       "form:NT1:q1": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 2258,
+        "targets": 38,
+        "covered": 19,
+        "price_per_anchor": 3.927,
+        "reach": {
+         "pt": 0.0377,
+         "ci": [
+          0.02016,
+          0.05709
+         ]
+        },
+        "precision": {
+         "pt": 0.01683,
+         "ci": [
+          0.00899,
+          0.02557
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 5.83674,
+         "ci": [
+          3.14047,
+          8.84771
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.00028,
+          "ci": [
+           -0.00854,
+           0.00881
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 920,
+        "graph_price": 48.4
+       },
+       "form:NT1:q2": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 1752,
+        "targets": 2,
+        "covered": 1,
+        "price_per_anchor": 3.047,
+        "reach": {
+         "pt": 0.00198,
+         "ci": [
+          0.0,
+          0.0064
+         ]
+        },
+        "precision": {
+         "pt": 0.00114,
+         "ci": [
+          0.0,
+          0.00361
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.39592,
+         "ci": [
+          0.0,
+          1.29037
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01597,
+          "ci": [
+           -0.01837,
+           -0.01295
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 921,
+        "graph_price": 921.0
+       },
+       "form:NT1:q3": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 1356,
+        "targets": 0,
+        "covered": 0,
+        "price_per_anchor": 2.3583,
+        "reach": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "precision": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01711,
+          "ci": [
+           -0.01863,
+           -0.01557
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 921,
+        "graph_price": null
+       },
+       "form:NT1:q4": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 1615,
+        "targets": 6,
+        "covered": 3,
+        "price_per_anchor": 2.8087,
+        "reach": {
+         "pt": 0.00595,
+         "ci": [
+          0.0,
+          0.01328
+         ]
+        },
+        "precision": {
+         "pt": 0.00372,
+         "ci": [
+          0.0,
+          0.00815
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 1.28852,
+         "ci": [
+          0.0,
+          2.84895
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.0134,
+          "ci": [
+           -0.01749,
+           -0.00855
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 921,
+        "graph_price": 307.0
+       },
+       "form:NT1:q5": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 1606,
+        "targets": 0,
+        "covered": 0,
+        "price_per_anchor": 2.793,
+        "reach": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "precision": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01711,
+          "ci": [
+           -0.01863,
+           -0.01557
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 921,
+        "graph_price": null
+       },
+       "form:HK2": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 11492,
+        "targets": 86,
+        "covered": 43,
+        "price_per_anchor": 19.9861,
+        "reach": {
+         "pt": 0.08532,
+         "ci": [
+          0.05961,
+          0.11313
+         ]
+        },
+        "precision": {
+         "pt": 0.00748,
+         "ci": [
+          0.00516,
+          0.01
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 2.59546,
+         "ci": [
+          1.78296,
+          3.48554
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.00963,
+          "ci": [
+           -0.0128,
+           -0.00644
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 4886,
+        "graph_price": 113.6
+       },
+       "form:HK2:q1": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 3323,
+        "targets": 72,
+        "covered": 36,
+        "price_per_anchor": 5.7791,
+        "reach": {
+         "pt": 0.07143,
+         "ci": [
+          0.04742,
+          0.09877
+         ]
+        },
+        "precision": {
+         "pt": 0.02167,
+         "ci": [
+          0.0144,
+          0.02993
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 7.51472,
+         "ci": [
+          4.94321,
+          10.42581
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 0.00455,
+          "ci": [
+           -0.00332,
+           0.01324
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 977,
+        "graph_price": 27.1
+       },
+       "form:HK2:q2": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 2553,
+        "targets": 6,
+        "covered": 3,
+        "price_per_anchor": 4.44,
+        "reach": {
+         "pt": 0.00595,
+         "ci": [
+          0.0,
+          0.01336
+         ]
+        },
+        "precision": {
+         "pt": 0.00235,
+         "ci": [
+          0.0,
+          0.00527
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.8151,
+         "ci": [
+          0.0,
+          1.83389
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01476,
+          "ci": [
+           -0.01772,
+           -0.01141
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 977,
+        "graph_price": 325.7
+       },
+       "form:HK2:q3": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 2211,
+        "targets": 4,
+        "covered": 2,
+        "price_per_anchor": 3.8452,
+        "reach": {
+         "pt": 0.00397,
+         "ci": [
+          0.0,
+          0.00984
+         ]
+        },
+        "precision": {
+         "pt": 0.00181,
+         "ci": [
+          0.0,
+          0.00458
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.62745,
+         "ci": [
+          0.0,
+          1.57408
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.0153,
+          "ci": [
+           -0.01772,
+           -0.01228
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 977,
+        "graph_price": 488.5
+       },
+       "form:HK2:q4": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 1700,
+        "targets": 0,
+        "covered": 0,
+        "price_per_anchor": 2.9565,
+        "reach": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "precision": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01711,
+          "ci": [
+           -0.01863,
+           -0.01557
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 977,
+        "graph_price": null
+       },
+       "form:HK2:q5": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 1705,
+        "targets": 4,
+        "covered": 2,
+        "price_per_anchor": 2.9652,
+        "reach": {
+         "pt": 0.00397,
+         "ci": [
+          0.0,
+          0.01029
+         ]
+        },
+        "precision": {
+         "pt": 0.00235,
+         "ci": [
+          0.0,
+          0.00607
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.81367,
+         "ci": [
+          0.0,
+          2.16145
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01477,
+          "ci": [
+           -0.01789,
+           -0.01042
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 978,
+        "graph_price": 489.0
+       },
+       "form:H10": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 10944,
+        "targets": 88,
+        "covered": 44,
+        "price_per_anchor": 19.033,
+        "reach": {
+         "pt": 0.0873,
+         "ci": [
+          0.06085,
+          0.11681
+         ]
+        },
+        "precision": {
+         "pt": 0.00804,
+         "ci": [
+          0.00556,
+          0.01084
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 2.7888,
+         "ci": [
+          1.91312,
+          3.79852
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.00907,
+          "ci": [
+           -0.01252,
+           -0.00541
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 4588,
+        "graph_price": 104.3
+       },
+       "form:H10:q1": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 3049,
+        "targets": 74,
+        "covered": 37,
+        "price_per_anchor": 5.3026,
+        "reach": {
+         "pt": 0.07341,
+         "ci": [
+          0.0495,
+          0.10056
+         ]
+        },
+        "precision": {
+         "pt": 0.02427,
+         "ci": [
+          0.0164,
+          0.0327
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 8.41754,
+         "ci": [
+          5.68106,
+          11.40835
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 0.00716,
+          "ci": [
+           -0.00137,
+           0.0162
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "pairs": 917,
+        "graph_price": 24.8
+       },
+       "form:H10:q2": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 2799,
+        "targets": 4,
+        "covered": 2,
+        "price_per_anchor": 4.8678,
+        "reach": {
+         "pt": 0.00397,
+         "ci": [
+          0.0,
+          0.01029
+         ]
+        },
+        "precision": {
+         "pt": 0.00143,
+         "ci": [
+          0.0,
+          0.00379
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.49564,
+         "ci": [
+          0.0,
+          1.31467
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01568,
+          "ci": [
+           -0.01807,
+           -0.01271
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 918,
+        "graph_price": 459.0
+       },
+       "form:H10:q3": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 2216,
+        "targets": 4,
+        "covered": 2,
+        "price_per_anchor": 3.8539,
+        "reach": {
+         "pt": 0.00397,
+         "ci": [
+          0.0,
+          0.01035
+         ]
+        },
+        "precision": {
+         "pt": 0.00181,
+         "ci": [
+          0.0,
+          0.00468
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.62604,
+         "ci": [
+          0.0,
+          1.66099
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01531,
+          "ci": [
+           -0.01798,
+           -0.01193
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 917,
+        "graph_price": 458.5
+       },
+       "form:H10:q4": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 1511,
+        "targets": 6,
+        "covered": 3,
+        "price_per_anchor": 2.6278,
+        "reach": {
+         "pt": 0.00595,
+         "ci": [
+          0.0,
+          0.01357
+         ]
+        },
+        "precision": {
+         "pt": 0.00397,
+         "ci": [
+          0.0,
+          0.00883
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 1.3772,
+         "ci": [
+          0.0,
+          3.06114
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01314,
+          "ci": [
+           -0.01754,
+           -0.00798
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 918,
+        "graph_price": 306.0
+       },
+       "form:H10:q5": {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 1369,
+        "targets": 0,
+        "covered": 0,
+        "price_per_anchor": 2.3809,
+        "reach": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "precision": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "lift_call": "BELOW_BASE",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01711,
+          "ci": [
+           -0.01863,
+           -0.01557
+          ]
+         },
+         "call": "BELOW"
+        },
+        "pairs": 918,
+        "graph_price": null
+       }
+      },
+      "exact": [
+       {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 46556,
+        "targets": 570,
+        "covered": 285,
+        "price_per_anchor": 80.967,
+        "reach": {
+         "pt": 0.56548,
+         "ci": [
+          0.5119,
+          0.61826
+         ]
+        },
+        "precision": {
+         "pt": 0.01224,
+         "ci": [
+          0.01071,
+          0.01372
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 4.24629,
+         "ci": [
+          3.84903,
+          4.65037
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": -0.00487,
+          "ci": [
+           -0.00586,
+           -0.00391
+          ]
+         },
+         "call": "BELOW"
+        },
+        "labels": [
+         "R.name_comention"
+        ],
+        "share_of_candidates": 0.93729
+       },
+       {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 2596,
+        "targets": 276,
+        "covered": 138,
+        "price_per_anchor": 4.5148,
+        "reach": {
+         "pt": 0.27381,
+         "ci": [
+          0.23203,
+          0.318
+         ]
+        },
+        "precision": {
+         "pt": 0.10632,
+         "ci": [
+          0.08873,
+          0.12476
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 36.87358,
+         "ci": [
+          30.8522,
+          43.43745
+         ]
+        },
+        "lift_call": "POINTS",
+        "vs_any": {
+         "diff": {
+          "pt": 0.0892,
+          "ci": [
+           0.07173,
+           0.10725
+          ]
+         },
+         "call": "ABOVE"
+        },
+        "labels": [
+         "R.name_comention",
+         "K.knn"
+        ],
+        "share_of_candidates": 0.05226
+       },
+       {
+        "questions": 224,
+        "anchors": 575,
+        "slots": 504,
+        "candidates": 358,
+        "targets": 2,
+        "covered": 1,
+        "price_per_anchor": 0.6226,
+        "reach": {
+         "pt": 0.00198,
+         "ci": [
+          0.0,
+          0.00661
+         ]
+        },
+        "precision": {
+         "pt": 0.00559,
+         "ci": [
+          0.0,
+          0.01858
+         ]
+        },
+        "base": 0.0028832951945080092,
+        "lift": {
+         "pt": 1.93757,
+         "ci": [
+          0.0,
+          6.61303
+         ]
+        },
+        "lift_call": "NO_LIFT",
+        "vs_any": {
+         "diff": {
+          "pt": -0.01153,
+          "ci": [
+           -0.01828,
+           0.00179
+          ]
+         },
+         "call": "LEVEL"
+        },
+        "labels": [
+         "K.knn"
+        ],
+        "share_of_candidates": 0.00721
+       }
+      ],
+      "multi_minus_single": {
+       "diff": {
+        "pt": 0.09392,
+        "ci": [
+         0.07564,
+         0.11283
+        ]
+       },
+       "call": "ABOVE"
+      },
+      "q1_vs_q5": {
+       "H5": {
+        "diff": {
+         "pt": 0.04169,
+         "ci": [
+          0.0282,
+          0.0564
+         ]
+        },
+        "call": "ABOVE"
+       },
+       "HM": {
+        "diff": {
+         "pt": 0.06339,
+         "ci": [
+          0.0346,
+          0.09291
+         ]
+        },
+        "call": "ABOVE"
+       },
+       "HK1": {
+        "diff": {
+         "pt": 0.02003,
+         "ci": [
+          0.01144,
+          0.02962
+         ]
+        },
+        "call": "ABOVE"
+       },
+       "NTc": {
+        "diff": {
+         "pt": 0.00046,
+         "ci": [
+          0.0,
+          0.00145
+         ]
+        },
+        "call": "LEVEL"
+       },
+       "NT1": {
+        "diff": {
+         "pt": 0.01683,
+         "ci": [
+          0.00899,
+          0.02557
+         ]
+        },
+        "call": "ABOVE"
+       },
+       "HK2": {
+        "diff": {
+         "pt": 0.01932,
+         "ci": [
+          0.01108,
+          0.02804
+         ]
+        },
+        "call": "ABOVE"
+       },
+       "H10": {
+        "diff": {
+         "pt": 0.02427,
+         "ci": [
+          0.0164,
+          0.0327
+         ]
+        },
+        "call": "ABOVE"
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "memory": {
+  "peak_working_set_gb": 0.07,
+  "peak_commit_gb": 0.27
+ },
+ "seconds": 10.7,
+ "utc": "2026-11-24T20:00:03Z",
+ "zul2p_sha256": "ba7a5d5af124e0af13306a75502239a421f9f4557555a015e0e65fc31e802c8a",
+ "zul2c_sha256": "fb4a3356931308cba6333fde66d55d9b23d0c973fffe219b92ce21dcb25e533e",
+ "zul2u_sha256": "bf41636269905d1a4c4f7a6f704dc723fbce152ef5c4e9852ee1e2621ab9cb6e",
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136"
+}
