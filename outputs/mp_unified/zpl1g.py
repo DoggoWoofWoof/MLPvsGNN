@@ -24,7 +24,10 @@ Measures (section 4):
   M4  AP4's ledger (zap4.unit_block, import only) on the pools: anchors = the golds in the top 5 ('found') and the first row ('top1'),
       candidates = their linked pool rows outside the top 5; and the same ledger on the pairs from B into the expansion rows, whose
       `reach` is the share of KEPT golds each label placed.
-Then the call (section 6) and the section 7 inputs. No number is chosen here: constants are fixed in this file before any pool exists.
+Then the call (section 6) and the section 7 inputs (amendment 2d: arms freeze one by one, on evidence, with no cap on rounds). Per arm grade.json
+holds the residual by label, the M4 reading of the pairs that placed KEPT golds, `candidates` (layout labels with POINTS in an M4 read that
+hold residual golds; a list of names, no decision) and `open_flag` (OUTSIDE share > 5%: a flag, not a trigger). report.{json,md} count how
+many of the nine arms have an empty candidate list. No number is chosen here: constants are fixed in this file before any pool exists.
 """
 import os
 import sys
@@ -629,6 +632,41 @@ def m4_block(G, pools, B, exp, golds, top5, hop_q, dense=None):
     return out
 
 
+# ── section 7's inputs: the candidate list and the report's count ────────────
+
+def candidates_of(m3, m4):
+    """An arm's candidate list (section 7, amendment 2d): the layout labels that M4 calls POINTS in any of its three reads (the anchors found,
+    the first row's anchor, the pairs that placed KEPT golds) AND that hold residual golds (BEYOND or OUTSIDE golds with a one-hop layout
+    pair of that label to a B node: M3's `residual`). Label names in the layout table's order; no decision, the round that picks one declares
+    it. Only labels of the layout are visible here: a form no layout carries, or a pool change for BEYOND golds with no label (they are the
+    'deeper' column of `residual`), cannot be named by the grade. Returns (names, basis), or (None, None) with no label table (the list is
+    unknown then, never 'empty')."""
+    if m4 is None or m3.get("residual") is None:
+        return None, None
+    reads = {"found": m4["anchors"]["found"], "top1": m4["anchors"]["top1"], "placing": m4["placing"]}
+    cand, basis = [], {}
+    for nm in m3["labels"]:
+        pts = [k for k, blk in reads.items() if blk["labels"][nm].get("lift_call") == "POINTS"]
+        res = {c: int(m3["residual"][c][nm]) for c in ("BEYOND", "OUTSIDE")}
+        if pts and res["BEYOND"] + res["OUTSIDE"] > 0:
+            cand.append(nm)
+            basis[nm] = {"points_in": pts, "residual_golds": res, "thin_in": [k for k in pts if reads[k]["labels"][nm].get("thin")]}
+    return cand, basis
+
+
+def section7_summary(arms):
+    """The report's section 7 line over the graded arms: how many of the nine have an empty candidate list. An arm with no grade, or with no
+    label table (candidates None), is undetermined, not empty. `outside_flag_arms` is the flag (OUTSIDE > 5%), never a trigger."""
+    by = {f"{a['dataset']}/{a['version']}": a for a in arms}
+    order = [f"{d}/{v}" for d, v in ARMS]
+    empty = [k for k in order if k in by and by[k].get("candidates") == []]
+    withc = [k for k in order if k in by and by[k].get("candidates")]
+    flag = [k for k in order if k in by and by[k].get("open_flag")]
+    return {"arms": len(ARMS), "graded": len(by), "empty_candidates": len(empty), "empty_arms": empty, "arms_with_candidates": withc,
+            "undetermined": [k for k in order if k not in by or by[k].get("candidates") is None],
+            "outside_flag_arms": flag, "empty_and_flagged": [k for k in empty if k in flag]}
+
+
 # ── the grade of one (dataset, version) on in-memory arrays ──────────────────
 
 def gates_of(src, P):
@@ -710,9 +748,13 @@ def grade_arrays(src):
         if G is not None else None
     o = res["m3"]["all"]
     pts = res["m4"]["points"] if res["m4"] else {}
-    res["section7"] = {"outside_share": None if not o["golds_outside_top5"] else round(o["classes"]["OUTSIDE"] / o["golds_outside_top5"], 6),
-                       "outside_above_5pct_flag": o["outside_above_flag"], "beyond_share": None if not o["golds_outside_top5"] else
-                       round(o["classes"]["BEYOND"] / o["golds_outside_top5"], 6),
+    tot = o["golds_outside_top5"]
+    # section 7 (amendment 2d): the arm's candidate list (label names; None = no label table, unknown and never "empty") and the OUTSIDE flag
+    res["candidates"], res["candidate_basis"] = candidates_of(res["m3"], res["m4"])
+    res["open_flag"] = bool(o["outside_above_flag"])             # OUTSIDE share of the golds outside the top 5 > OUTSIDE_FLAG: a flag only
+    res["section7"] = {"outside_share": None if not tot else round(o["classes"]["OUTSIDE"] / tot, 6),
+                       "beyond_share": None if not tot else round(o["classes"]["BEYOND"] / tot, 6),
+                       "residual_golds": {c: o["classes"][c] for c in ("BEYOND", "OUTSIDE")},
                        "residual_by_label": res["m3"].get("residual"), "points_labels": pts,
                        "kept_placed_by": None if res["m4"] is None else {nm: r.get("reach") for nm, r in res["m4"]["placing"]["labels"].items()}}
     res["verdict"] = "GRADED"
@@ -933,12 +975,23 @@ def report_md(rep):
         t = max(m["golds_outside_top5"], 1)
         L.append(f"| {a['dataset']}/{a['version']} | {m['golds_outside_top5']} | " + " | ".join(pct(m["classes"][c] / t) for c in CLASSES)
                  + f" | {m['outside_above_flag']} |")
-    L += ["", "## Section 7 inputs per arm", "", "| arm | OUTSIDE share | BEYOND share | POINTS labels (found / top1 / placing) |", "| --- | --- | --- | --- |"]
+    s7 = rep["section7"]
+    L += ["", "## Section 7, the closing rule's inputs per arm", "",
+          f"**{s7['empty_candidates']} of {s7['arms']} arms have an empty candidate list** ({s7['graded']} of {s7['arms']} graded"
+          + (f"; undetermined, not counted as empty: {', '.join(s7['undetermined'])}" if s7["undetermined"] else "") + "). "
+          "A candidate is a label of the layout that M4 calls POINTS in some read and that holds residual (BEYOND or OUTSIDE) golds; the list "
+          "names no decision, and an arm with candidates is OPEN. The OUTSIDE flag (> 5%) is a flag only. "
+          f"Flagged: {', '.join(s7['outside_flag_arms']) or 'none'}.", "",
+          "| arm | OUTSIDE share | BEYOND share | OUTSIDE > 5% | POINTS labels (found / top1 / placing) | candidates (label: BEYOND+OUTSIDE golds, POINTS reads) |",
+          "| --- | --- | --- | --- | --- | --- |"]
     for a in rep["arms"]:
         s = a["section7"]
         p = s["points_labels"] or {}
-        L.append(f"| {a['dataset']}/{a['version']} | {pct(s['outside_share'])} | {pct(s['beyond_share'])} | "
-                 f"{', '.join(p.get('found', [])) or '-'} / {', '.join(p.get('top1', [])) or '-'} / {', '.join(p.get('placing', [])) or '-'} |")
+        cb = a.get("candidate_basis") or {}
+        cand = "n/a (no label table)" if a.get("candidates") is None else (
+            "; ".join(f"{nm}: {sum(cb[nm]['residual_golds'].values())}, {'+'.join(cb[nm]['points_in'])}" for nm in a["candidates"]) or "none (empty)")
+        L.append(f"| {a['dataset']}/{a['version']} | {pct(s['outside_share'])} | {pct(s['beyond_share'])} | {a['open_flag']} | "
+                 f"{', '.join(p.get('found', [])) or '-'} / {', '.join(p.get('top1', [])) or '-'} / {', '.join(p.get('placing', [])) or '-'} | {cand} |")
     return "\n".join(L) + "\n"
 
 
@@ -961,11 +1014,13 @@ def cmd_report(_a):
         return 1
     rep["call"] = call_pools(arms + [{"dataset": d, "version": v, "verdict": "MISSING"} for d, v in miss])
     rep["arms"] = [a for a in arms if a.get("verdict") == "GRADED"]
+    rep["section7"] = section7_summary(rep["arms"])
     rep["verdict"] = "FILED" if not miss and rep["call"]["call"] != "INCOMPLETE" else "INCOMPLETE"
     wjson(OUT / "report.json", rep)
     if rep["arms"]:
         (OUT / "report.md").write_text(report_md(rep), encoding="utf-8", newline="\n")
-    log(f"report {rep['verdict']}: call {rep['call']['call']}, {len(rep['arms'])} graded, missing {miss}")
+    log(f"report {rep['verdict']}: call {rep['call']['call']}, {len(rep['arms'])} graded, missing {miss}; "
+        f"empty candidate lists {rep['section7']['empty_candidates']} of {len(ARMS)}")
     return 0 if rep["verdict"] == "FILED" else 2
 
 
@@ -1165,8 +1220,20 @@ def selftest():
     assert res3["m1"]["call_inputs"]["comparator"] == "pools of record" and res3["m3"]["paired_reach_vs_record"] is not None
     assert "vs_first_stage" in res3["m1"] and res3["m2"]["cells"]["GP"]["both_minus_record"] is not None
     call = call_pools([res3])
-    md = report_md({"code_hash": code_hash()[0], "call": call, "arms": [res3]})
+    s7 = section7_summary([res3])
+    md = report_md({"code_hash": code_hash()[0], "call": call, "arms": [res3], "section7": s7})
     assert call["call"] in ("ADOPT_POOLS", "NOT_ADOPTED") and "M3, the reach diagnosis" in md, call
+    assert f"**{s7['empty_candidates']} of 9 arms have an empty candidate list**" in md and "candidates (label:" in md
+    # section 7: the candidate list equals its definition read straight off M3's residual and M4's calls, the flag equals the share test
+    want = [nm for nm in G.names if res3["m4"]["points"]["found"].count(nm) + res3["m4"]["points"]["top1"].count(nm)
+            + res3["m4"]["points"]["placing"].count(nm) > 0
+            and res3["m3"]["by_label"]["BEYOND"][nm] + res3["m3"]["by_label"]["OUTSIDE"][nm] > 0]
+    assert res3["candidates"] == want and set(res3["candidate_basis"]) == set(want), (res3["candidates"], want)
+    o3 = res3["m3"]["all"]
+    assert res3["open_flag"] == bool(o3["classes"]["OUTSIDE"] / o3["golds_outside_top5"] > 0.05) and res3["candidates"] == res["candidates"]
+    assert res3["section7"]["residual_golds"] == {"BEYOND": o3["classes"]["BEYOND"], "OUTSIDE": o3["classes"]["OUTSIDE"]}
+    log(f"selftest: section 7 on the stand-in: candidates {res3['candidates']}, open_flag {res3['open_flag']}")
+    section7_test()
     lap("grade with the record, the call, the report text")
     report_test()
     grade_cmd_test()
@@ -1277,10 +1344,40 @@ def grade_cmd_test():
             assert res["m1"]["vs_record"]["calls"] == {"recall": "LEVEL", "ALL": "LEVEL"} and res["m1"]["call_inputs"]["comparator"] == "pools of record"
             assert res["m1"]["vs_first_stage"]["past_length"] > 0 and res["m3"]["paired_reach_vs_record"] is not None
             assert res["m2"]["cells"]["GP"]["slots"] > 0 and res["inputs"]["view_json_classes"]["equal"] is None
+            assert isinstance(res["open_flag"], bool) and (res["candidates"] is None or isinstance(res["candidates"], list))
+            assert cmd_report(None) == 2                                                  # one arm graded, eight missing: INCOMPLETE, and the files are written
+            rj = json.loads((OUT / "report.json").read_text(encoding="utf-8"))
+            assert rj["section7"]["graded"] == 1 and rj["section7"]["arms"] == 9 and len(rj["section7"]["undetermined"]) >= 8
+            assert "of 9 arms have an empty candidate list" in (OUT / "report.md").read_text(encoding="utf-8")
             a.record_dir = str(td / "nowhere")                                            # no record parts: refused as NO_RECORD, exit 3
             assert cmd_grade(a) == 3 and json.loads((base / "grade.json").read_text(encoding="utf-8"))["verdict"] == "NO_RECORD"
     finally:
         OUT, load_e0, load_splade, build_labels, u1b.package_root = saved
+
+
+def section7_test():
+    """candidates_of and section7_summary on hand-built blocks: POINTS without residual is not listed, residual without POINTS is not listed,
+    a POINTS read of any of the three counts, no label table is None (never empty), and the count of empty lists over the nine arms."""
+    def blk(**calls):
+        return {"labels": {nm: {"lift_call": calls.get(nm, "NO_LIFT"), "thin": nm == "B"} for nm in ("A", "B", "C")}}
+    m3 = {"labels": ["A", "B", "C"], "residual": {"BEYOND": {"A": 2, "B": 0, "C": 1, "deeper": 3}, "OUTSIDE": {"A": 0, "B": 0, "C": 0, "deeper": 1}}}
+    m4 = {"anchors": {"found": blk(A="POINTS", B="POINTS"), "top1": blk()}, "placing": blk(C="POINTS", B="POINTS")}
+    cand, basis = candidates_of(m3, m4)
+    assert cand == ["A", "C"], cand                              # B points but holds no residual gold
+    assert basis["A"] == {"points_in": ["found"], "residual_golds": {"BEYOND": 2, "OUTSIDE": 0}, "thin_in": []}, basis
+    assert basis["C"]["points_in"] == ["placing"] and basis["C"]["residual_golds"] == {"BEYOND": 1, "OUTSIDE": 0}
+    m3_none = {"labels": ["A", "B", "C"], "residual": {"BEYOND": {"A": 0, "B": 0, "C": 0, "deeper": 4}, "OUTSIDE": {"A": 0, "B": 0, "C": 0, "deeper": 0}}}
+    assert candidates_of(m3_none, m4) == ([], {})                # the residual holds no gold at a layout label: empty
+    assert candidates_of({"labels": [], "residual": None}, None) == (None, None)
+    assert candidates_of(m3, None) == (None, None)
+    names = [f"{d}/{v}" for d, v in ARMS]
+    arms = [{"dataset": d, "version": v, "candidates": c, "open_flag": f} for (d, v), c, f in zip(
+        ARMS, ([], [], ["F"], None, [], ["A", "C"]), (False, True, False, True, False, True))]
+    s = section7_summary(arms)
+    assert s["arms"] == 9 and s["graded"] == 6 and s["empty_candidates"] == 3 and s["empty_arms"] == [names[0], names[1], names[4]], s
+    assert s["arms_with_candidates"] == [names[2], names[5]] and s["undetermined"] == [names[3]] + names[6:], s
+    assert s["outside_flag_arms"] == [names[1], names[3], names[5]] and s["empty_and_flagged"] == [names[1]], s
+    assert section7_summary([])["empty_candidates"] == 0 and len(section7_summary([])["undetermined"]) == 9
 
 
 def report_test():
