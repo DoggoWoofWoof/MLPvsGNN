@@ -374,6 +374,15 @@ def world(M, d, view, stats, tab=None):
             prepare._pl1_view = (view, d)
             P_.set(mc, prepare=prepare)
 
+    if enc != "frozen":
+        # DenseNodes.read allocates (rows, DIM) with the package's DIM = 1536 once a corpus is too large to hold in RAM (n * DIM * 2 > 1.5 GB: WebQSP,
+        # HotpotQA, 2Wiki), and e3v's vectors are 1152 wide, so every gather of a large corpus died with a shape mismatch (the WebQSP smoke, 25 Nov).
+        # The small corpora (MuSiQue, SQuAD, MetaQA) hold the matrix in RAM and never meet DIM. The view's width is read from its first shard.
+        import mp_retrieval.m3b_features as FF
+        shard0 = sorted(E.vec_dir(None, enc, d, "docs").glob("shard_*.npy"))[0]
+        dim_view = int(np.load(shard0, mmap_mode="r").shape[1])
+        stats["dim"] = dim_view
+        P_.set(FF, DIM=dim_view)
     P_.set(M.S4, Opened=OpenedOnView)
     mp_mod = M.S4.m3b_pools
     orig_store = mp_mod.load_or_build_store
@@ -867,6 +876,7 @@ def main(argv=None):
         s.add_argument("--host", action="store_true")
         s.add_argument("--threads", type=int, default=2)
         s.add_argument("--smoke", action="store_true", help="plumbing run: layout and outputs under outputs/pl1/smoke (zpl1m smoke); never graded")
+        s.add_argument("--force-mmap", action="store_true", help="smoke only: DenseNodes keeps every shard memory-mapped, as the three large corpora do")
     g = sub.add_parser("gates")
     g.add_argument("--ds", required=True)
     sub.add_parser("selftest")
@@ -874,6 +884,11 @@ def main(argv=None):
     if getattr(a, "smoke", False):
         global OUT
         OUT = OUT / "smoke"
+    if getattr(a, "force_mmap", False):
+        if not a.smoke:
+            stop("--force-mmap is for smoke runs only")
+        import mp_retrieval.m3b_features as FF
+        FF.DenseNodes.__init__.__defaults__ = (0,)            # ram_limit_bytes = 0: the memory-mapped gather, as WebQSP, HotpotQA and 2Wiki use
     return {"first": cmd_first, "types": cmd_types, "pools": cmd_pools, "gates": cmd_gates,
             "selftest": lambda _a: selftest()}[a.cmd](a)
 
