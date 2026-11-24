@@ -975,3 +975,42 @@ two knowledge-base graphs. 8.12's seen/unseen split stays on the four datasets i
 outputs/sem2/r1q/hotpotqa/e3v.json, outputs/sem2/r1q/2wiki/e3v.json, outputs/sem2/r1q/webqsp/e3v.json, and the reports
 outputs/sem2/r1k/report.*, outputs/sem2/r1k/split/report.* and outputs/sem2/r1q/report.*. The laptop's rerun of each
 report matches the host's except the time stamp.
+
+### 7.12 R1 filed (24 November 2026, 23:57 IST, 18:27 UTC)
+
+All fourteen rows ran (seven datasets, two vector sets) and the report has no missing row. The laptop's rerun of the
+report matches the host's except the time stamp. Declared in section 7; the calls are 7.7's.
+
+**R1: link recovery on held-out nodes (MRR in points, cosine to rotation; delta = rotation - cosine, paired 95%
+bootstrap over test edges; MRR_T beside, never called on, per 8.10):**
+
+| dataset | e3v MRR | e3v delta, call | e3v MRR_T delta | frozen MRR | frozen delta, call | frozen MRR_T delta |
+| --- | --- | --- | --- | --- | --- | --- |
+| MultiHop-RAG | 17.36 to 24.12 | +6.76 [+5.16, +8.28] LEARNS | +6.69 [+4.81, +8.56] | 18.89 to 24.09 | +5.20 [+3.59, +6.81] LEARNS | +5.17 [+3.20, +7.05] |
+| SQuAD | 12.04 to 28.28 | +16.23 [+14.95, +17.54] LEARNS | +16.04 [+14.64, +17.41] | 10.19 to 28.49 | +18.30 [+16.97, +19.68] LEARNS | +18.61 [+17.22, +20.00] |
+| MuSiQue | 5.7 to 12.47 | +6.77 [+6.00, +7.60] LEARNS | +6.29 [+5.50, +7.14] | 6 to 13.87 | +7.87 [+7.04, +8.74] LEARNS | +7.37 [+6.52, +8.23] |
+| MetaQA | 3.37 to 15.68 | +12.31 [+11.74, +12.92] LEARNS | +5.63 [+5.11, +6.14] | 2.79 to 16.43 | +13.65 [+13.02, +14.28] LEARNS | +7.01 [+6.48, +7.56] |
+| WebQSP | 7.32 to 46.4 | +39.07 [+38.36, +39.75] LEARNS | +35.43 [+34.42, +36.38] | 5.19 to 46.24 | +41.06 [+40.31, +41.75] LEARNS | +40.02 [+38.98, +41.05] |
+| HotpotQA | 7.31 to 10.95 | +3.64 [+3.13, +4.17] LEARNS | +3.61 [+3.06, +4.14] | 7.46 to 13.08 | +5.61 [+5.01, +6.25] LEARNS | +5.55 [+4.91, +6.21] |
+| 2Wiki | 6.74 to 9.36 | +2.62 [+2.11, +3.14] LEARNS | +2.58 [+2.07, +3.09] | 6.64 to 10.96 | +4.32 [+3.72, +4.87] LEARNS | +4.25 [+3.66, +4.83] |
+
+- **R1 per arm: e3v HOLDS (7 of 7 LEARN); frozen HOLDS (7 of 7 LEARN).** Every interval sits above zero. The MRR_T
+  reading agrees on every row.
+- **Expectations:** X1 held (e3v LEARNS on MetaQA and WebQSP). X2 held (MuSiQue). X3 held (the report's call:
+  rotation with D' = D + 256 is not below rotation with D' = D on the small sets). **X4 failed:** frozen's delta is below e3v's on only 1 of 7
+  datasets (MultiHop-RAG), not on most. The weaker vector set leaves more to learn, not less.
+- **What the operators are doing (beside, not called):**
+  - On MultiHop-RAG, whose links carry one label, a shared map without rotations (map_only) recovers the whole gain
+    (+6.93 against rotation's +6.76). There is no relation to tell apart.
+  - On MetaQA (10 labels) map_only reaches +2.98 and rotation +12.31. On MuSiQue
+    (3 labels) it is +3.34 and +6.77. The typed operators carry the gain where the graph is typed.
+  - Translation is close to rotation: ahead of it on MetaQA and WebQSP (and by 0.05 on MultiHop-RAG), behind it on
+    SQuAD, MuSiQue, HotpotQA and 2Wiki.
+- **Sizes:** the gain is large on the knowledge-base graphs (WebQSP and MetaQA, with hits@100 from 21 to 73 percent
+  and from 12 to 44 percent on e3v) and small on HotpotQA and 2Wiki.
+- **What R1 does not say:** it recovers links among documents. It does not say a question's first stage improves. That
+  is R2a (section 9).
+
+**Files:** outputs/sem2/r1/*/e3v.json and frozen.json (fourteen), outputs/sem2/r1/report.json and report.md,
+outputs/sem2/r1h/hubread.json and hubread.md (all fourteen rows; it replaces the eleven-row version). The npz stay on
+the host.

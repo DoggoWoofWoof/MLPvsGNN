@@ -1,0 +1,429 @@
+{
+ "stage": "SEM2 R1",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 7",
+ "dataset": "2wiki",
+ "arm": "frozen",
+ "dim": 1536,
+ "worst_norm_offset": 0.000494,
+ "config": {
+  "extra": 256,
+  "tau": 0.05,
+  "batch": 1024,
+  "neg": 4096,
+  "lr": 0.001,
+  "epoch": 200000,
+  "max_epochs": 10,
+  "patience": 2,
+  "min_op": 500,
+  "top_s": 12,
+  "n_test": 1000,
+  "n_dev": 500
+ },
+ "smoke": false,
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 71483746,
+     "record": 71483746
+    },
+    "CN_all": {
+     "pairs": 38242751,
+     "record": 38242751
+    },
+    "F0T": {
+     "pairs": 39863302,
+     "record": 39863302
+    },
+    "S": {
+     "pairs": 28208857,
+     "record": 28208857
+    },
+    "S directed": {
+     "edges": 28963600,
+     "pair_relation_rows": 28208857,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-S samples": "PASS",
+  "G-0 rotation": {
+   "max_score_diff": 5.066394805908203e-07,
+   "mrr_diff": 4.416897833592337e-09,
+   "verdict": "PASS"
+  },
+  "G-S rotation training": "PASS",
+  "G-0 translation": {
+   "max_score_diff": 5.066394805908203e-07,
+   "mrr_diff": 4.416897833592337e-09,
+   "verdict": "PASS"
+  },
+  "G-S translation training": "PASS"
+ },
+ "nodes": 5989847,
+ "split": {
+  "test": 600197,
+  "dev": 598284,
+  "train": 4791366
+ },
+ "labels": {
+  "R.mention": {
+   "directed": false,
+   "pairs": 71483746,
+   "train_edges": 92014754,
+   "op": "R.mention"
+  },
+  "R.name_comention": {
+   "directed": false,
+   "pairs": 38242751,
+   "train_edges": 48925870,
+   "op": "R.name_comention"
+  },
+  "R.title_comention": {
+   "directed": false,
+   "pairs": 1620551,
+   "train_edges": 2073856,
+   "op": "R.title_comention"
+  },
+  "S.hyperlink": {
+   "directed": true,
+   "edges": 28963600,
+   "train_edges": 18443028,
+   "op": "S.hyperlink"
+  }
+ },
+ "operators": [
+  "R.mention",
+  "R.name_comention",
+  "R.title_comention",
+  "S.hyperlink"
+ ],
+ "read_groups": {
+  "R.mention": {
+   "test": 1000,
+   "dev": 500
+  },
+  "R.name_comention": {
+   "test": 1000,
+   "dev": 500
+  },
+  "R.title_comention": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.hyperlink": {
+   "test": 1000,
+   "dev": 500
+  }
+ },
+ "excluded_pairs": {
+  "test": 25108548,
+  "dev": 20519468
+ },
+ "call": {
+  "diff": 4.32,
+  "lo": 3.72,
+  "hi": 4.87,
+  "call": "LEARNS"
+ },
+ "per_label": {
+  "R.mention": {
+   "diff": 2.66,
+   "lo": 1.74,
+   "hi": 3.6,
+   "call": "ABOVE"
+  },
+  "R.name_comention": {
+   "diff": 0.74,
+   "lo": -0.03,
+   "hi": 1.54,
+   "call": "LEVEL"
+  },
+  "R.title_comention": {
+   "diff": 4.99,
+   "lo": 3.81,
+   "hi": 6.21,
+   "call": "ABOVE"
+  },
+  "S.hyperlink": {
+   "diff": 8.87,
+   "lo": 7.35,
+   "hi": 10.33,
+   "call": "ABOVE"
+  }
+ },
+ "beside": {
+  "translation - cosine": {
+   "diff": 3.35,
+   "lo": 2.8,
+   "hi": 3.87,
+   "call": "ABOVE"
+  }
+ },
+ "read": {
+  "cosine": {
+   "pooled": {
+    "n": 4000,
+    "mrr": 6.64,
+    "h10": 11.0,
+    "h100": 20.32
+   },
+   "R.mention": {
+    "n": 1000,
+    "mrr": 3.32,
+    "h10": 4.9,
+    "h100": 9.2
+   },
+   "R.name_comention": {
+    "n": 1000,
+    "mrr": 8.35,
+    "h10": 12.4,
+    "h100": 23.2
+   },
+   "R.title_comention": {
+    "n": 1000,
+    "mrr": 7.51,
+    "h10": 14.2,
+    "h100": 25.4
+   },
+   "S.hyperlink": {
+    "n": 1000,
+    "mrr": 7.4,
+    "h10": 12.5,
+    "h100": 23.5
+   }
+  },
+  "rotation": {
+   "pooled": {
+    "n": 4000,
+    "mrr": 10.96,
+    "h10": 19.45,
+    "h100": 35.95
+   },
+   "R.mention": {
+    "n": 1000,
+    "mrr": 5.99,
+    "h10": 11.2,
+    "h100": 21.5
+   },
+   "R.name_comention": {
+    "n": 1000,
+    "mrr": 9.09,
+    "h10": 14.1,
+    "h100": 27.9
+   },
+   "R.title_comention": {
+    "n": 1000,
+    "mrr": 12.5,
+    "h10": 23.3,
+    "h100": 39.1
+   },
+   "S.hyperlink": {
+    "n": 1000,
+    "mrr": 16.27,
+    "h10": 29.2,
+    "h100": 55.3
+   }
+  },
+  "translation": {
+   "pooled": {
+    "n": 4000,
+    "mrr": 10.0,
+    "h10": 17.62,
+    "h100": 32.92
+   },
+   "R.mention": {
+    "n": 1000,
+    "mrr": 4.52,
+    "h10": 7.6,
+    "h100": 16.1
+   },
+   "R.name_comention": {
+    "n": 1000,
+    "mrr": 8.34,
+    "h10": 13.2,
+    "h100": 25.8
+   },
+   "R.title_comention": {
+    "n": 1000,
+    "mrr": 10.73,
+    "h10": 19.7,
+    "h100": 34.7
+   },
+   "S.hyperlink": {
+    "n": 1000,
+    "mrr": 16.4,
+    "h10": 30.0,
+    "h100": 55.1
+   }
+  }
+ },
+ "fits": {
+  "rotation": {
+   "D_prime": 1792,
+   "history": [
+    {
+     "epoch": 0,
+     "dev_mrr": 6.32,
+     "seconds": 257.4
+    },
+    {
+     "epoch": 1,
+     "edges": 200000,
+     "loss": 3.841,
+     "dev_mrr": 7.74,
+     "seconds": 1104.2
+    },
+    {
+     "epoch": 2,
+     "edges": 200000,
+     "loss": 3.6925,
+     "dev_mrr": 8.16,
+     "seconds": 1792.7
+    },
+    {
+     "epoch": 3,
+     "edges": 200000,
+     "loss": 3.5802,
+     "dev_mrr": 8.51,
+     "seconds": 1485.9
+    },
+    {
+     "epoch": 4,
+     "edges": 200000,
+     "loss": 3.5047,
+     "dev_mrr": 8.93,
+     "seconds": 1336.8
+    },
+    {
+     "epoch": 5,
+     "edges": 200000,
+     "loss": 3.4311,
+     "dev_mrr": 9.09,
+     "seconds": 1167.8
+    },
+    {
+     "epoch": 6,
+     "edges": 200000,
+     "loss": 3.2679,
+     "dev_mrr": 9.53,
+     "seconds": 1250.8
+    },
+    {
+     "epoch": 7,
+     "edges": 200000,
+     "loss": 3.1755,
+     "dev_mrr": 10.01,
+     "seconds": 1317.7
+    },
+    {
+     "epoch": 8,
+     "edges": 200000,
+     "loss": 3.1253,
+     "dev_mrr": 10.27,
+     "seconds": 1805.0
+    },
+    {
+     "epoch": 9,
+     "edges": 200000,
+     "loss": 3.0914,
+     "dev_mrr": 10.33,
+     "seconds": 1878.8
+    },
+    {
+     "epoch": 10,
+     "edges": 200000,
+     "loss": 3.0594,
+     "dev_mrr": 10.51,
+     "seconds": 1383.8
+    }
+   ],
+   "best_epoch": 10,
+   "best_dev_mrr": 10.51,
+   "seconds": 14782.9
+  },
+  "translation": {
+   "D_prime": 1792,
+   "history": [
+    {
+     "epoch": 0,
+     "dev_mrr": 6.32,
+     "seconds": 305.6
+    },
+    {
+     "epoch": 1,
+     "edges": 200000,
+     "loss": 3.5756,
+     "dev_mrr": 9.45,
+     "seconds": 1371.3
+    },
+    {
+     "epoch": 2,
+     "edges": 200000,
+     "loss": 3.4173,
+     "dev_mrr": 9.54,
+     "seconds": 1616.8
+    },
+    {
+     "epoch": 3,
+     "edges": 200000,
+     "loss": 3.3583,
+     "dev_mrr": 9.7,
+     "seconds": 2171.8
+    },
+    {
+     "epoch": 4,
+     "edges": 200000,
+     "loss": 3.3303,
+     "dev_mrr": 9.74,
+     "seconds": 1637.4
+    },
+    {
+     "epoch": 5,
+     "edges": 200000,
+     "loss": 3.3071,
+     "dev_mrr": 10.17,
+     "seconds": 1634.1
+    },
+    {
+     "epoch": 6,
+     "edges": 200000,
+     "loss": 3.2844,
+     "dev_mrr": 10.0,
+     "seconds": 1353.3
+    },
+    {
+     "epoch": 7,
+     "edges": 200000,
+     "loss": 3.278,
+     "dev_mrr": 10.01,
+     "seconds": 1331.7
+    }
+   ],
+   "best_epoch": 5,
+   "best_dev_mrr": 10.17,
+   "seconds": 11422.1
+  }
+ },
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "73fb822f3e4dd255c2555af717f4664c78a01fec4b5dce892fdec25d5de2426a",
+  "ner_npz_sha256": "fd462a9c08740d57af79855efe37c1d77f30dc593ca6ad6242681c99b51a008a",
+  "knn_npz_sha256": "a7151f6bbebdb13d7e817abcc199fd5feae17585a955f781b0690d7ee1897f99",
+  "structural_npz_sha256": "1e380eaaa62b21eaf24f6dec8302d81482bf35695bfa6cdda2421fa90cfe9c85",
+  "w2_s_npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+  "f0t_npz_sha256": "d6c49214c935c6166fcaa9c3494827cf85aaeafdb1f84f9eb3679b84de52ad5e",
+  "names_npz_sha256": "56269a557dae67578c3c05c6b7c4350f82c28fe51edd44a024104a729d43c020",
+  "vectors": {
+   "shards": 150,
+   "dim": 1536,
+   "dtype": "float16"
+  }
+ },
+ "threads": 8,
+ "seconds": 27823.6,
+ "utc": "2026-11-24T18:15:15Z",
+ "script_sha256": "60208157465631a21f56731ffe90eb6df9367b722e6a479f889ee5f266f2474e",
+ "npz_sha256": "dc524af7b9c39e7514e4580b1b4623678aa8af97a6b1ab98887eb5869934ddf5"
+}

@@ -1,0 +1,1115 @@
+{
+ "stage": "SEM2 R1 report",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 7",
+ "per_arm": {
+  "e3v": {
+   "verdict": "HOLDS",
+   "learns": 7,
+   "calls": {
+    "multihoprag": "LEARNS",
+    "squad": "LEARNS",
+    "musique": "LEARNS",
+    "metaqa": "LEARNS",
+    "webqsp": "LEARNS",
+    "hotpotqa": "LEARNS",
+    "2wiki": "LEARNS"
+   },
+   "missing": []
+  },
+  "frozen": {
+   "verdict": "HOLDS",
+   "learns": 7,
+   "calls": {
+    "multihoprag": "LEARNS",
+    "squad": "LEARNS",
+    "musique": "LEARNS",
+    "metaqa": "LEARNS",
+    "webqsp": "LEARNS",
+    "hotpotqa": "LEARNS",
+    "2wiki": "LEARNS"
+   },
+   "missing": []
+  }
+ },
+ "expectations": {
+  "X1": true,
+  "X2": true,
+  "X3": true,
+  "X4": false
+ },
+ "x4_frozen_below_e3v": "1 of 7",
+ "rows": {
+  "multihoprag e3v": {
+   "call": {
+    "diff": 6.76,
+    "lo": 5.16,
+    "hi": 8.28,
+    "call": "LEARNS"
+   },
+   "cosine": {
+    "n": 1000,
+    "mrr": 17.36,
+    "h10": 27.7,
+    "h100": 56.0
+   },
+   "rotation": {
+    "n": 1000,
+    "mrr": 24.12,
+    "h10": 36.7,
+    "h100": 65.2
+   },
+   "beside": {
+    "translation - cosine": {
+     "diff": 6.81,
+     "lo": 5.27,
+     "hi": 8.32,
+     "call": "ABOVE"
+    },
+    "rotation_D - cosine": {
+     "diff": 6.9,
+     "lo": 5.28,
+     "hi": 8.47,
+     "call": "ABOVE"
+    },
+    "map_only - cosine": {
+     "diff": 6.93,
+     "lo": 5.32,
+     "hi": 8.51,
+     "call": "ABOVE"
+    },
+    "rotation - rotation_D (X3)": {
+     "diff": -0.14,
+     "lo": -0.36,
+     "hi": 0.06,
+     "call": "LEVEL"
+    }
+   },
+   "per_label": {
+    "R.name_comention": {
+     "diff": 6.76,
+     "lo": 5.16,
+     "hi": 8.28,
+     "call": "ABOVE"
+    }
+   },
+   "sha256": "00379d41120ea0b2e82a98ab8f50e9b2a1dbeab1ddf391793733116bdfcefa0b"
+  },
+  "multihoprag frozen": {
+   "call": {
+    "diff": 5.2,
+    "lo": 3.59,
+    "hi": 6.81,
+    "call": "LEARNS"
+   },
+   "cosine": {
+    "n": 1000,
+    "mrr": 18.89,
+    "h10": 28.6,
+    "h100": 56.0
+   },
+   "rotation": {
+    "n": 1000,
+    "mrr": 24.09,
+    "h10": 35.7,
+    "h100": 65.2
+   },
+   "beside": {
+    "translation - cosine": {
+     "diff": 3.94,
+     "lo": 2.24,
+     "hi": 5.52,
+     "call": "ABOVE"
+    },
+    "rotation_D - cosine": {
+     "diff": 5.28,
+     "lo": 3.69,
+     "hi": 6.91,
+     "call": "ABOVE"
+    },
+    "map_only - cosine": {
+     "diff": 5.37,
+     "lo": 3.76,
+     "hi": 6.97,
+     "call": "ABOVE"
+    },
+    "rotation - rotation_D (X3)": {
+     "diff": -0.08,
+     "lo": -0.34,
+     "hi": 0.18,
+     "call": "LEVEL"
+    }
+   },
+   "per_label": {
+    "R.name_comention": {
+     "diff": 5.2,
+     "lo": 3.59,
+     "hi": 6.81,
+     "call": "ABOVE"
+    }
+   },
+   "sha256": "4e840a140964e4213fa1c9611457c3df0eccf547eecac7364f7f3cb50d7af683"
+  },
+  "squad e3v": {
+   "call": {
+    "diff": 16.23,
+    "lo": 14.95,
+    "hi": 17.54,
+    "call": "LEARNS"
+   },
+   "cosine": {
+    "n": 2505,
+    "mrr": 12.04,
+    "h10": 23.31,
+    "h100": 50.14
+   },
+   "rotation": {
+    "n": 2505,
+    "mrr": 28.28,
+    "h10": 46.39,
+    "h100": 69.26
+   },
+   "beside": {
+    "translation - cosine": {
+     "diff": 13.17,
+     "lo": 12.03,
+     "hi": 14.35,
+     "call": "ABOVE"
+    },
+    "rotation_D - cosine": {
+     "diff": 15.94,
+     "lo": 14.65,
+     "hi": 17.21,
+     "call": "ABOVE"
+    },
+    "map_only - cosine": {
+     "diff": 10.18,
+     "lo": 9.11,
+     "hi": 11.28,
+     "call": "ABOVE"
+    },
+    "rotation - rotation_D (X3)": {
+     "diff": 0.29,
+     "lo": -0.09,
+     "hi": 0.67,
+     "call": "LEVEL"
+    }
+   },
+   "per_label": {
+    "R.mention": {
+     "diff": 24.22,
+     "lo": 21.86,
+     "hi": 26.62,
+     "call": "ABOVE"
+    },
+    "R.name_comention": {
+     "diff": 5.35,
+     "lo": 3.79,
+     "hi": 6.84,
+     "call": "ABOVE"
+    },
+    "R.title_comention": {
+     "diff": 21.97,
+     "lo": 19.69,
+     "hi": 24.39,
+     "call": "ABOVE"
+    }
+   },
+   "sha256": "81a3f38e5ae98f19625f94c6c9e6ef32b12b7b628823187abcb038317162df2e"
+  },
+  "squad frozen": {
+   "call": {
+    "diff": 18.3,
+    "lo": 16.97,
+    "hi": 19.68,
+    "call": "LEARNS"
+   },
+   "cosine": {
+    "n": 2505,
+    "mrr": 10.19,
+    "h10": 20.84,
+    "h100": 47.98
+   },
+   "rotation": {
+    "n": 2505,
+    "mrr": 28.49,
+    "h10": 47.03,
+    "h100": 72.02
+   },
+   "beside": {
+    "translation - cosine": {
+     "diff": 14.46,
+     "lo": 13.27,
+     "hi": 15.69,
+     "call": "ABOVE"
+    },
+    "rotation_D - cosine": {
+     "diff": 18.38,
+     "lo": 17.04,
+     "hi": 19.77,
+     "call": "ABOVE"
+    },
+    "map_only - cosine": {
+     "diff": 11.93,
+     "lo": 10.76,
+     "hi": 13.09,
+     "call": "ABOVE"
+    },
+    "rotation - rotation_D (X3)": {
+     "diff": -0.08,
+     "lo": -0.41,
+     "hi": 0.25,
+     "call": "LEVEL"
+    }
+   },
+   "per_label": {
+    "R.mention": {
+     "diff": 30.69,
+     "lo": 28.11,
+     "hi": 33.26,
+     "call": "ABOVE"
+    },
+    "R.name_comention": {
+     "diff": 6.57,
+     "lo": 5.1,
+     "hi": 8.05,
+     "call": "ABOVE"
+    },
+    "R.title_comention": {
+     "diff": 16.98,
+     "lo": 14.63,
+     "hi": 19.28,
+     "call": "ABOVE"
+    }
+   },
+   "sha256": "d6de4cfcee81781b89a7baebb54bb5b38431c64068c1825832afccd8a6cd8305"
+  },
+  "musique e3v": {
+   "call": {
+    "diff": 6.77,
+    "lo": 6.0,
+    "hi": 7.6,
+    "call": "LEARNS"
+   },
+   "cosine": {
+    "n": 3000,
+    "mrr": 5.7,
+    "h10": 10.83,
+    "h100": 25.7
+   },
+   "rotation": {
+    "n": 3000,
+    "mrr": 12.47,
+    "h10": 22.87,
+    "h100": 43.93
+   },
+   "beside": {
+    "translation - cosine": {
+     "diff": 3.99,
+     "lo": 3.33,
+     "hi": 4.7,
+     "call": "ABOVE"
+    },
+    "rotation_D - cosine": {
+     "diff": 6.58,
+     "lo": 5.82,
+     "hi": 7.41,
+     "call": "ABOVE"
+    },
+    "map_only - cosine": {
+     "diff": 3.34,
+     "lo": 2.75,
+     "hi": 3.96,
+     "call": "ABOVE"
+    },
+    "rotation - rotation_D (X3)": {
+     "diff": 0.2,
+     "lo": -0.08,
+     "hi": 0.46,
+     "call": "LEVEL"
+    }
+   },
+   "per_label": {
+    "R.mention": {
+     "diff": 13.74,
+     "lo": 11.83,
+     "hi": 15.72,
+     "call": "ABOVE"
+    },
+    "R.name_comention": {
+     "diff": 1.97,
+     "lo": 1.09,
+     "hi": 2.92,
+     "call": "ABOVE"
+    },
+    "R.title_comention": {
+     "diff": 4.62,
+     "lo": 3.61,
+     "hi": 5.72,
+     "call": "ABOVE"
+    }
+   },
+   "sha256": "3b767a5e487776d45d9039a8b2b314841c0b19a91da4202c2108256bfdb5ea77"
+  },
+  "musique frozen": {
+   "call": {
+    "diff": 7.87,
+    "lo": 7.04,
+    "hi": 8.74,
+    "call": "LEARNS"
+   },
+   "cosine": {
+    "n": 3000,
+    "mrr": 6.0,
+    "h10": 11.33,
+    "h100": 26.53
+   },
+   "rotation": {
+    "n": 3000,
+    "mrr": 13.87,
+    "h10": 26.13,
+    "h100": 47.63
+   },
+   "beside": {
+    "translation - cosine": {
+     "diff": 5.03,
+     "lo": 4.34,
+     "hi": 5.75,
+     "call": "ABOVE"
+    },
+    "rotation_D - cosine": {
+     "diff": 7.58,
+     "lo": 6.74,
+     "hi": 8.43,
+     "call": "ABOVE"
+    },
+    "map_only - cosine": {
+     "diff": 3.69,
+     "lo": 3.07,
+     "hi": 4.34,
+     "call": "ABOVE"
+    },
+    "rotation - rotation_D (X3)": {
+     "diff": 0.28,
+     "lo": 0.05,
+     "hi": 0.52,
+     "call": "ABOVE"
+    }
+   },
+   "per_label": {
+    "R.mention": {
+     "diff": 15.2,
+     "lo": 13.22,
+     "hi": 17.29,
+     "call": "ABOVE"
+    },
+    "R.name_comention": {
+     "diff": 1.81,
+     "lo": 0.85,
+     "hi": 2.8,
+     "call": "ABOVE"
+    },
+    "R.title_comention": {
+     "diff": 6.59,
+     "lo": 5.47,
+     "hi": 7.72,
+     "call": "ABOVE"
+    }
+   },
+   "sha256": "23db3eeabdd858cb40fedc022a0ef7a0d8192be95140a98df4ec916ed2a0e9b2"
+  },
+  "metaqa e3v": {
+   "call": {
+    "diff": 12.31,
+    "lo": 11.74,
+    "hi": 12.92,
+    "call": "LEARNS"
+   },
+   "cosine": {
+    "n": 8418,
+    "mrr": 3.37,
+    "h10": 6.06,
+    "h100": 11.82
+   },
+   "rotation": {
+    "n": 8418,
+    "mrr": 15.68,
+    "h10": 25.99,
+    "h100": 43.82
+   },
+   "beside": {
+    "translation - cosine": {
+     "diff": 13.54,
+     "lo": 12.9,
+     "hi": 14.16,
+     "call": "ABOVE"
+    },
+    "rotation_D - cosine": {
+     "diff": 11.6,
+     "lo": 11.02,
+     "hi": 12.16,
+     "call": "ABOVE"
+    },
+    "map_only - cosine": {
+     "diff": 2.98,
+     "lo": 2.67,
+     "hi": 3.28,
+     "call": "ABOVE"
+    },
+    "rotation - rotation_D (X3)": {
+     "diff": 0.71,
+     "lo": 0.5,
+     "hi": 0.92,
+     "call": "ABOVE"
+    }
+   },
+   "per_label": {
+    "R.mention": {
+     "diff": 1.16,
+     "lo": 0.66,
+     "hi": 1.74,
+     "call": "ABOVE"
+    },
+    "R.name_comention": {
+     "diff": 30.08,
+     "lo": 27.75,
+     "hi": 32.41,
+     "call": "ABOVE"
+    },
+    "S.starred_actors": {
+     "diff": 0.77,
+     "lo": 0.52,
+     "hi": 1.07,
+     "call": "ABOVE"
+    },
+    "S.has_tags": {
+     "diff": 4.02,
+     "lo": 3.1,
+     "hi": 4.97,
+     "call": "ABOVE"
+    },
+    "S.written_by": {
+     "diff": 1.22,
+     "lo": 0.73,
+     "hi": 1.82,
+     "call": "ABOVE"
+    },
+    "S.release_year": {
+     "diff": 6.86,
+     "lo": 6.15,
+     "hi": 7.66,
+     "call": "ABOVE"
+    },
+    "S.directed_by": {
+     "diff": 0.92,
+     "lo": 0.51,
+     "hi": 1.42,
+     "call": "ABOVE"
+    },
+    "S.has_genre": {
+     "diff": 43.52,
+     "lo": 41.22,
+     "hi": 45.98,
+     "call": "ABOVE"
+    },
+    "S.in_language": {
+     "diff": 34.35,
+     "lo": 30.93,
+     "hi": 37.81,
+     "call": "ABOVE"
+    },
+    "S.other": {
+     "diff": 52.37,
+     "lo": 40.6,
+     "hi": 63.92,
+     "call": "ABOVE"
+    }
+   },
+   "sha256": "b2fd0a33e1ef601c591d8cf6e62e2b13229c11ac14fb0f34e05aa429ad1f016f"
+  },
+  "metaqa frozen": {
+   "call": {
+    "diff": 13.65,
+    "lo": 13.02,
+    "hi": 14.28,
+    "call": "LEARNS"
+   },
+   "cosine": {
+    "n": 8418,
+    "mrr": 2.79,
+    "h10": 5.1,
+    "h100": 9.82
+   },
+   "rotation": {
+    "n": 8418,
+    "mrr": 16.43,
+    "h10": 27.17,
+    "h100": 47.85
+   },
+   "beside": {
+    "translation - cosine": {
+     "diff": 15.8,
+     "lo": 15.13,
+     "hi": 16.46,
+     "call": "ABOVE"
+    },
+    "rotation_D - cosine": {
+     "diff": 13.56,
+     "lo": 12.94,
+     "hi": 14.18,
+     "call": "ABOVE"
+    },
+    "map_only - cosine": {
+     "diff": 3.4,
+     "lo": 3.09,
+     "hi": 3.72,
+     "call": "ABOVE"
+    },
+    "rotation - rotation_D (X3)": {
+     "diff": 0.09,
+     "lo": -0.07,
+     "hi": 0.26,
+     "call": "LEVEL"
+    }
+   },
+   "per_label": {
+    "R.mention": {
+     "diff": 0.68,
+     "lo": 0.31,
+     "hi": 1.04,
+     "call": "ABOVE"
+    },
+    "R.name_comention": {
+     "diff": 31.63,
+     "lo": 29.34,
+     "hi": 33.87,
+     "call": "ABOVE"
+    },
+    "S.starred_actors": {
+     "diff": 2.41,
+     "lo": 1.74,
+     "hi": 3.14,
+     "call": "ABOVE"
+    },
+    "S.has_tags": {
+     "diff": 6.5,
+     "lo": 5.28,
+     "hi": 7.76,
+     "call": "ABOVE"
+    },
+    "S.written_by": {
+     "diff": 2.74,
+     "lo": 1.86,
+     "hi": 3.63,
+     "call": "ABOVE"
+    },
+    "S.release_year": {
+     "diff": 7.16,
+     "lo": 6.43,
+     "hi": 8.02,
+     "call": "ABOVE"
+    },
+    "S.directed_by": {
+     "diff": 3.2,
+     "lo": 2.32,
+     "hi": 4.08,
+     "call": "ABOVE"
+    },
+    "S.has_genre": {
+     "diff": 45.83,
+     "lo": 43.42,
+     "hi": 48.3,
+     "call": "ABOVE"
+    },
+    "S.in_language": {
+     "diff": 32.27,
+     "lo": 28.74,
+     "hi": 35.77,
+     "call": "ABOVE"
+    },
+    "S.other": {
+     "diff": 61.45,
+     "lo": 50.28,
+     "hi": 73.18,
+     "call": "ABOVE"
+    }
+   },
+   "sha256": "929e44b78635feb8cbca68e65b3a63a1b0ea31f9fbb2e4b0b467b84c328c2be8"
+  },
+  "webqsp e3v": {
+   "call": {
+    "diff": 39.07,
+    "lo": 38.36,
+    "hi": 39.75,
+    "call": "LEARNS"
+   },
+   "cosine": {
+    "n": 15361,
+    "mrr": 7.32,
+    "h10": 12.15,
+    "h100": 20.81
+   },
+   "rotation": {
+    "n": 15361,
+    "mrr": 46.4,
+    "h10": 56.34,
+    "h100": 73.14
+   },
+   "beside": {
+    "translation - cosine": {
+     "diff": 39.88,
+     "lo": 39.14,
+     "hi": 40.61,
+     "call": "ABOVE"
+    }
+   },
+   "per_label": {
+    "R.mention": {
+     "diff": 14.02,
+     "lo": 12.01,
+     "hi": 16.21,
+     "call": "ABOVE"
+    },
+    "R.name_comention": {
+     "diff": 2.05,
+     "lo": 0.66,
+     "hi": 3.4,
+     "call": "ABOVE"
+    },
+    "R.title_comention": {
+     "diff": 2.43,
+     "lo": 0.16,
+     "hi": 4.82,
+     "call": "ABOVE"
+    },
+    "S.topic notable types": {
+     "diff": 30.15,
+     "lo": 27.95,
+     "hi": 32.46,
+     "call": "ABOVE"
+    },
+    "S.valuenotation is reviewed": {
+     "diff": 59.63,
+     "lo": 56.98,
+     "hi": 62.33,
+     "call": "ABOVE"
+    },
+    "S.topic notable for": {
+     "diff": 64.81,
+     "lo": 62.85,
+     "hi": 66.75,
+     "call": "ABOVE"
+    },
+    "S.performance film": {
+     "diff": 84.23,
+     "lo": 82.17,
+     "hi": 86.18,
+     "call": "ABOVE"
+    },
+    "S.film starring": {
+     "diff": 87.66,
+     "lo": 86.15,
+     "hi": 89.13,
+     "call": "ABOVE"
+    },
+    "S.valuenotation has value": {
+     "diff": 61.67,
+     "lo": 59.14,
+     "hi": 64.4,
+     "call": "ABOVE"
+    },
+    "S.person profession": {
+     "diff": 8.49,
+     "lo": 7.18,
+     "hi": 9.79,
+     "call": "ABOVE"
+    },
+    "S.location containedby": {
+     "diff": 7.34,
+     "lo": 6.02,
+     "hi": 8.65,
+     "call": "ABOVE"
+    },
+    "S.person gender": {
+     "diff": 78.54,
+     "lo": 76.19,
+     "hi": 80.87,
+     "call": "ABOVE"
+    },
+    "S.netflix title netflix genres": {
+     "diff": 7.04,
+     "lo": 5.85,
+     "hi": 8.26,
+     "call": "ABOVE"
+    },
+    "S.person nationality": {
+     "diff": 66.86,
+     "lo": 64.26,
+     "hi": 69.42,
+     "call": "ABOVE"
+    },
+    "S.film genre": {
+     "diff": 18.34,
+     "lo": 16.38,
+     "hi": 20.32,
+     "call": "ABOVE"
+    },
+    "S.other": {
+     "diff": 8.5,
+     "lo": 7.02,
+     "hi": 10.02,
+     "call": "ABOVE"
+    }
+   },
+   "sha256": "771b1393aa9a159367edf6f3eb16d8d5d35ae0a813ec238794ee3b1e3c990a6f"
+  },
+  "webqsp frozen": {
+   "call": {
+    "diff": 41.06,
+    "lo": 40.31,
+    "hi": 41.75,
+    "call": "LEARNS"
+   },
+   "cosine": {
+    "n": 15361,
+    "mrr": 5.19,
+    "h10": 7.37,
+    "h100": 14.53
+   },
+   "rotation": {
+    "n": 15361,
+    "mrr": 46.24,
+    "h10": 58.47,
+    "h100": 75.87
+   },
+   "beside": {
+    "translation - cosine": {
+     "diff": 42.31,
+     "lo": 41.56,
+     "hi": 42.99,
+     "call": "ABOVE"
+    }
+   },
+   "per_label": {
+    "R.mention": {
+     "diff": 15.49,
+     "lo": 13.37,
+     "hi": 17.74,
+     "call": "ABOVE"
+    },
+    "R.name_comention": {
+     "diff": 3.64,
+     "lo": 2.25,
+     "hi": 5.12,
+     "call": "ABOVE"
+    },
+    "R.title_comention": {
+     "diff": 10.77,
+     "lo": 8.26,
+     "hi": 13.15,
+     "call": "ABOVE"
+    },
+    "S.topic notable types": {
+     "diff": 32.83,
+     "lo": 30.37,
+     "hi": 35.4,
+     "call": "ABOVE"
+    },
+    "S.valuenotation is reviewed": {
+     "diff": 48.41,
+     "lo": 45.98,
+     "hi": 50.96,
+     "call": "ABOVE"
+    },
+    "S.topic notable for": {
+     "diff": 89.86,
+     "lo": 88.53,
+     "hi": 91.16,
+     "call": "ABOVE"
+    },
+    "S.performance film": {
+     "diff": 87.69,
+     "lo": 85.99,
+     "hi": 89.45,
+     "call": "ABOVE"
+    },
+    "S.film starring": {
+     "diff": 86.06,
+     "lo": 84.22,
+     "hi": 87.75,
+     "call": "ABOVE"
+    },
+    "S.valuenotation has value": {
+     "diff": 50.8,
+     "lo": 48.42,
+     "hi": 53.45,
+     "call": "ABOVE"
+    },
+    "S.person profession": {
+     "diff": 16.42,
+     "lo": 14.51,
+     "hi": 18.45,
+     "call": "ABOVE"
+    },
+    "S.location containedby": {
+     "diff": 10.71,
+     "lo": 9.2,
+     "hi": 12.37,
+     "call": "ABOVE"
+    },
+    "S.person gender": {
+     "diff": 82.71,
+     "lo": 80.76,
+     "hi": 84.66,
+     "call": "ABOVE"
+    },
+    "S.netflix title netflix genres": {
+     "diff": 9.17,
+     "lo": 7.87,
+     "hi": 10.65,
+     "call": "ABOVE"
+    },
+    "S.person nationality": {
+     "diff": 67.01,
+     "lo": 64.39,
+     "hi": 69.63,
+     "call": "ABOVE"
+    },
+    "S.film genre": {
+     "diff": 18.68,
+     "lo": 16.75,
+     "hi": 20.72,
+     "call": "ABOVE"
+    },
+    "S.other": {
+     "diff": 7.29,
+     "lo": 6.06,
+     "hi": 8.5,
+     "call": "ABOVE"
+    }
+   },
+   "sha256": "6b8daa4044e8fa9ce32398030a948d93919df27c8c5cbbfa2be08cc59f84631c"
+  },
+  "hotpotqa e3v": {
+   "call": {
+    "diff": 3.64,
+    "lo": 3.13,
+    "hi": 4.17,
+    "call": "LEARNS"
+   },
+   "cosine": {
+    "n": 4000,
+    "mrr": 7.31,
+    "h10": 12.12,
+    "h100": 23.38
+   },
+   "rotation": {
+    "n": 4000,
+    "mrr": 10.95,
+    "h10": 18.9,
+    "h100": 38.4
+   },
+   "beside": {
+    "translation - cosine": {
+     "diff": 3.07,
+     "lo": 2.56,
+     "hi": 3.59,
+     "call": "ABOVE"
+    }
+   },
+   "per_label": {
+    "R.mention": {
+     "diff": 2.58,
+     "lo": 1.61,
+     "hi": 3.56,
+     "call": "ABOVE"
+    },
+    "R.name_comention": {
+     "diff": 1.18,
+     "lo": 0.49,
+     "hi": 1.91,
+     "call": "ABOVE"
+    },
+    "R.title_comention": {
+     "diff": 3.19,
+     "lo": 2.25,
+     "hi": 4.15,
+     "call": "ABOVE"
+    },
+    "S.hyperlink": {
+     "diff": 7.61,
+     "lo": 6.28,
+     "hi": 8.99,
+     "call": "ABOVE"
+    }
+   },
+   "sha256": "d91a43f178cbc43dbaed1c16229e994358e0f4c50a56b71db01b8b986282a477"
+  },
+  "hotpotqa frozen": {
+   "call": {
+    "diff": 5.61,
+    "lo": 5.01,
+    "hi": 6.25,
+    "call": "LEARNS"
+   },
+   "cosine": {
+    "n": 4000,
+    "mrr": 7.46,
+    "h10": 12.22,
+    "h100": 23.23
+   },
+   "rotation": {
+    "n": 4000,
+    "mrr": 13.08,
+    "h10": 22.95,
+    "h100": 43.23
+   },
+   "beside": {
+    "translation - cosine": {
+     "diff": 4.77,
+     "lo": 4.18,
+     "hi": 5.4,
+     "call": "ABOVE"
+    }
+   },
+   "per_label": {
+    "R.mention": {
+     "diff": 3.52,
+     "lo": 2.54,
+     "hi": 4.54,
+     "call": "ABOVE"
+    },
+    "R.name_comention": {
+     "diff": 1.38,
+     "lo": 0.59,
+     "hi": 2.18,
+     "call": "ABOVE"
+    },
+    "R.title_comention": {
+     "diff": 5.58,
+     "lo": 4.4,
+     "hi": 6.73,
+     "call": "ABOVE"
+    },
+    "S.hyperlink": {
+     "diff": 11.97,
+     "lo": 10.36,
+     "hi": 13.64,
+     "call": "ABOVE"
+    }
+   },
+   "sha256": "0c873b27b5fa15bd457bb7e25e8157e749a342be80432897dcb76a44fd3fe0fa"
+  },
+  "2wiki e3v": {
+   "call": {
+    "diff": 2.62,
+    "lo": 2.11,
+    "hi": 3.14,
+    "call": "LEARNS"
+   },
+   "cosine": {
+    "n": 4000,
+    "mrr": 6.74,
+    "h10": 11.33,
+    "h100": 20.7
+   },
+   "rotation": {
+    "n": 4000,
+    "mrr": 9.36,
+    "h10": 17.0,
+    "h100": 32.35
+   },
+   "beside": {
+    "translation - cosine": {
+     "diff": 2.08,
+     "lo": 1.56,
+     "hi": 2.58,
+     "call": "ABOVE"
+    }
+   },
+   "per_label": {
+    "R.mention": {
+     "diff": 2.43,
+     "lo": 1.51,
+     "hi": 3.34,
+     "call": "ABOVE"
+    },
+    "R.name_comention": {
+     "diff": -0.42,
+     "lo": -1.12,
+     "hi": 0.24,
+     "call": "LEVEL"
+    },
+    "R.title_comention": {
+     "diff": 2.9,
+     "lo": 1.87,
+     "hi": 3.94,
+     "call": "ABOVE"
+    },
+    "S.hyperlink": {
+     "diff": 5.59,
+     "lo": 4.33,
+     "hi": 6.86,
+     "call": "ABOVE"
+    }
+   },
+   "sha256": "cdfb0be0cd96082b6ef6cb105d1e2d86aa8e3ca8e651b816e8aef2273c724187"
+  },
+  "2wiki frozen": {
+   "call": {
+    "diff": 4.32,
+    "lo": 3.72,
+    "hi": 4.87,
+    "call": "LEARNS"
+   },
+   "cosine": {
+    "n": 4000,
+    "mrr": 6.64,
+    "h10": 11.0,
+    "h100": 20.32
+   },
+   "rotation": {
+    "n": 4000,
+    "mrr": 10.96,
+    "h10": 19.45,
+    "h100": 35.95
+   },
+   "beside": {
+    "translation - cosine": {
+     "diff": 3.35,
+     "lo": 2.8,
+     "hi": 3.87,
+     "call": "ABOVE"
+    }
+   },
+   "per_label": {
+    "R.mention": {
+     "diff": 2.66,
+     "lo": 1.74,
+     "hi": 3.6,
+     "call": "ABOVE"
+    },
+    "R.name_comention": {
+     "diff": 0.74,
+     "lo": -0.03,
+     "hi": 1.54,
+     "call": "LEVEL"
+    },
+    "R.title_comention": {
+     "diff": 4.99,
+     "lo": 3.81,
+     "hi": 6.21,
+     "call": "ABOVE"
+    },
+    "S.hyperlink": {
+     "diff": 8.87,
+     "lo": 7.35,
+     "hi": 10.33,
+     "call": "ABOVE"
+    }
+   },
+   "sha256": "1353f07a46d43c48cf6c01ca7fbc7508cd00dbb6cb7721151bb3af550d7073c9"
+  }
+ },
+ "utc": "2026-11-24T18:16:00Z",
+ "script_sha256": "60208157465631a21f56731ffe90eb6df9367b722e6a479f889ee5f266f2474e"
+}

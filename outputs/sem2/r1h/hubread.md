@@ -1,6 +1,6 @@
 # SEM2 R1h part A: R1's ranks grouped by target
 
-Declared in docs/SEM2_EDGE_OPERATORS.md section 8. Written by zsem2h.py hubread at 2026-11-24T09:28:46Z. MRR in points. MRR_T: each (read group, target) counts once. H0: rotation - cosine on MRR_T, paired bootstrap over groups.
+Declared in docs/SEM2_EDGE_OPERATORS.md section 8. Written by zsem2h.py hubread at 2026-11-24T18:16:04Z. MRR in points. MRR_T: each (read group, target) counts once. H0: rotation - cosine on MRR_T, paired bootstrap over groups.
 
 | dataset arm | cosine MRR / MRR_T | rotation MRR / MRR_T | pooled gain (R1's call) | MRR_T gain (H0) |
 | --- | --- | --- | --- | --- |
@@ -15,3 +15,6 @@ Declared in docs/SEM2_EDGE_OPERATORS.md section 8. Written by zsem2h.py hubread 
 | webqsp e3v | 7.32 / 13.87 | 46.4 / 49.3 | +39.07 [+38.36, +39.75] LEARNS | +35.43 [+34.42, +36.38] LEARNS |
 | webqsp frozen | 5.19 / 9.87 | 46.24 / 49.89 | +41.06 [+40.31, +41.75] LEARNS | +40.02 [+38.98, +41.05] LEARNS |
 | hotpotqa e3v | 7.31 / 7.69 | 10.95 / 11.3 | +3.64 [+3.13, +4.17] LEARNS | +3.61 [+3.06, +4.14] LEARNS |
+| hotpotqa frozen | 7.46 / 7.86 | 13.08 / 13.4 | +5.61 [+5.01, +6.25] LEARNS | +5.55 [+4.91, +6.21] LEARNS |
+| 2wiki e3v | 6.74 / 6.97 | 9.36 / 9.55 | +2.62 [+2.11, +3.14] LEARNS | +2.58 [+2.07, +3.09] LEARNS |
+| 2wiki frozen | 6.64 / 6.87 | 10.96 / 11.12 | +4.32 [+3.72, +4.87] LEARNS | +4.25 [+3.66, +4.83] LEARNS |

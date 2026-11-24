@@ -1,0 +1,6295 @@
+{
+ "stage": "SEM2 R1",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 7",
+ "dataset": "webqsp",
+ "arm": "e3v",
+ "dim": 1152,
+ "worst_norm_offset": 0.000738,
+ "config": {
+  "extra": 256,
+  "tau": 0.05,
+  "batch": 1024,
+  "neg": 4096,
+  "lr": 0.001,
+  "epoch": 200000,
+  "max_epochs": 10,
+  "patience": 2,
+  "min_op": 500,
+  "top_s": 12,
+  "n_test": 1000,
+  "n_dev": 500
+ },
+ "smoke": false,
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 500445467,
+     "record": 500445467
+    },
+    "CN_all": {
+     "pairs": 995434,
+     "record": 995434
+    },
+    "F0T": {
+     "pairs": 997211,
+     "record": 997211
+    },
+    "S": {
+     "pairs": 5882501,
+     "record": 5882501
+    },
+    "S directed": {
+     "edges": 8215503,
+     "pair_relation_rows": 8213874,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-S samples": "PASS",
+  "G-0 rotation": {
+   "max_score_diff": 5.364418029785156e-07,
+   "mrr_diff": 2.17920764766788e-10,
+   "verdict": "PASS"
+  },
+  "G-S rotation training": "PASS",
+  "G-0 translation": {
+   "max_score_diff": 5.364418029785156e-07,
+   "mrr_diff": 2.17920764766788e-10,
+   "verdict": "PASS"
+  },
+  "G-S translation training": "PASS"
+ },
+ "nodes": 2592894,
+ "split": {
+  "test": 258590,
+  "dev": 259166,
+  "train": 2075138
+ },
+ "labels": {
+  "R.mention": {
+   "directed": false,
+   "pairs": 500445467,
+   "train_edges": 644159906,
+   "op": "R.mention"
+  },
+  "R.name_comention": {
+   "directed": false,
+   "pairs": 995434,
+   "train_edges": 1275960,
+   "op": "R.name_comention"
+  },
+  "R.title_comention": {
+   "directed": false,
+   "pairs": 1777,
+   "train_edges": 2410,
+   "op": "R.title_comention"
+  },
+  "S.football game passing": {
+   "directed": true,
+   "edges": 1308,
+   "train_edges": 838,
+   "op": "S.football game passing"
+  },
+  "S.football game receiving": {
+   "directed": true,
+   "edges": 7212,
+   "train_edges": 4636,
+   "op": "S.football game receiving"
+  },
+  "S.football game rushing": {
+   "directed": true,
+   "edges": 4148,
+   "train_edges": 2654,
+   "op": "S.football game rushing"
+  },
+  "S.football player games": {
+   "directed": true,
+   "edges": 1026,
+   "train_edges": 752,
+   "op": "S.football player games"
+  },
+  "S.american football football player position s": {
+   "directed": true,
+   "edges": 1419,
+   "train_edges": 957,
+   "op": "S.american football football player position s"
+  },
+  "S.game passing statistics game": {
+   "directed": true,
+   "edges": 1308,
+   "train_edges": 838,
+   "op": "S.game passing statistics game"
+  },
+  "S.game passing statistics team": {
+   "directed": true,
+   "edges": 1308,
+   "train_edges": 875,
+   "op": "S.game passing statistics team"
+  },
+  "S.game receiving statistics game": {
+   "directed": true,
+   "edges": 7212,
+   "train_edges": 4636,
+   "op": "S.game receiving statistics game"
+  },
+  "S.game receiving statistics player": {
+   "directed": true,
+   "edges": 863,
+   "train_edges": 567,
+   "op": "S.game receiving statistics player"
+  },
+  "S.game receiving statistics team": {
+   "directed": true,
+   "edges": 7212,
+   "train_edges": 4911,
+   "op": "S.game receiving statistics team"
+  },
+  "S.game rushing statistics game": {
+   "directed": true,
+   "edges": 4148,
+   "train_edges": 2654,
+   "op": "S.game rushing statistics game"
+  },
+  "S.game rushing statistics team": {
+   "directed": true,
+   "edges": 4148,
+   "train_edges": 2765,
+   "op": "S.game rushing statistics team"
+  },
+  "S.player game statistics player": {
+   "directed": true,
+   "edges": 1026,
+   "train_edges": 752,
+   "op": "S.player game statistics player"
+  },
+  "S.park rides": {
+   "directed": true,
+   "edges": 708,
+   "train_edges": 504,
+   "op": "S.park rides"
+  },
+  "S.architect structures designed": {
+   "directed": true,
+   "edges": 1779,
+   "train_edges": 1099,
+   "op": "S.architect structures designed"
+  },
+  "S.architectural style examples": {
+   "directed": true,
+   "edges": 1356,
+   "train_edges": 856,
+   "op": "S.architectural style examples"
+  },
+  "S.building building function": {
+   "directed": true,
+   "edges": 976,
+   "train_edges": 628,
+   "op": "S.building building function"
+  },
+  "S.structure architect": {
+   "directed": true,
+   "edges": 2317,
+   "train_edges": 1486,
+   "op": "S.structure architect"
+  },
+  "S.structure architectural style": {
+   "directed": true,
+   "edges": 3422,
+   "train_edges": 2116,
+   "op": "S.structure architectural style"
+  },
+  "S.automotive make model s": {
+   "directed": true,
+   "edges": 887,
+   "train_edges": 528,
+   "op": "S.automotive make model s"
+  },
+  "S.airport focus city for": {
+   "directed": true,
+   "edges": 850,
+   "train_edges": 520,
+   "op": "S.airport focus city for"
+  },
+  "S.airport hub for": {
+   "directed": true,
+   "edges": 2883,
+   "train_edges": 1800,
+   "op": "S.airport hub for"
+  },
+  "S.airport serves": {
+   "directed": true,
+   "edges": 2832,
+   "train_edges": 1780,
+   "op": "S.airport serves"
+  },
+  "S.award category": {
+   "directed": true,
+   "edges": 1642,
+   "train_edges": 1001,
+   "op": "S.award category"
+  },
+  "S.award category category of": {
+   "directed": true,
+   "edges": 1779,
+   "train_edges": 1055,
+   "op": "S.award category category of"
+  },
+  "S.award category disciplines or subjects": {
+   "directed": true,
+   "edges": 1847,
+   "train_edges": 1319,
+   "op": "S.award category disciplines or subjects"
+  },
+  "S.award category nominees": {
+   "directed": true,
+   "edges": 14743,
+   "train_edges": 9365,
+   "op": "S.award category nominees"
+  },
+  "S.award category presenting organization": {
+   "directed": true,
+   "edges": 1163,
+   "train_edges": 821,
+   "op": "S.award category presenting organization"
+  },
+  "S.award category winners": {
+   "directed": true,
+   "edges": 17589,
+   "train_edges": 11233,
+   "op": "S.award category winners"
+  },
+  "S.award ceremony awards presented": {
+   "directed": true,
+   "edges": 13380,
+   "train_edges": 8702,
+   "op": "S.award ceremony awards presented"
+  },
+  "S.award ceremony nominees": {
+   "directed": true,
+   "edges": 12806,
+   "train_edges": 8599,
+   "op": "S.award ceremony nominees"
+  },
+  "S.award discipline awards in this discipline": {
+   "directed": true,
+   "edges": 1270,
+   "train_edges": 848,
+   "op": "S.award discipline awards in this discipline"
+  },
+  "S.award honor award": {
+   "directed": true,
+   "edges": 18945,
+   "train_edges": 12173,
+   "op": "S.award honor award"
+  },
+  "S.award honor award winner": {
+   "directed": true,
+   "edges": 37698,
+   "train_edges": 23843,
+   "op": "S.award honor award winner"
+  },
+  "S.award honor ceremony": {
+   "directed": true,
+   "edges": 14106,
+   "train_edges": 9137,
+   "op": "S.award honor ceremony"
+  },
+  "S.award honor honored for": {
+   "directed": true,
+   "edges": 18208,
+   "train_edges": 11763,
+   "op": "S.award honor honored for"
+  },
+  "S.award nominated work award nominations": {
+   "directed": true,
+   "edges": 42550,
+   "train_edges": 27511,
+   "op": "S.award nominated work award nominations"
+  },
+  "S.award nomination award": {
+   "directed": true,
+   "edges": 26870,
+   "train_edges": 17332,
+   "op": "S.award nomination award"
+  },
+  "S.award nomination award nominee": {
+   "directed": true,
+   "edges": 78176,
+   "train_edges": 49997,
+   "op": "S.award nomination award nominee"
+  },
+  "S.award nomination ceremony": {
+   "directed": true,
+   "edges": 27435,
+   "train_edges": 17742,
+   "op": "S.award nomination ceremony"
+  },
+  "S.award nomination nominated for": {
+   "directed": true,
+   "edges": 46135,
+   "train_edges": 29716,
+   "op": "S.award nomination nominated for"
+  },
+  "S.award nominee award nominations": {
+   "directed": true,
+   "edges": 75630,
+   "train_edges": 48606,
+   "op": "S.award nominee award nominations"
+  },
+  "S.award presenting organization award categories presented": {
+   "directed": true,
+   "edges": 1251,
+   "train_edges": 854,
+   "op": "S.award presenting organization award categories presented"
+  },
+  "S.award winner awards won": {
+   "directed": true,
+   "edges": 37677,
+   "train_edges": 23928,
+   "op": "S.award winner awards won"
+  },
+  "S.award winning work awards won": {
+   "directed": true,
+   "edges": 17251,
+   "train_edges": 11122,
+   "op": "S.award winning work awards won"
+  },
+  "S.award ranked item appears in ranked lists": {
+   "directed": true,
+   "edges": 4361,
+   "train_edges": 2837,
+   "op": "S.award ranked item appears in ranked lists"
+  },
+  "S.award ranking item": {
+   "directed": true,
+   "edges": 4361,
+   "train_edges": 2837,
+   "op": "S.award ranking item"
+  },
+  "S.award ranking list": {
+   "directed": true,
+   "edges": 1085,
+   "train_edges": 592,
+   "op": "S.award ranking list"
+  },
+  "S.administrative area administrative area type": {
+   "directed": true,
+   "edges": 5018,
+   "train_edges": 3068,
+   "op": "S.administrative area administrative area type"
+  },
+  "S.administrative area administrative children": {
+   "directed": true,
+   "edges": 5748,
+   "train_edges": 3943,
+   "op": "S.administrative area administrative children"
+  },
+  "S.administrative area administrative parent": {
+   "directed": true,
+   "edges": 5432,
+   "train_edges": 3774,
+   "op": "S.administrative area administrative parent"
+  },
+  "S.activism issue activists": {
+   "directed": true,
+   "edges": 1146,
+   "train_edges": 764,
+   "op": "S.activism issue activists"
+  },
+  "S.activist area of activism": {
+   "directed": true,
+   "edges": 1254,
+   "train_edges": 809,
+   "op": "S.activist area of activism"
+  },
+  "S.bibs location country": {
+   "directed": true,
+   "edges": 1185,
+   "train_edges": 897,
+   "op": "S.bibs location country"
+  },
+  "S.base cars refactor make model s": {
+   "directed": true,
+   "edges": 881,
+   "train_edges": 610,
+   "op": "S.base cars refactor make model s"
+  },
+  "S.event entity involved": {
+   "directed": true,
+   "edges": 25170,
+   "train_edges": 15776,
+   "op": "S.event entity involved"
+  },
+  "S.names descriptive name": {
+   "directed": true,
+   "edges": 7179,
+   "train_edges": 4731,
+   "op": "S.names descriptive name"
+  },
+  "S.kwconnection other": {
+   "directed": true,
+   "edges": 2867,
+   "train_edges": 1921,
+   "op": "S.kwconnection other"
+  },
+  "S.kwconnection relation": {
+   "directed": true,
+   "edges": 2620,
+   "train_edges": 1663,
+   "op": "S.kwconnection relation"
+  },
+  "S.kwconnection sentence": {
+   "directed": true,
+   "edges": 2864,
+   "train_edges": 1875,
+   "op": "S.kwconnection sentence"
+  },
+  "S.kwconnection subject": {
+   "directed": true,
+   "edges": 2865,
+   "train_edges": 1869,
+   "op": "S.kwconnection subject"
+  },
+  "S.kwsentence contains connections": {
+   "directed": true,
+   "edges": 1569,
+   "train_edges": 1027,
+   "op": "S.kwsentence contains connections"
+  },
+  "S.kwsentence dates": {
+   "directed": true,
+   "edges": 2569,
+   "train_edges": 1642,
+   "op": "S.kwsentence dates"
+  },
+  "S.kwsentence kwtopic": {
+   "directed": true,
+   "edges": 6786,
+   "train_edges": 4333,
+   "op": "S.kwsentence kwtopic"
+  },
+  "S.kwsentence next sentence": {
+   "directed": true,
+   "edges": 6322,
+   "train_edges": 4003,
+   "op": "S.kwsentence next sentence"
+  },
+  "S.kwsentence previous sentence": {
+   "directed": true,
+   "edges": 6320,
+   "train_edges": 4000,
+   "op": "S.kwsentence previous sentence"
+  },
+  "S.kwtopic connections from": {
+   "directed": true,
+   "edges": 4385,
+   "train_edges": 2837,
+   "op": "S.kwtopic connections from"
+  },
+  "S.kwtopic connections to": {
+   "directed": true,
+   "edges": 4469,
+   "train_edges": 2923,
+   "op": "S.kwtopic connections to"
+  },
+  "S.kwtopic has sentences": {
+   "directed": true,
+   "edges": 16940,
+   "train_edges": 10917,
+   "op": "S.kwtopic has sentences"
+  },
+  "S.ncaa basketball team ncaa tournament seeds": {
+   "directed": true,
+   "edges": 1609,
+   "train_edges": 979,
+   "op": "S.ncaa basketball team ncaa tournament seeds"
+  },
+  "S.ncaa basketball team tournament games lost": {
+   "directed": true,
+   "edges": 1815,
+   "train_edges": 1094,
+   "op": "S.ncaa basketball team tournament games lost"
+  },
+  "S.ncaa basketball team tournament games won": {
+   "directed": true,
+   "edges": 1903,
+   "train_edges": 1117,
+   "op": "S.ncaa basketball team tournament games won"
+  },
+  "S.ncaa basketball tournament seeds": {
+   "directed": true,
+   "edges": 2462,
+   "train_edges": 1613,
+   "op": "S.ncaa basketball tournament seeds"
+  },
+  "S.ncaa basketball tournament stages": {
+   "directed": true,
+   "edges": 1008,
+   "train_edges": 653,
+   "op": "S.ncaa basketball tournament stages"
+  },
+  "S.ncaa basketball tournament game losing team": {
+   "directed": true,
+   "edges": 1536,
+   "train_edges": 932,
+   "op": "S.ncaa basketball tournament game losing team"
+  },
+  "S.ncaa basketball tournament game tournament round instance": {
+   "directed": true,
+   "edges": 1533,
+   "train_edges": 991,
+   "op": "S.ncaa basketball tournament game tournament round instance"
+  },
+  "S.ncaa basketball tournament game winning team": {
+   "directed": true,
+   "edges": 1551,
+   "train_edges": 897,
+   "op": "S.ncaa basketball tournament game winning team"
+  },
+  "S.ncaa basketball tournament stage games": {
+   "directed": true,
+   "edges": 1245,
+   "train_edges": 792,
+   "op": "S.ncaa basketball tournament stage games"
+  },
+  "S.ncaa tournament seed region": {
+   "directed": true,
+   "edges": 1933,
+   "train_edges": 935,
+   "op": "S.ncaa tournament seed region"
+  },
+  "S.ncaa tournament seed team": {
+   "directed": true,
+   "edges": 1671,
+   "train_edges": 1028,
+   "op": "S.ncaa tournament seed team"
+  },
+  "S.ncaa tournament seed tournament": {
+   "directed": true,
+   "edges": 2463,
+   "train_edges": 1614,
+   "op": "S.ncaa tournament seed tournament"
+  },
+  "S.ontology instance equivalent instances": {
+   "directed": true,
+   "edges": 2877,
+   "train_edges": 1805,
+   "op": "S.ontology instance equivalent instances"
+  },
+  "S.ontology instance mapping freebase topic": {
+   "directed": true,
+   "edges": 2877,
+   "train_edges": 1805,
+   "op": "S.ontology instance mapping freebase topic"
+  },
+  "S.ontology instance mapping ontology": {
+   "directed": true,
+   "edges": 2175,
+   "train_edges": 1721,
+   "op": "S.ontology instance mapping ontology"
+  },
+  "S.dog breed color": {
+   "directed": true,
+   "edges": 1474,
+   "train_edges": 984,
+   "op": "S.dog breed color"
+  },
+  "S.dog breed temperament": {
+   "directed": true,
+   "edges": 2131,
+   "train_edges": 1382,
+   "op": "S.dog breed temperament"
+  },
+  "S.dog coat color dog breeds": {
+   "directed": true,
+   "edges": 1009,
+   "train_edges": 625,
+   "op": "S.dog coat color dog breeds"
+  },
+  "S.dog temperament dog breeds": {
+   "directed": true,
+   "edges": 1490,
+   "train_edges": 1030,
+   "op": "S.dog temperament dog breeds"
+  },
+  "S.canoodled participant": {
+   "directed": true,
+   "edges": 882,
+   "train_edges": 552,
+   "op": "S.canoodled participant"
+  },
+  "S.celebrity canoodled": {
+   "directed": true,
+   "edges": 881,
+   "train_edges": 551,
+   "op": "S.celebrity canoodled"
+  },
+  "S.celebrity dated": {
+   "directed": true,
+   "edges": 2890,
+   "train_edges": 1877,
+   "op": "S.celebrity dated"
+  },
+  "S.celebrity friendship": {
+   "directed": true,
+   "edges": 2591,
+   "train_edges": 1708,
+   "op": "S.celebrity friendship"
+  },
+  "S.celebrity vacations in": {
+   "directed": true,
+   "edges": 873,
+   "train_edges": 610,
+   "op": "S.celebrity vacations in"
+  },
+  "S.dated participant": {
+   "directed": true,
+   "edges": 2892,
+   "train_edges": 1877,
+   "op": "S.dated participant"
+  },
+  "S.friendship participant": {
+   "directed": true,
+   "edges": 2592,
+   "train_edges": 1709,
+   "op": "S.friendship participant"
+  },
+  "S.location vacationers": {
+   "directed": true,
+   "edges": 932,
+   "train_edges": 612,
+   "op": "S.location vacationers"
+  },
+  "S.vacation choice location": {
+   "directed": true,
+   "edges": 932,
+   "train_edges": 612,
+   "op": "S.vacation choice location"
+  },
+  "S.vacation choice vacationer": {
+   "directed": true,
+   "edges": 873,
+   "train_edges": 610,
+   "op": "S.vacation choice vacationer"
+  },
+  "S.review mentions": {
+   "directed": true,
+   "edges": 2997,
+   "train_edges": 1745,
+   "op": "S.review mentions"
+  },
+  "S.languoid document": {
+   "directed": true,
+   "edges": 860,
+   "train_edges": 565,
+   "op": "S.languoid document"
+  },
+  "S.languoid languoid class": {
+   "directed": true,
+   "edges": 1309,
+   "train_edges": 1066,
+   "op": "S.languoid languoid class"
+  },
+  "S.languoid parent": {
+   "directed": true,
+   "edges": 996,
+   "train_edges": 649,
+   "op": "S.languoid parent"
+  },
+  "S.local name locale": {
+   "directed": true,
+   "edges": 973,
+   "train_edges": 704,
+   "op": "S.local name locale"
+  },
+  "S.context name pronunciation": {
+   "directed": true,
+   "edges": 7221,
+   "train_edges": 4605,
+   "op": "S.context name pronunciation"
+  },
+  "S.organization extra phone number": {
+   "directed": true,
+   "edges": 1869,
+   "train_edges": 1323,
+   "op": "S.organization extra phone number"
+  },
+  "S.phone sandbox caller category": {
+   "directed": true,
+   "edges": 809,
+   "train_edges": 657,
+   "op": "S.phone sandbox caller category"
+  },
+  "S.phone sandbox contact category": {
+   "directed": true,
+   "edges": 823,
+   "train_edges": 658,
+   "op": "S.phone sandbox contact category"
+  },
+  "S.phone sandbox service location": {
+   "directed": true,
+   "edges": 1410,
+   "train_edges": 1064,
+   "op": "S.phone sandbox service location"
+  },
+  "S.plural form gender": {
+   "directed": true,
+   "edges": 1766,
+   "train_edges": 1416,
+   "op": "S.plural form gender"
+  },
+  "S.plural form language": {
+   "directed": true,
+   "edges": 3837,
+   "train_edges": 2401,
+   "op": "S.plural form language"
+  },
+  "S.skos concept narrower": {
+   "directed": true,
+   "edges": 783,
+   "train_edges": 504,
+   "op": "S.skos concept narrower"
+  },
+  "S.exception involves": {
+   "directed": true,
+   "edges": 1359,
+   "train_edges": 771,
+   "op": "S.exception involves"
+  },
+  "S.topic exceptions": {
+   "directed": true,
+   "edges": 2129,
+   "train_edges": 1281,
+   "op": "S.topic exceptions"
+  },
+  "S.nris listing significance level": {
+   "directed": true,
+   "edges": 2525,
+   "train_edges": 1583,
+   "op": "S.nris listing significance level"
+  },
+  "S.film w id": {
+   "directed": true,
+   "edges": 812,
+   "train_edges": 535,
+   "op": "S.film w id"
+  },
+  "S.siteid film": {
+   "directed": true,
+   "edges": 812,
+   "train_edges": 535,
+   "op": "S.siteid film"
+  },
+  "S.settlement area code": {
+   "directed": true,
+   "edges": 4941,
+   "train_edges": 3392,
+   "op": "S.settlement area code"
+  },
+  "S.video game platforms": {
+   "directed": true,
+   "edges": 1458,
+   "train_edges": 1015,
+   "op": "S.video game platforms"
+  },
+  "S.baseball player batting stats": {
+   "directed": true,
+   "edges": 2113,
+   "train_edges": 1494,
+   "op": "S.baseball player batting stats"
+  },
+  "S.baseball player position s": {
+   "directed": true,
+   "edges": 1517,
+   "train_edges": 1176,
+   "op": "S.baseball player position s"
+  },
+  "S.baseball team team stats": {
+   "directed": true,
+   "edges": 1271,
+   "train_edges": 855,
+   "op": "S.baseball team team stats"
+  },
+  "S.baseball team stats season": {
+   "directed": true,
+   "edges": 1039,
+   "train_edges": 680,
+   "op": "S.baseball team stats season"
+  },
+  "S.baseball team stats team": {
+   "directed": true,
+   "edges": 1271,
+   "train_edges": 855,
+   "op": "S.baseball team stats team"
+  },
+  "S.batting statistics player": {
+   "directed": true,
+   "edges": 2113,
+   "train_edges": 1494,
+   "op": "S.batting statistics player"
+  },
+  "S.basketball player player statistics": {
+   "directed": true,
+   "edges": 964,
+   "train_edges": 641,
+   "op": "S.basketball player player statistics"
+  },
+  "S.basketball player position s": {
+   "directed": true,
+   "edges": 2311,
+   "train_edges": 1577,
+   "op": "S.basketball player position s"
+  },
+  "S.basketball player stats player": {
+   "directed": true,
+   "edges": 964,
+   "train_edges": 641,
+   "op": "S.basketball player stats player"
+  },
+  "S.animal breed coloring": {
+   "directed": true,
+   "edges": 1464,
+   "train_edges": 981,
+   "op": "S.animal breed coloring"
+  },
+  "S.animal breed place of origin": {
+   "directed": true,
+   "edges": 952,
+   "train_edges": 688,
+   "op": "S.animal breed place of origin"
+  },
+  "S.animal breed temperament": {
+   "directed": true,
+   "edges": 2114,
+   "train_edges": 1379,
+   "op": "S.animal breed temperament"
+  },
+  "S.breed coloring breeds": {
+   "directed": true,
+   "edges": 1004,
+   "train_edges": 626,
+   "op": "S.breed coloring breeds"
+  },
+  "S.breed origin breeds originating here": {
+   "directed": true,
+   "edges": 880,
+   "train_edges": 627,
+   "op": "S.breed origin breeds originating here"
+  },
+  "S.breed temperament breeds": {
+   "directed": true,
+   "edges": 1476,
+   "train_edges": 1027,
+   "op": "S.breed temperament breeds"
+  },
+  "S.organism classification higher classification": {
+   "directed": true,
+   "edges": 879,
+   "train_edges": 601,
+   "op": "S.organism classification higher classification"
+  },
+  "S.organism classification lower classifications": {
+   "directed": true,
+   "edges": 949,
+   "train_edges": 602,
+   "op": "S.organism classification lower classifications"
+  },
+  "S.author book editions published": {
+   "directed": true,
+   "edges": 9369,
+   "train_edges": 5926,
+   "op": "S.author book editions published"
+  },
+  "S.author series written or contributed to": {
+   "directed": true,
+   "edges": 1019,
+   "train_edges": 638,
+   "op": "S.author series written or contributed to"
+  },
+  "S.author works written": {
+   "directed": true,
+   "edges": 56446,
+   "train_edges": 35127,
+   "op": "S.author works written"
+  },
+  "S.book book characters": {
+   "directed": true,
+   "edges": 7066,
+   "train_edges": 4383,
+   "op": "S.book book characters"
+  },
+  "S.book editions": {
+   "directed": true,
+   "edges": 14524,
+   "train_edges": 9402,
+   "op": "S.book editions"
+  },
+  "S.book genre": {
+   "directed": true,
+   "edges": 21033,
+   "train_edges": 15105,
+   "op": "S.book genre"
+  },
+  "S.book character appears in book": {
+   "directed": true,
+   "edges": 5532,
+   "train_edges": 3378,
+   "op": "S.book character appears in book"
+  },
+  "S.book edition author editor": {
+   "directed": true,
+   "edges": 3468,
+   "train_edges": 2319,
+   "op": "S.book edition author editor"
+  },
+  "S.book edition binding": {
+   "directed": true,
+   "edges": 1076,
+   "train_edges": 819,
+   "op": "S.book edition binding"
+  },
+  "S.book edition book": {
+   "directed": true,
+   "edges": 2672,
+   "train_edges": 1675,
+   "op": "S.book edition book"
+  },
+  "S.book edition isbn": {
+   "directed": true,
+   "edges": 4142,
+   "train_edges": 2688,
+   "op": "S.book edition isbn"
+  },
+  "S.book edition number of pages": {
+   "directed": true,
+   "edges": 2436,
+   "train_edges": 1524,
+   "op": "S.book edition number of pages"
+  },
+  "S.book edition publisher": {
+   "directed": true,
+   "edges": 1008,
+   "train_edges": 625,
+   "op": "S.book edition publisher"
+  },
+  "S.book subject works": {
+   "directed": true,
+   "edges": 21158,
+   "train_edges": 13340,
+   "op": "S.book subject works"
+  },
+  "S.literary series works in this series": {
+   "directed": true,
+   "edges": 1319,
+   "train_edges": 756,
+   "op": "S.literary series works in this series"
+  },
+  "S.newspaper circulation areas": {
+   "directed": true,
+   "edges": 3645,
+   "train_edges": 2321,
+   "op": "S.newspaper circulation areas"
+  },
+  "S.newspaper headquarters": {
+   "directed": true,
+   "edges": 1616,
+   "train_edges": 1009,
+   "op": "S.newspaper headquarters"
+  },
+  "S.periodical first issue date": {
+   "directed": true,
+   "edges": 1038,
+   "train_edges": 678,
+   "op": "S.periodical first issue date"
+  },
+  "S.periodical format": {
+   "directed": true,
+   "edges": 839,
+   "train_edges": 526,
+   "op": "S.periodical format"
+  },
+  "S.periodical frequency or issues per year": {
+   "directed": true,
+   "edges": 1227,
+   "train_edges": 756,
+   "op": "S.periodical frequency or issues per year"
+  },
+  "S.periodical format period periodical": {
+   "directed": true,
+   "edges": 839,
+   "train_edges": 526,
+   "op": "S.periodical format period periodical"
+  },
+  "S.periodical publisher period periodical": {
+   "directed": true,
+   "edges": 790,
+   "train_edges": 532,
+   "op": "S.periodical publisher period periodical"
+  },
+  "S.periodical subject periodicals": {
+   "directed": true,
+   "edges": 1463,
+   "train_edges": 965,
+   "op": "S.periodical subject periodicals"
+  },
+  "S.publishing company books published": {
+   "directed": true,
+   "edges": 1000,
+   "train_edges": 619,
+   "op": "S.publishing company books published"
+  },
+  "S.written work author": {
+   "directed": true,
+   "edges": 26511,
+   "train_edges": 16889,
+   "op": "S.written work author"
+  },
+  "S.written work next in series": {
+   "directed": true,
+   "edges": 2333,
+   "train_edges": 1490,
+   "op": "S.written work next in series"
+  },
+  "S.written work original language": {
+   "directed": true,
+   "edges": 7382,
+   "train_edges": 549,
+   "op": "S.written work original language"
+  },
+  "S.written work part of series": {
+   "directed": true,
+   "edges": 2326,
+   "train_edges": 1396,
+   "op": "S.written work part of series"
+  },
+  "S.written work previous in series": {
+   "directed": true,
+   "edges": 2245,
+   "train_edges": 1441,
+   "op": "S.written work previous in series"
+  },
+  "S.written work school or movement": {
+   "directed": true,
+   "edges": 834,
+   "train_edges": 507,
+   "op": "S.written work school or movement"
+  },
+  "S.written work subjects": {
+   "directed": true,
+   "edges": 46459,
+   "train_edges": 29332,
+   "op": "S.written work subjects"
+  },
+  "S.artist content": {
+   "directed": true,
+   "edges": 19406,
+   "train_edges": 13048,
+   "op": "S.artist content"
+  },
+  "S.content artist": {
+   "directed": true,
+   "edges": 10079,
+   "train_edges": 6798,
+   "op": "S.content artist"
+  },
+  "S.content broadcast": {
+   "directed": true,
+   "edges": 806,
+   "train_edges": 536,
+   "op": "S.content broadcast"
+  },
+  "S.content genre": {
+   "directed": true,
+   "edges": 2315,
+   "train_edges": 1604,
+   "op": "S.content genre"
+  },
+  "S.genre content": {
+   "directed": true,
+   "edges": 2000,
+   "train_edges": 1159,
+   "op": "S.genre content"
+  },
+  "S.board member leader of": {
+   "directed": true,
+   "edges": 1201,
+   "train_edges": 776,
+   "op": "S.board member leader of"
+  },
+  "S.board member organization board memberships": {
+   "directed": true,
+   "edges": 1554,
+   "train_edges": 997,
+   "op": "S.board member organization board memberships"
+  },
+  "S.business operation industry": {
+   "directed": true,
+   "edges": 4269,
+   "train_edges": 2858,
+   "op": "S.business operation industry"
+  },
+  "S.employer employees": {
+   "directed": true,
+   "edges": 10168,
+   "train_edges": 6743,
+   "op": "S.employer employees"
+  },
+  "S.employment tenure company": {
+   "directed": true,
+   "edges": 10526,
+   "train_edges": 6992,
+   "op": "S.employment tenure company"
+  },
+  "S.employment tenure person": {
+   "directed": true,
+   "edges": 6044,
+   "train_edges": 3918,
+   "op": "S.employment tenure person"
+  },
+  "S.employment tenure title": {
+   "directed": true,
+   "edges": 2512,
+   "train_edges": 1628,
+   "op": "S.employment tenure title"
+  },
+  "S.industry companies": {
+   "directed": true,
+   "edges": 4345,
+   "train_edges": 2807,
+   "op": "S.industry companies"
+  },
+  "S.job title people with this title": {
+   "directed": true,
+   "edges": 1724,
+   "train_edges": 1082,
+   "op": "S.job title people with this title"
+  },
+  "S.document content": {
+   "directed": true,
+   "edges": 907,
+   "train_edges": 575,
+   "op": "S.document content"
+  },
+  "S.image appears in topic gallery": {
+   "directed": true,
+   "edges": 16569,
+   "train_edges": 10474,
+   "op": "S.image appears in topic gallery"
+  },
+  "S.image size": {
+   "directed": true,
+   "edges": 10027,
+   "train_edges": 6558,
+   "op": "S.image size"
+  },
+  "S.resource annotations": {
+   "directed": true,
+   "edges": 33011,
+   "train_edges": 21330,
+   "op": "S.resource annotations"
+  },
+  "S.topic article": {
+   "directed": true,
+   "edges": 118899,
+   "train_edges": 75993,
+   "op": "S.topic article"
+  },
+  "S.topic image": {
+   "directed": true,
+   "edges": 63783,
+   "train_edges": 40640,
+   "op": "S.topic image"
+  },
+  "S.topic notable for": {
+   "directed": true,
+   "edges": 195745,
+   "train_edges": 125368,
+   "op": "S.topic notable for"
+  },
+  "S.topic notable types": {
+   "directed": true,
+   "edges": 390431,
+   "train_edges": 284054,
+   "op": "S.topic notable types"
+  },
+  "S.topic subject of": {
+   "directed": true,
+   "edges": 6285,
+   "train_edges": 4002,
+   "op": "S.topic subject of"
+  },
+  "S.topic subjects": {
+   "directed": true,
+   "edges": 7535,
+   "train_edges": 4929,
+   "op": "S.topic subjects"
+  },
+  "S.common topic webpage": {
+   "directed": true,
+   "edges": 121433,
+   "train_edges": 77630,
+   "op": "S.common topic webpage"
+  },
+  "S.webpage category": {
+   "directed": true,
+   "edges": 26238,
+   "train_edges": 14163,
+   "op": "S.webpage category"
+  },
+  "S.webpage in index": {
+   "directed": true,
+   "edges": 63710,
+   "train_edges": 47941,
+   "op": "S.webpage in index"
+  },
+  "S.webpage resource": {
+   "directed": true,
+   "edges": 33034,
+   "train_edges": 21345,
+   "op": "S.webpage resource"
+  },
+  "S.webpage topic": {
+   "directed": true,
+   "edges": 120996,
+   "train_edges": 77326,
+   "op": "S.webpage topic"
+  },
+  "S.computer videogame cvg genre": {
+   "directed": true,
+   "edges": 1514,
+   "train_edges": 1004,
+   "op": "S.computer videogame cvg genre"
+  },
+  "S.computer videogame gameplay modes": {
+   "directed": true,
+   "edges": 829,
+   "train_edges": 645,
+   "op": "S.computer videogame gameplay modes"
+  },
+  "S.computer videogame publisher": {
+   "directed": true,
+   "edges": 963,
+   "train_edges": 604,
+   "op": "S.computer videogame publisher"
+  },
+  "S.academic departments old": {
+   "directed": true,
+   "edges": 951,
+   "train_edges": 596,
+   "op": "S.academic departments old"
+  },
+  "S.department academics old": {
+   "directed": true,
+   "edges": 1198,
+   "train_edges": 730,
+   "op": "S.department academics old"
+  },
+  "S.education degree": {
+   "directed": true,
+   "edges": 1227,
+   "train_edges": 911,
+   "op": "S.education degree"
+  },
+  "S.education institution": {
+   "directed": true,
+   "edges": 19042,
+   "train_edges": 12354,
+   "op": "S.education institution"
+  },
+  "S.education major field of study": {
+   "directed": true,
+   "edges": 3149,
+   "train_edges": 1900,
+   "op": "S.education major field of study"
+  },
+  "S.education student": {
+   "directed": true,
+   "edges": 19787,
+   "train_edges": 12725,
+   "op": "S.education student"
+  },
+  "S.educational institution colors": {
+   "directed": true,
+   "edges": 2460,
+   "train_edges": 1925,
+   "op": "S.educational institution colors"
+  },
+  "S.educational institution mascot": {
+   "directed": true,
+   "edges": 745,
+   "train_edges": 510,
+   "op": "S.educational institution mascot"
+  },
+  "S.educational institution parent institution": {
+   "directed": true,
+   "edges": 805,
+   "train_edges": 580,
+   "op": "S.educational institution parent institution"
+  },
+  "S.educational institution phone number": {
+   "directed": true,
+   "edges": 1709,
+   "train_edges": 1086,
+   "op": "S.educational institution phone number"
+  },
+  "S.educational institution school type": {
+   "directed": true,
+   "edges": 3714,
+   "train_edges": 2404,
+   "op": "S.educational institution school type"
+  },
+  "S.educational institution students graduates": {
+   "directed": true,
+   "edges": 16228,
+   "train_edges": 10344,
+   "op": "S.educational institution students graduates"
+  },
+  "S.educational institution subsidiary or constituent schools": {
+   "directed": true,
+   "edges": 1012,
+   "train_edges": 708,
+   "op": "S.educational institution subsidiary or constituent schools"
+  },
+  "S.educational institution total enrollment": {
+   "directed": true,
+   "edges": 1040,
+   "train_edges": 658,
+   "op": "S.educational institution total enrollment"
+  },
+  "S.field of study journals in this discipline": {
+   "directed": true,
+   "edges": 2091,
+   "train_edges": 1304,
+   "op": "S.field of study journals in this discipline"
+  },
+  "S.field of study students majoring": {
+   "directed": true,
+   "edges": 2431,
+   "train_edges": 1424,
+   "op": "S.field of study students majoring"
+  },
+  "S.school district schools": {
+   "directed": true,
+   "edges": 1156,
+   "train_edges": 791,
+   "op": "S.school district schools"
+  },
+  "S.education university domestic tuition": {
+   "directed": true,
+   "edges": 2847,
+   "train_edges": 1834,
+   "op": "S.education university domestic tuition"
+  },
+  "S.university local tuition": {
+   "directed": true,
+   "edges": 1315,
+   "train_edges": 824,
+   "op": "S.university local tuition"
+  },
+  "S.university number of postgraduates": {
+   "directed": true,
+   "edges": 904,
+   "train_edges": 577,
+   "op": "S.university number of postgraduates"
+  },
+  "S.university number of undergraduates": {
+   "directed": true,
+   "edges": 1799,
+   "train_edges": 1167,
+   "op": "S.university number of undergraduates"
+  },
+  "S.exhibition run venue": {
+   "directed": true,
+   "edges": 948,
+   "train_edges": 541,
+   "op": "S.exhibition run venue"
+  },
+  "S.exhibition venue exhibitions at this venue": {
+   "directed": true,
+   "edges": 937,
+   "train_edges": 535,
+   "op": "S.exhibition venue exhibitions at this venue"
+  },
+  "S.character occupation characters with this occupation": {
+   "directed": true,
+   "edges": 2655,
+   "train_edges": 1857,
+   "op": "S.character occupation characters with this occupation"
+  },
+  "S.character powers characters with this ability": {
+   "directed": true,
+   "edges": 985,
+   "train_edges": 680,
+   "op": "S.character powers characters with this ability"
+  },
+  "S.character species characters of this species": {
+   "directed": true,
+   "edges": 1458,
+   "train_edges": 922,
+   "op": "S.character species characters of this species"
+  },
+  "S.fictional character appears in these fictional universes": {
+   "directed": true,
+   "edges": 3650,
+   "train_edges": 2382,
+   "op": "S.fictional character appears in these fictional universes"
+  },
+  "S.fictional character character created by": {
+   "directed": true,
+   "edges": 6579,
+   "train_edges": 4541,
+   "op": "S.fictional character character created by"
+  },
+  "S.fictional character children": {
+   "directed": true,
+   "edges": 2486,
+   "train_edges": 1611,
+   "op": "S.fictional character children"
+  },
+  "S.fictional character gender": {
+   "directed": true,
+   "edges": 11462,
+   "train_edges": 6225,
+   "op": "S.fictional character gender"
+  },
+  "S.fictional character married to": {
+   "directed": true,
+   "edges": 942,
+   "train_edges": 594,
+   "op": "S.fictional character married to"
+  },
+  "S.fictional character occupation": {
+   "directed": true,
+   "edges": 4135,
+   "train_edges": 2777,
+   "op": "S.fictional character occupation"
+  },
+  "S.fictional character organizations": {
+   "directed": true,
+   "edges": 1481,
+   "train_edges": 940,
+   "op": "S.fictional character organizations"
+  },
+  "S.fictional character parents": {
+   "directed": true,
+   "edges": 2532,
+   "train_edges": 1645,
+   "op": "S.fictional character parents"
+  },
+  "S.fictional character place of birth": {
+   "directed": true,
+   "edges": 1005,
+   "train_edges": 715,
+   "op": "S.fictional character place of birth"
+  },
+  "S.fictional character powers or abilities": {
+   "directed": true,
+   "edges": 2182,
+   "train_edges": 1482,
+   "op": "S.fictional character powers or abilities"
+  },
+  "S.fictional character romantically involved with": {
+   "directed": true,
+   "edges": 1575,
+   "train_edges": 992,
+   "op": "S.fictional character romantically involved with"
+  },
+  "S.fictional character siblings": {
+   "directed": true,
+   "edges": 1165,
+   "train_edges": 750,
+   "op": "S.fictional character siblings"
+  },
+  "S.fictional character species": {
+   "directed": true,
+   "edges": 2676,
+   "train_edges": 1709,
+   "op": "S.fictional character species"
+  },
+  "S.fictional character creator fictional characters created": {
+   "directed": true,
+   "edges": 6656,
+   "train_edges": 4655,
+   "op": "S.fictional character creator fictional characters created"
+  },
+  "S.fictional organization members": {
+   "directed": true,
+   "edges": 1351,
+   "train_edges": 868,
+   "op": "S.fictional organization members"
+  },
+  "S.fictional setting fictional characters born here": {
+   "directed": true,
+   "edges": 796,
+   "train_edges": 552,
+   "op": "S.fictional setting fictional characters born here"
+  },
+  "S.fictional universe characters": {
+   "directed": true,
+   "edges": 2168,
+   "train_edges": 1374,
+   "op": "S.fictional universe characters"
+  },
+  "S.fictional universe works set here": {
+   "directed": true,
+   "edges": 827,
+   "train_edges": 593,
+   "op": "S.fictional universe works set here"
+  },
+  "S.marriage of fictional characters spouses": {
+   "directed": true,
+   "edges": 963,
+   "train_edges": 609,
+   "op": "S.marriage of fictional characters spouses"
+  },
+  "S.romantic involvement partner": {
+   "directed": true,
+   "edges": 1613,
+   "train_edges": 1019,
+   "op": "S.romantic involvement partner"
+  },
+  "S.sibling relationship of fictional characters siblings": {
+   "directed": true,
+   "edges": 1197,
+   "train_edges": 767,
+   "op": "S.sibling relationship of fictional characters siblings"
+  },
+  "S.work of fiction setting": {
+   "directed": true,
+   "edges": 752,
+   "train_edges": 508,
+   "op": "S.work of fiction setting"
+  },
+  "S.actor film": {
+   "directed": true,
+   "edges": 55319,
+   "train_edges": 35301,
+   "op": "S.actor film"
+  },
+  "S.cinematographer film": {
+   "directed": true,
+   "edges": 15862,
+   "train_edges": 10128,
+   "op": "S.cinematographer film"
+  },
+  "S.director film": {
+   "directed": true,
+   "edges": 26271,
+   "train_edges": 16851,
+   "op": "S.director film"
+  },
+  "S.editor film": {
+   "directed": true,
+   "edges": 13436,
+   "train_edges": 8837,
+   "op": "S.editor film"
+  },
+  "S.film cinematography": {
+   "directed": true,
+   "edges": 17819,
+   "train_edges": 11361,
+   "op": "S.film cinematography"
+  },
+  "S.film costume design by": {
+   "directed": true,
+   "edges": 11375,
+   "train_edges": 7446,
+   "op": "S.film costume design by"
+  },
+  "S.film country": {
+   "directed": true,
+   "edges": 60512,
+   "train_edges": 47411,
+   "op": "S.film country"
+  },
+  "S.film directed by": {
+   "directed": true,
+   "edges": 25242,
+   "train_edges": 16237,
+   "op": "S.film directed by"
+  },
+  "S.film distributors": {
+   "directed": true,
+   "edges": 9877,
+   "train_edges": 6387,
+   "op": "S.film distributors"
+  },
+  "S.film edited by": {
+   "directed": true,
+   "edges": 16187,
+   "train_edges": 10557,
+   "op": "S.film edited by"
+  },
+  "S.film estimated budget": {
+   "directed": true,
+   "edges": 2652,
+   "train_edges": 1700,
+   "op": "S.film estimated budget"
+  },
+  "S.film executive produced by": {
+   "directed": true,
+   "edges": 17458,
+   "train_edges": 11254,
+   "op": "S.film executive produced by"
+  },
+  "S.film featured film locations": {
+   "directed": true,
+   "edges": 6149,
+   "train_edges": 4125,
+   "op": "S.film featured film locations"
+  },
+  "S.film film art direction by": {
+   "directed": true,
+   "edges": 12387,
+   "train_edges": 7729,
+   "op": "S.film film art direction by"
+  },
+  "S.film film casting director": {
+   "directed": true,
+   "edges": 9252,
+   "train_edges": 5554,
+   "op": "S.film film casting director"
+  },
+  "S.film film festivals": {
+   "directed": true,
+   "edges": 14347,
+   "train_edges": 9718,
+   "op": "S.film film festivals"
+  },
+  "S.film film format": {
+   "directed": true,
+   "edges": 1823,
+   "train_edges": 1480,
+   "op": "S.film film format"
+  },
+  "S.film film production design by": {
+   "directed": true,
+   "edges": 9615,
+   "train_edges": 6076,
+   "op": "S.film film production design by"
+  },
+  "S.film film series": {
+   "directed": true,
+   "edges": 1263,
+   "train_edges": 775,
+   "op": "S.film film series"
+  },
+  "S.film film set decoration by": {
+   "directed": true,
+   "edges": 9587,
+   "train_edges": 6178,
+   "op": "S.film film set decoration by"
+  },
+  "S.film genre": {
+   "directed": true,
+   "edges": 116293,
+   "train_edges": 78945,
+   "op": "S.film genre"
+  },
+  "S.film language": {
+   "directed": true,
+   "edges": 52297,
+   "train_edges": 10372,
+   "op": "S.film language"
+  },
+  "S.film music": {
+   "directed": true,
+   "edges": 18942,
+   "train_edges": 12397,
+   "op": "S.film music"
+  },
+  "S.film other crew": {
+   "directed": true,
+   "edges": 53886,
+   "train_edges": 35000,
+   "op": "S.film other crew"
+  },
+  "S.film personal appearances": {
+   "directed": true,
+   "edges": 10692,
+   "train_edges": 6942,
+   "op": "S.film personal appearances"
+  },
+  "S.film prequel": {
+   "directed": true,
+   "edges": 2299,
+   "train_edges": 1474,
+   "op": "S.film prequel"
+  },
+  "S.film produced by": {
+   "directed": true,
+   "edges": 29493,
+   "train_edges": 19033,
+   "op": "S.film produced by"
+  },
+  "S.film production companies": {
+   "directed": true,
+   "edges": 12964,
+   "train_edges": 7770,
+   "op": "S.film production companies"
+  },
+  "S.film rating": {
+   "directed": true,
+   "edges": 11623,
+   "train_edges": 7348,
+   "op": "S.film rating"
+  },
+  "S.film release date s": {
+   "directed": true,
+   "edges": 50508,
+   "train_edges": 32585,
+   "op": "S.film release date s"
+  },
+  "S.film runtime": {
+   "directed": true,
+   "edges": 18051,
+   "train_edges": 11573,
+   "op": "S.film runtime"
+  },
+  "S.film sequel": {
+   "directed": true,
+   "edges": 2344,
+   "train_edges": 1491,
+   "op": "S.film sequel"
+  },
+  "S.film starring": {
+   "directed": true,
+   "edges": 179182,
+   "train_edges": 114434,
+   "op": "S.film starring"
+  },
+  "S.film story by": {
+   "directed": true,
+   "edges": 9164,
+   "train_edges": 6037,
+   "op": "S.film story by"
+  },
+  "S.film subjects": {
+   "directed": true,
+   "edges": 6498,
+   "train_edges": 4284,
+   "op": "S.film subjects"
+  },
+  "S.film written by": {
+   "directed": true,
+   "edges": 22397,
+   "train_edges": 14658,
+   "op": "S.film written by"
+  },
+  "S.film art director films art directed": {
+   "directed": true,
+   "edges": 8646,
+   "train_edges": 5655,
+   "op": "S.film art director films art directed"
+  },
+  "S.film casting director films casting directed": {
+   "directed": true,
+   "edges": 7551,
+   "train_edges": 4653,
+   "op": "S.film casting director films casting directed"
+  },
+  "S.film character portrayed in films": {
+   "directed": true,
+   "edges": 29505,
+   "train_edges": 19226,
+   "op": "S.film character portrayed in films"
+  },
+  "S.film costumer designer costume design for film": {
+   "directed": true,
+   "edges": 8293,
+   "train_edges": 5566,
+   "op": "S.film costumer designer costume design for film"
+  },
+  "S.film crew gig crewmember": {
+   "directed": true,
+   "edges": 11527,
+   "train_edges": 7186,
+   "op": "S.film crew gig crewmember"
+  },
+  "S.film crew gig film": {
+   "directed": true,
+   "edges": 54146,
+   "train_edges": 35172,
+   "op": "S.film crew gig film"
+  },
+  "S.film crew gig film crew role": {
+   "directed": true,
+   "edges": 10645,
+   "train_edges": 7126,
+   "op": "S.film crew gig film crew role"
+  },
+  "S.film crewmember films crewed": {
+   "directed": true,
+   "edges": 11255,
+   "train_edges": 7027,
+   "op": "S.film crewmember films crewed"
+  },
+  "S.film cut film": {
+   "directed": true,
+   "edges": 17777,
+   "train_edges": 11396,
+   "op": "S.film cut film"
+  },
+  "S.film distributor films distributed": {
+   "directed": true,
+   "edges": 1389,
+   "train_edges": 743,
+   "op": "S.film distributor films distributed"
+  },
+  "S.film festival individual festivals": {
+   "directed": true,
+   "edges": 2820,
+   "train_edges": 1977,
+   "op": "S.film festival individual festivals"
+  },
+  "S.film festival event festival": {
+   "directed": true,
+   "edges": 5405,
+   "train_edges": 3510,
+   "op": "S.film festival event festival"
+  },
+  "S.film festival event films": {
+   "directed": true,
+   "edges": 7907,
+   "train_edges": 5481,
+   "op": "S.film festival event films"
+  },
+  "S.film film distributor relationship distributor": {
+   "directed": true,
+   "edges": 5657,
+   "train_edges": 3561,
+   "op": "S.film film distributor relationship distributor"
+  },
+  "S.film film distributor relationship film": {
+   "directed": true,
+   "edges": 9764,
+   "train_edges": 6315,
+   "op": "S.film film distributor relationship film"
+  },
+  "S.film genre films in this genre": {
+   "directed": true,
+   "edges": 4167,
+   "train_edges": 2847,
+   "op": "S.film genre films in this genre"
+  },
+  "S.film job films with this crew job": {
+   "directed": true,
+   "edges": 3370,
+   "train_edges": 2197,
+   "op": "S.film job films with this crew job"
+  },
+  "S.film location featured in films": {
+   "directed": true,
+   "edges": 4469,
+   "train_edges": 2805,
+   "op": "S.film location featured in films"
+  },
+  "S.film production designer films production designed": {
+   "directed": true,
+   "edges": 8102,
+   "train_edges": 5113,
+   "op": "S.film production designer films production designed"
+  },
+  "S.film regional release date film": {
+   "directed": true,
+   "edges": 50487,
+   "train_edges": 32566,
+   "op": "S.film regional release date film"
+  },
+  "S.film regional release date film regional debut venue": {
+   "directed": true,
+   "edges": 3313,
+   "train_edges": 2200,
+   "op": "S.film regional release date film regional debut venue"
+  },
+  "S.film regional release date film release distribution medium": {
+   "directed": true,
+   "edges": 8589,
+   "train_edges": 6813,
+   "op": "S.film regional release date film release distribution medium"
+  },
+  "S.film regional release date film release region": {
+   "directed": true,
+   "edges": 21047,
+   "train_edges": 15604,
+   "op": "S.film regional release date film release region"
+  },
+  "S.film set designer film sets designed": {
+   "directed": true,
+   "edges": 6102,
+   "train_edges": 3983,
+   "op": "S.film set designer film sets designed"
+  },
+  "S.film story contributor film story credits": {
+   "directed": true,
+   "edges": 8926,
+   "train_edges": 5877,
+   "op": "S.film story contributor film story credits"
+  },
+  "S.film subject films": {
+   "directed": true,
+   "edges": 4592,
+   "train_edges": 3090,
+   "op": "S.film subject films"
+  },
+  "S.music contributor film": {
+   "directed": true,
+   "edges": 16130,
+   "train_edges": 10551,
+   "op": "S.music contributor film"
+  },
+  "S.performance actor": {
+   "directed": true,
+   "edges": 55564,
+   "train_edges": 35466,
+   "op": "S.performance actor"
+  },
+  "S.performance character": {
+   "directed": true,
+   "edges": 30023,
+   "train_edges": 19578,
+   "op": "S.performance character"
+  },
+  "S.performance film": {
+   "directed": true,
+   "edges": 179493,
+   "train_edges": 114649,
+   "op": "S.performance film"
+  },
+  "S.performance special performance type": {
+   "directed": true,
+   "edges": 15635,
+   "train_edges": 1819,
+   "op": "S.performance special performance type"
+  },
+  "S.person or entity appearing in film films": {
+   "directed": true,
+   "edges": 11491,
+   "train_edges": 7318,
+   "op": "S.person or entity appearing in film films"
+  },
+  "S.personal film appearance film": {
+   "directed": true,
+   "edges": 10820,
+   "train_edges": 7008,
+   "op": "S.personal film appearance film"
+  },
+  "S.personal film appearance person": {
+   "directed": true,
+   "edges": 11545,
+   "train_edges": 7361,
+   "op": "S.personal film appearance person"
+  },
+  "S.personal film appearance type of appearance": {
+   "directed": true,
+   "edges": 7964,
+   "train_edges": 6311,
+   "op": "S.personal film appearance type of appearance"
+  },
+  "S.producer film": {
+   "directed": true,
+   "edges": 28329,
+   "train_edges": 18283,
+   "op": "S.producer film"
+  },
+  "S.producer films executive produced": {
+   "directed": true,
+   "edges": 16831,
+   "train_edges": 10803,
+   "op": "S.producer films executive produced"
+  },
+  "S.production company films": {
+   "directed": true,
+   "edges": 6453,
+   "train_edges": 3900,
+   "op": "S.production company films"
+  },
+  "S.writer film": {
+   "directed": true,
+   "edges": 20971,
+   "train_edges": 13754,
+   "op": "S.writer film"
+  },
+  "S.food nutrients": {
+   "directed": true,
+   "edges": 1645,
+   "train_edges": 1019,
+   "op": "S.food nutrients"
+  },
+  "S.nutrition fact food": {
+   "directed": true,
+   "edges": 1645,
+   "train_edges": 1019,
+   "op": "S.nutrition fact food"
+  },
+  "S.type hints included types": {
+   "directed": true,
+   "edges": 2488,
+   "train_edges": 1912,
+   "op": "S.type hints included types"
+  },
+  "S.type profile strict included types": {
+   "directed": true,
+   "edges": 989,
+   "train_edges": 743,
+   "op": "S.type profile strict included types"
+  },
+  "S.valuenotation has no value": {
+   "directed": true,
+   "edges": 55831,
+   "train_edges": 36811,
+   "op": "S.valuenotation has no value"
+  },
+  "S.valuenotation has value": {
+   "directed": true,
+   "edges": 169921,
+   "train_edges": 106309,
+   "op": "S.valuenotation has value"
+  },
+  "S.valuenotation is reviewed": {
+   "directed": true,
+   "edges": 217268,
+   "train_edges": 144514,
+   "op": "S.valuenotation is reviewed"
+  },
+  "S.mountain mountain range": {
+   "directed": true,
+   "edges": 1771,
+   "train_edges": 1157,
+   "op": "S.mountain mountain range"
+  },
+  "S.mountain range mountains": {
+   "directed": true,
+   "edges": 1656,
+   "train_edges": 1070,
+   "op": "S.mountain range mountains"
+  },
+  "S.river basin countries": {
+   "directed": true,
+   "edges": 1447,
+   "train_edges": 999,
+   "op": "S.river basin countries"
+  },
+  "S.river cities": {
+   "directed": true,
+   "edges": 1006,
+   "train_edges": 654,
+   "op": "S.river cities"
+  },
+  "S.river mouth": {
+   "directed": true,
+   "edges": 856,
+   "train_edges": 528,
+   "op": "S.river mouth"
+  },
+  "S.form of government countries": {
+   "directed": true,
+   "edges": 757,
+   "train_edges": 589,
+   "op": "S.form of government countries"
+  },
+  "S.government agency jurisdiction": {
+   "directed": true,
+   "edges": 2541,
+   "train_edges": 1651,
+   "op": "S.government agency jurisdiction"
+  },
+  "S.government office category officeholders": {
+   "directed": true,
+   "edges": 1086,
+   "train_edges": 600,
+   "op": "S.government office category officeholders"
+  },
+  "S.government office or title category": {
+   "directed": true,
+   "edges": 743,
+   "train_edges": 500,
+   "op": "S.government office or title category"
+  },
+  "S.government office or title office holders": {
+   "directed": true,
+   "edges": 7489,
+   "train_edges": 5019,
+   "op": "S.government office or title office holders"
+  },
+  "S.government position held appointed by": {
+   "directed": true,
+   "edges": 1415,
+   "train_edges": 883,
+   "op": "S.government position held appointed by"
+  },
+  "S.government position held basic title": {
+   "directed": true,
+   "edges": 9015,
+   "train_edges": 6331,
+   "op": "S.government position held basic title"
+  },
+  "S.government position held district represented": {
+   "directed": true,
+   "edges": 3146,
+   "train_edges": 2136,
+   "op": "S.government position held district represented"
+  },
+  "S.government position held governmental body": {
+   "directed": true,
+   "edges": 6981,
+   "train_edges": 4998,
+   "op": "S.government position held governmental body"
+  },
+  "S.government position held jurisdiction of office": {
+   "directed": true,
+   "edges": 11104,
+   "train_edges": 7619,
+   "op": "S.government position held jurisdiction of office"
+  },
+  "S.government position held legislative sessions": {
+   "directed": true,
+   "edges": 4610,
+   "train_edges": 2845,
+   "op": "S.government position held legislative sessions"
+  },
+  "S.government position held office holder": {
+   "directed": true,
+   "edges": 11557,
+   "train_edges": 7474,
+   "op": "S.government position held office holder"
+  },
+  "S.government position held office position or title": {
+   "directed": true,
+   "edges": 9951,
+   "train_edges": 6991,
+   "op": "S.government position held office position or title"
+  },
+  "S.governmental body members": {
+   "directed": true,
+   "edges": 4476,
+   "train_edges": 3079,
+   "op": "S.governmental body members"
+  },
+  "S.governmental jurisdiction agencies": {
+   "directed": true,
+   "edges": 2732,
+   "train_edges": 1786,
+   "op": "S.governmental jurisdiction agencies"
+  },
+  "S.governmental jurisdiction governing officials": {
+   "directed": true,
+   "edges": 7886,
+   "train_edges": 5057,
+   "op": "S.governmental jurisdiction governing officials"
+  },
+  "S.governmental jurisdiction government bodies": {
+   "directed": true,
+   "edges": 915,
+   "train_edges": 621,
+   "op": "S.governmental jurisdiction government bodies"
+  },
+  "S.legislative session members": {
+   "directed": true,
+   "edges": 2654,
+   "train_edges": 1503,
+   "op": "S.legislative session members"
+  },
+  "S.political appointer appointees": {
+   "directed": true,
+   "edges": 1415,
+   "train_edges": 883,
+   "op": "S.political appointer appointees"
+  },
+  "S.political district representatives": {
+   "directed": true,
+   "edges": 3146,
+   "train_edges": 2135,
+   "op": "S.political district representatives"
+  },
+  "S.political ideology political parties": {
+   "directed": true,
+   "edges": 943,
+   "train_edges": 580,
+   "op": "S.political ideology political parties"
+  },
+  "S.political party ideology": {
+   "directed": true,
+   "edges": 3692,
+   "train_edges": 2264,
+   "op": "S.political party ideology"
+  },
+  "S.political party politicians in this party": {
+   "directed": true,
+   "edges": 5305,
+   "train_edges": 3221,
+   "op": "S.political party politicians in this party"
+  },
+  "S.political party tenure party": {
+   "directed": true,
+   "edges": 5331,
+   "train_edges": 3306,
+   "op": "S.political party tenure party"
+  },
+  "S.political party tenure politician": {
+   "directed": true,
+   "edges": 3499,
+   "train_edges": 2264,
+   "op": "S.political party tenure politician"
+  },
+  "S.politician government positions held": {
+   "directed": true,
+   "edges": 11556,
+   "train_edges": 7476,
+   "op": "S.politician government positions held"
+  },
+  "S.politician party": {
+   "directed": true,
+   "edges": 3616,
+   "train_edges": 2338,
+   "op": "S.politician party"
+  },
+  "S.influence node influenced": {
+   "directed": true,
+   "edges": 17158,
+   "train_edges": 11014,
+   "op": "S.influence node influenced"
+  },
+  "S.influence node influenced by": {
+   "directed": true,
+   "edges": 18239,
+   "train_edges": 11851,
+   "op": "S.influence node influenced by"
+  },
+  "S.influence node peers": {
+   "directed": true,
+   "edges": 1121,
+   "train_edges": 722,
+   "op": "S.influence node peers"
+  },
+  "S.peer relationship peers": {
+   "directed": true,
+   "edges": 1134,
+   "train_edges": 733,
+   "op": "S.peer relationship peers"
+  },
+  "S.website category sites": {
+   "directed": true,
+   "edges": 1263,
+   "train_edges": 797,
+   "op": "S.website category sites"
+  },
+  "S.human language countries spoken in": {
+   "directed": true,
+   "edges": 1188,
+   "train_edges": 767,
+   "op": "S.human language countries spoken in"
+  },
+  "S.human language language family": {
+   "directed": true,
+   "edges": 2831,
+   "train_edges": 1868,
+   "op": "S.human language language family"
+  },
+  "S.human language main country": {
+   "directed": true,
+   "edges": 1266,
+   "train_edges": 862,
+   "op": "S.human language main country"
+  },
+  "S.human language region": {
+   "directed": true,
+   "edges": 1104,
+   "train_edges": 612,
+   "op": "S.human language region"
+  },
+  "S.language family languages": {
+   "directed": true,
+   "edges": 2525,
+   "train_edges": 1684,
+   "op": "S.language family languages"
+  },
+  "S.adjoining relationship adjoins": {
+   "directed": true,
+   "edges": 7411,
+   "train_edges": 4740,
+   "op": "S.adjoining relationship adjoins"
+  },
+  "S.administrative division capital": {
+   "directed": true,
+   "edges": 1580,
+   "train_edges": 993,
+   "op": "S.administrative division capital"
+  },
+  "S.administrative division country": {
+   "directed": true,
+   "edges": 3780,
+   "train_edges": 2542,
+   "op": "S.administrative division country"
+  },
+  "S.administrative division first level division of": {
+   "directed": true,
+   "edges": 1023,
+   "train_edges": 744,
+   "op": "S.administrative division first level division of"
+  },
+  "S.administrative division second level division of": {
+   "directed": true,
+   "edges": 3786,
+   "train_edges": 3006,
+   "op": "S.administrative division second level division of"
+  },
+  "S.administrative division capital relationship administrative division": {
+   "directed": true,
+   "edges": 1587,
+   "train_edges": 994,
+   "op": "S.administrative division capital relationship administrative division"
+  },
+  "S.administrative division capital relationship capital": {
+   "directed": true,
+   "edges": 1531,
+   "train_edges": 955,
+   "op": "S.administrative division capital relationship capital"
+  },
+  "S.capital of administrative division capital of": {
+   "directed": true,
+   "edges": 1435,
+   "train_edges": 891,
+   "op": "S.capital of administrative division capital of"
+  },
+  "S.citytown postal codes": {
+   "directed": true,
+   "edges": 8395,
+   "train_edges": 5308,
+   "op": "S.citytown postal codes"
+  },
+  "S.country administrative divisions": {
+   "directed": true,
+   "edges": 3726,
+   "train_edges": 2418,
+   "op": "S.country administrative divisions"
+  },
+  "S.country first level divisions": {
+   "directed": true,
+   "edges": 1130,
+   "train_edges": 803,
+   "op": "S.country first level divisions"
+  },
+  "S.country form of government": {
+   "directed": true,
+   "edges": 1041,
+   "train_edges": 724,
+   "op": "S.country form of government"
+  },
+  "S.country languages spoken": {
+   "directed": true,
+   "edges": 1235,
+   "train_edges": 804,
+   "op": "S.country languages spoken"
+  },
+  "S.country second level divisions": {
+   "directed": true,
+   "edges": 909,
+   "train_edges": 714,
+   "op": "S.country second level divisions"
+  },
+  "S.geometry delineates location": {
+   "directed": true,
+   "edges": 1343,
+   "train_edges": 871,
+   "op": "S.geometry delineates location"
+  },
+  "S.hud county place county": {
+   "directed": true,
+   "edges": 7046,
+   "train_edges": 4499,
+   "op": "S.hud county place county"
+  },
+  "S.hud foreclosure area bls unemployment rate": {
+   "directed": true,
+   "edges": 2034,
+   "train_edges": 1293,
+   "op": "S.hud foreclosure area bls unemployment rate"
+  },
+  "S.hud foreclosure area estimated number foreclosures": {
+   "directed": true,
+   "edges": 2037,
+   "train_edges": 1326,
+   "op": "S.hud foreclosure area estimated number foreclosures"
+  },
+  "S.hud foreclosure area estimated number of mortgages": {
+   "directed": true,
+   "edges": 2037,
+   "train_edges": 1318,
+   "op": "S.hud foreclosure area estimated number of mortgages"
+  },
+  "S.hud foreclosure area hhuniv": {
+   "directed": true,
+   "edges": 2039,
+   "train_edges": 1307,
+   "op": "S.hud foreclosure area hhuniv"
+  },
+  "S.hud foreclosure area ofheo price change": {
+   "directed": true,
+   "edges": 1742,
+   "train_edges": 1124,
+   "op": "S.hud foreclosure area ofheo price change"
+  },
+  "S.hud foreclosure area total 90 day vacant residential addresses": {
+   "directed": true,
+   "edges": 2043,
+   "train_edges": 1308,
+   "op": "S.hud foreclosure area total 90 day vacant residential addresses"
+  },
+  "S.hud foreclosure area total residential addresses": {
+   "directed": true,
+   "edges": 2035,
+   "train_edges": 1299,
+   "op": "S.hud foreclosure area total residential addresses"
+  },
+  "S.location adjoin s": {
+   "directed": true,
+   "edges": 7390,
+   "train_edges": 4723,
+   "op": "S.location adjoin s"
+  },
+  "S.location containedby": {
+   "directed": true,
+   "edges": 152628,
+   "train_edges": 102094,
+   "op": "S.location containedby"
+  },
+  "S.location contains": {
+   "directed": true,
+   "edges": 70015,
+   "train_edges": 45421,
+   "op": "S.location contains"
+  },
+  "S.location events": {
+   "directed": true,
+   "edges": 33021,
+   "train_edges": 21119,
+   "op": "S.location events"
+  },
+  "S.location geolocation": {
+   "directed": true,
+   "edges": 26546,
+   "train_edges": 16965,
+   "op": "S.location geolocation"
+  },
+  "S.location geometry": {
+   "directed": true,
+   "edges": 1343,
+   "train_edges": 871,
+   "op": "S.location geometry"
+  },
+  "S.location nearby airports": {
+   "directed": true,
+   "edges": 3147,
+   "train_edges": 1989,
+   "op": "S.location nearby airports"
+  },
+  "S.location partially contained by": {
+   "directed": true,
+   "edges": 4345,
+   "train_edges": 2754,
+   "op": "S.location partially contained by"
+  },
+  "S.location partially containedby": {
+   "directed": true,
+   "edges": 4524,
+   "train_edges": 2984,
+   "op": "S.location partially containedby"
+  },
+  "S.location partially contains": {
+   "directed": true,
+   "edges": 4567,
+   "train_edges": 3014,
+   "op": "S.location partially contains"
+  },
+  "S.location partiallycontains": {
+   "directed": true,
+   "edges": 4442,
+   "train_edges": 2904,
+   "op": "S.location partiallycontains"
+  },
+  "S.location people born here": {
+   "directed": true,
+   "edges": 64328,
+   "train_edges": 40237,
+   "op": "S.location people born here"
+  },
+  "S.location street address": {
+   "directed": true,
+   "edges": 2415,
+   "train_edges": 1554,
+   "op": "S.location street address"
+  },
+  "S.location time zones": {
+   "directed": true,
+   "edges": 18848,
+   "train_edges": 11989,
+   "op": "S.location time zones"
+  },
+  "S.mailing address citytown": {
+   "directed": true,
+   "edges": 7050,
+   "train_edges": 4569,
+   "op": "S.mailing address citytown"
+  },
+  "S.mailing address country": {
+   "directed": true,
+   "edges": 3764,
+   "train_edges": 2879,
+   "op": "S.mailing address country"
+  },
+  "S.mailing address postal code": {
+   "directed": true,
+   "edges": 1925,
+   "train_edges": 1216,
+   "op": "S.mailing address postal code"
+  },
+  "S.mailing address state province region": {
+   "directed": true,
+   "edges": 5790,
+   "train_edges": 3548,
+   "op": "S.mailing address state province region"
+  },
+  "S.neighborhood neighborhood of": {
+   "directed": true,
+   "edges": 5498,
+   "train_edges": 3485,
+   "op": "S.neighborhood neighborhood of"
+  },
+  "S.partial containment relationship partially contained by": {
+   "directed": true,
+   "edges": 4460,
+   "train_edges": 2916,
+   "op": "S.partial containment relationship partially contained by"
+  },
+  "S.partial containment relationship partially contains": {
+   "directed": true,
+   "edges": 4416,
+   "train_edges": 2807,
+   "op": "S.partial containment relationship partially contains"
+  },
+  "S.place with neighborhoods neighborhoods": {
+   "directed": true,
+   "edges": 4799,
+   "train_edges": 3116,
+   "op": "S.place with neighborhoods neighborhoods"
+  },
+  "S.postal code country": {
+   "directed": true,
+   "edges": 5414,
+   "train_edges": 4269,
+   "op": "S.postal code country"
+  },
+  "S.statistical region agriculture as percent of gdp": {
+   "directed": true,
+   "edges": 5378,
+   "train_edges": 3508,
+   "op": "S.statistical region agriculture as percent of gdp"
+  },
+  "S.statistical region broadband penetration rate": {
+   "directed": true,
+   "edges": 894,
+   "train_edges": 610,
+   "op": "S.statistical region broadband penetration rate"
+  },
+  "S.statistical region co2 emissions per capita": {
+   "directed": true,
+   "edges": 14279,
+   "train_edges": 9431,
+   "op": "S.statistical region co2 emissions per capita"
+  },
+  "S.statistical region consumer price index": {
+   "directed": true,
+   "edges": 5789,
+   "train_edges": 3707,
+   "op": "S.statistical region consumer price index"
+  },
+  "S.statistical region cpi inflation rate": {
+   "directed": true,
+   "edges": 5620,
+   "train_edges": 3664,
+   "op": "S.statistical region cpi inflation rate"
+  },
+  "S.statistical region debt service as percent of trade volume": {
+   "directed": true,
+   "edges": 3090,
+   "train_edges": 2023,
+   "op": "S.statistical region debt service as percent of trade volume"
+  },
+  "S.statistical region deposit interest rate": {
+   "directed": true,
+   "edges": 4293,
+   "train_edges": 2882,
+   "op": "S.statistical region deposit interest rate"
+  },
+  "S.statistical region diesel price liter": {
+   "directed": true,
+   "edges": 1287,
+   "train_edges": 819,
+   "op": "S.statistical region diesel price liter"
+  },
+  "S.statistical region electricity consumption per capita": {
+   "directed": true,
+   "edges": 6818,
+   "train_edges": 4438,
+   "op": "S.statistical region electricity consumption per capita"
+  },
+  "S.statistical region energy use per capita": {
+   "directed": true,
+   "edges": 7049,
+   "train_edges": 4515,
+   "op": "S.statistical region energy use per capita"
+  },
+  "S.statistical region external debt stock": {
+   "directed": true,
+   "edges": 3942,
+   "train_edges": 2577,
+   "op": "S.statistical region external debt stock"
+  },
+  "S.statistical region foreign direct investment net inflows": {
+   "directed": true,
+   "edges": 1293,
+   "train_edges": 843,
+   "op": "S.statistical region foreign direct investment net inflows"
+  },
+  "S.statistical region gdp growth rate": {
+   "directed": true,
+   "edges": 5541,
+   "train_edges": 3292,
+   "op": "S.statistical region gdp growth rate"
+  },
+  "S.statistical region gdp nominal": {
+   "directed": true,
+   "edges": 5397,
+   "train_edges": 3291,
+   "op": "S.statistical region gdp nominal"
+  },
+  "S.statistical region gdp nominal per capita": {
+   "directed": true,
+   "edges": 7297,
+   "train_edges": 4884,
+   "op": "S.statistical region gdp nominal per capita"
+  },
+  "S.statistical region gdp real": {
+   "directed": true,
+   "edges": 5803,
+   "train_edges": 3627,
+   "op": "S.statistical region gdp real"
+  },
+  "S.statistical region gender balance members of parliament": {
+   "directed": true,
+   "edges": 2754,
+   "train_edges": 1771,
+   "op": "S.statistical region gender balance members of parliament"
+  },
+  "S.statistical region gni in ppp dollars": {
+   "directed": true,
+   "edges": 7710,
+   "train_edges": 5114,
+   "op": "S.statistical region gni in ppp dollars"
+  },
+  "S.statistical region gni per capita in ppp dollars": {
+   "directed": true,
+   "edges": 7703,
+   "train_edges": 5115,
+   "op": "S.statistical region gni per capita in ppp dollars"
+  },
+  "S.statistical region government debt percent gdp": {
+   "directed": true,
+   "edges": 991,
+   "train_edges": 680,
+   "op": "S.statistical region government debt percent gdp"
+  },
+  "S.statistical region gross savings as percent of gdp": {
+   "directed": true,
+   "edges": 4346,
+   "train_edges": 2913,
+   "op": "S.statistical region gross savings as percent of gdp"
+  },
+  "S.statistical region health expenditure as percent of gdp": {
+   "directed": true,
+   "edges": 2761,
+   "train_edges": 1805,
+   "op": "S.statistical region health expenditure as percent of gdp"
+  },
+  "S.statistical region high tech as percent of manufactured exports": {
+   "directed": true,
+   "edges": 2654,
+   "train_edges": 1801,
+   "op": "S.statistical region high tech as percent of manufactured exports"
+  },
+  "S.statistical region internet users percent population": {
+   "directed": true,
+   "edges": 6660,
+   "train_edges": 4424,
+   "op": "S.statistical region internet users percent population"
+  },
+  "S.statistical region labor participation rate": {
+   "directed": true,
+   "edges": 3750,
+   "train_edges": 2411,
+   "op": "S.statistical region labor participation rate"
+  },
+  "S.statistical region long term unemployment rate": {
+   "directed": true,
+   "edges": 1226,
+   "train_edges": 850,
+   "op": "S.statistical region long term unemployment rate"
+  },
+  "S.statistical region market cap of listed companies as percent of gdp": {
+   "directed": true,
+   "edges": 2109,
+   "train_edges": 1428,
+   "op": "S.statistical region market cap of listed companies as percent of gdp"
+  },
+  "S.statistical region merchandise trade percent of gdp": {
+   "directed": true,
+   "edges": 6635,
+   "train_edges": 4486,
+   "op": "S.statistical region merchandise trade percent of gdp"
+  },
+  "S.statistical region military expenditure percent gdp": {
+   "directed": true,
+   "edges": 5933,
+   "train_edges": 3875,
+   "op": "S.statistical region military expenditure percent gdp"
+  },
+  "S.statistical region minimum wage": {
+   "directed": true,
+   "edges": 1257,
+   "train_edges": 935,
+   "op": "S.statistical region minimum wage"
+  },
+  "S.statistical region net migration": {
+   "directed": true,
+   "edges": 1764,
+   "train_edges": 1127,
+   "op": "S.statistical region net migration"
+  },
+  "S.statistical region official development assistance": {
+   "directed": true,
+   "edges": 6099,
+   "train_edges": 3992,
+   "op": "S.statistical region official development assistance"
+  },
+  "S.statistical region part time employment percent": {
+   "directed": true,
+   "edges": 1206,
+   "train_edges": 861,
+   "op": "S.statistical region part time employment percent"
+  },
+  "S.statistical region population": {
+   "directed": true,
+   "edges": 100698,
+   "train_edges": 65108,
+   "op": "S.statistical region population"
+  },
+  "S.statistical region poverty rate 2dollars per day": {
+   "directed": true,
+   "edges": 999,
+   "train_edges": 695,
+   "op": "S.statistical region poverty rate 2dollars per day"
+  },
+  "S.statistical region prevalence of undernourisment": {
+   "directed": true,
+   "edges": 2227,
+   "train_edges": 1462,
+   "op": "S.statistical region prevalence of undernourisment"
+  },
+  "S.statistical region religions": {
+   "directed": true,
+   "edges": 930,
+   "train_edges": 631,
+   "op": "S.statistical region religions"
+  },
+  "S.statistical region renewable freshwater per capita": {
+   "directed": true,
+   "edges": 1668,
+   "train_edges": 1101,
+   "op": "S.statistical region renewable freshwater per capita"
+  },
+  "S.statistical region size of armed forces": {
+   "directed": true,
+   "edges": 3449,
+   "train_edges": 2260,
+   "op": "S.statistical region size of armed forces"
+  },
+  "S.statistical region time required to start a business": {
+   "directed": true,
+   "edges": 1745,
+   "train_edges": 1143,
+   "op": "S.statistical region time required to start a business"
+  },
+  "S.statistical region trade balance as percent of gdp": {
+   "directed": true,
+   "edges": 6369,
+   "train_edges": 4221,
+   "op": "S.statistical region trade balance as percent of gdp"
+  },
+  "S.us county county seat": {
+   "directed": true,
+   "edges": 963,
+   "train_edges": 623,
+   "op": "S.us county county seat"
+  },
+  "S.us county hud county place": {
+   "directed": true,
+   "edges": 8140,
+   "train_edges": 5225,
+   "op": "S.us county hud county place"
+  },
+  "S.adjusted money value adjustment currency": {
+   "directed": true,
+   "edges": 2358,
+   "train_edges": 1892,
+   "op": "S.adjusted money value adjustment currency"
+  },
+  "S.adjusted money value source": {
+   "directed": true,
+   "edges": 2092,
+   "train_edges": 1681,
+   "op": "S.adjusted money value source"
+  },
+  "S.dated integer source": {
+   "directed": true,
+   "edges": 26953,
+   "train_edges": 21312,
+   "op": "S.dated integer source"
+  },
+  "S.dated kgoe source": {
+   "directed": true,
+   "edges": 2948,
+   "train_edges": 2369,
+   "op": "S.dated kgoe source"
+  },
+  "S.dated kilowatt hour source": {
+   "directed": true,
+   "edges": 2882,
+   "train_edges": 2323,
+   "op": "S.dated kilowatt hour source"
+  },
+  "S.dated metric ton source": {
+   "directed": true,
+   "edges": 5842,
+   "train_edges": 4669,
+   "op": "S.dated metric ton source"
+  },
+  "S.dated money value currency": {
+   "directed": true,
+   "edges": 15261,
+   "train_edges": 12122,
+   "op": "S.dated money value currency"
+  },
+  "S.dated money value source": {
+   "directed": true,
+   "edges": 9153,
+   "train_edges": 7296,
+   "op": "S.dated money value source"
+  },
+  "S.dated percentage source": {
+   "directed": true,
+   "edges": 7770,
+   "train_edges": 6095,
+   "op": "S.dated percentage source"
+  },
+  "S.adaptation adapted from": {
+   "directed": true,
+   "edges": 1870,
+   "train_edges": 1219,
+   "op": "S.adaptation adapted from"
+  },
+  "S.adapted work adaptations": {
+   "directed": true,
+   "edges": 1665,
+   "train_edges": 1094,
+   "op": "S.adapted work adaptations"
+  },
+  "S.literary genre books in this genre": {
+   "directed": true,
+   "edges": 2256,
+   "train_edges": 1443,
+   "op": "S.literary genre books in this genre"
+  },
+  "S.netflix genre titles": {
+   "directed": true,
+   "edges": 4563,
+   "train_edges": 3055,
+   "op": "S.netflix genre titles"
+  },
+  "S.netflix title netflix genres": {
+   "directed": true,
+   "edges": 121305,
+   "train_edges": 84294,
+   "op": "S.netflix title netflix genres"
+  },
+  "S.quotation author": {
+   "directed": true,
+   "edges": 5561,
+   "train_edges": 3651,
+   "op": "S.quotation author"
+  },
+  "S.quotation subjects": {
+   "directed": true,
+   "edges": 6426,
+   "train_edges": 3986,
+   "op": "S.quotation subjects"
+  },
+  "S.quotation subject quotations about this subject": {
+   "directed": true,
+   "edges": 7396,
+   "train_edges": 5019,
+   "op": "S.quotation subject quotations about this subject"
+  },
+  "S.disease causes": {
+   "directed": true,
+   "edges": 879,
+   "train_edges": 570,
+   "op": "S.disease causes"
+  },
+  "S.disease includes diseases": {
+   "directed": true,
+   "edges": 1439,
+   "train_edges": 998,
+   "op": "S.disease includes diseases"
+  },
+  "S.disease medical specialties": {
+   "directed": true,
+   "edges": 964,
+   "train_edges": 658,
+   "op": "S.disease medical specialties"
+  },
+  "S.disease notable people with this condition": {
+   "directed": true,
+   "edges": 1227,
+   "train_edges": 838,
+   "op": "S.disease notable people with this condition"
+  },
+  "S.disease parent disease": {
+   "directed": true,
+   "edges": 1266,
+   "train_edges": 802,
+   "op": "S.disease parent disease"
+  },
+  "S.disease risk factors": {
+   "directed": true,
+   "edges": 2194,
+   "train_edges": 1254,
+   "op": "S.disease risk factors"
+  },
+  "S.disease symptoms": {
+   "directed": true,
+   "edges": 4851,
+   "train_edges": 3277,
+   "op": "S.disease symptoms"
+  },
+  "S.disease treatments": {
+   "directed": true,
+   "edges": 3549,
+   "train_edges": 2138,
+   "op": "S.disease treatments"
+  },
+  "S.drug active moieties": {
+   "directed": true,
+   "edges": 1349,
+   "train_edges": 782,
+   "op": "S.drug active moieties"
+  },
+  "S.drug marketed formulations": {
+   "directed": true,
+   "edges": 1722,
+   "train_edges": 1187,
+   "op": "S.drug marketed formulations"
+  },
+  "S.drug formulation active ingredient moieties": {
+   "directed": true,
+   "edges": 1386,
+   "train_edges": 831,
+   "op": "S.drug formulation active ingredient moieties"
+  },
+  "S.drug formulation active ingredients": {
+   "directed": true,
+   "edges": 1376,
+   "train_edges": 871,
+   "op": "S.drug formulation active ingredients"
+  },
+  "S.drug ingredient active ingredient of formulation": {
+   "directed": true,
+   "edges": 1844,
+   "train_edges": 1177,
+   "op": "S.drug ingredient active ingredient of formulation"
+  },
+  "S.drug ingredient active moiety of drug": {
+   "directed": true,
+   "edges": 895,
+   "train_edges": 537,
+   "op": "S.drug ingredient active moiety of drug"
+  },
+  "S.drug ingredient active moiety of formulation": {
+   "directed": true,
+   "edges": 2365,
+   "train_edges": 1569,
+   "op": "S.drug ingredient active moiety of formulation"
+  },
+  "S.icd 9 cm classification includes classifications": {
+   "directed": true,
+   "edges": 973,
+   "train_edges": 591,
+   "op": "S.icd 9 cm classification includes classifications"
+  },
+  "S.medical specialty diseases treated": {
+   "directed": true,
+   "edges": 839,
+   "train_edges": 559,
+   "op": "S.medical specialty diseases treated"
+  },
+  "S.medical treatment used to treat": {
+   "directed": true,
+   "edges": 2528,
+   "train_edges": 1551,
+   "op": "S.medical treatment used to treat"
+  },
+  "S.notable person with medical condition condition": {
+   "directed": true,
+   "edges": 1196,
+   "train_edges": 813,
+   "op": "S.notable person with medical condition condition"
+  },
+  "S.risk factor diseases": {
+   "directed": true,
+   "edges": 1753,
+   "train_edges": 1064,
+   "op": "S.risk factor diseases"
+  },
+  "S.medicine symptom symptom of": {
+   "directed": true,
+   "edges": 4026,
+   "train_edges": 2750,
+   "op": "S.medicine symptom symptom of"
+  },
+  "S.cyclone affected area cyclones": {
+   "directed": true,
+   "edges": 2374,
+   "train_edges": 1491,
+   "op": "S.cyclone affected area cyclones"
+  },
+  "S.tropical cyclone affected areas": {
+   "directed": true,
+   "edges": 2471,
+   "train_edges": 1576,
+   "op": "S.tropical cyclone affected areas"
+  },
+  "S.military combatant military conflicts": {
+   "directed": true,
+   "edges": 4645,
+   "train_edges": 2701,
+   "op": "S.military combatant military conflicts"
+  },
+  "S.military combatant group combatants": {
+   "directed": true,
+   "edges": 6656,
+   "train_edges": 3963,
+   "op": "S.military combatant group combatants"
+  },
+  "S.military combatant group conflict": {
+   "directed": true,
+   "edges": 5218,
+   "train_edges": 3327,
+   "op": "S.military combatant group conflict"
+  },
+  "S.military command military commander": {
+   "directed": true,
+   "edges": 3105,
+   "train_edges": 1957,
+   "op": "S.military command military commander"
+  },
+  "S.military command military conflict": {
+   "directed": true,
+   "edges": 2761,
+   "train_edges": 1778,
+   "op": "S.military command military conflict"
+  },
+  "S.military commander military commands": {
+   "directed": true,
+   "edges": 3016,
+   "train_edges": 1908,
+   "op": "S.military commander military commands"
+  },
+  "S.military conflict combatants": {
+   "directed": true,
+   "edges": 5148,
+   "train_edges": 3284,
+   "op": "S.military conflict combatants"
+  },
+  "S.military conflict commanders": {
+   "directed": true,
+   "edges": 2734,
+   "train_edges": 1761,
+   "op": "S.military conflict commanders"
+  },
+  "S.military conflict military personnel involved": {
+   "directed": true,
+   "edges": 5682,
+   "train_edges": 3543,
+   "op": "S.military conflict military personnel involved"
+  },
+  "S.military person participated in conflicts": {
+   "directed": true,
+   "edges": 8114,
+   "train_edges": 5158,
+   "op": "S.military person participated in conflicts"
+  },
+  "S.military person service": {
+   "directed": true,
+   "edges": 1407,
+   "train_edges": 882,
+   "op": "S.military person service"
+  },
+  "S.military service military person": {
+   "directed": true,
+   "edges": 1372,
+   "train_edges": 861,
+   "op": "S.military service military person"
+  },
+  "S.military unit place of origin": {
+   "directed": true,
+   "edges": 834,
+   "train_edges": 603,
+   "op": "S.military unit place of origin"
+  },
+  "S.military unit unit size": {
+   "directed": true,
+   "edges": 790,
+   "train_edges": 622,
+   "op": "S.military unit unit size"
+  },
+  "S.military unit place of origin military units": {
+   "directed": true,
+   "edges": 1123,
+   "train_edges": 756,
+   "op": "S.military unit place of origin military units"
+  },
+  "S.album album content type": {
+   "directed": true,
+   "edges": 5194,
+   "train_edges": 4159,
+   "op": "S.album album content type"
+  },
+  "S.album artist": {
+   "directed": true,
+   "edges": 11138,
+   "train_edges": 7006,
+   "op": "S.album artist"
+  },
+  "S.album contributor": {
+   "directed": true,
+   "edges": 1548,
+   "train_edges": 1003,
+   "op": "S.album contributor"
+  },
+  "S.album featured artists": {
+   "directed": true,
+   "edges": 924,
+   "train_edges": 661,
+   "op": "S.album featured artists"
+  },
+  "S.album genre": {
+   "directed": true,
+   "edges": 8270,
+   "train_edges": 5189,
+   "op": "S.album genre"
+  },
+  "S.album release type": {
+   "directed": true,
+   "edges": 7876,
+   "train_edges": 6324,
+   "op": "S.album release type"
+  },
+  "S.album releases": {
+   "directed": true,
+   "edges": 1182,
+   "train_edges": 757,
+   "op": "S.album releases"
+  },
+  "S.music.artist.album": {
+   "directed": true,
+   "edges": 24475,
+   "train_edges": 15798,
+   "op": "S.music.artist.album"
+  },
+  "S.artist contribution": {
+   "directed": true,
+   "edges": 2192,
+   "train_edges": 1340,
+   "op": "S.artist contribution"
+  },
+  "S.music.artist.genre": {
+   "directed": true,
+   "edges": 28847,
+   "train_edges": 18604,
+   "op": "S.music.artist.genre"
+  },
+  "S.artist label": {
+   "directed": true,
+   "edges": 10291,
+   "train_edges": 7144,
+   "op": "S.artist label"
+  },
+  "S.artist origin": {
+   "directed": true,
+   "edges": 3140,
+   "train_edges": 2138,
+   "op": "S.artist origin"
+  },
+  "S.music.artist.track": {
+   "directed": true,
+   "edges": 31310,
+   "train_edges": 20049,
+   "op": "S.music.artist.track"
+  },
+  "S.artist track contributions": {
+   "directed": true,
+   "edges": 15279,
+   "train_edges": 9981,
+   "op": "S.artist track contributions"
+  },
+  "S.composer compositions": {
+   "directed": true,
+   "edges": 25491,
+   "train_edges": 16729,
+   "op": "S.composer compositions"
+  },
+  "S.music composition composer": {
+   "directed": true,
+   "edges": 15591,
+   "train_edges": 10045,
+   "op": "S.music composition composer"
+  },
+  "S.composition form": {
+   "directed": true,
+   "edges": 3385,
+   "train_edges": 2602,
+   "op": "S.composition form"
+  },
+  "S.composition lyricist": {
+   "directed": true,
+   "edges": 4929,
+   "train_edges": 3237,
+   "op": "S.composition lyricist"
+  },
+  "S.composition recordings": {
+   "directed": true,
+   "edges": 9643,
+   "train_edges": 6255,
+   "op": "S.composition recordings"
+  },
+  "S.engineer tracks engineered": {
+   "directed": true,
+   "edges": 1576,
+   "train_edges": 960,
+   "op": "S.engineer tracks engineered"
+  },
+  "S.featured artist albums": {
+   "directed": true,
+   "edges": 1342,
+   "train_edges": 936,
+   "op": "S.featured artist albums"
+  },
+  "S.featured artist recordings": {
+   "directed": true,
+   "edges": 7051,
+   "train_edges": 4401,
+   "op": "S.featured artist recordings"
+  },
+  "S.genre albums": {
+   "directed": true,
+   "edges": 2853,
+   "train_edges": 1710,
+   "op": "S.genre albums"
+  },
+  "S.genre artists": {
+   "directed": true,
+   "edges": 3727,
+   "train_edges": 2341,
+   "op": "S.genre artists"
+  },
+  "S.genre subgenre": {
+   "directed": true,
+   "edges": 1286,
+   "train_edges": 821,
+   "op": "S.genre subgenre"
+  },
+  "S.group member instruments played": {
+   "directed": true,
+   "edges": 5484,
+   "train_edges": 3676,
+   "op": "S.group member instruments played"
+  },
+  "S.group member membership": {
+   "directed": true,
+   "edges": 3434,
+   "train_edges": 2198,
+   "op": "S.group member membership"
+  },
+  "S.music group membership group": {
+   "directed": true,
+   "edges": 2083,
+   "train_edges": 1362,
+   "op": "S.music group membership group"
+  },
+  "S.music group membership member": {
+   "directed": true,
+   "edges": 3317,
+   "train_edges": 2134,
+   "op": "S.music group membership member"
+  },
+  "S.group membership role": {
+   "directed": true,
+   "edges": 2712,
+   "train_edges": 1804,
+   "op": "S.group membership role"
+  },
+  "S.instrument instrumentalists": {
+   "directed": true,
+   "edges": 1063,
+   "train_edges": 804,
+   "op": "S.instrument instrumentalists"
+  },
+  "S.lyricist lyrics written": {
+   "directed": true,
+   "edges": 9431,
+   "train_edges": 6310,
+   "op": "S.lyricist lyrics written"
+  },
+  "S.musical group member": {
+   "directed": true,
+   "edges": 2199,
+   "train_edges": 1446,
+   "op": "S.musical group member"
+  },
+  "S.performance role regular performances": {
+   "directed": true,
+   "edges": 659,
+   "train_edges": 506,
+   "op": "S.performance role regular performances"
+  },
+  "S.producer releases produced": {
+   "directed": true,
+   "edges": 3391,
+   "train_edges": 2404,
+   "op": "S.producer releases produced"
+  },
+  "S.producer tracks produced": {
+   "directed": true,
+   "edges": 10636,
+   "train_edges": 6812,
+   "op": "S.producer tracks produced"
+  },
+  "S.record label artist": {
+   "directed": true,
+   "edges": 6773,
+   "train_edges": 4373,
+   "op": "S.record label artist"
+  },
+  "S.record label releases": {
+   "directed": true,
+   "edges": 1169,
+   "train_edges": 673,
+   "op": "S.record label releases"
+  },
+  "S.recording artist": {
+   "directed": true,
+   "edges": 27469,
+   "train_edges": 17829,
+   "op": "S.recording artist"
+  },
+  "S.recording canonical version": {
+   "directed": true,
+   "edges": 5692,
+   "train_edges": 3664,
+   "op": "S.recording canonical version"
+  },
+  "S.recording contributions": {
+   "directed": true,
+   "edges": 11142,
+   "train_edges": 6853,
+   "op": "S.recording contributions"
+  },
+  "S.recording engineer": {
+   "directed": true,
+   "edges": 2280,
+   "train_edges": 1444,
+   "op": "S.recording engineer"
+  },
+  "S.recording featured artists": {
+   "directed": true,
+   "edges": 4803,
+   "train_edges": 3050,
+   "op": "S.recording featured artists"
+  },
+  "S.recording lyrics website": {
+   "directed": true,
+   "edges": 2120,
+   "train_edges": 1310,
+   "op": "S.recording lyrics website"
+  },
+  "S.recording producer": {
+   "directed": true,
+   "edges": 8522,
+   "train_edges": 5474,
+   "op": "S.recording producer"
+  },
+  "S.recording releases": {
+   "directed": true,
+   "edges": 22435,
+   "train_edges": 14365,
+   "op": "S.recording releases"
+  },
+  "S.recording song": {
+   "directed": true,
+   "edges": 6934,
+   "train_edges": 4447,
+   "op": "S.recording song"
+  },
+  "S.recording tracks": {
+   "directed": true,
+   "edges": 2225,
+   "train_edges": 1371,
+   "op": "S.recording tracks"
+  },
+  "S.recording contribution album": {
+   "directed": true,
+   "edges": 1695,
+   "train_edges": 1090,
+   "op": "S.recording contribution album"
+  },
+  "S.recording contribution contributor": {
+   "directed": true,
+   "edges": 2252,
+   "train_edges": 1381,
+   "op": "S.recording contribution contributor"
+  },
+  "S.recording contribution performance role": {
+   "directed": true,
+   "edges": 1005,
+   "train_edges": 647,
+   "op": "S.recording contribution performance role"
+  },
+  "S.single versions": {
+   "directed": true,
+   "edges": 6645,
+   "train_edges": 4288,
+   "op": "S.single versions"
+  },
+  "S.track contribution contributor": {
+   "directed": true,
+   "edges": 15884,
+   "train_edges": 10349,
+   "op": "S.track contribution contributor"
+  },
+  "S.track contribution role": {
+   "directed": true,
+   "edges": 13255,
+   "train_edges": 9591,
+   "op": "S.track contribution role"
+  },
+  "S.track contribution track": {
+   "directed": true,
+   "edges": 11385,
+   "train_edges": 7009,
+   "op": "S.track contribution track"
+  },
+  "S.olympic athlete country": {
+   "directed": true,
+   "edges": 2717,
+   "train_edges": 1771,
+   "op": "S.olympic athlete country"
+  },
+  "S.olympic athlete medals won": {
+   "directed": true,
+   "edges": 1795,
+   "train_edges": 1169,
+   "op": "S.olympic athlete medals won"
+  },
+  "S.olympic athlete affiliation athlete": {
+   "directed": true,
+   "edges": 2734,
+   "train_edges": 1781,
+   "op": "S.olympic athlete affiliation athlete"
+  },
+  "S.olympic athlete affiliation country": {
+   "directed": true,
+   "edges": 4133,
+   "train_edges": 2677,
+   "op": "S.olympic athlete affiliation country"
+  },
+  "S.olympic athlete affiliation olympics": {
+   "directed": true,
+   "edges": 4083,
+   "train_edges": 3015,
+   "op": "S.olympic athlete affiliation olympics"
+  },
+  "S.olympic athlete affiliation sport": {
+   "directed": true,
+   "edges": 3341,
+   "train_edges": 2298,
+   "op": "S.olympic athlete affiliation sport"
+  },
+  "S.olympic event competitions": {
+   "directed": true,
+   "edges": 2540,
+   "train_edges": 1563,
+   "op": "S.olympic event competitions"
+  },
+  "S.olympic event olympic games contested": {
+   "directed": true,
+   "edges": 3785,
+   "train_edges": 2369,
+   "op": "S.olympic event olympic games contested"
+  },
+  "S.olympic event competition event": {
+   "directed": true,
+   "edges": 2544,
+   "train_edges": 1563,
+   "op": "S.olympic event competition event"
+  },
+  "S.olympic event competition medalists": {
+   "directed": true,
+   "edges": 2812,
+   "train_edges": 1777,
+   "op": "S.olympic event competition medalists"
+  },
+  "S.olympic event competition olympic games contested": {
+   "directed": true,
+   "edges": 3033,
+   "train_edges": 2031,
+   "op": "S.olympic event competition olympic games contested"
+  },
+  "S.olympic games athletes": {
+   "directed": true,
+   "edges": 1121,
+   "train_edges": 639,
+   "op": "S.olympic games athletes"
+  },
+  "S.olympic games competitions": {
+   "directed": true,
+   "edges": 1242,
+   "train_edges": 816,
+   "op": "S.olympic games competitions"
+  },
+  "S.olympic games events": {
+   "directed": true,
+   "edges": 1565,
+   "train_edges": 1027,
+   "op": "S.olympic games events"
+  },
+  "S.olympic games sports": {
+   "directed": true,
+   "edges": 948,
+   "train_edges": 598,
+   "op": "S.olympic games sports"
+  },
+  "S.olympic medal honor country": {
+   "directed": true,
+   "edges": 3599,
+   "train_edges": 2346,
+   "op": "S.olympic medal honor country"
+  },
+  "S.olympic medal honor event": {
+   "directed": true,
+   "edges": 2781,
+   "train_edges": 1752,
+   "op": "S.olympic medal honor event"
+  },
+  "S.olympic medal honor medal": {
+   "directed": true,
+   "edges": 1570,
+   "train_edges": 1254,
+   "op": "S.olympic medal honor medal"
+  },
+  "S.olympic medal honor medalist": {
+   "directed": true,
+   "edges": 1787,
+   "train_edges": 1164,
+   "op": "S.olympic medal honor medalist"
+  },
+  "S.olympic medal honor olympics": {
+   "directed": true,
+   "edges": 3371,
+   "train_edges": 2244,
+   "op": "S.olympic medal honor olympics"
+  },
+  "S.olympic participating country athletes": {
+   "directed": true,
+   "edges": 2954,
+   "train_edges": 1814,
+   "op": "S.olympic participating country athletes"
+  },
+  "S.olympic participating country medals won": {
+   "directed": true,
+   "edges": 1947,
+   "train_edges": 1231,
+   "op": "S.olympic participating country medals won"
+  },
+  "S.olympic participating country olympics participated in": {
+   "directed": true,
+   "edges": 715,
+   "train_edges": 523,
+   "op": "S.olympic participating country olympics participated in"
+  },
+  "S.olympic sport events": {
+   "directed": true,
+   "edges": 778,
+   "train_edges": 509,
+   "op": "S.olympic sport events"
+  },
+  "S.olympic sport olympic games contested": {
+   "directed": true,
+   "edges": 943,
+   "train_edges": 595,
+   "op": "S.olympic sport olympic games contested"
+  },
+  "S.leadership organization": {
+   "directed": true,
+   "edges": 3111,
+   "train_edges": 2048,
+   "op": "S.leadership organization"
+  },
+  "S.leadership person": {
+   "directed": true,
+   "edges": 1299,
+   "train_edges": 841,
+   "op": "S.leadership person"
+  },
+  "S.leadership role": {
+   "directed": true,
+   "edges": 1045,
+   "train_edges": 737,
+   "op": "S.leadership role"
+  },
+  "S.membership organization members": {
+   "directed": true,
+   "edges": 1647,
+   "train_edges": 938,
+   "op": "S.membership organization members"
+  },
+  "S.organization board members": {
+   "directed": true,
+   "edges": 2505,
+   "train_edges": 1675,
+   "op": "S.organization board members"
+  },
+  "S.organization child": {
+   "directed": true,
+   "edges": 4240,
+   "train_edges": 2895,
+   "op": "S.organization child"
+  },
+  "S.organization founders": {
+   "directed": true,
+   "edges": 4906,
+   "train_edges": 3019,
+   "op": "S.organization founders"
+  },
+  "S.organization geographic scope": {
+   "directed": true,
+   "edges": 8783,
+   "train_edges": 5563,
+   "op": "S.organization geographic scope"
+  },
+  "S.organization headquarters": {
+   "directed": true,
+   "edges": 5764,
+   "train_edges": 3738,
+   "op": "S.organization headquarters"
+  },
+  "S.organization leadership": {
+   "directed": true,
+   "edges": 3066,
+   "train_edges": 2019,
+   "op": "S.organization leadership"
+  },
+  "S.organization organization type": {
+   "directed": true,
+   "edges": 942,
+   "train_edges": 585,
+   "op": "S.organization organization type"
+  },
+  "S.organization parent": {
+   "directed": true,
+   "edges": 2875,
+   "train_edges": 1800,
+   "op": "S.organization parent"
+  },
+  "S.organization phone number": {
+   "directed": true,
+   "edges": 1022,
+   "train_edges": 654,
+   "op": "S.organization phone number"
+  },
+  "S.organization place founded": {
+   "directed": true,
+   "edges": 1436,
+   "train_edges": 921,
+   "op": "S.organization place founded"
+  },
+  "S.organization sectors": {
+   "directed": true,
+   "edges": 2975,
+   "train_edges": 1889,
+   "op": "S.organization sectors"
+  },
+  "S.organization board membership member": {
+   "directed": true,
+   "edges": 1626,
+   "train_edges": 1042,
+   "op": "S.organization board membership member"
+  },
+  "S.organization board membership organization": {
+   "directed": true,
+   "edges": 2547,
+   "train_edges": 1705,
+   "op": "S.organization board membership organization"
+  },
+  "S.organization founder organizations founded": {
+   "directed": true,
+   "edges": 5380,
+   "train_edges": 3375,
+   "op": "S.organization founder organizations founded"
+  },
+  "S.organization member member of": {
+   "directed": true,
+   "edges": 2092,
+   "train_edges": 1383,
+   "op": "S.organization member member of"
+  },
+  "S.organization membership member": {
+   "directed": true,
+   "edges": 2099,
+   "train_edges": 1388,
+   "op": "S.organization membership member"
+  },
+  "S.organization membership organization": {
+   "directed": true,
+   "edges": 1928,
+   "train_edges": 1051,
+   "op": "S.organization membership organization"
+  },
+  "S.organization relationship child": {
+   "directed": true,
+   "edges": 2923,
+   "train_edges": 1834,
+   "op": "S.organization relationship child"
+  },
+  "S.organization relationship parent": {
+   "directed": true,
+   "edges": 4295,
+   "train_edges": 2941,
+   "op": "S.organization relationship parent"
+  },
+  "S.organization scope organizations with this scope": {
+   "directed": true,
+   "edges": 8461,
+   "train_edges": 5228,
+   "op": "S.organization scope organizations with this scope"
+  },
+  "S.organization sector organizations in this sector": {
+   "directed": true,
+   "edges": 4416,
+   "train_edges": 2765,
+   "op": "S.organization sector organizations in this sector"
+  },
+  "S.cause of death includes causes of death": {
+   "directed": true,
+   "edges": 830,
+   "train_edges": 612,
+   "op": "S.cause of death includes causes of death"
+  },
+  "S.cause of death people": {
+   "directed": true,
+   "edges": 4107,
+   "train_edges": 2752,
+   "op": "S.cause of death people"
+  },
+  "S.deceased person cause of death": {
+   "directed": true,
+   "edges": 8887,
+   "train_edges": 5728,
+   "op": "S.deceased person cause of death"
+  },
+  "S.deceased person place of burial": {
+   "directed": true,
+   "edges": 8002,
+   "train_edges": 5438,
+   "op": "S.deceased person place of burial"
+  },
+  "S.deceased person place of death": {
+   "directed": true,
+   "edges": 18918,
+   "train_edges": 12160,
+   "op": "S.deceased person place of death"
+  },
+  "S.ethnicity languages spoken": {
+   "directed": true,
+   "edges": 1618,
+   "train_edges": 1076,
+   "op": "S.ethnicity languages spoken"
+  },
+  "S.ethnicity people": {
+   "directed": true,
+   "edges": 6037,
+   "train_edges": 4008,
+   "op": "S.ethnicity people"
+  },
+  "S.family members": {
+   "directed": true,
+   "edges": 2072,
+   "train_edges": 1524,
+   "op": "S.family members"
+  },
+  "S.family member family": {
+   "directed": true,
+   "edges": 3298,
+   "train_edges": 2177,
+   "op": "S.family member family"
+  },
+  "S.marriage spouse": {
+   "directed": true,
+   "edges": 14215,
+   "train_edges": 9136,
+   "op": "S.marriage spouse"
+  },
+  "S.marriage type of union": {
+   "directed": true,
+   "edges": 6063,
+   "train_edges": 4847,
+   "op": "S.marriage type of union"
+  },
+  "S.person children": {
+   "directed": true,
+   "edges": 26583,
+   "train_edges": 17129,
+   "op": "S.person children"
+  },
+  "S.person education": {
+   "directed": true,
+   "edges": 19817,
+   "train_edges": 12745,
+   "op": "S.person education"
+  },
+  "S.person employment history": {
+   "directed": true,
+   "edges": 5948,
+   "train_edges": 3852,
+   "op": "S.person employment history"
+  },
+  "S.person ethnicity": {
+   "directed": true,
+   "edges": 12346,
+   "train_edges": 6712,
+   "op": "S.person ethnicity"
+  },
+  "S.person gender": {
+   "directed": true,
+   "edges": 146804,
+   "train_edges": 91356,
+   "op": "S.person gender"
+  },
+  "S.person languages": {
+   "directed": true,
+   "edges": 3274,
+   "train_edges": 879,
+   "op": "S.person languages"
+  },
+  "S.person nationality": {
+   "directed": true,
+   "edges": 107312,
+   "train_edges": 82308,
+   "op": "S.person nationality"
+  },
+  "S.person parents": {
+   "directed": true,
+   "edges": 23885,
+   "train_edges": 15486,
+   "op": "S.person parents"
+  },
+  "S.person place of birth": {
+   "directed": true,
+   "edges": 68583,
+   "train_edges": 44608,
+   "op": "S.person place of birth"
+  },
+  "S.person places lived": {
+   "directed": true,
+   "edges": 12335,
+   "train_edges": 7999,
+   "op": "S.person places lived"
+  },
+  "S.person profession": {
+   "directed": true,
+   "edges": 166478,
+   "train_edges": 104746,
+   "op": "S.person profession"
+  },
+  "S.person quotations": {
+   "directed": true,
+   "edges": 9099,
+   "train_edges": 6020,
+   "op": "S.person quotations"
+  },
+  "S.person religion": {
+   "directed": true,
+   "edges": 9477,
+   "train_edges": 3911,
+   "op": "S.person religion"
+  },
+  "S.person sibling s": {
+   "directed": true,
+   "edges": 16379,
+   "train_edges": 10484,
+   "op": "S.person sibling s"
+  },
+  "S.person spouse s": {
+   "directed": true,
+   "edges": 14200,
+   "train_edges": 9131,
+   "op": "S.person spouse s"
+  },
+  "S.place lived location": {
+   "directed": true,
+   "edges": 9449,
+   "train_edges": 6128,
+   "op": "S.place lived location"
+  },
+  "S.place lived person": {
+   "directed": true,
+   "edges": 12310,
+   "train_edges": 7980,
+   "op": "S.place lived person"
+  },
+  "S.place of interment interred here": {
+   "directed": true,
+   "edges": 6773,
+   "train_edges": 4519,
+   "op": "S.place of interment interred here"
+  },
+  "S.profession people with this profession": {
+   "directed": true,
+   "edges": 10893,
+   "train_edges": 6312,
+   "op": "S.profession people with this profession"
+  },
+  "S.people profession specialization of": {
+   "directed": true,
+   "edges": 1066,
+   "train_edges": 715,
+   "op": "S.people profession specialization of"
+  },
+  "S.profession specializations": {
+   "directed": true,
+   "edges": 1924,
+   "train_edges": 1345,
+   "op": "S.profession specializations"
+  },
+  "S.sibling relationship sibling": {
+   "directed": true,
+   "edges": 16540,
+   "train_edges": 10596,
+   "op": "S.sibling relationship sibling"
+  },
+  "S.newspaper circulation area newspapers": {
+   "directed": true,
+   "edges": 4752,
+   "train_edges": 3003,
+   "op": "S.newspaper circulation area newspapers"
+  },
+  "S.listed site designation as natural or cultural site": {
+   "directed": true,
+   "edges": 2809,
+   "train_edges": 1840,
+   "op": "S.listed site designation as natural or cultural site"
+  },
+  "S.natural or cultural site listing listed site": {
+   "directed": true,
+   "edges": 2306,
+   "train_edges": 1496,
+   "op": "S.natural or cultural site listing listed site"
+  },
+  "S.rdf-schema domain": {
+   "directed": true,
+   "edges": 942,
+   "train_edges": 609,
+   "op": "S.rdf-schema domain"
+  },
+  "S.rdf-schema range": {
+   "directed": true,
+   "edges": 778,
+   "train_edges": 521,
+   "op": "S.rdf-schema range"
+  },
+  "S.chivalric order member belongs to order": {
+   "directed": true,
+   "edges": 896,
+   "train_edges": 590,
+   "op": "S.chivalric order member belongs to order"
+  },
+  "S.chivalric order membership order": {
+   "directed": true,
+   "edges": 997,
+   "train_edges": 610,
+   "op": "S.chivalric order membership order"
+  },
+  "S.chivalric order membership recipient": {
+   "directed": true,
+   "edges": 897,
+   "train_edges": 591,
+   "op": "S.chivalric order membership recipient"
+  },
+  "S.monarch royal line": {
+   "directed": true,
+   "edges": 886,
+   "train_edges": 546,
+   "op": "S.monarch royal line"
+  },
+  "S.order of chivalry recipients": {
+   "directed": true,
+   "edges": 735,
+   "train_edges": 585,
+   "op": "S.order of chivalry recipients"
+  },
+  "S.football match players": {
+   "directed": true,
+   "edges": 1307,
+   "train_edges": 900,
+   "op": "S.football match players"
+  },
+  "S.soccer football player position s": {
+   "directed": true,
+   "edges": 2190,
+   "train_edges": 1272,
+   "op": "S.soccer football player position s"
+  },
+  "S.football player statistics": {
+   "directed": true,
+   "edges": 2480,
+   "train_edges": 1574,
+   "op": "S.football player statistics"
+  },
+  "S.football player match participation match": {
+   "directed": true,
+   "edges": 1307,
+   "train_edges": 900,
+   "op": "S.football player match participation match"
+  },
+  "S.football player match participation team": {
+   "directed": true,
+   "edges": 1307,
+   "train_edges": 959,
+   "op": "S.football player match participation team"
+  },
+  "S.football player stats player": {
+   "directed": true,
+   "edges": 2485,
+   "train_edges": 1578,
+   "op": "S.football player stats player"
+  },
+  "S.football player stats team": {
+   "directed": true,
+   "edges": 6457,
+   "train_edges": 3933,
+   "op": "S.football player stats team"
+  },
+  "S.football team player statistics": {
+   "directed": true,
+   "edges": 6423,
+   "train_edges": 3918,
+   "op": "S.football team player statistics"
+  },
+  "S.drafted athlete drafted": {
+   "directed": true,
+   "edges": 1394,
+   "train_edges": 913,
+   "op": "S.drafted athlete drafted"
+  },
+  "S.pro athlete sports played professionally": {
+   "directed": true,
+   "edges": 2823,
+   "train_edges": 1800,
+   "op": "S.pro athlete sports played professionally"
+  },
+  "S.pro athlete teams": {
+   "directed": true,
+   "edges": 9039,
+   "train_edges": 5769,
+   "op": "S.pro athlete teams"
+  },
+  "S.pro sports played athlete": {
+   "directed": true,
+   "edges": 2831,
+   "train_edges": 1806,
+   "op": "S.pro sports played athlete"
+  },
+  "S.pro sports played sport": {
+   "directed": true,
+   "edges": 1945,
+   "train_edges": 1339,
+   "op": "S.pro sports played sport"
+  },
+  "S.professional sports team draft picks": {
+   "directed": true,
+   "edges": 1694,
+   "train_edges": 1096,
+   "op": "S.professional sports team draft picks"
+  },
+  "S.sport pro athletes": {
+   "directed": true,
+   "edges": 884,
+   "train_edges": 504,
+   "op": "S.sport pro athletes"
+  },
+  "S.sports award season": {
+   "directed": true,
+   "edges": 1158,
+   "train_edges": 721,
+   "op": "S.sports award season"
+  },
+  "S.sports championship event champion": {
+   "directed": true,
+   "edges": 997,
+   "train_edges": 579,
+   "op": "S.sports championship event champion"
+  },
+  "S.sports championship event championship": {
+   "directed": true,
+   "edges": 720,
+   "train_edges": 528,
+   "op": "S.sports championship event championship"
+  },
+  "S.sports facility home venue for": {
+   "directed": true,
+   "edges": 1276,
+   "train_edges": 854,
+   "op": "S.sports facility home venue for"
+  },
+  "S.sports facility teams": {
+   "directed": true,
+   "edges": 1245,
+   "train_edges": 823,
+   "op": "S.sports facility teams"
+  },
+  "S.sports league draft picks": {
+   "directed": true,
+   "edges": 1520,
+   "train_edges": 1108,
+   "op": "S.sports league draft picks"
+  },
+  "S.sports league draft pick draft": {
+   "directed": true,
+   "edges": 1520,
+   "train_edges": 1108,
+   "op": "S.sports league draft pick draft"
+  },
+  "S.sports league draft pick player": {
+   "directed": true,
+   "edges": 1394,
+   "train_edges": 913,
+   "op": "S.sports league draft pick player"
+  },
+  "S.sports league draft pick school": {
+   "directed": true,
+   "edges": 866,
+   "train_edges": 581,
+   "op": "S.sports league draft pick school"
+  },
+  "S.sports league draft pick team": {
+   "directed": true,
+   "edges": 1695,
+   "train_edges": 1096,
+   "op": "S.sports league draft pick team"
+  },
+  "S.sports league participation team": {
+   "directed": true,
+   "edges": 1148,
+   "train_edges": 713,
+   "op": "S.sports league participation team"
+  },
+  "S.sports league season awards": {
+   "directed": true,
+   "edges": 1158,
+   "train_edges": 721,
+   "op": "S.sports league season awards"
+  },
+  "S.sports position players": {
+   "directed": true,
+   "edges": 837,
+   "train_edges": 554,
+   "op": "S.sports position players"
+  },
+  "S.sports team arena stadium": {
+   "directed": true,
+   "edges": 1436,
+   "train_edges": 936,
+   "op": "S.sports team arena stadium"
+  },
+  "S.sports team championships": {
+   "directed": true,
+   "edges": 1446,
+   "train_edges": 875,
+   "op": "S.sports team championships"
+  },
+  "S.sports team colors": {
+   "directed": true,
+   "edges": 2095,
+   "train_edges": 1629,
+   "op": "S.sports team colors"
+  },
+  "S.sports team league": {
+   "directed": true,
+   "edges": 1167,
+   "train_edges": 720,
+   "op": "S.sports team league"
+  },
+  "S.sports team location": {
+   "directed": true,
+   "edges": 2357,
+   "train_edges": 1563,
+   "op": "S.sports team location"
+  },
+  "S.sports team roster": {
+   "directed": true,
+   "edges": 13267,
+   "train_edges": 7937,
+   "op": "S.sports team roster"
+  },
+  "S.sports team season record": {
+   "directed": true,
+   "edges": 1613,
+   "train_edges": 1061,
+   "op": "S.sports team season record"
+  },
+  "S.sports team sport": {
+   "directed": true,
+   "edges": 2843,
+   "train_edges": 2061,
+   "op": "S.sports team sport"
+  },
+  "S.sports team venue": {
+   "directed": true,
+   "edges": 1367,
+   "train_edges": 903,
+   "op": "S.sports team venue"
+  },
+  "S.sports team location teams": {
+   "directed": true,
+   "edges": 2564,
+   "train_edges": 1675,
+   "op": "S.sports team location teams"
+  },
+  "S.sports team roster player": {
+   "directed": true,
+   "edges": 8976,
+   "train_edges": 5728,
+   "op": "S.sports team roster player"
+  },
+  "S.sports team roster position": {
+   "directed": true,
+   "edges": 11479,
+   "train_edges": 7873,
+   "op": "S.sports team roster position"
+  },
+  "S.sports team roster team": {
+   "directed": true,
+   "edges": 14098,
+   "train_edges": 8436,
+   "op": "S.sports team roster team"
+  },
+  "S.sports team season record season": {
+   "directed": true,
+   "edges": 1396,
+   "train_edges": 909,
+   "op": "S.sports team season record season"
+  },
+  "S.sports team season record team": {
+   "directed": true,
+   "edges": 1613,
+   "train_edges": 1061,
+   "op": "S.sports team season record team"
+  },
+  "S.team venue relationship team": {
+   "directed": true,
+   "edges": 1428,
+   "train_edges": 942,
+   "op": "S.team venue relationship team"
+  },
+  "S.team venue relationship venue": {
+   "directed": true,
+   "edges": 1404,
+   "train_edges": 935,
+   "op": "S.team venue relationship venue"
+  },
+  "S.name source namesakes": {
+   "directed": true,
+   "edges": 7334,
+   "train_edges": 4827,
+   "op": "S.name source namesakes"
+  },
+  "S.namesake named after": {
+   "directed": true,
+   "edges": 5979,
+   "train_edges": 3920,
+   "op": "S.namesake named after"
+  },
+  "S.play characters": {
+   "directed": true,
+   "edges": 1205,
+   "train_edges": 820,
+   "op": "S.play characters"
+  },
+  "S.theater character plays appears in": {
+   "directed": true,
+   "edges": 858,
+   "train_edges": 609,
+   "op": "S.theater character plays appears in"
+  },
+  "S.theater producer plays produced": {
+   "directed": true,
+   "edges": 1115,
+   "train_edges": 760,
+   "op": "S.theater producer plays produced"
+  },
+  "S.theater production cast": {
+   "directed": true,
+   "edges": 965,
+   "train_edges": 677,
+   "op": "S.theater production cast"
+  },
+  "S.theater production producer": {
+   "directed": true,
+   "edges": 936,
+   "train_edges": 670,
+   "op": "S.theater production producer"
+  },
+  "S.theater role play": {
+   "directed": true,
+   "edges": 994,
+   "train_edges": 691,
+   "op": "S.theater role play"
+  },
+  "S.event included in event": {
+   "directed": true,
+   "edges": 7803,
+   "train_edges": 5014,
+   "op": "S.event included in event"
+  },
+  "S.event includes event": {
+   "directed": true,
+   "edges": 7292,
+   "train_edges": 4893,
+   "op": "S.event includes event"
+  },
+  "S.event instance of recurring event": {
+   "directed": true,
+   "edges": 8552,
+   "train_edges": 5397,
+   "op": "S.event instance of recurring event"
+  },
+  "S.event locations": {
+   "directed": true,
+   "edges": 27145,
+   "train_edges": 17316,
+   "op": "S.event locations"
+  },
+  "S.recurring event instances": {
+   "directed": true,
+   "edges": 5850,
+   "train_edges": 3761,
+   "op": "S.recurring event instances"
+  },
+  "S.time zone locations in this time zone": {
+   "directed": true,
+   "edges": 1157,
+   "train_edges": 643,
+   "op": "S.time zone locations in this time zone"
+  },
+  "S.tourist attraction near travel destination": {
+   "directed": true,
+   "edges": 5617,
+   "train_edges": 3522,
+   "op": "S.tourist attraction near travel destination"
+  },
+  "S.travel destination tourist attractions": {
+   "directed": true,
+   "edges": 8066,
+   "train_edges": 5105,
+   "op": "S.travel destination tourist attractions"
+  },
+  "S.regular tv appearance actor": {
+   "directed": true,
+   "edges": 8414,
+   "train_edges": 5293,
+   "op": "S.regular tv appearance actor"
+  },
+  "S.regular tv appearance character": {
+   "directed": true,
+   "edges": 4464,
+   "train_edges": 2869,
+   "op": "S.regular tv appearance character"
+  },
+  "S.regular tv appearance seasons": {
+   "directed": true,
+   "edges": 4514,
+   "train_edges": 2930,
+   "op": "S.regular tv appearance seasons"
+  },
+  "S.regular tv appearance series": {
+   "directed": true,
+   "edges": 8018,
+   "train_edges": 5293,
+   "op": "S.regular tv appearance series"
+  },
+  "S.tv actor guest roles": {
+   "directed": true,
+   "edges": 27328,
+   "train_edges": 17551,
+   "op": "S.tv actor guest roles"
+  },
+  "S.tv actor starring roles": {
+   "directed": true,
+   "edges": 8485,
+   "train_edges": 5341,
+   "op": "S.tv actor starring roles"
+  },
+  "S.tv character appeared in tv episodes": {
+   "directed": true,
+   "edges": 3327,
+   "train_edges": 2047,
+   "op": "S.tv character appeared in tv episodes"
+  },
+  "S.tv character appeared in tv program": {
+   "directed": true,
+   "edges": 4469,
+   "train_edges": 2869,
+   "op": "S.tv character appeared in tv program"
+  },
+  "S.tv director episodes directed": {
+   "directed": true,
+   "edges": 8196,
+   "train_edges": 5298,
+   "op": "S.tv director episodes directed"
+  },
+  "S.tv genre programs": {
+   "directed": true,
+   "edges": 2303,
+   "train_edges": 1461,
+   "op": "S.tv genre programs"
+  },
+  "S.tv guest personal appearance appearance type": {
+   "directed": true,
+   "edges": 1002,
+   "train_edges": 731,
+   "op": "S.tv guest personal appearance appearance type"
+  },
+  "S.tv guest personal appearance episode": {
+   "directed": true,
+   "edges": 1125,
+   "train_edges": 705,
+   "op": "S.tv guest personal appearance episode"
+  },
+  "S.tv guest personal appearance person": {
+   "directed": true,
+   "edges": 1522,
+   "train_edges": 990,
+   "op": "S.tv guest personal appearance person"
+  },
+  "S.tv guest role actor": {
+   "directed": true,
+   "edges": 27467,
+   "train_edges": 17662,
+   "op": "S.tv guest role actor"
+  },
+  "S.tv guest role character": {
+   "directed": true,
+   "edges": 3328,
+   "train_edges": 2059,
+   "op": "S.tv guest role character"
+  },
+  "S.tv guest role episodes appeared in": {
+   "directed": true,
+   "edges": 12696,
+   "train_edges": 8205,
+   "op": "S.tv guest role episodes appeared in"
+  },
+  "S.tv network duration network": {
+   "directed": true,
+   "edges": 860,
+   "train_edges": 552,
+   "op": "S.tv network duration network"
+  },
+  "S.tv network duration program": {
+   "directed": true,
+   "edges": 1083,
+   "train_edges": 702,
+   "op": "S.tv network duration program"
+  },
+  "S.tv personality tv regular appearances": {
+   "directed": true,
+   "edges": 1793,
+   "train_edges": 1113,
+   "op": "S.tv personality tv regular appearances"
+  },
+  "S.tv producer programs produced": {
+   "directed": true,
+   "edges": 4662,
+   "train_edges": 2978,
+   "op": "S.tv producer programs produced"
+  },
+  "S.tv producer term producer": {
+   "directed": true,
+   "edges": 4486,
+   "train_edges": 2847,
+   "op": "S.tv producer term producer"
+  },
+  "S.tv producer term producer type": {
+   "directed": true,
+   "edges": 1246,
+   "train_edges": 685,
+   "op": "S.tv producer term producer type"
+  },
+  "S.tv producer term program": {
+   "directed": true,
+   "edges": 3575,
+   "train_edges": 2221,
+   "op": "S.tv producer term program"
+  },
+  "S.tv program country of origin": {
+   "directed": true,
+   "edges": 6197,
+   "train_edges": 4899,
+   "op": "S.tv program country of origin"
+  },
+  "S.tv program episodes": {
+   "directed": true,
+   "edges": 10896,
+   "train_edges": 7192,
+   "op": "S.tv program episodes"
+  },
+  "S.tv program genre": {
+   "directed": true,
+   "edges": 9974,
+   "train_edges": 7048,
+   "op": "S.tv program genre"
+  },
+  "S.tv program original network": {
+   "directed": true,
+   "edges": 1091,
+   "train_edges": 708,
+   "op": "S.tv program original network"
+  },
+  "S.tv program program creator": {
+   "directed": true,
+   "edges": 2066,
+   "train_edges": 1332,
+   "op": "S.tv program program creator"
+  },
+  "S.tv program recurring writers": {
+   "directed": true,
+   "edges": 1418,
+   "train_edges": 871,
+   "op": "S.tv program recurring writers"
+  },
+  "S.tv program regular cast": {
+   "directed": true,
+   "edges": 7964,
+   "train_edges": 5260,
+   "op": "S.tv program regular cast"
+  },
+  "S.tv program regular personal appearances": {
+   "directed": true,
+   "edges": 1345,
+   "train_edges": 839,
+   "op": "S.tv program regular personal appearances"
+  },
+  "S.tv program seasons": {
+   "directed": true,
+   "edges": 2862,
+   "train_edges": 1897,
+   "op": "S.tv program seasons"
+  },
+  "S.tv program tv producer": {
+   "directed": true,
+   "edges": 3595,
+   "train_edges": 2247,
+   "op": "S.tv program tv producer"
+  },
+  "S.tv program creator programs created": {
+   "directed": true,
+   "edges": 2581,
+   "train_edges": 1642,
+   "op": "S.tv program creator programs created"
+  },
+  "S.tv program guest appeared on": {
+   "directed": true,
+   "edges": 1522,
+   "train_edges": 990,
+   "op": "S.tv program guest appeared on"
+  },
+  "S.tv program writer relationship tv program": {
+   "directed": true,
+   "edges": 1465,
+   "train_edges": 905,
+   "op": "S.tv program writer relationship tv program"
+  },
+  "S.tv program writer relationship writer": {
+   "directed": true,
+   "edges": 1531,
+   "train_edges": 985,
+   "op": "S.tv program writer relationship writer"
+  },
+  "S.tv regular personal appearance appearance type": {
+   "directed": true,
+   "edges": 1419,
+   "train_edges": 681,
+   "op": "S.tv regular personal appearance appearance type"
+  },
+  "S.tv regular personal appearance person": {
+   "directed": true,
+   "edges": 1797,
+   "train_edges": 1115,
+   "op": "S.tv regular personal appearance person"
+  },
+  "S.tv regular personal appearance program": {
+   "directed": true,
+   "edges": 1584,
+   "train_edges": 1028,
+   "op": "S.tv regular personal appearance program"
+  },
+  "S.tv regular personal appearance seasons": {
+   "directed": true,
+   "edges": 1130,
+   "train_edges": 762,
+   "op": "S.tv regular personal appearance seasons"
+  },
+  "S.tv series season episodes": {
+   "directed": true,
+   "edges": 14585,
+   "train_edges": 9402,
+   "op": "S.tv series season episodes"
+  },
+  "S.tv series season regular cast": {
+   "directed": true,
+   "edges": 3801,
+   "train_edges": 2460,
+   "op": "S.tv series season regular cast"
+  },
+  "S.tv series season regular personal appearances": {
+   "directed": true,
+   "edges": 1034,
+   "train_edges": 699,
+   "op": "S.tv series season regular personal appearances"
+  },
+  "S.tv series season series": {
+   "directed": true,
+   "edges": 1541,
+   "train_edges": 1037,
+   "op": "S.tv series season series"
+  },
+  "S.tv writer episodes written": {
+   "directed": true,
+   "edges": 12045,
+   "train_edges": 7619,
+   "op": "S.tv writer episodes written"
+  },
+  "S.tv writer tv programs": {
+   "directed": true,
+   "edges": 1521,
+   "train_edges": 978,
+   "op": "S.tv writer tv programs"
+  },
+  "S.property expected type": {
+   "directed": true,
+   "edges": 778,
+   "train_edges": 521,
+   "op": "S.property expected type"
+  },
+  "S.property schema": {
+   "directed": true,
+   "edges": 942,
+   "train_edges": 609,
+   "op": "S.property schema"
+  },
+  "S.type expected by": {
+   "directed": true,
+   "edges": 1946,
+   "train_edges": 1353,
+   "op": "S.type expected by"
+  },
+  "S.type properties": {
+   "directed": true,
+   "edges": 2524,
+   "train_edges": 1603,
+   "op": "S.type properties"
+  },
+  "S.art owner artworks owned": {
+   "directed": true,
+   "edges": 937,
+   "train_edges": 596,
+   "op": "S.art owner artworks owned"
+  },
+  "S.art period movement associated artists": {
+   "directed": true,
+   "edges": 1297,
+   "train_edges": 830,
+   "op": "S.art period movement associated artists"
+  },
+  "S.art period movement associated artworks": {
+   "directed": true,
+   "edges": 782,
+   "train_edges": 615,
+   "op": "S.art period movement associated artworks"
+  },
+  "S.art subject artwork on the subject": {
+   "directed": true,
+   "edges": 1017,
+   "train_edges": 705,
+   "op": "S.art subject artwork on the subject"
+  },
+  "S.artwork art subject": {
+   "directed": true,
+   "edges": 791,
+   "train_edges": 504,
+   "op": "S.artwork art subject"
+  },
+  "S.artwork artist": {
+   "directed": true,
+   "edges": 1523,
+   "train_edges": 1010,
+   "op": "S.artwork artist"
+  },
+  "S.artwork media": {
+   "directed": true,
+   "edges": 1051,
+   "train_edges": 768,
+   "op": "S.artwork media"
+  },
+  "S.artwork owners": {
+   "directed": true,
+   "edges": 787,
+   "train_edges": 542,
+   "op": "S.artwork owners"
+  },
+  "S.artwork owner relationship artwork": {
+   "directed": true,
+   "edges": 796,
+   "train_edges": 549,
+   "op": "S.artwork owner relationship artwork"
+  },
+  "S.artwork owner relationship owner": {
+   "directed": true,
+   "edges": 977,
+   "train_edges": 626,
+   "op": "S.artwork owner relationship owner"
+  },
+  "S.visual artist art forms": {
+   "directed": true,
+   "edges": 2091,
+   "train_edges": 565,
+   "op": "S.visual artist art forms"
+  },
+  "S.visual artist artworks": {
+   "directed": true,
+   "edges": 5483,
+   "train_edges": 3443,
+   "op": "S.visual artist artworks"
+  },
+  "S.visual artist associated periods or movements": {
+   "directed": true,
+   "edges": 1718,
+   "train_edges": 1148,
+   "op": "S.visual artist associated periods or movements"
+  },
+  "S.rare (pooled)": {
+   "relations": 6243,
+   "edges": 480253,
+   "train_edges": 298021
+  }
+ },
+ "operators": [
+  "R.mention",
+  "R.name_comention",
+  "R.title_comention",
+  "S.rare",
+  "S.football game passing",
+  "S.football game receiving",
+  "S.football game rushing",
+  "S.football player games",
+  "S.american football football player position s",
+  "S.game passing statistics game",
+  "S.game passing statistics team",
+  "S.game receiving statistics game",
+  "S.game receiving statistics player",
+  "S.game receiving statistics team",
+  "S.game rushing statistics game",
+  "S.game rushing statistics team",
+  "S.player game statistics player",
+  "S.park rides",
+  "S.architect structures designed",
+  "S.architectural style examples",
+  "S.building building function",
+  "S.structure architect",
+  "S.structure architectural style",
+  "S.automotive make model s",
+  "S.airport focus city for",
+  "S.airport hub for",
+  "S.airport serves",
+  "S.award category",
+  "S.award category category of",
+  "S.award category disciplines or subjects",
+  "S.award category nominees",
+  "S.award category presenting organization",
+  "S.award category winners",
+  "S.award ceremony awards presented",
+  "S.award ceremony nominees",
+  "S.award discipline awards in this discipline",
+  "S.award honor award",
+  "S.award honor award winner",
+  "S.award honor ceremony",
+  "S.award honor honored for",
+  "S.award nominated work award nominations",
+  "S.award nomination award",
+  "S.award nomination award nominee",
+  "S.award nomination ceremony",
+  "S.award nomination nominated for",
+  "S.award nominee award nominations",
+  "S.award presenting organization award categories presented",
+  "S.award winner awards won",
+  "S.award winning work awards won",
+  "S.award ranked item appears in ranked lists",
+  "S.award ranking item",
+  "S.award ranking list",
+  "S.administrative area administrative area type",
+  "S.administrative area administrative children",
+  "S.administrative area administrative parent",
+  "S.activism issue activists",
+  "S.activist area of activism",
+  "S.bibs location country",
+  "S.base cars refactor make model s",
+  "S.event entity involved",
+  "S.names descriptive name",
+  "S.kwconnection other",
+  "S.kwconnection relation",
+  "S.kwconnection sentence",
+  "S.kwconnection subject",
+  "S.kwsentence contains connections",
+  "S.kwsentence dates",
+  "S.kwsentence kwtopic",
+  "S.kwsentence next sentence",
+  "S.kwsentence previous sentence",
+  "S.kwtopic connections from",
+  "S.kwtopic connections to",
+  "S.kwtopic has sentences",
+  "S.ncaa basketball team ncaa tournament seeds",
+  "S.ncaa basketball team tournament games lost",
+  "S.ncaa basketball team tournament games won",
+  "S.ncaa basketball tournament seeds",
+  "S.ncaa basketball tournament stages",
+  "S.ncaa basketball tournament game losing team",
+  "S.ncaa basketball tournament game tournament round instance",
+  "S.ncaa basketball tournament game winning team",
+  "S.ncaa basketball tournament stage games",
+  "S.ncaa tournament seed region",
+  "S.ncaa tournament seed team",
+  "S.ncaa tournament seed tournament",
+  "S.ontology instance equivalent instances",
+  "S.ontology instance mapping freebase topic",
+  "S.ontology instance mapping ontology",
+  "S.dog breed color",
+  "S.dog breed temperament",
+  "S.dog coat color dog breeds",
+  "S.dog temperament dog breeds",
+  "S.canoodled participant",
+  "S.celebrity canoodled",
+  "S.celebrity dated",
+  "S.celebrity friendship",
+  "S.celebrity vacations in",
+  "S.dated participant",
+  "S.friendship participant",
+  "S.location vacationers",
+  "S.vacation choice location",
+  "S.vacation choice vacationer",
+  "S.review mentions",
+  "S.languoid document",
+  "S.languoid languoid class",
+  "S.languoid parent",
+  "S.local name locale",
+  "S.context name pronunciation",
+  "S.organization extra phone number",
+  "S.phone sandbox caller category",
+  "S.phone sandbox contact category",
+  "S.phone sandbox service location",
+  "S.plural form gender",
+  "S.plural form language",
+  "S.skos concept narrower",
+  "S.exception involves",
+  "S.topic exceptions",
+  "S.nris listing significance level",
+  "S.film w id",
+  "S.siteid film",
+  "S.settlement area code",
+  "S.video game platforms",
+  "S.baseball player batting stats",
+  "S.baseball player position s",
+  "S.baseball team team stats",
+  "S.baseball team stats season",
+  "S.baseball team stats team",
+  "S.batting statistics player",
+  "S.basketball player player statistics",
+  "S.basketball player position s",
+  "S.basketball player stats player",
+  "S.animal breed coloring",
+  "S.animal breed place of origin",
+  "S.animal breed temperament",
+  "S.breed coloring breeds",
+  "S.breed origin breeds originating here",
+  "S.breed temperament breeds",
+  "S.organism classification higher classification",
+  "S.organism classification lower classifications",
+  "S.author book editions published",
+  "S.author series written or contributed to",
+  "S.author works written",
+  "S.book book characters",
+  "S.book editions",
+  "S.book genre",
+  "S.book character appears in book",
+  "S.book edition author editor",
+  "S.book edition binding",
+  "S.book edition book",
+  "S.book edition isbn",
+  "S.book edition number of pages",
+  "S.book edition publisher",
+  "S.book subject works",
+  "S.literary series works in this series",
+  "S.newspaper circulation areas",
+  "S.newspaper headquarters",
+  "S.periodical first issue date",
+  "S.periodical format",
+  "S.periodical frequency or issues per year",
+  "S.periodical format period periodical",
+  "S.periodical publisher period periodical",
+  "S.periodical subject periodicals",
+  "S.publishing company books published",
+  "S.written work author",
+  "S.written work next in series",
+  "S.written work original language",
+  "S.written work part of series",
+  "S.written work previous in series",
+  "S.written work school or movement",
+  "S.written work subjects",
+  "S.artist content",
+  "S.content artist",
+  "S.content broadcast",
+  "S.content genre",
+  "S.genre content",
+  "S.board member leader of",
+  "S.board member organization board memberships",
+  "S.business operation industry",
+  "S.employer employees",
+  "S.employment tenure company",
+  "S.employment tenure person",
+  "S.employment tenure title",
+  "S.industry companies",
+  "S.job title people with this title",
+  "S.document content",
+  "S.image appears in topic gallery",
+  "S.image size",
+  "S.resource annotations",
+  "S.topic article",
+  "S.topic image",
+  "S.topic notable for",
+  "S.topic notable types",
+  "S.topic subject of",
+  "S.topic subjects",
+  "S.common topic webpage",
+  "S.webpage category",
+  "S.webpage in index",
+  "S.webpage resource",
+  "S.webpage topic",
+  "S.computer videogame cvg genre",
+  "S.computer videogame gameplay modes",
+  "S.computer videogame publisher",
+  "S.academic departments old",
+  "S.department academics old",
+  "S.education degree",
+  "S.education institution",
+  "S.education major field of study",
+  "S.education student",
+  "S.educational institution colors",
+  "S.educational institution mascot",
+  "S.educational institution parent institution",
+  "S.educational institution phone number",
+  "S.educational institution school type",
+  "S.educational institution students graduates",
+  "S.educational institution subsidiary or constituent schools",
+  "S.educational institution total enrollment",
+  "S.field of study journals in this discipline",
+  "S.field of study students majoring",
+  "S.school district schools",
+  "S.education university domestic tuition",
+  "S.university local tuition",
+  "S.university number of postgraduates",
+  "S.university number of undergraduates",
+  "S.exhibition run venue",
+  "S.exhibition venue exhibitions at this venue",
+  "S.character occupation characters with this occupation",
+  "S.character powers characters with this ability",
+  "S.character species characters of this species",
+  "S.fictional character appears in these fictional universes",
+  "S.fictional character character created by",
+  "S.fictional character children",
+  "S.fictional character gender",
+  "S.fictional character married to",
+  "S.fictional character occupation",
+  "S.fictional character organizations",
+  "S.fictional character parents",
+  "S.fictional character place of birth",
+  "S.fictional character powers or abilities",
+  "S.fictional character romantically involved with",
+  "S.fictional character siblings",
+  "S.fictional character species",
+  "S.fictional character creator fictional characters created",
+  "S.fictional organization members",
+  "S.fictional setting fictional characters born here",
+  "S.fictional universe characters",
+  "S.fictional universe works set here",
+  "S.marriage of fictional characters spouses",
+  "S.romantic involvement partner",
+  "S.sibling relationship of fictional characters siblings",
+  "S.work of fiction setting",
+  "S.actor film",
+  "S.cinematographer film",
+  "S.director film",
+  "S.editor film",
+  "S.film cinematography",
+  "S.film costume design by",
+  "S.film country",
+  "S.film directed by",
+  "S.film distributors",
+  "S.film edited by",
+  "S.film estimated budget",
+  "S.film executive produced by",
+  "S.film featured film locations",
+  "S.film film art direction by",
+  "S.film film casting director",
+  "S.film film festivals",
+  "S.film film format",
+  "S.film film production design by",
+  "S.film film series",
+  "S.film film set decoration by",
+  "S.film genre",
+  "S.film language",
+  "S.film music",
+  "S.film other crew",
+  "S.film personal appearances",
+  "S.film prequel",
+  "S.film produced by",
+  "S.film production companies",
+  "S.film rating",
+  "S.film release date s",
+  "S.film runtime",
+  "S.film sequel",
+  "S.film starring",
+  "S.film story by",
+  "S.film subjects",
+  "S.film written by",
+  "S.film art director films art directed",
+  "S.film casting director films casting directed",
+  "S.film character portrayed in films",
+  "S.film costumer designer costume design for film",
+  "S.film crew gig crewmember",
+  "S.film crew gig film",
+  "S.film crew gig film crew role",
+  "S.film crewmember films crewed",
+  "S.film cut film",
+  "S.film distributor films distributed",
+  "S.film festival individual festivals",
+  "S.film festival event festival",
+  "S.film festival event films",
+  "S.film film distributor relationship distributor",
+  "S.film film distributor relationship film",
+  "S.film genre films in this genre",
+  "S.film job films with this crew job",
+  "S.film location featured in films",
+  "S.film production designer films production designed",
+  "S.film regional release date film",
+  "S.film regional release date film regional debut venue",
+  "S.film regional release date film release distribution medium",
+  "S.film regional release date film release region",
+  "S.film set designer film sets designed",
+  "S.film story contributor film story credits",
+  "S.film subject films",
+  "S.music contributor film",
+  "S.performance actor",
+  "S.performance character",
+  "S.performance film",
+  "S.performance special performance type",
+  "S.person or entity appearing in film films",
+  "S.personal film appearance film",
+  "S.personal film appearance person",
+  "S.personal film appearance type of appearance",
+  "S.producer film",
+  "S.producer films executive produced",
+  "S.production company films",
+  "S.writer film",
+  "S.food nutrients",
+  "S.nutrition fact food",
+  "S.type hints included types",
+  "S.type profile strict included types",
+  "S.valuenotation has no value",
+  "S.valuenotation has value",
+  "S.valuenotation is reviewed",
+  "S.mountain mountain range",
+  "S.mountain range mountains",
+  "S.river basin countries",
+  "S.river cities",
+  "S.river mouth",
+  "S.form of government countries",
+  "S.government agency jurisdiction",
+  "S.government office category officeholders",
+  "S.government office or title category",
+  "S.government office or title office holders",
+  "S.government position held appointed by",
+  "S.government position held basic title",
+  "S.government position held district represented",
+  "S.government position held governmental body",
+  "S.government position held jurisdiction of office",
+  "S.government position held legislative sessions",
+  "S.government position held office holder",
+  "S.government position held office position or title",
+  "S.governmental body members",
+  "S.governmental jurisdiction agencies",
+  "S.governmental jurisdiction governing officials",
+  "S.governmental jurisdiction government bodies",
+  "S.legislative session members",
+  "S.political appointer appointees",
+  "S.political district representatives",
+  "S.political ideology political parties",
+  "S.political party ideology",
+  "S.political party politicians in this party",
+  "S.political party tenure party",
+  "S.political party tenure politician",
+  "S.politician government positions held",
+  "S.politician party",
+  "S.influence node influenced",
+  "S.influence node influenced by",
+  "S.influence node peers",
+  "S.peer relationship peers",
+  "S.website category sites",
+  "S.human language countries spoken in",
+  "S.human language language family",
+  "S.human language main country",
+  "S.human language region",
+  "S.language family languages",
+  "S.adjoining relationship adjoins",
+  "S.administrative division capital",
+  "S.administrative division country",
+  "S.administrative division first level division of",
+  "S.administrative division second level division of",
+  "S.administrative division capital relationship administrative division",
+  "S.administrative division capital relationship capital",
+  "S.capital of administrative division capital of",
+  "S.citytown postal codes",
+  "S.country administrative divisions",
+  "S.country first level divisions",
+  "S.country form of government",
+  "S.country languages spoken",
+  "S.country second level divisions",
+  "S.geometry delineates location",
+  "S.hud county place county",
+  "S.hud foreclosure area bls unemployment rate",
+  "S.hud foreclosure area estimated number foreclosures",
+  "S.hud foreclosure area estimated number of mortgages",
+  "S.hud foreclosure area hhuniv",
+  "S.hud foreclosure area ofheo price change",
+  "S.hud foreclosure area total 90 day vacant residential addresses",
+  "S.hud foreclosure area total residential addresses",
+  "S.location adjoin s",
+  "S.location containedby",
+  "S.location contains",
+  "S.location events",
+  "S.location geolocation",
+  "S.location geometry",
+  "S.location nearby airports",
+  "S.location partially contained by",
+  "S.location partially containedby",
+  "S.location partially contains",
+  "S.location partiallycontains",
+  "S.location people born here",
+  "S.location street address",
+  "S.location time zones",
+  "S.mailing address citytown",
+  "S.mailing address country",
+  "S.mailing address postal code",
+  "S.mailing address state province region",
+  "S.neighborhood neighborhood of",
+  "S.partial containment relationship partially contained by",
+  "S.partial containment relationship partially contains",
+  "S.place with neighborhoods neighborhoods",
+  "S.postal code country",
+  "S.statistical region agriculture as percent of gdp",
+  "S.statistical region broadband penetration rate",
+  "S.statistical region co2 emissions per capita",
+  "S.statistical region consumer price index",
+  "S.statistical region cpi inflation rate",
+  "S.statistical region debt service as percent of trade volume",
+  "S.statistical region deposit interest rate",
+  "S.statistical region diesel price liter",
+  "S.statistical region electricity consumption per capita",
+  "S.statistical region energy use per capita",
+  "S.statistical region external debt stock",
+  "S.statistical region foreign direct investment net inflows",
+  "S.statistical region gdp growth rate",
+  "S.statistical region gdp nominal",
+  "S.statistical region gdp nominal per capita",
+  "S.statistical region gdp real",
+  "S.statistical region gender balance members of parliament",
+  "S.statistical region gni in ppp dollars",
+  "S.statistical region gni per capita in ppp dollars",
+  "S.statistical region government debt percent gdp",
+  "S.statistical region gross savings as percent of gdp",
+  "S.statistical region health expenditure as percent of gdp",
+  "S.statistical region high tech as percent of manufactured exports",
+  "S.statistical region internet users percent population",
+  "S.statistical region labor participation rate",
+  "S.statistical region long term unemployment rate",
+  "S.statistical region market cap of listed companies as percent of gdp",
+  "S.statistical region merchandise trade percent of gdp",
+  "S.statistical region military expenditure percent gdp",
+  "S.statistical region minimum wage",
+  "S.statistical region net migration",
+  "S.statistical region official development assistance",
+  "S.statistical region part time employment percent",
+  "S.statistical region population",
+  "S.statistical region poverty rate 2dollars per day",
+  "S.statistical region prevalence of undernourisment",
+  "S.statistical region religions",
+  "S.statistical region renewable freshwater per capita",
+  "S.statistical region size of armed forces",
+  "S.statistical region time required to start a business",
+  "S.statistical region trade balance as percent of gdp",
+  "S.us county county seat",
+  "S.us county hud county place",
+  "S.adjusted money value adjustment currency",
+  "S.adjusted money value source",
+  "S.dated integer source",
+  "S.dated kgoe source",
+  "S.dated kilowatt hour source",
+  "S.dated metric ton source",
+  "S.dated money value currency",
+  "S.dated money value source",
+  "S.dated percentage source",
+  "S.adaptation adapted from",
+  "S.adapted work adaptations",
+  "S.literary genre books in this genre",
+  "S.netflix genre titles",
+  "S.netflix title netflix genres",
+  "S.quotation author",
+  "S.quotation subjects",
+  "S.quotation subject quotations about this subject",
+  "S.disease causes",
+  "S.disease includes diseases",
+  "S.disease medical specialties",
+  "S.disease notable people with this condition",
+  "S.disease parent disease",
+  "S.disease risk factors",
+  "S.disease symptoms",
+  "S.disease treatments",
+  "S.drug active moieties",
+  "S.drug marketed formulations",
+  "S.drug formulation active ingredient moieties",
+  "S.drug formulation active ingredients",
+  "S.drug ingredient active ingredient of formulation",
+  "S.drug ingredient active moiety of drug",
+  "S.drug ingredient active moiety of formulation",
+  "S.icd 9 cm classification includes classifications",
+  "S.medical specialty diseases treated",
+  "S.medical treatment used to treat",
+  "S.notable person with medical condition condition",
+  "S.risk factor diseases",
+  "S.medicine symptom symptom of",
+  "S.cyclone affected area cyclones",
+  "S.tropical cyclone affected areas",
+  "S.military combatant military conflicts",
+  "S.military combatant group combatants",
+  "S.military combatant group conflict",
+  "S.military command military commander",
+  "S.military command military conflict",
+  "S.military commander military commands",
+  "S.military conflict combatants",
+  "S.military conflict commanders",
+  "S.military conflict military personnel involved",
+  "S.military person participated in conflicts",
+  "S.military person service",
+  "S.military service military person",
+  "S.military unit place of origin",
+  "S.military unit unit size",
+  "S.military unit place of origin military units",
+  "S.album album content type",
+  "S.album artist",
+  "S.album contributor",
+  "S.album featured artists",
+  "S.album genre",
+  "S.album release type",
+  "S.album releases",
+  "S.music.artist.album",
+  "S.artist contribution",
+  "S.music.artist.genre",
+  "S.artist label",
+  "S.artist origin",
+  "S.music.artist.track",
+  "S.artist track contributions",
+  "S.composer compositions",
+  "S.music composition composer",
+  "S.composition form",
+  "S.composition lyricist",
+  "S.composition recordings",
+  "S.engineer tracks engineered",
+  "S.featured artist albums",
+  "S.featured artist recordings",
+  "S.genre albums",
+  "S.genre artists",
+  "S.genre subgenre",
+  "S.group member instruments played",
+  "S.group member membership",
+  "S.music group membership group",
+  "S.music group membership member",
+  "S.group membership role",
+  "S.instrument instrumentalists",
+  "S.lyricist lyrics written",
+  "S.musical group member",
+  "S.performance role regular performances",
+  "S.producer releases produced",
+  "S.producer tracks produced",
+  "S.record label artist",
+  "S.record label releases",
+  "S.recording artist",
+  "S.recording canonical version",
+  "S.recording contributions",
+  "S.recording engineer",
+  "S.recording featured artists",
+  "S.recording lyrics website",
+  "S.recording producer",
+  "S.recording releases",
+  "S.recording song",
+  "S.recording tracks",
+  "S.recording contribution album",
+  "S.recording contribution contributor",
+  "S.recording contribution performance role",
+  "S.single versions",
+  "S.track contribution contributor",
+  "S.track contribution role",
+  "S.track contribution track",
+  "S.olympic athlete country",
+  "S.olympic athlete medals won",
+  "S.olympic athlete affiliation athlete",
+  "S.olympic athlete affiliation country",
+  "S.olympic athlete affiliation olympics",
+  "S.olympic athlete affiliation sport",
+  "S.olympic event competitions",
+  "S.olympic event olympic games contested",
+  "S.olympic event competition event",
+  "S.olympic event competition medalists",
+  "S.olympic event competition olympic games contested",
+  "S.olympic games athletes",
+  "S.olympic games competitions",
+  "S.olympic games events",
+  "S.olympic games sports",
+  "S.olympic medal honor country",
+  "S.olympic medal honor event",
+  "S.olympic medal honor medal",
+  "S.olympic medal honor medalist",
+  "S.olympic medal honor olympics",
+  "S.olympic participating country athletes",
+  "S.olympic participating country medals won",
+  "S.olympic participating country olympics participated in",
+  "S.olympic sport events",
+  "S.olympic sport olympic games contested",
+  "S.leadership organization",
+  "S.leadership person",
+  "S.leadership role",
+  "S.membership organization members",
+  "S.organization board members",
+  "S.organization child",
+  "S.organization founders",
+  "S.organization geographic scope",
+  "S.organization headquarters",
+  "S.organization leadership",
+  "S.organization organization type",
+  "S.organization parent",
+  "S.organization phone number",
+  "S.organization place founded",
+  "S.organization sectors",
+  "S.organization board membership member",
+  "S.organization board membership organization",
+  "S.organization founder organizations founded",
+  "S.organization member member of",
+  "S.organization membership member",
+  "S.organization membership organization",
+  "S.organization relationship child",
+  "S.organization relationship parent",
+  "S.organization scope organizations with this scope",
+  "S.organization sector organizations in this sector",
+  "S.cause of death includes causes of death",
+  "S.cause of death people",
+  "S.deceased person cause of death",
+  "S.deceased person place of burial",
+  "S.deceased person place of death",
+  "S.ethnicity languages spoken",
+  "S.ethnicity people",
+  "S.family members",
+  "S.family member family",
+  "S.marriage spouse",
+  "S.marriage type of union",
+  "S.person children",
+  "S.person education",
+  "S.person employment history",
+  "S.person ethnicity",
+  "S.person gender",
+  "S.person languages",
+  "S.person nationality",
+  "S.person parents",
+  "S.person place of birth",
+  "S.person places lived",
+  "S.person profession",
+  "S.person quotations",
+  "S.person religion",
+  "S.person sibling s",
+  "S.person spouse s",
+  "S.place lived location",
+  "S.place lived person",
+  "S.place of interment interred here",
+  "S.profession people with this profession",
+  "S.people profession specialization of",
+  "S.profession specializations",
+  "S.sibling relationship sibling",
+  "S.newspaper circulation area newspapers",
+  "S.listed site designation as natural or cultural site",
+  "S.natural or cultural site listing listed site",
+  "S.rdf-schema domain",
+  "S.rdf-schema range",
+  "S.chivalric order member belongs to order",
+  "S.chivalric order membership order",
+  "S.chivalric order membership recipient",
+  "S.monarch royal line",
+  "S.order of chivalry recipients",
+  "S.football match players",
+  "S.soccer football player position s",
+  "S.football player statistics",
+  "S.football player match participation match",
+  "S.football player match participation team",
+  "S.football player stats player",
+  "S.football player stats team",
+  "S.football team player statistics",
+  "S.drafted athlete drafted",
+  "S.pro athlete sports played professionally",
+  "S.pro athlete teams",
+  "S.pro sports played athlete",
+  "S.pro sports played sport",
+  "S.professional sports team draft picks",
+  "S.sport pro athletes",
+  "S.sports award season",
+  "S.sports championship event champion",
+  "S.sports championship event championship",
+  "S.sports facility home venue for",
+  "S.sports facility teams",
+  "S.sports league draft picks",
+  "S.sports league draft pick draft",
+  "S.sports league draft pick player",
+  "S.sports league draft pick school",
+  "S.sports league draft pick team",
+  "S.sports league participation team",
+  "S.sports league season awards",
+  "S.sports position players",
+  "S.sports team arena stadium",
+  "S.sports team championships",
+  "S.sports team colors",
+  "S.sports team league",
+  "S.sports team location",
+  "S.sports team roster",
+  "S.sports team season record",
+  "S.sports team sport",
+  "S.sports team venue",
+  "S.sports team location teams",
+  "S.sports team roster player",
+  "S.sports team roster position",
+  "S.sports team roster team",
+  "S.sports team season record season",
+  "S.sports team season record team",
+  "S.team venue relationship team",
+  "S.team venue relationship venue",
+  "S.name source namesakes",
+  "S.namesake named after",
+  "S.play characters",
+  "S.theater character plays appears in",
+  "S.theater producer plays produced",
+  "S.theater production cast",
+  "S.theater production producer",
+  "S.theater role play",
+  "S.event included in event",
+  "S.event includes event",
+  "S.event instance of recurring event",
+  "S.event locations",
+  "S.recurring event instances",
+  "S.time zone locations in this time zone",
+  "S.tourist attraction near travel destination",
+  "S.travel destination tourist attractions",
+  "S.regular tv appearance actor",
+  "S.regular tv appearance character",
+  "S.regular tv appearance seasons",
+  "S.regular tv appearance series",
+  "S.tv actor guest roles",
+  "S.tv actor starring roles",
+  "S.tv character appeared in tv episodes",
+  "S.tv character appeared in tv program",
+  "S.tv director episodes directed",
+  "S.tv genre programs",
+  "S.tv guest personal appearance appearance type",
+  "S.tv guest personal appearance episode",
+  "S.tv guest personal appearance person",
+  "S.tv guest role actor",
+  "S.tv guest role character",
+  "S.tv guest role episodes appeared in",
+  "S.tv network duration network",
+  "S.tv network duration program",
+  "S.tv personality tv regular appearances",
+  "S.tv producer programs produced",
+  "S.tv producer term producer",
+  "S.tv producer term producer type",
+  "S.tv producer term program",
+  "S.tv program country of origin",
+  "S.tv program episodes",
+  "S.tv program genre",
+  "S.tv program original network",
+  "S.tv program program creator",
+  "S.tv program recurring writers",
+  "S.tv program regular cast",
+  "S.tv program regular personal appearances",
+  "S.tv program seasons",
+  "S.tv program tv producer",
+  "S.tv program creator programs created",
+  "S.tv program guest appeared on",
+  "S.tv program writer relationship tv program",
+  "S.tv program writer relationship writer",
+  "S.tv regular personal appearance appearance type",
+  "S.tv regular personal appearance person",
+  "S.tv regular personal appearance program",
+  "S.tv regular personal appearance seasons",
+  "S.tv series season episodes",
+  "S.tv series season regular cast",
+  "S.tv series season regular personal appearances",
+  "S.tv series season series",
+  "S.tv writer episodes written",
+  "S.tv writer tv programs",
+  "S.property expected type",
+  "S.property schema",
+  "S.type expected by",
+  "S.type properties",
+  "S.art owner artworks owned",
+  "S.art period movement associated artists",
+  "S.art period movement associated artworks",
+  "S.art subject artwork on the subject",
+  "S.artwork art subject",
+  "S.artwork artist",
+  "S.artwork media",
+  "S.artwork owners",
+  "S.artwork owner relationship artwork",
+  "S.artwork owner relationship owner",
+  "S.visual artist art forms",
+  "S.visual artist artworks",
+  "S.visual artist associated periods or movements"
+ ],
+ "read_groups": {
+  "R.mention": {
+   "test": 1000,
+   "dev": 500
+  },
+  "R.name_comention": {
+   "test": 1000,
+   "dev": 500
+  },
+  "R.title_comention": {
+   "test": 361,
+   "dev": 252
+  },
+  "S.topic notable types": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.valuenotation is reviewed": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.topic notable for": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.performance film": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.film starring": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.valuenotation has value": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.person profession": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.location containedby": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.person gender": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.netflix title netflix genres": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.person nationality": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.film genre": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.other": {
+   "test": 1000,
+   "dev": 500
+  }
+ },
+ "excluded_pairs": {
+  "test": 13633994,
+  "dev": 6935528
+ },
+ "call": {
+  "diff": 39.07,
+  "lo": 38.36,
+  "hi": 39.75,
+  "call": "LEARNS"
+ },
+ "per_label": {
+  "R.mention": {
+   "diff": 14.02,
+   "lo": 12.01,
+   "hi": 16.21,
+   "call": "ABOVE"
+  },
+  "R.name_comention": {
+   "diff": 2.05,
+   "lo": 0.66,
+   "hi": 3.4,
+   "call": "ABOVE"
+  },
+  "R.title_comention": {
+   "diff": 2.43,
+   "lo": 0.16,
+   "hi": 4.82,
+   "call": "ABOVE"
+  },
+  "S.topic notable types": {
+   "diff": 30.15,
+   "lo": 27.95,
+   "hi": 32.46,
+   "call": "ABOVE"
+  },
+  "S.valuenotation is reviewed": {
+   "diff": 59.63,
+   "lo": 56.98,
+   "hi": 62.33,
+   "call": "ABOVE"
+  },
+  "S.topic notable for": {
+   "diff": 64.81,
+   "lo": 62.85,
+   "hi": 66.75,
+   "call": "ABOVE"
+  },
+  "S.performance film": {
+   "diff": 84.23,
+   "lo": 82.17,
+   "hi": 86.18,
+   "call": "ABOVE"
+  },
+  "S.film starring": {
+   "diff": 87.66,
+   "lo": 86.15,
+   "hi": 89.13,
+   "call": "ABOVE"
+  },
+  "S.valuenotation has value": {
+   "diff": 61.67,
+   "lo": 59.14,
+   "hi": 64.4,
+   "call": "ABOVE"
+  },
+  "S.person profession": {
+   "diff": 8.49,
+   "lo": 7.18,
+   "hi": 9.79,
+   "call": "ABOVE"
+  },
+  "S.location containedby": {
+   "diff": 7.34,
+   "lo": 6.02,
+   "hi": 8.65,
+   "call": "ABOVE"
+  },
+  "S.person gender": {
+   "diff": 78.54,
+   "lo": 76.19,
+   "hi": 80.87,
+   "call": "ABOVE"
+  },
+  "S.netflix title netflix genres": {
+   "diff": 7.04,
+   "lo": 5.85,
+   "hi": 8.26,
+   "call": "ABOVE"
+  },
+  "S.person nationality": {
+   "diff": 66.86,
+   "lo": 64.26,
+   "hi": 69.42,
+   "call": "ABOVE"
+  },
+  "S.film genre": {
+   "diff": 18.34,
+   "lo": 16.38,
+   "hi": 20.32,
+   "call": "ABOVE"
+  },
+  "S.other": {
+   "diff": 8.5,
+   "lo": 7.02,
+   "hi": 10.02,
+   "call": "ABOVE"
+  }
+ },
+ "beside": {
+  "translation - cosine": {
+   "diff": 39.88,
+   "lo": 39.14,
+   "hi": 40.61,
+   "call": "ABOVE"
+  }
+ },
+ "read": {
+  "cosine": {
+   "pooled": {
+    "n": 15361,
+    "mrr": 7.32,
+    "h10": 12.15,
+    "h100": 20.81
+   },
+   "R.mention": {
+    "n": 1000,
+    "mrr": 31.6,
+    "h10": 31.6,
+    "h100": 31.8
+   },
+   "R.name_comention": {
+    "n": 1000,
+    "mrr": 25.2,
+    "h10": 39.6,
+    "h100": 64.5
+   },
+   "R.title_comention": {
+    "n": 361,
+    "mrr": 30.51,
+    "h10": 42.94,
+    "h100": 63.71
+   },
+   "S.topic notable types": {
+    "n": 1000,
+    "mrr": 0.08,
+    "h10": 0.1,
+    "h100": 1.4
+   },
+   "S.valuenotation is reviewed": {
+    "n": 1000,
+    "mrr": 0.0,
+    "h10": 0.0,
+    "h100": 0.0
+   },
+   "S.topic notable for": {
+    "n": 1000,
+    "mrr": 33.19,
+    "h10": 74.5,
+    "h100": 95.0
+   },
+   "S.performance film": {
+    "n": 1000,
+    "mrr": 0.42,
+    "h10": 0.4,
+    "h100": 8.7
+   },
+   "S.film starring": {
+    "n": 1000,
+    "mrr": 4.34,
+    "h10": 12.8,
+    "h100": 66.3
+   },
+   "S.valuenotation has value": {
+    "n": 1000,
+    "mrr": 0.0,
+    "h10": 0.0,
+    "h100": 0.0
+   },
+   "S.person profession": {
+    "n": 1000,
+    "mrr": 0.0,
+    "h10": 0.0,
+    "h100": 0.0
+   },
+   "S.location containedby": {
+    "n": 1000,
+    "mrr": 2.39,
+    "h10": 4.8,
+    "h100": 8.9
+   },
+   "S.person gender": {
+    "n": 1000,
+    "mrr": 0.0,
+    "h10": 0.0,
+    "h100": 0.0
+   },
+   "S.netflix title netflix genres": {
+    "n": 1000,
+    "mrr": 0.14,
+    "h10": 0.3,
+    "h100": 0.7
+   },
+   "S.person nationality": {
+    "n": 1000,
+    "mrr": 0.07,
+    "h10": 0.1,
+    "h100": 0.5
+   },
+   "S.film genre": {
+    "n": 1000,
+    "mrr": 0.02,
+    "h10": 0.0,
+    "h100": 0.4
+   },
+   "S.other": {
+    "n": 1000,
+    "mrr": 4.0,
+    "h10": 6.9,
+    "h100": 18.4
+   }
+  },
+  "rotation": {
+   "pooled": {
+    "n": 15361,
+    "mrr": 46.4,
+    "h10": 56.34,
+    "h100": 73.14
+   },
+   "R.mention": {
+    "n": 1000,
+    "mrr": 45.63,
+    "h10": 49.0,
+    "h100": 53.3
+   },
+   "R.name_comention": {
+    "n": 1000,
+    "mrr": 27.24,
+    "h10": 41.0,
+    "h100": 65.0
+   },
+   "R.title_comention": {
+    "n": 361,
+    "mrr": 32.94,
+    "h10": 56.51,
+    "h100": 80.89
+   },
+   "S.topic notable types": {
+    "n": 1000,
+    "mrr": 30.24,
+    "h10": 51.5,
+    "h100": 78.5
+   },
+   "S.valuenotation is reviewed": {
+    "n": 1000,
+    "mrr": 59.63,
+    "h10": 77.1,
+    "h100": 87.6
+   },
+   "S.topic notable for": {
+    "n": 1000,
+    "mrr": 98.0,
+    "h10": 99.0,
+    "h100": 99.6
+   },
+   "S.performance film": {
+    "n": 1000,
+    "mrr": 84.65,
+    "h10": 90.5,
+    "h100": 99.0
+   },
+   "S.film starring": {
+    "n": 1000,
+    "mrr": 92.0,
+    "h10": 96.2,
+    "h100": 99.1
+   },
+   "S.valuenotation has value": {
+    "n": 1000,
+    "mrr": 61.67,
+    "h10": 72.8,
+    "h100": 91.6
+   },
+   "S.person profession": {
+    "n": 1000,
+    "mrr": 8.49,
+    "h10": 18.1,
+    "h100": 48.4
+   },
+   "S.location containedby": {
+    "n": 1000,
+    "mrr": 9.73,
+    "h10": 15.9,
+    "h100": 35.2
+   },
+   "S.person gender": {
+    "n": 1000,
+    "mrr": 78.54,
+    "h10": 84.6,
+    "h100": 93.9
+   },
+   "S.netflix title netflix genres": {
+    "n": 1000,
+    "mrr": 7.18,
+    "h10": 15.4,
+    "h100": 43.4
+   },
+   "S.person nationality": {
+    "n": 1000,
+    "mrr": 66.93,
+    "h10": 80.5,
+    "h100": 93.7
+   },
+   "S.film genre": {
+    "n": 1000,
+    "mrr": 18.35,
+    "h10": 31.9,
+    "h100": 65.6
+   },
+   "S.other": {
+    "n": 1000,
+    "mrr": 12.5,
+    "h10": 21.6,
+    "h100": 40.4
+   }
+  },
+  "translation": {
+   "pooled": {
+    "n": 15361,
+    "mrr": 47.2,
+    "h10": 56.52,
+    "h100": 73.22
+   },
+   "R.mention": {
+    "n": 1000,
+    "mrr": 33.22,
+    "h10": 33.6,
+    "h100": 44.3
+   },
+   "R.name_comention": {
+    "n": 1000,
+    "mrr": 28.16,
+    "h10": 40.7,
+    "h100": 62.4
+   },
+   "R.title_comention": {
+    "n": 361,
+    "mrr": 36.3,
+    "h10": 59.56,
+    "h100": 79.22
+   },
+   "S.topic notable types": {
+    "n": 1000,
+    "mrr": 21.76,
+    "h10": 39.1,
+    "h100": 72.8
+   },
+   "S.valuenotation is reviewed": {
+    "n": 1000,
+    "mrr": 56.93,
+    "h10": 74.2,
+    "h100": 87.0
+   },
+   "S.topic notable for": {
+    "n": 1000,
+    "mrr": 98.52,
+    "h10": 99.0,
+    "h100": 99.7
+   },
+   "S.performance film": {
+    "n": 1000,
+    "mrr": 92.16,
+    "h10": 98.0,
+    "h100": 99.2
+   },
+   "S.film starring": {
+    "n": 1000,
+    "mrr": 94.66,
+    "h10": 97.8,
+    "h100": 99.4
+   },
+   "S.valuenotation has value": {
+    "n": 1000,
+    "mrr": 63.98,
+    "h10": 73.3,
+    "h100": 90.3
+   },
+   "S.person profession": {
+    "n": 1000,
+    "mrr": 5.73,
+    "h10": 10.9,
+    "h100": 42.5
+   },
+   "S.location containedby": {
+    "n": 1000,
+    "mrr": 9.41,
+    "h10": 14.7,
+    "h100": 34.4
+   },
+   "S.person gender": {
+    "n": 1000,
+    "mrr": 79.85,
+    "h10": 91.1,
+    "h100": 99.4
+   },
+   "S.netflix title netflix genres": {
+    "n": 1000,
+    "mrr": 5.47,
+    "h10": 11.6,
+    "h100": 41.9
+   },
+   "S.person nationality": {
+    "n": 1000,
+    "mrr": 58.87,
+    "h10": 77.2,
+    "h100": 91.9
+   },
+   "S.film genre": {
+    "n": 1000,
+    "mrr": 18.25,
+    "h10": 32.9,
+    "h100": 69.7
+   },
+   "S.other": {
+    "n": 1000,
+    "mrr": 44.98,
+    "h10": 52.6,
+    "h100": 61.2
+   }
+  }
+ },
+ "fits": {
+  "rotation": {
+   "D_prime": 1408,
+   "history": [
+    {
+     "epoch": 0,
+     "dev_mrr": 7.09,
+     "seconds": 247.9
+    },
+    {
+     "epoch": 1,
+     "edges": 189910,
+     "loss": 4.1769,
+     "dev_mrr": 13.94,
+     "seconds": 581.1
+    },
+    {
+     "epoch": 2,
+     "edges": 189910,
+     "loss": 3.2252,
+     "dev_mrr": 21.24,
+     "seconds": 576.6
+    },
+    {
+     "epoch": 3,
+     "edges": 189910,
+     "loss": 2.7061,
+     "dev_mrr": 31.96,
+     "seconds": 569.8
+    },
+    {
+     "epoch": 4,
+     "edges": 189910,
+     "loss": 2.4549,
+     "dev_mrr": 38.22,
+     "seconds": 564.7
+    },
+    {
+     "epoch": 5,
+     "edges": 189910,
+     "loss": 2.324,
+     "dev_mrr": 41.68,
+     "seconds": 559.3
+    },
+    {
+     "epoch": 6,
+     "edges": 189910,
+     "loss": 2.2493,
+     "dev_mrr": 43.45,
+     "seconds": 547.7
+    },
+    {
+     "epoch": 7,
+     "edges": 189910,
+     "loss": 2.2025,
+     "dev_mrr": 44.79,
+     "seconds": 520.1
+    },
+    {
+     "epoch": 8,
+     "edges": 189910,
+     "loss": 2.1652,
+     "dev_mrr": 46.98,
+     "seconds": 518.4
+    },
+    {
+     "epoch": 9,
+     "edges": 189910,
+     "loss": 2.1336,
+     "dev_mrr": 47.64,
+     "seconds": 529.8
+    },
+    {
+     "epoch": 10,
+     "edges": 189910,
+     "loss": 2.1077,
+     "dev_mrr": 48.27,
+     "seconds": 533.4
+    }
+   ],
+   "best_epoch": 10,
+   "best_dev_mrr": 48.27,
+   "seconds": 5750.9
+  },
+  "translation": {
+   "D_prime": 1408,
+   "history": [
+    {
+     "epoch": 0,
+     "dev_mrr": 7.09,
+     "seconds": 228.9
+    },
+    {
+     "epoch": 1,
+     "edges": 189910,
+     "loss": 2.5453,
+     "dev_mrr": 46.12,
+     "seconds": 559.3
+    },
+    {
+     "epoch": 2,
+     "edges": 189910,
+     "loss": 2.1367,
+     "dev_mrr": 46.79,
+     "seconds": 527.8
+    },
+    {
+     "epoch": 3,
+     "edges": 189910,
+     "loss": 2.0795,
+     "dev_mrr": 47.73,
+     "seconds": 512.1
+    },
+    {
+     "epoch": 4,
+     "edges": 189910,
+     "loss": 2.0608,
+     "dev_mrr": 47.46,
+     "seconds": 481.7
+    },
+    {
+     "epoch": 5,
+     "edges": 189910,
+     "loss": 2.037,
+     "dev_mrr": 48.34,
+     "seconds": 514.2
+    },
+    {
+     "epoch": 6,
+     "edges": 189910,
+     "loss": 2.0165,
+     "dev_mrr": 48.37,
+     "seconds": 531.8
+    },
+    {
+     "epoch": 7,
+     "edges": 189910,
+     "loss": 2.0075,
+     "dev_mrr": 48.56,
+     "seconds": 538.7
+    },
+    {
+     "epoch": 8,
+     "edges": 189910,
+     "loss": 1.9996,
+     "dev_mrr": 49.27,
+     "seconds": 542.3
+    },
+    {
+     "epoch": 9,
+     "edges": 189910,
+     "loss": 1.9907,
+     "dev_mrr": 48.8,
+     "seconds": 479.1
+    },
+    {
+     "epoch": 10,
+     "edges": 189910,
+     "loss": 1.9862,
+     "dev_mrr": 48.45,
+     "seconds": 488.1
+    }
+   ],
+   "best_epoch": 8,
+   "best_dev_mrr": 49.27,
+   "seconds": 5404.1
+  }
+ },
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "b39c615122ad55f587eaea0c3fc5c7eff4190e6236fa258006e957dcfda948fe",
+  "ner_npz_sha256": "8ed08f05db3da877f02d212b2c8ac5b495d12bf15c91c329b33652fdc2e9fb10",
+  "knn_npz_sha256": "75a03f25dfa8c6339773059bffbd8322c2f9bf13e7b48cad0105c2ee189519cd",
+  "structural_npz_sha256": "b7c2c435fc0b9dbab3a238c7db31cd61da9a8bd435864c0eba6990ae12756b95",
+  "w2_s_npz_sha256": "a2e79a93c350f6e4de9455af07b11684b875444d2fb61ed6f2555b443ed093c4",
+  "f0t_npz_sha256": "624684bf80d6605b8a7e9d9f884ee027b35c84f3f51dbdd4d65c10ee29a51edd",
+  "names_npz_sha256": "b567061f6c9fc8653ee964518913a97e72ef42e0d940315528401e80f0140f38",
+  "vectors": {
+   "shards": 65,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "e171839e9a7376ae102ec00d7fefffc0edc2ef2775707d79c3f76aa779fe4f17"
+  }
+ },
+ "threads": 8,
+ "seconds": 12642.3,
+ "utc": "2026-11-24T00:15:42Z",
+ "script_sha256": "60208157465631a21f56731ffe90eb6df9367b722e6a479f889ee5f266f2474e",
+ "npz_sha256": "6a7d1b0316fa4540e857c078fc4fa0d5a9c77814b4a17bf1ee7dc0319c425a62"
+}

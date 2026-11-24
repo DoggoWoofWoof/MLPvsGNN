@@ -1,0 +1,927 @@
+{
+ "stage": "SEM2 R1",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 7",
+ "dataset": "metaqa",
+ "arm": "frozen",
+ "dim": 1536,
+ "worst_norm_offset": 0.000489,
+ "config": {
+  "extra": 256,
+  "tau": 0.05,
+  "batch": 1024,
+  "neg": 4096,
+  "lr": 0.001,
+  "epoch": 200000,
+  "max_epochs": 10,
+  "patience": 2,
+  "min_op": 500,
+  "top_s": 12,
+  "n_test": 1000,
+  "n_dev": 500
+ },
+ "smoke": false,
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 245144,
+     "record": 245144
+    },
+    "CN_all": {
+     "pairs": 12605,
+     "record": 12605
+    },
+    "F0T": {
+     "pairs": 12605,
+     "record": 12605
+    },
+    "S": {
+     "pairs": 124669,
+     "record": 124669
+    },
+    "S directed": {
+     "edges": 133571,
+     "pair_relation_rows": 133571,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-S samples": "PASS",
+  "G-0 rotation": {
+   "max_score_diff": 5.364418029785156e-07,
+   "mrr_diff": 1.1125865333194707e-09,
+   "verdict": "PASS"
+  },
+  "G-S rotation training": "PASS",
+  "G-0 translation": {
+   "max_score_diff": 5.364418029785156e-07,
+   "mrr_diff": 1.1125865333194707e-09,
+   "verdict": "PASS"
+  },
+  "G-S translation training": "PASS",
+  "G-0 rotation_D": {
+   "max_score_diff": 2.980232238769531e-07,
+   "mrr_diff": 4.930729435859149e-12,
+   "verdict": "PASS"
+  },
+  "G-S rotation_D training": "PASS",
+  "G-0 map_only": {
+   "max_score_diff": 5.364418029785156e-07,
+   "mrr_diff": 1.1125865333194707e-09,
+   "verdict": "PASS"
+  },
+  "G-S map_only training": "PASS"
+ },
+ "nodes": 43234,
+ "split": {
+  "test": 4305,
+  "dev": 4406,
+  "train": 34523
+ },
+ "labels": {
+  "R.mention": {
+   "directed": false,
+   "pairs": 245144,
+   "train_edges": 321130,
+   "op": "R.mention"
+  },
+  "R.name_comention": {
+   "directed": false,
+   "pairs": 12605,
+   "train_edges": 16028,
+   "op": "R.name_comention"
+  },
+  "R.title_comention": {
+   "directed": false,
+   "pairs": 0,
+   "train_edges": 0,
+   "op": null
+  },
+  "S.directed_by": {
+   "directed": true,
+   "edges": 15957,
+   "train_edges": 10251,
+   "op": "S.directed_by"
+  },
+  "S.has_genre": {
+   "directed": true,
+   "edges": 15485,
+   "train_edges": 9821,
+   "op": "S.has_genre"
+  },
+  "S.has_tags": {
+   "directed": true,
+   "edges": 28718,
+   "train_edges": 18341,
+   "op": "S.has_tags"
+  },
+  "S.in_language": {
+   "directed": true,
+   "edges": 3426,
+   "train_edges": 2270,
+   "op": "S.in_language"
+  },
+  "S.release_year": {
+   "directed": true,
+   "edges": 16715,
+   "train_edges": 11748,
+   "op": "S.release_year"
+  },
+  "S.starred_actors": {
+   "directed": true,
+   "edges": 33717,
+   "train_edges": 21145,
+   "op": "S.starred_actors"
+  },
+  "S.written_by": {
+   "directed": true,
+   "edges": 19120,
+   "train_edges": 12129,
+   "op": "S.written_by"
+  },
+  "S.rare (pooled)": {
+   "relations": 2,
+   "edges": 433,
+   "train_edges": 343
+  }
+ },
+ "operators": [
+  "R.mention",
+  "R.name_comention",
+  "S.directed_by",
+  "S.has_genre",
+  "S.rare",
+  "S.has_tags",
+  "S.in_language",
+  "S.release_year",
+  "S.starred_actors",
+  "S.written_by"
+ ],
+ "read_groups": {
+  "R.mention": {
+   "test": 1000,
+   "dev": 500
+  },
+  "R.name_comention": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.starred_actors": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.has_tags": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.written_by": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.release_year": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.directed_by": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.has_genre": {
+   "test": 1000,
+   "dev": 500
+  },
+  "S.in_language": {
+   "test": 376,
+   "dev": 335
+  },
+  "S.other": {
+   "test": 42,
+   "dev": 39
+  }
+ },
+ "excluded_pairs": {
+  "test": 192216,
+  "dev": 84675
+ },
+ "call": {
+  "diff": 13.65,
+  "lo": 13.02,
+  "hi": 14.28,
+  "call": "LEARNS"
+ },
+ "per_label": {
+  "R.mention": {
+   "diff": 0.68,
+   "lo": 0.31,
+   "hi": 1.04,
+   "call": "ABOVE"
+  },
+  "R.name_comention": {
+   "diff": 31.63,
+   "lo": 29.34,
+   "hi": 33.87,
+   "call": "ABOVE"
+  },
+  "S.starred_actors": {
+   "diff": 2.41,
+   "lo": 1.74,
+   "hi": 3.14,
+   "call": "ABOVE"
+  },
+  "S.has_tags": {
+   "diff": 6.5,
+   "lo": 5.28,
+   "hi": 7.76,
+   "call": "ABOVE"
+  },
+  "S.written_by": {
+   "diff": 2.74,
+   "lo": 1.86,
+   "hi": 3.63,
+   "call": "ABOVE"
+  },
+  "S.release_year": {
+   "diff": 7.16,
+   "lo": 6.43,
+   "hi": 8.02,
+   "call": "ABOVE"
+  },
+  "S.directed_by": {
+   "diff": 3.2,
+   "lo": 2.32,
+   "hi": 4.08,
+   "call": "ABOVE"
+  },
+  "S.has_genre": {
+   "diff": 45.83,
+   "lo": 43.42,
+   "hi": 48.3,
+   "call": "ABOVE"
+  },
+  "S.in_language": {
+   "diff": 32.27,
+   "lo": 28.74,
+   "hi": 35.77,
+   "call": "ABOVE"
+  },
+  "S.other": {
+   "diff": 61.45,
+   "lo": 50.28,
+   "hi": 73.18,
+   "call": "ABOVE"
+  }
+ },
+ "beside": {
+  "translation - cosine": {
+   "diff": 15.8,
+   "lo": 15.13,
+   "hi": 16.46,
+   "call": "ABOVE"
+  },
+  "rotation_D - cosine": {
+   "diff": 13.56,
+   "lo": 12.94,
+   "hi": 14.18,
+   "call": "ABOVE"
+  },
+  "map_only - cosine": {
+   "diff": 3.4,
+   "lo": 3.09,
+   "hi": 3.72,
+   "call": "ABOVE"
+  },
+  "rotation - rotation_D (X3)": {
+   "diff": 0.09,
+   "lo": -0.07,
+   "hi": 0.26,
+   "call": "LEVEL"
+  }
+ },
+ "read": {
+  "cosine": {
+   "pooled": {
+    "n": 8418,
+    "mrr": 2.79,
+    "h10": 5.1,
+    "h100": 9.82
+   },
+   "R.mention": {
+    "n": 1000,
+    "mrr": 0.52,
+    "h10": 0.7,
+    "h100": 1.8
+   },
+   "R.name_comention": {
+    "n": 1000,
+    "mrr": 20.87,
+    "h10": 38.6,
+    "h100": 71.3
+   },
+   "S.starred_actors": {
+    "n": 1000,
+    "mrr": 0.06,
+    "h10": 0.1,
+    "h100": 0.8
+   },
+   "S.has_tags": {
+    "n": 1000,
+    "mrr": 1.24,
+    "h10": 2.1,
+    "h100": 5.3
+   },
+   "S.written_by": {
+    "n": 1000,
+    "mrr": 0.41,
+    "h10": 0.6,
+    "h100": 1.4
+   },
+   "S.release_year": {
+    "n": 1000,
+    "mrr": 0.01,
+    "h10": 0.0,
+    "h100": 0.0
+   },
+   "S.directed_by": {
+    "n": 1000,
+    "mrr": 0.13,
+    "h10": 0.1,
+    "h100": 0.4
+   },
+   "S.has_genre": {
+    "n": 1000,
+    "mrr": 0.06,
+    "h10": 0.3,
+    "h100": 0.7
+   },
+   "S.in_language": {
+    "n": 376,
+    "mrr": 0.4,
+    "h10": 0.8,
+    "h100": 2.13
+   },
+   "S.other": {
+    "n": 42,
+    "mrr": 0.84,
+    "h10": 2.38,
+    "h100": 4.76
+   }
+  },
+  "rotation": {
+   "pooled": {
+    "n": 8418,
+    "mrr": 16.43,
+    "h10": 27.17,
+    "h100": 47.85
+   },
+   "R.mention": {
+    "n": 1000,
+    "mrr": 1.2,
+    "h10": 2.6,
+    "h100": 9.3
+   },
+   "R.name_comention": {
+    "n": 1000,
+    "mrr": 52.5,
+    "h10": 78.6,
+    "h100": 94.8
+   },
+   "S.starred_actors": {
+    "n": 1000,
+    "mrr": 2.46,
+    "h10": 4.6,
+    "h100": 13.5
+   },
+   "S.has_tags": {
+    "n": 1000,
+    "mrr": 7.75,
+    "h10": 12.6,
+    "h100": 27.9
+   },
+   "S.written_by": {
+    "n": 1000,
+    "mrr": 3.15,
+    "h10": 4.9,
+    "h100": 12.1
+   },
+   "S.release_year": {
+    "n": 1000,
+    "mrr": 7.17,
+    "h10": 18.0,
+    "h100": 92.5
+   },
+   "S.directed_by": {
+    "n": 1000,
+    "mrr": 3.32,
+    "h10": 5.8,
+    "h100": 16.3
+   },
+   "S.has_genre": {
+    "n": 1000,
+    "mrr": 45.89,
+    "h10": 75.1,
+    "h100": 97.5
+   },
+   "S.in_language": {
+    "n": 376,
+    "mrr": 32.67,
+    "h10": 60.9,
+    "h100": 93.09
+   },
+   "S.other": {
+    "n": 42,
+    "mrr": 62.29,
+    "h10": 85.71,
+    "h100": 92.86
+   }
+  },
+  "translation": {
+   "pooled": {
+    "n": 8418,
+    "mrr": 18.59,
+    "h10": 29.21,
+    "h100": 49.37
+   },
+   "R.mention": {
+    "n": 1000,
+    "mrr": 0.81,
+    "h10": 1.2,
+    "h100": 5.6
+   },
+   "R.name_comention": {
+    "n": 1000,
+    "mrr": 53.23,
+    "h10": 76.4,
+    "h100": 94.5
+   },
+   "S.starred_actors": {
+    "n": 1000,
+    "mrr": 2.26,
+    "h10": 4.6,
+    "h100": 14.6
+   },
+   "S.has_tags": {
+    "n": 1000,
+    "mrr": 8.07,
+    "h10": 14.0,
+    "h100": 30.2
+   },
+   "S.written_by": {
+    "n": 1000,
+    "mrr": 3.57,
+    "h10": 5.6,
+    "h100": 13.6
+   },
+   "S.release_year": {
+    "n": 1000,
+    "mrr": 9.53,
+    "h10": 23.5,
+    "h100": 96.9
+   },
+   "S.directed_by": {
+    "n": 1000,
+    "mrr": 3.73,
+    "h10": 6.3,
+    "h100": 19.1
+   },
+   "S.has_genre": {
+    "n": 1000,
+    "mrr": 56.58,
+    "h10": 84.9,
+    "h100": 99.5
+   },
+   "S.in_language": {
+    "n": 376,
+    "mrr": 40.43,
+    "h10": 67.02,
+    "h100": 99.47
+   },
+   "S.other": {
+    "n": 42,
+    "mrr": 83.14,
+    "h10": 100.0,
+    "h100": 100.0
+   }
+  },
+  "rotation_D": {
+   "pooled": {
+    "n": 8418,
+    "mrr": 16.35,
+    "h10": 27.42,
+    "h100": 47.92
+   },
+   "R.mention": {
+    "n": 1000,
+    "mrr": 1.23,
+    "h10": 2.2,
+    "h100": 8.5
+   },
+   "R.name_comention": {
+    "n": 1000,
+    "mrr": 52.66,
+    "h10": 80.0,
+    "h100": 95.4
+   },
+   "S.starred_actors": {
+    "n": 1000,
+    "mrr": 2.37,
+    "h10": 4.6,
+    "h100": 13.9
+   },
+   "S.has_tags": {
+    "n": 1000,
+    "mrr": 7.84,
+    "h10": 13.2,
+    "h100": 28.7
+   },
+   "S.written_by": {
+    "n": 1000,
+    "mrr": 3.06,
+    "h10": 5.1,
+    "h100": 12.8
+   },
+   "S.release_year": {
+    "n": 1000,
+    "mrr": 7.36,
+    "h10": 18.5,
+    "h100": 93.3
+   },
+   "S.directed_by": {
+    "n": 1000,
+    "mrr": 2.92,
+    "h10": 5.8,
+    "h100": 15.8
+   },
+   "S.has_genre": {
+    "n": 1000,
+    "mrr": 44.89,
+    "h10": 74.7,
+    "h100": 96.3
+   },
+   "S.in_language": {
+    "n": 376,
+    "mrr": 35.15,
+    "h10": 62.23,
+    "h100": 92.82
+   },
+   "S.other": {
+    "n": 42,
+    "mrr": 48.8,
+    "h10": 78.57,
+    "h100": 90.48
+   }
+  },
+  "map_only": {
+   "pooled": {
+    "n": 8418,
+    "mrr": 6.19,
+    "h10": 10.58,
+    "h100": 21.48
+   },
+   "R.mention": {
+    "n": 1000,
+    "mrr": 0.78,
+    "h10": 1.5,
+    "h100": 5.9
+   },
+   "R.name_comention": {
+    "n": 1000,
+    "mrr": 41.39,
+    "h10": 68.6,
+    "h100": 90.1
+   },
+   "S.starred_actors": {
+    "n": 1000,
+    "mrr": 0.55,
+    "h10": 0.9,
+    "h100": 5.6
+   },
+   "S.has_tags": {
+    "n": 1000,
+    "mrr": 3.62,
+    "h10": 6.4,
+    "h100": 16.5
+   },
+   "S.written_by": {
+    "n": 1000,
+    "mrr": 1.28,
+    "h10": 2.3,
+    "h100": 7.3
+   },
+   "S.release_year": {
+    "n": 1000,
+    "mrr": 0.41,
+    "h10": 0.2,
+    "h100": 8.6
+   },
+   "S.directed_by": {
+    "n": 1000,
+    "mrr": 0.71,
+    "h10": 1.7,
+    "h100": 7.8
+   },
+   "S.has_genre": {
+    "n": 1000,
+    "mrr": 1.99,
+    "h10": 4.7,
+    "h100": 28.7
+   },
+   "S.in_language": {
+    "n": 376,
+    "mrr": 3.33,
+    "h10": 6.91,
+    "h100": 26.33
+   },
+   "S.other": {
+    "n": 42,
+    "mrr": 2.04,
+    "h10": 4.76,
+    "h100": 9.52
+   }
+  }
+ },
+ "fits": {
+  "rotation": {
+   "D_prime": 1792,
+   "history": [
+    {
+     "epoch": 0,
+     "dev_mrr": 2.81,
+     "seconds": 2.4
+    },
+    {
+     "epoch": 1,
+     "edges": 120931,
+     "loss": 7.1839,
+     "dev_mrr": 5.83,
+     "seconds": 114.9
+    },
+    {
+     "epoch": 2,
+     "edges": 120931,
+     "loss": 6.2947,
+     "dev_mrr": 9.46,
+     "seconds": 120.2
+    },
+    {
+     "epoch": 3,
+     "edges": 120931,
+     "loss": 5.6961,
+     "dev_mrr": 12.16,
+     "seconds": 121.2
+    },
+    {
+     "epoch": 4,
+     "edges": 120931,
+     "loss": 5.3979,
+     "dev_mrr": 13.94,
+     "seconds": 125.5
+    },
+    {
+     "epoch": 5,
+     "edges": 120931,
+     "loss": 5.2131,
+     "dev_mrr": 15.32,
+     "seconds": 123.8
+    },
+    {
+     "epoch": 6,
+     "edges": 120931,
+     "loss": 5.0786,
+     "dev_mrr": 15.77,
+     "seconds": 128.2
+    },
+    {
+     "epoch": 7,
+     "edges": 120931,
+     "loss": 4.9805,
+     "dev_mrr": 16.29,
+     "seconds": 125.8
+    },
+    {
+     "epoch": 8,
+     "edges": 120931,
+     "loss": 4.8921,
+     "dev_mrr": 16.78,
+     "seconds": 126.1
+    },
+    {
+     "epoch": 9,
+     "edges": 120931,
+     "loss": 4.8198,
+     "dev_mrr": 16.88,
+     "seconds": 124.1
+    },
+    {
+     "epoch": 10,
+     "edges": 120931,
+     "loss": 4.7462,
+     "dev_mrr": 17.43,
+     "seconds": 126.7
+    }
+   ],
+   "best_epoch": 10,
+   "best_dev_mrr": 17.43,
+   "seconds": 1240.0
+  },
+  "translation": {
+   "D_prime": 1792,
+   "history": [
+    {
+     "epoch": 0,
+     "dev_mrr": 2.81,
+     "seconds": 3.3
+    },
+    {
+     "epoch": 1,
+     "edges": 120931,
+     "loss": 5.9786,
+     "dev_mrr": 18.67,
+     "seconds": 122.8
+    },
+    {
+     "epoch": 2,
+     "edges": 120931,
+     "loss": 5.404,
+     "dev_mrr": 20.04,
+     "seconds": 123.7
+    },
+    {
+     "epoch": 3,
+     "edges": 120931,
+     "loss": 5.2476,
+     "dev_mrr": 18.96,
+     "seconds": 122.7
+    },
+    {
+     "epoch": 4,
+     "edges": 120931,
+     "loss": 5.1438,
+     "dev_mrr": 19.92,
+     "seconds": 123.5
+    }
+   ],
+   "best_epoch": 2,
+   "best_dev_mrr": 20.04,
+   "seconds": 496.0
+  },
+  "rotation_D": {
+   "D_prime": 1536,
+   "history": [
+    {
+     "epoch": 0,
+     "dev_mrr": 2.81,
+     "seconds": 3.2
+    },
+    {
+     "epoch": 1,
+     "edges": 120931,
+     "loss": 7.1804,
+     "dev_mrr": 5.71,
+     "seconds": 117.7
+    },
+    {
+     "epoch": 2,
+     "edges": 120931,
+     "loss": 6.2943,
+     "dev_mrr": 9.3,
+     "seconds": 115.5
+    },
+    {
+     "epoch": 3,
+     "edges": 120931,
+     "loss": 5.7188,
+     "dev_mrr": 11.6,
+     "seconds": 115.7
+    },
+    {
+     "epoch": 4,
+     "edges": 120931,
+     "loss": 5.4307,
+     "dev_mrr": 13.3,
+     "seconds": 117.5
+    },
+    {
+     "epoch": 5,
+     "edges": 120931,
+     "loss": 5.2522,
+     "dev_mrr": 14.22,
+     "seconds": 117.3
+    },
+    {
+     "epoch": 6,
+     "edges": 120931,
+     "loss": 5.1247,
+     "dev_mrr": 14.79,
+     "seconds": 116.3
+    },
+    {
+     "epoch": 7,
+     "edges": 120931,
+     "loss": 5.0222,
+     "dev_mrr": 15.47,
+     "seconds": 116.4
+    },
+    {
+     "epoch": 8,
+     "edges": 120931,
+     "loss": 4.9261,
+     "dev_mrr": 16.35,
+     "seconds": 117.3
+    },
+    {
+     "epoch": 9,
+     "edges": 120931,
+     "loss": 4.8458,
+     "dev_mrr": 16.76,
+     "seconds": 117.1
+    },
+    {
+     "epoch": 10,
+     "edges": 120931,
+     "loss": 4.7623,
+     "dev_mrr": 17.47,
+     "seconds": 116.9
+    }
+   ],
+   "best_epoch": 10,
+   "best_dev_mrr": 17.47,
+   "seconds": 1171.0
+  },
+  "map_only": {
+   "D_prime": 1792,
+   "history": [
+    {
+     "epoch": 0,
+     "dev_mrr": 2.81,
+     "seconds": 3.5
+    },
+    {
+     "epoch": 1,
+     "edges": 120931,
+     "loss": 7.2944,
+     "dev_mrr": 4.83,
+     "seconds": 121.1
+    },
+    {
+     "epoch": 2,
+     "edges": 120931,
+     "loss": 6.9108,
+     "dev_mrr": 5.38,
+     "seconds": 120.7
+    },
+    {
+     "epoch": 3,
+     "edges": 120931,
+     "loss": 6.7471,
+     "dev_mrr": 5.73,
+     "seconds": 122.9
+    },
+    {
+     "epoch": 4,
+     "edges": 120931,
+     "loss": 6.638,
+     "dev_mrr": 5.92,
+     "seconds": 121.6
+    },
+    {
+     "epoch": 5,
+     "edges": 120931,
+     "loss": 6.5538,
+     "dev_mrr": 5.87,
+     "seconds": 123.1
+    },
+    {
+     "epoch": 6,
+     "edges": 120931,
+     "loss": 6.4883,
+     "dev_mrr": 5.91,
+     "seconds": 123.0
+    }
+   ],
+   "best_epoch": 4,
+   "best_dev_mrr": 5.92,
+   "seconds": 736.0
+  }
+ },
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+  "ner_npz_sha256": "93065a2311c2b445cc14ce6458457c9e14ec0d3c641a4bc573ef4b175a374cb8",
+  "knn_npz_sha256": "f7c59640e816951148fee791bc8790e026461ee52a5b6741c63859244b5a4a16",
+  "structural_npz_sha256": "1b2027c64b2e62b5cf122f09a246ed4cb485841bf0823fcee246e8bf45bf8570",
+  "w2_s_npz_sha256": "3f2b97d1474552dae2fea1f7f8be5e83f7960950b38c0ca41bd3a78025aa7dd5",
+  "f0t_npz_sha256": "499e8c70d3d7d1375a77a609819aacdd40c8753ac2bf6f3d1ea277c5ae62a7fe",
+  "names_npz_sha256": "0ccad8b4b6a55c2bec41bfd36e6fa83f48dc448964e170cf15a2c191f517d720",
+  "vectors": {
+   "shards": 2,
+   "dim": 1536,
+   "dtype": "float16"
+  }
+ },
+ "threads": 8,
+ "seconds": 3672.8,
+ "utc": "2026-11-23T20:30:12Z",
+ "script_sha256": "60208157465631a21f56731ffe90eb6df9367b722e6a479f889ee5f266f2474e",
+ "npz_sha256": "f9d6c3e2cf4acc1b18d9b09900da498e472a0467d00ec82631f64aa9d570b51f"
+}
