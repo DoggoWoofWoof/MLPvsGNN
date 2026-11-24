@@ -51,6 +51,22 @@ work (section 7). It decides nothing about any model.
   datasets, and MultiHop-RAG's train, dev and test. The measures below are read on the eval carves (s1eval; MultiHop-RAG
   test); s1sel is read beside.
 
+### 2a. Universal (the user, 25 Nov: "the pools or the rules or links all should be universal")
+
+- **One rule set, one call.** The link rules (S, W2_S, F0T, K_e3v, the carried forms, the S > R > K dedup, the labels), the
+  pool rule (pick O with its constants) and the four measures are the same on all seven datasets and both versions. No
+  dataset gets its own constant, form, label set, cut, depth or first stage, here or in PL2.
+- **What differs between datasets is the data, not the rule.** S exists only where the data has structure (KB triples,
+  corpus hyperlinks; ruling 10 Nov), and 2Wiki and HotpotQA show both versions (21 Nov). The node is the corpus's own unit
+  (an article for MultiHop-RAG). Same rule, different inputs.
+- **Carried everywhere or nowhere.** Any link form or pool change enters by UL2's universal rule (ABOVE somewhere, BELOW
+  nowhere, one price bound), on all datasets at once. The call in section 6 is ONE call over all seven, never one per
+  dataset. A form that helps one dataset and hurts another is not carried, and PL2 may not special-case a dataset.
+- **Stand-ins are rules too.** Where a dataset lacks an input (no oracle pairs: SQuAD; no pool of record: MultiHop-RAG), the
+  stand-in is declared once, in this page, for every dataset that lacks it.
+- **Enforced in the grade.** `zpl1g` records one hash of the constants and the code path in every dataset's report, and
+  `pl1-report` refuses to file when two datasets differ.
+
 ## 3. The steps (each step's record is filed, with its gates, before the next runs)
 
 | step | what | gate (a failure stops that dataset; none of its numbers is read) |
@@ -96,8 +112,8 @@ beside.
 
 ## 6. The calls (fixed now)
 
-Per dataset and version, on the eval carve, against the pools of record (MultiHop-RAG: against the first stage at equal
-rows):
+Each measure is read per dataset and version, on the eval carve, against the pools of record (MultiHop-RAG: against the
+first stage at equal rows). The call itself is ONE call over all of them (section 2a):
 
 - **Coverage.** Gold recall: ABOVE / LEVEL / BELOW by the paired interval, and ALL likewise.
 - **Price.** Mean rows: the new pools' rows over the record's, with its interval.
