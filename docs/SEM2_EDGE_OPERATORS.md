@@ -319,3 +319,111 @@ are not read.
 - **What it showed about the shapes:**
   - MetaQA reads 10 groups: R.mention, R.name_comention, 7 S relations, and S.other.
   - Its F0T equals CN_all, so it has no R.title_comention.
+
+## 8. R1h declared: hubs (24 November 2026, 14:43 IST, 09:13 UTC)
+
+**The user (24 November), on WebQSP's R1 rows:** "we need to mitigate that and somehow normalize it, it isnt good for
+retrieval if we always land in the hub, it is a start which means it identifies the right space now we have to
+identify the right vectors, need to downweight hub".
+
+**What had been seen when it was written:**
+- R1's json records for 11 of the 14 rows: MultiHop-RAG, SQuAD, MuSiQue, MetaQA and WebQSP on both arms, and HotpotQA
+  on e3v. Every one LEARNS on 7.7's pooled MRR.
+- Their per-label deltas. On WebQSP the largest gains are on relations whose edges point at a few targets: person
+  gender +78.54 (e3v), film starring +87.66, topic notable for +64.81. The text links gain less: R.mention +14.02.
+
+No number grouped by target has been computed, and no hub-aware fit has run.
+
+**Why this matters.** 7.6's pooled MRR counts every test edge once. A label whose edges point at a few hub targets
+(person gender has two) is learned by aiming the operator at the hub. That helps no retrieval: a traversal that lands
+on "male" has found nothing. R2 needs the operator to find the right node among many, not the hub.
+
+### 8.1 Definitions
+
+- **deg_L(y):** the number of label-L training edges (7.3: both ends train nodes) whose target is y.
+  - An undirected R label counts y's training pairs.
+  - An S relation counts training edges with destination y.
+  - Only training edges count, so no test or dev edge informs it.
+- **Target-macro MRR (MRR_T):**
+  - The test sample's edges are grouped by (read group, target). A group's value is the mean reciprocal rank of its
+    edges.
+  - MRR_T is the mean over groups. A hub counts once per read group, however many sampled edges point at it.
+- **Its interval:** the difference of two scorers' group values, paired bootstrap over groups (2,000 resamples, seed
+  0, 95%). ABOVE, LEVEL and BELOW as in 7.7.
+- **Pooled MRR** (7.6) is reported beside every MRR_T and is never called on here.
+
+### 8.2 Part A: the hub read of R1 (no fit)
+
+From R1's saved ranks (outputs/sem2/r1/<ds>/<arm>.npz: test_grp, test_d and rank_<form>):
+- MRR_T of the cosine and of every R1 form.
+- **Call H0:** R1's rotation against the cosine, on MRR_T: LEARNS, LEVEL or LOSES.
+- **Descriptive, per read group:** the sampled edges, their distinct targets, and the share of edges whose target
+  takes 10 or more of the group's sampled edges.
+
+### 8.3 Part B: downweighting hubs at query time (no new fit)
+
+Logit adjustment (Menon et al., 2021), with no tuned value:
+- R1's logits are q . x_y / tau, trained against negatives drawn uniformly from the training nodes. So a label's hub
+  prior, log deg_L(y), sits inside the learned score.
+- **The adjusted score:** q . x_y - tau log(1 + deg_L(y)), with tau = 0.05, R1's temperature (7.5). The 1 keeps a node
+  with no training edge of the label at no penalty.
+- The cosine gets the same correction, beside.
+- The ranks follow 7.6: filtered, ties half.
+- CSLS (Conneau et al., 2018) was considered and is not run. It needs every node's similarity to thousands of moved
+  sources per operator, and WebQSP has 791 operators: about 10^15 multiply-adds per read.
+
+### 8.4 Part C: the hub-balanced fit (HB)
+
+R1's rotation (7.4, 7.5), with two changes:
+- **The loss:** each training positive (s, L, d) is weighted w = 1 / deg_L(d), normalised within the batch:
+  sum(w CE) / sum(w). Edges are still sampled uniformly, so in expectation each target carries the same weight,
+  whatever its degree.
+- **The stop:** dev MRR_T instead of dev MRR.
+
+Everything else is unchanged: the split, the samples, the negatives, the temperature, the epochs, D' = D + 256 and the
+seed. HB is read raw and with the adjustment (8.3).
+
+**Beside: popularity.** Every node ranked by deg_L alone (ties half, filtered as 7.6). This is what a scorer that
+knows only the hubs reads.
+
+### 8.5 Gates
+
+- **G-R (reproduction):**
+  - zsem2h.py rebuilds R1's split, plan and samples from the same graph. They must equal R1's saved test_s, test_d and
+    test_lab exactly.
+  - R1's rotation, reloaded from its npz, must reproduce R1's saved test ranks: at least 99.9% identical, and the
+    pooled MRR within 0.01 points.
+- **G-0, G-S and G-E** as in 7.8, for the HB fit.
+- **G-C:** on the self-test, the adjusted ranks and the popularity ranks equal a full sort.
+
+### 8.6 The calls (per dataset; e3v decides, frozen is read beside)
+
+- **H0:** R1's rotation against the cosine, on MRR_T (part A).
+- **H1:** HB against R1's rotation, both raw, on MRR_T.
+- **H2:** R1's rotation with the adjustment against R1's rotation raw, on MRR_T.
+- **Beside:** HB with the adjustment against R1 raw; the cosine with the adjustment against the cosine; popularity;
+  and every one of these on pooled MRR.
+- **Carry rule (universal).** HB and the adjustment are judged separately. Each is carried into R2 if, on e3v, it reads ABOVE on
+  at least 4 of the 7 datasets and BELOW on none. Otherwise it is carried nowhere. If both are carried, R2 uses HB
+  with the adjustment.
+- **Expectations, written before any number:**
+  - X5: H0 is LEARNS on at least 4 of the 7 datasets (e3v), and WebQSP's MRR_T gain (e3v) is below half its pooled
+    gain (+39.07).
+  - X6: H2 is ABOVE on WebQSP (e3v).
+
+### 8.7 What does not change
+
+- R1's own call (7.7) stays on pooled MRR, as declared. Its filing reports MRR_T beside it, with this section's caveat.
+- Nothing here enters the journal's pools or the one refit.
+
+### 8.8 Code, rows and outputs
+
+- **Code:** outputs/mp_unified/zsem2h.py (new). It imports zsem2 and edits nothing. Commands: `selftest`, `hubread`,
+  `r1h --ds D --arm A` and `report`.
+- **Rows:**
+  - sem2h-selftest;
+  - sem2h-hubread, over the R1 npz files present when it runs (the report reads all 14);
+  - sem2h-r1h-<ds>-<arm>, each after its R1 row, e3v first and then frozen, the small sets first;
+  - sem2h-report.
+- **Memory** as R1's rows.
+- **Outputs:** outputs/sem2/r1h/. The json and md files are committed; the npz files are not.
