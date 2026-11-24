@@ -1,0 +1,104 @@
+{
+ "stage": "SEM2 R1k split",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 8.12",
+ "dataset": "multihoprag",
+ "arm": "e3v",
+ "gates": {
+  "G-A": "PASS"
+ },
+ "subsets": {
+  "all": {
+   "edges": 1000,
+   "targets": 458,
+   "target_share_pct": 100.0,
+   "rotation": 23.43,
+   "ceiling": 28.35,
+   "C": {
+    "diff": 4.93,
+    "lo": 4.06,
+    "hi": 5.81,
+    "call": "ABOVE",
+    "groups": 458
+   }
+  },
+  "seen target (train node)": {
+   "edges": 804,
+   "targets": 367,
+   "target_share_pct": 80.13,
+   "rotation": 23.71,
+   "ceiling": 27.74,
+   "C": {
+    "diff": 4.03,
+    "lo": 3.17,
+    "hi": 5.05,
+    "call": "ABOVE",
+    "groups": 367
+   }
+  },
+  "unseen target (test or dev node)": {
+   "edges": 196,
+   "targets": 91,
+   "target_share_pct": 19.87,
+   "rotation": 22.3,
+   "ceiling": 30.82,
+   "C": {
+    "diff": 8.52,
+    "lo": 6.23,
+    "hi": 11.0,
+    "call": "ABOVE",
+    "groups": 91
+   }
+  },
+  "seen, degree > 0": {
+   "edges": 804,
+   "targets": 367,
+   "target_share_pct": 80.13,
+   "rotation": 23.71,
+   "ceiling": 27.74,
+   "C": {
+    "diff": 4.03,
+    "lo": 3.17,
+    "hi": 5.05,
+    "call": "ABOVE",
+    "groups": 367
+   }
+  },
+  "seen, degree 0": null
+ },
+ "per_group": {
+  "R.name_comention": {
+   "seen target (train node)": {
+    "edges": 804,
+    "targets": 367,
+    "target_share_pct": 80.13,
+    "rotation": 23.71,
+    "ceiling": 27.74,
+    "C": {
+     "diff": 4.03,
+     "lo": 3.17,
+     "hi": 5.05,
+     "call": "ABOVE",
+     "groups": 367
+    }
+   },
+   "unseen target (test or dev node)": {
+    "edges": 196,
+    "targets": 91,
+    "target_share_pct": 19.87,
+    "rotation": 22.3,
+    "ceiling": 30.82,
+    "C": {
+     "diff": 8.52,
+     "lo": 6.23,
+     "hi": 11.0,
+     "call": "ABOVE",
+     "groups": 91
+    }
+   }
+  }
+ },
+ "r1k_record_sha256": "122545e91be1771ece260efa6d032773bd8dc8f1396807ffb23b9671d0cf63a0",
+ "seconds": 0.2,
+ "utc": "2026-11-24T12:13:27Z",
+ "script_sha256": "2ca59cf4dcd4fe6502139b50c9eaf2952a117edbe615bb61e0245f7494b09d44"
+}
