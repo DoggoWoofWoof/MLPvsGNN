@@ -74,9 +74,11 @@ def carried_order(fidx, rank, rank_max):
 
 
 def tables(n, version, S, W2, f0t, K, carried):
-    """The three families of one (dataset, version) as pair tables.
+    """The three walk stores of one (dataset, version) as pair tables (docs/PL1_POOLS_ON_UL2_LAYOUT.md 2b, amended 2e).
     S: sorted keys or None (RK); W2: sorted keys; f0t: (a, b, w) with a < b ascending; K: (a, b, w) unique pairs a < b ascending;
-    carried: (keys ascending, fidx, rank) or None. Returns the tables and the counts."""
+    carried: (keys ascending, fidx, rank) or None. The typed store holds W2_S (RK) or S and W2_S (SRK, ABL's SR union), every pair
+    with its label (0 S, 1 R; S wins a pair both hold); the ner store F0T then the carried forms; the knn store K. Returns the
+    tables and the counts."""
     sv = version == "SRK"
     if sv != (S is not None):
         stop(f"version {version} and S {'given' if S is not None else 'missing'} disagree")
@@ -92,13 +94,6 @@ def tables(n, version, S, W2, f0t, K, carried):
               "K_pairs_in": int(kk.size)}
     # ner tiers
     keys, okey, w, tier = [fk], [fw.astype(np.float32)], [fw.astype(np.float32)], [np.zeros(fk.size, np.uint8)]
-    if sv:
-        w2o = W2[~isin(W2, fk)]
-        keys.append(w2o)
-        okey.append(np.zeros(w2o.size, np.float32))
-        w.append(np.zeros(w2o.size, np.float32))
-        tier.append(np.ones(w2o.size, np.uint8))
-        counts["W2_S_only"] = int(w2o.size)
     if carried is not None:
         ck, cf, cr = carried
         ck = np.asarray(ck, np.int64)
@@ -121,23 +116,26 @@ def tables(n, version, S, W2, f0t, K, carried):
     if k_all.size > 1 and np.any(np.diff(k_all) == 0):
         stop("a pair is in two ner tiers")
     counts["ner_pairs_in"] = int(k_all.size)
-    if sv:                                                    # S > R: the ner store loses the pairs S holds
+    if sv:                                                    # S > R: the ner store loses the pairs S holds (an F0T pair W2_S also holds stays: R inside R)
         gone = isin(k_all, S)
         k_all, okey, w, tier = k_all[~gone], okey[~gone], w[~gone], tier[~gone]
         counts["ner_removed_in_S"] = int(gone.sum())
     else:
         counts["ner_removed_in_S"] = 0
-    struct = S if sv else W2
+    struct = np.union1d(S, W2) if sv else W2                  # the typed store: ABL's SR union under SRK
+    slab = np.ones(struct.size, np.uint8)                     # label 1 = R
+    if sv:
+        slab[isin(struct, S)] = 0                             # label 0 = S (S > R on a pair both hold)
     held = np.union1d(struct, k_all)
     gone = isin(kk, held)                                     # R > K and S > K
     kk2, kw2 = kk[~gone], kw[~gone]
     counts.update(knn_removed_in_SR=int(gone.sum()), knn_pairs_out=int(kk2.size), ner_pairs_out=int(k_all.size),
-                  structural_pairs=int(struct.size),
-                  tiers={"F0T": int((tier == 0).sum()), "W2_S_only": int((tier == 1).sum()), "carried": int((tier == 2).sum())})
+                  structural_pairs=int(struct.size), structural_S=int((slab == 0).sum()), structural_R=int((slab == 1).sum()),
+                  tiers={"F0T": int((tier == 0).sum()), "carried": int((tier == 2).sum())})
     counts["union"] = union_size([struct, np.unique(k_all), kk2])
     ner = {"a": (k_all // n).astype(np.int32), "b": (k_all % n).astype(np.int32), "order_key": okey, "weight": w, "tier": tier}
     knn = {"a": (kk2 // n).astype(np.int32), "b": (kk2 % n).astype(np.int32), "weight": kw2.astype(np.float32)}
-    return {"ner": ner, "knn": knn, "structural_keys": struct}, counts
+    return {"ner": ner, "knn": knn, "structural_keys": struct, "structural_label": slab}, counts
 
 
 def expected_union(n, version, S, W2, f0t_keys, K_keys, carried_keys):
@@ -154,12 +152,16 @@ def gates(tab, counts, n, version, exp_union):
     """G-L: the families are disjoint where the dedup says, and the union is the layout's."""
     ner_k = tab["ner"]["a"].astype(np.int64) * n + tab["ner"]["b"].astype(np.int64)
     knn_k = tab["knn"]["a"].astype(np.int64) * n + tab["knn"]["b"].astype(np.int64)
-    st = tab["structural_keys"]
+    st, lab = tab["structural_keys"], tab["structural_label"]
+    s_keys = st[lab == 0]
     g = {"knn_disjoint_from_structural": int(isin(knn_k, st).sum()) == 0, "knn_disjoint_from_ner": int(isin(knn_k, ner_k).sum()) == 0,
-         "ner_disjoint_from_S": True if version == "RK" else int(isin(ner_k, st).sum()) == 0,
+         "ner_disjoint_from_S": int(isin(ner_k, s_keys).sum()) == 0,
+         "labels": {"S": int(s_keys.size), "R": int((lab == 1).sum()), "S_expected": counts["S_pairs"] or 0,
+                    "equal": int(s_keys.size) == (counts["S_pairs"] or 0) and bool(np.all(np.diff(st) > 0)) if st.size > 1 else True},
          "union": {"stores": counts["union"], "layout": int(exp_union)}}
     g["union"]["equal"] = g["union"]["stores"] == g["union"]["layout"]
-    g["verdict"] = "PASS" if g["knn_disjoint_from_structural"] and g["knn_disjoint_from_ner"] and g["ner_disjoint_from_S"] and g["union"]["equal"] else "FAIL"
+    g["verdict"] = "PASS" if (g["knn_disjoint_from_structural"] and g["knn_disjoint_from_ner"] and g["ner_disjoint_from_S"]
+                              and g["labels"]["equal"] and g["union"]["equal"]) else "FAIL"
     return g
 
 
@@ -276,6 +278,7 @@ def cmd_build(a):
     if gate["verdict"] == "PASS":
         flat = {f"ner_{k}": x for k, x in tab["ner"].items()}
         flat.update({f"knn_{k}": x for k, x in tab["knn"].items()})
+        flat.update(struct_key=tab["structural_keys"], struct_label=tab["structural_label"])
         sha = L2.save_npz(od / "layout.npz", **flat)
     rec = {"stage": "PL1 S1", "declared_in": DECLARED, "dataset": d, "version": v, "nodes": n, "nodes_sha256": nsha,
            "freeze_RECORD_SHA256": freeze, "inputs": shas, "knn_e3v": krec, "carried": {"forms": crec["forms"], "bits": crec["bits"]},
@@ -313,13 +316,16 @@ def selftest():
         # brute force with python sets
         W, Ff, Kf, Cf = set(W2.tolist()), set(Fk.tolist()), set(Kk.tolist()), set(ck.tolist())
         Sf = set(Sk.tolist()) if S is not None else set()
-        ner = (Ff | Cf | (W if version == "SRK" else set())) - Sf
-        struct = Sf if version == "SRK" else W
+        ner = (Ff | Cf) - Sf
+        struct = (Sf | W) if version == "SRK" else W
         knn = Kf - struct - ner
         nk = set((tab["ner"]["a"].astype(np.int64) * n + tab["ner"]["b"]).tolist())
         kk = set((tab["knn"]["a"].astype(np.int64) * n + tab["knn"]["b"]).tolist())
         assert nk == ner and kk == knn and set(tab["structural_keys"].tolist()) == struct, version
-        # the order: F0T first (descending weight), then W2_S-only, then carried by form then rank
+        labof = dict(zip(tab["structural_keys"].tolist(), tab["structural_label"].tolist()))
+        assert all(labof[k] == (0 if k in Sf else 1) for k in struct), version      # S wins a pair both hold
+        assert int((tab["structural_label"] == 0).sum()) == len(Sf), version
+        # the order: F0T first (descending weight), then carried by form then rank
         ner_st, knn_st = to_stores(tab, n)
         ip, col = np.asarray(ner_st.indptr), np.asarray(ner_st.col)
         tierof = dict(zip((tab["ner"]["a"].astype(np.int64) * n + tab["ner"]["b"]).tolist(), tab["ner"]["tier"].tolist()))
@@ -396,6 +402,7 @@ def cmd_smoke(a):
     if gate["verdict"] == "PASS":
         flat = {f"ner_{k}": x for k, x in tab["ner"].items()}
         flat.update({f"knn_{k}": x for k, x in tab["knn"].items()})
+        flat.update(struct_key=tab["structural_keys"], struct_label=tab["structural_label"])
         sha = L2.save_npz(od / "layout.npz", **flat)
     rec = {"stage": "PL1 S1 smoke (plumbing only, never graded)", "declared_in": DECLARED, "dataset": d, "version": v, "nodes": n,
            "smoke": True, "k": "the package's frozen K (not K_e3v)", "carried": "none", "counts": counts, "gate_GL": gate,

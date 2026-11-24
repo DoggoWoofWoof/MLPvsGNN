@@ -100,15 +100,15 @@ class Patches:
 # ── names: the slot, the folders ─────────────────────────────────────────────
 
 def slot_of(d, v, view):
-    """What fills the structural slot. e3v: S where the version has S (the KBs, and the passage datasets under SRK), else R (W2_S) (section
-    2b). record and search views: the record's slot (R on the passage datasets, S on the KBs)."""
+    """What fills the typed store (the code's structural slot), section 2b as amended in 2e. e3v: SRK is ABL's slot "SR" (S and W2_S, every
+    pair keeping its label), RK is R (W2_S). record and search views: the record's slot (R on the passage datasets, S on the KBs)."""
     if d not in SIX:
         stop(f"{d}: one of {SIX}")
     if view != "e3v":
         return "S" if d in KB else "R"
     if v not in PM.L2C.VERSIONS[d]:
         stop(f"{d} has the versions {PM.L2C.VERSIONS[d]}")
-    return "S" if v == "SRK" else "R"
+    return "SR" if v == "SRK" else "R"
 
 
 def base_dir(view, d, v):
@@ -293,6 +293,8 @@ def layout_of(d, v):
     with np.load(od / "layout.npz") as z:
         tab = {"ner": {k[4:]: z[k] for k in z.files if k.startswith("ner_")},
                "knn": {k[4:]: z[k] for k in z.files if k.startswith("knn_")}}
+        if "struct_key" in z.files:                                # the typed store's pairs with their label (2e)
+            tab["struct"] = {"key": z["struct_key"], "label": z["struct_label"]}
     return tab, rj
 
 
@@ -455,8 +457,10 @@ def types_for(G, rec, d, slot):
             cls_slot, hit = cls_s, int(cls_s.size)
         elif slot == "S":
             cls_slot, hit = np.full(col.size, P.NULL, cls_s.dtype), 0
+        elif slot == "SR":                                    # the union's class: W2_S's where W2_S holds the pair, null where only S does
+            cls_slot, hit = G.lookup_classes(n, ip, col, base.rip, base.rcol, cls_s, cls_s.dtype.type(P.NULL))
         else:
-            stop("PL1 slots are R and S")
+            stop("PL1 slots are R, S and SR")
         sha_sc = G.save_npz(od / slot / "score.npz", cls=cls_slot, zbar=np.asarray(zbar))
         out.update(score_record_file_sha256=srec["file_sha256"], score_cls_sha256=G.sha_arr(cls_slot),
                    score_npz=G.rel(od / slot / "score.npz"), score_file_sha256=sha_sc,
@@ -483,6 +487,8 @@ def cmd_types(a):
     try:
         with world(M, d, view, stats, tab=None):
             rec = G.open_record(d)
+            if slot == "SR":                                  # ABL's own union builder, into this view's g folder (G.OUT is patched)
+                G.build_stage(d, rec)
             types_for(G, rec, d, slot)
     finally:
         G.OUT = keep
@@ -539,7 +545,7 @@ def cmd_pools(a):
         with slot_ctx(M, d, slot, gdir) as A, world(M, d, view, stats, tab=tab) as W:
             out = PK.pools_pass(d, CARVE, threads=int(a.threads), limit=int(a.limit or 0), shard=(i, k), R=R, rule=rule)
             if view == "e3v":
-                _gate_structural(d, v, W, A, lay, stats)
+                _gate_structural(d, v, W, A, lay, stats, tab)
         sv = stats["served"]
         need = ("cache", "prepare_checked", "union_pools") + (("embeddings", "stores") if view == "e3v" else ())
         miss = [x for x in need if not sv[x]]
@@ -569,8 +575,9 @@ def cmd_pools(a):
     return 0
 
 
-def _gate_structural(d, v, W, A, lay, stats):
-    """The slot the walk read holds the pairs the layout counted (G-L's structural_pairs)."""
+def _gate_structural(d, v, W, A, lay, stats, tab=None):
+    """The typed store the walk read holds the pairs the layout counted (G-L's structural_pairs) and, when the layout carries them,
+    exactly its labelled keys (struct_key)."""
     import d83stores as DS
     sl = A.cache.get("sl")
     if sl is None:
@@ -578,11 +585,17 @@ def _gate_structural(d, v, W, A, lay, stats):
     n = int(sl.ip.size - 1)
     h = np.repeat(np.arange(n, dtype=np.int64), np.diff(sl.ip))
     t = np.asarray(sl.col, np.int64)
-    pairs = int(np.unique(h[h < t] * n + t[h < t]).size) if h.size else 0
+    keys = np.unique(h[h < t] * n + t[h < t]) if h.size else np.zeros(0, np.int64)
+    pairs = int(keys.size)
     want = int(lay["counts"]["structural_pairs"])
     stats["structural_pairs"] = {"slot": pairs, "layout": want, "equal": pairs == want}
     if pairs != want:
-        stop(f"{d}/{v}: the structural slot holds {pairs:,} pairs, the layout counted {want:,}")
+        stop(f"{d}/{v}: the typed store holds {pairs:,} pairs, the layout counted {want:,}")
+    if tab is not None and "struct" in tab:
+        same = bool(np.array_equal(keys, np.asarray(tab["struct"]["key"], np.int64)))
+        stats["structural_pairs"]["keys_equal"] = same
+        if not same:
+            stop(f"{d}/{v}: the typed store holds {pairs:,} pairs but not the layout's (struct_key)")
 
 
 # ── S3: GV and GS ────────────────────────────────────────────────────────────
@@ -670,7 +683,7 @@ def cmd_gates(a):
 
 def selftest():
     # slots
-    assert slot_of("musique", "RK", "e3v") == "R" and slot_of("2wiki", "SRK", "e3v") == "S" and slot_of("metaqa", "SRK", "e3v") == "S"
+    assert slot_of("musique", "RK", "e3v") == "R" and slot_of("2wiki", "SRK", "e3v") == "SR" and slot_of("metaqa", "SRK", "e3v") == "SR" and slot_of("2wiki", "RK", "e3v") == "R"
     assert slot_of("squad", "RK", "record") == "R" and slot_of("webqsp", "SRK", "search") == "S"
     # classes
     pos = np.array([0, 1, 3, 4, -1, 2, -1, 9], np.int32)

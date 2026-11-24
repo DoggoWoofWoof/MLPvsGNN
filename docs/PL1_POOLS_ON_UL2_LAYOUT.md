@@ -47,8 +47,9 @@ pool work for that arm is finished (section 7). It decides nothing about any mod
 - **The graph.** The layout UL2's universal call carries, per dataset and version: B0 = S | W2_S | F0T | K_e3v plus the
   forms the call carries (UL2 12.3, 12.6, 13). S > R > K dedup, every pair held by one family only, labels by the rule that
   made it. 2Wiki and HotpotQA carry both versions (RK and SRK); MuSiQue, SQuAD and MultiHop-RAG RK; MetaQA and WebQSP SRK.
-  The three walk families keep the slots the record gives them (structural; ner, now R's other parts; knn, now K_e3v), as
-  D83 section 4 maps them, with the carried forms inside R's slot.
+  The three walk stores keep the slots the record gives them (the typed store, the ner store, the knn store), as D83
+  section 4 maps them. They are named by what the walk reads, never by a label: S, R and K say which rule made a link, and
+  every link keeps its label in whichever store holds it (2e).
 - **The pick rule.** PKO's pick O exactly as filed (`own/kind_t/kt_cos:ada_f16_k0@0.85`, docs/PKO_PICK_O_POOLS_UNDER_WQ.md
   section 2). **This page adds no constant and changes none.**
 - **Questions.** The s1eval carves of the six datasets and MultiHop-RAG's test split (dev beside it): the carves E0's e3v
@@ -72,29 +73,46 @@ pool work for that arm is finished (section 7). It decides nothing about any mod
 - **Enforced in the grade.** `zpl1g` records one hash of the constants and the code path in every dataset's report, and
   `pl1-report` refuses to file when two datasets differ.
 
-### 2b. What each of the three walk families holds, per version (declared now; the survey found it was only implied)
+### 2b. What each of the three walk stores holds, per version (declared in 2b; the SRK row and the names amended in 2e)
 
-| version | structural family | ner family | knn family |
+**Labels are not stores (2e).** S is the structure the data carries: hyperlinks, or the KB's triples. R is the rule-made links:
+W2_S, F0T and the carried forms. K is kNN. A label says which rule made a pair and is kept on every pair for good. The walk's
+three stores are code, and the page names them by what the walk reads: the **typed store** (the code's "structural" slot: its
+entries are read with the EM relation type and the score class), the **ner store** and the **knn store**. A store is a place a
+pair sits so the walk can read it; it never defines S or R. The walk may walk on R, and R may sit in the typed store, with R
+still R.
+
+| version | typed store (code: structural slot) | ner store | knn store |
 | --- | --- | --- | --- |
-| RK (MuSiQue, SQuAD, MultiHop-RAG; 2Wiki and HotpotQA without S) | W2_S | F0T, then the carried forms | K_e3v |
-| SRK (MetaQA, WebQSP; 2Wiki and HotpotQA with S) | S | W2_S and F0T, then the carried forms | K_e3v |
+| RK (MuSiQue, SQuAD, MultiHop-RAG; 2Wiki and HotpotQA without S) | W2_S (label R) | F0T, then the carried forms (label R) | K_e3v (label K) |
+| SRK (MetaQA, WebQSP; 2Wiki and HotpotQA with S) | S (label S) and W2_S (label R): ABL's SR union | F0T, then the carried forms (label R) | K_e3v (label K) |
 
-The rule, one for all datasets: **the structural family holds S where the version has S, else W2_S; the ner family holds the
-rest of R (W2_S when S holds the structural slot, F0T, the carried forms); the knn family holds K_e3v.** RK is D83 section 1's
-slot; SRK is A1's (S in the slot, the rule graph inside R). The S > R > K dedup is D83's `d83stores.dedup`: the ner store
-loses the pairs S holds where S exists, nothing is removed inside R, and the knn store loses every pair the other two hold.
+The rule, one for all datasets: **the typed store holds every S pair where the version has S, and every W2_S pair; the ner store
+holds F0T and the carried forms; the knn store holds K_e3v.** SRK is ABL's SRK (slot "SR", the filed pools of the SRK family);
+this page's amendment 2b moved W2_S out of the typed store under SRK (A1's layout), which made SRK differ from RK in two
+ways at once (S added, W2_S's types and score classes dropped); that is withdrawn. The S > R > K dedup is D83's
+`d83stores.dedup`: a pair both S and W2_S hold keeps the label S; the ner store loses the pairs S holds; nothing is removed
+inside R (an F0T pair that W2_S also holds stays in the ner store, as under RK); the knn store loses every pair the other two
+hold. The layout file records each typed-store pair's label (S or R), so no count or read ever has to infer it from the store.
+
+**All weights are kept (2e: "we will keep all weights").** Every pair keeps the weight its own rule gave it: S and W2_S their EM
+relation type and (W2_S, on the passage datasets) score class, F0T its 1/df, a carried pair its form's score and rank, K its
+cosine. Nothing is dropped from the layout. The base pool rule is PKO's pick O exactly as filed and reads what it reads (above
+all the typed store's types and classes, and the other two stores' order); a walk that also reads the ner or knn weights, or
+walks R in some other way, is a candidate for an improvement round (section 7), declared with its evidence before it is built.
 
 **Row order, not weight.** The survey (zu2m_a, step4_pool_reach) found that the walk does not read a family's weight: a ner or
 knn edge counts 1 times the steer, and the structural edge counts the EM and score type's weight. A store's weight only
 fixes the order of each row, which matters where the code reads a row prefix (`capped`, `capped_multi`, `expand_hops`, which
 build the incumbent pool I). So the order is declared, with no new constant: in the ner store each node's row lists the F0T
-pairs by 1/df weight (D83's), then the W2_S-only pairs (SRK), then the carried pairs by the form's own score, ties by node id.
+pairs by 1/df weight (D83's), then the carried pairs by the form's own score, ties by node id.
 K_e3v's weight is the cosine, the larger of the two ends (zenc1b2's `k_edges`). A pair is held by one family only (dedup)
 except inside R.
 
-**Types.** The EM and score types are fitted on the structural CSR (zpko checks the entries equal the adjacency's). So the
-types are refitted on every (dataset, version) structural CSR, on e3v's vectors, by `zu2m_a_types.types_stage` as ENC E1b
-part 2 did for its arms. An unsupervised fit on the family's pairs; no question, no gold. One process serves one (dataset,
+**Types.** The EM and score types are fitted on the typed store's CSR (zpko checks the entries equal the adjacency's). So the
+types are refitted on every (dataset, version) typed-store CSR (under SRK the SR union of S and W2_S), on e3v's vectors, by
+`zu2m_a_types.types_stage` as ENC E1b part 2 did for its arms; on the union a pair's score class is its class in W2_S's list
+(`zabl_g.lookup_classes`, as ABL filed it) and null where only S holds it. An unsupervised fit on the family's pairs; no question, no gold. One process serves one (dataset,
 version).
 
 ## 3. The steps (each step's record is filed, with its gates, before the next runs)
@@ -206,7 +224,9 @@ HotpotQA each under RK and SRK. Nine arms.
   per dataset, the identity check per dataset, then the builds in a size order that keeps the memory cap (the old chain's
   lane sizes: zpko `LANE_GIB`, `SHARD_Q`), then the grades, then `pl1-report`.
 - **Outputs** (`<d>` = the dataset, `<v>` = RK or SRK; MultiHop-RAG is RK). Arrays stay uncommitted; the json heads are filed.
-  - `outputs/pl1/<d>/<v>/layout.{npz,json}`: S1's pair tables and gate G-L (`zpl1m.py`, committed).
+  - `outputs/pl1/<d>/<v>/layout.{npz,json}`: S1's pair tables and gate G-L (`zpl1m.py`, committed). The typed store's pairs
+    with their label (`struct_key`, `struct_label`: 0 S, 1 R), the ner store's with their tier and order key, the knn store's
+    with their cosine.
   - `outputs/pl1/<d>/<v>/types/<d>.{npz,json}`: S2b's EM and score types.
   - `outputs/pl1/<d>/<v>/pools/parts/<d>__s1eval__<i>of<k>.{npz,json}` and `.kt.npy`: zpko's own part format.
   - `outputs/pl1/<d>/<v>/places/<d>__s1eval__<i>of<k>.npz`: the reach read, one row per gold. Per question: `ids`, `keep`
@@ -226,6 +246,24 @@ HotpotQA each under RK and SRK. Nine arms.
   the user replaced it on 25 Nov (amendment 2d, section 7). What is still mine in the new rule: the unit of an arm
   (dataset and version), and that an arm's freeze test is an empty candidate list and not a share threshold.
 - This page decides nothing about the models, the paper's numbers, the encoder or the hub line.
+- **Amendment 2e (25 Nov, before any number).** The user: "we cant conflate the meaning S is the structural which is
+  hyperlinks or KB triplets and R is the rule based links ... if you want to walk on R then do but do not conflate the
+  meanings of them, might as well score all if you want to, we will keep all weights". The page had used one word for two
+  things: "structural" named both the label S and the walk's first store, and under RK the rule links W2_S sat in the
+  "structural family". Now: S, R and K are labels by rule; the walk's stores are the typed, ner and knn stores (2b); R may sit
+  in the typed store and stays R; the SRK typed store is ABL's SR union (S and W2_S, each pair with its label), which withdraws
+  amendment 2b's "S alone in the slot, W2_S moved into the ner family" (A1's layout, which 2b itself called the most arguable
+  choice here); every pair keeps its label and its own weight. What changes in the code: `zpl1m.tables` (the SRK typed store,
+  the label column, no W2_S-only tier in the ner store), `zpl1w.slot_of` (SRK is the slot "SR") and `types_for` (the union's
+  score classes). The gate rows already queued (G-T, GV, GS) read the record and search views, which this does not touch. The
+  union count of the layout (G-L) is unchanged: the same pairs, held in other stores.
+- **Amendment 2f (25 Nov, before any number).** The user, on MultiHop-RAG: "treat it as any other dataset". The first draft
+  gave it pools "with the same rule" and left open how, and my note to the user offered a first-stage-only arm; that is
+  withdrawn. MultiHop-RAG is built through the same steps as the six: its own pool record (the construction pick, the walk-mass
+  budget, the EM and score types) by the rules U2m, U2s and PKO applied to the six, then pick O, then S1-S5, on the test split with
+  dev beside it. The modules written for six datasets are not edited (they stay pinned); the MultiHop-RAG record chain is
+  new modules, declared as step S0 of this page after a read-only survey of what each module reads per dataset, before any
+  number. What stays as 2a says: there is no pool of record to compare against, so its comparison is the first stage at equal rows.
 - **Amendment 2b (25 Nov, after the survey, before any number).** Five things the first draft left out or got wrong, now
   declared: which links each walk family holds per version (2b; the SRK structural slot is S, with W2_S moved into the ner
   family, which is A1's layout and the most arguable choice here); that the walk reads row order and not weight (the carried
