@@ -1743,6 +1743,104 @@ Read by `zsem2r7.py report` from `outputs/sem2/r7/<dataset>/e3v.json` (every rec
 - **Closes:** the withheld-links read of 13.8, against the expectation scorecard above. FILL_CARRIES is a small, floor-size result. **Nothing is queued by this page.** The noisy-links read (15.7) and a refit on the surviving edges are declared only on the user's word. No pool, link or PL change follows and no model is trained (15.10).
 - **Disclosed:** f = 0.5 and the call were fixed before the number (15.5); the other f are beside. The walk uses the true T1 for its exclusion, which favours the baseline (15.3). One expectation (crossover) failed and two were looser than the outcome (W alone's range, MuSiQue's size). WebQSP's main-call interval and the HotpotQA and MuSiQue control intervals start within 0.05 points of zero.
 
+## 16. R8 declared: does routing the stored walk by the question move the node bound? (26 November 2026, 04:13 IST, 22:43 UTC), before any R8 number
+
+### 16.1 Naming, why, and what was seen
+
+- **Naming.** The user's 26 November message was "work on r7 as well based on the 5 points you told me". R7 (section 15, withheld links) is already filed (15.11), so I read it as **the round after R7, designed from the five points of the last answer**: what limits retrieval; what transfers is one generic operator; what may be missing is question-conditioned routing, walk-level self-supervision, composition across hops and a trainable adapter; the rules are too rigorous; the objective may be wrong. This page is called R8. The same message set the form: **constrained programming, not a linear program**, wherever a selection or a budget appears. 16.4 states the programs, their variables, objective and constraints, and which solver is exact.
+- **The point read here: question-conditioned routing.** Why it, and not another:
+  - R2a (9.12): choosing the best operator per seed has no room at fused R@5 (C = oracle minus trav, -0.02 to +0.04 points). R5 (13.12) and R7 (15.11) read BRANCH_CARRIES and FILL_CARRIES, both at the floor of the scale. All three score **rank quality at the top of a list** (R@5, R-precision). None scores the quantity the pool bound is stated in: **which golds enter a pool of a stated number of nodes**.
+  - UL4 (docs/UL4_UNIVERSAL_LP.md section 10): the factor lies in per-question depth (oracle Q-min at ALL 0.95: MuSiQue 3,382, MetaQA 2,804, WebQSP 10,250 mean nodes against the 2,500 the user named). No router has been read at that quantity.
+  - Other sessions read the cross-question allocation (a depth signal) and the patterns of gold links. **Neither is read here.** R8 reads the within-question half: for one question and its seeds, which stored links earn their node.
+- **Seen before this page:** R1 to R7's records, and UL4's depth bound (counts only). **Not seen:** any gold coverage of any ordering of a stored walk's reach. No R8 number exists.
+
+### 16.2 The question, in two parts
+
+- **Part A (no scorer, no parameter): the room.** Of the questions whose first stage misses a gold, how many could a two-hop stored walk from the first stage's seeds complete at all, and at how many new nodes? That is the room any router has, perfect or not.
+- **Part B (only where Part A finds room): the router.** At 1,500 new nodes, how many of those completable questions does a question-conditioned router complete, against the same program with a question-only score, an operator-only score, a shuffled question and a random order?
+
+### 16.3 Questions, first stage, walk, pool (fixed now)
+
+- **Questions.** The selection carve: s1sel (zul1.carve_questions) on SQuAD, MuSiQue, MetaQA, HotpotQA and 2Wiki; MultiHop-RAG's dev split (224); **WebQSP: PL's dev (outputs/pl2/webqsp/pop_dev.npz, as UL3's code reads it; its ids are disjoint from s1eval's, gate G-Q)**. Every carve question with at least one gold. **No s1eval question is read.** e3v only; the frozen arm is not run.
+- **First stage.** SEM1's, unchanged: v = zenc's exact dense top 1,000 on e3v; SPLADE's top 1,000; base = RRF(v, SPLADE) with C = 60, **depth F = 1,000** (zsem1.rrf). F-list(q) is the base list's nodes. A corpus smaller than F (MultiHop-RAG, 609 nodes) gives a list that ends early and holds the corpus. **cov0 = the share of questions with every gold in F-list(q)** (the first stage's ALL-gold coverage).
+- **Seeds.** The first **b = 25** nodes of the base list.
+- **The walk.** Two hops over the stored links R1 gave an operator (every label with an operator: R labels in both directions, S edges in their stored direction, rare S relations through the pooled operator, as 9.1). N+(x) is x's stored out-neighbours. **Hop 1: A(q) = N+(seeds) minus the seeds. Hop 2: D(q) = N+(the hop-1 nodes that are in the pool) minus the nodes already in the pool or in A(q).** The K store (the encoder's own neighbours) is not followed; no third hop (16.7).
+- **Pool and cost.** pool = F-list(q) plus the nodes a program adds. **Cost = the number of added nodes**: a node already in the F-list is free, as a pool member and as a parent. **M' = the added-node budget; the total is F + M' = 2,500 at M' = 1,500** (the user's bound). The ladder is M' in {25, 100, 500, 1,500}; **the main read is M' = 1,500**.
+
+### 16.4 The constrained programs (variables, objective, constraints, solver)
+
+For a question q let C(q) = (A(q) union D(q)) minus F-list(q) be the candidates. **Variables:** x_u in {0, 1} for u in C(q): the node u is added to the pool. Let p_a = 1 if a is in F-list(q) and p_a = x_a otherwise (a is in the pool).
+
+- **Closure (the walk's precedence).** For u in A(q): none (a seed is its parent and is always in the pool). For u in D(q) not in A(q): x_u <= the sum over its parents a in A(q) (a stored edge a to u) of p_a. If a parent is in the F-list, u is free to take.
+- **Budget.** The sum of x_u <= M'.
+- **Pi_oracle(q): minimise** the sum of x_u **subject to** x_g = 1 for every missed gold g (a gold not in the F-list) that is in C(q), and the closure. It is **feasible iff every missed gold is in C(q)**; its optimum is cost*(q). **q is completable at M' iff Pi_oracle is feasible and cost*(q) <= M'.** A question with no missed gold has cost 0 and is not counted as completable (the first stage already covers it).
+- **Pi_score(q, w): maximise** the sum of w_u x_u **subject to** the closure and the budget, with a score-derived weight w_u >= 0 (16.6). **The number of branches the walk opens, the sum of x_a over the hop-1 nodes, is not a parameter: it is an output of the program, per question.**
+- **Solver and its exactness.** Each is a 0-1 integer program with a precedence (closure) structure; with a cardinality budget the closure-knapsack is NP-hard in general, and these instances are small (Pi_oracle: the missed golds and their parents; Pi_score: at most 5,100 variables, 16.6). **Exact solver: HiGHS branch and bound (scipy.optimize.milp, relative MIP gap 0, time limit 60 s per instance).** An exit that is not proven optimal is counted, listed and gated (G-P); it is never read as optimal. The LP relaxation of every instance is solved as well and the share of instances with LP = IP is recorded (how far the integer program is from a linear one). The cross-question allocation (a total budget over the questions, the multiple-choice knapsack on the per-question curves) is **not** solved here; R8 writes each question's cost*(q) to its npz as an input for it.
+
+### 16.5 Part A: the room (no scorer, no parameter)
+
+- **Measures per dataset:** the number of questions; cov0; for each missed gold, whether it is in A(q), in D(q) only (reached through a hop-1 node), or **beyond** (neither within two hops); the completable share at each M' of the ladder; **H(M') = (the completable share at M') x (1 - cov0)**, the first stage's ALL-gold coverage gain in points if a perfect router spent M'; the median and mean of cost*(q) over completable questions; the field: |A(q)| and the sum over A(q) of the out-degree of each node (an upper bound on the hop-2 frontier, so on what an unordered two-hop walk would add).
+- **ROOM rule (fixed now, R2a's line): a dataset has ROOM iff H(1,500) >= 1.0 point.** Reported with a bootstrap interval over questions (2,000 resamples, seed 0) beside; **ROOM is decided on the point.**
+
+### 16.6 Part B: the router (declared now; run only on the ROOM datasets; its code is written and pinned after Part A is filed, and its rule is this page's)
+
+- **Population.** The questions completable at M' = 1,500 (16.4), a seeded draw (numpy default_rng(8)) of at most 600 per dataset.
+- **Candidates per scorer.** Scorer x gives every node of A(q) a value; **A_cap = the 100 best hop-1 nodes of A(q) minus the F-list by x** (hop-1 nodes already in the F-list are in the program as free parents); for each hop-1 node in A_cap (or the F-list) its **50 best stored out-neighbours by x** make D_cap. **Caps differ from Pi_oracle's (none); the share of populations whose missed golds all lie in the capped candidate set is reported as the candidate recall of x.** The weight is w_u = value(u) minus the smallest value among the question's candidates, so w_u >= 0 and ties are the scorer's own.
+- **Scorers (parameter-free; x = P v / |P v|; R1's operators as stored, G-R):**
+
+| scorer | value of a candidate u reached from its parent a (a seed for hop 1) |
+|---|---|
+| W0 qcos | x_q . x_u (the question's own geometry, parent-blind) |
+| W1 lcos | x_a . x_u (cosine along the stored link; no question, no operator) |
+| W2 plaus | the operator of the stored edge's label applied to x_a, dotted with x_u (R1's score of that edge; no question). With several edges a to u, the maximum |
+| W3 routed | plaus + lambda x_q . x_u (R2a's form, the stored label as the route; **lambda = R2a's chosen lambda for trav on that dataset**, read from outputs/sem2/r2/read/e3v/<dataset>.json, never refit) |
+| W4 routed, another question | W3 with x_q replaced by the question of a fixed derangement of the population (seeded) |
+| W5 random | i.i.d. U(0, 1), seeded (an unordered walk's expectation inside the same caps) |
+
+- **Measures at each M' of the ladder:** completion = 1 iff every missed gold of the question is in Pi_score's solution (parents included); the completion rate over the population. Beside: the recovered share of missed golds; the number of branches opened; the cost used; the candidate recall.
+
+### 16.7 What this does not test (named, not run)
+
+- A **third hop** (composition across hops, the point of the five that needs it), more or fewer than 25 seeds, other caps, the K store.
+- **A trained router** (a fit on questions, a walk-level self-supervision, an adapter): R8 fits nothing.
+- **Any pool, retriever or model gain.** R8's pool is the F-list plus the program's nodes, **not PL's cells** (their walks start from up to 400 seeds and spend the nodes by their own rules); R8's counts are not those of PL's cells and no number of R8 replaces PL's.
+- The **cross-question allocation** (16.4), s1eval, and any change of link or layout. This is SEM2's work, not the journal's.
+
+### 16.8 Calls and the verdict (fixed now)
+
+- **Part A:** per dataset ROOM or NO_ROOM (16.5).
+- **Part B, main call per ROOM dataset (M' = 1,500): W3 - W0, completion rate in points, over the population, paired bootstrap over questions (2,000 resamples, seed 0, zsem2.paired).** ABOVE, LEVEL, BELOW.
+- **Control, declared with the call: W3 - W4** (the question's own contribution): CONTROL_HOLDS on a dataset iff ABOVE there.
+- **Verdict:**
+  - **ROUTING_CARRIES** iff at least two datasets have ROOM, the main call is ABOVE on at least two thirds of the ROOM datasets and BELOW on none, and the control holds on every dataset where the main call is ABOVE.
+  - **ROUTING_NO_QUESTION** iff the main call carries and the control does not (the gain is not the question's).
+  - **NOT_CARRIED** otherwise. **INCONCLUSIVE** if fewer than two datasets have ROOM (only A is then filed).
+- **Beside (decide nothing):** W3 - W2, W3 - W1, W3 - W5, W0 - W5, every contrast at M' = 25, 100, 500; the implied ALL-gold coverage gain over the carve (completion rate x H); the share of the oracle's room closed (the completion rate itself); by the number of missed golds (1, 2, 3 or more).
+
+### 16.9 Expectations, written before any number (a failed one is reported, not explained away)
+
+- **XA1.** ROOM on at least four of the seven. **No ROOM on MultiHop-RAG** (the corpus has 609 nodes, F = 1,000, so cov0 = 1 by construction) **and none on SQuAD** (an answer sits in one paragraph; the first stage at depth 1,000 should hold nearly every gold).
+- **XA2.** On the KB datasets (MetaQA, WebQSP) **most missed golds lie beyond two hops of the top-25 seeds** (the first stage barely finds anything there: R2a's base R@5 is 0.45 and 4.56 percent), so the completable share is small and the room is reach, not order.
+- **XA3.** cost*(q) is small (**median at most 10 new nodes**): a perfect router needs a handful of nodes; and the field is large: **the median unordered cost (hop-1 nodes plus the hop-2 frontier bound) exceeds 1,500 on every dataset with ROOM.** So the difficulty is choosing, not budget.
+- **XB1.** Random (W5) completes under 5 percent; **qcos (W0) completes 20 to 60 percent of the population; W3 - W0 is LEVEL or a small ABOVE (at most +5 points). My expectation is NOT_CARRIED or ROUTING_NO_QUESTION:** R2a's attention added hundredths of a point, and the stored label already routes. **The control (W3 - W4) will hold**, because any real question beats another question's vector, so it only says the question is read at all.
+- **XB2.** The branches the program opens per question (Sum x_a) vary widely: a median under 20 and a long tail (a few questions need over 100).
+
+### 16.10 Gates (a failure stops the row), code, rows and outputs
+
+- **G-E:** the graph's family counts equal UL1's grade; the labels followed are R1's operator labels (names equal R1's record). **G-Q:** the carve's ids in order, golds in range, **base5 equals R2a's selection record's base5 within 0.0005** (not WebQSP, which has none: its ids are checked against s1eval's instead).
+- **G-A:** for 40 questions' seeds the forward adjacency, and for 40 questions' missed golds the backward adjacency, equal a direct scan of the graph's keys.
+- **G-P:** each Pi_oracle solution satisfies the closure and the budget, and cost*(q) lies between the number of reachable missed golds and that number plus the golds reached only through a hop-1 node; **at least 99.5 percent of the instances are proven optimal** (the rest are listed and dropped from the calls, never read as optimal); each LP optimum is at most the IP optimum. **G-R (Part B):** R1's operators reproduced, `--threads 8`.
+- **Self-test:** a toy graph with planted two-hop golds: HiGHS equals a brute-force enumeration of the closure-knapsack on 200 random small instances (both programs); the oracle, the walk, the cost and the closure by hand; the report's rule on stand-in records.
+- **Code:** outputs/mp_unified/zsem2r8.py (mine; imports zsem2, zsem2t, zsem1, zenc and zul1 read-only; edits none): `selftest`, `reach --ds D --host --threads 8 [--smoke]` (Part A), then `route` (Part B, after Part A is filed) and `report`. Records carry the script's sha.
+- **Rows:** `r8smoke-squad` (a code check, read by nothing), then `r8a-<dataset>` for the seven, CPU only, placed in the feed before the r6 rows (the GPU is not ours); memory sized from R5's measured peaks for the same dataset; **priority is unchanged: pools and links first.**
+- **Outputs:** outputs/sem2/r8/<dataset>/reach.json and .npz (per question: cost*, completable flags, missed-gold classes, the field), then report.json and report.md; the json and md are committed, the npz is not.
+
+### 16.11 What follows (fixed now)
+
+- **No ROOM on any dataset:** R8 stops at Part A. It says the stored walk's reach, not its order, bounds the pool: no router over two hops of these links can move the bound. What is left is named, not queued: a third hop, and links the rules do not give (R6's and R7's operators as a link source), on the user's word.
+- **ROOM on some:** Part B on those, as 16.6 and 16.8.
+- **ROUTING_CARRIES:** a full-carve (s1eval) read on those datasets would be declared on the user's word. **Either way no pool, link or PL change follows, no model is trained, and the cross-question allocation stays with its own line.**
+
 ### 8.16 Records completed after the closure (24 November 2026, 23:47 IST, 18:17 UTC): decides nothing
 
 8.15 closed the hub line with five rows still running. They have finished: R1k on WebQSP and 2Wiki, and R1q on
