@@ -1,0 +1,226 @@
+{
+ "stage": "PL5 confirm",
+ "declared_in": "docs/PL5_COVERAGE_ROUND4.md",
+ "dataset": "multihoprag",
+ "first": "frozen",
+ "questions": 1130,
+ "utc": "2026-11-25T08:07:31Z",
+ "cells": {
+  "rrf1000_b25+FULL:h1_c100+top25": {
+   "all": 0.9690265486725663,
+   "all_ci": [
+    0.9572290087348612,
+    0.977645961391781
+   ],
+   "any": 0.9982300884955753,
+   "coverage": 0.9872696817420435,
+   "nodes": 50.0,
+   "p95": 50.0,
+   "max": 50,
+   "over_bound": false
+  },
+  "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50": {
+   "all": 0.9787610619469026,
+   "all_ci": [
+    0.9685914846923456,
+    0.9856865508520194
+   ],
+   "any": 1.0,
+   "coverage": 0.9916247906197655,
+   "nodes": 58.00353982300885,
+   "p95": 75.0,
+   "max": 75,
+   "over_bound": false
+  },
+  "rrf1000_b25+FULL:h1_cW~s10-cs+top50": {
+   "all": 0.988495575221239,
+   "all_ci": [
+    0.9804165540237237,
+    0.9932645469383641
+   ],
+   "any": 1.0,
+   "coverage": 0.995644891122278,
+   "nodes": 75.0,
+   "p95": 75.0,
+   "max": 75,
+   "over_bound": false
+  },
+  "rrf1000_b50+FULL:h2_c100_v5000+top50": {
+   "all": 0.9911504424778761,
+   "all_ci": [
+    0.9837867772093354,
+    0.9951860688666767
+   ],
+   "any": 1.0,
+   "coverage": 0.9966499162479062,
+   "nodes": 100.0,
+   "p95": 100.0,
+   "max": 100,
+   "over_bound": false
+  },
+  "equal_rrf_budget_50": {
+   "all": 0.9539823008849557,
+   "all_ci": [
+    0.9401519606416229,
+    0.9647364538394478
+   ],
+   "any": 0.9964601769911504,
+   "coverage": 0.9812395309882747,
+   "nodes": 50.0,
+   "p95": 50.0,
+   "max": 50,
+   "over_bound": false
+  }
+ },
+ "named": {
+  "R95_all": {
+   "name": "rrf1000_b25+FULL:h1_c100+top25",
+   "dev_all": 0.9776785714285714,
+   "dev_nodes": 50.0,
+   "eval_all": 0.9690265486725663,
+   "eval_nodes": 50.0,
+   "floor": 0.95,
+   "confirmed": true,
+   "short_by": 0.0,
+   "dev_to_eval": -0.008652022756005073,
+   "over_bound": false
+  },
+  "R95_prev": {
+   "name": "rrf1000_b25+FULL:h1_c100+top25",
+   "dev_all": 0.9776785714285714,
+   "dev_nodes": 50.0,
+   "eval_all": 0.9690265486725663,
+   "eval_nodes": 50.0,
+   "floor": 0.95,
+   "confirmed": true,
+   "short_by": 0.0,
+   "dev_to_eval": -0.008652022756005073,
+   "over_bound": false
+  },
+  "R95_new": {
+   "name": "rrf1000_b25+FULL:h1_cW~s10-cs+top50",
+   "dev_all": 0.9955357142857143,
+   "dev_nodes": 75.0,
+   "eval_all": 0.988495575221239,
+   "eval_nodes": 75.0,
+   "floor": 0.95,
+   "confirmed": true,
+   "short_by": 0.0,
+   "dev_to_eval": -0.007040139064475315,
+   "over_bound": false
+  },
+  "R95any_all": {
+   "name": "rrf1000_b25+FULL:h1_c100+top25",
+   "dev_all": 0.9776785714285714,
+   "dev_nodes": 50.0,
+   "eval_all": 0.9690265486725663,
+   "eval_nodes": 50.0,
+   "floor": 0.95,
+   "confirmed": true,
+   "short_by": 0.0,
+   "dev_to_eval": -0.008652022756005073,
+   "over_bound": false
+  },
+  "R95any_prev": {
+   "name": "rrf1000_b25+FULL:h1_c100+top25",
+   "dev_all": 0.9776785714285714,
+   "dev_nodes": 50.0,
+   "eval_all": 0.9690265486725663,
+   "eval_nodes": 50.0,
+   "floor": 0.95,
+   "confirmed": true,
+   "short_by": 0.0,
+   "dev_to_eval": -0.008652022756005073,
+   "over_bound": false
+  },
+  "R95any_new": {
+   "name": "rrf1000_b25+FULL:h1_cW~s10-cs+top50",
+   "dev_all": 0.9955357142857143,
+   "dev_nodes": 75.0,
+   "eval_all": 0.988495575221239,
+   "eval_nodes": 75.0,
+   "floor": 0.95,
+   "confirmed": true,
+   "short_by": 0.0,
+   "dev_to_eval": -0.007040139064475315,
+   "over_bound": false
+  },
+  "R98_all": {
+   "name": "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50",
+   "dev_all": 0.9955357142857143,
+   "dev_nodes": 58.611607142857146,
+   "eval_all": 0.9787610619469026,
+   "eval_nodes": 58.00353982300885,
+   "floor": 0.98,
+   "confirmed": false,
+   "short_by": 0.0012389380530973826,
+   "dev_to_eval": -0.016774652338811702,
+   "over_bound": false
+  },
+  "R98_prev": {
+   "name": "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50",
+   "dev_all": 0.9955357142857143,
+   "dev_nodes": 58.611607142857146,
+   "eval_all": 0.9787610619469026,
+   "eval_nodes": 58.00353982300885,
+   "floor": 0.98,
+   "confirmed": false,
+   "short_by": 0.0012389380530973826,
+   "dev_to_eval": -0.016774652338811702,
+   "over_bound": false
+  },
+  "R98_new": {
+   "name": "rrf1000_b25+FULL:h1_cW~s10-cs+top50",
+   "dev_all": 0.9955357142857143,
+   "dev_nodes": 75.0,
+   "eval_all": 0.988495575221239,
+   "eval_nodes": 75.0,
+   "floor": 0.98,
+   "confirmed": true,
+   "short_by": 0.0,
+   "dev_to_eval": -0.007040139064475315,
+   "over_bound": false
+  },
+  "R98any_all": {
+   "name": "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50",
+   "dev_all": 0.9955357142857143,
+   "dev_nodes": 58.611607142857146,
+   "eval_all": 0.9787610619469026,
+   "eval_nodes": 58.00353982300885,
+   "floor": 0.98,
+   "confirmed": false,
+   "short_by": 0.0012389380530973826,
+   "dev_to_eval": -0.016774652338811702,
+   "over_bound": false
+  },
+  "R98any_prev": {
+   "name": "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50",
+   "dev_all": 0.9955357142857143,
+   "dev_nodes": 58.611607142857146,
+   "eval_all": 0.9787610619469026,
+   "eval_nodes": 58.00353982300885,
+   "floor": 0.98,
+   "confirmed": false,
+   "short_by": 0.0012389380530973826,
+   "dev_to_eval": -0.016774652338811702,
+   "over_bound": false
+  },
+  "R98any_new": {
+   "name": "rrf1000_b25+FULL:h1_cW~s10-cs+top50",
+   "dev_all": 0.9955357142857143,
+   "dev_nodes": 75.0,
+   "eval_all": 0.988495575221239,
+   "eval_nodes": 75.0,
+   "floor": 0.98,
+   "confirmed": true,
+   "short_by": 0.0,
+   "dev_to_eval": -0.007040139064475315,
+   "over_bound": false
+  }
+ },
+ "old": {
+  "name": "equal_rrf_budget_50",
+  "eval_all": 0.9539823008849557,
+  "eval_nodes": 50.0
+ }
+}

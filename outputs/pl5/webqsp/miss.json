@@ -1,0 +1,39 @@
+{
+ "stage": "PL5 D1 + D2 (post-hoc diagnostic, labels read, decides nothing)",
+ "declared_in": "docs/PL5_COVERAGE_ROUND4.md",
+ "dataset": "webqsp",
+ "cell": "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+ "questions": 300,
+ "carve": "dev",
+ "first": "frozen",
+ "nodes_mean": 2093.52,
+ "bound": 2500.0,
+ "totals": {
+  "q_missing": 31,
+  "golds_missing": 81,
+  "R": 0,
+  "C": 81,
+  "U": 0,
+  "U_in_lists": 0,
+  "q_R": 0,
+  "q_C": 31,
+  "q_U": 0
+ },
+ "D2": {
+  "by_stage_hop": {
+   "cap2": 35,
+   "cap1": 2,
+   "budget3": 16,
+   "upstream": 4,
+   "budget2": 19,
+   "cap3": 5
+  },
+  "c_golds": 81,
+  "trace_matches_engine": true,
+  "trace_mismatch_questions": 0
+ },
+ "uncapped_setting": "3 hops, no per-seed, per-frontier or visited cap, FULL families, the cell's own seeds",
+ "seconds": 1058.5,
+ "code_path_sha256": "62a27dbb08c49a81fb4605f211f908935135e01c4cb6dd080e3c54b50066930f",
+ "utc": "2026-11-25T18:53:59Z"
+}

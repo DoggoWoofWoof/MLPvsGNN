@@ -1,0 +1,29 @@
+{
+ "stage": "PL5 confirm grid",
+ "declared_in": "docs/PL5_COVERAGE_ROUND4.md",
+ "dataset": "2wiki",
+ "carve": "eval",
+ "first": "e3v",
+ "questions": 12576,
+ "rows": [
+  0,
+  12576
+ ],
+ "part": null,
+ "cells": 10,
+ "cells_sha256": "f670f5ae40edfa20a969adc92e1886720bbd60c9f0760f699c8e769854bdb23f",
+ "graph": "package",
+ "population_digest": "9473c881c2811f9c8ce493294ecbbe8628779cdd0e291e62dd60ed14f60e408f",
+ "code_path_sha256": "62a27dbb08c49a81fb4605f211f908935135e01c4cb6dd080e3c54b50066930f",
+ "pl4_code_path_sha256": "aa7c9ac9ddd53327cbb906ed1b68e43c6e932d6bf740278684194abdd4eec006",
+ "pl3_code_path_sha256": "e9d860950c700bdd5e988f16b4b0ef6023d3207b7f5c07b1e7ee36593c13c8c4",
+ "pl2_code_path_sha256": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+ "script_sha256": "c3e8221e4fb4dcde134eead544ceb88f2d90579e88dd8e6d10281072696d427c",
+ "constants_sha256": "17d1fa133e9c7d47639c4843e39a41a863b0932362290ef9cfbd3530333c6dfc",
+ "npz": "outputs/pl5/2wiki/grid_eval_e3v_confirm.npz",
+ "npz_sha256": "8fb08fcbb55acf50125a826aeb177a443b9c5e156825c20d108877d4750bf819",
+ "seconds": 11226.6,
+ "peak_gb": 13.77,
+ "host": true,
+ "utc": "2026-11-25T13:03:27Z"
+}

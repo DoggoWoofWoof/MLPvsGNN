@@ -1,0 +1,36 @@
+{
+ "stage": "PL5 D1 + D2 (post-hoc diagnostic, labels read, decides nothing)",
+ "declared_in": "docs/PL5_COVERAGE_ROUND4.md",
+ "dataset": "musique",
+ "cell": "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+ "questions": 300,
+ "carve": "dev",
+ "first": "frozen",
+ "nodes_mean": 2462.2633333333333,
+ "bound": 2500.0,
+ "totals": {
+  "q_missing": 36,
+  "golds_missing": 39,
+  "R": 0,
+  "C": 39,
+  "U": 0,
+  "U_in_lists": 0,
+  "q_R": 0,
+  "q_C": 36,
+  "q_U": 0
+ },
+ "D2": {
+  "by_stage_hop": {
+   "upstream": 12,
+   "cap2": 18,
+   "budget2": 9
+  },
+  "c_golds": 39,
+  "trace_matches_engine": true,
+  "trace_mismatch_questions": 0
+ },
+ "uncapped_setting": "3 hops, no per-seed, per-frontier or visited cap, FULL families, the cell's own seeds",
+ "seconds": 370.8,
+ "code_path_sha256": "62a27dbb08c49a81fb4605f211f908935135e01c4cb6dd080e3c54b50066930f",
+ "utc": "2026-11-25T18:42:31Z"
+}

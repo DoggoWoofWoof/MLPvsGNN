@@ -1,0 +1,20 @@
+[13:13:25] chain start
+   note: a byte-code cache exists under the package root, not created by this process: canonical.cpython-313.pyc (37614 B, mtime 2026-09-13T15:58:07)
+[13:22:53] zpl2g: musique/dev/frozen: 300/400 questions, 563 s (0.68 GB)
+[13:34:51] zpl2g: G-R musique: PASS, 400 questions x 2274 cells + 150 x 1932 = 1199400 elements, mismatches 0/0 (1282.9 s)
+[15:39:27] chain2 start (waiting for WebQSP's three grid parts)
+bounded_wait: 'pl5-chain2-wq' condition met after 1063 s
+[15:57:10] webqsp grid parts done
+[15:57:20] zpl2g: webqsp R95_all: dense_top200+STRUCT:h3_bf_v2000~cs-fu  ALL 0.8759 at 2094.2 nodes  (SHORT)
+[15:57:20] zpl2g: webqsp R95_prev: dense_top200+FULL:h2_c100_v5000~s10-cs-sp  ALL 0.7731 at 2442.4 nodes  (SHORT)
+[15:57:20] zpl2g: webqsp R95_new: dense_top200+STRUCT:h3_bf_v2000~cs-fu  ALL 0.8759 at 2094.2 nodes  (SHORT)
+[15:57:20] zpl2g: webqsp R98_all: dense_top200+STRUCT:h3_bf_v2000~cs-fu  ALL 0.8759 at 2094.2 nodes  (SHORT)
+[15:57:20] zpl2g: webqsp R98_prev: dense_top200+FULL:h2_c100_v5000~s10-cs-sp  ALL 0.7731 at 2442.4 nodes  (SHORT)
+[15:57:20] zpl2g: webqsp R98_new: dense_top200+STRUCT:h3_bf_v2000~cs-fu  ALL 0.8759 at 2094.2 nodes  (SHORT)
+[15:57:20] zpl2g: webqsp R95any_all: rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu  ALL 0.9257 at 6070.5 nodes  (SHORT)
+[15:57:20] zpl2g: webqsp R95any_prev: rrf1000_b1600+FULL:h3_c100_v5000~cs-sp-eq  ALL 0.8540 at 6021.1 nodes  (SHORT)
+[15:57:20] zpl2g: webqsp R98any_all: rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu  ALL 0.9257 at 6070.5 nodes  (SHORT)
+[15:57:20] zpl2g: webqsp R98any_prev: rrf1000_b1600+FULL:h3_c100_v5000~cs-sp-eq  ALL 0.8540 at 6021.1 nodes  (SHORT)
+[15:57:20] zpl2g: webqsp: PL4's pick re-read (reading `prev`) equals its filed select.json: True
+[16:53:51] musique grid and select done
+[22:32:33] chain2 end

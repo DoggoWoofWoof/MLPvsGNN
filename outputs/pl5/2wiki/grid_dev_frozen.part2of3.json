@@ -1,0 +1,32 @@
+{
+ "stage": "PL5 grid",
+ "declared_in": "docs/PL5_COVERAGE_ROUND4.md",
+ "dataset": "2wiki",
+ "carve": "dev",
+ "first": "frozen",
+ "questions": 499,
+ "rows": [
+  997,
+  1496
+ ],
+ "part": [
+  2,
+  3
+ ],
+ "cells": 1872,
+ "cells_sha256": "a5a759803992cc0524a4ebd4de21d21396ea599dd9f0597329be9842ab9baaeb",
+ "graph": "package",
+ "population_digest": "4be833a5a3effc4e4046205a6ab2325297369fb489722f174fca8b5409ec4051",
+ "code_path_sha256": "62a27dbb08c49a81fb4605f211f908935135e01c4cb6dd080e3c54b50066930f",
+ "pl4_code_path_sha256": "aa7c9ac9ddd53327cbb906ed1b68e43c6e932d6bf740278684194abdd4eec006",
+ "pl3_code_path_sha256": "e9d860950c700bdd5e988f16b4b0ef6023d3207b7f5c07b1e7ee36593c13c8c4",
+ "pl2_code_path_sha256": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+ "script_sha256": "c3e8221e4fb4dcde134eead544ceb88f2d90579e88dd8e6d10281072696d427c",
+ "constants_sha256": "17d1fa133e9c7d47639c4843e39a41a863b0932362290ef9cfbd3530333c6dfc",
+ "npz": "outputs/pl5/2wiki/grid_dev_frozen.part2of3.npz",
+ "npz_sha256": "506573c1743be1ad312ad8cd2530fe4d30e5c2d93f48ad0baebc507b5ca1ba57",
+ "seconds": 2270.0,
+ "peak_gb": 17.46,
+ "host": true,
+ "utc": "2026-11-25T09:53:41Z"
+}

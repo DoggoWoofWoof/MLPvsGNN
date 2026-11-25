@@ -1,0 +1,2 @@
+   note: a byte-code cache exists under the package root, not created by this process: canonical.cpython-313.pyc (37614 B, mtime 2026-09-13T15:58:07)
+[13:57:05] zpl2g: D1 metaqa rrf1000_b400+STRUCT:h3_c25_v2000: 300 q, 33 miss a gold (375 golds): R 0, C 373, U 2 (in lists 0) at 2337 nodes; D2 {'cap2': 15, 'upstream': 82, 'budget3': 264, 'cap3': 12} (trace = engine: True)

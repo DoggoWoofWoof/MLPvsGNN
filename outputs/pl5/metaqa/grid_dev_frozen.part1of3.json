@@ -1,0 +1,32 @@
+{
+ "stage": "PL5 grid",
+ "declared_in": "docs/PL5_COVERAGE_ROUND4.md",
+ "dataset": "metaqa",
+ "carve": "dev",
+ "first": "frozen",
+ "questions": 499,
+ "rows": [
+  499,
+  998
+ ],
+ "part": [
+  1,
+  3
+ ],
+ "cells": 1872,
+ "cells_sha256": "a5a759803992cc0524a4ebd4de21d21396ea599dd9f0597329be9842ab9baaeb",
+ "graph": "package",
+ "population_digest": "dabbb4f9e8770db0fd373b7ffddbb63d481cba23971b386e684696167df0d780",
+ "code_path_sha256": "62a27dbb08c49a81fb4605f211f908935135e01c4cb6dd080e3c54b50066930f",
+ "pl4_code_path_sha256": "aa7c9ac9ddd53327cbb906ed1b68e43c6e932d6bf740278684194abdd4eec006",
+ "pl3_code_path_sha256": "e9d860950c700bdd5e988f16b4b0ef6023d3207b7f5c07b1e7ee36593c13c8c4",
+ "pl2_code_path_sha256": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+ "script_sha256": "c3e8221e4fb4dcde134eead544ceb88f2d90579e88dd8e6d10281072696d427c",
+ "constants_sha256": "17d1fa133e9c7d47639c4843e39a41a863b0932362290ef9cfbd3530333c6dfc",
+ "npz": "outputs/pl5/metaqa/grid_dev_frozen.part1of3.npz",
+ "npz_sha256": "214cd5feabaf2e5539a5b6e579af31fa842d7d72a81e94ffce1c9b8a314c720a",
+ "seconds": 638.7,
+ "peak_gb": 0.4,
+ "host": false,
+ "utc": "2026-11-25T08:25:29Z"
+}

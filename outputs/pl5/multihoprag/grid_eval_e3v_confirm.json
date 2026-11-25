@@ -1,0 +1,29 @@
+{
+ "stage": "PL5 confirm grid",
+ "declared_in": "docs/PL5_COVERAGE_ROUND4.md",
+ "dataset": "multihoprag",
+ "carve": "eval",
+ "first": "e3v",
+ "questions": 1130,
+ "rows": [
+  0,
+  1130
+ ],
+ "part": null,
+ "cells": 5,
+ "cells_sha256": "23815dae26f46e208e67aabd72f71a98ec8331d4e38280d3b63e98583f52d5fa",
+ "graph": "layout:B0",
+ "population_digest": "dfd1eb644374d0a42bdc69a8d71ed9a16f19debcd320a5e6c3f87085f33664a9",
+ "code_path_sha256": "62a27dbb08c49a81fb4605f211f908935135e01c4cb6dd080e3c54b50066930f",
+ "pl4_code_path_sha256": "aa7c9ac9ddd53327cbb906ed1b68e43c6e932d6bf740278684194abdd4eec006",
+ "pl3_code_path_sha256": "e9d860950c700bdd5e988f16b4b0ef6023d3207b7f5c07b1e7ee36593c13c8c4",
+ "pl2_code_path_sha256": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+ "script_sha256": "c3e8221e4fb4dcde134eead544ceb88f2d90579e88dd8e6d10281072696d427c",
+ "constants_sha256": "17d1fa133e9c7d47639c4843e39a41a863b0932362290ef9cfbd3530333c6dfc",
+ "npz": "outputs/pl5/multihoprag/grid_eval_e3v_confirm.npz",
+ "npz_sha256": "62b4251bf4e1383b7a6f034a759bcb680814cc819edab0a6471630183de3a00e",
+ "seconds": 12.3,
+ "peak_gb": 0.29,
+ "host": false,
+ "utc": "2026-11-25T08:07:49Z"
+}
