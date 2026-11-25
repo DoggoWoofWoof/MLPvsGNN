@@ -1,0 +1,25 @@
+{
+ "stage": "PL2 grid",
+ "declared_in": "docs/PL2_COVERAGE_TARGET.md",
+ "dataset": "2wiki",
+ "carve": "eval",
+ "first": "e3v",
+ "questions": 12576,
+ "rows": [
+  0,
+  12576
+ ],
+ "part": null,
+ "cells": 3,
+ "cells_sha256": "47c37f64a5d948b4ece73fe830bd28b83d0534f8e180e9a74ddceee81bfa59f0",
+ "graph": "package",
+ "population_digest": "9473c881c2811f9c8ce493294ecbbe8628779cdd0e291e62dd60ed14f60e408f",
+ "code_path_sha256": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+ "constants_sha256": "1f89d64fad950dbd2f6f49a34f8f29339a34ef57ab69918fa247fc79dab03cb1",
+ "script_sha256": "97ec4883b41445110b57181b44d2630b7424dfbfd884f7cc9512a65085d7e477",
+ "npz": "outputs/pl2/2wiki/grid_eval_e3v_confirm.npz",
+ "npz_sha256": "7be73d1c588767b0c1a2e710619aa57eef70085b4d9c41ebca69a1eb10078df8",
+ "seconds": 93.1,
+ "peak_gb": 1.05,
+ "utc": "2026-11-25T01:42:56Z"
+}

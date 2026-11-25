@@ -1,0 +1,25 @@
+{
+ "stage": "PL2 grid",
+ "declared_in": "docs/PL2_COVERAGE_TARGET.md",
+ "dataset": "hotpotqa",
+ "carve": "eval",
+ "first": "e3v",
+ "questions": 7405,
+ "rows": [
+  0,
+  7405
+ ],
+ "part": null,
+ "cells": 4,
+ "cells_sha256": "210f22f881d34a1de9f0380e43c4e79f6487619951ea99dfea2cbd82ab925878",
+ "graph": "package",
+ "population_digest": "d00bbdbcccb9f4c4dc73f50398253b3b44fd5a4aa1c83bda5490af6603022c4e",
+ "code_path_sha256": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+ "constants_sha256": "1f89d64fad950dbd2f6f49a34f8f29339a34ef57ab69918fa247fc79dab03cb1",
+ "script_sha256": "97ec4883b41445110b57181b44d2630b7424dfbfd884f7cc9512a65085d7e477",
+ "npz": "outputs/pl2/hotpotqa/grid_eval_e3v_confirm.npz",
+ "npz_sha256": "b45d34aceca49a0de7c29dcdaa52bf6e35d9cfc2b096f5f82f105d967fb3a698",
+ "seconds": 51.6,
+ "peak_gb": 2.26,
+ "utc": "2026-11-25T00:46:25Z"
+}

@@ -1,7 +1,7 @@
 {
  "stage": "PL2 call",
  "declared_in": "docs/PL2_COVERAGE_TARGET.md",
- "utc": "2026-11-25T00:26:49Z",
+ "utc": "2026-11-25T01:45:37Z",
  "datasets": {
   "metaqa": {
    "status": "LEVEL",
@@ -70,12 +70,48 @@
    ]
   },
   "hotpotqa": {
-   "status": "NOT_READ",
-   "why": "no select or confirm file here"
+   "status": "ABOVE",
+   "new": "rrf1000_b25+STRUCT:h1_c100+top100",
+   "old": "equal_rrf_budget_50+STRUCT:h1_c25",
+   "new_all": 0.962727886563133,
+   "old_all": 0.9683997299122215,
+   "new_nodes": 77.92140445644834,
+   "old_nodes": 93.67873058744092,
+   "new_reaches": true,
+   "old_reaches": true,
+   "within_bound": true,
+   "all_diff": -0.005671843349088435,
+   "all_diff_ci": [
+    -0.008376097231600307,
+    -0.002835921674544273
+   ],
+   "nodes_ratio": 0.8317939832000126,
+   "nodes_ratio_ci": [
+    0.8277203701430993,
+    0.8360582464457419
+   ]
   },
   "2wiki": {
-   "status": "NOT_READ",
-   "why": "no select or confirm file here"
+   "status": "ABOVE",
+   "new": "equal_rrf_budget_200+FULL:h2_c25",
+   "old": "equal_rrf_budget_50+STRUCT:h1_c25",
+   "new_all": 0.9503021628498728,
+   "old_all": 0.9057729007633588,
+   "new_nodes": 2140.140903307888,
+   "old_nodes": 105.64456106870229,
+   "new_reaches": true,
+   "old_reaches": false,
+   "within_bound": true,
+   "all_diff": 0.04452926208651398,
+   "all_diff_ci": [
+    0.04095101781170485,
+    0.04826653944020354
+   ],
+   "nodes_ratio": 20.257937386063077,
+   "nodes_ratio_ci": [
+    20.19536983347485,
+    20.323440782731538
+   ]
   },
   "webqsp": {
    "status": "ABOVE",
@@ -90,13 +126,13 @@
    "within_bound": true,
    "all_diff": 0.07584830339321358,
    "all_diff_ci": [
-    0.059198270126413745,
-    0.09381237524950103
+    0.05788423153692612,
+    0.09447771124417825
    ],
    "nodes_ratio": 0.8920358860212954,
    "nodes_ratio_ci": [
-    0.8826101782348202,
-    0.9015339007198538
+    0.8826004838848366,
+    0.9013011737230459
    ]
   },
   "multihoprag": {
@@ -113,7 +149,7 @@
    "all_diff": 0.015044247787610598,
    "all_diff_ci": [
     0.005309734513274322,
-    0.024778761061946875
+    0.024778761061946878
    ],
    "nodes_ratio": 1.0,
    "nodes_ratio_ci": [
@@ -123,6 +159,8 @@
   }
  },
  "datasets_read": [
+  "2wiki",
+  "hotpotqa",
   "metaqa",
   "multihoprag",
   "musique",
@@ -130,5 +168,5 @@
   "webqsp"
  ],
  "code_path_equal_everywhere": true,
- "call": "INCOMPLETE"
+ "call": "CARRY_PL2"
 }

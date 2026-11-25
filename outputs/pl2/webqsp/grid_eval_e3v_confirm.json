@@ -1,0 +1,25 @@
+{
+ "stage": "PL2 grid",
+ "declared_in": "docs/PL2_COVERAGE_TARGET.md",
+ "dataset": "webqsp",
+ "carve": "eval",
+ "first": "e3v",
+ "questions": 1503,
+ "rows": [
+  0,
+  1503
+ ],
+ "part": null,
+ "cells": 3,
+ "cells_sha256": "622cee0944783562df316e79c2ef7071f9d43dd0f36741ffcce1f9e3858b6850",
+ "graph": "package",
+ "population_digest": "faa1d372294cc62f116549bdce087bb0d3f8ce533dce8bfd814c56e1c42e7a2e",
+ "code_path_sha256": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+ "constants_sha256": "1f89d64fad950dbd2f6f49a34f8f29339a34ef57ab69918fa247fc79dab03cb1",
+ "script_sha256": "97ec4883b41445110b57181b44d2630b7424dfbfd884f7cc9512a65085d7e477",
+ "npz": "outputs/pl2/webqsp/grid_eval_e3v_confirm.npz",
+ "npz_sha256": "cd0437760addc832afcbc027d6fbe3bebb9cd5777049e3daecaf37367e6f2858",
+ "seconds": 14.5,
+ "peak_gb": 0.42,
+ "utc": "2026-11-25T00:44:34Z"
+}
