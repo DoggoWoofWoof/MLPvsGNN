@@ -1,0 +1,30 @@
+{
+ "dataset": "webqsp",
+ "rung": 4,
+ "v": 80000,
+ "questions": 2,
+ "cells": 156,
+ "walks": 13,
+ "seconds_per_question": 9.54693877696991,
+ "nodes_scored_per_question": 294674.5,
+ "peak_gb": 2.99,
+ "n_nodes": 2592894,
+ "per_walk_ms": {
+  "STRUCT:h3_c100_v80000": 1096.0116000060225,
+  "STRUCT:h3_c100_v80000~cs-sp-eq": 685.1980500068748,
+  "FULL:h3_c100_v80000~cs-sp-eq": 573.1178999994881,
+  "FULL:h3_c100_v80000~cs-sp": 104.29504999774508,
+  "FULL:h3_c100_v80000~cs-vr-eq": 92.76839999074582,
+  "FULL:h2_c100_v80000~cs-vr": 7.525300010456704,
+  "FULL:h2_c100_v80000~s10-cs-vr": 15.055100011522882,
+  "FULL:h2_c100_v80000~s20-cs-vr": 12.038299988489598,
+  "FULL:h2_c100_v80000~s20-cs-rk": 8.627050003269687,
+  "FULL:h3_bf_v80000~cs-vr": 4089.298000006238,
+  "FULL:h3_bf_v80000~cs-fu": 1694.9546500109136,
+  "STRUCT:h3_bf_v80000~cs-fu": 1147.3371499887435,
+  "FULL:h2_bf_v80000~s10-cs-vr": 11.721400005626492
+ },
+ "labels_read": false,
+ "host": false,
+ "utc": "2026-11-25T10:31:58Z"
+}
