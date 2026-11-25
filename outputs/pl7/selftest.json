@@ -1,0 +1,97 @@
+{
+ "stage": "PL7 selftest",
+ "declared_in": "docs/PL7_COVERAGE_RESTRICTION.md",
+ "utc": "2026-11-25T17:43:44Z",
+ "script_sha256": "54623c848af9ff359bc6ef09ed46481eef3b811302fb96753bd2c2048c8b0f47",
+ "code_path_sha256": "58cea08c7a12c496dbd0912ecf958cb9144e07fc53184714c4b16470e274881f",
+ "cells": {
+  "datasets": {
+   "metaqa": {
+    "n": 156,
+    "distinct": 156,
+    "sha256": "0e9ff2e94427d323aaa5810aa024889bf57e42fd9674f949fa6ae5a5d7d0f9c4",
+    "controls": 39
+   },
+   "squad": {
+    "n": 0,
+    "distinct": 0,
+    "sha256": null,
+    "controls": 0
+   },
+   "musique": {
+    "n": 624,
+    "distinct": 624,
+    "sha256": "373ff76a51f4479b57b653b28606ffd8c451286dac091028d73ee659e949b19c",
+    "controls": 117
+   },
+   "hotpotqa": {
+    "n": 0,
+    "distinct": 0,
+    "sha256": null,
+    "controls": 0
+   },
+   "2wiki": {
+    "n": 0,
+    "distinct": 0,
+    "sha256": null,
+    "controls": 0
+   },
+   "webqsp": {
+    "n": 975,
+    "distinct": 975,
+    "sha256": "ebe7442dd61ec5260f351da9b38c7fb6e4a228755ea9052127f9ea0e62fcfc7e",
+    "controls": 156
+   },
+   "multihoprag": {
+    "n": 0,
+    "distinct": 0,
+    "sha256": null,
+    "controls": 0
+   }
+  },
+  "problems": [],
+  "verdict": "PASS"
+ },
+ "G-P": {
+  "problems": [],
+  "hashes": {
+   "pl2": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+   "pl2_script": "97ec4883b41445110b57181b44d2630b7424dfbfd884f7cc9512a65085d7e477",
+   "pl3": "e9d860950c700bdd5e988f16b4b0ef6023d3207b7f5c07b1e7ee36593c13c8c4",
+   "pl4": "aa7c9ac9ddd53327cbb906ed1b68e43c6e932d6bf740278684194abdd4eec006",
+   "pl5": "62a27dbb08c49a81fb4605f211f908935135e01c4cb6dd080e3c54b50066930f",
+   "pl5_script": "c3e8221e4fb4dcde134eead544ceb88f2d90579e88dd8e6d10281072696d427c",
+   "pl6": "cce8c3fb01e42e11eebf42ac94dacbd360c8abba39142b9278763365a7a105ee",
+   "pl6_script": "8a595176ed6167fa4c79440d576ad9b287b78eece9d19a32776f9a637f6b0b27"
+  },
+  "verdict": "PASS"
+ },
+ "engine": [
+  {
+   "dataset": "metaqa",
+   "visited": 2500,
+   "questions": 1,
+   "checks": 13,
+   "mismatches": [],
+   "n_mismatches": 0,
+   "hard_cut_cells_probed": 30,
+   "hard_cut_over_ceiling": [],
+   "n_nodes": 43234,
+   "verdict": "PASS"
+  },
+  {
+   "dataset": "musique",
+   "visited": 2500,
+   "questions": 1,
+   "checks": 13,
+   "mismatches": [],
+   "n_mismatches": 0,
+   "hard_cut_cells_probed": 30,
+   "hard_cut_over_ceiling": [],
+   "n_nodes": 117534,
+   "verdict": "PASS"
+  }
+ ],
+ "verdict": "PASS",
+ "seconds": 56.6
+}
