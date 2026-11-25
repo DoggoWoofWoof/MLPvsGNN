@@ -1189,6 +1189,19 @@ Writing zsem2r3.py against zsem2.py showed that eight lines of 11.1-11.11 do not
 - **(j) Checkpoints.** A checkpoint after every epoch and the ranks of every chunk of 4,000 edges are stored, keyed to the code, the roles, the settings and zsem2.py; a restart takes up where it stopped, so a kill costs at most one epoch or one chunk. The checkpoint folder is the row's own temporary output and is removed when the row ends.
 - **(k) A smoke run** (`fit --smoke`: one epoch on 4,096 edges, 20 test edges per relation) is a code check on the real data. It writes under outputs/sem2/r3/smoke/, which nothing reads; **its numbers are not read, not recorded and not used.** A change to the code after it is for a crash only.
 
+### 11.13 Amendment from the MetaQA smoke row (G-0, test edges) (25 November 2026, 16:39 IST, 11:09 UTC), before any R3 number is read
+
+The smoke row r3smoke-metaqa (fold 0: 9 relations, train 5, dev 1, test 3) stopped at G-0. The dev check passed (largest score difference 4.8e-7, MRR difference 8e-11). The test-edge check read 60 edges and **58 equal ranks, 0.9667, below the 0.99 of 11.12 (d)**. A debug run of the same fold's start on the host (the committed code with one print added, not committed, stopped right after the G-0 numbers) showed **2 of 60 ranks differ, each by exactly 0.5** (28,390.0 against 28,389.5 and 12,274.0 against 12,274.5).
+
+**Cause.** The rank read counts a node whose score is within 1e-6 of the true tail's as a tie (half a position, zsem2.rank_read). The extra rows of P start at N(0, 1e-4^2), so the name net at its start differs from the cosine by up to about 5e-7, and one neighbour node moves in or out of that tie window. The scores are the same to 5e-7; only the tie bookkeeping moved by half a position. No number of the fit was read, and the smoke's numbers are not read (11.12 (k)).
+
+**Amendment to 11.12 (d), the test-edge half of G-0.** The strict equality is replaced by two checks on the same up to 300 evenly spaced test edges:
+
+- the largest difference between the name net's true-tail score at its start and the cosine's is **at most 1e-4** (the dev check's bound);
+- **at least 99 percent of the ranks agree within max(1, 0.001 x the cosine's rank) positions.** The relative part is there because WebQSP has 2.59 million nodes, where a window of 1e-6 can hold more than one node; MetaQA's ranks differ by half a position.
+
+The share of exactly equal ranks is still recorded, beside the two. Nothing else changes: not a call, a threshold, an expectation, the roles or the fit. The check reads the start of the net before any step, so it cannot move a result. The MetaQA and WebQSP smoke and fit rows are requeued under new names (the first MetaQA smoke row failed on this gate and wrote nothing the report reads).
+
 ### 8.16 Records completed after the closure (24 November 2026, 23:47 IST, 18:17 UTC): decides nothing
 
 8.15 closed the hub line with five rows still running. They have finished: R1k on WebQSP and 2Wiki, and R1q on

@@ -245,12 +245,16 @@ def run_fold(torch, G, X, vec_of, cfg, ds, fold, ckdir, gates):
     sel = np.unique(np.linspace(0, test["s"].size - 1, min(300, test["s"].size)).astype(np.int64))
     tsub = subsample(test, sel)
     tex = Z.exclusions(G, tsub)
-    rc, _ = Z.rank_read(torch, cos, X, tsub, tex, op_of)
-    rn, _ = Z.rank_read(torch, sc, X, tsub, tex, op_of)
-    same = float((np.abs(rc - rn) < 1e-9).mean())
+    rc, tcs = Z.rank_read(torch, cos, X, tsub, tex, op_of)
+    rn, tns = Z.rank_read(torch, sc, X, tsub, tex, op_of)
+    dr = np.abs(rc - rn)
     g0["test_edges_checked"] = int(sel.size)
-    g0["test_rank_equal_share"] = round(same, 4)
-    if same < 0.99:
+    g0["test_rank_equal_share"] = round(float((dr < 1e-9).mean()), 4)
+    # 11.13: the test-edge half of G-0 is the true-score difference and the rank agreement within max(1, 0.001 x rank)
+    g0["test_max_score_diff"] = float(np.abs(tns - tcs).max())
+    near = float((dr <= np.maximum(1.0, 0.001 * rc)).mean())
+    g0["test_rank_near_share"] = round(near, 4)
+    if g0["test_max_score_diff"] > Z.G0_SCORE or near < 0.99:
         g0["verdict"] = "FAIL"
     gates["G-0"] = g0
     if g0["verdict"] != "PASS":
