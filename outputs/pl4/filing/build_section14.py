@@ -180,6 +180,26 @@ def build():
                     "e3v pool rows by this page. WebQSP's PL3 cell carries the same flag with the same sizes, as PL3 filed (2,720 nodes).") if "WebQSP" in over else (
                     f"On the e3v lists the chosen cell of {', '.join(over)} reads above 2,500 mean nodes (OVER_BOUND); under section 6 the flag changes neither call.")
     stays = "" if complete else "PL3's grid stays the rule until a call is filed."
+    refile_line = ("- This section was first filed at c25eddf with five of the seven read (the call INCOMPLETE on both readings) and is re-filed here from the same records plus HotpotQA's and 2Wiki's host rows "
+                   "(`pl4-hotpotqag*`, `pl4-hotpotqace`, `pl4-hotpotqacf`, `pl4-2wikig*`, `pl4-2wikisel`, `pl4-2wikicf`, `pl4-2wikice`); the five laptop datasets' numbers are unchanged from that filing, and the hand-written "
+                   "sentences of 14.4 and 14.7 were rewritten for seven.") if complete else ""
+    if complete:
+        calls_line = f"At {NR} of 7 read: the old rule is {C['call']}; the frontier reading is {C['call_frontier']}."
+        calls_bullet = (f"- **At {NR} of 7 read the old rule is {C['call']} and the frontier reading is {C['call_frontier']}.** The old rule's call rests on one ABOVE, "
+                        f"{', '.join(LABEL[d] for d in above) or 'none'}'s, which is by the price clause alone (the ALL interval includes 0) and on no BELOW; "
+                        f"the frontier reading finds no budget of any dataset ABOVE (a lower end above 0) and none BELOW. The two are filed under their own names; this page does not say which governs "
+                        f"(section 6): which one governs is the user's decision.")
+        reading_line = ("On six of the seven datasets PL4's cells are PL3's cells or tie them at R95 (MultiHop-RAG, SQuAD, HotpotQA, 2Wiki and MetaQA: the same R95 cell; WebQSP: identical ALL and sizes on every eval "
+                        "question); on MuSiQue they save 7.3 percent of the nodes for a gain whose interval includes 0. HotpotQA and 2Wiki, the two host rows, agree with the five laptop datasets: both reach 0.95 inside the bound "
+                        "with PL3's own cell (HotpotQA 0.9634 at 77.9 nodes, 2Wiki 0.9609 at 917.0), no PL4 cell moves HotpotQA's dev frontier at any of the 14 budgets, and 2Wiki's moves at 2,500 nodes only "
+                        "(+0.20 points on dev, three questions of 1,496; on eval -0.01 [-0.14, +0.13], LEVEL). None of the three SHORT datasets is closer to 0.95 in any way the rule can credit: "
+                        "MuSiQue 0.8821 (+0.33 points), MetaQA 0.8968 (0.00), WebQSP 0.7804 (0.00).")
+    else:
+        calls_line = f"At {NR} of 7 read, neither carries."
+        calls_bullet = f"- **At {NR} of 7 read, nothing is carried.** The old rule and the frontier reading are both INCOMPLETE. {stays}"
+        reading_line = ("On four of the five laptop datasets PL4's cells are PL3's cells or tie them (MultiHop-RAG and SQuAD: the same R95 cell; MetaQA: the same cell; WebQSP: identical ALL and sizes on every eval question); "
+                        "on MuSiQue they save 7.3 percent of the nodes for a gain whose interval includes 0. None of the three SHORT datasets is closer to 0.95 in any way the rule can credit: "
+                        "MuSiQue 0.8821 (+0.33 points), MetaQA 0.8968 (0.00), WebQSP 0.7804 (0.00).")
     title = (f"## 14. Results (25 Nov 2026; {NR} of 7 datasets read" + ("" if complete else f"; {', '.join(unread)} not yet returned from the host: the call is INCOMPLETE") + ")")
     paras = "\n".join(para(d) + ("\n" + specific(d) if specific(d) else "") for d in ORDER)
     wq = D("webqsp") if has("webqsp") else None
@@ -219,7 +239,7 @@ bootstrap of the eval ALL difference (points; `=` marks the same cell on both si
 
 - **Frontier call: {C['call_frontier']}** (BELOW {counts['frontier']['BELOW']}, ABOVE {counts['frontier']['ABOVE']}, LEVEL {counts['frontier']['LEVEL']}; read {NR} of 7). On the {NR} read no budget of any dataset is ABOVE by the frontier's rule
   (a lower end above 0) and none is BELOW; the cells at each budget, with dev and eval numbers, are in the table of section 14.9 (`What the PL4 cells bought`) and in `call.json`.
-- **The two calls are filed under their own names and this page does not choose between them** (section 6). At {NR} of 7 read, neither carries.
+- **The two calls are filed under their own names and this page does not choose between them** (section 6). {calls_line}
 
 The cells behind each frontier budget (dev ALL at dev nodes; eval ALL at eval nodes; the eval difference in points):
 
@@ -249,9 +269,9 @@ The construction each dataset would get from R95 of the reading `all` (NEW), and
 ### 14.4 What each option bought
 
 Read from `outputs/pl4/report.md` ("What each option bought" and "What the PL4 cells bought", section 14.9): on the {NR} read, the dev frontier of all cells differs from PL3's only on MuSiQue
-(+1.11 points at 2,000 nodes and +0.46 at 2,500 on dev, from `eq` and `rr` with `cs-vr`, and `sp`; on eval the 2,000-node pair reads -0.58 [-1.57, +0.50], so that dev gain does not carry, and the 2,500-node pair +0.33 [-0.29, +0.95]) and on SQuAD (+0.07 points at three budgets of 75 to 1,000 nodes: one question's worth in 1,498). `rk` moves no read dataset's R95 pick (its cells alone reach 0.8638 on MuSiQue, 0.7862 on MetaQA, 0.7731 on WebQSP). The one SHORT dataset whose R95 pick moves is MuSiQue (190 nodes fewer, through `eq`, `rr`
-and `sp` cells). Nothing moves MetaQA or WebQSP at any budget, and nothing moves MultiHop-RAG. On SQuAD the R95 and R98 picks are PL3's; the +0.07 points are one question and read LEVEL on eval
-(1,000 nodes: +0.04 [-0.05, +0.13]).
+(+1.11 points at 2,000 nodes and +0.46 at 2,500 on dev, from `eq` and `rr` with `cs-vr`, and `sp`; on eval the 2,000-node pair reads -0.58 [-1.57, +0.50], so that dev gain does not carry, and the 2,500-node pair +0.33 [-0.29, +0.95]), on SQuAD (+0.07 points at three budgets of 75 to 1,000 nodes: one question's worth in 1,498), and on 2Wiki at one budget (+0.20 points at 2,500 nodes on dev, three questions of 1,496, from the `eq` cell `rrf1000_b400+FULL:h3_c25_v2000~s20-cs-vr-eq`, 0.9626 at 2,215.1 against PL3's 0.9606 at 2,078.2; on eval -0.01 [-0.14, +0.13], LEVEL). `rk` moves no read dataset's R95 pick (its cells alone reach 0.8638 on MuSiQue, 0.7862 on MetaQA, 0.7731 on WebQSP). The one SHORT dataset whose R95 pick moves is MuSiQue (190 nodes fewer, through `eq`, `rr`
+and `sp` cells). Nothing moves MetaQA or WebQSP at any budget, and nothing moves MultiHop-RAG or HotpotQA. On SQuAD the R95 and R98 picks are PL3's; the +0.07 points are one question and read LEVEL on eval
+(1,000 nodes: +0.04 [-0.05, +0.13]); on 2Wiki and HotpotQA the R95 pick is PL3's, and 2Wiki's R98 cell differs from PL3's but does not reach 0.98 and reads the same eval ALL (0.9656 on both, LEVEL).
 
 ### 14.5 What is still short, in numbers (diagnostics D1 and D2, post-hoc, labels read; 300 dev questions evenly spaced over the carve)
 
@@ -288,9 +308,8 @@ NEW (R95 of all cells) and OLD (PL3's) re-run on the eval carve's e3v lists. The
 
 ### 14.7 What the calls mean, and what they leave unread
 
-- **At {NR} of 7 read, nothing is carried.** The old rule and the frontier reading are both {('INCOMPLETE' if not complete else C['call'] + ' / ' + C['call_frontier'])}. {stays}
-- **A reading of what the read datasets say.** On four of the five laptop datasets PL4's cells are PL3's cells or tie them (MultiHop-RAG and SQuAD: the same R95 cell; MetaQA: the same cell; WebQSP: identical ALL and sizes on every eval question); on MuSiQue they
-  save 7.3 percent of the nodes for a gain whose interval includes 0. None of the three SHORT datasets is closer to 0.95 in any way the rule can credit: MuSiQue 0.8821 (+0.33 points), MetaQA 0.8968 (0.00), WebQSP 0.7804 (0.00).
+{calls_bullet}
+- **A reading of what the read datasets say.** {reading_line}
 - **D2 against the four options.** `sp`, `rk`, `eq` and `rr` reorder or re-share the visited budget and leave the per-seed and per-frontier caps alone. D2 puts all of WebQSP's attributed C golds (223 of 245; 22 upstream) at those
   caps, which no option touches, and most of MetaQA's (264 of 373) at hop 3's budget, where `eq` bought nothing. That was the disclosed limit of this round (section 13, "the four options do not change the per-seed or
   per-frontier caps"); it is now measured.
@@ -318,6 +337,7 @@ Label-ordered caps need a UL2 layout on all seven (section 3). The e3v-bounded s
   concatenated arrays were checked equal to the single-process confirmation on MultiHop-RAG (`--verify`). `chain4.log` records the stop as `FAIL confirm squad` at 11:06.
 - D1/D2 ran on 300 dev questions chosen evenly over the carve (as PL3's D1), post-hoc, and decide nothing. `zpl4r.py` (the report and the diagnostics, not the engine) is committed with this section.
 - The frontier reading is a change of the rule proposed in this page's declaration; it is filed beside the old call, and neither is chosen here.
+{refile_line}
 - The laptop's grids and confirmations ran with up to eight heavy processes on 12 logical CPUs; seconds are upper bounds.
 - The grid arrays (`*.npz`) are not committed (as PL2's and PL3's); the heads, selects, confirmations, the call, the diagnostics and the report are.
 - Not done in this filing: {(', '.join(unread) + ' (their reads are host rows); ' if not complete else '')}{('the e3v confirmation of ' + ', '.join(LABEL[d] for d in ORDER if T.conf(d, 'e3v') is None) + ' (host rows); ' if any(T.conf(d, 'e3v') is None for d in ORDER) else '')}PL1's rebuild of the pools on a carried construction (PL1's rows); the next changes of 14.8.

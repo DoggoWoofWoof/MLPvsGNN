@@ -1,7 +1,7 @@
 {
  "stage": "PL4 call",
  "declared_in": "docs/PL4_COVERAGE_ROUND3.md",
- "utc": "2026-11-25T06:46:21Z",
+ "utc": "2026-11-25T09:45:55Z",
  "datasets": {
   "metaqa": {
    "status": "LEVEL",
@@ -580,12 +580,388 @@
    "frontier_status": "LEVEL"
   },
   "hotpotqa": {
-   "status": "NOT_READ",
-   "why": "no PL4 select or confirm file here"
+   "status": "LEVEL",
+   "new": "rrf1000_b25+STRUCT:h1_c100~cs+top100",
+   "old": "rrf1000_b25+STRUCT:h1_c100~cs+top100",
+   "same_cell": true,
+   "new_all": 0.9634031060094531,
+   "old_all": 0.9634031060094531,
+   "new_nodes": 77.88872383524645,
+   "old_nodes": 77.88872383524645,
+   "new_reaches": true,
+   "old_reaches": true,
+   "within_bound": true,
+   "all_diff": 0.0,
+   "all_diff_ci": [
+    0.0,
+    0.0
+   ],
+   "nodes_ratio": 1.0,
+   "nodes_ratio_ci": [
+    1.0,
+    1.0
+   ],
+   "r98": {
+    "status": "LEVEL",
+    "new": "rrf1000_b100+STRUCT:h1_c100~cs+top200",
+    "old": "rrf1000_b100+STRUCT:h1_c100~cs+top200",
+    "same_cell": true,
+    "new_all": 0.9782579338284942,
+    "old_all": 0.9782579338284942,
+    "new_nodes": 153.50979068197165,
+    "old_nodes": 153.50979068197165,
+    "new_reaches": false,
+    "old_reaches": false,
+    "within_bound": true,
+    "all_diff": 0.0,
+    "all_diff_ci": [
+     0.0,
+     0.0
+    ],
+    "nodes_ratio": 1.0,
+    "nodes_ratio_ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "new_only": {
+    "status": "BELOW",
+    "new": "rrf1000_b25+FULL:h3_c25_v2000~rk+top800",
+    "old": "rrf1000_b25+STRUCT:h1_c100~cs+top100",
+    "same_cell": false,
+    "new_all": 0.9567859554355166,
+    "old_all": 0.9634031060094531,
+    "new_nodes": 825.0,
+    "old_nodes": 77.88872383524645,
+    "new_reaches": true,
+    "old_reaches": true,
+    "within_bound": true,
+    "all_diff": -0.0066171505739365255,
+    "all_diff_ci": [
+     -0.011073598919648875,
+     -0.0024274139095205737
+    ],
+    "nodes_ratio": 10.592033857751671,
+    "nodes_ratio_ci": [
+     10.497566119028445,
+     10.677008384625093
+    ]
+   },
+   "frontier": {
+    "500": {
+     "status": "LEVEL",
+     "new": "rrf1000_b100+FULL:h1_c100~s20+top800",
+     "old": "rrf1000_b100+FULL:h1_c100~s20+top800",
+     "same_cell": true,
+     "new_dev_all": 0.9887267904509284,
+     "old_dev_all": 0.9887267904509284,
+     "new_dev_nodes": 460.5457559681698,
+     "old_dev_nodes": 460.5457559681698,
+     "new_all": 0.9854152599594869,
+     "old_all": 0.9854152599594869,
+     "new_nodes": 460.9327481431465,
+     "old_nodes": 460.9327481431465,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "1000": {
+     "status": "LEVEL",
+     "new": "rrf1000_b800+FULL:h1_c100~cs+top400",
+     "old": "rrf1000_b800+FULL:h1_c100~cs+top400",
+     "same_cell": true,
+     "new_dev_all": 0.9927055702917772,
+     "old_dev_all": 0.9927055702917772,
+     "new_dev_nodes": 932.4946949602122,
+     "old_dev_nodes": 932.4946949602122,
+     "new_all": 0.9896016205266712,
+     "old_all": 0.9896016205266712,
+     "new_nodes": 931.1542201215395,
+     "old_nodes": 931.1542201215395,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "1500": {
+     "status": "LEVEL",
+     "new": "rrf1000_b800+FULL:h1_c100~s20+top800",
+     "old": "rrf1000_b800+FULL:h1_c100~s20+top800",
+     "same_cell": true,
+     "new_dev_all": 0.993368700265252,
+     "old_dev_all": 0.993368700265252,
+     "new_dev_nodes": 1111.7088859416447,
+     "old_dev_nodes": 1111.7088859416447,
+     "new_all": 0.9923024983119514,
+     "old_all": 0.9923024983119514,
+     "new_nodes": 1112.4187711006077,
+     "old_nodes": 1112.4187711006077,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "2000": {
+     "status": "LEVEL",
+     "new": "rrf1000_b1600+FULL:h1_c100~s20+top800",
+     "old": "rrf1000_b1600+FULL:h1_c100~s20+top800",
+     "same_cell": true,
+     "new_dev_all": 0.9940318302387268,
+     "old_dev_all": 0.9940318302387268,
+     "new_dev_nodes": 1880.8614058355438,
+     "old_dev_nodes": 1880.8614058355438,
+     "new_all": 0.9944632005401756,
+     "old_all": 0.9944632005401756,
+     "new_nodes": 1883.5769074949358,
+     "old_nodes": 1883.5769074949358,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "2500": {
+     "status": "LEVEL",
+     "new": "rrf1000_b800+STRUCT:h2_c100_v5000~cs-vr",
+     "old": "rrf1000_b800+STRUCT:h2_c100_v5000~cs-vr",
+     "same_cell": true,
+     "new_dev_all": 0.9960212201591512,
+     "old_dev_all": 0.9960212201591512,
+     "new_dev_nodes": 2246.766578249337,
+     "old_dev_nodes": 2246.766578249337,
+     "new_all": 0.9917623227548953,
+     "old_all": 0.9917623227548953,
+     "new_nodes": 2226.5308575286967,
+     "old_nodes": 2226.5308575286967,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    }
+   },
+   "frontier_status": "LEVEL"
   },
   "2wiki": {
-   "status": "NOT_READ",
-   "why": "no PL4 select or confirm file here"
+   "status": "LEVEL",
+   "new": "rrf1000_b400+FULL:h1_c100~s20+top800",
+   "old": "rrf1000_b400+FULL:h1_c100~s20+top800",
+   "same_cell": true,
+   "new_all": 0.9608778625954199,
+   "old_all": 0.9608778625954199,
+   "new_nodes": 916.9652512722646,
+   "old_nodes": 916.9652512722646,
+   "new_reaches": true,
+   "old_reaches": true,
+   "within_bound": true,
+   "all_diff": 0.0,
+   "all_diff_ci": [
+    0.0,
+    0.0
+   ],
+   "nodes_ratio": 1.0,
+   "nodes_ratio_ci": [
+    1.0,
+    1.0
+   ],
+   "r98": {
+    "status": "LEVEL",
+    "new": "rrf1000_b400+FULL:h3_c25_v2000~s20-cs-vr-eq",
+    "old": "rrf1000_b1600+FULL:h1_c100~s20+top800",
+    "same_cell": false,
+    "new_all": 0.9655693384223919,
+    "old_all": 0.9656488549618321,
+    "new_nodes": 2211.172312340967,
+    "old_nodes": 2085.7087309160306,
+    "new_reaches": false,
+    "old_reaches": false,
+    "within_bound": true,
+    "all_diff": -7.95165394401609e-05,
+    "all_diff_ci": [
+     -0.0015903307888041063,
+     0.0013517811704835125
+    ],
+    "nodes_ratio": 1.0601539321215927,
+    "nodes_ratio_ci": [
+     1.058863503709412,
+     1.06155103719188
+    ]
+   },
+   "new_only": {
+    "status": "BELOW",
+    "new": "rrf1000_b400+FULL:h3_c25_v2000~rk+top1600",
+    "old": "rrf1000_b400+FULL:h1_c100~s20+top800",
+    "same_cell": false,
+    "new_all": 0.9491094147582697,
+    "old_all": 0.9608778625954199,
+    "new_nodes": 2000.0,
+    "old_nodes": 916.9652512722646,
+    "new_reaches": false,
+    "old_reaches": true,
+    "within_bound": true,
+    "all_diff": -0.011768447837150142,
+    "all_diff_ci": [
+     -0.015187659033078841,
+     -0.008269720101781175
+    ],
+    "nodes_ratio": 2.1811077325177304,
+    "nodes_ratio_ci": [
+     2.175039221541945,
+     2.187414018851772
+    ]
+   },
+   "frontier": {
+    "500": {
+     "status": "LEVEL",
+     "new": "rrf1000_b200+FULL:h1_c100+top400",
+     "old": "rrf1000_b200+FULL:h1_c100+top400",
+     "same_cell": true,
+     "new_dev_all": 0.9324866310160428,
+     "old_dev_all": 0.9324866310160428,
+     "new_dev_nodes": 419.1851604278075,
+     "old_dev_nodes": 419.1851604278075,
+     "new_all": 0.9359891857506362,
+     "old_all": 0.9359891857506362,
+     "new_nodes": 421.5504134860051,
+     "old_nodes": 421.5504134860051,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "1000": {
+     "status": "LEVEL",
+     "new": "rrf1000_b400+FULL:h1_c100~s20",
+     "old": "rrf1000_b400+FULL:h1_c100~s20",
+     "same_cell": true,
+     "new_dev_all": 0.9552139037433155,
+     "old_dev_all": 0.9552139037433155,
+     "new_dev_nodes": 911.2199197860963,
+     "old_dev_nodes": 911.2199197860963,
+     "new_all": 0.961354961832061,
+     "old_all": 0.961354961832061,
+     "new_nodes": 920.3912213740458,
+     "old_nodes": 920.3912213740458,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "1500": {
+     "status": "LEVEL",
+     "new": "rrf1000_b400+FULL:h1_c100~s20",
+     "old": "rrf1000_b400+FULL:h1_c100~s20",
+     "same_cell": true,
+     "new_dev_all": 0.9552139037433155,
+     "old_dev_all": 0.9552139037433155,
+     "new_dev_nodes": 911.2199197860963,
+     "old_dev_nodes": 911.2199197860963,
+     "new_all": 0.961354961832061,
+     "old_all": 0.961354961832061,
+     "new_nodes": 920.3912213740458,
+     "old_nodes": 920.3912213740458,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "2000": {
+     "status": "LEVEL",
+     "new": "rrf1000_b400+FULL:h1_c100~s20",
+     "old": "rrf1000_b400+FULL:h1_c100~s20",
+     "same_cell": true,
+     "new_dev_all": 0.9552139037433155,
+     "old_dev_all": 0.9552139037433155,
+     "new_dev_nodes": 911.2199197860963,
+     "old_dev_nodes": 911.2199197860963,
+     "new_all": 0.961354961832061,
+     "old_all": 0.961354961832061,
+     "new_nodes": 920.3912213740458,
+     "old_nodes": 920.3912213740458,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "2500": {
+     "status": "LEVEL",
+     "new": "rrf1000_b400+FULL:h3_c25_v2000~s20-cs-vr-eq",
+     "old": "rrf1000_b1600+FULL:h1_c100~s20+top800",
+     "same_cell": false,
+     "new_dev_all": 0.9625668449197861,
+     "old_dev_all": 0.9605614973262032,
+     "new_dev_nodes": 2215.0601604278077,
+     "old_dev_nodes": 2078.2393048128342,
+     "new_all": 0.9655693384223919,
+     "old_all": 0.9656488549618321,
+     "new_nodes": 2211.172312340967,
+     "old_nodes": 2085.7087309160306,
+     "all_diff": -7.95165394401609e-05,
+     "all_diff_ci": [
+      -0.0014312977099236734,
+      0.0012722646310432434
+     ],
+     "nodes_ratio": 1.0601539321215927,
+     "nodes_ratio_ci": [
+      1.0588176673735992,
+      1.061469622356827
+     ]
+    }
+   },
+   "frontier_status": "LEVEL"
   },
   "webqsp": {
    "status": "LEVEL",
@@ -973,6 +1349,8 @@
   }
  },
  "datasets_read": [
+  "2wiki",
+  "hotpotqa",
   "metaqa",
   "multihoprag",
   "musique",
@@ -980,18 +1358,18 @@
   "webqsp"
  ],
  "code_path_equal_everywhere": true,
- "call": "INCOMPLETE",
- "call_frontier": "INCOMPLETE",
+ "call": "CARRY_PL4",
+ "call_frontier": "NOT_CARRIED",
  "counts": {
   "old": {
    "BELOW": 0,
    "ABOVE": 1,
-   "LEVEL": 4
+   "LEVEL": 6
   },
   "frontier": {
    "BELOW": 0,
    "ABOVE": 0,
-   "LEVEL": 5
+   "LEVEL": 7
   }
  }
 }

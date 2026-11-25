@@ -1,0 +1,28 @@
+{
+ "stage": "PL4 confirm grid",
+ "declared_in": "docs/PL4_COVERAGE_ROUND3.md",
+ "dataset": "2wiki",
+ "carve": "eval",
+ "first": "e3v",
+ "questions": 12576,
+ "rows": [
+  0,
+  12576
+ ],
+ "part": null,
+ "cells": 7,
+ "cells_sha256": "ad7ac47e8d5bbd065ba8d26448c9b2a7d5e7a7c80ff52b8f222415463b7fb3b5",
+ "graph": "package",
+ "population_digest": "9473c881c2811f9c8ce493294ecbbe8628779cdd0e291e62dd60ed14f60e408f",
+ "code_path_sha256": "aa7c9ac9ddd53327cbb906ed1b68e43c6e932d6bf740278684194abdd4eec006",
+ "pl3_code_path_sha256": "e9d860950c700bdd5e988f16b4b0ef6023d3207b7f5c07b1e7ee36593c13c8c4",
+ "pl2_code_path_sha256": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+ "script_sha256": "a9aa6a03c4937049ddaf571a2381cef91b0b9c75a1661bc725614a9385565d50",
+ "constants_sha256": "ca7d8fa7933045b87c13c507222e791a515664746275d550b732d49c8db3cca7",
+ "npz": "outputs/pl4/2wiki/grid_eval_e3v_confirm.npz",
+ "npz_sha256": "1220e6b1624b4bdb0de546868d2c6be85fe340845a0cb2e2c48c027c1ad5bc19",
+ "seconds": 7786.9,
+ "peak_gb": 13.75,
+ "host": true,
+ "utc": "2026-11-25T09:17:31Z"
+}

@@ -946,6 +946,333 @@
    }
   }
  },
+ "2wiki": {
+  "dev_questions": 1496,
+  "picks": {
+   "R95_all": {
+    "name": "rrf1000_b400+FULL:h1_c100~s20+top800",
+    "all": 0.9545454545454546,
+    "any": 1.0,
+    "nodes": 908.1918449197861,
+    "reached": true
+   },
+   "R95_pl3": {
+    "name": "rrf1000_b400+FULL:h1_c100~s20+top800",
+    "all": 0.9545454545454546,
+    "any": 1.0,
+    "nodes": 908.1918449197861,
+    "reached": true
+   },
+   "R95_new": {
+    "name": "rrf1000_b400+FULL:h3_c25_v2000~rk+top1600",
+    "all": 0.9505347593582888,
+    "any": 1.0,
+    "nodes": 2000.0,
+    "reached": true
+   },
+   "R95_pl3+sp": {
+    "name": "rrf1000_b400+FULL:h1_c100~s20+top800",
+    "all": 0.9545454545454546,
+    "any": 1.0,
+    "nodes": 908.1918449197861,
+    "reached": true
+   },
+   "R95_only:sp": {
+    "name": "rrf1000_b400+FULL:h3_c25_v2000~cs-sp-rr-eq",
+    "all": 0.9578877005347594,
+    "any": 1.0,
+    "nodes": 2288.668449197861,
+    "reached": true
+   },
+   "R95_pl3+rk": {
+    "name": "rrf1000_b400+FULL:h1_c100~s20+top800",
+    "all": 0.9545454545454546,
+    "any": 1.0,
+    "nodes": 908.1918449197861,
+    "reached": true
+   },
+   "R95_only:rk": {
+    "name": "rrf1000_b400+FULL:h3_c25_v2000~rk+top1600",
+    "all": 0.9505347593582888,
+    "any": 1.0,
+    "nodes": 2000.0,
+    "reached": true
+   },
+   "R95_pl3+eq": {
+    "name": "rrf1000_b400+FULL:h1_c100~s20+top800",
+    "all": 0.9545454545454546,
+    "any": 1.0,
+    "nodes": 908.1918449197861,
+    "reached": true
+   },
+   "R95_only:eq": {
+    "name": "rrf1000_b100+FULL:h3_c25_v2000~s20-cs-vr-eq",
+    "all": 0.9538770053475936,
+    "any": 0.9993315508021391,
+    "nodes": 2037.278743315508,
+    "reached": true
+   },
+   "R95_pl3+rr": {
+    "name": "rrf1000_b400+FULL:h1_c100~s20+top800",
+    "all": 0.9545454545454546,
+    "any": 1.0,
+    "nodes": 908.1918449197861,
+    "reached": true
+   },
+   "R95_only:rr": {
+    "name": "rrf1000_b400+FULL:h3_c25_v2000~cs-vr-rr-eq",
+    "all": 0.9512032085561497,
+    "any": 1.0,
+    "nodes": 2245.2165775401068,
+    "reached": true
+   },
+   "R95_pl3+seeds": {
+    "name": "rrf1000_b400+FULL:h1_c100~s20+top800",
+    "all": 0.9545454545454546,
+    "any": 1.0,
+    "nodes": 908.1918449197861,
+    "reached": true
+   },
+   "R95_only:seeds": {
+    "name": "rrf1000_b100+FULL:h3_c25_v2000~s20-cs-vr-eq",
+    "all": 0.9538770053475936,
+    "any": 0.9993315508021391,
+    "nodes": 2037.278743315508,
+    "reached": true
+   },
+   "R98_all": {
+    "name": "rrf1000_b400+FULL:h3_c25_v2000~s20-cs-vr-eq",
+    "all": 0.9625668449197861,
+    "any": 1.0,
+    "nodes": 2215.0601604278077,
+    "reached": false
+   },
+   "R98_pl3": {
+    "name": "rrf1000_b1600+FULL:h1_c100~s20+top800",
+    "all": 0.9605614973262032,
+    "any": 1.0,
+    "nodes": 2078.2393048128342,
+    "reached": false
+   },
+   "R98_new": {
+    "name": "rrf1000_b400+FULL:h3_c25_v2000~s20-cs-vr-eq",
+    "all": 0.9625668449197861,
+    "any": 1.0,
+    "nodes": 2215.0601604278077,
+    "reached": false
+   },
+   "R98_pl3+sp": {
+    "name": "rrf1000_b1600+FULL:h1_c100~s20+top800",
+    "all": 0.9605614973262032,
+    "any": 1.0,
+    "nodes": 2078.2393048128342,
+    "reached": false
+   },
+   "R98_only:sp": {
+    "name": "rrf1000_b400+FULL:h3_c25_v2000~cs-sp-rr-eq",
+    "all": 0.9578877005347594,
+    "any": 1.0,
+    "nodes": 2288.668449197861,
+    "reached": false
+   },
+   "R98_pl3+rk": {
+    "name": "rrf1000_b1600+FULL:h1_c100~s20+top800",
+    "all": 0.9605614973262032,
+    "any": 1.0,
+    "nodes": 2078.2393048128342,
+    "reached": false
+   },
+   "R98_only:rk": {
+    "name": "rrf1000_b400+FULL:h3_c25_v2000~cs-rk",
+    "all": 0.9592245989304813,
+    "any": 1.0,
+    "nodes": 2318.336898395722,
+    "reached": false
+   },
+   "R98_pl3+eq": {
+    "name": "rrf1000_b400+FULL:h3_c25_v2000~s20-cs-vr-eq",
+    "all": 0.9625668449197861,
+    "any": 1.0,
+    "nodes": 2215.0601604278077,
+    "reached": false
+   },
+   "R98_only:eq": {
+    "name": "rrf1000_b400+FULL:h3_c25_v2000~s20-cs-vr-eq",
+    "all": 0.9625668449197861,
+    "any": 1.0,
+    "nodes": 2215.0601604278077,
+    "reached": false
+   },
+   "R98_pl3+rr": {
+    "name": "rrf1000_b1600+FULL:h1_c100~s20+top800",
+    "all": 0.9605614973262032,
+    "any": 1.0,
+    "nodes": 2078.2393048128342,
+    "reached": false
+   },
+   "R98_only:rr": {
+    "name": "rrf1000_b400+FULL:h3_c25_v2000~cs-rk-rr",
+    "all": 0.9592245989304813,
+    "any": 1.0,
+    "nodes": 2318.419117647059,
+    "reached": false
+   },
+   "R98_pl3+seeds": {
+    "name": "rrf1000_b400+FULL:h3_c25_v2000~s20-cs-vr-eq",
+    "all": 0.9625668449197861,
+    "any": 1.0,
+    "nodes": 2215.0601604278077,
+    "reached": false
+   },
+   "R98_only:seeds": {
+    "name": "rrf1000_b400+FULL:h3_c25_v2000~s20-cs-vr-eq",
+    "all": 0.9625668449197861,
+    "any": 1.0,
+    "nodes": 2215.0601604278077,
+    "reached": false
+   }
+  },
+  "smallest_any_size": {
+   "pl3_95": "`rrf1000_b400+FULL:h1_c100~s20+top800` 0.9545 at 908.2",
+   "all_95": "`rrf1000_b400+FULL:h1_c100~s20+top800` 0.9545 at 908.2",
+   "pl3_98": "none (best 0.9719 at 6,230.3)",
+   "all_98": "none (best 0.9786 at 6,277.7)"
+  },
+  "bought": [
+   {
+    "nodes": 25,
+    "pl3": 0.3195187165775401,
+    "new": null,
+    "all": 0.3195187165775401,
+    "gain": 0.0
+   },
+   {
+    "nodes": 50,
+    "pl3": 0.7172459893048129,
+    "new": null,
+    "all": 0.7172459893048129,
+    "gain": 0.0
+   },
+   {
+    "nodes": 75,
+    "pl3": 0.8342245989304813,
+    "new": 0.42780748663101603,
+    "all": 0.8342245989304813,
+    "gain": 0.0
+   },
+   {
+    "nodes": 100,
+    "pl3": 0.8890374331550802,
+    "new": 0.42780748663101603,
+    "all": 0.8890374331550802,
+    "gain": 0.0
+   },
+   {
+    "nodes": 150,
+    "pl3": 0.8983957219251337,
+    "new": 0.4786096256684492,
+    "all": 0.8983957219251337,
+    "gain": 0.0
+   },
+   {
+    "nodes": 200,
+    "pl3": 0.9077540106951871,
+    "new": 0.5073529411764706,
+    "all": 0.9077540106951871,
+    "gain": 0.0
+   },
+   {
+    "nodes": 300,
+    "pl3": 0.9164438502673797,
+    "new": 0.589572192513369,
+    "all": 0.9164438502673797,
+    "gain": 0.0
+   },
+   {
+    "nodes": 400,
+    "pl3": 0.9298128342245989,
+    "new": 0.589572192513369,
+    "all": 0.9298128342245989,
+    "gain": 0.0
+   },
+   {
+    "nodes": 500,
+    "pl3": 0.9324866310160428,
+    "new": 0.6991978609625669,
+    "all": 0.9324866310160428,
+    "gain": 0.0
+   },
+   {
+    "nodes": 750,
+    "pl3": 0.9451871657754011,
+    "new": 0.6991978609625669,
+    "all": 0.9451871657754011,
+    "gain": 0.0
+   },
+   {
+    "nodes": 1000,
+    "pl3": 0.9552139037433155,
+    "new": 0.8275401069518716,
+    "all": 0.9552139037433155,
+    "gain": 0.0
+   },
+   {
+    "nodes": 1500,
+    "pl3": 0.9552139037433155,
+    "new": 0.8409090909090909,
+    "all": 0.9552139037433155,
+    "gain": 0.0
+   },
+   {
+    "nodes": 2000,
+    "pl3": 0.9552139037433155,
+    "new": 0.9505347593582888,
+    "all": 0.9552139037433155,
+    "gain": 0.0
+   },
+   {
+    "nodes": 2500,
+    "pl3": 0.9605614973262032,
+    "new": 0.9625668449197861,
+    "all": 0.9625668449197861,
+    "gain": 0.00200534759358284
+   }
+  ],
+  "reach": {
+   "STRUCT": {
+    "questions": 2096,
+    "with_missing": 1038,
+    "w1": 0.8775811209439528,
+    "w2": 0.9299410029498525,
+    "w3": 0.9874631268436578,
+    "all3": 1006
+   },
+   "NER": {
+    "questions": 2096,
+    "with_missing": 1038,
+    "w1": 0.35191889934829834,
+    "w2": 0.44532947139753803,
+    "w3": 0.5677045619116582,
+    "all3": 542
+   },
+   "KNN": {
+    "questions": 2096,
+    "with_missing": 1038,
+    "w1": 0.0890658942795076,
+    "w2": 0.16437364228819695,
+    "w3": 0.21288921071687184,
+    "all3": 217
+   },
+   "FULL": {
+    "questions": 2096,
+    "with_missing": 1038,
+    "w1": 0.9213139801375095,
+    "w2": 0.9816653934300993,
+    "w3": 0.998472116119175,
+    "all3": 991
+   }
+  }
+ },
  "musique": {
   "dev_questions": 1534,
   "picks": {
@@ -1927,46 +2254,12 @@
    }
   }
  },
- "2wiki": {
-  "reach": {
-   "STRUCT": {
-    "questions": 2096,
-    "with_missing": 1038,
-    "w1": 0.8775811209439528,
-    "w2": 0.9299410029498525,
-    "w3": 0.9874631268436578,
-    "all3": 1006
-   },
-   "NER": {
-    "questions": 2096,
-    "with_missing": 1038,
-    "w1": 0.35191889934829834,
-    "w2": 0.44532947139753803,
-    "w3": 0.5677045619116582,
-    "all3": 542
-   },
-   "KNN": {
-    "questions": 2096,
-    "with_missing": 1038,
-    "w1": 0.0890658942795076,
-    "w2": 0.16437364228819695,
-    "w3": 0.21288921071687184,
-    "all3": 217
-   },
-   "FULL": {
-    "questions": 2096,
-    "with_missing": 1038,
-    "w1": 0.9213139801375095,
-    "w2": 0.9816653934300993,
-    "w3": 0.998472116119175,
-    "all3": 991
-   }
-  }
- },
  "call": {
-  "call": "INCOMPLETE",
-  "call_frontier": "INCOMPLETE",
+  "call": "CARRY_PL4",
+  "call_frontier": "NOT_CARRIED",
   "datasets_read": [
+   "2wiki",
+   "hotpotqa",
    "metaqa",
    "multihoprag",
    "musique",
@@ -1977,20 +2270,20 @@
    "old": {
     "BELOW": 0,
     "ABOVE": 1,
-    "LEVEL": 4
+    "LEVEL": 6
    },
    "frontier": {
     "BELOW": 0,
     "ABOVE": 0,
-    "LEVEL": 5
+    "LEVEL": 7
    }
   },
   "statuses": {
    "metaqa": "LEVEL",
    "squad": "LEVEL",
    "musique": "ABOVE",
-   "hotpotqa": "NOT_READ",
-   "2wiki": "NOT_READ",
+   "hotpotqa": "LEVEL",
+   "2wiki": "LEVEL",
    "webqsp": "LEVEL",
    "multihoprag": "LEVEL"
   },
@@ -1998,8 +2291,8 @@
    "metaqa": "LEVEL",
    "squad": "LEVEL",
    "musique": "LEVEL",
-   "hotpotqa": null,
-   "2wiki": null,
+   "hotpotqa": "LEVEL",
+   "2wiki": "LEVEL",
    "webqsp": "LEVEL",
    "multihoprag": "LEVEL"
   }
