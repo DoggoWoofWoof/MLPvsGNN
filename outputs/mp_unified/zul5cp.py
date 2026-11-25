@@ -487,7 +487,13 @@ def cmd_solve(a=None):
         res["phi"] = phi
         res["saving_vs_uniform"] = float(1.0 - pick["t"] / uni[0])
         res["best_saving_vs_uniform"] = float(1.0 - overall["t"] / uni[0])
-    # P1 without WebQSP beside (six datasets), P2 under the caps, LP relaxation of the chosen
+    # E4: the same bins with private levels per dataset (the cost of universality), P2 under the caps, LP relaxation of the chosen
+    priv = {}
+    for i, d in enumerate(SEVEN):
+        r = solve_p1(As[i:i + 1], Zs[i:i + 1], Ns[i:i + 1], RHO, integer=True)
+        priv[d] = None if r is None else {"t": r["t"], "levels_m": [LADDER_M[j] for j in r["levels"]]}
+    res["private_levels"] = priv
+    res["private_worst"] = max((v["t"] for v in priv.values() if v), default=None)
     lbp = solve_p1(As, Zs, Ns, RHO, integer=False)
     res["chosen_lp_t"] = None if lbp is None else lbp["t"]
     res["p2"] = {}
