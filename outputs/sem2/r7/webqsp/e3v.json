@@ -1,0 +1,1717 @@
+{
+ "stage": "SEM2 R7 links withheld",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 15",
+ "dataset": "webqsp",
+ "arm": "e3v",
+ "smoke": false,
+ "config": {
+  "b": 10,
+  "pool": 3000,
+  "t1_max": 100,
+  "m_min": 2,
+  "m_max": 100,
+  "min_group": 20,
+  "max_groups": 12,
+  "per_group": 100,
+  "kmult": 4,
+  "ck_secs": 240,
+  "mem_cells": 60000000.0,
+  "min_units": 20,
+  "n_gate_u": 50,
+  "n_gate_t": 12
+ },
+ "fs": [
+  0.25,
+  0.5,
+  0.75,
+  0.9
+ ],
+ "f_main": 0.5,
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 500445467,
+     "record": 500445467
+    },
+    "CN_all": {
+     "pairs": 995434,
+     "record": 995434
+    },
+    "F0T": {
+     "pairs": 997211,
+     "record": 997211
+    },
+    "S": {
+     "pairs": 5882501,
+     "record": 5882501
+    },
+    "S directed": {
+     "edges": 8215503,
+     "pair_relation_rows": 8213874,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-U": {
+   "rebuilt units equal R5's record": true,
+   "units": 1200,
+   "R5 units": 1200,
+   "verdict": "PASS"
+  },
+  "G-U-units": {
+   "|T1| and |T2| in range": true,
+   "verdict": "PASS"
+  },
+  "G-W": {
+   "every T2 node has a path (reach >= 0)": true,
+   "scalar hash equals the vectorised one (2,000 edges)": true,
+   "an undirected edge has one u from either end": true,
+   "withheld share within 1.5 points of f": true,
+   "withheld shares": {
+    "0.25": 0.2512,
+    "0.5": 0.501,
+    "0.75": 0.75,
+    "0.9": 0.8997
+   },
+   "W_f equals an independent scalar walk (checked units x f in 0, 0.25, 0.5, 0.75, 0.9)": true,
+   "seen flags equal a per-unit scalar scan": true,
+   "units checked": 50,
+   "verdict": "PASS",
+   "f = 0 reads R-precision 1 for every unit": true
+  },
+  "G-S": {
+   "cosine": {
+    "units equal": 1.0,
+    "mean abs diff": 0.0
+   },
+   "chain-cos": {
+    "units equal": 1.0,
+    "mean abs diff": 0.0
+   },
+   "chain-point": {
+    "units equal": 1.0,
+    "mean abs diff": 0.0
+   },
+   "compose": {
+    "units equal": 1.0,
+    "mean abs diff": 0.0
+   },
+   "verdict": "PASS"
+  }
+ },
+ "chain_labels": [
+  "R.mention",
+  "R.name_comention",
+  "R.title_comention",
+  "S.football game passing",
+  "S.football game receiving",
+  "S.football game rushing",
+  "S.football player games",
+  "S.american football football player position s",
+  "S.game passing statistics game",
+  "S.game passing statistics team",
+  "S.game receiving statistics game",
+  "S.game receiving statistics player",
+  "S.game receiving statistics team",
+  "S.game rushing statistics game",
+  "S.game rushing statistics team",
+  "S.player game statistics player",
+  "S.park rides",
+  "S.architect structures designed",
+  "S.architectural style examples",
+  "S.building building function",
+  "S.structure architect",
+  "S.structure architectural style",
+  "S.automotive make model s",
+  "S.airport focus city for",
+  "S.airport hub for",
+  "S.airport serves",
+  "S.award category",
+  "S.award category category of",
+  "S.award category disciplines or subjects",
+  "S.award category nominees",
+  "S.award category presenting organization",
+  "S.award category winners",
+  "S.award ceremony awards presented",
+  "S.award ceremony nominees",
+  "S.award discipline awards in this discipline",
+  "S.award honor award",
+  "S.award honor award winner",
+  "S.award honor ceremony",
+  "S.award honor honored for",
+  "S.award nominated work award nominations",
+  "S.award nomination award",
+  "S.award nomination award nominee",
+  "S.award nomination ceremony",
+  "S.award nomination nominated for",
+  "S.award nominee award nominations",
+  "S.award presenting organization award categories presented",
+  "S.award winner awards won",
+  "S.award winning work awards won",
+  "S.award ranked item appears in ranked lists",
+  "S.award ranking item",
+  "S.award ranking list",
+  "S.administrative area administrative area type",
+  "S.administrative area administrative children",
+  "S.administrative area administrative parent",
+  "S.activism issue activists",
+  "S.activist area of activism",
+  "S.bibs location country",
+  "S.base cars refactor make model s",
+  "S.event entity involved",
+  "S.names descriptive name",
+  "S.kwconnection other",
+  "S.kwconnection relation",
+  "S.kwconnection sentence",
+  "S.kwconnection subject",
+  "S.kwsentence contains connections",
+  "S.kwsentence dates",
+  "S.kwsentence kwtopic",
+  "S.kwsentence next sentence",
+  "S.kwsentence previous sentence",
+  "S.kwtopic connections from",
+  "S.kwtopic connections to",
+  "S.kwtopic has sentences",
+  "S.ncaa basketball team ncaa tournament seeds",
+  "S.ncaa basketball team tournament games lost",
+  "S.ncaa basketball team tournament games won",
+  "S.ncaa basketball tournament seeds",
+  "S.ncaa basketball tournament stages",
+  "S.ncaa basketball tournament game losing team",
+  "S.ncaa basketball tournament game tournament round instance",
+  "S.ncaa basketball tournament game winning team",
+  "S.ncaa basketball tournament stage games",
+  "S.ncaa tournament seed region",
+  "S.ncaa tournament seed team",
+  "S.ncaa tournament seed tournament",
+  "S.ontology instance equivalent instances",
+  "S.ontology instance mapping freebase topic",
+  "S.ontology instance mapping ontology",
+  "S.dog breed color",
+  "S.dog breed temperament",
+  "S.dog coat color dog breeds",
+  "S.dog temperament dog breeds",
+  "S.canoodled participant",
+  "S.celebrity canoodled",
+  "S.celebrity dated",
+  "S.celebrity friendship",
+  "S.celebrity vacations in",
+  "S.dated participant",
+  "S.friendship participant",
+  "S.location vacationers",
+  "S.vacation choice location",
+  "S.vacation choice vacationer",
+  "S.review mentions",
+  "S.languoid document",
+  "S.languoid languoid class",
+  "S.languoid parent",
+  "S.local name locale",
+  "S.context name pronunciation",
+  "S.organization extra phone number",
+  "S.phone sandbox caller category",
+  "S.phone sandbox contact category",
+  "S.phone sandbox service location",
+  "S.plural form gender",
+  "S.plural form language",
+  "S.skos concept narrower",
+  "S.exception involves",
+  "S.topic exceptions",
+  "S.nris listing significance level",
+  "S.film w id",
+  "S.siteid film",
+  "S.settlement area code",
+  "S.video game platforms",
+  "S.baseball player batting stats",
+  "S.baseball player position s",
+  "S.baseball team team stats",
+  "S.baseball team stats season",
+  "S.baseball team stats team",
+  "S.batting statistics player",
+  "S.basketball player player statistics",
+  "S.basketball player position s",
+  "S.basketball player stats player",
+  "S.animal breed coloring",
+  "S.animal breed place of origin",
+  "S.animal breed temperament",
+  "S.breed coloring breeds",
+  "S.breed origin breeds originating here",
+  "S.breed temperament breeds",
+  "S.organism classification higher classification",
+  "S.organism classification lower classifications",
+  "S.author book editions published",
+  "S.author series written or contributed to",
+  "S.author works written",
+  "S.book book characters",
+  "S.book editions",
+  "S.book genre",
+  "S.book character appears in book",
+  "S.book edition author editor",
+  "S.book edition binding",
+  "S.book edition book",
+  "S.book edition isbn",
+  "S.book edition number of pages",
+  "S.book edition publisher",
+  "S.book subject works",
+  "S.literary series works in this series",
+  "S.newspaper circulation areas",
+  "S.newspaper headquarters",
+  "S.periodical first issue date",
+  "S.periodical format",
+  "S.periodical frequency or issues per year",
+  "S.periodical format period periodical",
+  "S.periodical publisher period periodical",
+  "S.periodical subject periodicals",
+  "S.publishing company books published",
+  "S.written work author",
+  "S.written work next in series",
+  "S.written work original language",
+  "S.written work part of series",
+  "S.written work previous in series",
+  "S.written work school or movement",
+  "S.written work subjects",
+  "S.artist content",
+  "S.content artist",
+  "S.content broadcast",
+  "S.content genre",
+  "S.genre content",
+  "S.board member leader of",
+  "S.board member organization board memberships",
+  "S.business operation industry",
+  "S.employer employees",
+  "S.employment tenure company",
+  "S.employment tenure person",
+  "S.employment tenure title",
+  "S.industry companies",
+  "S.job title people with this title",
+  "S.document content",
+  "S.image appears in topic gallery",
+  "S.image size",
+  "S.resource annotations",
+  "S.topic article",
+  "S.topic image",
+  "S.topic notable for",
+  "S.topic notable types",
+  "S.topic subject of",
+  "S.topic subjects",
+  "S.common topic webpage",
+  "S.webpage category",
+  "S.webpage in index",
+  "S.webpage resource",
+  "S.webpage topic",
+  "S.computer videogame cvg genre",
+  "S.computer videogame gameplay modes",
+  "S.computer videogame publisher",
+  "S.academic departments old",
+  "S.department academics old",
+  "S.education degree",
+  "S.education institution",
+  "S.education major field of study",
+  "S.education student",
+  "S.educational institution colors",
+  "S.educational institution mascot",
+  "S.educational institution parent institution",
+  "S.educational institution phone number",
+  "S.educational institution school type",
+  "S.educational institution students graduates",
+  "S.educational institution subsidiary or constituent schools",
+  "S.educational institution total enrollment",
+  "S.field of study journals in this discipline",
+  "S.field of study students majoring",
+  "S.school district schools",
+  "S.education university domestic tuition",
+  "S.university local tuition",
+  "S.university number of postgraduates",
+  "S.university number of undergraduates",
+  "S.exhibition run venue",
+  "S.exhibition venue exhibitions at this venue",
+  "S.character occupation characters with this occupation",
+  "S.character powers characters with this ability",
+  "S.character species characters of this species",
+  "S.fictional character appears in these fictional universes",
+  "S.fictional character character created by",
+  "S.fictional character children",
+  "S.fictional character gender",
+  "S.fictional character married to",
+  "S.fictional character occupation",
+  "S.fictional character organizations",
+  "S.fictional character parents",
+  "S.fictional character place of birth",
+  "S.fictional character powers or abilities",
+  "S.fictional character romantically involved with",
+  "S.fictional character siblings",
+  "S.fictional character species",
+  "S.fictional character creator fictional characters created",
+  "S.fictional organization members",
+  "S.fictional setting fictional characters born here",
+  "S.fictional universe characters",
+  "S.fictional universe works set here",
+  "S.marriage of fictional characters spouses",
+  "S.romantic involvement partner",
+  "S.sibling relationship of fictional characters siblings",
+  "S.work of fiction setting",
+  "S.actor film",
+  "S.cinematographer film",
+  "S.director film",
+  "S.editor film",
+  "S.film cinematography",
+  "S.film costume design by",
+  "S.film country",
+  "S.film directed by",
+  "S.film distributors",
+  "S.film edited by",
+  "S.film estimated budget",
+  "S.film executive produced by",
+  "S.film featured film locations",
+  "S.film film art direction by",
+  "S.film film casting director",
+  "S.film film festivals",
+  "S.film film format",
+  "S.film film production design by",
+  "S.film film series",
+  "S.film film set decoration by",
+  "S.film genre",
+  "S.film language",
+  "S.film music",
+  "S.film other crew",
+  "S.film personal appearances",
+  "S.film prequel",
+  "S.film produced by",
+  "S.film production companies",
+  "S.film rating",
+  "S.film release date s",
+  "S.film runtime",
+  "S.film sequel",
+  "S.film starring",
+  "S.film story by",
+  "S.film subjects",
+  "S.film written by",
+  "S.film art director films art directed",
+  "S.film casting director films casting directed",
+  "S.film character portrayed in films",
+  "S.film costumer designer costume design for film",
+  "S.film crew gig crewmember",
+  "S.film crew gig film",
+  "S.film crew gig film crew role",
+  "S.film crewmember films crewed",
+  "S.film cut film",
+  "S.film distributor films distributed",
+  "S.film festival individual festivals",
+  "S.film festival event festival",
+  "S.film festival event films",
+  "S.film film distributor relationship distributor",
+  "S.film film distributor relationship film",
+  "S.film genre films in this genre",
+  "S.film job films with this crew job",
+  "S.film location featured in films",
+  "S.film production designer films production designed",
+  "S.film regional release date film",
+  "S.film regional release date film regional debut venue",
+  "S.film regional release date film release distribution medium",
+  "S.film regional release date film release region",
+  "S.film set designer film sets designed",
+  "S.film story contributor film story credits",
+  "S.film subject films",
+  "S.music contributor film",
+  "S.performance actor",
+  "S.performance character",
+  "S.performance film",
+  "S.performance special performance type",
+  "S.person or entity appearing in film films",
+  "S.personal film appearance film",
+  "S.personal film appearance person",
+  "S.personal film appearance type of appearance",
+  "S.producer film",
+  "S.producer films executive produced",
+  "S.production company films",
+  "S.writer film",
+  "S.food nutrients",
+  "S.nutrition fact food",
+  "S.type hints included types",
+  "S.type profile strict included types",
+  "S.valuenotation has no value",
+  "S.valuenotation has value",
+  "S.valuenotation is reviewed",
+  "S.mountain mountain range",
+  "S.mountain range mountains",
+  "S.river basin countries",
+  "S.river cities",
+  "S.river mouth",
+  "S.form of government countries",
+  "S.government agency jurisdiction",
+  "S.government office category officeholders",
+  "S.government office or title category",
+  "S.government office or title office holders",
+  "S.government position held appointed by",
+  "S.government position held basic title",
+  "S.government position held district represented",
+  "S.government position held governmental body",
+  "S.government position held jurisdiction of office",
+  "S.government position held legislative sessions",
+  "S.government position held office holder",
+  "S.government position held office position or title",
+  "S.governmental body members",
+  "S.governmental jurisdiction agencies",
+  "S.governmental jurisdiction governing officials",
+  "S.governmental jurisdiction government bodies",
+  "S.legislative session members",
+  "S.political appointer appointees",
+  "S.political district representatives",
+  "S.political ideology political parties",
+  "S.political party ideology",
+  "S.political party politicians in this party",
+  "S.political party tenure party",
+  "S.political party tenure politician",
+  "S.politician government positions held",
+  "S.politician party",
+  "S.influence node influenced",
+  "S.influence node influenced by",
+  "S.influence node peers",
+  "S.peer relationship peers",
+  "S.website category sites",
+  "S.human language countries spoken in",
+  "S.human language language family",
+  "S.human language main country",
+  "S.human language region",
+  "S.language family languages",
+  "S.adjoining relationship adjoins",
+  "S.administrative division capital",
+  "S.administrative division country",
+  "S.administrative division first level division of",
+  "S.administrative division second level division of",
+  "S.administrative division capital relationship administrative division",
+  "S.administrative division capital relationship capital",
+  "S.capital of administrative division capital of",
+  "S.citytown postal codes",
+  "S.country administrative divisions",
+  "S.country first level divisions",
+  "S.country form of government",
+  "S.country languages spoken",
+  "S.country second level divisions",
+  "S.geometry delineates location",
+  "S.hud county place county",
+  "S.hud foreclosure area bls unemployment rate",
+  "S.hud foreclosure area estimated number foreclosures",
+  "S.hud foreclosure area estimated number of mortgages",
+  "S.hud foreclosure area hhuniv",
+  "S.hud foreclosure area ofheo price change",
+  "S.hud foreclosure area total 90 day vacant residential addresses",
+  "S.hud foreclosure area total residential addresses",
+  "S.location adjoin s",
+  "S.location containedby",
+  "S.location contains",
+  "S.location events",
+  "S.location geolocation",
+  "S.location geometry",
+  "S.location nearby airports",
+  "S.location partially contained by",
+  "S.location partially containedby",
+  "S.location partially contains",
+  "S.location partiallycontains",
+  "S.location people born here",
+  "S.location street address",
+  "S.location time zones",
+  "S.mailing address citytown",
+  "S.mailing address country",
+  "S.mailing address postal code",
+  "S.mailing address state province region",
+  "S.neighborhood neighborhood of",
+  "S.partial containment relationship partially contained by",
+  "S.partial containment relationship partially contains",
+  "S.place with neighborhoods neighborhoods",
+  "S.postal code country",
+  "S.statistical region agriculture as percent of gdp",
+  "S.statistical region broadband penetration rate",
+  "S.statistical region co2 emissions per capita",
+  "S.statistical region consumer price index",
+  "S.statistical region cpi inflation rate",
+  "S.statistical region debt service as percent of trade volume",
+  "S.statistical region deposit interest rate",
+  "S.statistical region diesel price liter",
+  "S.statistical region electricity consumption per capita",
+  "S.statistical region energy use per capita",
+  "S.statistical region external debt stock",
+  "S.statistical region foreign direct investment net inflows",
+  "S.statistical region gdp growth rate",
+  "S.statistical region gdp nominal",
+  "S.statistical region gdp nominal per capita",
+  "S.statistical region gdp real",
+  "S.statistical region gender balance members of parliament",
+  "S.statistical region gni in ppp dollars",
+  "S.statistical region gni per capita in ppp dollars",
+  "S.statistical region government debt percent gdp",
+  "S.statistical region gross savings as percent of gdp",
+  "S.statistical region health expenditure as percent of gdp",
+  "S.statistical region high tech as percent of manufactured exports",
+  "S.statistical region internet users percent population",
+  "S.statistical region labor participation rate",
+  "S.statistical region long term unemployment rate",
+  "S.statistical region market cap of listed companies as percent of gdp",
+  "S.statistical region merchandise trade percent of gdp",
+  "S.statistical region military expenditure percent gdp",
+  "S.statistical region minimum wage",
+  "S.statistical region net migration",
+  "S.statistical region official development assistance",
+  "S.statistical region part time employment percent",
+  "S.statistical region population",
+  "S.statistical region poverty rate 2dollars per day",
+  "S.statistical region prevalence of undernourisment",
+  "S.statistical region religions",
+  "S.statistical region renewable freshwater per capita",
+  "S.statistical region size of armed forces",
+  "S.statistical region time required to start a business",
+  "S.statistical region trade balance as percent of gdp",
+  "S.us county county seat",
+  "S.us county hud county place",
+  "S.adjusted money value adjustment currency",
+  "S.adjusted money value source",
+  "S.dated integer source",
+  "S.dated kgoe source",
+  "S.dated kilowatt hour source",
+  "S.dated metric ton source",
+  "S.dated money value currency",
+  "S.dated money value source",
+  "S.dated percentage source",
+  "S.adaptation adapted from",
+  "S.adapted work adaptations",
+  "S.literary genre books in this genre",
+  "S.netflix genre titles",
+  "S.netflix title netflix genres",
+  "S.quotation author",
+  "S.quotation subjects",
+  "S.quotation subject quotations about this subject",
+  "S.disease causes",
+  "S.disease includes diseases",
+  "S.disease medical specialties",
+  "S.disease notable people with this condition",
+  "S.disease parent disease",
+  "S.disease risk factors",
+  "S.disease symptoms",
+  "S.disease treatments",
+  "S.drug active moieties",
+  "S.drug marketed formulations",
+  "S.drug formulation active ingredient moieties",
+  "S.drug formulation active ingredients",
+  "S.drug ingredient active ingredient of formulation",
+  "S.drug ingredient active moiety of drug",
+  "S.drug ingredient active moiety of formulation",
+  "S.icd 9 cm classification includes classifications",
+  "S.medical specialty diseases treated",
+  "S.medical treatment used to treat",
+  "S.notable person with medical condition condition",
+  "S.risk factor diseases",
+  "S.medicine symptom symptom of",
+  "S.cyclone affected area cyclones",
+  "S.tropical cyclone affected areas",
+  "S.military combatant military conflicts",
+  "S.military combatant group combatants",
+  "S.military combatant group conflict",
+  "S.military command military commander",
+  "S.military command military conflict",
+  "S.military commander military commands",
+  "S.military conflict combatants",
+  "S.military conflict commanders",
+  "S.military conflict military personnel involved",
+  "S.military person participated in conflicts",
+  "S.military person service",
+  "S.military service military person",
+  "S.military unit place of origin",
+  "S.military unit unit size",
+  "S.military unit place of origin military units",
+  "S.album album content type",
+  "S.album artist",
+  "S.album contributor",
+  "S.album featured artists",
+  "S.album genre",
+  "S.album release type",
+  "S.album releases",
+  "S.music.artist.album",
+  "S.artist contribution",
+  "S.music.artist.genre",
+  "S.artist label",
+  "S.artist origin",
+  "S.music.artist.track",
+  "S.artist track contributions",
+  "S.composer compositions",
+  "S.music composition composer",
+  "S.composition form",
+  "S.composition lyricist",
+  "S.composition recordings",
+  "S.engineer tracks engineered",
+  "S.featured artist albums",
+  "S.featured artist recordings",
+  "S.genre albums",
+  "S.genre artists",
+  "S.genre subgenre",
+  "S.group member instruments played",
+  "S.group member membership",
+  "S.music group membership group",
+  "S.music group membership member",
+  "S.group membership role",
+  "S.instrument instrumentalists",
+  "S.lyricist lyrics written",
+  "S.musical group member",
+  "S.performance role regular performances",
+  "S.producer releases produced",
+  "S.producer tracks produced",
+  "S.record label artist",
+  "S.record label releases",
+  "S.recording artist",
+  "S.recording canonical version",
+  "S.recording contributions",
+  "S.recording engineer",
+  "S.recording featured artists",
+  "S.recording lyrics website",
+  "S.recording producer",
+  "S.recording releases",
+  "S.recording song",
+  "S.recording tracks",
+  "S.recording contribution album",
+  "S.recording contribution contributor",
+  "S.recording contribution performance role",
+  "S.single versions",
+  "S.track contribution contributor",
+  "S.track contribution role",
+  "S.track contribution track",
+  "S.olympic athlete country",
+  "S.olympic athlete medals won",
+  "S.olympic athlete affiliation athlete",
+  "S.olympic athlete affiliation country",
+  "S.olympic athlete affiliation olympics",
+  "S.olympic athlete affiliation sport",
+  "S.olympic event competitions",
+  "S.olympic event olympic games contested",
+  "S.olympic event competition event",
+  "S.olympic event competition medalists",
+  "S.olympic event competition olympic games contested",
+  "S.olympic games athletes",
+  "S.olympic games competitions",
+  "S.olympic games events",
+  "S.olympic games sports",
+  "S.olympic medal honor country",
+  "S.olympic medal honor event",
+  "S.olympic medal honor medal",
+  "S.olympic medal honor medalist",
+  "S.olympic medal honor olympics",
+  "S.olympic participating country athletes",
+  "S.olympic participating country medals won",
+  "S.olympic participating country olympics participated in",
+  "S.olympic sport events",
+  "S.olympic sport olympic games contested",
+  "S.leadership organization",
+  "S.leadership person",
+  "S.leadership role",
+  "S.membership organization members",
+  "S.organization board members",
+  "S.organization child",
+  "S.organization founders",
+  "S.organization geographic scope",
+  "S.organization headquarters",
+  "S.organization leadership",
+  "S.organization organization type",
+  "S.organization parent",
+  "S.organization phone number",
+  "S.organization place founded",
+  "S.organization sectors",
+  "S.organization board membership member",
+  "S.organization board membership organization",
+  "S.organization founder organizations founded",
+  "S.organization member member of",
+  "S.organization membership member",
+  "S.organization membership organization",
+  "S.organization relationship child",
+  "S.organization relationship parent",
+  "S.organization scope organizations with this scope",
+  "S.organization sector organizations in this sector",
+  "S.cause of death includes causes of death",
+  "S.cause of death people",
+  "S.deceased person cause of death",
+  "S.deceased person place of burial",
+  "S.deceased person place of death",
+  "S.ethnicity languages spoken",
+  "S.ethnicity people",
+  "S.family members",
+  "S.family member family",
+  "S.marriage spouse",
+  "S.marriage type of union",
+  "S.person children",
+  "S.person education",
+  "S.person employment history",
+  "S.person ethnicity",
+  "S.person gender",
+  "S.person languages",
+  "S.person nationality",
+  "S.person parents",
+  "S.person place of birth",
+  "S.person places lived",
+  "S.person profession",
+  "S.person quotations",
+  "S.person religion",
+  "S.person sibling s",
+  "S.person spouse s",
+  "S.place lived location",
+  "S.place lived person",
+  "S.place of interment interred here",
+  "S.profession people with this profession",
+  "S.people profession specialization of",
+  "S.profession specializations",
+  "S.sibling relationship sibling",
+  "S.newspaper circulation area newspapers",
+  "S.listed site designation as natural or cultural site",
+  "S.natural or cultural site listing listed site",
+  "S.rdf-schema domain",
+  "S.rdf-schema range",
+  "S.chivalric order member belongs to order",
+  "S.chivalric order membership order",
+  "S.chivalric order membership recipient",
+  "S.monarch royal line",
+  "S.order of chivalry recipients",
+  "S.football match players",
+  "S.soccer football player position s",
+  "S.football player statistics",
+  "S.football player match participation match",
+  "S.football player match participation team",
+  "S.football player stats player",
+  "S.football player stats team",
+  "S.football team player statistics",
+  "S.drafted athlete drafted",
+  "S.pro athlete sports played professionally",
+  "S.pro athlete teams",
+  "S.pro sports played athlete",
+  "S.pro sports played sport",
+  "S.professional sports team draft picks",
+  "S.sport pro athletes",
+  "S.sports award season",
+  "S.sports championship event champion",
+  "S.sports championship event championship",
+  "S.sports facility home venue for",
+  "S.sports facility teams",
+  "S.sports league draft picks",
+  "S.sports league draft pick draft",
+  "S.sports league draft pick player",
+  "S.sports league draft pick school",
+  "S.sports league draft pick team",
+  "S.sports league participation team",
+  "S.sports league season awards",
+  "S.sports position players",
+  "S.sports team arena stadium",
+  "S.sports team championships",
+  "S.sports team colors",
+  "S.sports team league",
+  "S.sports team location",
+  "S.sports team roster",
+  "S.sports team season record",
+  "S.sports team sport",
+  "S.sports team venue",
+  "S.sports team location teams",
+  "S.sports team roster player",
+  "S.sports team roster position",
+  "S.sports team roster team",
+  "S.sports team season record season",
+  "S.sports team season record team",
+  "S.team venue relationship team",
+  "S.team venue relationship venue",
+  "S.name source namesakes",
+  "S.namesake named after",
+  "S.play characters",
+  "S.theater character plays appears in",
+  "S.theater producer plays produced",
+  "S.theater production cast",
+  "S.theater production producer",
+  "S.theater role play",
+  "S.event included in event",
+  "S.event includes event",
+  "S.event instance of recurring event",
+  "S.event locations",
+  "S.recurring event instances",
+  "S.time zone locations in this time zone",
+  "S.tourist attraction near travel destination",
+  "S.travel destination tourist attractions",
+  "S.regular tv appearance actor",
+  "S.regular tv appearance character",
+  "S.regular tv appearance seasons",
+  "S.regular tv appearance series",
+  "S.tv actor guest roles",
+  "S.tv actor starring roles",
+  "S.tv character appeared in tv episodes",
+  "S.tv character appeared in tv program",
+  "S.tv director episodes directed",
+  "S.tv genre programs",
+  "S.tv guest personal appearance appearance type",
+  "S.tv guest personal appearance episode",
+  "S.tv guest personal appearance person",
+  "S.tv guest role actor",
+  "S.tv guest role character",
+  "S.tv guest role episodes appeared in",
+  "S.tv network duration network",
+  "S.tv network duration program",
+  "S.tv personality tv regular appearances",
+  "S.tv producer programs produced",
+  "S.tv producer term producer",
+  "S.tv producer term producer type",
+  "S.tv producer term program",
+  "S.tv program country of origin",
+  "S.tv program episodes",
+  "S.tv program genre",
+  "S.tv program original network",
+  "S.tv program program creator",
+  "S.tv program recurring writers",
+  "S.tv program regular cast",
+  "S.tv program regular personal appearances",
+  "S.tv program seasons",
+  "S.tv program tv producer",
+  "S.tv program creator programs created",
+  "S.tv program guest appeared on",
+  "S.tv program writer relationship tv program",
+  "S.tv program writer relationship writer",
+  "S.tv regular personal appearance appearance type",
+  "S.tv regular personal appearance person",
+  "S.tv regular personal appearance program",
+  "S.tv regular personal appearance seasons",
+  "S.tv series season episodes",
+  "S.tv series season regular cast",
+  "S.tv series season regular personal appearances",
+  "S.tv series season series",
+  "S.tv writer episodes written",
+  "S.tv writer tv programs",
+  "S.property expected type",
+  "S.property schema",
+  "S.type expected by",
+  "S.type properties",
+  "S.art owner artworks owned",
+  "S.art period movement associated artists",
+  "S.art period movement associated artworks",
+  "S.art subject artwork on the subject",
+  "S.artwork art subject",
+  "S.artwork artist",
+  "S.artwork media",
+  "S.artwork owners",
+  "S.artwork owner relationship artwork",
+  "S.artwork owner relationship owner",
+  "S.visual artist art forms",
+  "S.visual artist artworks",
+  "S.visual artist associated periods or movements"
+ ],
+ "units": 1200,
+ "path_groups": [
+  "R.mention > S.topic notable types",
+  "R.mention > S.topic notable for",
+  "R.mention > S.topic article",
+  "R.mention > R.name_comention",
+  "R.mention > S.common topic webpage",
+  "R.mention > S.topic image",
+  "R.mention > S.location containedby",
+  "R.mention > S.film genre",
+  "R.mention > S.valuenotation is reviewed",
+  "R.mention > S.netflix title netflix genres",
+  "R.mention > S.film country",
+  "R.mention > S.film starring"
+ ],
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "b39c615122ad55f587eaea0c3fc5c7eff4190e6236fa258006e957dcfda948fe",
+  "ner_npz_sha256": "8ed08f05db3da877f02d212b2c8ac5b495d12bf15c91c329b33652fdc2e9fb10",
+  "knn_npz_sha256": "75a03f25dfa8c6339773059bffbd8322c2f9bf13e7b48cad0105c2ee189519cd",
+  "structural_npz_sha256": "b7c2c435fc0b9dbab3a238c7db31cd61da9a8bd435864c0eba6990ae12756b95",
+  "w2_s_npz_sha256": "a2e79a93c350f6e4de9455af07b11684b875444d2fb61ed6f2555b443ed093c4",
+  "f0t_npz_sha256": "624684bf80d6605b8a7e9d9f884ee027b35c84f3f51dbdd4d65c10ee29a51edd",
+  "names_npz_sha256": "b567061f6c9fc8653ee964518913a97e72ef42e0d940315528401e80f0140f38",
+  "vectors": {
+   "shards": 65,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "e171839e9a7376ae102ec00d7fefffc0edc2ef2775707d79c3f76aa779fe4f17"
+  }
+ },
+ "refs": {
+  "r1_record_sha256": "771b1393aa9a159367edf6f3eb16d8d5d35ae0a813ec238794ee3b1e3c990a6f",
+  "r1_npz_sha256": "6a7d1b0316fa4540e857c078fc4fa0d5a9c77814b4a17bf1ee7dc0319c425a62"
+ },
+ "threads": 8,
+ "script_sha256": "961539e0e7f2798cb23862e2a9e6c42d0f7070a3a17804859ffb63185d464486",
+ "r5_script_sha256": "69d287d067c1e139112d5e8c86bda7776067fbba381d7785c4e0e46fe6282f4f",
+ "r5_npz_sha256": "8f26a19298ffda45537e31af1e2d0006f8f329585dbbb8526e01f455e99ac231",
+ "by f": {
+  "0.25": {
+   "rp": {
+    "C_chain-point - C_cosine": {
+     "diff": 0.12,
+     "lo": -0.32,
+     "hi": 0.54,
+     "call": "LEVEL"
+    },
+    "C_chain-point - W": {
+     "diff": 0.9,
+     "lo": 0.58,
+     "hi": 1.27,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_chain-cos": {
+     "diff": 0.24,
+     "lo": -0.19,
+     "hi": 0.66,
+     "call": "LEVEL"
+    },
+    "C_chain-point - C_compose": {
+     "diff": -0.19,
+     "lo": -0.5,
+     "hi": 0.1,
+     "call": "LEVEL"
+    },
+    "chain-point alone - W": {
+     "diff": -53.79,
+     "lo": -55.67,
+     "hi": -51.91,
+     "call": "BELOW"
+    }
+   },
+   "rc": {
+    "C_chain-point - C_cosine": {
+     "diff": 1.57,
+     "lo": 0.94,
+     "hi": 2.2,
+     "call": "ABOVE"
+    },
+    "C_chain-point - W": {
+     "diff": 2.73,
+     "lo": 2.15,
+     "hi": 3.37,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_chain-cos": {
+     "diff": 1.67,
+     "lo": 1.09,
+     "hi": 2.26,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_compose": {
+     "diff": -0.25,
+     "lo": -0.77,
+     "hi": 0.2,
+     "call": "LEVEL"
+    },
+    "chain-point alone - W": {
+     "diff": -49.55,
+     "lo": -51.6,
+     "hi": -47.45,
+     "call": "BELOW"
+    }
+   },
+   "rpu": {
+    "C_chain-point - C_cosine": {
+     "diff": -0.0,
+     "lo": -0.21,
+     "hi": 0.2,
+     "call": "LEVEL"
+    },
+    "C_chain-point - W": {
+     "diff": 0.36,
+     "lo": 0.19,
+     "hi": 0.55,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_chain-cos": {
+     "diff": 0.07,
+     "lo": -0.11,
+     "hi": 0.25,
+     "call": "LEVEL"
+    },
+    "C_chain-point - C_compose": {
+     "diff": -0.08,
+     "lo": -0.24,
+     "hi": 0.07,
+     "call": "LEVEL"
+    },
+    "chain-point alone - W": {
+     "diff": -17.18,
+     "lo": -18.65,
+     "hi": -15.89,
+     "call": "BELOW"
+    }
+   },
+   "rcu": {
+    "C_chain-point - C_cosine": {
+     "diff": 0.64,
+     "lo": 0.26,
+     "hi": 1.02,
+     "call": "ABOVE"
+    },
+    "C_chain-point - W": {
+     "diff": 1.15,
+     "lo": 0.75,
+     "hi": 1.56,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_chain-cos": {
+     "diff": 0.73,
+     "lo": 0.38,
+     "hi": 1.1,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_compose": {
+     "diff": -0.02,
+     "lo": -0.28,
+     "hi": 0.24,
+     "call": "LEVEL"
+    },
+    "chain-point alone - W": {
+     "diff": -15.54,
+     "lo": -16.96,
+     "hi": -14.22,
+     "call": "BELOW"
+    }
+   }
+  },
+  "0.5": {
+   "rp": {
+    "C_chain-point - C_cosine": {
+     "diff": 0.62,
+     "lo": 0.05,
+     "hi": 1.21,
+     "call": "ABOVE"
+    },
+    "C_chain-point - W": {
+     "diff": 1.7,
+     "lo": 1.21,
+     "hi": 2.24,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_chain-cos": {
+     "diff": 0.75,
+     "lo": 0.21,
+     "hi": 1.32,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_compose": {
+     "diff": -0.41,
+     "lo": -0.87,
+     "hi": 0.01,
+     "call": "LEVEL"
+    },
+    "chain-point alone - W": {
+     "diff": -22.47,
+     "lo": -24.02,
+     "hi": -20.97,
+     "call": "BELOW"
+    }
+   },
+   "rc": {
+    "C_chain-point - C_cosine": {
+     "diff": 3.17,
+     "lo": 2.28,
+     "hi": 4.08,
+     "call": "ABOVE"
+    },
+    "C_chain-point - W": {
+     "diff": 4.75,
+     "lo": 3.88,
+     "hi": 5.69,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_chain-cos": {
+     "diff": 3.16,
+     "lo": 2.3,
+     "hi": 4.04,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_compose": {
+     "diff": -0.06,
+     "lo": -0.75,
+     "hi": 0.54,
+     "call": "LEVEL"
+    },
+    "chain-point alone - W": {
+     "diff": -18.22,
+     "lo": -20.04,
+     "hi": -16.42,
+     "call": "BELOW"
+    }
+   },
+   "rpu": {
+    "C_chain-point - C_cosine": {
+     "diff": 0.16,
+     "lo": -0.09,
+     "hi": 0.42,
+     "call": "LEVEL"
+    },
+    "C_chain-point - W": {
+     "diff": 0.58,
+     "lo": 0.36,
+     "hi": 0.85,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_chain-cos": {
+     "diff": 0.24,
+     "lo": 0.02,
+     "hi": 0.49,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_compose": {
+     "diff": -0.21,
+     "lo": -0.44,
+     "hi": -0.01,
+     "call": "BELOW"
+    },
+    "chain-point alone - W": {
+     "diff": -7.16,
+     "lo": -8.11,
+     "hi": -6.27,
+     "call": "BELOW"
+    }
+   },
+   "rcu": {
+    "C_chain-point - C_cosine": {
+     "diff": 1.15,
+     "lo": 0.63,
+     "hi": 1.68,
+     "call": "ABOVE"
+    },
+    "C_chain-point - W": {
+     "diff": 1.8,
+     "lo": 1.27,
+     "hi": 2.36,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_chain-cos": {
+     "diff": 1.2,
+     "lo": 0.7,
+     "hi": 1.72,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_compose": {
+     "diff": 0.04,
+     "lo": -0.29,
+     "hi": 0.41,
+     "call": "LEVEL"
+    },
+    "chain-point alone - W": {
+     "diff": -5.51,
+     "lo": -6.55,
+     "hi": -4.51,
+     "call": "BELOW"
+    }
+   }
+  },
+  "0.75": {
+   "rp": {
+    "C_chain-point - C_cosine": {
+     "diff": 0.88,
+     "lo": 0.21,
+     "hi": 1.56,
+     "call": "ABOVE"
+    },
+    "C_chain-point - W": {
+     "diff": 2.25,
+     "lo": 1.69,
+     "hi": 2.89,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_chain-cos": {
+     "diff": 0.93,
+     "lo": 0.27,
+     "hi": 1.62,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_compose": {
+     "diff": -0.47,
+     "lo": -1.0,
+     "hi": 0.01,
+     "call": "LEVEL"
+    },
+    "chain-point alone - W": {
+     "diff": -3.6,
+     "lo": -4.55,
+     "hi": -2.62,
+     "call": "BELOW"
+    }
+   },
+   "rc": {
+    "C_chain-point - C_cosine": {
+     "diff": 4.08,
+     "lo": 3.01,
+     "hi": 5.09,
+     "call": "ABOVE"
+    },
+    "C_chain-point - W": {
+     "diff": 6.17,
+     "lo": 5.12,
+     "hi": 7.23,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_chain-cos": {
+     "diff": 4.03,
+     "lo": 3.02,
+     "hi": 5.06,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_compose": {
+     "diff": 0.16,
+     "lo": -0.64,
+     "hi": 0.85,
+     "call": "LEVEL"
+    },
+    "chain-point alone - W": {
+     "diff": 0.64,
+     "lo": -0.62,
+     "hi": 1.94,
+     "call": "LEVEL"
+    }
+   },
+   "rpu": {
+    "C_chain-point - C_cosine": {
+     "diff": 0.19,
+     "lo": -0.12,
+     "hi": 0.5,
+     "call": "LEVEL"
+    },
+    "C_chain-point - W": {
+     "diff": 0.72,
+     "lo": 0.47,
+     "hi": 1.02,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_chain-cos": {
+     "diff": 0.24,
+     "lo": -0.05,
+     "hi": 0.54,
+     "call": "LEVEL"
+    },
+    "C_chain-point - C_compose": {
+     "diff": -0.32,
+     "lo": -0.61,
+     "hi": -0.06,
+     "call": "BELOW"
+    },
+    "chain-point alone - W": {
+     "diff": -0.99,
+     "lo": -1.46,
+     "hi": -0.52,
+     "call": "BELOW"
+    }
+   },
+   "rcu": {
+    "C_chain-point - C_cosine": {
+     "diff": 1.38,
+     "lo": 0.8,
+     "hi": 1.96,
+     "call": "ABOVE"
+    },
+    "C_chain-point - W": {
+     "diff": 2.26,
+     "lo": 1.66,
+     "hi": 2.89,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_chain-cos": {
+     "diff": 1.46,
+     "lo": 0.87,
+     "hi": 2.03,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_compose": {
+     "diff": 0.02,
+     "lo": -0.43,
+     "hi": 0.46,
+     "call": "LEVEL"
+    },
+    "chain-point alone - W": {
+     "diff": 0.65,
+     "lo": -0.04,
+     "hi": 1.35,
+     "call": "LEVEL"
+    }
+   }
+  },
+  "0.9": {
+   "rp": {
+    "C_chain-point - C_cosine": {
+     "diff": 0.95,
+     "lo": 0.26,
+     "hi": 1.66,
+     "call": "ABOVE"
+    },
+    "C_chain-point - W": {
+     "diff": 2.44,
+     "lo": 1.84,
+     "hi": 3.11,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_chain-cos": {
+     "diff": 1.05,
+     "lo": 0.36,
+     "hi": 1.76,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_compose": {
+     "diff": -0.54,
+     "lo": -1.08,
+     "hi": -0.02,
+     "call": "BELOW"
+    },
+    "chain-point alone - W": {
+     "diff": 1.44,
+     "lo": 0.77,
+     "hi": 2.23,
+     "call": "ABOVE"
+    }
+   },
+   "rc": {
+    "C_chain-point - C_cosine": {
+     "diff": 4.37,
+     "lo": 3.26,
+     "hi": 5.43,
+     "call": "ABOVE"
+    },
+    "C_chain-point - W": {
+     "diff": 6.62,
+     "lo": 5.54,
+     "hi": 7.73,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_chain-cos": {
+     "diff": 4.36,
+     "lo": 3.34,
+     "hi": 5.44,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_compose": {
+     "diff": 0.23,
+     "lo": -0.59,
+     "hi": 0.93,
+     "call": "LEVEL"
+    },
+    "chain-point alone - W": {
+     "diff": 5.68,
+     "lo": 4.56,
+     "hi": 6.86,
+     "call": "ABOVE"
+    }
+   },
+   "rpu": {
+    "C_chain-point - C_cosine": {
+     "diff": 0.2,
+     "lo": -0.12,
+     "hi": 0.53,
+     "call": "LEVEL"
+    },
+    "C_chain-point - W": {
+     "diff": 0.81,
+     "lo": 0.53,
+     "hi": 1.14,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_chain-cos": {
+     "diff": 0.29,
+     "lo": -0.01,
+     "hi": 0.63,
+     "call": "LEVEL"
+    },
+    "C_chain-point - C_compose": {
+     "diff": -0.32,
+     "lo": -0.62,
+     "hi": -0.04,
+     "call": "BELOW"
+    },
+    "chain-point alone - W": {
+     "diff": 0.37,
+     "lo": 0.03,
+     "hi": 0.75,
+     "call": "ABOVE"
+    }
+   },
+   "rcu": {
+    "C_chain-point - C_cosine": {
+     "diff": 1.43,
+     "lo": 0.85,
+     "hi": 2.01,
+     "call": "ABOVE"
+    },
+    "C_chain-point - W": {
+     "diff": 2.39,
+     "lo": 1.78,
+     "hi": 3.04,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_chain-cos": {
+     "diff": 1.54,
+     "lo": 0.96,
+     "hi": 2.13,
+     "call": "ABOVE"
+    },
+    "C_chain-point - C_compose": {
+     "diff": 0.02,
+     "lo": -0.42,
+     "hi": 0.45,
+     "call": "LEVEL"
+    },
+    "chain-point alone - W": {
+     "diff": 2.01,
+     "lo": 1.37,
+     "hi": 2.71,
+     "call": "ABOVE"
+    }
+   }
+  }
+ },
+ "means": {
+  "pure": {
+   "cosine": {
+    "rp": 1.5,
+    "rc": 2.25,
+    "rpu": 0.61,
+    "rcu": 0.96
+   },
+   "chain-cos": {
+    "rp": 1.4,
+    "rc": 2.26,
+    "rpu": 0.51,
+    "rcu": 0.85
+   },
+   "chain-point": {
+    "rp": 2.52,
+    "rc": 6.76,
+    "rpu": 0.81,
+    "rcu": 2.46
+   },
+   "compose": {
+    "rp": 3.07,
+    "rc": 6.58,
+    "rpu": 1.14,
+    "rcu": 2.44
+   }
+  },
+  "by f": {
+   "0.25": {
+    "reach share of T2 (%)": 56.31,
+    "W": {
+     "rp": 56.31,
+     "rc": 56.31,
+     "rpu": 18.0,
+     "rcu": 18.0
+    },
+    "C_cosine": {
+     "rp": 57.09,
+     "rc": 57.47,
+     "rpu": 18.36,
+     "rcu": 18.51
+    },
+    "C_chain-cos": {
+     "rp": 56.98,
+     "rc": 57.37,
+     "rpu": 18.28,
+     "rcu": 18.41
+    },
+    "C_chain-point": {
+     "rp": 57.21,
+     "rc": 59.04,
+     "rpu": 18.36,
+     "rcu": 19.15
+    },
+    "C_compose": {
+     "rp": 57.4,
+     "rc": 59.29,
+     "rpu": 18.43,
+     "rcu": 19.17
+    }
+   },
+   "0.5": {
+    "reach share of T2 (%)": 24.99,
+    "W": {
+     "rp": 24.99,
+     "rc": 24.99,
+     "rpu": 7.97,
+     "rcu": 7.97
+    },
+    "C_cosine": {
+     "rp": 26.07,
+     "rc": 26.56,
+     "rpu": 8.4,
+     "rcu": 8.63
+    },
+    "C_chain-cos": {
+     "rp": 25.94,
+     "rc": 26.58,
+     "rpu": 8.31,
+     "rcu": 8.58
+    },
+    "C_chain-point": {
+     "rp": 26.69,
+     "rc": 29.74,
+     "rpu": 8.55,
+     "rcu": 9.77
+    },
+    "C_compose": {
+     "rp": 27.1,
+     "rc": 29.8,
+     "rpu": 8.76,
+     "rcu": 9.73
+    }
+   },
+   "0.75": {
+    "reach share of T2 (%)": 6.12,
+    "W": {
+     "rp": 6.12,
+     "rc": 6.12,
+     "rpu": 1.81,
+     "rcu": 1.81
+    },
+    "C_cosine": {
+     "rp": 7.49,
+     "rc": 8.21,
+     "rpu": 2.34,
+     "rcu": 2.69
+    },
+    "C_chain-cos": {
+     "rp": 7.44,
+     "rc": 8.26,
+     "rpu": 2.29,
+     "rcu": 2.61
+    },
+    "C_chain-point": {
+     "rp": 8.37,
+     "rc": 12.29,
+     "rpu": 2.53,
+     "rcu": 4.07
+    },
+    "C_compose": {
+     "rp": 8.84,
+     "rc": 12.13,
+     "rpu": 2.85,
+     "rcu": 4.06
+    }
+   },
+   "0.9": {
+    "reach share of T2 (%)": 1.08,
+    "W": {
+     "rp": 1.08,
+     "rc": 1.08,
+     "rpu": 0.44,
+     "rcu": 0.44
+    },
+    "C_cosine": {
+     "rp": 2.57,
+     "rc": 3.33,
+     "rpu": 1.05,
+     "rcu": 1.41
+    },
+    "C_chain-cos": {
+     "rp": 2.48,
+     "rc": 3.33,
+     "rpu": 0.95,
+     "rcu": 1.3
+    },
+    "C_chain-point": {
+     "rp": 3.53,
+     "rc": 7.7,
+     "rpu": 1.25,
+     "rcu": 2.83
+    },
+    "C_compose": {
+     "rp": 4.07,
+     "rc": 7.47,
+     "rpu": 1.57,
+     "rcu": 2.82
+    }
+   }
+  }
+ },
+ "R5 control": {
+  "rp": {
+   "chain-point - chain-cos": {
+    "diff": 1.12,
+    "lo": 0.43,
+    "hi": 1.85,
+    "call": "ABOVE"
+   }
+  },
+  "rc": {
+   "chain-point - chain-cos": {
+    "diff": 4.51,
+    "lo": 3.47,
+    "hi": 5.59,
+    "call": "ABOVE"
+   }
+  },
+  "rpu": {
+   "chain-point - chain-cos": {
+    "diff": 0.3,
+    "lo": -0.0,
+    "hi": 0.63,
+    "call": "LEVEL"
+   }
+  },
+  "rcu": {
+   "chain-point - chain-cos": {
+    "diff": 1.6,
+    "lo": 1.03,
+    "hi": 2.21,
+    "call": "ABOVE"
+   }
+  }
+ },
+ "by set size at f = 0.5": {
+  "m 2-3": {
+   "units": 317,
+   "C_chain-point - C_cosine": {
+    "diff": 0.47,
+    "lo": -0.68,
+    "hi": 1.79,
+    "call": "LEVEL"
+   },
+   "mean R-precision": {
+    "W": 23.97,
+    "C_cosine": 25.03,
+    "C_chain-point": 25.5
+   }
+  },
+  "m 4-10": {
+   "units": 492,
+   "C_chain-point - C_cosine": {
+    "diff": -0.13,
+    "lo": -0.79,
+    "hi": 0.44,
+    "call": "LEVEL"
+   },
+   "mean R-precision": {
+    "W": 24.69,
+    "C_cosine": 25.6,
+    "C_chain-point": 25.47
+   }
+  },
+  "m 11-100": {
+   "units": 391,
+   "C_chain-point - C_cosine": {
+    "diff": 1.69,
+    "lo": 0.56,
+    "hi": 2.99,
+    "call": "ABOVE"
+   },
+   "mean R-precision": {
+    "W": 26.18,
+    "C_cosine": 27.5,
+    "C_chain-point": 29.19
+   }
+  }
+ },
+ "mean_m": 11.13,
+ "mean_n1": 16.51,
+ "unseen_share_of_T2": 33.72,
+ "seconds": 1685.7,
+ "utc": "2026-11-25T20:09:41Z",
+ "not_a_dataset": false,
+ "npz_sha256": "8664cda24cb33ddbabecbfde784c9887f9814d4ab43a97c79ef189af3f36a768"
+}

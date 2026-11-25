@@ -1,0 +1,74 @@
+{
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 15",
+ "expected": [
+  "squad",
+  "musique",
+  "metaqa",
+  "webqsp",
+  "hotpotqa",
+  "2wiki"
+ ],
+ "datasets": [
+  "2wiki",
+  "hotpotqa",
+  "metaqa",
+  "musique",
+  "squad",
+  "webqsp"
+ ],
+ "read": [
+  "2wiki",
+  "hotpotqa",
+  "metaqa",
+  "musique",
+  "squad",
+  "webqsp"
+ ],
+ "f_main": 0.5,
+ "main calls": {
+  "squad": "ABOVE",
+  "musique": "ABOVE",
+  "metaqa": "ABOVE",
+  "webqsp": "ABOVE",
+  "hotpotqa": "ABOVE",
+  "2wiki": "ABOVE"
+ },
+ "main above": [
+  "squad",
+  "musique",
+  "metaqa",
+  "webqsp",
+  "hotpotqa",
+  "2wiki"
+ ],
+ "main below": [],
+ "control calls": {
+  "squad": "ABOVE",
+  "musique": "ABOVE",
+  "metaqa": "LEVEL",
+  "webqsp": "LEVEL",
+  "hotpotqa": "ABOVE",
+  "2wiki": "ABOVE"
+ },
+ "control above": [
+  "squad",
+  "musique",
+  "hotpotqa",
+  "2wiki"
+ ],
+ "control below": [],
+ "CONTROL_HOLDS": true,
+ "R5 control calls": {
+  "squad": "ABOVE",
+  "musique": "ABOVE",
+  "metaqa": "LEVEL",
+  "webqsp": "LEVEL",
+  "hotpotqa": "ABOVE",
+  "2wiki": "ABOVE"
+ },
+ "R5_CONTROL_HOLDS": true,
+ "carry_min": 4,
+ "verdict": "FILL_CARRIES",
+ "script_sha256": "961539e0e7f2798cb23862e2a9e6c42d0f7070a3a17804859ffb63185d464486",
+ "utc": "2026-11-25T21:33:56Z"
+}

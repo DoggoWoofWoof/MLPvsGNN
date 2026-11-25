@@ -1654,6 +1654,51 @@ R5's units (the same sources, labels, T1 and T2, rebuilt from R5's seeds and che
 - **FILL_CARRIES:** it says a semantic fill reaches a little of what withheld links leave, on R-precision against stored links, and no more; the noisy-links read of 15.7 is declared only on the user's word. **FILL_CARRIES_SEEN_ONLY or NOT_CARRIED:** the fill is closed on R1's operators and the exposure of 15.1(2) is part of the record.
 - Either way: no pool, link or PL change follows, and no model is trained.
 
+### 15.11 Records and call (26 November 2026, 03:06 IST, 21:36 UTC)
+
+Read by `zsem2r7.py report` from `outputs/sem2/r7/<dataset>/e3v.json` (every record carries the script's sha, 961539e0..., and R5's, 69d287d0...; the report stops on a mismatch). **Six datasets read; MultiHop-RAG has no unit under the chain labels and no row.** All six rows ran the gates: G-E, G-R (rank agreement 1.0), G-U (rebuilt units equal R5's), G-S (the per-unit R-precision of all four scorers equals R5's on 100% of units, mean absolute difference 0.0) and G-W (hash, walk, nesting, seen flags) PASS on every dataset. R-precision in points, mean over the pooled test units, f = 0.5; intervals are the paired bootstrap over units (2,000 resamples, seed 0).
+
+| dataset | units | walk alone | C_cosine | C_chain-point | C_chain-point minus C_cosine (main call) | control: unseen members | R5 under the control (chain-point minus chain-cos, unseen) |
+|---|---:|---:|---:|---:|---|---|---|
+| SQuAD | 710 | 35.17 | 42.14 | 46.45 | +4.31 [+3.48, +5.11] ABOVE | +0.58 [+0.26, +0.91] ABOVE | +0.66 [+0.30, +1.08] ABOVE |
+| MuSiQue | 900 | 28.54 | 32.24 | 33.59 | +1.35 [+0.77, +1.95] ABOVE | +0.39 [+0.05, +0.75] ABOVE | +0.61 [+0.20, +1.01] ABOVE |
+| MetaQA | 1,200 | 26.90 | 28.10 | 28.72 | +0.62 [+0.18, +1.06] ABOVE | -0.05 [-0.23, +0.12] LEVEL | +0.15 [-0.05, +0.34] LEVEL |
+| WebQSP | 1,200 | 24.99 | 26.07 | 26.69 | +0.62 [+0.05, +1.21] ABOVE | +0.16 [-0.09, +0.42] LEVEL | +0.30 [-0.00, +0.63] LEVEL |
+| HotpotQA | 1,200 | 27.59 | 29.55 | 30.20 | +0.65 [+0.36, +0.93] ABOVE | +0.19 [+0.02, +0.37] ABOVE | +0.35 [+0.15, +0.54] ABOVE |
+| 2Wiki | 1,200 | 26.41 | 27.72 | 28.46 | +0.74 [+0.49, +1.01] ABOVE | +0.28 [+0.14, +0.41] ABOVE | +0.54 [+0.38, +0.70] ABOVE |
+
+**Rule 15.5: the main call is ABOVE on 6 of 6 read and BELOW on none. The control (unseen members) is ABOVE on 4 (SQuAD, MuSiQue, HotpotQA, 2Wiki) and BELOW on none: CONTROL_HOLDS. R5 under the control is ABOVE on the same 4 and BELOW on none: R5_CONTROL_HOLDS (so 15.5 asks for no note under 13.12). Verdict: FILL_CARRIES.**
+
+**Size, said plainly.** The ABOVE is small. On the four near-floor datasets the main gain is +0.62 to +0.74 points, and WebQSP's interval starts at +0.05; on the control it is +0.16 to +0.58 points, with HotpotQA's interval starting at +0.02 and MuSiQue's at +0.05, and MetaQA and WebQSP LEVEL. Withholding half the stored chain-label edges leaves the stored walk 25.0 to 35.2 points of R-precision (a full set of links reads 100 by definition); the best fill reaches 26.7 to 46.5. Measured against the walk alone, the fill adds +11.27 (SQuAD), +5.05 (MuSiQue), +1.81 (MetaQA), +1.70 (WebQSP), +2.61 (HotpotQA) and +2.05 (2Wiki) points, which is 17%, 7%, 2.5%, 2.3%, 3.6% and 2.8% of the 64.8, 71.5, 73.1, 75.0, 72.4 and 73.6 points (in the same order) the withholding costs. **A semantic fill recovers a few percent of what withheld links lose on five datasets and about a sixth on SQuAD; it is no substitute for a link a walk needs.**
+
+### 15.12 The reads beside (decide nothing)
+
+- **By f.** The main contrast is ABOVE at every f on SQuAD, MuSiQue, HotpotQA and 2Wiki; MetaQA (+0.20) and WebQSP (+0.12) are LEVEL at f = 0.25 and ABOVE from 0.5. It grows with f: SQuAD +1.52 to +8.85, MuSiQue +0.48 to +2.70, the other four +0.12 to +0.26 at f = 0.25 and +0.95 to +1.50 at f = 0.9. C_chain-point minus the walk alone is ABOVE at every f on all six (+0.88 to +23.83).
+- **The walk's reach** falls from 56.3 to 65.0% of T2 at f = 0.25 to 24.99 to 35.17% at f = 0.5, 6.1 to 11.1% at 0.75 and 1.0 to 2.0% at 0.9; the unseen share of T2 is 32.2 to 35.3% on all six.
+- **Crossover** (the smallest grid f at which chain-point alone is not BELOW the walk alone): 0.75 on SQuAD and MuSiQue, 0.9 on MetaQA, WebQSP, HotpotQA and 2Wiki (at 0.9 the walk reaches only 1.0 to 2.0% of T2; chain-point alone is then +1.44 to +2.85 above it on the four).
+- **Recall at 4m**, C_chain-point minus C_cosine: ABOVE at every f on all six; at f = 0.5 +7.08 (SQuAD), +3.83, +4.09, +3.17, +2.08, +2.47. On the unseen measure recall at 4m is ABOVE at every f on all six (+0.60 to +1.48 at f = 0.5), including MetaQA and WebQSP, where the R-precision control is LEVEL.
+- **Other fills at f = 0.5:** chain-point minus chain-cos is ABOVE on 6 of 6 (+0.66 to +3.58); minus compose is ABOVE on SQuAD, MuSiQue, HotpotQA and 2Wiki, LEVEL on MetaQA (+0.34) and WebQSP (-0.41 [-0.87, +0.01]; the point estimate is below zero).
+- **By |T2| at f = 0.5:** the gain sits in the largest sets (11 to 100 members) on five of six (SQuAD's 4 to 10 bin is ABOVE too); MetaQA's ABOVE is in its smallest bin (2 to 3, +1.16) and its 11 to 100 bin is LEVEL (+0.36 [-0.02, +0.73]). The sets of 2 to 3 members are LEVEL on the other five.
+
+### 15.13 Expectations against the outcome (15.6; a failed one is reported, not explained away)
+
+- **W alone** at f = 0.5 was expected between about 25% and 70% of T2 and under 10% at f = 0.9: **held**, but at the bottom of my range (25.0 to 35.2%) and well under 10% at 0.9 (1.0 to 2.0%); my 70% was loose (two surviving edges at f = 0.5 is 25% per path).
+- **The main call:** expected +0.5 to +1.5 on the four near-floor datasets, a few points on MuSiQue and SQuAD, ABOVE on at least five of six: **held** on the four (+0.62 to +0.74) and on SQuAD (+4.31); **MuSiQue's +1.35 is below "a few points"**; ABOVE on six of six. No interval touched 0, the nearest being WebQSP's +0.05.
+- **The control:** expected to hold on SQuAD and MuSiQue and to be weaker on the near-floor four, CONTROL_HOLDS about even: **held** (4 ABOVE), and **two of the four (HotpotQA, 2Wiki) were ABOVE where I expected weakness**; MetaQA and WebQSP were LEVEL. The sizes (+0.16 to +0.58) are at the floor of the scale.
+- **R5_CONTROL_HOLDS:** expected, with smaller gaps than 13.12: **held**; the gaps are +0.15 to +0.66 against 13.12's +1.12 to +7.68, that is 9% (SQuAD), 19% (MuSiQue), 8% (MetaQA), 27% (WebQSP), 26% (HotpotQA) and 32% (2Wiki) of the filed gap. The unseen members are about a third of T2, so a gain spread evenly over the members would leave about a third: **on SQuAD, MuSiQue and MetaQA most of R5's gap sits on second-hop pairs the fit could draw** (15.1(2)); on the other three it is roughly proportional.
+- **Crossover: failed.** I expected chain-point alone below the walk alone at every grid f on the four near-floor datasets, and to cross at f = 0.9 only on SQuAD and MuSiQue. The four cross at f = 0.9 (where the walk reaches 1 to 2% of T2), and SQuAD and MuSiQue cross earlier, at 0.75.
+
+### 15.14 What this says, and what it does not
+
+- **Says:** on R-precision against stored links with half withheld, a fill by R1's operators through branches reaches a little more of the missing second hop than a cosine fill, on all six datasets (+0.6 to +4.3 points) and, on the control that drops the pairs the fit could draw, on four of six (+0.2 to +0.6). It recovers 2 to 17% of what the withholding costs.
+- **Does not say:** that a pool, a retriever or a trained model gains; that links can be dropped because a fill replaces them (it does not: 15.11); that the gain is independent of the fit's training edges beyond the control. R1's operators were fitted on the full graph, **including the edges this read withholds**, and R7 never refits without them; the unseen control removes the members for which any pair the fit could draw reaches them, which is the cleaner read, and its gains are the +0.16 to +0.58 above. A refit on the surviving edges only is the clean test, named, not run.
+- **Bearing on the link work:** link tightening that drops a link carrying a gold path loses it from the walk, and a semantic fill gets back a few percent of that; the layout stays as the link line decides it.
+
+### 15.15 What this closes, and disclosed
+
+- **Closes:** the withheld-links read of 13.8, against the expectation scorecard above. FILL_CARRIES is a small, floor-size result. **Nothing is queued by this page.** The noisy-links read (15.7) and a refit on the surviving edges are declared only on the user's word. No pool, link or PL change follows and no model is trained (15.10).
+- **Disclosed:** f = 0.5 and the call were fixed before the number (15.5); the other f are beside. The walk uses the true T1 for its exclusion, which favours the baseline (15.3). One expectation (crossover) failed and two were looser than the outcome (W alone's range, MuSiQue's size). WebQSP's main-call interval and the HotpotQA and MuSiQue control intervals start within 0.05 points of zero.
+
 ### 8.16 Records completed after the closure (24 November 2026, 23:47 IST, 18:17 UTC): decides nothing
 
 8.15 closed the hub line with five rows still running. They have finished: R1k on WebQSP and 2Wiki, and R1q on
