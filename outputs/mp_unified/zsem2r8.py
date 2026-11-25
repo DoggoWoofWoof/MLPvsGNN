@@ -218,7 +218,7 @@ def out_degree(G, op_of):
 
 def oracle_one(seeds, Fset, gold, fa, fb, ba, bb, time_limit=TIME_LIMIT):
     """Pi_oracle for one question (16.4). Returns a dict: classes, the optimum, its status, the LP bound."""
-    out = {"n_gold": int(gold.size), "n_missed": 0, "c1": 0, "c2": 0, "beyond": 0, "cost": 0, "status": "none", "lp_eq": 1, "A": 0, "A_new": 0, "D_ub": 0, "needy": 0}
+    out = {"n_gold": int(gold.size), "n_missed": 0, "c1": 0, "c2": 0, "beyond": 0, "cost": 0, "status": "none", "lp_eq": 1, "lp_ok": 1, "sol_ok": 1, "A": 0, "A_new": 0, "D_ub": 0, "needy": 0}
     lo, hi = np.searchsorted(fa, seeds, "left"), np.searchsorted(fa, seeds, "right")
     A = np.setdiff1d(np.unique(fb[Z.expand(lo, hi)]), seeds)
     out["A"] = int(A.size)
@@ -261,6 +261,8 @@ def oracle_one(seeds, Fset, gold, fa, fb, ba, bb, time_limit=TIME_LIMIT):
     out["status"] = "optimal"
     out["cost"] = int(c1.size + (len(c2) - len(needy)) + obj)
     out["lp_eq"] = int(lp is not None and abs(lp - obj) < 1e-6)
+    out["lp_ok"] = int(lp is not None and lp <= obj + 1e-7)
+    out["sol_ok"] = int(all(x[i] == 1 and any(x[j] == 1 for j in parents[i]) for i in range(len(needy))) and int(x.sum()) == int(round(obj)))
     return out
 
 
@@ -284,7 +286,7 @@ def reach_engine(G, op_of, base, flat, off, b_seeds=B_SEEDS, F=F_DEPTH, time_lim
     ba, bb = edge_rows(G, op_of, mark_g, True)
     log(f"backward rows into {int(mark_g.sum()):,} missed golds: {ba.size:,} ({time.time() - t0:.0f} s)")
     deg = out_degree(G, op_of)
-    cols = ("n_gold", "n_missed", "c1", "c2", "beyond", "cost", "A", "A_new", "needy", "lp_eq")
+    cols = ("n_gold", "n_missed", "c1", "c2", "beyond", "cost", "A", "A_new", "needy", "lp_eq", "lp_ok", "sol_ok")
     res = {k: np.zeros(nq, np.int64) for k in cols}
     res["status"] = np.zeros(nq, np.int8)
     res["D_ub"] = np.zeros(nq, np.int64)
@@ -453,9 +455,12 @@ def cmd_reach(a):
     bounds_ok = bool(np.all((res["cost"][feas & (res["n_missed"] > 0)] >= lo_b[feas & (res["n_missed"] > 0)]) &
                             (res["cost"][feas & (res["n_missed"] > 0)] <= hi_b[feas & (res["n_missed"] > 0)])))
     share = opt / inst if inst else 1.0                      # no instance (every gold already in the F-list): vacuous
-    gates["G-P"] = {"instances": inst, "proven_optimal": opt, "share": round(share, 6), "cost_inside_bounds": bounds_ok,
+    lp_ok = bool(np.all(res["lp_ok"] == 1))
+    sol_ok = bool(np.all(res["sol_ok"] == 1))
+    gates["G-P"] = {"instances": inst, "proven_optimal": opt, "share": round(share, 6), "cost_inside_bounds": bounds_ok, "lp_at_most_ip": lp_ok,
+                    "solutions_satisfy_closure_and_budget": sol_ok,
                     "lp_equals_ip_share": round(float(res["lp_eq"][st == STATUS["optimal"]].mean()), 6) if (st == STATUS["optimal"]).any() else None,
-                    "verdict": "PASS" if (share >= OPT_SHARE and bounds_ok) else "FAIL"}
+                    "verdict": "PASS" if (share >= OPT_SHARE and bounds_ok and lp_ok and sol_ok) else "FAIL"}
     if gates["G-P"]["verdict"] != "PASS":
         log(f"gate G-P FAILED: {gates['G-P']}")
     od.mkdir(parents=True, exist_ok=True)
@@ -679,6 +684,7 @@ def selftest(_a):
             assert (res["c1"][q], res["c2"][q], res["beyond"][q]) == (ref["c1"], ref["c2"], ref["beyond"]), (g_i, q, res["c1"][q], res["c2"][q], res["beyond"][q], ref)
             if ref["beyond"] == 0 and res["n_missed"][q] > 0:
                 assert res["cost"][q] == ref["cost"], (g_i, q, res["cost"][q], ref)
+                assert res["sol_ok"][q] == 1 and res["lp_ok"][q] == 1, (g_i, q)
                 n_feas += 1
                 n_needy += int(res["needy"][q] > 0)
             elif ref["beyond"]:
