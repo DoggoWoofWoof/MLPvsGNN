@@ -98,7 +98,7 @@ RK GP and SRK GP (nine).
 
 ## 7. What I expect (stated before the number)
 
-Most likely FAILS_SCREEN for every variant: on the KB datasets the structural links carry nearly all the one-hop reach at a price near the whole graph, so a keep set
+**(The KB-dataset sentence below is withdrawn by section 12; the rest stands.)** Most likely FAILS_SCREEN for every variant: on the KB datasets the structural links carry nearly all the one-hop reach at a price near the whole graph, so a keep set
 at 95% reach cannot be much cheaper than B0 there. On MuSiQue and the passage datasets, where B0 is mostly one low-precision label, agreement between families (P) and the
 dot (C, PC) may well keep 92% of reach at well under half the candidates. If that holds, A reads as a split between structured and passage datasets and the question
 for part B becomes whether one rule (this one, with the whole graph kept when nothing can be cut) can be carried everywhere, which the universal ruling decides on its
@@ -136,7 +136,29 @@ A read of the sub rows, then of the full rows, filed as a results section of thi
 if none does, I name which cells and classes failed and whether one different rule is worth a page, on the dev subset first. The PL agent is told when a link set is final; its
 PL8 re-run starts only then, and the int8 world, the vectors and the models follow on that pool.
 
-## 12. Disclosed
+## 12. Amendment A.1, 25 November, before any host number (MultiHop-RAG had been read)
+
+- **The user, ~23:40:** "the issue with that is R has much much more links than S, we cant afford to have multiple useless links draining our walks and need to
+  have much smarter walks too which can be done two ways eliminate useless links and use the question to guide, so we are at first step here and if the vectors look
+  good we can have a semantic walk as well".
+- **What the filed UL2P ledgers say** (their B0 headers, read before this amendment; B0 pairs at the anchors, S > R > K groups): WebQSP S 1.2% / R 97.7% / K 1.1%;
+  MuSiQue R 94.7% / K 5.3%; HotpotQA SRK S 22.6% / R 63.6% / K 13.8%; 2Wiki SRK S 22.3% / R 69.9% / K 7.9%; MetaQA S 36% / R 38% / K 26%; MultiHop-RAG R 99.0% / K 1.0%.
+  R is the bulk everywhere, and S is a small part of B0 on every dataset that has it.
+- **A correction:** section 7 expected the KB datasets to price near the whole graph because S carries their reach. That was wrong: S is a small share of the candidates,
+  so keeping all of S is cheap where S carries the reach, and the screen can still find a large saving in R and K there. The sentence is withdrawn.
+- **The rule change (A.1):** the S cells (the pairs in the structural store: the profile's S bit; the S group of variant C) are **never removed**. Selection runs over the
+  other cells in precision order as in section 6; the S cells' covered slots count toward the RHO budget and their candidates toward the price. **The call is A.1's**;
+  the section 6 rule with S not protected is computed beside and reported, never the call. RHO, the thresholds (0.92, 0.50), the variants, the carves, the judged cells and the
+  pass rule are unchanged. In an RK version (MultiHop-RAG, MuSiQue, HotpotQA RK, 2Wiki RK) there is no S, so A.1 and the first rule coincide.
+- **What I had read:** both MultiHop-RAG stages on the laptop (23:30), before this amendment: at RHO 0.95, C and PC SCREEN_IN, P SCREEN_OUT. The amendment follows from the user's
+  words and the filed shares; it cannot change those readings (no S there), and the MultiHop-RAG records are re-run with the amended module so that every record carries its sha.
+  No host row had started; none of the five host datasets has been read.
+- **The two levers, and where each lives:** (1) drop useless links before the walk: this page (R and K are what it can cut; S stays), then parts B and C; (2) let the question guide
+  the walk: expansion filtered or ranked by the question vector (the pool builder already ranks expansion by the first-stage inner product); a walk-time rule, declared on the pool
+  side after the link set is final, subset first; (3) a semantic walk (SEM2/R4's operators and regions): only if the vectors look good. Nothing for (2) or (3) is run here.
+- A pass here still decides nothing about the layout: part B (paths) and part C (pools) must keep the gold coverage on the tightened set.
+
+## 13. Disclosed
 
 - I chose the cell partition, the 0.92 and 0.50 thresholds, RHO = 0.95 and the subset fraction (a quarter) before any UL3 number, and from reading UL2P/UL2H's
   tables (section 1) rather than from the grid itself.

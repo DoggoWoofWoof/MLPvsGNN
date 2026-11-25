@@ -122,15 +122,24 @@ def cell_columns(an, any_k, cid):
     return {int(i): P.unit_cols(an, any_k[order[a:b]]) for i, a, b in zip(ids.tolist(), start.tolist(), end.tolist())}
 
 
-def keep_set(cols, rho):
+def s_cells(ids, names, variant):
+    """The cell ids whose class is S (the pair is in the structural store): A.1 never removes them. Empty where there is no S (RK versions)."""
+    if not names or names[0] != "S":
+        return set()
+    return {i for i in ids if (i // BINS == 0 if variant == "C" else bool((i // BINS) & 1))}
+
+
+def keep_set(cols, rho, protect=()):
     """The cells, highest gold precision first (ties: fewer candidates, then the cell id), taken until their covered slots reach rho of all
-    cells' covered slots; cells with no candidate are never kept. None when nothing is covered."""
+    cells' covered slots; cells with no candidate are never kept. protect: cell ids kept first whatever their precision (A.1: the S cells), counted
+    in the budget and the price. None when nothing is covered."""
     tot = float(sum(c[2].sum() for c in cols.values()))
     if tot <= 0:
         return None
-    rows = [(i, float(c[0].sum()), float(c[2].sum())) for i, c in cols.items() if c[0].sum() > 0]
+    pro = sorted(i for i in protect if i in cols and cols[i][0].sum() > 0)
+    rows = [(i, float(c[0].sum()), float(c[2].sum())) for i, c in cols.items() if c[0].sum() > 0 and i not in set(pro)]
     rows.sort(key=lambda r: (-(r[2] / r[1]), r[1], r[0]))
-    kept, acc = [], 0.0
+    kept, acc = list(pro), float(sum(cols[i][2].sum() for i in pro))
     for i, cand, cov in rows:
         if acc >= rho * tot:
             break
@@ -193,18 +202,20 @@ def cells_record(n, any_k, bits, names, dot, sel, ev):
             cov = sum(c[2] for c in cols[k].values())
             if not (np.array_equal(cand, anyc[k][0]) and np.array_equal(cov, anyc[k][2])):
                 stop(f"G3-1: {v}/{k}: the cells do not partition the any-link pairs")
-        vr = {"cells": {}, "kept": {}}
+        vr = {"cells": {}, "kept": {}, "kept_S": {}}
+        prot = s_cells(set(cols["sel"]) | set(cols["eval"]), names, v)
+        vr["s_cells"] = sorted(prot)
         for i in sorted(set(cols["sel"]) | set(cols["eval"])):                    # a cell with pairs only at the graded carve's anchors is listed too
             vr["cells"][str(i)] = {"class": class_name(i // BINS, names, v), "bin": int(i % BINS),
                                    **{k: {"candidates": int(cols[k][i][0].sum()), "covered": int(cols[k][i][2].sum())} for k in cols if i in cols[k]}}
         vr["edges"] = {str(c): (None if e is None else [float(x) for x in e]) for c, e in edges.items()}
         for rho in RHOS:
-            kept = keep_set(cols["sel"], rho)
-            if kept is None:
-                vr["kept"][str(rho)] = {"status": "not read: nothing covered on the selection half"}
-                continue
-            ks = {"cells": kept, "sel": grade(cols["sel"], kept), "eval": grade(cols["eval"], [i for i in kept if i in cols["eval"]])}
-            vr["kept"][str(rho)] = ks
+            for key, protect in (("kept_S", prot), ("kept", ())):                    # kept_S: A.1, the call; kept: S not protected, as first declared, beside
+                kept = keep_set(cols["sel"], rho, protect)
+                if kept is None:
+                    vr[key][str(rho)] = {"status": "not read: nothing covered on the selection half"}
+                    continue
+                vr[key][str(rho)] = {"cells": kept, "sel": grade(cols["sel"], kept), "eval": grade(cols["eval"], [i for i in kept if i in cols["eval"]])}
         out[v] = vr
     return out
 
@@ -390,14 +401,17 @@ def judged(L):
 def screen_calls(L):
     """Per variant: the call of each judged cell (at RHO) and the universal read: passes iff every judged cell is SCREEN_IN (and all six read)."""
     out = {}
+    read = all(d in L for d in DS6)
     for v in VARIANTS:
-        cells = {}
-        for d, ver, kind, kr in judged(L):
-            k = kr[v]["kept"].get(str(RHO), {})
-            cells[f"{d}/{ver}/{kind}"] = k.get("eval", {}).get("call", "NOT_READ")
-        read = all(d in L for d in DS6)
-        out[v] = {"cells": cells, "all_six_read": read,
-                  "call": "NOT_READ" if not read else ("PASSES_SCREEN" if cells and all(c == "SCREEN_IN" for c in cells.values()) else "FAILS_SCREEN")}
+        rec = {"all_six_read": read}
+        for key, tag in (("kept_S", ""), ("kept", "_S_unprotected")):          # A.1 (S protected) is the call; S not protected is reported beside
+            cells = {}
+            for d, ver, kind, kr in judged(L):
+                k = kr[v][key].get(str(RHO), {})
+                cells[f"{d}/{ver}/{kind}"] = k.get("eval", {}).get("call", "NOT_READ")
+            rec["cells" + tag] = cells
+            rec["call" + tag] = "NOT_READ" if not read else ("PASSES_SCREEN" if cells and all(c == "SCREEN_IN" for c in cells.values()) else "FAILS_SCREEN")
+        out[v] = rec
     return out
 
 
@@ -409,31 +423,41 @@ def render(L, S):
     w = [f"# UL3 part A: the one-hop screen, report", "",
          f"Declared in `{DECLARED}`. Read: {', '.join(L) or 'none'}. Reach and price retained are shares of the any-link graph's covered slots and candidates "
          f"on s1eval, points with 95% intervals over questions, in percent. The keep-sets are chosen on the dev carve; the call fixes RHO = {RHO}, SCREEN_IN = reach retained >= {100 * R_MIN:.0f} and price retained <= {100 * TAU_MAX:.0f} (point values).", "",
-         "## The universal read (a variant passes iff every judged cell is SCREEN_IN)", "", "| variant | call | cells SCREEN_IN | cells |", "|---|---|---:|---:|"]
+         "## The universal read (a variant passes iff every judged cell is SCREEN_IN)"]
+    w += ["", "The call is A.1's (the S cells are never removed; section 12 of the page); the same keep rule with S not protected, as first declared, is beside."]
+    w.append("")
+    w += ["| variant | call (S protected) | cells SCREEN_IN | cells | beside: S not protected |", "|---|---|---:|---:|---|"]
     for v in VARIANTS:
         s = S[v]
-        w.append(f"| {v} | {s['call']} | {sum(c == 'SCREEN_IN' for c in s['cells'].values())} | {len(s['cells'])} |")
+        w.append(f"| {v} | {s['call']} | {sum(c == 'SCREEN_IN' for c in s['cells'].values())} | {len(s['cells'])} | {s['call_S_unprotected']} |")
     for d, ver, kind, kr in judged(L):
         a_e, a_s = kr["any"]["eval"], kr["any"]["sel"]
         w += ["", f"## {d} {ver} {kind}", "",
-              f"any-link candidates / covered slots: s1eval {a_e['candidates']:,} / {a_e['covered']:,}; dev {a_s['candidates']:,} / {a_s['covered']:,}.", "",
-              "| variant | RHO | reach retained (dev) | reach retained (s1eval) | price retained (s1eval) | precision kept minus any (s1eval, pts) | call |",
-              "|---|---:|---|---|---|---|---|"]
-        for v in VARIANTS:
-            for rho in RHOS:
-                k = kr[v]["kept"].get(str(rho), {})
-                e = k.get("eval")
-                if not e:
-                    w.append(f"| {v} | {rho} | not read | | | | |")
-                    continue
-                vs = e["vs_any"]["diff"]
-                dv = "n/a" if not vs else "%+.3f" % (100 * vs["pt"])
-                w.append("| %s | %s | %s | %s | %s | %s | %s |" % (v, rho, pc(k["sel"]["reach_retained"]), pc(e["reach_retained"]), pc(e["price_retained"]), dv,
-                                                              e["call"] if rho == RHO else "-"))
-        k = kr["PC"]["kept"].get(str(RHO))
+              f"any-link candidates / covered slots: s1eval {a_e['candidates']:,} / {a_e['covered']:,}; dev {a_s['candidates']:,} / {a_s['covered']:,}.", ""]
+        has_s = any(kr[v]["s_cells"] for v in VARIANTS)
+        for key, title in (("kept_S", "S protected (A.1, the call)"), ("kept", "S not protected (as first declared), beside")):
+            if key == "kept" and not has_s:
+                w += ["No S cell in this version: the two rules are identical.", ""]
+                continue
+            w += [f"**{title}**", "",
+                  "| variant | RHO | reach retained (dev) | reach retained (s1eval) | price retained (s1eval) | precision kept minus any (s1eval, pts) | call |",
+                  "|---|---:|---|---|---|---|---|"]
+            for v in VARIANTS:
+                for rho in RHOS:
+                    k = kr[v][key].get(str(rho), {})
+                    e = k.get("eval")
+                    if not e:
+                        w.append(f"| {v} | {rho} | not read | | | | |")
+                        continue
+                    vs = e["vs_any"]["diff"]
+                    dv = "n/a" if not vs else "%+.3f" % (100 * vs["pt"])
+                    w.append("| %s | %s | %s | %s | %s | %s | %s |" % (v, rho, pc(k["sel"]["reach_retained"]), pc(e["reach_retained"]), pc(e["price_retained"]), dv,
+                                                                  e["call"] if rho == RHO else "-"))
+            w.append("")
+        k = kr["PC"]["kept_S"].get(str(RHO))
         if k and "cells" in k:
             cells = kr["PC"]["cells"]
-            w += ["", "PC's kept cells at RHO %s (dev, in precision order): " % RHO +
+            w += ["PC's kept cells at RHO %s (S protected; dev; the S cells first, then in precision order): " % RHO +
                   "; ".join("%s q%d" % (cells[str(i)]["class"], cells[str(i)]["bin"] + 1) for i in k["cells"][:14]) + (" ..." if len(k["cells"]) > 14 else "")]
     return "\n".join(w) + "\n"
 
@@ -445,7 +469,7 @@ def cmd_report(_a):
            "zul3a_sha256": script_sha256()}
     L2.wjson(OUT / "report.json", rec)
     (OUT / "report.md").write_text(render(L, S), encoding="utf-8", newline="\n")
-    log(f"report written: {', '.join(f'{v} {S[v]['call']}' for v in VARIANTS)}")
+    log(f"report written: {', '.join(f'{v} {S[v]['call']} (S unprotected {S[v]['call_S_unprotected']})' for v in VARIANTS)}")
     return 0
 
 
@@ -469,21 +493,22 @@ def render_sub(L):
                 a_e, a_s = kr["any"]["eval"], kr["any"]["sel"]
                 w += ["", f"## {d} {v} {kind}", "", f"any-link candidates / covered slots: subset {a_s['candidates']:,} / {a_s['covered']:,}; rest of dev "
                       f"{a_e['candidates']:,} / {a_e['covered']:,}.", "",
+                      "S protected (A.1; the S cells are never removed), reach and price retained of the rest of dev:", "",
                       "| variant | RHO | reach retained (subset) | reach retained (rest of dev) | price retained (rest of dev) |", "|---|---:|---|---|---|"]
                 for var in VARIANTS:
                     for rho in RHOS:
-                        k = kr[var]["kept"].get(str(rho), {})
+                        k = kr[var]["kept_S"].get(str(rho), {})
                         e = k.get("eval")
                         if not e:
                             w.append(f"| {var} | {rho} | not read | | |")
                             continue
                         w.append("| %s | %s | %s | %s | %s |" % (var, rho, pc(k["sel"]["reach_retained"]), pc(e["reach_retained"]), pc(e["price_retained"])))
-                k = kr["P"]["kept"].get(str(RHO))
+                k = kr["P"]["kept_S"].get(str(RHO))
                 if k and "cells" in k:
                     kept = set(k["cells"])
                     lost = sorted(((c["eval"]["covered"], c["eval"]["candidates"], c["class"]) for i, c in kr["P"]["cells"].items()
                                    if int(i) not in kept and "eval" in c and c["eval"]["covered"] > 0), reverse=True)[:6]
-                    w += ["", "P at RHO %s, the classes it drops that hold the most covered slots on the rest of dev (covered / candidates): " % RHO +
+                    w += ["", "P (S protected) at RHO %s, the classes it drops that hold the most covered slots on the rest of dev (covered / candidates): " % RHO +
                           ("; ".join("%s %d / %d" % (nm, cv, cd) for cv, cd, nm in lost) if lost else "none")]
     return "\n".join(w) + "\n"
 
@@ -574,6 +599,14 @@ def selftest():
             assert np.array_equal(sum(c[0] for c in cols.values()), tot[0]) and np.array_equal(sum(c[2] for c in cols.values()), tot[2])
             for i, c in cols.items():                             # a cell's columns equal the engine's on the cell's keys
                 assert np.array_equal(np.array(c), np.array(P.unit_cols(an, any_k[cid == i])))
+            prot = s_cells(set(cols), names, variant)                  # A.1: the S cells are exactly the cells whose pairs are in the S store, always kept
+            assert (not srk) <= (not prot), "no S cell without S"
+            for i in prot:
+                m = cid == i
+                assert UL.member(any_k[m], F["S"]).all(), "an S cell holds only S pairs"
+            if prot:
+                cc = keep_set(cols, 0.5, prot)
+                assert cc is None or {i for i in prot if cols[i][0].sum() > 0} <= set(cc)
     # the keep rule on a made-up table whose answer is known
     z = lambda *x: (np.array([x[0]], float), np.array([2.0 * x[1]]), np.array([float(x[1])]))   # noqa: E731
     cols = {1: z(100, 5), 2: z(10, 4), 3: z(1000, 1), 4: z(5, 0), 5: z(0, 0), 6: z(20, 4)}
@@ -581,6 +614,9 @@ def selftest():
     assert keep_set(cols, 0.50) == [2, 6], keep_set(cols, 0.50)             # precision 0.40, 0.20, 0.05, 0.001; 14 of 14 covered
     assert keep_set(cols, 1.0) == [2, 6, 1, 3]
     assert keep_set({1: z(7, 0)}, 0.95) is None
+    cols_p = {1: z(100, 5), 2: z(10, 4), 3: z(1000, 1)}                      # A.1: the protected cell comes first whatever its precision and counts in the budget
+    assert keep_set(cols_p, 0.5) == [2, 1] and keep_set(cols_p, 0.5, {3}) == [3, 2], (keep_set(cols_p, 0.5), keep_set(cols_p, 0.5, {3}))
+    assert keep_set(cols_p, 0.5, {9}) == [2, 1], "a protected id that is not a cell is ignored"
     cols_t = {1: z(10, 3), 2: z(10, 3)}                                      # a tie: the lower id first
     assert keep_set(cols_t, 0.4) == [1]
     # a wrong rule is caught: keeping the LOWEST precision first reaches the budget at a higher price
@@ -628,6 +664,7 @@ def selftest():
     txt = render_sub({"multihoprag": {"versions": {"RK": {"kinds": {"GP": ks}}}}})
     assert "## multihoprag RK GP" in txt and "s1eval is not read" in txt
     for v in VARIANTS:
+        assert kr[v]["s_cells"] == [] and all(kr[v]["kept_S"][str(r)]["cells"] == kr[v]["kept"][str(r)]["cells"] for r in RHOS), "no S in an RK version: A.1 = A"
         k = kr[v]["kept"][str(RHO)]
         assert "eval" in k and k["eval"]["any"]["covered"] == kr["any"]["eval"]["covered"]
         assert k["sel"]["reach_retained"]["pt"] >= RHO - 1e-9, "the dev carve holds RHO of its own covered slots"
