@@ -1,0 +1,185 @@
+{
+ "stage": "SEM2 R6 read",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 14",
+ "net": "p",
+ "net_sha256": "5a896002a987eb7a1cae997b9406118479ff6fcbcfb506a985d9990f63f065b6",
+ "dataset": "musique",
+ "arm": "e3v",
+ "smoke": false,
+ "config": {
+  "extra": 256,
+  "tau": 0.05,
+  "batch": 1024,
+  "neg": 4096,
+  "lr": 0.001,
+  "epoch": 200000,
+  "max_epochs": 10,
+  "patience": 2,
+  "min_op": 500,
+  "top_s": 12,
+  "n_test": 1000,
+  "n_dev": 500,
+  "hidden": 256,
+  "n_read": 200,
+  "chunk": 4000
+ },
+ "gate_only": false,
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 2343920,
+     "record": 2343920
+    },
+    "CN_all": {
+     "pairs": 931069,
+     "record": 931069
+    },
+    "F0T": {
+     "pairs": 973013,
+     "record": 973013
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-N": {
+   "webqsp": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   },
+   "metaqa": {
+    "min_cosine": 0.999998,
+    "verdict": "PASS"
+   },
+   "hotpotqa": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   },
+   "2wiki": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   }
+  },
+  "G-U": "PASS",
+  "G-S": {
+   "units": 3,
+   "seen_names": 3,
+   "seen_labels": [
+    "R.mention",
+    "R.name_comention",
+    "R.title_comention"
+   ]
+  }
+ },
+ "units": {
+  "musique|R.mention": {
+   "label": "R.mention",
+   "kind": "R",
+   "main": true,
+   "seen": true,
+   "edges": 200,
+   "mrr_cosine": 3.134,
+   "h10_cosine": 5.0,
+   "h100_cosine": 12.5,
+   "mrr_name": 3.58,
+   "h10_name": 8.0,
+   "h100_name": 20.5,
+   "mrr_mean": 3.491,
+   "h10_mean": 7.5,
+   "h100_mean": 21.5,
+   "mrr_shuffled": 3.303,
+   "h10_shuffled": 4.5,
+   "h100_shuffled": 20.5
+  },
+  "musique|R.name_comention": {
+   "label": "R.name_comention",
+   "kind": "R",
+   "main": true,
+   "seen": true,
+   "edges": 200,
+   "mrr_cosine": 5.879,
+   "h10_cosine": 11.5,
+   "h100_cosine": 22.0,
+   "mrr_name": 6.492,
+   "h10_name": 13.0,
+   "h100_name": 27.5,
+   "mrr_mean": 8.138,
+   "h10_mean": 13.5,
+   "h100_mean": 32.5,
+   "mrr_shuffled": 7.286,
+   "h10_shuffled": 13.0,
+   "h100_shuffled": 28.5
+  },
+  "musique|R.title_comention": {
+   "label": "R.title_comention",
+   "kind": "R",
+   "main": true,
+   "seen": true,
+   "edges": 200,
+   "mrr_cosine": 6.042,
+   "h10_cosine": 14.0,
+   "h100_cosine": 35.5,
+   "mrr_name": 6.712,
+   "h10_name": 14.5,
+   "h100_name": 40.0,
+   "mrr_mean": 7.211,
+   "h10_mean": 17.0,
+   "h100_mean": 42.0,
+   "mrr_shuffled": 6.737,
+   "h10_shuffled": 16.5,
+   "h100_shuffled": 41.0
+  }
+ },
+ "test_edges": 600,
+ "pooled": {
+  "cosine": {
+   "n": 600,
+   "mrr": 5.02,
+   "h10": 10.17,
+   "h100": 23.33
+  },
+  "name": {
+   "n": 600,
+   "mrr": 5.59,
+   "h10": 11.83,
+   "h100": 29.33
+  },
+  "mean": {
+   "n": 600,
+   "mrr": 6.28,
+   "h10": 12.67,
+   "h100": 32.0
+  },
+  "shuffled": {
+   "n": 600,
+   "mrr": 5.78,
+   "h10": 11.33,
+   "h100": 30.0
+  }
+ },
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+  "ner_npz_sha256": "f294708600750c48eae9e32d0895d517ac3a8b5d048c736a70e9a566af2fe9c6",
+  "knn_npz_sha256": "6020ac7e0b6773e64866b5e942dc0e02c3b704615ced8de4d557aa543221ef5b",
+  "w2_s_npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+  "f0t_npz_sha256": "a0cea3c450f4a8364d202d7f21fe949e288f2ed0ca325aadea199f7ed2a4eebc",
+  "names_npz_sha256": {
+   "webqsp": "151927d8e775f01e8e51419fd62da8f93a120528a42cf7bb999b1a55abe670b4",
+   "metaqa": "bb1679f2cb4f7b4897c0834dc97ad297a82ecaa2556a4db9dac7156b226dac80",
+   "hotpotqa": "d54dc412b251af9012332191fd1a8d85bf8e1983a907a8d666e30daab34949d9",
+   "2wiki": "d54dc412b251af9012332191fd1a8d85bf8e1983a907a8d666e30daab34949d9"
+  },
+  "vectors": {
+   "shards": 3,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "48ccb700e4baf00235fc67190011b70245f923cdbd11e2bf9d178ba51064c81e"
+  }
+ },
+ "threads": 8,
+ "script_sha256": "8b58d91fddf1faae6fa9d735c980da410aae8acfa3e751821cdb1fdd0ae3d8d4",
+ "seconds": 16.0,
+ "utc": "2026-11-25T20:58:39Z",
+ "npz_sha256": "bbaadef6e2e4f2af1d56338e9bf636ecf2f27a135a09453157342fbb2557603f"
+}

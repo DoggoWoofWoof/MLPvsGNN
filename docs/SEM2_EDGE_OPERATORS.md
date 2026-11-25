@@ -1586,6 +1586,50 @@ Read by `zsem2r5.py report` from `outputs/sem2/r5/<dataset>/e3v.json` (every rec
 - **NOT_BRIDGED:** the operators are type-specific as fitted here; the working path stays per-corpus operators (R1) and the stored links, and what is named in 14.8 (signatures from edges, a KB net without R labels, a second passage net) is what could still bridge them.
 - Either way: no pool, link or PL change follows from R6, and no MLP or GNN is trained.
 
+### 14.11 Records and call (26 November 2026, 03:53 IST; 22:23 UTC)
+
+Read by `zsem2r6.py report` from `outputs/sem2/r6/reads/<net>_<dataset>.json` and `nets/p_hotpotqa.json` (every record carries the script's sha, 8b58d91f..., and the nets' file shas; the report stops on a mismatch; **missing rows: none**). Gates: G-E and G-N PASS on every row; G-L PASS (the stored N_KB, reloaded, reproduces R3's recorded ranks on 300 stored test edges: name and mean-name ranks within the tolerance on 100% and equal on 98.7% and 96.0%); G-0 PASS (N_P unfitted scores the cosine: largest score difference 4.8e-7, MRR difference 1.5e-9); G-U PASS; G-S recorded (the seen names: N_KB's three R labels on the passage units, N_P's four on HotpotQA; MetaQA's two R labels under N_KB, WebQSP's three R labels under N_P: beside, not in the main calls). N_P's fit: dev MRR 7.80 at the start (the cosine), best 12.67 at epoch 8 of 10 (ended by patience); the four train names are R.mention, R.name_comention, R.title_comention, S.hyperlink. MRR in points on test sources; intervals are the bootstrap over units (2,000 resamples, seed 0); one WebQSP unit (S.form of government countries) had fewer than 20 test edges and is dropped from direction 3 (162 of the 163 held-out relations read, plus MetaQA's 7).
+
+| direction | units | Delta name - cosine | Gain from the name | call | mean MRR cosine / mean name / name / shuffled |
+|---|---|---|---|---|---|
+| 1 KB -> KB (WebQSP net on MetaQA's S relations) | 7 | +0.79 [-0.21, +2.47] LEVEL | -0.13 [-1.51, +1.35] LEVEL | NO | 0.43 / 1.36 / 1.22 / 0.48 |
+| 2 KB -> passage (WebQSP net on the 15 passage units) | 15 | -1.37 [-1.89, -0.85] BELOW | -0.80 [-1.43, -0.36] BELOW | LOSES | 8.90 / 8.34 / 7.54 / 7.88 |
+| 3 passage -> KB (HotpotQA net on WebQSP's 163 and MetaQA's 7) | 169 | +1.53 [+0.68, +2.52] ABOVE | +0.15 [-0.08, +0.38] LEVEL | GENERIC | 2.52 / 3.90 / 4.05 / 4.03 |
+| 4 passage -> passage, control (HotpotQA net on the other four corpora) | 11 | +2.36 [+1.06, +3.87] ABOVE | +0.15 [-0.39, +0.70] LEVEL | GENERIC | 9.28 / 11.49 / 11.64 / 10.45 |
+
+**Rule 14.5: the direction 4 control is ABOVE (+2.36), so the cross-type reads are about types. Direction 3 (passage to KB) has Delta ABOVE and direction 2 (KB to passage) has Delta BELOW: verdict ONE_WAY (passage -> KB).** The call of direction 3 is **GENERIC**: the name adds +0.15 [-0.08, +0.38] over the net's relation-blind operator (LEVEL), and a name taken from another relation does as well as the right one (name minus shuffled name +0.02 [-0.10, +0.15]).
+
+**Size, said plainly.** The gain is at the floor of the scale. On direction 3 the cosine reads 2.52 MRR points and the generic operator 3.90; WebQSP's 162 relations dominate the 169 units. On MetaQA alone (7 relations) the cosine reads 0.43 and the net 1.89 (Delta +1.45 [+0.16, +3.73], GENERIC). Where the net's own labels are read on new nodes (HotpotQA, in sample, 4 units) the cosine reads 7.86 and the net 11.98 (Delta +4.12, the name adding +1.04 [+0.32, +1.87]: TRANSFERS, the only row where the name matters). **What crosses from passages to a KB is one generic link operator worth about 1.5 MRR points on relations the net never saw, not a relation-specific map.**
+
+### 14.12 The reads beside (decide nothing)
+
+- **Per direction, mean-name and shuffled-name minus cosine.** Direction 1: +0.92 [+0.12, +1.93] ABOVE and +0.05 [-0.46, +0.48] LEVEL. Direction 2: -0.56 [-1.12, -0.06] BELOW and -1.02 [-1.66, -0.45] BELOW. Direction 3: +1.38 [+0.52, +2.33] ABOVE and +1.51 [+0.69, +2.46] ABOVE. Direction 4: +2.21 [+0.87, +3.67] ABOVE and +1.17 [+0.39, +1.99] ABOVE (name minus shuffled +1.19 [+0.16, +2.38] ABOVE: among passage corpora the name does carry a little).
+- **Units with a gain.** Relations with d above 0: direction 1 5 of 7; direction 2 1 of 15; direction 3 109 of 169; direction 4 11 of 11.
+- **Direction 1 (KB to KB).** The WebQSP net on MetaQA's S relations: Delta +0.79 [-0.21, +2.47] LEVEL with the cosine at 0.43 (the floor R3 found); the generic operator is ABOVE the cosine (+0.92 [+0.12, +1.93]) but the name is not above the generic one.
+- **Direction 2 (KB to passage).** BELOW on the pooled 15 units and on the 13 units whose names the net has seen (R labels: Delta -1.53 [-2.07, -0.96] LOSES, one of 13 units above zero): **the loss is not caused by unseen names.** Per corpus: SQuAD, MuSiQue and HotpotQA BELOW, 2Wiki LEVEL, MultiHop-RAG has one unit (TOO_FEW_UNITS).
+- **S.hyperlink under N_KB** (a passage-side name the net has never seen; two units, 200 edges each, MRR points): HotpotQA cosine 7.41, name 7.14, mean name 7.92, shuffled 7.23; 2Wiki 6.67, 6.32, 6.95, 6.96. The name is below the cosine on both and the generic operator is above it on both (+0.51, +0.28), a read of two units.
+- **By dataset under N_P** (beside, the units of each corpus): ABOVE on SQuAD (+3.09), MuSiQue (+0.58), MetaQA (+1.45), WebQSP (+1.53), HotpotQA (+4.12, in sample), 2Wiki (+3.64); GENERIC on all but HotpotQA; WebQSP's three R labels LEVEL (-0.37 [-3.64, +2.53], three units).
+
+### 14.13 Expectations against the outcome (14.6; a failed one is reported, not explained away)
+
+- **X22 (KB to KB, Delta not ABOVE): held** (+0.79, LEVEL; MetaQA at the floor).
+- **X23 (KB to passage, Delta not ABOVE, and the hyperlink units no better than cosine): held** (BELOW at -1.37; the name is below the cosine on both hyperlink units).
+- **X24 (passage to KB, Delta not ABOVE): FAILED.** Delta is +1.53 [+0.68, +2.52] ABOVE. I had written that if anything were above it would be the mean name, reading GENERIC: **that half held** (the call is GENERIC and the name adds nothing), but I had expected it not to reach ABOVE, and it did, on 162 WebQSP relations and 7 MetaQA ones.
+- **X25 (passage to passage, Delta ABOVE): held** (+2.36). **X26 (N_P in sample, Delta ABOVE): held** (+4.12).
+- **My expectation for the verdict (NOT_BRIDGED): FAILED.** The verdict is ONE_WAY (passage to KB), by the Delta rule of 14.5; the call says what crosses is generic. The working idea (the user's, 25 Nov) was that link operators bridge passage corpora and KBs: **one generic operator does, in one direction; a relation-specific one does not, in either.**
+
+### 14.14 What this says, and what it does not
+
+- **Says:** a net fitted on one passage corpus's four link labels produces an operator that places the true tails of KB relations above plain cosine (+1.53 MRR points on 169 relations, 109 of them above zero), and the relation's name does not matter for that (a shuffled name does the same); the reverse does not hold (a net fitted on a KB's relations loses to cosine on passage links, -1.37, and on the names it has seen too). Passage corpora carry each other's operators (+2.36, with a small name effect beside).
+- **Does not say:** that a pool, a retriever, an MLP or a GNN gains; that the names mean anything across types (they do not here); that this is the only route (relation signatures from edges and a KB net fitted without R labels are named in 14.8, not run); that the generic operator is not simply "links go to a near neighbour in a certain direction" learned from any corpus (no read separates the two); that the size matters: the cosine's own MRR on the KB units is 0.4 to 2.5 points.
+- **Bearing on the user's idea (25 Nov: passage to KB and back, 'if we can transfer links only then we can work with them during questions with mlp and gnn').** At link level, the passage-to-KB direction crosses as one shared operator, the KB-to-passage direction does not, and no relation-specific map crosses in either. The question-level read of 14.10 (links produced by a net fitted on passages, built on a KB graph, entering the pools and the models) **is declared only on the user's word**; no pool, link or PL change follows from R6.
+
+### 14.15 What this closes, and disclosed
+
+- **Closes:** R6's four directions against 14.5's rule. **Nothing is queued by this page.** 14.8's reads (the free-angle ceiling, signatures from edges, a second passage net, a KB net without R labels) are declared only on the user's word.
+- **Disclosed:** the calls and the verdict rule were fixed before any number (14.5). X24 and my verdict expectation failed. Direction 3's units are dominated by one KB (162 of 169 WebQSP); MetaQA alone is at the floor; the hyperlink units are two each. HotpotQA is the only passage net fitted. The generic and the shuffled operators are the net's own, so GENERIC is a statement about this net: a relation-blind operator is enough to explain the gain here, which is not a proof that no relation-specific signal exists in the data.
+
+
 ## 15. R7 declared: links withheld, does the semantic branch fill what the stored walk cannot reach? (26 November 2026, 00:10 IST, 18:40 UTC), before any R7 number
 
 ### 15.1 Why, and what was seen

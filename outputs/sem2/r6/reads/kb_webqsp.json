@@ -1,0 +1,106 @@
+{
+ "stage": "SEM2 R6 read",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 14",
+ "net": "kb",
+ "net_sha256": "622b3a22dc923460ade8196b0b8388dcac69ce36b452733230f54888b796413e",
+ "dataset": "webqsp",
+ "arm": "e3v",
+ "smoke": false,
+ "config": {
+  "extra": 256,
+  "tau": 0.05,
+  "batch": 1024,
+  "neg": 4096,
+  "lr": 0.001,
+  "epoch": 200000,
+  "max_epochs": 10,
+  "patience": 2,
+  "min_op": 500,
+  "top_s": 12,
+  "n_test": 1000,
+  "n_dev": 500,
+  "hidden": 256,
+  "n_read": 200,
+  "chunk": 4000
+ },
+ "gate_only": true,
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 500445467,
+     "record": 500445467
+    },
+    "CN_all": {
+     "pairs": 995434,
+     "record": 995434
+    },
+    "F0T": {
+     "pairs": 997211,
+     "record": 997211
+    },
+    "S": {
+     "pairs": 5882501,
+     "record": 5882501
+    },
+    "S directed": {
+     "edges": 8215503,
+     "pair_relation_rows": 8213874,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-N": {
+   "webqsp": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   },
+   "metaqa": {
+    "min_cosine": 0.999998,
+    "verdict": "PASS"
+   },
+   "hotpotqa": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   },
+   "2wiki": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   }
+  },
+  "G-L": {
+   "edges_checked": 300,
+   "name_rank_near_share": 1.0,
+   "name_rank_equal_share": 0.9867,
+   "mean_rank_near_share": 1.0,
+   "mean_rank_equal_share": 0.96,
+   "verdict": "PASS"
+  }
+ },
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "b39c615122ad55f587eaea0c3fc5c7eff4190e6236fa258006e957dcfda948fe",
+  "ner_npz_sha256": "8ed08f05db3da877f02d212b2c8ac5b495d12bf15c91c329b33652fdc2e9fb10",
+  "knn_npz_sha256": "75a03f25dfa8c6339773059bffbd8322c2f9bf13e7b48cad0105c2ee189519cd",
+  "structural_npz_sha256": "b7c2c435fc0b9dbab3a238c7db31cd61da9a8bd435864c0eba6990ae12756b95",
+  "w2_s_npz_sha256": "a2e79a93c350f6e4de9455af07b11684b875444d2fb61ed6f2555b443ed093c4",
+  "f0t_npz_sha256": "624684bf80d6605b8a7e9d9f884ee027b35c84f3f51dbdd4d65c10ee29a51edd",
+  "names_npz_sha256": {
+   "webqsp": "151927d8e775f01e8e51419fd62da8f93a120528a42cf7bb999b1a55abe670b4",
+   "metaqa": "bb1679f2cb4f7b4897c0834dc97ad297a82ecaa2556a4db9dac7156b226dac80",
+   "hotpotqa": "d54dc412b251af9012332191fd1a8d85bf8e1983a907a8d666e30daab34949d9",
+   "2wiki": "d54dc412b251af9012332191fd1a8d85bf8e1983a907a8d666e30daab34949d9"
+  },
+  "vectors": {
+   "shards": 65,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "e171839e9a7376ae102ec00d7fefffc0edc2ef2775707d79c3f76aa779fe4f17"
+  }
+ },
+ "threads": 8,
+ "script_sha256": "8b58d91fddf1faae6fa9d735c980da410aae8acfa3e751821cdb1fdd0ae3d8d4",
+ "seconds": 232.0,
+ "utc": "2026-11-25T17:30:39Z"
+}

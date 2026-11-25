@@ -1,0 +1,185 @@
+{
+ "stage": "SEM2 R6 read",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 14",
+ "net": "p",
+ "net_sha256": "5a896002a987eb7a1cae997b9406118479ff6fcbcfb506a985d9990f63f065b6",
+ "dataset": "squad",
+ "arm": "e3v",
+ "smoke": false,
+ "config": {
+  "extra": 256,
+  "tau": 0.05,
+  "batch": 1024,
+  "neg": 4096,
+  "lr": 0.001,
+  "epoch": 200000,
+  "max_epochs": 10,
+  "patience": 2,
+  "min_op": 500,
+  "top_s": 12,
+  "n_test": 1000,
+  "n_dev": 500,
+  "hidden": 256,
+  "n_read": 200,
+  "chunk": 4000
+ },
+ "gate_only": false,
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 878200,
+     "record": 878200
+    },
+    "CN_all": {
+     "pairs": 173645,
+     "record": 173645
+    },
+    "F0T": {
+     "pairs": 176454,
+     "record": 176454
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-N": {
+   "webqsp": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   },
+   "metaqa": {
+    "min_cosine": 0.999998,
+    "verdict": "PASS"
+   },
+   "hotpotqa": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   },
+   "2wiki": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   }
+  },
+  "G-U": "PASS",
+  "G-S": {
+   "units": 3,
+   "seen_names": 3,
+   "seen_labels": [
+    "R.mention",
+    "R.name_comention",
+    "R.title_comention"
+   ]
+  }
+ },
+ "units": {
+  "squad|R.mention": {
+   "label": "R.mention",
+   "kind": "R",
+   "main": true,
+   "seen": true,
+   "edges": 200,
+   "mrr_cosine": 16.601,
+   "h10_cosine": 26.5,
+   "h100_cosine": 47.5,
+   "mrr_name": 20.949,
+   "h10_name": 32.0,
+   "h100_name": 55.0,
+   "mrr_mean": 21.818,
+   "h10_mean": 35.0,
+   "h100_mean": 56.0,
+   "mrr_shuffled": 20.383,
+   "h10_shuffled": 32.0,
+   "h100_shuffled": 51.0
+  },
+  "squad|R.name_comention": {
+   "label": "R.name_comention",
+   "kind": "R",
+   "main": true,
+   "seen": true,
+   "edges": 200,
+   "mrr_cosine": 18.509,
+   "h10_cosine": 25.0,
+   "h100_cosine": 54.5,
+   "mrr_name": 22.33,
+   "h10_name": 28.5,
+   "h100_name": 53.0,
+   "mrr_mean": 20.453,
+   "h10_mean": 29.5,
+   "h100_mean": 53.0,
+   "mrr_shuffled": 17.34,
+   "h10_shuffled": 27.5,
+   "h100_shuffled": 50.5
+  },
+  "squad|R.title_comention": {
+   "label": "R.title_comention",
+   "kind": "R",
+   "main": true,
+   "seen": true,
+   "edges": 200,
+   "mrr_cosine": 12.629,
+   "h10_cosine": 30.0,
+   "h100_cosine": 67.0,
+   "mrr_name": 13.725,
+   "h10_name": 35.5,
+   "h100_name": 73.5,
+   "mrr_mean": 12.906,
+   "h10_mean": 36.0,
+   "h100_mean": 71.5,
+   "mrr_shuffled": 13.089,
+   "h10_shuffled": 37.0,
+   "h100_shuffled": 74.0
+  }
+ },
+ "test_edges": 600,
+ "pooled": {
+  "cosine": {
+   "n": 600,
+   "mrr": 15.91,
+   "h10": 27.17,
+   "h100": 56.33
+  },
+  "name": {
+   "n": 600,
+   "mrr": 19.0,
+   "h10": 32.0,
+   "h100": 60.5
+  },
+  "mean": {
+   "n": 600,
+   "mrr": 18.39,
+   "h10": 33.5,
+   "h100": 60.17
+  },
+  "shuffled": {
+   "n": 600,
+   "mrr": 16.94,
+   "h10": 32.17,
+   "h100": 58.5
+  }
+ },
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "34ac47757e0080f0e2eb6c679009a6090ca97be39d576307ba7281db730c1a8b",
+  "ner_npz_sha256": "e8b061c3dc417d7c481e57d9f360dd98c825049d62c61958ca0fed655fa57a22",
+  "knn_npz_sha256": "fee9cca5435668378d2a139614cec141d0b4977991801a004c8ca43ee8ad796f",
+  "w2_s_npz_sha256": "3f44314052d91556d6d694cb97fc5319dcf84e80ef68790ec9a33800286880c5",
+  "f0t_npz_sha256": "04703c6d42e9d2717fc1a3e659d9ef6d376d85dd2bd2e410904a7573b09157e0",
+  "names_npz_sha256": {
+   "webqsp": "151927d8e775f01e8e51419fd62da8f93a120528a42cf7bb999b1a55abe670b4",
+   "metaqa": "bb1679f2cb4f7b4897c0834dc97ad297a82ecaa2556a4db9dac7156b226dac80",
+   "hotpotqa": "d54dc412b251af9012332191fd1a8d85bf8e1983a907a8d666e30daab34949d9",
+   "2wiki": "d54dc412b251af9012332191fd1a8d85bf8e1983a907a8d666e30daab34949d9"
+  },
+  "vectors": {
+   "shards": 1,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "dc9bda57edde0b4440c8f8b1cfbe3ab28e7aeffa3b5079f2984db4c23e2435d6"
+  }
+ },
+ "threads": 8,
+ "script_sha256": "8b58d91fddf1faae6fa9d735c980da410aae8acfa3e751821cdb1fdd0ae3d8d4",
+ "seconds": 2.7,
+ "utc": "2026-11-25T20:57:07Z",
+ "npz_sha256": "5db6fcdafd65ceddcaccefdbc3d867b16c118c0df7f0cc6861df427a491e9b84"
+}

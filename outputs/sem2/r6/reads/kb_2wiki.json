@@ -1,0 +1,214 @@
+{
+ "stage": "SEM2 R6 read",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 14",
+ "net": "kb",
+ "net_sha256": "622b3a22dc923460ade8196b0b8388dcac69ce36b452733230f54888b796413e",
+ "dataset": "2wiki",
+ "arm": "e3v",
+ "smoke": false,
+ "config": {
+  "extra": 256,
+  "tau": 0.05,
+  "batch": 1024,
+  "neg": 4096,
+  "lr": 0.001,
+  "epoch": 200000,
+  "max_epochs": 10,
+  "patience": 2,
+  "min_op": 500,
+  "top_s": 12,
+  "n_test": 1000,
+  "n_dev": 500,
+  "hidden": 256,
+  "n_read": 200,
+  "chunk": 4000
+ },
+ "gate_only": false,
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 71483746,
+     "record": 71483746
+    },
+    "CN_all": {
+     "pairs": 38242751,
+     "record": 38242751
+    },
+    "F0T": {
+     "pairs": 39863302,
+     "record": 39863302
+    },
+    "S": {
+     "pairs": 28208857,
+     "record": 28208857
+    },
+    "S directed": {
+     "edges": 28963600,
+     "pair_relation_rows": 28208857,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-N": {
+   "webqsp": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   },
+   "metaqa": {
+    "min_cosine": 0.999998,
+    "verdict": "PASS"
+   },
+   "hotpotqa": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   },
+   "2wiki": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   }
+  },
+  "G-U": "PASS",
+  "G-S": {
+   "units": 4,
+   "seen_names": 3,
+   "seen_labels": [
+    "R.mention",
+    "R.name_comention",
+    "R.title_comention"
+   ]
+  }
+ },
+ "units": {
+  "2wiki|R.mention": {
+   "label": "R.mention",
+   "kind": "R",
+   "main": true,
+   "seen": true,
+   "edges": 200,
+   "mrr_cosine": 1.693,
+   "h10_cosine": 3.0,
+   "h100_cosine": 7.0,
+   "mrr_name": 1.007,
+   "h10_name": 2.0,
+   "h100_name": 6.0,
+   "mrr_mean": 1.51,
+   "h10_mean": 2.0,
+   "h100_mean": 9.0,
+   "mrr_shuffled": 1.522,
+   "h10_shuffled": 2.5,
+   "h100_shuffled": 7.5
+  },
+  "2wiki|R.name_comention": {
+   "label": "R.name_comention",
+   "kind": "R",
+   "main": true,
+   "seen": true,
+   "edges": 200,
+   "mrr_cosine": 8.251,
+   "h10_cosine": 13.0,
+   "h100_cosine": 25.5,
+   "mrr_name": 7.16,
+   "h10_name": 12.5,
+   "h100_name": 21.5,
+   "mrr_mean": 8.123,
+   "h10_mean": 12.5,
+   "h100_mean": 22.0,
+   "mrr_shuffled": 7.97,
+   "h10_shuffled": 13.5,
+   "h100_shuffled": 21.5
+  },
+  "2wiki|R.title_comention": {
+   "label": "R.title_comention",
+   "kind": "R",
+   "main": true,
+   "seen": true,
+   "edges": 200,
+   "mrr_cosine": 6.707,
+   "h10_cosine": 13.0,
+   "h100_cosine": 29.0,
+   "mrr_name": 7.285,
+   "h10_name": 11.5,
+   "h100_name": 26.5,
+   "mrr_mean": 7.033,
+   "h10_mean": 12.5,
+   "h100_mean": 27.0,
+   "mrr_shuffled": 6.858,
+   "h10_shuffled": 11.5,
+   "h100_shuffled": 27.0
+  },
+  "2wiki|S.hyperlink": {
+   "label": "S.hyperlink",
+   "kind": "S",
+   "main": true,
+   "seen": false,
+   "edges": 200,
+   "mrr_cosine": 6.665,
+   "h10_cosine": 12.5,
+   "h100_cosine": 21.5,
+   "mrr_name": 6.317,
+   "h10_name": 10.0,
+   "h100_name": 21.0,
+   "mrr_mean": 6.947,
+   "h10_mean": 11.0,
+   "h100_mean": 25.5,
+   "mrr_shuffled": 6.957,
+   "h10_shuffled": 11.0,
+   "h100_shuffled": 23.0
+  }
+ },
+ "test_edges": 800,
+ "pooled": {
+  "cosine": {
+   "n": 800,
+   "mrr": 5.83,
+   "h10": 10.38,
+   "h100": 20.75
+  },
+  "name": {
+   "n": 800,
+   "mrr": 5.44,
+   "h10": 9.0,
+   "h100": 18.75
+  },
+  "mean": {
+   "n": 800,
+   "mrr": 5.9,
+   "h10": 9.5,
+   "h100": 20.88
+  },
+  "shuffled": {
+   "n": 800,
+   "mrr": 5.83,
+   "h10": 9.62,
+   "h100": 19.75
+  }
+ },
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "73fb822f3e4dd255c2555af717f4664c78a01fec4b5dce892fdec25d5de2426a",
+  "ner_npz_sha256": "fd462a9c08740d57af79855efe37c1d77f30dc593ca6ad6242681c99b51a008a",
+  "knn_npz_sha256": "a7151f6bbebdb13d7e817abcc199fd5feae17585a955f781b0690d7ee1897f99",
+  "structural_npz_sha256": "1e380eaaa62b21eaf24f6dec8302d81482bf35695bfa6cdda2421fa90cfe9c85",
+  "w2_s_npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+  "f0t_npz_sha256": "d6c49214c935c6166fcaa9c3494827cf85aaeafdb1f84f9eb3679b84de52ad5e",
+  "names_npz_sha256": {
+   "webqsp": "151927d8e775f01e8e51419fd62da8f93a120528a42cf7bb999b1a55abe670b4",
+   "metaqa": "bb1679f2cb4f7b4897c0834dc97ad297a82ecaa2556a4db9dac7156b226dac80",
+   "hotpotqa": "d54dc412b251af9012332191fd1a8d85bf8e1983a907a8d666e30daab34949d9",
+   "2wiki": "d54dc412b251af9012332191fd1a8d85bf8e1983a907a8d666e30daab34949d9"
+  },
+  "vectors": {
+   "shards": 150,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "97669fbeb024ccd647cf0ab3538e855783361b0d02ee2364b1e5bf75e56eaa96"
+  }
+ },
+ "threads": 8,
+ "script_sha256": "8b58d91fddf1faae6fa9d735c980da410aae8acfa3e751821cdb1fdd0ae3d8d4",
+ "seconds": 579.0,
+ "utc": "2026-11-25T17:52:41Z",
+ "npz_sha256": "c45115a62868c8f50cde5ece5871c95f8e52adfd6a19ae23fedc3d816751e59a"
+}

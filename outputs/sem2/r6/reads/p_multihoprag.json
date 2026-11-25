@@ -1,0 +1,143 @@
+{
+ "stage": "SEM2 R6 read",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 14",
+ "net": "p",
+ "net_sha256": "5a896002a987eb7a1cae997b9406118479ff6fcbcfb506a985d9990f63f065b6",
+ "dataset": "multihoprag",
+ "arm": "e3v",
+ "smoke": false,
+ "config": {
+  "extra": 256,
+  "tau": 0.05,
+  "batch": 1024,
+  "neg": 4096,
+  "lr": 0.001,
+  "epoch": 200000,
+  "max_epochs": 10,
+  "patience": 2,
+  "min_op": 500,
+  "top_s": 12,
+  "n_test": 1000,
+  "n_dev": 500,
+  "hidden": 256,
+  "n_read": 200,
+  "chunk": 4000
+ },
+ "gate_only": false,
+ "gates": {
+  "G-E": {
+   "families": {
+    "F0": {
+     "pairs": 25005,
+     "record": 25005
+    },
+    "F0T": {
+     "pairs": 25080,
+     "record": 25080
+    },
+    "W2_S": {
+     "pairs": 2,
+     "record": 2
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-N": {
+   "webqsp": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   },
+   "metaqa": {
+    "min_cosine": 0.999998,
+    "verdict": "PASS"
+   },
+   "hotpotqa": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   },
+   "2wiki": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   }
+  },
+  "G-U": "PASS",
+  "G-S": {
+   "units": 1,
+   "seen_names": 1,
+   "seen_labels": [
+    "R.name_comention"
+   ]
+  }
+ },
+ "units": {
+  "multihoprag|R.name_comention": {
+   "label": "R.name_comention",
+   "kind": "R",
+   "main": true,
+   "seen": true,
+   "edges": 200,
+   "mrr_cosine": 15.991,
+   "h10_cosine": 27.5,
+   "h100_cosine": 53.5,
+   "mrr_name": 16.357,
+   "h10_name": 24.5,
+   "h100_name": 54.0,
+   "mrr_mean": 15.716,
+   "h10_mean": 25.5,
+   "h100_mean": 49.5,
+   "mrr_shuffled": 16.357,
+   "h10_shuffled": 24.5,
+   "h100_shuffled": 54.0
+  }
+ },
+ "test_edges": 200,
+ "pooled": {
+  "cosine": {
+   "n": 200,
+   "mrr": 15.99,
+   "h10": 27.5,
+   "h100": 53.5
+  },
+  "name": {
+   "n": 200,
+   "mrr": 16.36,
+   "h10": 24.5,
+   "h100": 54.0
+  },
+  "mean": {
+   "n": 200,
+   "mrr": 15.72,
+   "h10": 25.5,
+   "h100": 49.5
+  },
+  "shuffled": {
+   "n": 200,
+   "mrr": 16.36,
+   "h10": 24.5,
+   "h100": 54.0
+  }
+ },
+ "inputs": {
+  "links_json_sha256": "97a1f768bae0e0256136220f1a6aa037ec71632918053e89b262a523b2455744",
+  "F0_npz_sha256": "345d21c15bfda50834613b27b72bee5122e4e85a258e65973867c762b217305c",
+  "F0T_npz_sha256": "2e884936ec9398f4ce1395021d63cc68580b77c1ce4ec39ad7bdb231109406ec",
+  "W2_S_npz_sha256": "00b5b57909411d1ffae9a23fad257f5294731cc97845625d58b4e1ca254a940a",
+  "vectors": {
+   "shards": 1,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "29722959d04395f0b9dc396bc549e192f090d184d42f4318b20e0ecfdff6d6c3"
+  },
+  "names_npz_sha256": {
+   "webqsp": "151927d8e775f01e8e51419fd62da8f93a120528a42cf7bb999b1a55abe670b4",
+   "metaqa": "bb1679f2cb4f7b4897c0834dc97ad297a82ecaa2556a4db9dac7156b226dac80",
+   "hotpotqa": "d54dc412b251af9012332191fd1a8d85bf8e1983a907a8d666e30daab34949d9",
+   "2wiki": "d54dc412b251af9012332191fd1a8d85bf8e1983a907a8d666e30daab34949d9"
+  }
+ },
+ "threads": 8,
+ "script_sha256": "8b58d91fddf1faae6fa9d735c980da410aae8acfa3e751821cdb1fdd0ae3d8d4",
+ "seconds": 0.5,
+ "utc": "2026-11-25T20:57:04Z",
+ "npz_sha256": "26e9ce1a906d38dbf31a14309e0451021de1e9a0b4193c8b3be873a653b76633"
+}

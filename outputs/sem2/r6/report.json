@@ -1,0 +1,952 @@
+{
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 14",
+ "verdict": "ONE_WAY (passage -> KB)",
+ "directions": {
+  "1 KB -> KB (WebQSP net on MetaQA's S relations)": {
+   "units": 7,
+   "dropped_under_min": [],
+   "relations": 7,
+   "Delta name - cosine": {
+    "diff": 0.79,
+    "lo": -0.21,
+    "hi": 2.47,
+    "call": "LEVEL"
+   },
+   "Gain from the name (name - mean name)": {
+    "diff": -0.13,
+    "lo": -1.51,
+    "hi": 1.35,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "mean name - cosine": {
+     "diff": 0.92,
+     "lo": 0.12,
+     "hi": 1.93,
+     "call": "ABOVE"
+    },
+    "name - shuffled name": {
+     "diff": 0.75,
+     "lo": -0.66,
+     "hi": 2.95,
+     "call": "LEVEL"
+    },
+    "shuffled name - cosine": {
+     "diff": 0.05,
+     "lo": -0.46,
+     "hi": 0.48,
+     "call": "LEVEL"
+    },
+    "relations with d_r > 0": 5,
+    "mean MRR (points)": {
+     "cosine": 0.432,
+     "name": 1.224,
+     "mean": 1.356,
+     "shuffled": 0.479
+    }
+   },
+   "call": "NO"
+  },
+  "2 KB -> passage (WebQSP net on the 15 passage units)": {
+   "units": 15,
+   "dropped_under_min": [],
+   "relations": 15,
+   "Delta name - cosine": {
+    "diff": -1.37,
+    "lo": -1.89,
+    "hi": -0.85,
+    "call": "BELOW"
+   },
+   "Gain from the name (name - mean name)": {
+    "diff": -0.8,
+    "lo": -1.43,
+    "hi": -0.36,
+    "call": "BELOW"
+   },
+   "beside": {
+    "mean name - cosine": {
+     "diff": -0.56,
+     "lo": -1.12,
+     "hi": -0.06,
+     "call": "BELOW"
+    },
+    "name - shuffled name": {
+     "diff": -0.34,
+     "lo": -0.87,
+     "hi": 0.04,
+     "call": "LEVEL"
+    },
+    "shuffled name - cosine": {
+     "diff": -1.02,
+     "lo": -1.66,
+     "hi": -0.45,
+     "call": "BELOW"
+    },
+    "relations with d_r > 0": 1,
+    "mean MRR (points)": {
+     "cosine": 8.903,
+     "name": 7.537,
+     "mean": 8.339,
+     "shuffled": 7.882
+    }
+   },
+   "call": "LOSES"
+  },
+  "3 passage -> KB (HotpotQA net on WebQSP's 163 and MetaQA's 7)": {
+   "units": 169,
+   "dropped_under_min": [
+    "webqsp|S.form of government countries"
+   ],
+   "relations": 169,
+   "Delta name - cosine": {
+    "diff": 1.53,
+    "lo": 0.68,
+    "hi": 2.52,
+    "call": "ABOVE"
+   },
+   "Gain from the name (name - mean name)": {
+    "diff": 0.15,
+    "lo": -0.08,
+    "hi": 0.38,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "mean name - cosine": {
+     "diff": 1.38,
+     "lo": 0.52,
+     "hi": 2.33,
+     "call": "ABOVE"
+    },
+    "name - shuffled name": {
+     "diff": 0.02,
+     "lo": -0.1,
+     "hi": 0.15,
+     "call": "LEVEL"
+    },
+    "shuffled name - cosine": {
+     "diff": 1.51,
+     "lo": 0.69,
+     "hi": 2.46,
+     "call": "ABOVE"
+    },
+    "relations with d_r > 0": 109,
+    "mean MRR (points)": {
+     "cosine": 2.516,
+     "name": 4.047,
+     "mean": 3.898,
+     "shuffled": 4.028
+    }
+   },
+   "call": "GENERIC"
+  },
+  "4 passage -> passage, control (HotpotQA net on the other four corpora)": {
+   "units": 11,
+   "dropped_under_min": [],
+   "relations": 11,
+   "Delta name - cosine": {
+    "diff": 2.36,
+    "lo": 1.06,
+    "hi": 3.87,
+    "call": "ABOVE"
+   },
+   "Gain from the name (name - mean name)": {
+    "diff": 0.15,
+    "lo": -0.39,
+    "hi": 0.7,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "mean name - cosine": {
+     "diff": 2.21,
+     "lo": 0.87,
+     "hi": 3.67,
+     "call": "ABOVE"
+    },
+    "name - shuffled name": {
+     "diff": 1.19,
+     "lo": 0.16,
+     "hi": 2.38,
+     "call": "ABOVE"
+    },
+    "shuffled name - cosine": {
+     "diff": 1.17,
+     "lo": 0.39,
+     "hi": 1.99,
+     "call": "ABOVE"
+    },
+    "relations with d_r > 0": 11,
+    "mean MRR (points)": {
+     "cosine": 9.282,
+     "name": 11.638,
+     "mean": 11.492,
+     "shuffled": 10.451
+    }
+   },
+   "call": "GENERIC"
+  }
+ },
+ "beside": {
+  "kb on multihoprag (main units)": {
+   "units": 1,
+   "dropped_under_min": [],
+   "mean MRR (points)": {
+    "cosine": 15.991,
+    "name": 13.257,
+    "mean": 14.772,
+    "shuffled": 13.257
+   },
+   "call": "TOO_FEW_UNITS"
+  },
+  "kb on squad (main units)": {
+   "units": 3,
+   "dropped_under_min": [],
+   "relations": 3,
+   "Delta name - cosine": {
+    "diff": -2.67,
+    "lo": -2.92,
+    "hi": -2.51,
+    "call": "BELOW"
+   },
+   "Gain from the name (name - mean name)": {
+    "diff": -1.9,
+    "lo": -4.28,
+    "hi": -0.47,
+    "call": "BELOW"
+   },
+   "beside": {
+    "mean name - cosine": {
+     "diff": -0.78,
+     "lo": -2.04,
+     "hi": 1.37,
+     "call": "LEVEL"
+    },
+    "name - shuffled name": {
+     "diff": -0.84,
+     "lo": -3.33,
+     "hi": 0.72,
+     "call": "LEVEL"
+    },
+    "shuffled name - cosine": {
+     "diff": -1.84,
+     "lo": -3.31,
+     "hi": 0.41,
+     "call": "LEVEL"
+    },
+    "relations with d_r > 0": 0,
+    "mean MRR (points)": {
+     "cosine": 15.913,
+     "name": 13.239,
+     "mean": 15.137,
+     "shuffled": 14.076
+    }
+   },
+   "call": "LOSES"
+  },
+  "kb on musique (main units)": {
+   "units": 3,
+   "dropped_under_min": [],
+   "relations": 3,
+   "Delta name - cosine": {
+    "diff": -1.03,
+    "lo": -1.6,
+    "hi": -0.7,
+    "call": "BELOW"
+   },
+   "Gain from the name (name - mean name)": {
+    "diff": -0.47,
+    "lo": -0.53,
+    "hi": -0.39,
+    "call": "BELOW"
+   },
+   "beside": {
+    "mean name - cosine": {
+     "diff": -0.56,
+     "lo": -1.07,
+     "hi": -0.2,
+     "call": "BELOW"
+    },
+    "name - shuffled name": {
+     "diff": -0.05,
+     "lo": -0.21,
+     "hi": 0.11,
+     "call": "LEVEL"
+    },
+    "shuffled name - cosine": {
+     "diff": -0.98,
+     "lo": -1.7,
+     "hi": -0.59,
+     "call": "BELOW"
+    },
+    "relations with d_r > 0": 0,
+    "mean MRR (points)": {
+     "cosine": 5.018,
+     "name": 3.986,
+     "mean": 4.458,
+     "shuffled": 4.038
+    }
+   },
+   "call": "LOSES"
+  },
+  "kb on metaqa (main units)": {
+   "units": 7,
+   "dropped_under_min": [],
+   "relations": 7,
+   "Delta name - cosine": {
+    "diff": 0.79,
+    "lo": -0.21,
+    "hi": 2.47,
+    "call": "LEVEL"
+   },
+   "Gain from the name (name - mean name)": {
+    "diff": -0.13,
+    "lo": -1.51,
+    "hi": 1.35,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "mean name - cosine": {
+     "diff": 0.92,
+     "lo": 0.12,
+     "hi": 1.93,
+     "call": "ABOVE"
+    },
+    "name - shuffled name": {
+     "diff": 0.75,
+     "lo": -0.66,
+     "hi": 2.95,
+     "call": "LEVEL"
+    },
+    "shuffled name - cosine": {
+     "diff": 0.05,
+     "lo": -0.46,
+     "hi": 0.48,
+     "call": "LEVEL"
+    },
+    "relations with d_r > 0": 5,
+    "mean MRR (points)": {
+     "cosine": 0.432,
+     "name": 1.224,
+     "mean": 1.356,
+     "shuffled": 0.479
+    }
+   },
+   "call": "NO"
+  },
+  "kb on metaqa (beside units: R labels)": {
+   "units": 2,
+   "dropped_under_min": [],
+   "mean MRR (points)": {
+    "cosine": 12.266,
+    "name": 9.606,
+    "mean": 10.38,
+    "shuffled": 9.897
+   },
+   "call": "TOO_FEW_UNITS"
+  },
+  "kb on hotpotqa (main units)": {
+   "units": 4,
+   "dropped_under_min": [],
+   "relations": 4,
+   "Delta name - cosine": {
+    "diff": -1.27,
+    "lo": -2.13,
+    "hi": -0.53,
+    "call": "BELOW"
+   },
+   "Gain from the name (name - mean name)": {
+    "diff": -0.39,
+    "lo": -0.89,
+    "hi": 0.16,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "mean name - cosine": {
+     "diff": -0.88,
+     "lo": -2.33,
+     "hi": 0.21,
+     "call": "LEVEL"
+    },
+    "name - shuffled name": {
+     "diff": -0.24,
+     "lo": -0.72,
+     "hi": 0.06,
+     "call": "LEVEL"
+    },
+    "shuffled name - cosine": {
+     "diff": -1.03,
+     "lo": -1.97,
+     "hi": -0.29,
+     "call": "BELOW"
+    },
+    "relations with d_r > 0": 0,
+    "mean MRR (points)": {
+     "cosine": 7.86,
+     "name": 6.59,
+     "mean": 6.977,
+     "shuffled": 6.829
+    }
+   },
+   "call": "LOSES"
+  },
+  "kb on 2wiki (main units)": {
+   "units": 4,
+   "dropped_under_min": [],
+   "relations": 4,
+   "Delta name - cosine": {
+    "diff": -0.39,
+    "lo": -0.91,
+    "hi": 0.26,
+    "call": "LEVEL"
+   },
+   "Gain from the name (name - mean name)": {
+    "diff": -0.46,
+    "lo": -0.85,
+    "hi": 0.03,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "mean name - cosine": {
+     "diff": 0.07,
+     "lo": -0.16,
+     "hi": 0.3,
+     "call": "LEVEL"
+    },
+    "name - shuffled name": {
+     "diff": -0.38,
+     "lo": -0.74,
+     "hi": 0.16,
+     "call": "LEVEL"
+    },
+    "shuffled name - cosine": {
+     "diff": -0.0,
+     "lo": -0.23,
+     "hi": 0.22,
+     "call": "LEVEL"
+    },
+    "relations with d_r > 0": 1,
+    "mean MRR (points)": {
+     "cosine": 5.829,
+     "name": 5.442,
+     "mean": 5.903,
+     "shuffled": 5.827
+    }
+   },
+   "call": "NO"
+  },
+  "p on multihoprag (main units)": {
+   "units": 1,
+   "dropped_under_min": [],
+   "mean MRR (points)": {
+    "cosine": 15.991,
+    "name": 16.357,
+    "mean": 15.716,
+    "shuffled": 16.357
+   },
+   "call": "TOO_FEW_UNITS"
+  },
+  "p on squad (main units)": {
+   "units": 3,
+   "dropped_under_min": [],
+   "relations": 3,
+   "Delta name - cosine": {
+    "diff": 3.09,
+    "lo": 1.1,
+    "hi": 4.35,
+    "call": "ABOVE"
+   },
+   "Gain from the name (name - mean name)": {
+    "diff": 0.61,
+    "lo": -0.87,
+    "hi": 1.88,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "mean name - cosine": {
+     "diff": 2.48,
+     "lo": 0.28,
+     "hi": 5.22,
+     "call": "ABOVE"
+    },
+    "name - shuffled name": {
+     "diff": 2.06,
+     "lo": 0.57,
+     "hi": 4.99,
+     "call": "ABOVE"
+    },
+    "shuffled name - cosine": {
+     "diff": 1.02,
+     "lo": -1.17,
+     "hi": 3.78,
+     "call": "LEVEL"
+    },
+    "relations with d_r > 0": 3,
+    "mean MRR (points)": {
+     "cosine": 15.913,
+     "name": 19.001,
+     "mean": 18.392,
+     "shuffled": 16.937
+    }
+   },
+   "call": "GENERIC"
+  },
+  "p on musique (main units)": {
+   "units": 3,
+   "dropped_under_min": [],
+   "relations": 3,
+   "Delta name - cosine": {
+    "diff": 0.58,
+    "lo": 0.45,
+    "hi": 0.67,
+    "call": "ABOVE"
+   },
+   "Gain from the name (name - mean name)": {
+    "diff": -0.69,
+    "lo": -1.65,
+    "hi": 0.09,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "mean name - cosine": {
+     "diff": 1.26,
+     "lo": 0.36,
+     "hi": 2.26,
+     "call": "ABOVE"
+    },
+    "name - shuffled name": {
+     "diff": -0.18,
+     "lo": -0.79,
+     "hi": 0.28,
+     "call": "LEVEL"
+    },
+    "shuffled name - cosine": {
+     "diff": 0.76,
+     "lo": 0.17,
+     "hi": 1.41,
+     "call": "ABOVE"
+    },
+    "relations with d_r > 0": 3,
+    "mean MRR (points)": {
+     "cosine": 5.018,
+     "name": 5.595,
+     "mean": 6.28,
+     "shuffled": 5.775
+    }
+   },
+   "call": "GENERIC"
+  },
+  "p on metaqa (main units)": {
+   "units": 7,
+   "dropped_under_min": [],
+   "relations": 7,
+   "Delta name - cosine": {
+    "diff": 1.45,
+    "lo": 0.16,
+    "hi": 3.73,
+    "call": "ABOVE"
+   },
+   "Gain from the name (name - mean name)": {
+    "diff": 0.08,
+    "lo": -0.08,
+    "hi": 0.3,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "mean name - cosine": {
+     "diff": 1.38,
+     "lo": 0.14,
+     "hi": 3.46,
+     "call": "ABOVE"
+    },
+    "name - shuffled name": {
+     "diff": 0.19,
+     "lo": -0.05,
+     "hi": 0.63,
+     "call": "LEVEL"
+    },
+    "shuffled name - cosine": {
+     "diff": 1.26,
+     "lo": 0.16,
+     "hi": 3.12,
+     "call": "ABOVE"
+    },
+    "relations with d_r > 0": 7,
+    "mean MRR (points)": {
+     "cosine": 0.432,
+     "name": 1.886,
+     "mean": 1.81,
+     "shuffled": 1.695
+    }
+   },
+   "call": "GENERIC"
+  },
+  "p on metaqa (beside units: R labels)": {
+   "units": 2,
+   "dropped_under_min": [],
+   "mean MRR (points)": {
+    "cosine": 12.266,
+    "name": 11.478,
+    "mean": 12.107,
+    "shuffled": 12.109
+   },
+   "call": "TOO_FEW_UNITS"
+  },
+  "p on webqsp (main units)": {
+   "units": 162,
+   "dropped_under_min": [
+    "webqsp|S.form of government countries"
+   ],
+   "relations": 162,
+   "Delta name - cosine": {
+    "diff": 1.53,
+    "lo": 0.65,
+    "hi": 2.56,
+    "call": "ABOVE"
+   },
+   "Gain from the name (name - mean name)": {
+    "diff": 0.15,
+    "lo": -0.07,
+    "hi": 0.38,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "mean name - cosine": {
+     "diff": 1.38,
+     "lo": 0.51,
+     "hi": 2.39,
+     "call": "ABOVE"
+    },
+    "name - shuffled name": {
+     "diff": 0.01,
+     "lo": -0.11,
+     "hi": 0.14,
+     "call": "LEVEL"
+    },
+    "shuffled name - cosine": {
+     "diff": 1.52,
+     "lo": 0.67,
+     "hi": 2.5,
+     "call": "ABOVE"
+    },
+    "relations with d_r > 0": 102,
+    "mean MRR (points)": {
+     "cosine": 2.606,
+     "name": 4.141,
+     "mean": 3.988,
+     "shuffled": 4.128
+    }
+   },
+   "call": "GENERIC"
+  },
+  "p on webqsp (beside units: R labels)": {
+   "units": 3,
+   "dropped_under_min": [],
+   "relations": 3,
+   "Delta name - cosine": {
+    "diff": -0.37,
+    "lo": -3.64,
+    "hi": 2.53,
+    "call": "LEVEL"
+   },
+   "Gain from the name (name - mean name)": {
+    "diff": 1.11,
+    "lo": -1.23,
+    "hi": 4.55,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "mean name - cosine": {
+     "diff": -1.47,
+     "lo": -2.41,
+     "hi": 0.01,
+     "call": "LEVEL"
+    },
+    "name - shuffled name": {
+     "diff": 0.28,
+     "lo": -0.54,
+     "hi": 1.39,
+     "call": "LEVEL"
+    },
+    "shuffled name - cosine": {
+     "diff": -0.65,
+     "lo": -3.1,
+     "hi": 1.14,
+     "call": "LEVEL"
+    },
+    "relations with d_r > 0": 2,
+    "mean MRR (points)": {
+     "cosine": 32.136,
+     "name": 31.768,
+     "mean": 30.661,
+     "shuffled": 31.486
+    }
+   },
+   "call": "NO"
+  },
+  "p on hotpotqa (main units)": {
+   "units": 4,
+   "dropped_under_min": [],
+   "relations": 4,
+   "Delta name - cosine": {
+    "diff": 4.12,
+    "lo": 1.5,
+    "hi": 8.3,
+    "call": "ABOVE"
+   },
+   "Gain from the name (name - mean name)": {
+    "diff": 1.04,
+    "lo": 0.32,
+    "hi": 1.87,
+    "call": "ABOVE"
+   },
+   "beside": {
+    "mean name - cosine": {
+     "diff": 3.08,
+     "lo": 0.67,
+     "hi": 7.19,
+     "call": "ABOVE"
+    },
+    "name - shuffled name": {
+     "diff": 2.56,
+     "lo": 0.94,
+     "hi": 5.76,
+     "call": "ABOVE"
+    },
+    "shuffled name - cosine": {
+     "diff": 1.56,
+     "lo": 0.56,
+     "hi": 2.54,
+     "call": "ABOVE"
+    },
+    "relations with d_r > 0": 4,
+    "mean MRR (points)": {
+     "cosine": 7.86,
+     "name": 11.98,
+     "mean": 10.937,
+     "shuffled": 9.425
+    }
+   },
+   "call": "TRANSFERS"
+  },
+  "p on 2wiki (main units)": {
+   "units": 4,
+   "dropped_under_min": [],
+   "relations": 4,
+   "Delta name - cosine": {
+    "diff": 3.64,
+    "lo": 1.11,
+    "hi": 6.58,
+    "call": "ABOVE"
+   },
+   "Gain from the name (name - mean name)": {
+    "diff": 0.3,
+    "lo": -0.04,
+    "hi": 0.62,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "mean name - cosine": {
+     "diff": 3.34,
+     "lo": 0.75,
+     "hi": 6.0,
+     "call": "ABOVE"
+    },
+    "name - shuffled name": {
+     "diff": 1.85,
+     "lo": -0.02,
+     "hi": 3.72,
+     "call": "LEVEL"
+    },
+    "shuffled name - cosine": {
+     "diff": 1.79,
+     "lo": 0.96,
+     "hi": 2.93,
+     "call": "ABOVE"
+    },
+    "relations with d_r > 0": 4,
+    "mean MRR (points)": {
+     "cosine": 5.829,
+     "name": 9.469,
+     "mean": 9.168,
+     "shuffled": 7.616
+    }
+   },
+   "call": "GENERIC"
+  },
+  "kb on R-label units (names seen)": {
+   "units": 13,
+   "dropped_under_min": [],
+   "relations": 13,
+   "Delta name - cosine": {
+    "diff": -1.53,
+    "lo": -2.07,
+    "hi": -0.96,
+    "call": "BELOW"
+   },
+   "Gain from the name (name - mean name)": {
+    "diff": -0.82,
+    "lo": -1.49,
+    "hi": -0.31,
+    "call": "BELOW"
+   },
+   "beside": {
+    "mean name - cosine": {
+     "diff": -0.71,
+     "lo": -1.28,
+     "hi": -0.13,
+     "call": "BELOW"
+    },
+    "name - shuffled name": {
+     "diff": -0.34,
+     "lo": -0.94,
+     "hi": 0.08,
+     "call": "LEVEL"
+    },
+    "shuffled name - cosine": {
+     "diff": -1.19,
+     "lo": -1.83,
+     "hi": -0.56,
+     "call": "BELOW"
+    },
+    "relations with d_r > 0": 1,
+    "mean MRR (points)": {
+     "cosine": 9.19,
+     "name": 7.661,
+     "mean": 8.478,
+     "shuffled": 8.003
+    }
+   },
+   "call": "LOSES"
+  },
+  "p on hotpotqa, in sample (X26)": {
+   "units": 4,
+   "dropped_under_min": [],
+   "relations": 4,
+   "Delta name - cosine": {
+    "diff": 4.12,
+    "lo": 1.5,
+    "hi": 8.3,
+    "call": "ABOVE"
+   },
+   "Gain from the name (name - mean name)": {
+    "diff": 1.04,
+    "lo": 0.32,
+    "hi": 1.87,
+    "call": "ABOVE"
+   },
+   "beside": {
+    "mean name - cosine": {
+     "diff": 3.08,
+     "lo": 0.67,
+     "hi": 7.19,
+     "call": "ABOVE"
+    },
+    "name - shuffled name": {
+     "diff": 2.56,
+     "lo": 0.94,
+     "hi": 5.76,
+     "call": "ABOVE"
+    },
+    "shuffled name - cosine": {
+     "diff": 1.56,
+     "lo": 0.56,
+     "hi": 2.54,
+     "call": "ABOVE"
+    },
+    "relations with d_r > 0": 4,
+    "mean MRR (points)": {
+     "cosine": 7.86,
+     "name": 11.98,
+     "mean": 10.937,
+     "shuffled": 9.425
+    }
+   },
+   "call": "TRANSFERS"
+  }
+ },
+ "missing": [],
+ "control_direction_4_delta": "ABOVE",
+ "hyperlink_units": {
+  "hotpotqa|S.hyperlink": {
+   "edges": 200,
+   "cosine": 7.407,
+   "name": 7.144,
+   "mean": 7.918,
+   "shuffled": 7.227
+  },
+  "2wiki|S.hyperlink": {
+   "edges": 200,
+   "cosine": 6.665,
+   "name": 6.317,
+   "mean": 6.947,
+   "shuffled": 6.957
+  }
+ },
+ "expectations": {
+  "X22 KB -> KB Delta not ABOVE": true,
+  "X23 KB -> passage Delta not ABOVE": true,
+  "X23 hyperlink units: name no better than cosine on both": true,
+  "X24 passage -> KB Delta not ABOVE": false,
+  "X25 passage -> passage Delta ABOVE": true,
+  "X26 N_P in sample Delta ABOVE": true
+ },
+ "records": {
+  "kb_2wiki": {
+   "npz_sha256": "c45115a62868c8f50cde5ece5871c95f8e52adfd6a19ae23fedc3d816751e59a",
+   "utc": "2026-11-25T17:52:41Z"
+  },
+  "kb_hotpotqa": {
+   "npz_sha256": "db76cd21b5ed2cea579260034ef56bbbcf97e79af3d8f99531a46914390c5f86",
+   "utc": "2026-11-25T17:42:29Z"
+  },
+  "kb_metaqa": {
+   "npz_sha256": "9fc0cec8639bf32ae481d3a0af67ac9ed9e4c1928ae3c8a3741a81de1f605788",
+   "utc": "2026-11-25T17:31:06Z"
+  },
+  "kb_multihoprag": {
+   "npz_sha256": "5d85e89c48e9e2bb1ffbd6b1c24bd7eca7933c56bcd166222216cbda80142bae",
+   "utc": "2026-11-25T17:32:11Z"
+  },
+  "kb_musique": {
+   "npz_sha256": "7f5a6ea7bf0940217fa4a53f6f459c6680d725b176020a1895fe1868d8fe84e9",
+   "utc": "2026-11-25T17:34:40Z"
+  },
+  "kb_squad": {
+   "npz_sha256": "1b8b3fdd1755adb4f344a5da8bd46c61d5f69d10f905aa0e6b25c6f7f2ce4471",
+   "utc": "2026-11-25T17:33:21Z"
+  },
+  "kb_webqsp": {
+   "npz_sha256": null,
+   "utc": "2026-11-25T17:30:39Z"
+  },
+  "p_2wiki": {
+   "npz_sha256": "d879b469f6f627d153e9926d1263c4415b00f3c06dbb0c19f1291eb3af758a69",
+   "utc": "2026-11-25T21:29:24Z"
+  },
+  "p_hotpotqa": {
+   "npz_sha256": "f019135b496a7fad7de782bdee2f68da872e8bde7c01f05c2e578662f0b53d31",
+   "utc": "2026-11-25T21:11:13Z"
+  },
+  "p_metaqa": {
+   "npz_sha256": "a3746f952f322c153ed2fe59955b4cff636a20a503fe11891d7e136ceb03fd3f",
+   "utc": "2026-11-25T20:58:32Z"
+  },
+  "p_multihoprag": {
+   "npz_sha256": "26e9ce1a906d38dbf31a14309e0451021de1e9a0b4193c8b3be873a653b76633",
+   "utc": "2026-11-25T20:57:04Z"
+  },
+  "p_musique": {
+   "npz_sha256": "bbaadef6e2e4f2af1d56338e9bf636ecf2f27a135a09453157342fbb2557603f",
+   "utc": "2026-11-25T20:58:39Z"
+  },
+  "p_squad": {
+   "npz_sha256": "5db6fcdafd65ceddcaccefdbc3d867b16c118c0df7f0cc6861df427a491e9b84",
+   "utc": "2026-11-25T20:57:07Z"
+  },
+  "p_webqsp": {
+   "npz_sha256": "e7123bad864d150c7a4af9d3be4298afb6fc19aa733bdcd01d8ef018b4747b30",
+   "utc": "2026-11-25T21:59:41Z"
+  }
+ },
+ "script_sha256": "8b58d91fddf1faae6fa9d735c980da410aae8acfa3e751821cdb1fdd0ae3d8d4",
+ "utc": "2026-11-25T22:06:18Z"
+}

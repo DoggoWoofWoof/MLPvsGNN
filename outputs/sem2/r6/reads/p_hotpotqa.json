@@ -1,0 +1,215 @@
+{
+ "stage": "SEM2 R6 read",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 14",
+ "net": "p",
+ "net_sha256": "5a896002a987eb7a1cae997b9406118479ff6fcbcfb506a985d9990f63f065b6",
+ "dataset": "hotpotqa",
+ "arm": "e3v",
+ "smoke": false,
+ "config": {
+  "extra": 256,
+  "tau": 0.05,
+  "batch": 1024,
+  "neg": 4096,
+  "lr": 0.001,
+  "epoch": 200000,
+  "max_epochs": 10,
+  "patience": 2,
+  "min_op": 500,
+  "top_s": 12,
+  "n_test": 1000,
+  "n_dev": 500,
+  "hidden": 256,
+  "n_read": 200,
+  "chunk": 4000
+ },
+ "gate_only": false,
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 32159229,
+     "record": 32159229
+    },
+    "CN_all": {
+     "pairs": 23218108,
+     "record": 23218108
+    },
+    "F0T": {
+     "pairs": 24450229,
+     "record": 24450229
+    },
+    "S": {
+     "pairs": 15095287,
+     "record": 15095287
+    },
+    "S directed": {
+     "edges": 15367541,
+     "pair_relation_rows": 15095287,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-N": {
+   "webqsp": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   },
+   "metaqa": {
+    "min_cosine": 0.999998,
+    "verdict": "PASS"
+   },
+   "hotpotqa": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   },
+   "2wiki": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   }
+  },
+  "G-U": "PASS",
+  "G-S": {
+   "units": 4,
+   "seen_names": 4,
+   "seen_labels": [
+    "R.mention",
+    "R.name_comention",
+    "R.title_comention",
+    "S.hyperlink"
+   ]
+  }
+ },
+ "units": {
+  "hotpotqa|R.mention": {
+   "label": "R.mention",
+   "kind": "R",
+   "main": true,
+   "seen": true,
+   "edges": 200,
+   "mrr_cosine": 4.785,
+   "h10_cosine": 9.5,
+   "h100_cosine": 15.5,
+   "mrr_name": 7.297,
+   "h10_name": 13.5,
+   "h100_name": 26.5,
+   "mrr_mean": 5.109,
+   "h10_mean": 12.5,
+   "h100_mean": 22.5,
+   "mrr_shuffled": 6.344,
+   "h10_shuffled": 12.0,
+   "h100_shuffled": 22.5
+  },
+  "hotpotqa|R.name_comention": {
+   "label": "R.name_comention",
+   "kind": "R",
+   "main": true,
+   "seen": true,
+   "edges": 200,
+   "mrr_cosine": 7.109,
+   "h10_cosine": 11.5,
+   "h100_cosine": 23.5,
+   "mrr_name": 8.246,
+   "h10_name": 11.0,
+   "h100_name": 25.5,
+   "mrr_mean": 8.141,
+   "h10_mean": 12.5,
+   "h100_mean": 26.0,
+   "mrr_shuffled": 7.318,
+   "h10_shuffled": 12.0,
+   "h100_shuffled": 25.5
+  },
+  "hotpotqa|R.title_comention": {
+   "label": "R.title_comention",
+   "kind": "R",
+   "main": true,
+   "seen": true,
+   "edges": 200,
+   "mrr_cosine": 12.138,
+   "h10_cosine": 21.5,
+   "h100_cosine": 36.0,
+   "mrr_name": 14.741,
+   "h10_name": 26.5,
+   "h100_name": 41.0,
+   "mrr_mean": 13.84,
+   "h10_mean": 24.0,
+   "h100_mean": 40.5,
+   "mrr_shuffled": 13.758,
+   "h10_shuffled": 24.0,
+   "h100_shuffled": 39.5
+  },
+  "hotpotqa|S.hyperlink": {
+   "label": "S.hyperlink",
+   "kind": "S",
+   "main": true,
+   "seen": true,
+   "edges": 200,
+   "mrr_cosine": 7.407,
+   "h10_cosine": 13.0,
+   "h100_cosine": 23.0,
+   "mrr_name": 17.636,
+   "h10_name": 31.0,
+   "h100_name": 58.5,
+   "mrr_mean": 16.656,
+   "h10_mean": 28.0,
+   "h100_mean": 58.5,
+   "mrr_shuffled": 10.279,
+   "h10_shuffled": 19.5,
+   "h100_shuffled": 40.0
+  }
+ },
+ "test_edges": 800,
+ "pooled": {
+  "cosine": {
+   "n": 800,
+   "mrr": 7.86,
+   "h10": 13.88,
+   "h100": 24.5
+  },
+  "name": {
+   "n": 800,
+   "mrr": 11.98,
+   "h10": 20.5,
+   "h100": 37.88
+  },
+  "mean": {
+   "n": 800,
+   "mrr": 10.94,
+   "h10": 19.25,
+   "h100": 36.88
+  },
+  "shuffled": {
+   "n": 800,
+   "mrr": 9.42,
+   "h10": 16.88,
+   "h100": 31.87
+  }
+ },
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "c777ab4b7a64eaaa5af852265daf6ba9f9debb4658a67f0c96595662e43f182a",
+  "ner_npz_sha256": "744da64a5f356b89241b2539085c9a0bf673750abd0b1822891c26f069a37137",
+  "knn_npz_sha256": "a82ee3d96ff6943678444f12279fe666ff5e03465b818bc229844597488222ae",
+  "structural_npz_sha256": "bc27173133e69cc821a14733a2f3dfe9d56442aeb867cf2cdcdcc4fff9c17608",
+  "w2_s_npz_sha256": "c46e17ee41b6a36540d46b5f0775dc707c128d352288aa27e4d1e1a54ff0234c",
+  "f0t_npz_sha256": "7b3bb50b1cc8ee03e4a76e1e7dd8c078000dbc68c3f4f7e32fbb6e0310cd53e7",
+  "names_npz_sha256": {
+   "webqsp": "151927d8e775f01e8e51419fd62da8f93a120528a42cf7bb999b1a55abe670b4",
+   "metaqa": "bb1679f2cb4f7b4897c0834dc97ad297a82ecaa2556a4db9dac7156b226dac80",
+   "hotpotqa": "d54dc412b251af9012332191fd1a8d85bf8e1983a907a8d666e30daab34949d9",
+   "2wiki": "d54dc412b251af9012332191fd1a8d85bf8e1983a907a8d666e30daab34949d9"
+  },
+  "vectors": {
+   "shards": 131,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "956a389cf0dc79e0c745d6d59124e25b3a6591f8d33e14e147754261bb23c3cb"
+  }
+ },
+ "threads": 8,
+ "script_sha256": "8b58d91fddf1faae6fa9d735c980da410aae8acfa3e751821cdb1fdd0ae3d8d4",
+ "seconds": 689.7,
+ "utc": "2026-11-25T21:11:13Z",
+ "npz_sha256": "f019135b496a7fad7de782bdee2f68da872e8bde7c01f05c2e578662f0b53d31"
+}

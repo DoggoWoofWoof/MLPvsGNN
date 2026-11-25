@@ -1,0 +1,185 @@
+{
+ "stage": "SEM2 R6 read",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 14",
+ "net": "kb",
+ "net_sha256": "622b3a22dc923460ade8196b0b8388dcac69ce36b452733230f54888b796413e",
+ "dataset": "squad",
+ "arm": "e3v",
+ "smoke": false,
+ "config": {
+  "extra": 256,
+  "tau": 0.05,
+  "batch": 1024,
+  "neg": 4096,
+  "lr": 0.001,
+  "epoch": 200000,
+  "max_epochs": 10,
+  "patience": 2,
+  "min_op": 500,
+  "top_s": 12,
+  "n_test": 1000,
+  "n_dev": 500,
+  "hidden": 256,
+  "n_read": 200,
+  "chunk": 4000
+ },
+ "gate_only": false,
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 878200,
+     "record": 878200
+    },
+    "CN_all": {
+     "pairs": 173645,
+     "record": 173645
+    },
+    "F0T": {
+     "pairs": 176454,
+     "record": 176454
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-N": {
+   "webqsp": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   },
+   "metaqa": {
+    "min_cosine": 0.999998,
+    "verdict": "PASS"
+   },
+   "hotpotqa": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   },
+   "2wiki": {
+    "min_cosine": 0.999999,
+    "verdict": "PASS"
+   }
+  },
+  "G-U": "PASS",
+  "G-S": {
+   "units": 3,
+   "seen_names": 3,
+   "seen_labels": [
+    "R.mention",
+    "R.name_comention",
+    "R.title_comention"
+   ]
+  }
+ },
+ "units": {
+  "squad|R.mention": {
+   "label": "R.mention",
+   "kind": "R",
+   "main": true,
+   "seen": true,
+   "edges": 200,
+   "mrr_cosine": 16.601,
+   "h10_cosine": 26.5,
+   "h100_cosine": 47.5,
+   "mrr_name": 13.685,
+   "h10_name": 21.0,
+   "h100_name": 42.5,
+   "mrr_mean": 17.968,
+   "h10_mean": 26.0,
+   "h100_mean": 46.5,
+   "mrr_shuffled": 17.012,
+   "h10_shuffled": 25.5,
+   "h100_shuffled": 47.5
+  },
+  "squad|R.name_comention": {
+   "label": "R.name_comention",
+   "kind": "R",
+   "main": true,
+   "seen": true,
+   "edges": 200,
+   "mrr_cosine": 18.509,
+   "h10_cosine": 25.0,
+   "h100_cosine": 54.5,
+   "mrr_name": 15.917,
+   "h10_name": 25.5,
+   "h100_name": 50.5,
+   "mrr_mean": 16.858,
+   "h10_mean": 24.5,
+   "h100_mean": 50.5,
+   "mrr_shuffled": 15.201,
+   "h10_shuffled": 24.0,
+   "h100_shuffled": 49.5
+  },
+  "squad|R.title_comention": {
+   "label": "R.title_comention",
+   "kind": "R",
+   "main": true,
+   "seen": true,
+   "edges": 200,
+   "mrr_cosine": 12.629,
+   "h10_cosine": 30.0,
+   "h100_cosine": 67.0,
+   "mrr_name": 10.116,
+   "h10_name": 28.5,
+   "h100_name": 65.0,
+   "mrr_mean": 10.585,
+   "h10_mean": 27.5,
+   "h100_mean": 64.5,
+   "mrr_shuffled": 10.015,
+   "h10_shuffled": 28.5,
+   "h100_shuffled": 64.5
+  }
+ },
+ "test_edges": 600,
+ "pooled": {
+  "cosine": {
+   "n": 600,
+   "mrr": 15.91,
+   "h10": 27.17,
+   "h100": 56.33
+  },
+  "name": {
+   "n": 600,
+   "mrr": 13.24,
+   "h10": 25.0,
+   "h100": 52.67
+  },
+  "mean": {
+   "n": 600,
+   "mrr": 15.14,
+   "h10": 26.0,
+   "h100": 53.83
+  },
+  "shuffled": {
+   "n": 600,
+   "mrr": 14.08,
+   "h10": 26.0,
+   "h100": 53.83
+  }
+ },
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "34ac47757e0080f0e2eb6c679009a6090ca97be39d576307ba7281db730c1a8b",
+  "ner_npz_sha256": "e8b061c3dc417d7c481e57d9f360dd98c825049d62c61958ca0fed655fa57a22",
+  "knn_npz_sha256": "fee9cca5435668378d2a139614cec141d0b4977991801a004c8ca43ee8ad796f",
+  "w2_s_npz_sha256": "3f44314052d91556d6d694cb97fc5319dcf84e80ef68790ec9a33800286880c5",
+  "f0t_npz_sha256": "04703c6d42e9d2717fc1a3e659d9ef6d376d85dd2bd2e410904a7573b09157e0",
+  "names_npz_sha256": {
+   "webqsp": "151927d8e775f01e8e51419fd62da8f93a120528a42cf7bb999b1a55abe670b4",
+   "metaqa": "bb1679f2cb4f7b4897c0834dc97ad297a82ecaa2556a4db9dac7156b226dac80",
+   "hotpotqa": "d54dc412b251af9012332191fd1a8d85bf8e1983a907a8d666e30daab34949d9",
+   "2wiki": "d54dc412b251af9012332191fd1a8d85bf8e1983a907a8d666e30daab34949d9"
+  },
+  "vectors": {
+   "shards": 1,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "dc9bda57edde0b4440c8f8b1cfbe3ab28e7aeffa3b5079f2984db4c23e2435d6"
+  }
+ },
+ "threads": 8,
+ "script_sha256": "8b58d91fddf1faae6fa9d735c980da410aae8acfa3e751821cdb1fdd0ae3d8d4",
+ "seconds": 2.1,
+ "utc": "2026-11-25T17:33:21Z",
+ "npz_sha256": "1b8b3fdd1755adb4f344a5da8bd46c61d5f69d10f905aa0e6b25c6f7f2ce4471"
+}
