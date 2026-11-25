@@ -1200,7 +1200,7 @@ The smoke row r3smoke-metaqa (fold 0: 9 relations, train 5, dev 1, test 3) stopp
 - the largest difference between the name net's true-tail score at its start and the cosine's is **at most 1e-4** (the dev check's bound);
 - **at least 99 percent of the ranks agree within max(1, 0.001 x the cosine's rank) positions.** The relative part is there because WebQSP has 2.59 million nodes, where a window of 1e-6 can hold more than one node; MetaQA's ranks differ by half a position.
 
-The share of exactly equal ranks is still recorded, beside the two. Nothing else changes: not a call, a threshold, an expectation, the roles or the fit. The check reads the start of the net before any step, so it cannot move a result. The MetaQA and WebQSP smoke and fit rows are requeued under new names (the first MetaQA smoke row failed on this gate and wrote nothing the report reads).
+The share of exactly equal ranks is still recorded, beside the two. Nothing else changes: not a call, a threshold, an expectation, the roles or the fit. The check reads the start of the net before any step, so it cannot move a result. The failed MetaQA smoke row is re-sent by the feeder under its own name with the amended code (it wrote nothing the report reads); the fit rows, and the WebQSP smoke and fit rows, had not run, so they run the amended code too. Every fit record carries the sha of the code that fitted it, and the report stops on a mismatch.
 
 ### 8.16 Records completed after the closure (24 November 2026, 23:47 IST, 18:17 UTC): decides nothing
 
