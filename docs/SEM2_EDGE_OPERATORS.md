@@ -1465,6 +1465,88 @@ Pass 1: one streaming pass over all nodes per unit set gives the b branches and 
 - **NOT_CARRIED:** R5 closes the chained form on R1's operators; what it leaves open is named, not queued (the reverse direction, a third hop, a trained path scorer). The reads beside say whether any walk beats cosine anywhere.
 - Either way: no pool, link or PL change follows from R5, and no model is trained.
 
+## 14. R6 declared: do link operators cross between passages and a KB? (25 November 2026, 22:05 IST, 16:35 UTC), before any R6 number
+
+### 14.1 Why, and what was seen
+
+- **The user, 25 November:** "we also need to test passage to KB and vice versa that is the major issue, a simple common semantic space will not solve it hence we are doing this operators etc". Asked whether that meant link level (operators on links) or question level (an MLP or GNN trained on passage datasets and scored on KB datasets), **the user:** "if we can transfer links only then we can work with them during questions with mlp and gnn so both are technically linked". **This page is the link-level read. The question-level read is not declared: it follows only if links cross.**
+- **The two kinds of corpus.** Passage corpora (MultiHop-RAG, SQuAD, MuSiQue, HotpotQA, 2Wiki) have text nodes and link labels built from text (the R labels: mention, name comention, title comention) and, on HotpotQA and 2Wiki, a structural S relation (hyperlink). KB corpora (MetaQA, WebQSP) have entity nodes whose text is a name and facts, many typed S relations (7 on MetaQA, 791 operators on WebQSP) and the same R labels (two on MetaQA, three on WebQSP).
+- **What the common space gives, and what is on file.** The common semantic space is the cosine of the frozen e3v vectors: the baseline of every section of this page's family (R3: WebQSP's cosine MRR 2.6 on held-out relations, MetaQA's 0.6). R3(c) (section 11) fitted a name net g(name vector) -> angles and plane weights on **one** KB's relations and read it on that KB's held-out relations (WebQSP TRANSFERS, MetaQA NO). It never left the dataset it was fitted on, and no operator has ever been read across corpora or across types.
+- **A correction.** My handoff note of 25 November 21:12 said R3's fitted weights were not stored. They are: every fold's npz holds the best-epoch state (model.P and model.g.*), and outputs/sem2/r3/webqsp/f0.npz is on the laptop. **The KB net below is that stored net, not a refit.**
+- **Seen before this page:** R1's, R3's and R4's records. **Not seen:** any score of any operator on a corpus other than the one it was fitted on. No R6 number exists. This page claims no novelty (prior art on cross-domain transfer of relation embeddings is not rechecked here).
+
+### 14.2 The question
+
+**Does an operator net fitted on the links of one type of corpus rank the true tails of the other type's links above plain cosine (the common space), and above a relation-blind operator the same net produces?** Four directions, each read on e3v with no refit on the target:
+
+1. **KB -> KB** (control and the named cross-dataset read): the WebQSP net on MetaQA's S relations.
+2. **KB -> passage:** the WebQSP net on the link labels of the five passage corpora.
+3. **passage -> KB:** a net fitted on HotpotQA's links, on WebQSP's held-out relations and MetaQA's S relations.
+4. **passage -> passage** (control): the HotpotQA net on the other four passage corpora's labels.
+
+### 14.3 The nets (both e3v, D = 1,152, D' = 1,408, hidden 256, as R3; code of section 11 for the net, the loss and the optimiser)
+
+- **N_KB:** R3's WebQSP fit as stored (best epoch 3 of 5; trained on 549 train relations: the three R labels and 546 S relations; stopped on 78 dev relations; 163 relations held out). Its stored file and its sha are pinned by R3's record; the row stops on a mismatch. **Names seen by N_KB:** the 549 train names, **including mention, name comention and title comention.**
+- **N_P:** a new fit on **HotpotQA's four labels with an operator of their own** (R.mention, R.name_comention, R.title_comention, S.hyperlink), all of them train. There is no relation left to hold out, so the stop is on **dev edges of these four labels** (dev-node sources), as R1's fit (7.5); two epochs without a gain, 10 at most, the best epoch kept; an epoch is up to 200,000 train edges with an equal share per label; learning rate 1e-3, temperature 0.05, seed 0. The last layer of g starts at zero, so at the start every score is the cosine (G-0, as R3). **Names seen by N_P:** the four. HotpotQA is the passage corpus because it carries all four passage-side labels, the structural one included. 2Wiki carries them too and is read, not fitted. A second passage net is named below, not run.
+- **No target corpus is ever fitted on.** A target's labels get their operators from the net and their own name string alone.
+- **Name vectors:** as 11.4 (the e3v encoder on the name string, divided by its norm; G-N on every names file). The names of the three R labels come from R3's names files; "hyperlink" is encoded by R3's names command on HotpotQA (the same string on 2Wiki).
+
+### 14.4 Units and the read
+
+- **A unit is one (target corpus, label with an operator of its own).** Test sources only (R1's node split); up to **200 test edges per unit** (R3's sampler, default_rng(0)); the filtered rank of the true tail among all of the target's nodes (7.6), MRR, hits@10, hits@100. A unit with fewer than 20 test edges is dropped from the calls and counted.
+- **Scorers on the same edges (as 11.6):** **cosine**; **name** (the net's operator from the label's own name); **mean name** (the same net on the mean of the net's train name vectors: a relation-blind operator the net produced); **shuffled name** (each target label takes another target label's name, a derangement, seed 0; a target with one label has none and the shuffled read equals the name read, said in the record).
+- **Target units by direction:**
+  - **MetaQA:** its 7 S relations with an operator of their own (the unit set of the main calls); its R.mention and R.name_comention are read and reported beside.
+  - **WebQSP:** its **163 held-out relations of R3** (u < 0.20 of 11.5), the same relations R3 read, for N_P (for N_KB they are R3's own read, not re-read); its three R labels beside.
+  - **Passage corpora:** every label with an operator of its own: HotpotQA 4, 2Wiki 4, MuSiQue 3, SQuAD 3, MultiHop-RAG 1 (R.name_comention).
+- **Rows:** N_KB on each of the seven datasets (WebQSP: the loader gate only); N_P on each of the seven; HotpotQA's own four labels under N_P are an in-sample read (new nodes, fitted labels), beside.
+
+### 14.5 The calls (11.7's form, per direction)
+
+- **d_u = MRR(name) - MRR(cosine)** on unit u's edges; **e_u = MRR(name) - MRR(mean name).** Each unit counts once; the interval is a bootstrap over units (2,000 resamples, seed 0, 95%); ABOVE, LEVEL or BELOW as 9.6.
+- **Per direction:** TRANSFERS if Delta (the mean of d_u) is ABOVE and the gain from the name (the mean of e_u) is ABOVE; **GENERIC** if Delta is ABOVE and the gain is not (a relation-blind operator carries it); **LOSES** if Delta is BELOW; **NO** otherwise.
+- **The units pooled per direction:** (1) MetaQA's 7 S relations; (2) all 15 passage units; (3) the 163 WebQSP relations and MetaQA's 7 (170 units, WebQSP dominates; each dataset is also called alone); (4) the 11 units of 2Wiki, MuSiQue, SQuAD and MultiHop-RAG.
+- **Bridge verdict (fixed now): BRIDGES if directions 2 and 3 both have Delta ABOVE; ONE_WAY (named) if exactly one has; NOT_BRIDGED if neither has; INCOMPLETE while a row is missing.** The direction 4 control is read first: **if direction 4's Delta is not ABOVE, operators do not even cross between corpora of one type, and the cross-type reads are reported as that, not as a result about types.**
+- **Beside, deciding nothing:** the S.hyperlink units alone (the only passage-side name N_KB has not seen) against the R-label units (names it has seen); the mean name and the shuffled name against the cosine; relations (units) with d_u above 0; hits@10 and hits@100; MetaQA's and WebQSP's R labels under N_P; N_P's in-sample HotpotQA read.
+
+### 14.6 Expectations, written before any number (a failed one is reported, not explained away)
+
+- **X22 (KB -> KB, MetaQA):** Delta not ABOVE. MetaQA is at the floor (R3: MRR below 2.2 for every relation) and has 7 units.
+- **X23 (KB -> passage):** Delta not ABOVE on the 15 pooled units, and BELOW or LEVEL on both S.hyperlink units. The net learned its R-label operators from KB text (a name and facts), and a structural link of a passage corpus is a kind of link it has no name for.
+- **X24 (passage -> KB):** Delta not ABOVE. Four training names cannot teach a map from "directed by" or "film starring" to angles; the net's value at a new name is an interpolation between four points, and the one directed point is hyperlink. If anything is above it is the mean name, through the shared map, which would read GENERIC.
+- **X25 (passage -> passage, the control):** Delta ABOVE (the R labels of one corpus type carry their operators across corpora: the same kind of text, the same link rules). If it fails, 14.5's rule applies.
+- **X26 (N_P in-sample on HotpotQA, beside):** Delta ABOVE (the labels were fitted there).
+- **My expectation for the verdict is NOT_BRIDGED.** Writing it first means a BRIDGES or ONE_WAY is a surprise, and the user said the opposite is the working idea.
+
+### 14.7 Gates (a failure stops the row)
+
+- **G-E** (the loader's own), **G-N** (each names file's, re-read), **G-S (a record, not a stop):** for every unit the row records whether its name string is one of the net's train name strings. 14.4 lists the units that are seen by construction (the R labels under both nets, hyperlink under N_P); **any other unit whose string is a train string is named in the record and kept in the main calls**, and the beside read splits seen from unseen names.
+- **G-L (the loader, on WebQSP rows of N_KB):** the stored net, reloaded, reproduces R3's recorded ranks of its stored test edges (300 evenly spaced; name and mean name; ranks agree within max(1, 0.001 x the recorded rank) on at least 99 percent), so the loader and the table are the fit's own. A row that reads N_KB on any target is run after this row passes; the report stops if it is missing or failed.
+- **G-0 (N_P, as R3's):** the unfitted N_P scores the cosine on the dev edges (largest score difference at most 1e-4, MRR difference at most 1e-3).
+- **G-U:** every unit's test sources are test nodes, every edge's label is the unit's label, and the unit's edge count is recorded.
+- **Self-test (toy):** a stored net is saved and reloaded and reproduces the fit's own recorded ranks; the same planted operators read on a second graph make the name net beat the cosine; a different planted operator does not; the report's rule runs on stand-in records.
+
+### 14.8 What this does not test (named, not run)
+
+- **The question level** (an MLP or GNN trained on passage datasets, scored zero-shot on KB datasets, and back). It starts only if links cross (14.5); it needs the verdict, and the links, first.
+- **The free-angle ceiling** (R1's own per-corpus operators on the same edges): the share of the target's own gain the transferred operator recovers.
+- **Relation signatures from edges instead of names** (a relation's operator from its own edges' statistics, usable where names are few, as on the passage side).
+- **A second passage net** (a net fitted on 2Wiki or on several passage corpora at once) and **a KB net fitted without the R labels** (so that no link name of the passage side was seen).
+- This is SEM2's, not the journal's work.
+
+### 14.9 Code, rows and outputs
+
+- **outputs/mp_unified/zsem2r6.py** (mine; imports zsem2 and zsem2r3 and edits neither): `selftest`, `names` (R3's names command on a passage corpus), `fit --net p` (N_P), `read --net kb|p --ds D`, `report`. Records carry the code's sha256 and the reads carry the net's file sha256; the report stops on a mismatch.
+- **Outputs:** outputs/sem2/r6/nets/p_hotpotqa.npz and .json (the N_P weights and record), outputs/sem2/r6/reads/<net>_<dataset>.json and .npz, then outputs/sem2/r6/report.json and report.md. The json and md are committed, the npz are not.
+- **Rows (host, 8 threads; the first reads of N_KB do not wait for N_P):** the names row on HotpotQA and the loader-gate row on WebQSP first; then N_KB on the other six datasets; N_P's fit on HotpotQA (about the length of a short R1 fit); then N_P on the seven. Memory is asked from the measured peaks of the same datasets' R4 rows.
+
+### 14.10 What follows (fixed now)
+
+- **BRIDGES:** the next page is the question level: links produced by a net fitted on one type, built on the other type's graph, entering the pools and the MLP and GNN of that dataset. It is declared before it runs and needs the user's word.
+- **ONE_WAY:** the same, in the direction that crossed, and the direction that did not is named.
+- **NOT_BRIDGED:** the operators are type-specific as fitted here; the working path stays per-corpus operators (R1) and the stored links, and what is named in 14.8 (signatures from edges, a KB net without R labels, a second passage net) is what could still bridge them.
+- Either way: no pool, link or PL change follows from R6, and no MLP or GNN is trained.
+
 ### 8.16 Records completed after the closure (24 November 2026, 23:47 IST, 18:17 UTC): decides nothing
 
 8.15 closed the hub line with five rows still running. They have finished: R1k on WebQSP and 2Wiki, and R1q on
