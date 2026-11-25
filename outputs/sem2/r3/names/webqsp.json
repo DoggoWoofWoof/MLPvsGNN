@@ -1,0 +1,18 @@
+{
+ "stage": "SEM2 R3 names",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 11",
+ "dataset": "webqsp",
+ "labels": 7061,
+ "G-N": {
+  "nodes": 64,
+  "min_cosine": 0.999999,
+  "device": "cpu",
+  "distinct_strings": 7061,
+  "labels": 7061,
+  "verdict": "PASS"
+ },
+ "npz_sha256": "151927d8e775f01e8e51419fd62da8f93a120528a42cf7bb999b1a55abe670b4",
+ "script_sha256": "d0defeb9f7c32edb83ced631cb9e99a797a5740de4ee05614ea3abe1bec846bc",
+ "seconds": 94.6,
+ "utc": "2026-11-25T11:06:12Z"
+}

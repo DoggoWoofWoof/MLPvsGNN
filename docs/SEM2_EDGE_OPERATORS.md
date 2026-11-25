@@ -1202,6 +1202,55 @@ The smoke row r3smoke-metaqa (fold 0: 9 relations, train 5, dev 1, test 3) stopp
 
 The share of exactly equal ranks is still recorded, beside the two. Nothing else changes: not a call, a threshold, an expectation, the roles or the fit. The check reads the start of the net before any step, so it cannot move a result. The failed MetaQA smoke row is re-sent by the feeder under its own name with the amended code (it wrote nothing the report reads); the fit rows, and the WebQSP smoke and fit rows, had not run, so they run the amended code too. Every fit record carries the sha of the code that fitted it, and the report stops on a mismatch.
 
+### 11.14 Records and call (25 November 2026, 21:03 IST, 15:33 UTC)
+
+**Rows and gates.** r3names-metaqa and r3names-webqsp, then r3fit-metaqa0, 1, 2 and r3fit-webqsp0 (8 threads), all with outputs/mp_unified/zsem2r3.py at sha256 c75f3324fb6c8a4d, the code of 11.12-11.13; the report stops on a record fitted by other code, and none was. Every gate of every one of the four fits is PASS: G-N (the name encode reproduces 64 stored node vectors, cosine at least 0.999998 on every fit), G-E, G-S and G-0, G-0 by the amended rule of 11.13 (WebQSP: largest test-edge score difference 4.2e-7, ranks agreeing within the amended window on 100 percent, exactly equal on 73.3 percent). The first MetaQA smoke row stopped at that gate and is the one 11.13 describes; no number of it was read. The smoke rows are code checks and nothing here reads them.
+
+**The fits.**
+
+- **WebQSP (one fold):** 549 train relations, 78 dev relations, **163 test relations**, 28,051 test edges (at most 200 per relation), 20,789 dev edges. The fit ended by patience at epoch 5 with its best epoch 3 (dev MRR on the dev relations 13.62, from 3.0 at the start, which is the cosine), so it was not cut by the epoch limit and 11.12 (i) does not read it as under-fit. 9320 s.
+- **MetaQA (three folds):** fold 0: 5 train relations, best epoch 6 of 8, best dev MRR 1.47; fold 1: 6 train relations, best epoch 3 of 5, best dev MRR 1.27; fold 2: 6 train relations, best epoch 0 of 2, best dev MRR 0.08. All three ended by patience, none at the limit. **Fold 2's best epoch is the start:** the net never beat the cosine on its dev relation, and its two test relations score the same under all four scorers.
+
+**The calls (11.7; bootstrap over relations, 2,000 resamples, seed 0; MRR in points).**
+
+| dataset | test relations | Delta = name - cosine | Gain from the name | call | d_r > 0 | mean MRR cosine / mean name / name / shuffled |
+| --- | --- | --- | --- | --- | --- | --- |
+| metaqa | 7 | -0.12 [-0.54, +0.24] LEVEL | +0.24 [+0.04, +0.45] ABOVE | NO | 2 | 0.58 / 0.23 / 0.46 / 0.40 |
+| webqsp | 163 | +11.98 [+8.99, +15.23] ABOVE | +6.09 [+3.78, +8.77] ABOVE | TRANSFERS | 126 | 2.63 / 8.51 / 14.60 / 9.66 |
+
+- **WebQSP: Delta +11.98 [+8.99, +15.23] ABOVE; Gain from the name +6.09 [+3.78, +8.77] ABOVE: TRANSFERS.**
+- **MetaQA: Delta -0.12 [-0.54, +0.24] LEVEL; Gain from the name +0.24 [+0.04, +0.45] ABOVE: NO.**
+- **R3(c) verdict (11.7): PARTIAL (TRANSFERS on one of two).**
+
+**Beside, deciding nothing (11.7).**
+
+| | WebQSP (163 relations) | MetaQA (7 relations) |
+|---|---|---|
+| mean name minus cosine | +5.88 [+4.10, +7.74] ABOVE | -0.35 [-0.95, +0.14] LEVEL |
+| name minus shuffled name | +4.94 [+2.51, +7.55] ABOVE | +0.06 [-0.05, +0.21] LEVEL |
+| shuffled name minus cosine | +7.04 [+4.57, +10.08] ABOVE | -0.18 [-0.61, +0.24] LEVEL |
+| relations with d_r above 0 | 126 of 163 | 2 of 7 |
+| mean MRR, cosine / mean name / name / shuffled | 2.63 / 8.51 / 14.60 / 9.66 | 0.58 / 0.23 / 0.46 / 0.40 |
+
+WebQSP pooled over its 28,051 test edges (each edge once, not each relation): **MRR cosine 2.52, mean name 8.02, shuffled 9.32, name net 14.53; hits@10 6.13 / 16.52 / 16.68 / 26.11; hits@100 19.08 / 36.68 / 34.17 / 44.09.** The free-angle ceiling and the share of it the name recovers are not read (11.12 (h): they need R1's stored WebQSP model, which is on the host).
+
+### 11.15 Expectations against the outcome (11.8)
+
+- **X18, WebQSP Delta ABOVE: held** (+11.98).
+- **X19, WebQSP Gain from the name ABOVE: held** (+6.09).
+- **X20, MetaQA Delta not ABOVE: held** (-0.12 LEVEL).
+- **X21, shuffled name below the name net on WebQSP: held** (name minus shuffled +4.94 ABOVE).
+
+All four held. They were written before any number, and the WebQSP hold-out was drawn by a hash of the relation's name.
+
+### 11.16 What the numbers say, and what they do not (and 11.10, applied)
+
+- **WebQSP.** A relation the fit never saw, given an operator from its name alone, ranks its true tails well above the cosine: pooled MRR 2.5 to 14.5, hits@100 19 to 44, and 126 of the 163 held-out relations improve. By the beside rows the gain has two parts: the net's relation-blind operator (the mean name) already gives +5.88 over the cosine, which is the shared map and a generic operator learned from 549 relations, and **the right name adds +6.09 on top**; a wrong name (shuffled) lands between (+7.04 over the cosine and 4.94 below the right name). The name matters; it is not all of the gain.
+- **What the WebQSP mean hides.** The call counts each relation once, and the mean over relations (+11.98) is carried by a minority: the **median relation gains +1.5 points**, the largest gains are +99.0 (food nutrients), +74.5 (tv regular personal appearance person) and +70.6 (sports league participation team), and the five worst lose 5.1 to 14.7 (topic notable for -14.7). The interval is over relations and accounts for that spread; it is the right interval for the claim, but "most relations gain a little, a few gain a lot" is the shape.
+- **Where it transfers.** The held-out relations belong to the same knowledge base as the train relations, and X18's reason was that sibling relations share words in their names (the award honor family). This is **transfer to new relations of a known graph, not to a new graph.** A net fit on WebQSP's relations and applied to MetaQA's is the cross-dataset read, named in 11.10, not declared and not run.
+- **MetaQA: NO, and a statement about power.** Seven relations, an MRR below 2.2 for every relation under every scorer, the cosine's mean at 0.58, at most 6 train relations to learn a map from names to angles, and 2 of 7 relations above the cosine. The name's +0.24 over the mean name is read beside a mean name that is below the cosine (-0.35) and a shuffled name that is level with the name net (+0.06), so it is not a transfer. X20 said this would be so.
+- **11.10, applied:** TRANSFERS on one dataset means an operator for a new relation of the same KB needs no fit, and SEM2's generalization claim is **read** on WebQSP, **not carried to a layout.** No pool, link or PL change follows from R3, and nothing is fit on a question. **Named, not declared and not queued:** (1) the cross-dataset read (WebQSP's net on MetaQA's relations); (2) the free-angle ceiling and the share of it the name recovers (a new module on the host, since zsem2r3.py's records pin its sha). The user's word decides whether either runs.
+
 ## 12. R4 declared: sets, not points (25 November 2026, 17:30 IST, 12:00 UTC), before any R4 number
 
 ### 12.1 Why, and what was seen
