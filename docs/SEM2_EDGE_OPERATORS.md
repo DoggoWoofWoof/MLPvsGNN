@@ -1202,6 +1202,84 @@ The smoke row r3smoke-metaqa (fold 0: 9 relations, train 5, dev 1, test 3) stopp
 
 The share of exactly equal ranks is still recorded, beside the two. Nothing else changes: not a call, a threshold, an expectation, the roles or the fit. The check reads the start of the net before any step, so it cannot move a result. The failed MetaQA smoke row is re-sent by the feeder under its own name with the amended code (it wrote nothing the report reads); the fit rows, and the WebQSP smoke and fit rows, had not run, so they run the amended code too. Every fit record carries the sha of the code that fitted it, and the report stops on a mismatch.
 
+## 12. R4 declared: sets, not points (25 November 2026, 17:30 IST, 12:00 UTC), before any R4 number
+
+### 12.1 Why, and what was seen
+
+- **The user, 25 November (the idea):** put the walks themselves in the semantic space, "like a semantic tree or neuron where each vector entity is linked in different rotations or operations denoting the relation and branches out further and further". I answered that one point cannot stand for many nodes (a genre has many films, a film has many actors), which is why the literature uses boxes or distributions. **The user:** "yeah so we check the distribution across a specific domain which is the edge or operation and we would be able to walk all the nearest neighbours quickly instead of backtracking etc like we currently do / try testing this".
+- **What R1 read, and what it did not.** R1 (section 7) moves a source to ONE point and ranks one true tail among all nodes (filtered rank, MRR). R2a and R2c (sections 9, 10) used that point to seed a one-hop. Neither read how much of a relation's WHOLE tail set the moved point recovers, and neither gave the operation a spread. That is the gap the user's idea names, and it is checkable on the stored operators with no new fit of the operators.
+- **Prior art (from memory, not rechecked; recheck before any claim):** set and region embeddings for logical queries (GQE, Query2Box with boxes, BetaE with distributions, CQD), and typed ranges in knowledge-graph embeddings. This page claims no novelty.
+- **Seen before this page:** R1's records (rotation MRR vs cosine, 7 of 7 LEARN on e3v), R2a's and R2c Part A's calls, R3(c)'s interim MetaQA read (a different question). **Not seen:** any recall of a tail set, by any scorer, on any dataset. No R4 number exists.
+
+### 12.2 The question
+
+For a source node s and one of R1's read labels L whose true tail set T(s, L) has m members (2 <= m <= 100): **does a scorer that gives the operation a region (the distribution of its tails around the moved source) put more of T in its top m than R1's point does?** Mean over units. Main measure: **R-precision**, the share of T in the top m. Beside it: recall at 4m (the share of T in the top 4m).
+
+### 12.3 Units
+
+- A unit is (a source s, a read label L). The read labels are R1's read groups (section 7.7): the R labels and the top S relations of each dataset, and the S relations pooled in S.other (a unit there is a source and ONE relation). T(s, L) is every true tail under L in the graph, **any split**; for an undirected R label it is every neighbour of s under that label. Sets of 2 to 100 are read; a set of one is R1's own read, a set over 100 is not a set a walk would take.
+- **Sources** are test nodes (R1's node split, sha256 of "sem2|<dataset>|<node>"): up to **200 units per read group** (test) and up to **60 per group** (dev, on dev nodes), drawn with seeded generators (seed 0, streams 4/0 and 4/1). Each dataset's units are drawn from every eligible (source, label) of its groups; the eligible counts are recorded.
+- **The source itself is the only node left out** of a unit's ranking. The other tails are NOT left out (they are what is retrieved). R1 left them out to read one tail; this read must not.
+- Datasets: all seven, on **e3v** (the frozen arm is not run). R1's records are the operators.
+
+### 12.4 The four scorers (every node y, with x = P v / |P v| and q = R1's operator applied to x_s; R1's stored P, rotations and plane weights, never refit)
+
+| scorer | score of node y | what it is |
+|---|---|---|
+| cosine | v_s . v_y | no operator |
+| point | q . x_y | R1's read |
+| shift | x_y . (q + mu_op) | the point moved by the operation's mean residual (a type prior: where this operation's tails sit) |
+| region | - sum_d W_d (x_y,d - q_d - mu_op,d)^2 | the diagonal Gaussian of the operation's residuals: mean mu_op, per-dimension variance var_op |
+
+- **mu_op and var_op** are the mean and the per-dimension variance of x_y - q over the train-train edges of every label sharing the operator, up to 20,000 edges per read group (R1's operator index: the pooled rare relations share one). An operator with under 50 such edges gets mu = 0 and the pooled variance.
+- **W** = 1 / ((1 - lam) var_op + lam mean_d(var_op)), scaled to mean 1 over d (a constant per operator: no unit's order changes). **lam in {1, 0.5, 0.2, 0.05}, chosen on the dev units by R-precision** (ties to the larger lam). lam = 1 is the isotropic case and ranks as the shift (an offset, no shape); smaller lam gives the dimensions their own spread. **region** is the chosen lam; **shift** is lam = 1 and is always read beside it, so a gain from the region is told apart from a gain from the offset.
+- Nothing here is trained by gradient. The two fitted pieces (mu, var) are sample statistics of R1's train edges; the one chosen number (lam) is chosen on dev units before any test unit is scored.
+
+### 12.5 The read
+
+One streaming pass over all nodes per unit set: every scorer's score for every node, the top K = 400 kept per unit and scorer (exact: a block's candidates enter only if they beat the current K-th). The dev pass (the lam grid and the point) runs first and fixes lam; the test pass (cosine, point, shift, region) follows. R-precision uses the first m of the list, recall at 4m the first 4m. A checkpoint of the running lists is written every four minutes and the units are kept after they are built (a kill costs minutes).
+
+### 12.6 The calls and the carry rule
+
+- **Per dataset, main call:** region minus point, mean R-precision over the pooled test units (equal share per group by the cap, as in R1), paired bootstrap over units (2,000 resamples, seed 0, zsem2.paired): ABOVE (the 95% interval is above 0), LEVEL, BELOW. Beside it, same form: point - cosine, region - cosine, region - shift, shift - point (R-precision) and region - point, point - cosine, region - cosine (recall at 4m); region - point by set size (m 2-3, 4-10, 11-100) and per group (means).
+- **Carry rule (fixed now): REGION_CARRIES if region - point is ABOVE on at least 4 of the 7 e3v datasets and BELOW on none; otherwise NOT_CARRIED.** The reads beside are named and decide nothing (a region that beats the point only because of the shift is told by region - shift, and said so).
+
+### 12.7 Expectations, written before any number (a failed one is reported, not explained away)
+
+- **point - cosine ABOVE on most datasets** (R1's 7 of 7 LEARN is on single tails; sets are a wider read of the same operators), smaller than R1's MRR gains because a set is ranked on its first m, not on one tail.
+- **shift carries a part of any gain**, most on typed KB relations (MetaQA, WebQSP: the tails of one relation sit in one region of the space), least on the rule-link labels (R.*: the cosine neighbourhood is already the set).
+- **region - shift is small.** A diagonal Gaussian over 1,408 frozen-encoder dimensions is a weak shape. **My expectation is NOT_CARRIED, with REGION (ABOVE) on at most two or three datasets, KB-structured first.** A BELOW on the rule-link groups is plausible (the hub line's null again: the operator adds nothing where the neighbourhood is the set).
+- **By set size:** any gain rises with m (a larger set is where one point is least enough).
+- If the region equals the shift, the gain is a type prior, not a distribution, and is reported as that.
+
+### 12.8 What this does not test (named, not run)
+
+- **The reverse direction** (genre to films): R1's directed operators were trained forward; the inverse relation is not an operator. Undirected R labels are read both ways.
+- **Composition** (a region of regions, the walk's second and third hop, Query2Box-style projection of a box through a relation): the user's tree. It needs the one-hop set read to work first.
+- **Whether a set read replaces an explicit walk** in pool coverage or retrieval: the stored links ARE the sets (R-precision 1 by definition), so the value of a region read is where a node's links are missing or noisy. That is a different read (links withheld from the walk) and is not declared here.
+- This is SEM2's, not the journal's work.
+
+### 12.9 Gates (a failure stops the row)
+
+- **G-E** (the loader's own: the graph's family counts equal UL1's grade).
+- **G-R** (zsem2t.operators): R1's test sample and ranks are reproduced from its stored operators (rank agreement >= 0.999, MRR within 0.01).
+- **G-U:** unit sources are test (dev) nodes; every unit's set has 2 to 100 members; the sets read from the graph's keys equal the degree read (an independent count) for every unit.
+- **G-T:** for 16 test units and every scorer, the stored top-K scores equal the definition's scores (up to the constant a query's score drops) within 5e-3, and no node outside the stored list, among the list's neighbours and 20,000 random nodes, scores above the K-th stored score.
+- **G-0 (self-test):** a region with mu = 0 and equal weights returns the point's list.
+- **Self-test** (planted toy: a one-to-many relation whose tails have a planted offset and anisotropic spread, a control with isotropic spread and no offset, an undirected clique relation): the streaming lists equal a full read for every scorer; the planted region beats the point and the shift; on the control it does not.
+
+### 12.10 Code, rows and outputs
+
+- **outputs/mp_unified/zsem2r4.py** (mine; imports zsem2, zsem2t.operators and zsem2h read-only and edits none): `selftest`, `run --ds D --host --threads 8` (per dataset), `report` (laptop).
+- **Rows:** a code check on each loader first (r4smoke-squad on the six-dataset loader, r4smoke-multihoprag on MultiHop-RAG's; `--smoke`: 12 test and 6 dev units per group, written under outputs/sem2/r4/smoke/, read by nothing), then **r4-<dataset> for the seven**, 8 CPUs each, memory as R1's rows (MultiHop-RAG 4, SQuAD 6, MetaQA 6, MuSiQue 10, HotpotQA 32, 2Wiki 36, WebQSP 40 GB), the small ones first. The feeder retries a failed row once by its own name.
+- **Outputs:** outputs/sem2/r4/<dataset>/e3v.json and .npz (per-unit R-precision and recall for every scorer), then `report` writes outputs/sem2/r4/report.json and report.md; the report stops on a record fitted by other code than the one it runs.
+
+### 12.11 What follows (fixed now)
+
+- **REGION_CARRIES:** the next page is the reverse direction and one composition step (region of region), on the datasets that carried; nothing is queued before the user is told.
+- **NOT_CARRIED:** R4 closes this form (a diagonal Gaussian over R1's residuals does not beat the point as a set read). What it leaves open is named, not queued: a per-operation box trained by gradient on the sets (Query2Box's form), and the withheld-links read of 12.8. If the shift carries the gain, that is reported as a type prior, which R1's operators already approximate.
+- Either way: no pool, link or PL change follows from R4, and no model is trained.
+
 ### 8.16 Records completed after the closure (24 November 2026, 23:47 IST, 18:17 UTC): decides nothing
 
 8.15 closed the hub line with five rows still running. They have finished: R1k on WebQSP and 2Wiki, and R1q on
