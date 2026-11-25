@@ -1586,6 +1586,74 @@ Read by `zsem2r5.py report` from `outputs/sem2/r5/<dataset>/e3v.json` (every rec
 - **NOT_BRIDGED:** the operators are type-specific as fitted here; the working path stays per-corpus operators (R1) and the stored links, and what is named in 14.8 (signatures from edges, a KB net without R labels, a second passage net) is what could still bridge them.
 - Either way: no pool, link or PL change follows from R6, and no MLP or GNN is trained.
 
+## 15. R7 declared: links withheld, does the semantic branch fill what the stored walk cannot reach? (26 November 2026, 00:10 IST, 18:40 UTC), before any R7 number
+
+### 15.1 Why, and what was seen
+
+- **The user, 25 November, on the branch:** "put the walks itself in the semantic space ... a semantic tree or neuron". **R5 (section 13)** read BRANCH_CARRIES on six of six, but against the stored links themselves, where a stored walk scores R-precision 1 by definition. Section 13.8 named the read that says whether a semantic branch is worth anything where links are missing; I offered it and the user said "Declare it" (26 November). **Priority is unchanged: pools and links first.** This read is CPU only, never on the GPU, and its rows go last in the feed, behind every link and pool row.
+- **Seen before this page:** R5's records. They hold the per-unit R-precision of each scorer but **not the ranked lists** (the lists were checkpoints, deleted when each row ended), so this read recomputes them with R5's own streaming code. **Not seen:** any number with a link withheld, or any ranked list of R5.
+- **Two facts, stated before any number, that bound this read.**
+  1. **A walk over withheld links has no false positives.** A path that survives is one of the stored paths, and the exclusions are R5's, so every node it reaches is a true member of T2. The walk's list is shorter than m, and a semantic fill can only add to the slots it leaves empty. The most a fill can add is the scorer's own hit rate times the share of T2 the walk misses. At f = 0.5 that is a few points at most where R5's chain-point reached 2.5 to 4.2 points (MetaQA, WebQSP, HotpotQA, 2Wiki), more on MuSiQue and SQuAD.
+  2. **A leak I did not state in section 13.** R1's operators are fitted on edges drawn from the pairs whose two ends are both TRAIN nodes (`zsem2.take(..., is_train, ...)`; the plan's S edges likewise; a draw, so a pair of that kind is one the fit can see, not one it surely saw), and the node split is 10% test, 10% dev, 80% train (`zsem2.node_split`). R5's first hop starts at a test source, so it is clean. **Its second hop does not: the pair (a, b) of a branch a and a second-hop node b is a pair the fit can draw for about 64% of pairs** if the split were independent of the graph (0.8 x 0.8), so chain-point's second step may have been fitted to some of the very pairs it is scored on. chain-cos has no fitted part. This can inflate R5's gap over chain-cos and this page's fill gap alike. **15.5 declares the control that answers it, and a read of R5 under it.**
+
+### 15.2 The question
+
+R5's units (the same sources, labels, T1 and T2, rebuilt from R5's seeds and checked against R5's record). **Withhold a fraction f of the stored edges. The stored walk then reaches part of T2. Fill the rest of the list with a semantic scorer. Does a fill by R1's operators through branches (chain-point) reach more of the rest than a fill by cosine to s?**
+
+### 15.3 Withholding and the stored walk
+
+- **Which edges.** Every stored edge of a chain label (R: the unordered pair, label L; S: the directed edge, label L). An edge is withheld iff u(edge) < f, where u is a fixed 64-bit mix of (stream seed 7, L, the smaller end, the larger end for R or the source, destination for S) read as a number in [0, 1). **f in {0.25, 0.5, 0.75, 0.9}; withheld sets are nested** (a larger f withholds everything a smaller f withholds). f = 0 is the unit's own record (a gate).
+- **The stored walk W_f(unit):** the nodes b reached by at least one alive path s to a to b, a in the TRUE T1 (a first-hop edge (s, a) and a second-hop edge (a, b) both alive), minus ({s} union the TRUE T1). **Using the true T1 for the exclusion is the evaluator's exclusion of R5 and gives the walk a small free help** (a T1 node whose own first-hop edge was withheld would otherwise appear as a second-hop answer); it favours the baseline, and so works against the fill.
+- **|W_f| <= m always, and W_0 = T2.**
+
+### 15.4 The lists and the measures
+
+- **Semantic lists:** R5's four scorers (cosine, chain-cos, chain-point, compose), the same code, b = 10, K = 400, `--threads 8`, exclusions as R5. They do not depend on f.
+- **Combined list C_x(f)** for a scorer x: W_f first (any order: all of it is inside the top m), then x's list with every node of W_f skipped, cut at k. **R-precision** (k = m, main) and **recall at 4m** (k = 4m, beside) as R5. Pure W_f is the list with no fill; pure x is R5's list.
+- **Unseen members (the control of 15.1).** T2's node b is **seen** if some a in T1 has an edge (a, b) under L2 with both ends TRAIN nodes (a pair the fit can draw), and **unseen** otherwise. The **unseen measures** are the same R-precision and recall with only unseen members counted in the numerator (the denominator m is unchanged). Every unit and scorer is read both ways.
+
+### 15.5 The calls and the rules (fixed now)
+
+- **Per dataset, main call (f = 0.5, fixed now, not chosen from the results): C_chain-point minus C_cosine, R-precision, mean over the pooled test units, paired bootstrap over units (2,000 resamples, seed 0, `zsem2.paired`).** ABOVE, LEVEL or BELOW. Datasets are the six R5 read; MultiHop-RAG has 0 units under the chain labels and has no row.
+- **FILL_CARRIES if the main call is ABOVE on at least 4 of the datasets read and BELOW on none; otherwise NOT_CARRIED.** Fewer than 4 read: INCOMPLETE.
+- **Control, declared now and reported with the call:** the same call on the unseen measure. **CONTROL_HOLDS if ABOVE on at least 4 and BELOW on none.** The verdict line says one of FILL_CARRIES (both hold), FILL_CARRIES_SEEN_ONLY (the main call carries, the control does not: the gain is partly the fit's exposure), NOT_CARRIED.
+- **R5 under the control:** chain-point minus chain-cos on the unseen measure (it does not depend on f). **R5_CONTROL_HOLDS if ABOVE on at least 4 and BELOW on none.** If it does not hold, a dated note goes under 13.12 saying that R5's call included the exposure of 15.1(2); 13.12's numbers stay as filed.
+- **Read beside (decide nothing):** all four f; C_chain-point minus W (does any fill help), minus C_chain-cos, minus C_compose; W alone against chain-point alone by f (the crossover: the smallest grid f at which chain-point alone is at least W alone); recall at 4m; by |T2| (2-3, 4-10, 11-100); the share of T2 the walk reaches (mean |W_f| / m) by f.
+
+### 15.6 Expectations, written before any number (a failed one is reported, not explained away)
+
+- **W alone** falls with f from 100% (f = 0) as the share of surviving paths: at f = 0.5 between about 25% and 70% of T2, under 10% at f = 0.9 on most datasets.
+- **The main call:** the fill gain is R5's gap times the share the walk misses, so +0.5 to +1.5 points on the four near-floor datasets and a few points on MuSiQue and SQuAD; **I expect ABOVE on at least five of six, FILL_CARRIES, small.** The intervals shrink with the gain; they may touch 0 on one or two of the four.
+- **The control:** the unseen members are about a third of the second-hop edges. **I expect it to hold on SQuAD and MuSiQue and to be weaker on the near-floor four; CONTROL_HOLDS is about even.** This is the expectation I am least sure of.
+- **R5_CONTROL_HOLDS:** expected, with smaller gaps than 13.12. If it fails, R5's reading is amended by the note of 15.5.
+- **Crossover:** chain-point alone below W alone at every grid f on the four near-floor datasets (their chain-point level is 2.5 to 4.2 points); at f = 0.9 only on SQuAD and MuSiQue.
+- **What this will not show whichever way it falls:** a gain of a pool or a retriever. It reads R-precision against stored links with some withheld.
+
+### 15.7 What this does not test (named, not run)
+
+- **Noisy links** (extra or rewired edges): the stored walk then has false positives and a semantic score could re-rank it. That needs a chain-point score for arbitrary nodes, which the top-K lists do not give, so it is a different code path.
+- Withholding by hub degree or by relation, the first hop only, the reverse direction, a third hop, other widths, a trained scorer, and any pool or retrieval gain.
+- This is SEM2's, not the journal's work.
+
+### 15.8 Gates (a failure stops the row)
+
+- **G-E**, **G-R** as in 12.9 (R1's operators reproduced; `--threads 8`).
+- **G-U:** the rebuilt units equal R5's record (`s`, `l1`, `l2`, `grp`, `m`, `n1` of outputs/sem2/r5/<dataset>/e3v.npz, whose sha the record names). Not applied in a smoke run.
+- **G-S:** the per-unit R-precision of the four scorers computed from the recomputed lists equals R5's `rp_*` for at least 99% of the units, with a mean absolute difference of at most 0.002. Not applied in a smoke run.
+- **G-W:** W_0 equals T2 for every unit; W_f is inside T2 and nested in f for every unit; the hash recomputed by a scalar integer implementation equals the vectorised one on 2,000 edges; W_f recomputed by an independent per-unit scalar walk (R4's `true_sets` and the scalar hash) equals the stored one for 40 units and every f; the withheld share of 200,000 sampled edges is within 1.5 points of f; the seen/unseen flag of 40 units recomputed by a direct scan equals the stored one.
+- **Self-test:** a planted toy graph: the hash, the walk, the nesting, the combined list against a brute-force construction, the seen/unseen flag, R-precision by hand, and the report's rule over stand-in records.
+
+### 15.9 Code, rows and outputs
+
+- **outputs/mp_unified/zsem2r7.py** (mine; imports zsem2, zsem2t.operators, zsem2r4 and zsem2r5, read-only; edits none): `selftest`, `run --ds D --host --threads 8 [--smoke]`, `report` (laptop). Records carry the script's sha and R5's; `report` stops on a mismatch.
+- **Rows:** `r7smoke-squad` (a code check, read by nothing), then `r7-<dataset>` for the six; 8 CPUs; memory as R5's rows for the same dataset (7, 8, 12, 20, 24, 28 GB); `--threads 8`; **last in the feed, behind the r6 rows**. The feeder retries a failed row once by its own name.
+- **Outputs:** outputs/sem2/r7/<dataset>/e3v.json and .npz, then `report` writes outputs/sem2/r7/report.json and report.md.
+
+### 15.10 What follows (fixed now)
+
+- **FILL_CARRIES:** it says a semantic fill reaches a little of what withheld links leave, on R-precision against stored links, and no more; the noisy-links read of 15.7 is declared only on the user's word. **FILL_CARRIES_SEEN_ONLY or NOT_CARRIED:** the fill is closed on R1's operators and the exposure of 15.1(2) is part of the record.
+- Either way: no pool, link or PL change follows, and no model is trained.
+
 ### 8.16 Records completed after the closure (24 November 2026, 23:47 IST, 18:17 UTC): decides nothing
 
 8.15 closed the hub line with five rows still running. They have finished: R1k on WebQSP and 2Wiki, and R1q on
