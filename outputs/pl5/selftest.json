@@ -1,0 +1,73 @@
+{
+ "stage": "PL5 selftest",
+ "declared_in": "docs/PL5_COVERAGE_ROUND4.md",
+ "utc": "2026-11-25T07:31:20Z",
+ "script_sha256": "c3e8221e4fb4dcde134eead544ceb88f2d90579e88dd8e6d10281072696d427c",
+ "code_path_sha256": "62a27dbb08c49a81fb4605f211f908935135e01c4cb6dd080e3c54b50066930f",
+ "cells": {
+  "n": 1872,
+  "distinct": 1872,
+  "sha256": "a5a759803992cc0524a4ebd4de21d21396ea599dd9f0597329be9842ab9baaeb",
+  "expected": "a5a759803992cc0524a4ebd4de21d21396ea599dd9f0597329be9842ab9baaeb",
+  "union_distinct": 6078,
+  "verdict": "PASS"
+ },
+ "G-F": {
+  "checked": [
+   "parse_walk5",
+   "parse5",
+   "Plan5",
+   "capped_parts5",
+   "order_group5",
+   "order_fresh5",
+   "expand5",
+   "pool_state5",
+   "iter_states5"
+  ],
+  "problems": [],
+  "verdict": "PASS"
+ },
+ "engine": [
+  {
+   "dataset": "multihoprag",
+   "questions": 60,
+   "checks": 552,
+   "mismatches": [],
+   "n_mismatches": 0,
+   "verdict": "PASS"
+  },
+  {
+   "dataset": "squad",
+   "questions": 60,
+   "checks": 552,
+   "mismatches": [],
+   "n_mismatches": 0,
+   "verdict": "PASS"
+  }
+ ],
+ "G-X5": [
+  {
+   "dataset": "multihoprag",
+   "off_mode_vs_expand3_mismatches": 0,
+   "per_node_reference_checks": 384,
+   "per_node_reference_mismatches": 0,
+   "verdict": "PASS"
+  },
+  {
+   "dataset": "squad",
+   "off_mode_vs_expand3_mismatches": 0,
+   "per_node_reference_checks": 384,
+   "per_node_reference_mismatches": 0,
+   "verdict": "PASS"
+  }
+ ],
+ "G-D": {
+  "hashes": {
+   "threads1_chunk64": "a0d43210c098e82fa73ea1330e2d052282b4b8d2a42a44871a07029f9e9c8839",
+   "threads4_chunk7": "a0d43210c098e82fa73ea1330e2d052282b4b8d2a42a44871a07029f9e9c8839"
+  },
+  "verdict": "PASS"
+ },
+ "verdict": "PASS",
+ "seconds": 606.2
+}
