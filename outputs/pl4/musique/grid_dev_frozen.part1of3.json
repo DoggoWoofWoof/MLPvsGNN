@@ -1,0 +1,31 @@
+{
+ "stage": "PL4 grid",
+ "declared_in": "docs/PL4_COVERAGE_ROUND3.md",
+ "dataset": "musique",
+ "carve": "dev",
+ "first": "frozen",
+ "questions": 511,
+ "rows": [
+  511,
+  1022
+ ],
+ "part": [
+  1,
+  3
+ ],
+ "cells": 1932,
+ "cells_sha256": "32502a00db12e3afffd325170183f0508a7f108afecd505c73a516a4908eed96",
+ "graph": "package",
+ "population_digest": "58c6bd197a6cac8052f3b8b36b64a1f934a26ea082a6cc0217a75c9933b52d90",
+ "code_path_sha256": "aa7c9ac9ddd53327cbb906ed1b68e43c6e932d6bf740278684194abdd4eec006",
+ "pl3_code_path_sha256": "e9d860950c700bdd5e988f16b4b0ef6023d3207b7f5c07b1e7ee36593c13c8c4",
+ "pl2_code_path_sha256": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+ "script_sha256": "a9aa6a03c4937049ddaf571a2381cef91b0b9c75a1661bc725614a9385565d50",
+ "constants_sha256": "ca7d8fa7933045b87c13c507222e791a515664746275d550b732d49c8db3cca7",
+ "npz": "outputs/pl4/musique/grid_dev_frozen.part1of3.npz",
+ "npz_sha256": "7902c9326badb83620872276b912510a21b9cdac8ed4c9e190b8cbcb85e71c2c",
+ "seconds": 3177.4,
+ "peak_gb": 0.64,
+ "host": false,
+ "utc": "2026-11-25T05:03:01Z"
+}

@@ -1,0 +1,28 @@
+{
+ "stage": "PL4 confirm grid",
+ "declared_in": "docs/PL4_COVERAGE_ROUND3.md",
+ "dataset": "webqsp",
+ "carve": "eval",
+ "first": "e3v",
+ "questions": 1503,
+ "rows": [
+  0,
+  1503
+ ],
+ "part": null,
+ "cells": 7,
+ "cells_sha256": "99998656940127fbd7db80d76576a68b1e6f5737205c56e150ee2f10c72d20be",
+ "graph": "package",
+ "population_digest": "faa1d372294cc62f116549bdce087bb0d3f8ce533dce8bfd814c56e1c42e7a2e",
+ "code_path_sha256": "aa7c9ac9ddd53327cbb906ed1b68e43c6e932d6bf740278684194abdd4eec006",
+ "pl3_code_path_sha256": "e9d860950c700bdd5e988f16b4b0ef6023d3207b7f5c07b1e7ee36593c13c8c4",
+ "pl2_code_path_sha256": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+ "script_sha256": "a9aa6a03c4937049ddaf571a2381cef91b0b9c75a1661bc725614a9385565d50",
+ "constants_sha256": "ca7d8fa7933045b87c13c507222e791a515664746275d550b732d49c8db3cca7",
+ "npz": "outputs/pl4/webqsp/grid_eval_e3v_confirm.npz",
+ "npz_sha256": "c06e4f8bcc4f0e831e10bdaf81dfaa2b08e924292e025b7d722d1fd0765237df",
+ "seconds": 216.7,
+ "peak_gb": 4.87,
+ "host": true,
+ "utc": "2026-11-25T06:20:01Z"
+}

@@ -1,0 +1,28 @@
+{
+ "stage": "PL4 confirm grid",
+ "declared_in": "docs/PL4_COVERAGE_ROUND3.md",
+ "dataset": "multihoprag",
+ "carve": "eval",
+ "first": "frozen",
+ "questions": 1130,
+ "rows": [
+  0,
+  1130
+ ],
+ "part": null,
+ "cells": 5,
+ "cells_sha256": "e46ece2cb431ff2c63f3fa6c7931a6a115d2a4e9ec76c40698fb429cd7ef379a",
+ "graph": "layout:B0",
+ "population_digest": "dfd1eb644374d0a42bdc69a8d71ed9a16f19debcd320a5e6c3f87085f33664a9",
+ "code_path_sha256": "aa7c9ac9ddd53327cbb906ed1b68e43c6e932d6bf740278684194abdd4eec006",
+ "pl3_code_path_sha256": "e9d860950c700bdd5e988f16b4b0ef6023d3207b7f5c07b1e7ee36593c13c8c4",
+ "pl2_code_path_sha256": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+ "script_sha256": "a9aa6a03c4937049ddaf571a2381cef91b0b9c75a1661bc725614a9385565d50",
+ "constants_sha256": "ca7d8fa7933045b87c13c507222e791a515664746275d550b732d49c8db3cca7",
+ "npz": "outputs/pl4/multihoprag/grid_eval_frozen_confirm.npz",
+ "npz_sha256": "09f0446be46a270e2a93c75f74d0ba9f3579c0f9b02d1d954049ee258b13c49d",
+ "seconds": 14.6,
+ "peak_gb": 0.29,
+ "host": false,
+ "utc": "2026-11-25T03:57:48Z"
+}

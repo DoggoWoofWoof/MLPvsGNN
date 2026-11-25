@@ -1,0 +1,22 @@
+{
+ "stage": "PL4 G-R",
+ "declared_in": "docs/PL4_COVERAGE_ROUND3.md",
+ "dataset": "multihoprag",
+ "host": false,
+ "questions": 224,
+ "cells": 2274,
+ "pl2_cells": 804,
+ "pl3_cells": 1470,
+ "elements": 509376,
+ "present_mismatches": 0,
+ "size_mismatches": 0,
+ "first_mismatch": null,
+ "pl3_code_path_sha256": "e9d860950c700bdd5e988f16b4b0ef6023d3207b7f5c07b1e7ee36593c13c8c4",
+ "pl2_code_path_sha256": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+ "code_path_sha256": "aa7c9ac9ddd53327cbb906ed1b68e43c6e932d6bf740278684194abdd4eec006",
+ "script_sha256": "a9aa6a03c4937049ddaf571a2381cef91b0b9c75a1661bc725614a9385565d50",
+ "verdict": "PASS",
+ "seconds": 30.8,
+ "peak_gb": 0.28,
+ "utc": "2026-11-25T03:56:50Z"
+}

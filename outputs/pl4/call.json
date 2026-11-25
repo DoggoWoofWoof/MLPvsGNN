@@ -1,0 +1,997 @@
+{
+ "stage": "PL4 call",
+ "declared_in": "docs/PL4_COVERAGE_ROUND3.md",
+ "utc": "2026-11-25T06:46:21Z",
+ "datasets": {
+  "metaqa": {
+   "status": "LEVEL",
+   "new": "rrf1000_b400+STRUCT:h3_c25_v2000",
+   "old": "rrf1000_b400+STRUCT:h3_c25_v2000",
+   "same_cell": true,
+   "new_all": 0.8967807869187532,
+   "old_all": 0.8967807869187532,
+   "new_nodes": 2335.8849259070007,
+   "old_nodes": 2335.8849259070007,
+   "new_reaches": false,
+   "old_reaches": false,
+   "within_bound": true,
+   "all_diff": 0.0,
+   "all_diff_ci": [
+    0.0,
+    0.0
+   ],
+   "nodes_ratio": 1.0,
+   "nodes_ratio_ci": [
+    1.0,
+    1.0
+   ],
+   "r98": {
+    "status": "LEVEL",
+    "new": "rrf1000_b400+STRUCT:h3_c25_v2000",
+    "old": "rrf1000_b400+STRUCT:h3_c25_v2000",
+    "same_cell": true,
+    "new_all": 0.8967807869187532,
+    "old_all": 0.8967807869187532,
+    "new_nodes": 2335.8849259070007,
+    "old_nodes": 2335.8849259070007,
+    "new_reaches": false,
+    "old_reaches": false,
+    "within_bound": true,
+    "all_diff": 0.0,
+    "all_diff_ci": [
+     0.0,
+     0.0
+    ],
+    "nodes_ratio": 1.0,
+    "nodes_ratio_ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "new_only": {
+    "status": "ABOVE",
+    "new": "rrf1000_b400+STRUCT:h3_c25_v2000~cs-sp",
+    "old": "rrf1000_b400+STRUCT:h3_c25_v2000",
+    "same_cell": false,
+    "new_all": 0.8261624936126725,
+    "old_all": 0.8967807869187532,
+    "new_nodes": 2281.627593254982,
+    "old_nodes": 2335.8849259070007,
+    "new_reaches": false,
+    "old_reaches": false,
+    "within_bound": true,
+    "all_diff": -0.07061829330608071,
+    "all_diff_ci": [
+     -0.07675268267756763,
+     -0.06417986714358714
+    ],
+    "nodes_ratio": 0.9767722578923912,
+    "nodes_ratio_ci": [
+     0.976509149462332,
+     0.9770373587370426
+    ]
+   },
+   "frontier": {
+    "500": {
+     "status": "LEVEL",
+     "new": "rrf1000_b100+STRUCT:h2_c25+top400",
+     "old": "rrf1000_b100+STRUCT:h2_c25+top400",
+     "same_cell": true,
+     "new_dev_all": 0.5637942551770208,
+     "old_dev_all": 0.5637942551770208,
+     "new_dev_nodes": 480.93987975951904,
+     "old_dev_nodes": 480.93987975951904,
+     "new_all": 0.5483903934593766,
+     "old_all": 0.5483903934593766,
+     "new_nodes": 479.57608584568214,
+     "old_nodes": 479.57608584568214,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "1000": {
+     "status": "LEVEL",
+     "new": "equal_rrf_budget_200+STRUCT:h2_c25",
+     "old": "equal_rrf_budget_200+STRUCT:h2_c25",
+     "same_cell": true,
+     "new_dev_all": 0.6927187708750835,
+     "old_dev_all": 0.6927187708750835,
+     "new_dev_nodes": 764.8209752839011,
+     "old_dev_nodes": 764.8209752839011,
+     "new_all": 0.6899335717935616,
+     "old_all": 0.6899335717935616,
+     "new_nodes": 763.6757281553398,
+     "old_nodes": 763.6757281553398,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "1500": {
+     "status": "LEVEL",
+     "new": "rrf1000_b25+FS:h2_c100_v5000",
+     "old": "rrf1000_b25+FS:h2_c100_v5000",
+     "same_cell": true,
+     "new_dev_all": 0.7307949231796927,
+     "old_dev_all": 0.7307949231796927,
+     "new_dev_nodes": 1473.0674682698732,
+     "old_dev_nodes": 1473.0674682698732,
+     "new_all": 0.7288707204905468,
+     "old_all": 0.7288707204905468,
+     "new_nodes": 1473.683495145631,
+     "old_nodes": 1473.683495145631,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "2000": {
+     "status": "LEVEL",
+     "new": "rrf1000_b25+STRUCT:h3_c25_v2000",
+     "old": "rrf1000_b25+STRUCT:h3_c25_v2000",
+     "same_cell": true,
+     "new_dev_all": 0.8937875751503006,
+     "old_dev_all": 0.8937875751503006,
+     "new_dev_nodes": 1999.313961255845,
+     "old_dev_nodes": 1999.313961255845,
+     "new_all": 0.8949412365866122,
+     "old_all": 0.8949412365866122,
+     "new_nodes": 1995.288196218702,
+     "old_nodes": 1995.288196218702,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "2500": {
+     "status": "LEVEL",
+     "new": "rrf1000_b400+STRUCT:h3_c25_v2000",
+     "old": "rrf1000_b400+STRUCT:h3_c25_v2000",
+     "same_cell": true,
+     "new_dev_all": 0.8977955911823647,
+     "old_dev_all": 0.8977955911823647,
+     "new_dev_nodes": 2339.7247828991317,
+     "old_dev_nodes": 2339.7247828991317,
+     "new_all": 0.8967807869187532,
+     "old_all": 0.8967807869187532,
+     "new_nodes": 2335.8849259070007,
+     "old_nodes": 2335.8849259070007,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    }
+   },
+   "frontier_status": "LEVEL"
+  },
+  "squad": {
+   "status": "LEVEL",
+   "new": "rrf1000_b15",
+   "old": "rrf1000_b15",
+   "same_cell": true,
+   "new_all": 0.9553609028889076,
+   "old_all": 0.9553609028889076,
+   "new_nodes": 15.0,
+   "old_nodes": 15.0,
+   "new_reaches": true,
+   "old_reaches": true,
+   "within_bound": true,
+   "all_diff": 0.0,
+   "all_diff_ci": [
+    0.0,
+    0.0
+   ],
+   "nodes_ratio": 1.0,
+   "nodes_ratio_ci": [
+    1.0,
+    1.0
+   ],
+   "r98": {
+    "status": "LEVEL",
+    "new": "rrf1000_b50+KNN:h1_c100+top25",
+    "old": "rrf1000_b50+KNN:h1_c100+top25",
+    "same_cell": true,
+    "new_all": 0.9818074623094416,
+    "old_all": 0.9818074623094416,
+    "new_nodes": 63.04185968163059,
+    "old_nodes": 63.04185968163059,
+    "new_reaches": true,
+    "old_reaches": true,
+    "within_bound": true,
+    "all_diff": 0.0,
+    "all_diff_ci": [
+     0.0,
+     0.0
+    ],
+    "nodes_ratio": 1.0,
+    "nodes_ratio_ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "new_only": {
+    "status": "LEVEL",
+    "new": "rrf1000_b25+STRUCT:h3_c25_v2000~cs-rk+top50",
+    "old": "rrf1000_b15",
+    "same_cell": false,
+    "new_all": 0.977259327886802,
+    "old_all": 0.9553609028889076,
+    "new_nodes": 72.79011201886634,
+    "old_nodes": 15.0,
+    "new_reaches": true,
+    "old_reaches": true,
+    "within_bound": true,
+    "all_diff": 0.021898424997894406,
+    "all_diff_ci": [
+     0.019119009517392427,
+     0.024509391055335672
+    ],
+    "nodes_ratio": 4.852674134591089,
+    "nodes_ratio_ci": [
+     4.841637188017631,
+     4.863372076700637
+    ]
+   },
+   "frontier": {
+    "500": {
+     "status": "LEVEL",
+     "new": "rrf1000_b400+STRUCT:h1_c100~cs+top50",
+     "old": "rrf1000_b400+STRUCT:h1_c100~cs+top50",
+     "same_cell": true,
+     "new_dev_all": 0.9959946595460614,
+     "old_dev_all": 0.9959946595460614,
+     "new_dev_nodes": 446.9305740987984,
+     "old_dev_nodes": 446.9305740987984,
+     "new_all": 0.9965467868272552,
+     "old_all": 0.9965467868272552,
+     "new_nodes": 446.7276172829108,
+     "old_nodes": 446.7276172829108,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "1000": {
+     "status": "LEVEL",
+     "new": "rrf1000_b100+FULL:h3_c100_v5000~cs-vr-eq+top800",
+     "old": "rrf1000_b400+STRUCT:h3_c100_v5000~cs-vr+brg400",
+     "same_cell": false,
+     "new_dev_all": 0.9979973297730307,
+     "old_dev_all": 0.9973297730307076,
+     "new_dev_nodes": 900.0,
+     "old_dev_nodes": 795.7276368491322,
+     "new_all": 0.9978101575002105,
+     "old_all": 0.9973890339425587,
+     "new_nodes": 899.9722900699065,
+     "old_nodes": 793.2957129621831,
+     "all_diff": 0.00042112355765178133,
+     "all_diff_ci": [
+      -0.0005053482691821376,
+      0.001263370672955455
+     ],
+     "nodes_ratio": 1.1344726504437934,
+     "nodes_ratio_ci": [
+      1.1331733053363875,
+      1.1358074952060577
+     ]
+    },
+    "1500": {
+     "status": "LEVEL",
+     "new": "rrf1000_b400+FULL:h2_c100_v5000~s20-cs-vr+top800",
+     "old": "rrf1000_b400+FULL:h2_c100_v5000~s20-cs-vr+top800",
+     "same_cell": true,
+     "new_dev_all": 0.9986648865153538,
+     "old_dev_all": 0.9986648865153538,
+     "new_dev_nodes": 1199.7823765020028,
+     "old_dev_nodes": 1199.7823765020028,
+     "new_all": 0.9982312810578624,
+     "old_all": 0.9982312810578624,
+     "new_nodes": 1199.963614924619,
+     "old_nodes": 1199.963614924619,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "2000": {
+     "status": "LEVEL",
+     "new": "rrf1000_b800+FULL:h3_c100_v5000~cs-rk+top800",
+     "old": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top200",
+     "same_cell": false,
+     "new_dev_all": 0.9993324432576769,
+     "old_dev_all": 0.9993324432576769,
+     "new_dev_nodes": 1600.0,
+     "old_dev_nodes": 1737.0233644859813,
+     "new_all": 0.999073528173166,
+     "old_all": 0.9991577528846963,
+     "new_nodes": 1599.915691063758,
+     "old_nodes": 1740.599006148404,
+     "all_diff": -8.422471153035627e-05,
+     "all_diff_ci": [
+      -0.0005053482691821376,
+      0.0002526741345911798
+     ],
+     "nodes_ratio": 0.9191753444718149,
+     "nodes_ratio_ci": [
+      0.9184178541333321,
+      0.9199042267883543
+     ]
+    },
+    "2500": {
+     "status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "old": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "same_cell": true,
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 2190.361815754339,
+     "old_dev_nodes": 2190.361815754339,
+     "new_all": 0.9991577528846963,
+     "old_all": 0.9991577528846963,
+     "new_nodes": 2200.0112018866334,
+     "old_nodes": 2200.0112018866334,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    }
+   },
+   "frontier_status": "LEVEL"
+  },
+  "musique": {
+   "status": "ABOVE",
+   "new": "rrf1000_b800+FULL:h3_c25_v2000~cs-vr-rr-eq",
+   "old": "rrf1000_b800+FULL:h3_c25_v2000~cs-vr",
+   "same_cell": false,
+   "new_all": 0.8820852296235002,
+   "old_all": 0.87877534133223,
+   "new_nodes": 2274.926354985519,
+   "old_nodes": 2455.0541994207697,
+   "new_reaches": false,
+   "old_reaches": false,
+   "within_bound": true,
+   "all_diff": 0.0033098882912702132,
+   "all_diff_ci": [
+    -0.003309888291270105,
+    0.009929664873810529
+   ],
+   "nodes_ratio": 0.926629789078486,
+   "nodes_ratio_ci": [
+    0.9253401091282144,
+    0.9279067019901772
+   ],
+   "r98": {
+    "status": "ABOVE",
+    "new": "rrf1000_b800+FULL:h3_c25_v2000~cs-vr-rr-eq",
+    "old": "rrf1000_b800+FULL:h3_c25_v2000~cs-vr",
+    "same_cell": false,
+    "new_all": 0.8820852296235002,
+    "old_all": 0.87877534133223,
+    "new_nodes": 2274.926354985519,
+    "old_nodes": 2455.0541994207697,
+    "new_reaches": false,
+    "old_reaches": false,
+    "within_bound": true,
+    "all_diff": 0.0033098882912702132,
+    "all_diff_ci": [
+     -0.002896152254861395,
+     0.010343400910219236
+    ],
+    "nodes_ratio": 0.926629789078486,
+    "nodes_ratio_ci": [
+     0.9253296562204192,
+     0.927984693458764
+    ]
+   },
+   "new_only": {
+    "status": "ABOVE",
+    "new": "rrf1000_b800+FULL:h3_c25_v2000~cs-vr-rr-eq",
+    "old": "rrf1000_b800+FULL:h3_c25_v2000~cs-vr",
+    "same_cell": false,
+    "new_all": 0.8820852296235002,
+    "old_all": 0.87877534133223,
+    "new_nodes": 2274.926354985519,
+    "old_nodes": 2455.0541994207697,
+    "new_reaches": false,
+    "old_reaches": false,
+    "within_bound": true,
+    "all_diff": 0.0033098882912702132,
+    "all_diff_ci": [
+     -0.002896152254861395,
+     0.00951592883740171
+    ],
+    "nodes_ratio": 0.926629789078486,
+    "nodes_ratio_ci": [
+     0.9252426098462346,
+     0.9279986748462561
+    ]
+   },
+   "frontier": {
+    "500": {
+     "status": "LEVEL",
+     "new": "rrf1000_b400+FULL:h1_c100+brg100",
+     "old": "rrf1000_b400+FULL:h1_c100+brg100",
+     "same_cell": true,
+     "new_dev_all": 0.7372881355932204,
+     "old_dev_all": 0.7372881355932204,
+     "new_dev_nodes": 498.22033898305085,
+     "old_dev_nodes": 498.22033898305085,
+     "new_all": 0.7683078196110881,
+     "old_all": 0.7683078196110881,
+     "new_nodes": 498.065784029789,
+     "old_nodes": 498.065784029789,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "1000": {
+     "status": "LEVEL",
+     "new": "rrf1000_b800+FULL:h1_c100~s10+top200",
+     "old": "rrf1000_b800+FULL:h1_c100~s10+top200",
+     "same_cell": true,
+     "new_dev_all": 0.7946544980443285,
+     "old_dev_all": 0.7946544980443285,
+     "new_dev_nodes": 988.5567144719687,
+     "old_dev_nodes": 988.5567144719687,
+     "new_all": 0.8212660322714108,
+     "old_all": 0.8212660322714108,
+     "new_nodes": 986.6375672321059,
+     "old_nodes": 986.6375672321059,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "1500": {
+     "status": "LEVEL",
+     "new": "rrf1000_b800+FULL:h1_c100~s20+top800",
+     "old": "rrf1000_b800+FULL:h1_c100~s20+top800",
+     "same_cell": true,
+     "new_dev_all": 0.8246414602346805,
+     "old_dev_all": 0.8246414602346805,
+     "new_dev_nodes": 1388.8018252933507,
+     "old_dev_nodes": 1388.8018252933507,
+     "new_all": 0.8394704178733968,
+     "old_all": 0.8394704178733968,
+     "new_nodes": 1357.13363673976,
+     "old_nodes": 1357.13363673976,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "2000": {
+     "status": "LEVEL",
+     "new": "rrf1000_b400+FULL:h3_c25_v2000~cs-sp-eq+top1600",
+     "old": "rrf1000_b1600+FULL:h1_c100~s20+top400",
+     "same_cell": false,
+     "new_dev_all": 0.8559322033898306,
+     "old_dev_all": 0.8448500651890483,
+     "new_dev_nodes": 2000.0,
+     "old_dev_nodes": 1963.810299869622,
+     "new_all": 0.8527099710384775,
+     "old_all": 0.8585022755482002,
+     "new_nodes": 2000.0,
+     "old_nodes": 1946.3103020273065,
+     "all_diff": -0.00579230450972279,
+     "all_diff_ci": [
+      -0.01572196938353332,
+      0.004964832436905264
+     ],
+     "nodes_ratio": 1.0275853741907288,
+     "nodes_ratio_ci": [
+      1.0257257057384563,
+      1.02972476047287
+     ]
+    },
+    "2500": {
+     "status": "LEVEL",
+     "new": "rrf1000_b800+FULL:h3_c25_v2000~cs-vr-rr-eq",
+     "old": "rrf1000_b800+FULL:h3_c25_v2000~cs-vr",
+     "same_cell": false,
+     "new_dev_all": 0.878096479791395,
+     "old_dev_all": 0.8735332464146024,
+     "new_dev_nodes": 2298.6851368970015,
+     "old_dev_nodes": 2488.904172099087,
+     "new_all": 0.8820852296235002,
+     "old_all": 0.87877534133223,
+     "new_nodes": 2274.926354985519,
+     "old_nodes": 2455.0541994207697,
+     "all_diff": 0.0033098882912702132,
+     "all_diff_ci": [
+      -0.002896152254861395,
+      0.009515928837401714
+     ],
+     "nodes_ratio": 0.926629789078486,
+     "nodes_ratio_ci": [
+      0.925309259879617,
+      0.9280728410641147
+     ]
+    }
+   },
+   "frontier_status": "LEVEL"
+  },
+  "hotpotqa": {
+   "status": "NOT_READ",
+   "why": "no PL4 select or confirm file here"
+  },
+  "2wiki": {
+   "status": "NOT_READ",
+   "why": "no PL4 select or confirm file here"
+  },
+  "webqsp": {
+   "status": "LEVEL",
+   "new": "dense_top200+FULL:h2_c100_v5000~s10-cs-sp",
+   "old": "dense_top200+FULL:h2_c100_v5000~s10-cs-vr",
+   "same_cell": false,
+   "new_all": 0.780439121756487,
+   "old_all": 0.780439121756487,
+   "new_nodes": 2468.142381902861,
+   "old_nodes": 2468.142381902861,
+   "new_reaches": false,
+   "old_reaches": false,
+   "within_bound": true,
+   "all_diff": 0.0,
+   "all_diff_ci": [
+    0.0,
+    0.0
+   ],
+   "nodes_ratio": 1.0,
+   "nodes_ratio_ci": [
+    1.0,
+    1.0
+   ],
+   "r98": {
+    "status": "LEVEL",
+    "new": "dense_top200+FULL:h2_c100_v5000~s10-cs-sp",
+    "old": "dense_top200+FULL:h2_c100_v5000~s10-cs-vr",
+    "same_cell": false,
+    "new_all": 0.780439121756487,
+    "old_all": 0.780439121756487,
+    "new_nodes": 2468.142381902861,
+    "old_nodes": 2468.142381902861,
+    "new_reaches": false,
+    "old_reaches": false,
+    "within_bound": true,
+    "all_diff": 0.0,
+    "all_diff_ci": [
+     0.0,
+     0.0
+    ],
+    "nodes_ratio": 1.0,
+    "nodes_ratio_ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "new_only": {
+    "status": "LEVEL",
+    "new": "dense_top200+FULL:h2_c100_v5000~s10-cs-sp",
+    "old": "dense_top200+FULL:h2_c100_v5000~s10-cs-vr",
+    "same_cell": false,
+    "new_all": 0.780439121756487,
+    "old_all": 0.780439121756487,
+    "new_nodes": 2468.142381902861,
+    "old_nodes": 2468.142381902861,
+    "new_reaches": false,
+    "old_reaches": false,
+    "within_bound": true,
+    "all_diff": 0.0,
+    "all_diff_ci": [
+     0.0,
+     0.0
+    ],
+    "nodes_ratio": 1.0,
+    "nodes_ratio_ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "frontier": {
+    "500": {
+     "status": "LEVEL",
+     "new": "dense_top200+FULL:h1_c100~s20+top400",
+     "old": "dense_top200+FULL:h1_c100~s20+top400",
+     "same_cell": true,
+     "new_dev_all": 0.6801592568015926,
+     "old_dev_all": 0.6801592568015926,
+     "new_dev_nodes": 377.6556071665561,
+     "old_dev_nodes": 377.6556071665561,
+     "new_all": 0.697272122421823,
+     "old_all": 0.697272122421823,
+     "new_nodes": 384.7471723220226,
+     "old_nodes": 384.7471723220226,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "1000": {
+     "status": "LEVEL",
+     "new": "rrf1000_b800+FULL:h1_c100~s20+top400",
+     "old": "rrf1000_b800+FULL:h1_c100~s20+top400",
+     "same_cell": true,
+     "new_dev_all": 0.7146648971466489,
+     "old_dev_all": 0.7146648971466489,
+     "new_dev_nodes": 940.5109489051094,
+     "old_dev_nodes": 940.5109489051094,
+     "new_all": 0.7265469061876247,
+     "old_all": 0.7265469061876247,
+     "new_nodes": 947.6773120425815,
+     "old_nodes": 947.6773120425815,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "1500": {
+     "status": "LEVEL",
+     "new": "rrf1000_b100+FS:h2_c100_v5000+top1600",
+     "old": "rrf1000_b100+FS:h2_c100_v5000+top1600",
+     "same_cell": true,
+     "new_dev_all": 0.7339084273390842,
+     "old_dev_all": 0.7339084273390842,
+     "new_dev_nodes": 1486.921698739217,
+     "old_dev_nodes": 1486.921698739217,
+     "new_all": 0.7298735861610113,
+     "old_all": 0.7298735861610113,
+     "new_nodes": 1486.3812375249502,
+     "old_nodes": 1486.3812375249502,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "2000": {
+     "status": "LEVEL",
+     "new": "dense_top200+FS:h2_c100_v5000~cs-vr",
+     "old": "dense_top200+FS:h2_c100_v5000~cs-vr",
+     "same_cell": true,
+     "new_dev_all": 0.7571333775713338,
+     "old_dev_all": 0.7571333775713338,
+     "new_dev_nodes": 1891.5401459854015,
+     "old_dev_nodes": 1891.5401459854015,
+     "new_all": 0.7704590818363274,
+     "old_all": 0.7704590818363274,
+     "new_nodes": 1966.0805056553559,
+     "old_nodes": 1966.0805056553559,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "2500": {
+     "status": "LEVEL",
+     "new": "dense_top200+FULL:h2_c100_v5000~s10-cs-sp",
+     "old": "dense_top200+FULL:h2_c100_v5000~s10-cs-vr",
+     "same_cell": false,
+     "new_dev_all": 0.7730590577305906,
+     "old_dev_all": 0.7730590577305906,
+     "new_dev_nodes": 2442.4432647644326,
+     "old_dev_nodes": 2442.4432647644326,
+     "new_all": 0.780439121756487,
+     "old_all": 0.780439121756487,
+     "new_nodes": 2468.142381902861,
+     "old_nodes": 2468.142381902861,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    }
+   },
+   "frontier_status": "LEVEL"
+  },
+  "multihoprag": {
+   "status": "LEVEL",
+   "new": "rrf1000_b25+FULL:h1_c100+top25",
+   "old": "rrf1000_b25+FULL:h1_c100+top25",
+   "same_cell": true,
+   "new_all": 0.9690265486725663,
+   "old_all": 0.9690265486725663,
+   "new_nodes": 50.0,
+   "old_nodes": 50.0,
+   "new_reaches": true,
+   "old_reaches": true,
+   "within_bound": true,
+   "all_diff": 0.0,
+   "all_diff_ci": [
+    0.0,
+    0.0
+   ],
+   "nodes_ratio": 1.0,
+   "nodes_ratio_ci": [
+    1.0,
+    1.0
+   ],
+   "r98": {
+    "status": "LEVEL",
+    "new": "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50",
+    "old": "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50",
+    "same_cell": true,
+    "new_all": 0.9787610619469026,
+    "old_all": 0.9787610619469026,
+    "new_nodes": 58.00353982300885,
+    "old_nodes": 58.00353982300885,
+    "new_reaches": false,
+    "old_reaches": false,
+    "within_bound": true,
+    "all_diff": 0.0,
+    "all_diff_ci": [
+     0.0,
+     0.0
+    ],
+    "nodes_ratio": 1.0,
+    "nodes_ratio_ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "new_only": {
+    "status": "LEVEL",
+    "new": "rrf1000_b25+FS:h3_c25_v2000~cs-vr-eq+top50",
+    "old": "rrf1000_b25+FULL:h1_c100+top25",
+    "same_cell": false,
+    "new_all": 0.9787610619469026,
+    "old_all": 0.9690265486725663,
+    "new_nodes": 58.00353982300885,
+    "old_nodes": 50.0,
+    "new_reaches": true,
+    "old_reaches": true,
+    "within_bound": true,
+    "all_diff": 0.009734513274336276,
+    "all_diff_ci": [
+     0.0026548672566372167,
+     0.016814159292035447
+    ],
+    "nodes_ratio": 1.160070796460177,
+    "nodes_ratio_ci": [
+     1.1444557522123893,
+     1.1751508849557522
+    ]
+   },
+   "frontier": {
+    "500": {
+     "status": "LEVEL",
+     "new": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "old": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "same_cell": true,
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 100.0,
+     "old_dev_nodes": 100.0,
+     "new_all": 0.9911504424778761,
+     "old_all": 0.9911504424778761,
+     "new_nodes": 100.0,
+     "old_nodes": 100.0,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "1000": {
+     "status": "LEVEL",
+     "new": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "old": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "same_cell": true,
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 100.0,
+     "old_dev_nodes": 100.0,
+     "new_all": 0.9911504424778761,
+     "old_all": 0.9911504424778761,
+     "new_nodes": 100.0,
+     "old_nodes": 100.0,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "1500": {
+     "status": "LEVEL",
+     "new": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "old": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "same_cell": true,
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 100.0,
+     "old_dev_nodes": 100.0,
+     "new_all": 0.9911504424778761,
+     "old_all": 0.9911504424778761,
+     "new_nodes": 100.0,
+     "old_nodes": 100.0,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "2000": {
+     "status": "LEVEL",
+     "new": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "old": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "same_cell": true,
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 100.0,
+     "old_dev_nodes": 100.0,
+     "new_all": 0.9911504424778761,
+     "old_all": 0.9911504424778761,
+     "new_nodes": 100.0,
+     "old_nodes": 100.0,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    },
+    "2500": {
+     "status": "LEVEL",
+     "new": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "old": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "same_cell": true,
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 100.0,
+     "old_dev_nodes": 100.0,
+     "new_all": 0.9911504424778761,
+     "old_all": 0.9911504424778761,
+     "new_nodes": 100.0,
+     "old_nodes": 100.0,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ]
+    }
+   },
+   "frontier_status": "LEVEL"
+  }
+ },
+ "datasets_read": [
+  "metaqa",
+  "multihoprag",
+  "musique",
+  "squad",
+  "webqsp"
+ ],
+ "code_path_equal_everywhere": true,
+ "call": "INCOMPLETE",
+ "call_frontier": "INCOMPLETE",
+ "counts": {
+  "old": {
+   "BELOW": 0,
+   "ABOVE": 1,
+   "LEVEL": 4
+  },
+  "frontier": {
+   "BELOW": 0,
+   "ABOVE": 0,
+   "LEVEL": 5
+  }
+ }
+}
