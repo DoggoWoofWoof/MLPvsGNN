@@ -1,0 +1,4548 @@
+{
+ "declared_in": "docs/UL2_LAYOUT_ON_E3V.md",
+ "part_a": {
+  "verdict": "NOT_ADOPTED",
+  "failures": [
+   {
+    "dataset": "hotpotqa",
+    "version": "RK",
+    "condition": "size",
+    "ratio": 1.3063
+   }
+  ],
+  "bound": 1.3
+ },
+ "part_b": {
+  "P_star": 4997.1,
+  "chain": [
+   {
+    "form": "HM",
+    "new": 6,
+    "pairs_added": 46404,
+    "price": 7734.0,
+    "gain": {
+     "diff": 0.15,
+     "lo": 0.05,
+     "hi": 0.28,
+     "call": "ABOVE"
+    },
+    "carried": false
+   },
+   {
+    "form": "HK1",
+    "new": 30,
+    "pairs_added": 101748,
+    "price": 3391.6,
+    "gain": {
+     "diff": 0.75,
+     "lo": 0.5,
+     "hi": 1.04,
+     "call": "ABOVE"
+    },
+    "carried": true,
+    "ratio_to_REC": 1.1572
+   },
+   {
+    "form": "NTc",
+    "new": 138,
+    "pairs_added": 482638,
+    "price": 3497.4,
+    "gain": {
+     "diff": 3.46,
+     "lo": 2.93,
+     "hi": 4.03,
+     "call": "ABOVE"
+    },
+    "carried": true,
+    "ratio_to_REC": 1.2997
+   },
+   {
+    "form": "NT1",
+    "new": 19,
+    "pairs_added": 363832,
+    "price": 19149.1,
+    "gain": {
+     "diff": 0.48,
+     "lo": 0.27,
+     "hi": 0.71,
+     "call": "ABOVE"
+    },
+    "carried": false
+   },
+   {
+    "form": "HK2",
+    "new": 14,
+    "pairs_added": 144072,
+    "price": 10290.9,
+    "gain": {
+     "diff": 0.35,
+     "lo": 0.18,
+     "hi": 0.55,
+     "call": "ABOVE"
+    },
+    "carried": false
+   },
+   {
+    "form": "H10",
+    "new": 49,
+    "pairs_added": 358675,
+    "price": 7319.9,
+    "gain": {
+     "diff": 1.23,
+     "lo": 0.91,
+     "hi": 1.58,
+     "call": "ABOVE"
+    },
+    "carried": false
+   }
+  ],
+  "carried_on_musique": [
+   "HK1",
+   "NTc"
+  ],
+  "forms": [],
+  "verdict": "NOT_CARRIED_SIZE"
+ },
+ "boot": 2000,
+ "seed": 0,
+ "grades_sha256": {
+  "musique": "47ad0e7c030877e0fec42836b0a900063118e59300a9656de0b8458ac10d08bd",
+  "squad": "9215a03a936133840be5e293a85962e1ac63450fb3723924b9773de432d54b35",
+  "hotpotqa": "8b5b433537db717e4aedafb3aad5e71b3decf6a1eb23ce3ff6e335cdf3557072",
+  "2wiki": "cb9690b451f5f6f2838e20352c3cc9ae1f48d31c30a8c6dc4f68ff37c8714dea",
+  "metaqa": "cdf58c110c7811e405cd3f4045ad1bc6eba885f317e70f6b9ba90749d21d9fd3",
+  "webqsp": "4e87657fcf10d343beae6a9ae4d079cf1ddef0c2fd2ad3111bd7788a3ab60a65"
+ },
+ "datasets": {
+  "musique": {
+   "dataset": "musique",
+   "declared_in": "docs/UL2_LAYOUT_ON_E3V.md",
+   "nodes": 117534,
+   "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+   "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+   "kb": false,
+   "versions": [
+    "RK"
+   ],
+   "inputs": {
+    "ner_npz_sha256": "f294708600750c48eae9e32d0895d517ac3a8b5d048c736a70e9a566af2fe9c6",
+    "knn_npz_sha256": "6020ac7e0b6773e64866b5e942dc0e02c3b704615ced8de4d557aa543221ef5b",
+    "w2_s_npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+    "f0t_npz_sha256": "a0cea3c450f4a8364d202d7f21fe949e288f2ed0ca325aadea199f7ed2a4eebc",
+    "names_npz_sha256": "279d4b6ff3a2d5e3fbbab9071bcc93328167da1c5d19e805c3a9c5ad7a8f9cda"
+   },
+   "knn_e3v": {
+    "file": "outputs/enc/e1b2/knn/e3v/musique.npz",
+    "npz_sha256": "cab52dd1bfb99a908fbb7c020174b7803f611f178e748068b2c0bd15a303c6fd"
+   },
+   "h": {
+    "frozen": {
+     "npz_sha256": "d22234c635c083cc13ffe9d647d8c501611db8317c54f123ddeacd7567339f68",
+     "sizes": {
+      "H3": 269034,
+      "H5": 433566,
+      "H10": 833094,
+      "HM10": 258798,
+      "HK1": 280098,
+      "HK2": 525427
+     },
+     "flagged_rows": {
+      "RK": {
+       "rows": 117534,
+       "flagged": 0
+      }
+     },
+     "pass": {
+      "keys": 3017,
+      "skip_le": 25,
+      "keys_skipped": 83957,
+      "entries": 404849,
+      "sum_df2": 858549467,
+      "hub_keys": 3017,
+      "keys_over_dfmax": 0,
+      "threads": 8,
+      "offered": 9414509,
+      "merges": 1,
+      "seconds_pass": 20.0,
+      "hk_rows": 398805,
+      "truncated_rows": 108632
+     },
+     "gate_GH": {
+      "union_pairs": 3387597,
+      "cells": [
+       {
+        "carve": "s1sel",
+        "kind": "GP",
+        "k": 3,
+        "H_new": 23,
+        "hfo_H_new": 23,
+        "near_ties": 8,
+        "pass": true
+       },
+       {
+        "carve": "s1sel",
+        "kind": "GP",
+        "k": 5,
+        "H_new": 33,
+        "hfo_H_new": 33,
+        "near_ties": 7,
+        "pass": true
+       },
+       {
+        "carve": "s1sel",
+        "kind": "GP",
+        "k": 10,
+        "H_new": 59,
+        "hfo_H_new": 59,
+        "near_ties": 10,
+        "pass": true
+       },
+       {
+        "carve": "s1sel",
+        "kind": "CH",
+        "k": 3,
+        "H_new": 15,
+        "hfo_H_new": 15,
+        "near_ties": 5,
+        "pass": true
+       },
+       {
+        "carve": "s1sel",
+        "kind": "CH",
+        "k": 5,
+        "H_new": 25,
+        "hfo_H_new": 25,
+        "near_ties": 6,
+        "pass": true
+       },
+       {
+        "carve": "s1sel",
+        "kind": "CH",
+        "k": 10,
+        "H_new": 46,
+        "hfo_H_new": 46,
+        "near_ties": 7,
+        "pass": true
+       },
+       {
+        "carve": "s1eval",
+        "kind": "GP",
+        "k": 3,
+        "H_new": 62,
+        "hfo_H_new": 62,
+        "near_ties": 30,
+        "pass": true
+       },
+       {
+        "carve": "s1eval",
+        "kind": "GP",
+        "k": 5,
+        "H_new": 91,
+        "hfo_H_new": 91,
+        "near_ties": 20,
+        "pass": true
+       },
+       {
+        "carve": "s1eval",
+        "kind": "GP",
+        "k": 10,
+        "H_new": 215,
+        "hfo_H_new": 215,
+        "near_ties": 67,
+        "pass": true
+       },
+       {
+        "carve": "s1eval",
+        "kind": "CH",
+        "k": 3,
+        "H_new": 58,
+        "hfo_H_new": 58,
+        "near_ties": 29,
+        "pass": true
+       },
+       {
+        "carve": "s1eval",
+        "kind": "CH",
+        "k": 5,
+        "H_new": 83,
+        "hfo_H_new": 83,
+        "near_ties": 17,
+        "pass": true
+       },
+       {
+        "carve": "s1eval",
+        "kind": "CH",
+        "k": 10,
+        "H_new": 169,
+        "hfo_H_new": 169,
+        "near_ties": 60,
+        "pass": true
+       }
+      ],
+      "verdict": "PASS"
+     }
+    },
+    "e3v": {
+     "npz_sha256": "1f2a2c70fd28ac3f72a721d2e7112f5c245876555318a8e9bb52b14331cca7d6",
+     "sizes": {
+      "H3": 266647,
+      "H5": 429747,
+      "H10": 826642,
+      "HM10": 265292,
+      "HK1": 281823,
+      "HK2": 529407
+     },
+     "flagged_rows": {
+      "RK": {
+       "rows": 117534,
+       "flagged": 0
+      }
+     },
+     "pass": {
+      "keys": 3017,
+      "skip_le": 25,
+      "keys_skipped": 83957,
+      "entries": 404849,
+      "sum_df2": 858549467,
+      "hub_keys": 3017,
+      "keys_over_dfmax": 0,
+      "threads": 8,
+      "offered": 9414810,
+      "merges": 1,
+      "seconds_pass": 20.9,
+      "hk_rows": 398809,
+      "truncated_rows": 108631
+     }
+    }
+   },
+   "families": {
+    "K": 265366,
+    "W2_S": 2343920,
+    "CN_all": 931069,
+    "F0T": 973013,
+    "TITLE": 41944,
+    "K_e3v": 263122,
+    "H5_frozen": 433566,
+    "H5_e3v": 429747
+   },
+   "sizes": {
+    "D83": {
+     "RK": 3387597
+    },
+    "REC": {
+     "RK": 3387597
+    },
+    "L2f": {
+     "RK": 3821163
+    },
+    "L2e": {
+     "RK": 3818331
+    }
+   },
+   "held": {
+    "D83": {
+     "RK": {
+      "R_parts": {
+       "W2_S": 2343920,
+       "F0T": 973013
+      },
+      "K_in": 265366,
+      "S": 0,
+      "R": 3209654,
+      "K": 177943,
+      "K_removed_in_R": 87423,
+      "union": 3387597
+     }
+    },
+    "REC": {
+     "RK": {
+      "R_parts": {
+       "W2_S": 2343920,
+       "F0T": 973013
+      },
+      "K_in": 265366,
+      "S": 0,
+      "R": 3209654,
+      "K": 177943,
+      "K_removed_in_R": 87423,
+      "union": 3387597
+     }
+    },
+    "L2e": {
+     "RK": {
+      "R_parts": {
+       "W2_S": 2343920,
+       "F0T": 973013,
+       "H": 429747
+      },
+      "K_in": 263122,
+      "S": 0,
+      "R": 3639401,
+      "K": 178930,
+      "K_removed_in_R": 84192,
+      "union": 3818331
+     }
+    }
+   },
+   "carves": {
+    "s1sel": {
+     "questions": 1534,
+     "questions_npz_sha256": "0c3d07208f7cbfe263038ce65600020068e91b083e7a1a84a8b22a5f1e1187e6",
+     "slots": {
+      "GP": 3783,
+      "CH": 2530
+     },
+     "RK": {
+      "GP": {
+       "arms": {
+        "D83": {
+         "linked": 1120,
+         "share": 29.61
+        },
+        "REC": {
+         "linked": 1120,
+         "share": 29.61
+        },
+        "L2f": {
+         "linked": 1153,
+         "share": 30.48
+        },
+        "L2e": {
+         "linked": 1165,
+         "share": 30.8
+        }
+       },
+       "contrasts": {
+        "L2e-REC": {
+         "diff": 1.19,
+         "lo": 0.85,
+         "hi": 1.57,
+         "call": "ABOVE"
+        },
+        "L2f-REC": {
+         "diff": 0.87,
+         "lo": 0.59,
+         "hi": 1.17,
+         "call": "ABOVE"
+        },
+        "L2e-L2f": {
+         "diff": 0.32,
+         "lo": 0.03,
+         "hi": 0.64,
+         "call": "ABOVE"
+        },
+        "L2e-D83": {
+         "diff": 1.19,
+         "lo": 0.85,
+         "hi": 1.57,
+         "call": "ABOVE"
+        },
+        "REC-D83": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        }
+       },
+       "price_vs_REC": {
+        "D83": null,
+        "L2f": 13138.4,
+        "L2e": 9571.9
+       },
+       "labels_L2e": [
+        {
+         "label": "R.name_comention",
+         "pairs": 931069,
+         "slots": 694,
+         "alone": 417
+        },
+        {
+         "label": "R.mention",
+         "pairs": 2343920,
+         "slots": 626,
+         "alone": 353
+        },
+        {
+         "label": "K.knn",
+         "pairs": 263122,
+         "slots": 222,
+         "alone": 26
+        },
+        {
+         "label": "R.hub",
+         "pairs": 429747,
+         "slots": 37,
+         "alone": 37
+        },
+        {
+         "label": "R.title_comention",
+         "pairs": 41944,
+         "slots": 37,
+         "alone": 0
+        }
+       ],
+       "H_e3v": {
+        "new": 37,
+        "pairs_added": 429747
+       },
+       "part_b": {
+        "H10": {
+         "new": 27,
+         "pairs_added": 396895,
+         "price": 14699.8,
+         "gain": {
+          "diff": 0.71,
+          "lo": 0.46,
+          "hi": 0.99,
+          "call": "ABOVE"
+         }
+        },
+        "HM": {
+         "new": 6,
+         "pairs_added": 46404,
+         "price": 7734.0,
+         "gain": {
+          "diff": 0.16,
+          "lo": 0.05,
+          "hi": 0.3,
+          "call": "ABOVE"
+         }
+        },
+        "HK1": {
+         "new": 11,
+         "pairs_added": 101748,
+         "price": 9249.8,
+         "gain": {
+          "diff": 0.29,
+          "lo": 0.13,
+          "hi": 0.48,
+          "call": "ABOVE"
+         }
+        },
+        "HK2": {
+         "new": 31,
+         "pairs_added": 247459,
+         "price": 7982.5,
+         "gain": {
+          "diff": 0.82,
+          "lo": 0.55,
+          "hi": 1.12,
+          "call": "ABOVE"
+         }
+        },
+        "NTc": {
+         "new": 24,
+         "pairs_added": 484010,
+         "price": 20167.1,
+         "gain": {
+          "diff": 0.63,
+          "lo": 0.39,
+          "hi": 0.91,
+          "call": "ABOVE"
+         }
+        },
+        "NT1": {
+         "new": 24,
+         "pairs_added": 376603,
+         "price": 15691.8,
+         "gain": {
+          "diff": 0.63,
+          "lo": 0.39,
+          "hi": 0.91,
+          "call": "ABOVE"
+         }
+        }
+       }
+      },
+      "CC": {
+       "D83": {
+        "2": {
+         "questions": 795,
+         "connected": 255,
+         "share": 32.08
+        },
+        "3": {
+         "questions": 482,
+         "connected": 98,
+         "share": 20.33
+        },
+        "4": {
+         "questions": 257,
+         "connected": 19,
+         "share": 7.39
+        },
+        "all": {
+         "questions": 1534,
+         "connected": 372,
+         "share": 24.25
+        }
+       },
+       "REC": {
+        "2": {
+         "questions": 795,
+         "connected": 255,
+         "share": 32.08
+        },
+        "3": {
+         "questions": 482,
+         "connected": 98,
+         "share": 20.33
+        },
+        "4": {
+         "questions": 257,
+         "connected": 19,
+         "share": 7.39
+        },
+        "all": {
+         "questions": 1534,
+         "connected": 372,
+         "share": 24.25
+        }
+       },
+       "L2f": {
+        "2": {
+         "questions": 795,
+         "connected": 265,
+         "share": 33.33
+        },
+        "3": {
+         "questions": 482,
+         "connected": 102,
+         "share": 21.16
+        },
+        "4": {
+         "questions": 257,
+         "connected": 19,
+         "share": 7.39
+        },
+        "all": {
+         "questions": 1534,
+         "connected": 386,
+         "share": 25.16
+        }
+       },
+       "L2e": {
+        "2": {
+         "questions": 795,
+         "connected": 270,
+         "share": 33.96
+        },
+        "3": {
+         "questions": 482,
+         "connected": 102,
+         "share": 21.16
+        },
+        "4": {
+         "questions": 257,
+         "connected": 19,
+         "share": 7.39
+        },
+        "all": {
+         "questions": 1534,
+         "connected": 391,
+         "share": 25.49
+        }
+       },
+       "L2e-REC": {
+        "diff": 1.24,
+        "lo": 0.72,
+        "hi": 1.83,
+        "call": "ABOVE"
+       }
+      },
+      "CH": {
+       "arms": {
+        "D83": {
+         "linked": 1083,
+         "share": 42.81
+        },
+        "REC": {
+         "linked": 1083,
+         "share": 42.81
+        },
+        "L2f": {
+         "linked": 1108,
+         "share": 43.79
+        },
+        "L2e": {
+         "linked": 1121,
+         "share": 44.31
+        }
+       },
+       "contrasts": {
+        "L2e-REC": {
+         "diff": 1.5,
+         "lo": 1.03,
+         "hi": 2.03,
+         "call": "ABOVE"
+        },
+        "L2f-REC": {
+         "diff": 0.99,
+         "lo": 0.63,
+         "hi": 1.38,
+         "call": "ABOVE"
+        },
+        "L2e-L2f": {
+         "diff": 0.51,
+         "lo": 0.04,
+         "hi": 0.99,
+         "call": "ABOVE"
+        },
+        "L2e-D83": {
+         "diff": 1.5,
+         "lo": 1.03,
+         "hi": 2.03,
+         "call": "ABOVE"
+        },
+        "REC-D83": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        }
+       },
+       "price_vs_REC": {
+        "D83": null,
+        "L2f": 17342.6,
+        "L2e": 11335.1
+       },
+       "labels_L2e": [
+        {
+         "label": "R.name_comention",
+         "pairs": 931069,
+         "slots": 681,
+         "alone": 405
+        },
+        {
+         "label": "R.mention",
+         "pairs": 2343920,
+         "slots": 603,
+         "alone": 330
+        },
+        {
+         "label": "K.knn",
+         "pairs": 263122,
+         "slots": 217,
+         "alone": 22
+        },
+        {
+         "label": "R.title_comention",
+         "pairs": 41944,
+         "slots": 37,
+         "alone": 0
+        },
+        {
+         "label": "R.hub",
+         "pairs": 429747,
+         "slots": 33,
+         "alone": 33
+        }
+       ],
+       "H_e3v": {
+        "new": 33,
+        "pairs_added": 429747
+       },
+       "part_b": {
+        "H10": {
+         "new": 22,
+         "pairs_added": 396895,
+         "price": 18040.7,
+         "gain": {
+          "diff": 0.87,
+          "lo": 0.52,
+          "hi": 1.24,
+          "call": "ABOVE"
+         }
+        },
+        "HM": {
+         "new": 6,
+         "pairs_added": 46404,
+         "price": 7734.0,
+         "gain": {
+          "diff": 0.24,
+          "lo": 0.08,
+          "hi": 0.44,
+          "call": "ABOVE"
+         }
+        },
+        "HK1": {
+         "new": 11,
+         "pairs_added": 101748,
+         "price": 9249.8,
+         "gain": {
+          "diff": 0.43,
+          "lo": 0.2,
+          "hi": 0.71,
+          "call": "ABOVE"
+         }
+        },
+        "HK2": {
+         "new": 30,
+         "pairs_added": 247459,
+         "price": 8248.6,
+         "gain": {
+          "diff": 1.19,
+          "lo": 0.79,
+          "hi": 1.63,
+          "call": "ABOVE"
+         }
+        },
+        "NTc": {
+         "new": 15,
+         "pairs_added": 484010,
+         "price": 32267.3,
+         "gain": {
+          "diff": 0.59,
+          "lo": 0.32,
+          "hi": 0.94,
+          "call": "ABOVE"
+         }
+        },
+        "NT1": {
+         "new": 23,
+         "pairs_added": 376603,
+         "price": 16374.0,
+         "gain": {
+          "diff": 0.91,
+          "lo": 0.56,
+          "hi": 1.31,
+          "call": "ABOVE"
+         }
+        }
+       }
+      }
+     }
+    },
+    "s1eval": {
+     "questions": 2417,
+     "questions_npz_sha256": "48579db05059b7b0faa92fa7ac1a949e6669b4b91776da3cffbf690a5f48fdde",
+     "slots": {
+      "GP": 5962,
+      "CH": 3987
+     },
+     "RK": {
+      "GP": {
+       "arms": {
+        "D83": {
+         "linked": 2005,
+         "share": 33.63
+        },
+        "REC": {
+         "linked": 2005,
+         "share": 33.63
+        },
+        "L2f": {
+         "linked": 2096,
+         "share": 35.16
+        },
+        "L2e": {
+         "linked": 2106,
+         "share": 35.32
+        }
+       },
+       "contrasts": {
+        "L2e-REC": {
+         "diff": 1.69,
+         "lo": 1.34,
+         "hi": 2.05,
+         "call": "ABOVE"
+        },
+        "L2f-REC": {
+         "diff": 1.53,
+         "lo": 1.2,
+         "hi": 1.84,
+         "call": "ABOVE"
+        },
+        "L2e-L2f": {
+         "diff": 0.17,
+         "lo": -0.15,
+         "hi": 0.46,
+         "call": "LEVEL"
+        },
+        "L2e-D83": {
+         "diff": 1.69,
+         "lo": 1.34,
+         "hi": 2.05,
+         "call": "ABOVE"
+        },
+        "REC-D83": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        }
+       },
+       "price_vs_REC": {
+        "D83": null,
+        "L2f": 4764.5,
+        "L2e": 4264.7
+       },
+       "labels_L2e": [
+        {
+         "label": "R.name_comention",
+         "pairs": 931069,
+         "slots": 1326,
+         "alone": 713
+        },
+        {
+         "label": "R.mention",
+         "pairs": 2343920,
+         "slots": 1094,
+         "alone": 495
+        },
+        {
+         "label": "K.knn",
+         "pairs": 263122,
+         "slots": 422,
+         "alone": 39
+        },
+        {
+         "label": "R.title_comention",
+         "pairs": 41944,
+         "slots": 112,
+         "alone": 34
+        },
+        {
+         "label": "R.hub",
+         "pairs": 429747,
+         "slots": 93,
+         "alone": 93
+        }
+       ],
+       "H_e3v": {
+        "new": 93,
+        "pairs_added": 429747
+       },
+       "part_b": {
+        "H10": {
+         "new": 81,
+         "pairs_added": 396895,
+         "price": 4899.9,
+         "gain": {
+          "diff": 1.36,
+          "lo": 1.08,
+          "hi": 1.65,
+          "call": "ABOVE"
+         }
+        },
+        "HM": {
+         "new": 6,
+         "pairs_added": 46404,
+         "price": 7734.0,
+         "gain": {
+          "diff": 0.1,
+          "lo": 0.03,
+          "hi": 0.18,
+          "call": "ABOVE"
+         }
+        },
+        "HK1": {
+         "new": 35,
+         "pairs_added": 101748,
+         "price": 2907.1,
+         "gain": {
+          "diff": 0.59,
+          "lo": 0.41,
+          "hi": 0.79,
+          "call": "ABOVE"
+         }
+        },
+        "HK2": {
+         "new": 57,
+         "pairs_added": 247459,
+         "price": 4341.4,
+         "gain": {
+          "diff": 0.96,
+          "lo": 0.72,
+          "hi": 1.21,
+          "call": "ABOVE"
+         }
+        },
+        "NTc": {
+         "new": 146,
+         "pairs_added": 484010,
+         "price": 3315.1,
+         "gain": {
+          "diff": 2.45,
+          "lo": 2.06,
+          "hi": 2.86,
+          "call": "ABOVE"
+         }
+        },
+        "NT1": {
+         "new": 47,
+         "pairs_added": 376603,
+         "price": 8012.8,
+         "gain": {
+          "diff": 0.79,
+          "lo": 0.57,
+          "hi": 1.01,
+          "call": "ABOVE"
+         }
+        }
+       }
+      },
+      "CC": {
+       "D83": {
+        "2": {
+         "questions": 1252,
+         "connected": 881,
+         "share": 70.37
+        },
+        "3": {
+         "questions": 760,
+         "connected": 107,
+         "share": 14.08
+        },
+        "4": {
+         "questions": 405,
+         "connected": 34,
+         "share": 8.4
+        },
+        "all": {
+         "questions": 2417,
+         "connected": 1022,
+         "share": 42.28
+        }
+       },
+       "REC": {
+        "2": {
+         "questions": 1252,
+         "connected": 881,
+         "share": 70.37
+        },
+        "3": {
+         "questions": 760,
+         "connected": 107,
+         "share": 14.08
+        },
+        "4": {
+         "questions": 405,
+         "connected": 34,
+         "share": 8.4
+        },
+        "all": {
+         "questions": 2417,
+         "connected": 1022,
+         "share": 42.28
+        }
+       },
+       "L2f": {
+        "2": {
+         "questions": 1252,
+         "connected": 900,
+         "share": 71.88
+        },
+        "3": {
+         "questions": 760,
+         "connected": 129,
+         "share": 16.97
+        },
+        "4": {
+         "questions": 405,
+         "connected": 34,
+         "share": 8.4
+        },
+        "all": {
+         "questions": 2417,
+         "connected": 1063,
+         "share": 43.98
+        }
+       },
+       "L2e": {
+        "2": {
+         "questions": 1252,
+         "connected": 904,
+         "share": 72.2
+        },
+        "3": {
+         "questions": 760,
+         "connected": 134,
+         "share": 17.63
+        },
+        "4": {
+         "questions": 405,
+         "connected": 34,
+         "share": 8.4
+        },
+        "all": {
+         "questions": 2417,
+         "connected": 1072,
+         "share": 44.35
+        }
+       },
+       "L2e-REC": {
+        "diff": 2.07,
+        "lo": 1.49,
+        "hi": 2.69,
+        "call": "ABOVE"
+       }
+      },
+      "CH": {
+       "arms": {
+        "D83": {
+         "linked": 1982,
+         "share": 49.71
+        },
+        "REC": {
+         "linked": 1982,
+         "share": 49.71
+        },
+        "L2f": {
+         "linked": 2065,
+         "share": 51.79
+        },
+        "L2e": {
+         "linked": 2070,
+         "share": 51.92
+        }
+       },
+       "contrasts": {
+        "L2e-REC": {
+         "diff": 2.21,
+         "lo": 1.72,
+         "hi": 2.71,
+         "call": "ABOVE"
+        },
+        "L2f-REC": {
+         "diff": 2.08,
+         "lo": 1.63,
+         "hi": 2.51,
+         "call": "ABOVE"
+        },
+        "L2e-L2f": {
+         "diff": 0.13,
+         "lo": -0.29,
+         "hi": 0.51,
+         "call": "LEVEL"
+        },
+        "L2e-D83": {
+         "diff": 2.21,
+         "lo": 1.72,
+         "hi": 2.71,
+         "call": "ABOVE"
+        },
+        "REC-D83": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        }
+       },
+       "price_vs_REC": {
+        "D83": null,
+        "L2f": 5223.7,
+        "L2e": 4894.7
+       },
+       "labels_L2e": [
+        {
+         "label": "R.name_comention",
+         "pairs": 931069,
+         "slots": 1315,
+         "alone": 702
+        },
+        {
+         "label": "R.mention",
+         "pairs": 2343920,
+         "slots": 1082,
+         "alone": 483
+        },
+        {
+         "label": "K.knn",
+         "pairs": 263122,
+         "slots": 416,
+         "alone": 33
+        },
+        {
+         "label": "R.title_comention",
+         "pairs": 41944,
+         "slots": 112,
+         "alone": 34
+        },
+        {
+         "label": "R.hub",
+         "pairs": 429747,
+         "slots": 86,
+         "alone": 86
+        }
+       ],
+       "H_e3v": {
+        "new": 86,
+        "pairs_added": 429747
+       },
+       "part_b": {
+        "H10": {
+         "new": 53,
+         "pairs_added": 396895,
+         "price": 7488.6,
+         "gain": {
+          "diff": 1.33,
+          "lo": 0.99,
+          "hi": 1.7,
+          "call": "ABOVE"
+         }
+        },
+        "HM": {
+         "new": 6,
+         "pairs_added": 46404,
+         "price": 7734.0,
+         "gain": {
+          "diff": 0.15,
+          "lo": 0.05,
+          "hi": 0.28,
+          "call": "ABOVE"
+         }
+        },
+        "HK1": {
+         "new": 30,
+         "pairs_added": 101748,
+         "price": 3391.6,
+         "gain": {
+          "diff": 0.75,
+          "lo": 0.5,
+          "hi": 1.04,
+          "call": "ABOVE"
+         }
+        },
+        "HK2": {
+         "new": 49,
+         "pairs_added": 247459,
+         "price": 5050.2,
+         "gain": {
+          "diff": 1.23,
+          "lo": 0.89,
+          "hi": 1.58,
+          "call": "ABOVE"
+         }
+        },
+        "NTc": {
+         "new": 140,
+         "pairs_added": 484010,
+         "price": 3457.2,
+         "gain": {
+          "diff": 3.51,
+          "lo": 2.97,
+          "hi": 4.09,
+          "call": "ABOVE"
+         }
+        },
+        "NT1": {
+         "new": 47,
+         "pairs_added": 376603,
+         "price": 8012.8,
+         "gain": {
+          "diff": 1.18,
+          "lo": 0.85,
+          "hi": 1.52,
+          "call": "ABOVE"
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   "ratio_L2e_REC": {
+    "RK": 1.1272
+   },
+   "labels": {
+    "RK": {
+     "pairs": {
+      "R.mention": 2343920,
+      "R.name_comention": 931069,
+      "R.title_comention": 41944,
+      "R.hub": 429747,
+      "K.knn": 263122
+     },
+     "overlaps": {
+      "R.mention&R.name_comention": 87857,
+      "R.mention&R.title_comention": 19422,
+      "R.mention&R.hub": 0,
+      "R.mention&K.knn": 45294,
+      "R.name_comention&R.title_comention": 0,
+      "R.name_comention&R.hub": 0,
+      "R.name_comention&K.knn": 61346,
+      "R.title_comention&R.hub": 0,
+      "R.title_comention&K.knn": 3257,
+      "R.hub&K.knn": 0
+     }
+    }
+   },
+   "part_b_sizes": {
+    "H10": {
+     "RK": 396895,
+     "pairs": 826642
+    },
+    "HM": {
+     "RK": 46404,
+     "pairs": 265292
+    },
+    "HK1": {
+     "RK": 101748,
+     "pairs": 281823
+    },
+    "HK2": {
+     "RK": 247459,
+     "pairs": 529407
+    },
+    "NTc": {
+     "RK": 484010,
+     "pairs": 573098
+    },
+    "NT1": {
+     "RK": 376603,
+     "pairs": 417521
+    }
+   },
+   "part_b_chain": {
+    "P_star": 4997.1,
+    "H5e_new": 86,
+    "H5e_pairs_added": 429747,
+    "steps": [
+     {
+      "form": "HM",
+      "new": 6,
+      "pairs_added": 46404,
+      "price": 7734.0,
+      "gain": {
+       "diff": 0.15,
+       "lo": 0.05,
+       "hi": 0.28,
+       "call": "ABOVE"
+      },
+      "carried": false
+     },
+     {
+      "form": "HK1",
+      "new": 30,
+      "pairs_added": 101748,
+      "price": 3391.6,
+      "gain": {
+       "diff": 0.75,
+       "lo": 0.5,
+       "hi": 1.04,
+       "call": "ABOVE"
+      },
+      "carried": true,
+      "ratio_to_REC": 1.1572
+     },
+     {
+      "form": "NTc",
+      "new": 138,
+      "pairs_added": 482638,
+      "price": 3497.4,
+      "gain": {
+       "diff": 3.46,
+       "lo": 2.93,
+       "hi": 4.03,
+       "call": "ABOVE"
+      },
+      "carried": true,
+      "ratio_to_REC": 1.2997
+     },
+     {
+      "form": "NT1",
+      "new": 19,
+      "pairs_added": 363832,
+      "price": 19149.1,
+      "gain": {
+       "diff": 0.48,
+       "lo": 0.27,
+       "hi": 0.71,
+       "call": "ABOVE"
+      },
+      "carried": false
+     },
+     {
+      "form": "HK2",
+      "new": 14,
+      "pairs_added": 144072,
+      "price": 10290.9,
+      "gain": {
+       "diff": 0.35,
+       "lo": 0.18,
+       "hi": 0.55,
+       "call": "ABOVE"
+      },
+      "carried": false
+     },
+     {
+      "form": "H10",
+      "new": 49,
+      "pairs_added": 358675,
+      "price": 7319.9,
+      "gain": {
+       "diff": 1.23,
+       "lo": 0.91,
+       "hi": 1.58,
+       "call": "ABOVE"
+      },
+      "carried": false
+     }
+    ],
+    "carried": [
+     "HK1",
+     "NTc"
+    ],
+    "gain_over_L2e": {
+     "diff": 4.21,
+     "lo": 3.64,
+     "hi": 4.85,
+     "call": "ABOVE"
+    },
+    "new_over_L2e": 168,
+    "pairs_added": 584386
+   },
+   "part_b_carried": {
+    "applies": true,
+    "carried": [
+     "HK1",
+     "NTc"
+    ],
+    "missing": [],
+    "prefixes": [
+     {
+      "forms": [
+       "HK1"
+      ],
+      "ratio_to_REC": {
+       "RK": 1.1572
+      },
+      "pairs_added": {
+       "RK": 101748
+      }
+     },
+     {
+      "forms": [
+       "HK1",
+       "NTc"
+      ],
+      "ratio_to_REC": {
+       "RK": 1.2997
+      },
+      "pairs_added": {
+       "RK": 584386
+      }
+     }
+    ],
+    "carves": {
+     "s1sel": {
+      "RK": {
+       "GP": {
+        "new": 34,
+        "price": 17187.8,
+        "gain": {
+         "diff": 0.9,
+         "lo": 0.63,
+         "hi": 1.22,
+         "call": "ABOVE"
+        }
+       },
+       "CH": {
+        "new": 25,
+        "price": 23375.4,
+        "gain": {
+         "diff": 0.99,
+         "lo": 0.64,
+         "hi": 1.41,
+         "call": "ABOVE"
+        }
+       }
+      }
+     },
+     "s1eval": {
+      "RK": {
+       "GP": {
+        "new": 179,
+        "price": 3264.7,
+        "gain": {
+         "diff": 3.0,
+         "lo": 2.59,
+         "hi": 3.46,
+         "call": "ABOVE"
+        }
+       },
+       "CH": {
+        "new": 168,
+        "price": 3478.5,
+        "gain": {
+         "diff": 4.21,
+         "lo": 3.64,
+         "hi": 4.85,
+         "call": "ABOVE"
+        }
+       }
+      }
+     }
+    }
+   },
+   "seconds": 33.0,
+   "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+   "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+   "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+   "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+   "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+   "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+   "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+  },
+  "squad": {
+   "dataset": "squad",
+   "declared_in": "docs/UL2_LAYOUT_ON_E3V.md",
+   "nodes": 20233,
+   "nodes_sha256": "34ac47757e0080f0e2eb6c679009a6090ca97be39d576307ba7281db730c1a8b",
+   "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+   "kb": false,
+   "versions": [
+    "RK"
+   ],
+   "inputs": {
+    "ner_npz_sha256": "e8b061c3dc417d7c481e57d9f360dd98c825049d62c61958ca0fed655fa57a22",
+    "knn_npz_sha256": "fee9cca5435668378d2a139614cec141d0b4977991801a004c8ca43ee8ad796f",
+    "w2_s_npz_sha256": "3f44314052d91556d6d694cb97fc5319dcf84e80ef68790ec9a33800286880c5",
+    "f0t_npz_sha256": "04703c6d42e9d2717fc1a3e659d9ef6d376d85dd2bd2e410904a7573b09157e0",
+    "names_npz_sha256": "082a4c61f0563178da69802dc029008ba39becf12993bd6156ec66a1bd73f906"
+   },
+   "knn_e3v": {
+    "file": "outputs/enc/e2/knn/e3v/squad.npz",
+    "npz_sha256": "ee1a8df023af0705d89dbb09f739f3f298e0053da36b802169ed97b801c1cae4"
+   },
+   "h": {
+    "frozen": {
+     "npz_sha256": "f2c3474a4c2e28e926c87a0382669d50b2324d36302bc09c31ea0e74b2a80ebd",
+     "sizes": {
+      "H3": 37124,
+      "H5": 59909,
+      "H10": 115279,
+      "HM10": 35827,
+      "HK1": 38450,
+      "HK2": 71820
+     },
+     "flagged_rows": {
+      "RK": {
+       "rows": 20233,
+       "flagged": 0
+      }
+     },
+     "pass": {
+      "keys": 747,
+      "skip_le": 25,
+      "keys_skipped": 15750,
+      "entries": 63881,
+      "sum_df2": 15090081,
+      "hub_keys": 747,
+      "keys_over_dfmax": 0,
+      "threads": 4,
+      "offered": 1178424,
+      "merges": 1,
+      "seconds_pass": 1.6,
+      "hk_rows": 53186,
+      "truncated_rows": 14277
+     }
+    },
+    "e3v": {
+     "npz_sha256": "cf29799a083fea44167af669e6f2177ff69cd0eb2150fced0cb7af749ad6953b",
+     "sizes": {
+      "H3": 37564,
+      "H5": 60681,
+      "H10": 116928,
+      "HM10": 34187,
+      "HK1": 38713,
+      "HK2": 72729
+     },
+     "flagged_rows": {
+      "RK": {
+       "rows": 20233,
+       "flagged": 0
+      }
+     },
+     "pass": {
+      "keys": 747,
+      "skip_le": 25,
+      "keys_skipped": 15750,
+      "entries": 63881,
+      "sum_df2": 15090081,
+      "hub_keys": 747,
+      "keys_over_dfmax": 0,
+      "threads": 4,
+      "offered": 1178499,
+      "merges": 1,
+      "seconds_pass": 2.3,
+      "hk_rows": 53189,
+      "truncated_rows": 14277
+     }
+    }
+   },
+   "families": {
+    "K": 42969,
+    "W2_S": 878200,
+    "CN_all": 173645,
+    "F0T": 176454,
+    "TITLE": 2809,
+    "K_e3v": 43350,
+    "H5_frozen": 59909,
+    "H5_e3v": 60681
+   },
+   "sizes": {
+    "D83": {
+     "RK": 997652
+    },
+    "REC": {
+     "RK": 997652
+    },
+    "L2f": {
+     "RK": 1057561
+    },
+    "L2e": {
+     "RK": 1056550
+    }
+   },
+   "held": {
+    "D83": {
+     "RK": {
+      "R_parts": {
+       "W2_S": 878200,
+       "F0T": 176454
+      },
+      "K_in": 42969,
+      "S": 0,
+      "R": 989371,
+      "K": 8281,
+      "K_removed_in_R": 34688,
+      "union": 997652
+     }
+    },
+    "REC": {
+     "RK": {
+      "R_parts": {
+       "W2_S": 878200,
+       "F0T": 176454
+      },
+      "K_in": 42969,
+      "S": 0,
+      "R": 989371,
+      "K": 8281,
+      "K_removed_in_R": 34688,
+      "union": 997652
+     }
+    },
+    "L2e": {
+     "RK": {
+      "R_parts": {
+       "W2_S": 878200,
+       "F0T": 176454,
+       "H": 60681
+      },
+      "K_in": 43350,
+      "S": 0,
+      "R": 1050052,
+      "K": 6498,
+      "K_removed_in_R": 36852,
+      "union": 1056550
+     }
+    }
+   },
+   "carves": {
+    "s1sel": {
+     "questions": 1498,
+     "questions_npz_sha256": "248cffbd842ba2909f16ee7ef9055c72b90a016834d952858befa397053af1ae",
+     "slots": {
+      "GP": 0
+     },
+     "RK": {
+      "GP": null
+     }
+    },
+    "s1eval": {
+     "questions": 11873,
+     "questions_npz_sha256": "d859795e2b409d42d2e147677c9a64bcbcf57600d5e30d49334821850e9bdd3e",
+     "slots": {
+      "GP": 0
+     },
+     "RK": {
+      "GP": null
+     }
+    }
+   },
+   "ratio_L2e_REC": {
+    "RK": 1.059
+   },
+   "labels": {
+    "RK": {
+     "pairs": {
+      "R.mention": 878200,
+      "R.name_comention": 173645,
+      "R.title_comention": 2809,
+      "R.hub": 60681,
+      "K.knn": 43350
+     },
+     "overlaps": {
+      "R.mention&R.name_comention": 62522,
+      "R.mention&R.title_comention": 2761,
+      "R.mention&R.hub": 0,
+      "R.mention&K.knn": 35160,
+      "R.name_comention&R.title_comention": 0,
+      "R.name_comention&R.hub": 0,
+      "R.name_comention&K.knn": 13813,
+      "R.title_comention&R.hub": 0,
+      "R.title_comention&K.knn": 244,
+      "R.hub&K.knn": 0
+     }
+    }
+   },
+   "part_b_sizes": {
+    "H10": {
+     "RK": 56247,
+     "pairs": 116928
+    },
+    "HM": {
+     "RK": 5639,
+     "pairs": 34187
+    },
+    "HK1": {
+     "RK": 12805,
+     "pairs": 38713
+    },
+    "HK2": {
+     "RK": 32287,
+     "pairs": 72729
+    },
+    "NTc": {
+     "RK": 71195,
+     "pairs": 100108
+    },
+    "NT1": {
+     "RK": 49415,
+     "pairs": 55061
+    }
+   },
+   "part_b_carried": {
+    "applies": true,
+    "carried": [
+     "HK1",
+     "NTc"
+    ],
+    "missing": [],
+    "prefixes": [
+     {
+      "forms": [
+       "HK1"
+      ],
+      "ratio_to_REC": {
+       "RK": 1.0719
+      },
+      "pairs_added": {
+       "RK": 12805
+      }
+     },
+     {
+      "forms": [
+       "HK1",
+       "NTc"
+      ],
+      "ratio_to_REC": {
+       "RK": 1.143
+      },
+      "pairs_added": {
+       "RK": 83758
+      }
+     }
+    ],
+    "carves": {
+     "s1sel": {
+      "RK": {}
+     },
+     "s1eval": {
+      "RK": {}
+     }
+    }
+   },
+   "seconds": 5.3,
+   "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+   "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+   "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+   "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+   "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+   "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+   "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+  },
+  "hotpotqa": {
+   "dataset": "hotpotqa",
+   "declared_in": "docs/UL2_LAYOUT_ON_E3V.md",
+   "nodes": 5233329,
+   "nodes_sha256": "c777ab4b7a64eaaa5af852265daf6ba9f9debb4658a67f0c96595662e43f182a",
+   "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+   "kb": false,
+   "versions": [
+    "RK",
+    "SRK"
+   ],
+   "inputs": {
+    "ner_npz_sha256": "744da64a5f356b89241b2539085c9a0bf673750abd0b1822891c26f069a37137",
+    "knn_npz_sha256": "a82ee3d96ff6943678444f12279fe666ff5e03465b818bc229844597488222ae",
+    "structural_npz_sha256": "bc27173133e69cc821a14733a2f3dfe9d56442aeb867cf2cdcdcc4fff9c17608",
+    "w2_s_npz_sha256": "c46e17ee41b6a36540d46b5f0775dc707c128d352288aa27e4d1e1a54ff0234c",
+    "f0t_npz_sha256": "7b3bb50b1cc8ee03e4a76e1e7dd8c078000dbc68c3f4f7e32fbb6e0310cd53e7",
+    "names_npz_sha256": "8ae1d1cb11afcda4217ca8a33a6e8df743310489f8decb9a75baf07832da3f04"
+   },
+   "knn_e3v": {
+    "file": "outputs/enc/e4/knn/e3v/hotpotqa.npz",
+    "npz_sha256": "9c6a819c4a125f1c4a50bc5cc0b4192d090aaec399949424ba00f6a2a5923b91"
+   },
+   "h": {
+    "frozen": {
+     "npz_sha256": "b1e3fb625ef987a12fdd6265163d16c395f9e4af8a0e151c0a3261d5efa5f4e2",
+     "sizes": {
+      "H3": 12092446,
+      "H5": 19369321,
+      "H10": 37085747,
+      "HM10": 10171976,
+      "HK1": 10803938,
+      "HK2": 20608345
+     },
+     "flagged_rows": {
+      "RK": {
+       "rows": 5233329,
+       "flagged": 2694
+      },
+      "SRK": {
+       "rows": 3091,
+       "flagged": 17
+      }
+     },
+     "pass": {
+      "keys": 92764,
+      "skip_le": 25,
+      "keys_skipped": 1721802,
+      "entries": 16430379,
+      "sum_df2": 175646782789,
+      "hub_keys": 92764,
+      "keys_over_dfmax": 18,
+      "threads": 8,
+      "offered": 391458401,
+      "merges": 4,
+      "seconds_pass": 2870.6,
+      "hk_rows": 16375927,
+      "truncated_rows": 4659807
+     },
+     "gate_GH": {
+      "union_pairs": 66773876,
+      "cells": [
+       {
+        "carve": "s1sel",
+        "kind": "GP",
+        "k": 3,
+        "H_new": 0,
+        "hfo_H_new": 0,
+        "near_ties": 0,
+        "pass": true
+       },
+       {
+        "carve": "s1sel",
+        "kind": "GP",
+        "k": 5,
+        "H_new": 0,
+        "hfo_H_new": 0,
+        "near_ties": 0,
+        "pass": true
+       },
+       {
+        "carve": "s1sel",
+        "kind": "GP",
+        "k": 10,
+        "H_new": 1,
+        "hfo_H_new": 1,
+        "near_ties": 0,
+        "pass": true
+       },
+       {
+        "carve": "s1eval",
+        "kind": "GP",
+        "k": 3,
+        "H_new": 6,
+        "hfo_H_new": 6,
+        "near_ties": 2,
+        "pass": true
+       },
+       {
+        "carve": "s1eval",
+        "kind": "GP",
+        "k": 5,
+        "H_new": 11,
+        "hfo_H_new": 11,
+        "near_ties": 1,
+        "pass": true
+       },
+       {
+        "carve": "s1eval",
+        "kind": "GP",
+        "k": 10,
+        "H_new": 16,
+        "hfo_H_new": 16,
+        "near_ties": 4,
+        "pass": true
+       }
+      ],
+      "verdict": "PASS"
+     }
+    },
+    "e3v": {
+     "npz_sha256": "e4d38a12612ded250a175be8adafa296bf9d8a1cbd99c5e87ac0dd4d72fc0e9a",
+     "sizes": {
+      "H3": 11927810,
+      "H5": 19127180,
+      "H10": 36691954,
+      "HM10": 10458416,
+      "HK1": 11184149,
+      "HK2": 21334758
+     },
+     "flagged_rows": {
+      "RK": {
+       "rows": 5233329,
+       "flagged": 2949
+      }
+     },
+     "pass": {
+      "keys": 92764,
+      "skip_le": 25,
+      "keys_skipped": 1721802,
+      "entries": 16430379,
+      "sum_df2": 175646782789,
+      "hub_keys": 92764,
+      "keys_over_dfmax": 18,
+      "threads": 8,
+      "offered": 391492344,
+      "merges": 4,
+      "seconds_pass": 2473.3,
+      "hk_rows": 16375627,
+      "truncated_rows": 4660201
+     }
+    }
+   },
+   "families": {
+    "K": 11946289,
+    "S": 15095287,
+    "W2_S": 32159229,
+    "CN_all": 23218108,
+    "F0T": 24450229,
+    "TITLE": 1232121,
+    "K_e3v": 11838782,
+    "H5_frozen": 19369321,
+    "H5_e3v": 19127180
+   },
+   "sizes": {
+    "D83": {
+     "RK": 62565030
+    },
+    "REC": {
+     "RK": 62565030,
+     "SRK": 66773876
+    },
+    "L2f": {
+     "RK": 81934351,
+     "SRK": 85986155
+    },
+    "L2e": {
+     "RK": 81728317,
+     "SRK": 85807650
+    }
+   },
+   "held": {
+    "D83": {
+     "RK": {
+      "R_parts": {
+       "W2_S": 32159229,
+       "F0T": 24450229
+      },
+      "K_in": 11946289,
+      "S": 0,
+      "R": 53243304,
+      "K": 9321726,
+      "K_removed_in_R": 2624563,
+      "union": 62565030
+     }
+    },
+    "REC": {
+     "RK": {
+      "R_parts": {
+       "W2_S": 32159229,
+       "F0T": 24450229
+      },
+      "K_in": 11946289,
+      "S": 0,
+      "R": 53243304,
+      "K": 9321726,
+      "K_removed_in_R": 2624563,
+      "union": 62565030
+     },
+     "SRK": {
+      "R_parts": {
+       "W2_S": 32159229,
+       "F0T": 24450229
+      },
+      "K_in": 11946289,
+      "S": 15095287,
+      "R": 42527421,
+      "K": 9151168,
+      "R_removed_in_S": {
+       "W2_S": 10293229,
+       "F0T": 2860423
+      },
+      "K_removed_in_S": 1299405,
+      "K_removed_in_R": 1495716,
+      "union": 66773876
+     }
+    },
+    "L2e": {
+     "RK": {
+      "R_parts": {
+       "W2_S": 32159229,
+       "F0T": 24450229,
+       "H": 19127180
+      },
+      "K_in": 11838782,
+      "S": 0,
+      "R": 72370484,
+      "K": 9357833,
+      "K_removed_in_R": 2480949,
+      "union": 81728317
+     },
+     "SRK": {
+      "R_parts": {
+       "W2_S": 32159229,
+       "F0T": 24450229,
+       "H": 19127180
+      },
+      "K_in": 11838782,
+      "S": 15095287,
+      "R": 61502515,
+      "K": 9209848,
+      "R_removed_in_S": {
+       "W2_S": 10293229,
+       "F0T": 2860423,
+       "H": 152086
+      },
+      "K_removed_in_S": 1109768,
+      "K_removed_in_R": 1519166,
+      "union": 85807650
+     }
+    }
+   },
+   "carves": {
+    "s1sel": {
+     "questions": 1508,
+     "questions_npz_sha256": "b9f4c3f98a278872eb254d99c474548149df70dfa9f01cf64be6cf396b89453e",
+     "slots": {
+      "GP": 1508
+     },
+     "RK": {
+      "GP": {
+       "arms": {
+        "D83": {
+         "linked": 1035,
+         "share": 68.63
+        },
+        "REC": {
+         "linked": 1035,
+         "share": 68.63
+        },
+        "L2f": {
+         "linked": 1064,
+         "share": 70.56
+        },
+        "L2e": {
+         "linked": 1053,
+         "share": 69.83
+        }
+       },
+       "contrasts": {
+        "L2e-REC": {
+         "diff": 1.19,
+         "lo": 0.4,
+         "hi": 1.99,
+         "call": "ABOVE"
+        },
+        "L2f-REC": {
+         "diff": 1.92,
+         "lo": 1.26,
+         "hi": 2.65,
+         "call": "ABOVE"
+        },
+        "L2e-L2f": {
+         "diff": -0.73,
+         "lo": -1.46,
+         "hi": 0.0,
+         "call": "LEVEL"
+        },
+        "L2e-D83": {
+         "diff": 1.19,
+         "lo": 0.4,
+         "hi": 1.99,
+         "call": "ABOVE"
+        },
+        "REC-D83": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        }
+       },
+       "price_vs_REC": {
+        "D83": null,
+        "L2f": 667907.6,
+        "L2e": 1064627.1
+       },
+       "labels_L2e": [
+        {
+         "label": "R.mention",
+         "pairs": 32159229,
+         "slots": 913,
+         "alone": 378
+        },
+        {
+         "label": "R.name_comention",
+         "pairs": 23218108,
+         "slots": 394,
+         "alone": 49
+        },
+        {
+         "label": "K.knn",
+         "pairs": 11838782,
+         "slots": 227,
+         "alone": 40
+        },
+        {
+         "label": "R.title_comention",
+         "pairs": 1232121,
+         "slots": 181,
+         "alone": 8
+        },
+        {
+         "label": "R.hub",
+         "pairs": 19127180,
+         "slots": 25,
+         "alone": 25
+        }
+       ],
+       "H_e3v": {
+        "new": 25,
+        "pairs_added": 19127180
+       },
+       "part_b": {
+        "H10": {
+         "new": 15,
+         "pairs_added": 17564774,
+         "price": 1170984.9,
+         "gain": {
+          "diff": 0.99,
+          "lo": 0.53,
+          "hi": 1.53,
+          "call": "ABOVE"
+         }
+        },
+        "HM": {
+         "new": 4,
+         "pairs_added": 1807860,
+         "price": 451965.0,
+         "gain": {
+          "diff": 0.27,
+          "lo": 0.07,
+          "hi": 0.53,
+          "call": "ABOVE"
+         }
+        },
+        "HK1": {
+         "new": 8,
+         "pairs_added": 4365202,
+         "price": 545650.2,
+         "gain": {
+          "diff": 0.53,
+          "lo": 0.2,
+          "hi": 0.93,
+          "call": "ABOVE"
+         }
+        },
+        "HK2": {
+         "new": 19,
+         "pairs_added": 10111618,
+         "price": 532190.4,
+         "gain": {
+          "diff": 1.26,
+          "lo": 0.73,
+          "hi": 1.86,
+          "call": "ABOVE"
+         }
+        },
+        "NTc": {
+         "new": 6,
+         "pairs_added": 8374574,
+         "price": 1395762.3,
+         "gain": {
+          "diff": 0.4,
+          "lo": 0.13,
+          "hi": 0.73,
+          "call": "ABOVE"
+         }
+        },
+        "NT1": {
+         "new": 4,
+         "pairs_added": 14114573,
+         "price": 3528643.2,
+         "gain": {
+          "diff": 0.27,
+          "lo": 0.07,
+          "hi": 0.53,
+          "call": "ABOVE"
+         }
+        }
+       }
+      }
+     },
+     "SRK": {
+      "GP": {
+       "arms": {
+        "REC": {
+         "linked": 1211,
+         "share": 80.31
+        },
+        "L2f": {
+         "linked": 1211,
+         "share": 80.31
+        },
+        "L2e": {
+         "linked": 1212,
+         "share": 80.37
+        }
+       },
+       "contrasts": {
+        "L2e-REC": {
+         "diff": 0.07,
+         "lo": 0.0,
+         "hi": 0.2,
+         "call": "LEVEL"
+        },
+        "L2f-REC": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        },
+        "L2e-L2f": {
+         "diff": 0.07,
+         "lo": 0.0,
+         "hi": 0.2,
+         "call": "LEVEL"
+        }
+       },
+       "price_vs_REC": {
+        "L2f": null,
+        "L2e": 19033774.0
+       },
+       "labels_L2e": [
+        {
+         "label": "S",
+         "pairs": 15095287,
+         "slots": 1205,
+         "alone": 159
+        },
+        {
+         "label": "R.mention",
+         "pairs": 32159229,
+         "slots": 913,
+         "alone": 0
+        },
+        {
+         "label": "R.name_comention",
+         "pairs": 23218108,
+         "slots": 394,
+         "alone": 1
+        },
+        {
+         "label": "K.knn",
+         "pairs": 11838782,
+         "slots": 227,
+         "alone": 3
+        },
+        {
+         "label": "R.title_comention",
+         "pairs": 1232121,
+         "slots": 181,
+         "alone": 0
+        },
+        {
+         "label": "R.hub",
+         "pairs": 19127180,
+         "slots": 25,
+         "alone": 3
+        }
+       ],
+       "H_e3v": {
+        "new": 3,
+        "pairs_added": 18975094
+       },
+       "part_b": {
+        "H10": {
+         "new": 3,
+         "pairs_added": 17490814,
+         "price": 5830271.3,
+         "gain": {
+          "diff": 0.2,
+          "lo": 0.0,
+          "hi": 0.46,
+          "call": "LEVEL"
+         }
+        },
+        "HM": {
+         "new": 0,
+         "pairs_added": 1799083,
+         "price": null,
+         "gain": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "HK1": {
+         "new": 0,
+         "pairs_added": 4282949,
+         "price": null,
+         "gain": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "HK2": {
+         "new": 2,
+         "pairs_added": 9966215,
+         "price": 4983107.5,
+         "gain": {
+          "diff": 0.13,
+          "lo": 0.0,
+          "hi": 0.33,
+          "call": "LEVEL"
+         }
+        },
+        "NTc": {
+         "new": 0,
+         "pairs_added": 8321537,
+         "price": null,
+         "gain": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "NT1": {
+         "new": 0,
+         "pairs_added": 14048877,
+         "price": null,
+         "gain": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        }
+       }
+      }
+     }
+    },
+    "s1eval": {
+     "questions": 7405,
+     "questions_npz_sha256": "5c2dc4675720a981e3a53071613c47f41df3b6404bd63dfc404b3b5e2b11892e",
+     "slots": {
+      "GP": 7405
+     },
+     "RK": {
+      "GP": {
+       "arms": {
+        "D83": {
+         "linked": 4880,
+         "share": 65.9
+        },
+        "REC": {
+         "linked": 4880,
+         "share": 65.9
+        },
+        "L2f": {
+         "linked": 5012,
+         "share": 67.68
+        },
+        "L2e": {
+         "linked": 4950,
+         "share": 66.85
+        }
+       },
+       "contrasts": {
+        "L2e-REC": {
+         "diff": 0.95,
+         "lo": 0.62,
+         "hi": 1.27,
+         "call": "ABOVE"
+        },
+        "L2f-REC": {
+         "diff": 1.78,
+         "lo": 1.49,
+         "hi": 2.08,
+         "call": "ABOVE"
+        },
+        "L2e-L2f": {
+         "diff": -0.84,
+         "lo": -1.16,
+         "hi": -0.53,
+         "call": "BELOW"
+        },
+        "L2e-D83": {
+         "diff": 0.95,
+         "lo": 0.62,
+         "hi": 1.27,
+         "call": "ABOVE"
+        },
+        "REC-D83": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        }
+       },
+       "price_vs_REC": {
+        "D83": null,
+        "L2f": 146737.3,
+        "L2e": 273761.2
+       },
+       "labels_L2e": [
+        {
+         "label": "R.mention",
+         "pairs": 32159229,
+         "slots": 4294,
+         "alone": 1763
+        },
+        {
+         "label": "R.name_comention",
+         "pairs": 23218108,
+         "slots": 1940,
+         "alone": 241
+        },
+        {
+         "label": "K.knn",
+         "pairs": 11838782,
+         "slots": 1091,
+         "alone": 153
+        },
+        {
+         "label": "R.title_comention",
+         "pairs": 1232121,
+         "slots": 825,
+         "alone": 36
+        },
+        {
+         "label": "R.hub",
+         "pairs": 19127180,
+         "slots": 114,
+         "alone": 114
+        }
+       ],
+       "H_e3v": {
+        "new": 114,
+        "pairs_added": 19127180
+       },
+       "part_b": {
+        "H10": {
+         "new": 53,
+         "pairs_added": 17564774,
+         "price": 331410.8,
+         "gain": {
+          "diff": 0.72,
+          "lo": 0.53,
+          "hi": 0.92,
+          "call": "ABOVE"
+         }
+        },
+        "HM": {
+         "new": 6,
+         "pairs_added": 1807860,
+         "price": 301310.0,
+         "gain": {
+          "diff": 0.08,
+          "lo": 0.03,
+          "hi": 0.16,
+          "call": "ABOVE"
+         }
+        },
+        "HK1": {
+         "new": 68,
+         "pairs_added": 4365202,
+         "price": 64194.1,
+         "gain": {
+          "diff": 0.92,
+          "lo": 0.7,
+          "hi": 1.13,
+          "call": "ABOVE"
+         }
+        },
+        "HK2": {
+         "new": 114,
+         "pairs_added": 10111618,
+         "price": 88698.4,
+         "gain": {
+          "diff": 1.54,
+          "lo": 1.28,
+          "hi": 1.82,
+          "call": "ABOVE"
+         }
+        },
+        "NTc": {
+         "new": 27,
+         "pairs_added": 8374574,
+         "price": 310169.4,
+         "gain": {
+          "diff": 0.36,
+          "lo": 0.23,
+          "hi": 0.51,
+          "call": "ABOVE"
+         }
+        },
+        "NT1": {
+         "new": 31,
+         "pairs_added": 14114573,
+         "price": 455308.8,
+         "gain": {
+          "diff": 0.42,
+          "lo": 0.28,
+          "hi": 0.57,
+          "call": "ABOVE"
+         }
+        }
+       }
+      }
+     },
+     "SRK": {
+      "GP": {
+       "arms": {
+        "REC": {
+         "linked": 5925,
+         "share": 80.01
+        },
+        "L2f": {
+         "linked": 5936,
+         "share": 80.16
+        },
+        "L2e": {
+         "linked": 5934,
+         "share": 80.14
+        }
+       },
+       "contrasts": {
+        "L2e-REC": {
+         "diff": 0.12,
+         "lo": 0.04,
+         "hi": 0.22,
+         "call": "ABOVE"
+        },
+        "L2f-REC": {
+         "diff": 0.15,
+         "lo": 0.07,
+         "hi": 0.24,
+         "call": "ABOVE"
+        },
+        "L2e-L2f": {
+         "diff": -0.03,
+         "lo": -0.11,
+         "hi": 0.05,
+         "call": "LEVEL"
+        }
+       },
+       "price_vs_REC": {
+        "L2f": 1746570.8,
+        "L2e": 2114863.8
+       },
+       "labels_L2e": [
+        {
+         "label": "S",
+         "pairs": 15095287,
+         "slots": 5919,
+         "alone": 984
+        },
+        {
+         "label": "R.mention",
+         "pairs": 32159229,
+         "slots": 4294,
+         "alone": 0
+        },
+        {
+         "label": "R.name_comention",
+         "pairs": 23218108,
+         "slots": 1940,
+         "alone": 3
+        },
+        {
+         "label": "K.knn",
+         "pairs": 11838782,
+         "slots": 1091,
+         "alone": 3
+        },
+        {
+         "label": "R.title_comention",
+         "pairs": 1232121,
+         "slots": 825,
+         "alone": 0
+        },
+        {
+         "label": "R.hub",
+         "pairs": 19127180,
+         "slots": 114,
+         "alone": 9
+        }
+       ],
+       "H_e3v": {
+        "new": 9,
+        "pairs_added": 18975094
+       },
+       "part_b": {
+        "H10": {
+         "new": 3,
+         "pairs_added": 17490814,
+         "price": 5830271.3,
+         "gain": {
+          "diff": 0.04,
+          "lo": 0.0,
+          "hi": 0.09,
+          "call": "LEVEL"
+         }
+        },
+        "HM": {
+         "new": 1,
+         "pairs_added": 1799083,
+         "price": 1799083.0,
+         "gain": {
+          "diff": 0.01,
+          "lo": 0.0,
+          "hi": 0.04,
+          "call": "LEVEL"
+         }
+        },
+        "HK1": {
+         "new": 0,
+         "pairs_added": 4282949,
+         "price": null,
+         "gain": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "HK2": {
+         "new": 4,
+         "pairs_added": 9966215,
+         "price": 2491553.8,
+         "gain": {
+          "diff": 0.05,
+          "lo": 0.01,
+          "hi": 0.11,
+          "call": "ABOVE"
+         }
+        },
+        "NTc": {
+         "new": 1,
+         "pairs_added": 8321537,
+         "price": 8321537.0,
+         "gain": {
+          "diff": 0.01,
+          "lo": 0.0,
+          "hi": 0.04,
+          "call": "LEVEL"
+         }
+        },
+        "NT1": {
+         "new": 1,
+         "pairs_added": 14048877,
+         "price": 14048877.0,
+         "gain": {
+          "diff": 0.01,
+          "lo": 0.0,
+          "hi": 0.04,
+          "call": "LEVEL"
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   "ratio_L2e_REC": {
+    "RK": 1.3063,
+    "SRK": 1.285
+   },
+   "labels": {
+    "RK": {
+     "pairs": {
+      "R.mention": 32159229,
+      "R.name_comention": 23218108,
+      "R.title_comention": 1232121,
+      "R.hub": 19127180,
+      "K.knn": 11838782
+     },
+     "overlaps": {
+      "R.mention&R.name_comention": 2944753,
+      "R.mention&R.title_comention": 421401,
+      "R.mention&R.hub": 0,
+      "R.mention&K.knn": 1286408,
+      "R.name_comention&R.title_comention": 0,
+      "R.name_comention&R.hub": 0,
+      "R.name_comention&K.knn": 1885261,
+      "R.title_comention&R.hub": 0,
+      "R.title_comention&K.knn": 147348,
+      "R.hub&K.knn": 0
+     }
+    },
+    "SRK": {
+     "pairs": {
+      "S": 15095287,
+      "R.mention": 32159229,
+      "R.name_comention": 23218108,
+      "R.title_comention": 1232121,
+      "R.hub": 19127180,
+      "K.knn": 11838782
+     },
+     "overlaps": {
+      "S&R.mention": 10293229,
+      "S&R.name_comention": 2510420,
+      "S&R.title_comention": 350003,
+      "S&R.hub": 152086,
+      "S&K.knn": 1109768,
+      "R.mention&R.name_comention": 2944753,
+      "R.mention&R.title_comention": 421401,
+      "R.mention&R.hub": 0,
+      "R.mention&K.knn": 1286408,
+      "R.name_comention&R.title_comention": 0,
+      "R.name_comention&R.hub": 0,
+      "R.name_comention&K.knn": 1885261,
+      "R.title_comention&R.hub": 0,
+      "R.title_comention&K.knn": 147348,
+      "R.hub&K.knn": 0
+     }
+    }
+   },
+   "part_b_sizes": {
+    "H10": {
+     "RK": 17564774,
+     "SRK": 17490814,
+     "pairs": 36691954
+    },
+    "HM": {
+     "RK": 1807860,
+     "SRK": 1799083,
+     "pairs": 10458416
+    },
+    "HK1": {
+     "RK": 4365202,
+     "SRK": 4282949,
+     "pairs": 11184149
+    },
+    "HK2": {
+     "RK": 10111618,
+     "SRK": 9966215,
+     "pairs": 21334758
+    },
+    "NTc": {
+     "RK": 8374574,
+     "SRK": 8321537,
+     "pairs": 10357645
+    },
+    "NT1": {
+     "RK": 14114573,
+     "SRK": 14048877,
+     "pairs": 15483311
+    }
+   },
+   "part_b_carried": {
+    "applies": true,
+    "carried": [
+     "HK1",
+     "NTc"
+    ],
+    "missing": [],
+    "prefixes": [
+     {
+      "forms": [
+       "HK1"
+      ],
+      "ratio_to_REC": {
+       "RK": 1.3761,
+       "SRK": 1.3492
+      },
+      "pairs_added": {
+       "RK": 4365202,
+       "SRK": 4282949
+      }
+     },
+     {
+      "forms": [
+       "HK1",
+       "NTc"
+      ],
+      "ratio_to_REC": {
+       "RK": 1.5094,
+       "SRK": 1.4734
+      },
+      "pairs_added": {
+       "RK": 12707456,
+       "SRK": 12574926
+      }
+     }
+    ],
+    "carves": {
+     "s1sel": {
+      "RK": {
+       "GP": {
+        "new": 14,
+        "price": 907675.4,
+        "gain": {
+         "diff": 0.93,
+         "lo": 0.46,
+         "hi": 1.46,
+         "call": "ABOVE"
+        }
+       }
+      },
+      "SRK": {
+       "GP": {
+        "new": 0,
+        "price": null,
+        "gain": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        }
+       }
+      }
+     },
+     "s1eval": {
+      "RK": {
+       "GP": {
+        "new": 95,
+        "price": 133762.7,
+        "gain": {
+         "diff": 1.28,
+         "lo": 1.03,
+         "hi": 1.54,
+         "call": "ABOVE"
+        }
+       }
+      },
+      "SRK": {
+       "GP": {
+        "new": 1,
+        "price": 12574926.0,
+        "gain": {
+         "diff": 0.01,
+         "lo": 0.0,
+         "hi": 0.04,
+         "call": "LEVEL"
+        }
+       }
+      }
+     }
+    }
+   },
+   "seconds": 2153.3,
+   "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+   "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+   "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+   "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+   "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+   "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+   "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+  },
+  "2wiki": {
+   "dataset": "2wiki",
+   "declared_in": "docs/UL2_LAYOUT_ON_E3V.md",
+   "nodes": 5989847,
+   "nodes_sha256": "73fb822f3e4dd255c2555af717f4664c78a01fec4b5dce892fdec25d5de2426a",
+   "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+   "kb": false,
+   "versions": [
+    "RK",
+    "SRK"
+   ],
+   "inputs": {
+    "ner_npz_sha256": "fd462a9c08740d57af79855efe37c1d77f30dc593ca6ad6242681c99b51a008a",
+    "knn_npz_sha256": "a7151f6bbebdb13d7e817abcc199fd5feae17585a955f781b0690d7ee1897f99",
+    "structural_npz_sha256": "1e380eaaa62b21eaf24f6dec8302d81482bf35695bfa6cdda2421fa90cfe9c85",
+    "w2_s_npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+    "f0t_npz_sha256": "d6c49214c935c6166fcaa9c3494827cf85aaeafdb1f84f9eb3679b84de52ad5e",
+    "names_npz_sha256": "56269a557dae67578c3c05c6b7c4350f82c28fe51edd44a024104a729d43c020"
+   },
+   "knn_e3v": {
+    "file": "outputs/enc/e4/knn/e3v/2wiki.npz",
+    "npz_sha256": "acef2e58e9336213f9f31245c20fc81f44285d12cfa0ffabeddd284cd80148b0"
+   },
+   "h": {
+    "frozen": {
+     "npz_sha256": "55faa487075f64921c3e29181d0317275bed9dfd91e7ec42746839c6d18a86f6",
+     "sizes": {
+      "H3": 13850080,
+      "H5": 22176462,
+      "H10": 42458759,
+      "HM10": 11673753,
+      "HK1": 17151692,
+      "HK2": 32668564
+     },
+     "flagged_rows": {
+      "RK": {
+       "rows": 5989847,
+       "flagged": 2532
+      },
+      "SRK": {
+       "rows": 15301,
+       "flagged": 26
+      }
+     },
+     "pass": {
+      "keys": 152848,
+      "skip_le": 25,
+      "keys_skipped": 2678351,
+      "entries": 26410210,
+      "sum_df2": 247095621764,
+      "hub_keys": 152848,
+      "keys_over_dfmax": 22,
+      "threads": 8,
+      "offered": 628930010,
+      "merges": 6,
+      "seconds_pass": 4434.9,
+      "hk_rows": 26307748,
+      "truncated_rows": 5331142
+     },
+     "gate_GH": {
+      "union_pairs": 126635390,
+      "cells": [
+       {
+        "carve": "s1sel",
+        "kind": "GP",
+        "k": 3,
+        "H_new": 1,
+        "hfo_H_new": 1,
+        "near_ties": 0,
+        "pass": true
+       },
+       {
+        "carve": "s1sel",
+        "kind": "GP",
+        "k": 5,
+        "H_new": 3,
+        "hfo_H_new": 3,
+        "near_ties": 0,
+        "pass": true
+       },
+       {
+        "carve": "s1sel",
+        "kind": "GP",
+        "k": 10,
+        "H_new": 4,
+        "hfo_H_new": 4,
+        "near_ties": 1,
+        "pass": true
+       },
+       {
+        "carve": "s1eval",
+        "kind": "GP",
+        "k": 3,
+        "H_new": 42,
+        "hfo_H_new": 42,
+        "near_ties": 13,
+        "pass": true
+       },
+       {
+        "carve": "s1eval",
+        "kind": "GP",
+        "k": 5,
+        "H_new": 51,
+        "hfo_H_new": 51,
+        "near_ties": 5,
+        "pass": true
+       },
+       {
+        "carve": "s1eval",
+        "kind": "GP",
+        "k": 10,
+        "H_new": 68,
+        "hfo_H_new": 68,
+        "near_ties": 5,
+        "pass": true
+       }
+      ],
+      "verdict": "PASS"
+     }
+    },
+    "e3v": {
+     "npz_sha256": "0abe81550c700f77fc4ebe90d172eb6ec5823fe3517ca6663fb916a476fa1641",
+     "sizes": {
+      "H3": 13486536,
+      "H5": 21676906,
+      "H10": 41661546,
+      "HM10": 11998902,
+      "HK1": 17541000,
+      "HK2": 33412899
+     },
+     "flagged_rows": {
+      "RK": {
+       "rows": 5989847,
+       "flagged": 2011
+      }
+     },
+     "pass": {
+      "keys": 152848,
+      "skip_le": 25,
+      "keys_skipped": 2678351,
+      "entries": 26410210,
+      "sum_df2": 247095621764,
+      "hub_keys": 152848,
+      "keys_over_dfmax": 22,
+      "threads": 8,
+      "offered": 628958693,
+      "merges": 6,
+      "seconds_pass": 6927.3,
+      "hk_rows": 26307412,
+      "truncated_rows": 5331491
+     }
+    }
+   },
+   "families": {
+    "K": 13643063,
+    "S": 28208857,
+    "W2_S": 71483746,
+    "CN_all": 38242751,
+    "F0T": 39863302,
+    "TITLE": 1620551,
+    "K_e3v": 13439220,
+    "H5_frozen": 22176462,
+    "H5_e3v": 21676906
+   },
+   "sizes": {
+    "D83": {
+     "RK": 115654372
+    },
+    "REC": {
+     "RK": 115654372,
+     "SRK": 126635390
+    },
+    "L2f": {
+     "RK": 137830834,
+     "SRK": 148527880
+    },
+    "L2e": {
+     "RK": 137232216,
+     "SRK": 147939323
+    }
+   },
+   "held": {
+    "D83": {
+     "RK": {
+      "R_parts": {
+       "W2_S": 71483746,
+       "F0T": 39863302
+      },
+      "K_in": 13643063,
+      "S": 0,
+      "R": 105284400,
+      "K": 10369972,
+      "K_removed_in_R": 3273091,
+      "union": 115654372
+     }
+    },
+    "REC": {
+     "RK": {
+      "R_parts": {
+       "W2_S": 71483746,
+       "F0T": 39863302
+      },
+      "K_in": 13643063,
+      "S": 0,
+      "R": 105284400,
+      "K": 10369972,
+      "K_removed_in_R": 3273091,
+      "union": 115654372
+     },
+     "SRK": {
+      "R_parts": {
+       "W2_S": 71483746,
+       "F0T": 39863302
+      },
+      "K_in": 13643063,
+      "S": 28208857,
+      "R": 88392041,
+      "K": 10034492,
+      "R_removed_in_S": {
+       "W2_S": 16153694,
+       "F0T": 4673322
+      },
+      "K_removed_in_S": 1944885,
+      "K_removed_in_R": 1663686,
+      "union": 126635390
+     }
+    },
+    "L2e": {
+     "RK": {
+      "R_parts": {
+       "W2_S": 71483746,
+       "F0T": 39863302,
+       "H": 21676906
+      },
+      "K_in": 13439220,
+      "S": 0,
+      "R": 126961306,
+      "K": 10270910,
+      "K_removed_in_R": 3168310,
+      "union": 137232216
+     },
+     "SRK": {
+      "R_parts": {
+       "W2_S": 71483746,
+       "F0T": 39863302,
+       "H": 21676906
+      },
+      "K_in": 13439220,
+      "S": 28208857,
+      "R": 109789365,
+      "K": 9941101,
+      "R_removed_in_S": {
+       "W2_S": 16153694,
+       "F0T": 4673322,
+       "H": 279582
+      },
+      "K_removed_in_S": 1784520,
+      "K_removed_in_R": 1713599,
+      "union": 147939323
+     }
+    }
+   },
+   "carves": {
+    "s1sel": {
+     "questions": 1496,
+     "questions_npz_sha256": "be025627b9ae6beac340023262849bcffb2364d793c28a171e88ff093f2f3824",
+     "slots": {
+      "GP": 3131
+     },
+     "RK": {
+      "GP": {
+       "arms": {
+        "D83": {
+         "linked": 1382,
+         "share": 44.14
+        },
+        "REC": {
+         "linked": 1382,
+         "share": 44.14
+        },
+        "L2f": {
+         "linked": 1393,
+         "share": 44.49
+        },
+        "L2e": {
+         "linked": 1388,
+         "share": 44.33
+        }
+       },
+       "contrasts": {
+        "L2e-REC": {
+         "diff": 0.19,
+         "lo": 0.0,
+         "hi": 0.42,
+         "call": "LEVEL"
+        },
+        "L2f-REC": {
+         "diff": 0.35,
+         "lo": 0.16,
+         "hi": 0.57,
+         "call": "ABOVE"
+        },
+        "L2e-L2f": {
+         "diff": -0.16,
+         "lo": -0.4,
+         "hi": 0.06,
+         "call": "LEVEL"
+        },
+        "L2e-D83": {
+         "diff": 0.19,
+         "lo": 0.0,
+         "hi": 0.42,
+         "call": "LEVEL"
+        },
+        "REC-D83": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        }
+       },
+       "price_vs_REC": {
+        "D83": null,
+        "L2f": 2016042.0,
+        "L2e": 3596307.3
+       },
+       "labels_L2e": [
+        {
+         "label": "R.mention",
+         "pairs": 71483746,
+         "slots": 1313,
+         "alone": 591
+        },
+        {
+         "label": "R.name_comention",
+         "pairs": 38242751,
+         "slots": 624,
+         "alone": 37
+        },
+        {
+         "label": "K.knn",
+         "pairs": 13439220,
+         "slots": 231,
+         "alone": 8
+        },
+        {
+         "label": "R.title_comention",
+         "pairs": 1620551,
+         "slots": 119,
+         "alone": 6
+        },
+        {
+         "label": "R.hub",
+         "pairs": 21676906,
+         "slots": 9,
+         "alone": 9
+        }
+       ],
+       "H_e3v": {
+        "new": 9,
+        "pairs_added": 21676906
+       },
+       "part_b": {
+        "H10": {
+         "new": 9,
+         "pairs_added": 19984640,
+         "price": 2220515.6,
+         "gain": {
+          "diff": 0.29,
+          "lo": 0.12,
+          "hi": 0.5,
+          "call": "ABOVE"
+         }
+        },
+        "HM": {
+         "new": 2,
+         "pairs_added": 2096825,
+         "price": 1048412.5,
+         "gain": {
+          "diff": 0.06,
+          "lo": 0.0,
+          "hi": 0.16,
+          "call": "LEVEL"
+         }
+        },
+        "HK1": {
+         "new": 7,
+         "pairs_added": 8894110,
+         "price": 1270587.1,
+         "gain": {
+          "diff": 0.22,
+          "lo": 0.07,
+          "hi": 0.41,
+          "call": "ABOVE"
+         }
+        },
+        "HK2": {
+         "new": 8,
+         "pairs_added": 19780753,
+         "price": 2472594.1,
+         "gain": {
+          "diff": 0.26,
+          "lo": 0.09,
+          "hi": 0.45,
+          "call": "ABOVE"
+         }
+        },
+        "NTc": {
+         "new": 1,
+         "pairs_added": 13803654,
+         "price": 13803654.0,
+         "gain": {
+          "diff": 0.03,
+          "lo": 0.0,
+          "hi": 0.1,
+          "call": "LEVEL"
+         }
+        },
+        "NT1": {
+         "new": 1,
+         "pairs_added": 22220784,
+         "price": 22220784.0,
+         "gain": {
+          "diff": 0.03,
+          "lo": 0.0,
+          "hi": 0.1,
+          "call": "LEVEL"
+         }
+        }
+       }
+      }
+     },
+     "SRK": {
+      "GP": {
+       "arms": {
+        "REC": {
+         "linked": 1444,
+         "share": 46.12
+        },
+        "L2f": {
+         "linked": 1447,
+         "share": 46.22
+        },
+        "L2e": {
+         "linked": 1447,
+         "share": 46.22
+        }
+       },
+       "contrasts": {
+        "L2e-REC": {
+         "diff": 0.1,
+         "lo": 0.0,
+         "hi": 0.22,
+         "call": "LEVEL"
+        },
+        "L2f-REC": {
+         "diff": 0.1,
+         "lo": 0.0,
+         "hi": 0.22,
+         "call": "LEVEL"
+        },
+        "L2e-L2f": {
+         "diff": 0.0,
+         "lo": -0.13,
+         "hi": 0.13,
+         "call": "LEVEL"
+        }
+       },
+       "price_vs_REC": {
+        "L2f": 7297496.7,
+        "L2e": 7101311.0
+       },
+       "labels_L2e": [
+        {
+         "label": "S",
+         "pairs": 28208857,
+         "slots": 1355,
+         "alone": 59
+        },
+        {
+         "label": "R.mention",
+         "pairs": 71483746,
+         "slots": 1313,
+         "alone": 34
+        },
+        {
+         "label": "R.name_comention",
+         "pairs": 38242751,
+         "slots": 624,
+         "alone": 12
+        },
+        {
+         "label": "K.knn",
+         "pairs": 13439220,
+         "slots": 231,
+         "alone": 6
+        },
+        {
+         "label": "R.title_comention",
+         "pairs": 1620551,
+         "slots": 119,
+         "alone": 0
+        },
+        {
+         "label": "R.hub",
+         "pairs": 21676906,
+         "slots": 9,
+         "alone": 2
+        }
+       ],
+       "H_e3v": {
+        "new": 2,
+        "pairs_added": 21397324
+       },
+       "part_b": {
+        "H10": {
+         "new": 2,
+         "pairs_added": 19846623,
+         "price": 9923311.5,
+         "gain": {
+          "diff": 0.06,
+          "lo": 0.0,
+          "hi": 0.16,
+          "call": "LEVEL"
+         }
+        },
+        "HM": {
+         "new": 0,
+         "pairs_added": 2079613,
+         "price": null,
+         "gain": {
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "call": "LEVEL"
+         }
+        },
+        "HK1": {
+         "new": 1,
+         "pairs_added": 8727171,
+         "price": 8727171.0,
+         "gain": {
+          "diff": 0.03,
+          "lo": 0.0,
+          "hi": 0.1,
+          "call": "LEVEL"
+         }
+        },
+        "HK2": {
+         "new": 1,
+         "pairs_added": 19484731,
+         "price": 19484731.0,
+         "gain": {
+          "diff": 0.03,
+          "lo": 0.0,
+          "hi": 0.1,
+          "call": "LEVEL"
+         }
+        },
+        "NTc": {
+         "new": 1,
+         "pairs_added": 13706550,
+         "price": 13706550.0,
+         "gain": {
+          "diff": 0.03,
+          "lo": 0.0,
+          "hi": 0.1,
+          "call": "LEVEL"
+         }
+        },
+        "NT1": {
+         "new": 1,
+         "pairs_added": 22082853,
+         "price": 22082853.0,
+         "gain": {
+          "diff": 0.03,
+          "lo": 0.0,
+          "hi": 0.1,
+          "call": "LEVEL"
+         }
+        }
+       }
+      }
+     }
+    },
+    "s1eval": {
+     "questions": 12576,
+     "questions_npz_sha256": "d6d41aee0d5d109e84e81a6cc043c772554e87189cca3f0ed07e2e7f1e1a2adc",
+     "slots": {
+      "GP": 26331
+     },
+     "RK": {
+      "GP": {
+       "arms": {
+        "D83": {
+         "linked": 11534,
+         "share": 43.8
+        },
+        "REC": {
+         "linked": 11534,
+         "share": 43.8
+        },
+        "L2f": {
+         "linked": 11646,
+         "share": 44.23
+        },
+        "L2e": {
+         "linked": 11607,
+         "share": 44.08
+        }
+       },
+       "contrasts": {
+        "L2e-REC": {
+         "diff": 0.28,
+         "lo": 0.2,
+         "hi": 0.35,
+         "call": "ABOVE"
+        },
+        "L2f-REC": {
+         "diff": 0.43,
+         "lo": 0.35,
+         "hi": 0.5,
+         "call": "ABOVE"
+        },
+        "L2e-L2f": {
+         "diff": -0.15,
+         "lo": -0.24,
+         "hi": -0.07,
+         "call": "BELOW"
+        },
+        "L2e-D83": {
+         "diff": 0.28,
+         "lo": 0.2,
+         "hi": 0.35,
+         "call": "ABOVE"
+        },
+        "REC-D83": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        }
+       },
+       "price_vs_REC": {
+        "D83": null,
+        "L2f": 198004.1,
+        "L2e": 295586.9
+       },
+       "labels_L2e": [
+        {
+         "label": "R.mention",
+         "pairs": 71483746,
+         "slots": 10744,
+         "alone": 4185
+        },
+        {
+         "label": "R.name_comention",
+         "pairs": 38242751,
+         "slots": 5854,
+         "alone": 430
+        },
+        {
+         "label": "K.knn",
+         "pairs": 13439220,
+         "slots": 2369,
+         "alone": 93
+        },
+        {
+         "label": "R.title_comention",
+         "pairs": 1620551,
+         "slots": 1041,
+         "alone": 61
+        },
+        {
+         "label": "R.hub",
+         "pairs": 21676906,
+         "slots": 85,
+         "alone": 85
+        }
+       ],
+       "H_e3v": {
+        "new": 85,
+        "pairs_added": 21676906
+       },
+       "part_b": {
+        "H10": {
+         "new": 65,
+         "pairs_added": 19984640,
+         "price": 307456.0,
+         "gain": {
+          "diff": 0.25,
+          "lo": 0.19,
+          "hi": 0.31,
+          "call": "ABOVE"
+         }
+        },
+        "HM": {
+         "new": 8,
+         "pairs_added": 2096825,
+         "price": 262103.1,
+         "gain": {
+          "diff": 0.03,
+          "lo": 0.01,
+          "hi": 0.05,
+          "call": "ABOVE"
+         }
+        },
+        "HK1": {
+         "new": 50,
+         "pairs_added": 8894110,
+         "price": 177882.2,
+         "gain": {
+          "diff": 0.19,
+          "lo": 0.14,
+          "hi": 0.25,
+          "call": "ABOVE"
+         }
+        },
+        "HK2": {
+         "new": 105,
+         "pairs_added": 19780753,
+         "price": 188388.1,
+         "gain": {
+          "diff": 0.4,
+          "lo": 0.33,
+          "hi": 0.48,
+          "call": "ABOVE"
+         }
+        },
+        "NTc": {
+         "new": 35,
+         "pairs_added": 13803654,
+         "price": 394390.1,
+         "gain": {
+          "diff": 0.13,
+          "lo": 0.09,
+          "hi": 0.18,
+          "call": "ABOVE"
+         }
+        },
+        "NT1": {
+         "new": 35,
+         "pairs_added": 22220784,
+         "price": 634879.5,
+         "gain": {
+          "diff": 0.13,
+          "lo": 0.09,
+          "hi": 0.18,
+          "call": "ABOVE"
+         }
+        }
+       }
+      }
+     },
+     "SRK": {
+      "GP": {
+       "arms": {
+        "REC": {
+         "linked": 12066,
+         "share": 45.82
+        },
+        "L2f": {
+         "linked": 12115,
+         "share": 46.01
+        },
+        "L2e": {
+         "linked": 12093,
+         "share": 45.93
+        }
+       },
+       "contrasts": {
+        "L2e-REC": {
+         "diff": 0.1,
+         "lo": 0.05,
+         "hi": 0.15,
+         "call": "ABOVE"
+        },
+        "L2f-REC": {
+         "diff": 0.19,
+         "lo": 0.14,
+         "hi": 0.24,
+         "call": "ABOVE"
+        },
+        "L2e-L2f": {
+         "diff": -0.08,
+         "lo": -0.14,
+         "hi": -0.03,
+         "call": "BELOW"
+        }
+       },
+       "price_vs_REC": {
+        "L2f": 446785.5,
+        "L2e": 789034.6
+       },
+       "labels_L2e": [
+        {
+         "label": "S",
+         "pairs": 28208857,
+         "slots": 11234,
+         "alone": 486
+        },
+        {
+         "label": "R.mention",
+         "pairs": 71483746,
+         "slots": 10744,
+         "alone": 197
+        },
+        {
+         "label": "R.name_comention",
+         "pairs": 38242751,
+         "slots": 5854,
+         "alone": 152
+        },
+        {
+         "label": "K.knn",
+         "pairs": 13439220,
+         "slots": 2369,
+         "alone": 45
+        },
+        {
+         "label": "R.title_comention",
+         "pairs": 1620551,
+         "slots": 1041,
+         "alone": 16
+        },
+        {
+         "label": "R.hub",
+         "pairs": 21676906,
+         "slots": 85,
+         "alone": 32
+        }
+       ],
+       "H_e3v": {
+        "new": 32,
+        "pairs_added": 21397324
+       },
+       "part_b": {
+        "H10": {
+         "new": 12,
+         "pairs_added": 19846623,
+         "price": 1653885.2,
+         "gain": {
+          "diff": 0.05,
+          "lo": 0.02,
+          "hi": 0.07,
+          "call": "ABOVE"
+         }
+        },
+        "HM": {
+         "new": 4,
+         "pairs_added": 2079613,
+         "price": 519903.2,
+         "gain": {
+          "diff": 0.02,
+          "lo": 0.0,
+          "hi": 0.03,
+          "call": "ABOVE"
+         }
+        },
+        "HK1": {
+         "new": 11,
+         "pairs_added": 8727171,
+         "price": 793379.2,
+         "gain": {
+          "diff": 0.04,
+          "lo": 0.02,
+          "hi": 0.07,
+          "call": "ABOVE"
+         }
+        },
+        "HK2": {
+         "new": 26,
+         "pairs_added": 19484731,
+         "price": 749412.7,
+         "gain": {
+          "diff": 0.1,
+          "lo": 0.06,
+          "hi": 0.14,
+          "call": "ABOVE"
+         }
+        },
+        "NTc": {
+         "new": 21,
+         "pairs_added": 13706550,
+         "price": 652692.9,
+         "gain": {
+          "diff": 0.08,
+          "lo": 0.05,
+          "hi": 0.12,
+          "call": "ABOVE"
+         }
+        },
+        "NT1": {
+         "new": 12,
+         "pairs_added": 22082853,
+         "price": 1840237.8,
+         "gain": {
+          "diff": 0.05,
+          "lo": 0.02,
+          "hi": 0.07,
+          "call": "ABOVE"
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   "ratio_L2e_REC": {
+    "RK": 1.1866,
+    "SRK": 1.1682
+   },
+   "labels": {
+    "RK": {
+     "pairs": {
+      "R.mention": 71483746,
+      "R.name_comention": 38242751,
+      "R.title_comention": 1620551,
+      "R.hub": 21676906,
+      "K.knn": 13439220
+     },
+     "overlaps": {
+      "R.mention&R.name_comention": 5381272,
+      "R.mention&R.title_comention": 681376,
+      "R.mention&R.hub": 0,
+      "R.mention&K.knn": 1770595,
+      "R.name_comention&R.title_comention": 0,
+      "R.name_comention&R.hub": 0,
+      "R.name_comention&K.knn": 2444867,
+      "R.title_comention&R.hub": 0,
+      "R.title_comention&K.knn": 157020,
+      "R.hub&K.knn": 0
+     }
+    },
+    "SRK": {
+     "pairs": {
+      "S": 28208857,
+      "R.mention": 71483746,
+      "R.name_comention": 38242751,
+      "R.title_comention": 1620551,
+      "R.hub": 21676906,
+      "K.knn": 13439220
+     },
+     "overlaps": {
+      "S&R.mention": 16153694,
+      "S&R.name_comention": 4109620,
+      "S&R.title_comention": 563702,
+      "S&R.hub": 279582,
+      "S&K.knn": 1784520,
+      "R.mention&R.name_comention": 5381272,
+      "R.mention&R.title_comention": 681376,
+      "R.mention&R.hub": 0,
+      "R.mention&K.knn": 1770595,
+      "R.name_comention&R.title_comention": 0,
+      "R.name_comention&R.hub": 0,
+      "R.name_comention&K.knn": 2444867,
+      "R.title_comention&R.hub": 0,
+      "R.title_comention&K.knn": 157020,
+      "R.hub&K.knn": 0
+     }
+    }
+   },
+   "part_b_sizes": {
+    "H10": {
+     "RK": 19984640,
+     "SRK": 19846623,
+     "pairs": 41661546
+    },
+    "HM": {
+     "RK": 2096825,
+     "SRK": 2079613,
+     "pairs": 11998902
+    },
+    "HK1": {
+     "RK": 8894110,
+     "SRK": 8727171,
+     "pairs": 17541000
+    },
+    "HK2": {
+     "RK": 19780753,
+     "SRK": 19484731,
+     "pairs": 33412899
+    },
+    "NTc": {
+     "RK": 13803654,
+     "SRK": 13706550,
+     "pairs": 17076370
+    },
+    "NT1": {
+     "RK": 22220784,
+     "SRK": 22082853,
+     "pairs": 24449948
+    }
+   },
+   "part_b_carried": {
+    "applies": true,
+    "carried": [
+     "HK1",
+     "NTc"
+    ],
+    "missing": [],
+    "prefixes": [
+     {
+      "forms": [
+       "HK1"
+      ],
+      "ratio_to_REC": {
+       "RK": 1.2635,
+       "SRK": 1.2371
+      },
+      "pairs_added": {
+       "RK": 8894110,
+       "SRK": 8727171
+      }
+     },
+     {
+      "forms": [
+       "HK1",
+       "NTc"
+      ],
+      "ratio_to_REC": {
+       "RK": 1.3821,
+       "SRK": 1.3448
+      },
+      "pairs_added": {
+       "RK": 22614776,
+       "SRK": 22357610
+      }
+     }
+    ],
+    "carves": {
+     "s1sel": {
+      "RK": {
+       "GP": {
+        "new": 7,
+        "price": 3230682.3,
+        "gain": {
+         "diff": 0.22,
+         "lo": 0.07,
+         "hi": 0.41,
+         "call": "ABOVE"
+        }
+       }
+      },
+      "SRK": {
+       "GP": {
+        "new": 1,
+        "price": 22357610.0,
+        "gain": {
+         "diff": 0.03,
+         "lo": 0.0,
+         "hi": 0.1,
+         "call": "LEVEL"
+        }
+       }
+      }
+     },
+     "s1eval": {
+      "RK": {
+       "GP": {
+        "new": 78,
+        "price": 289933.0,
+        "gain": {
+         "diff": 0.3,
+         "lo": 0.24,
+         "hi": 0.36,
+         "call": "ABOVE"
+        }
+       }
+      },
+      "SRK": {
+       "GP": {
+        "new": 29,
+        "price": 770952.1,
+        "gain": {
+         "diff": 0.11,
+         "lo": 0.07,
+         "hi": 0.15,
+         "call": "ABOVE"
+        }
+       }
+      }
+     }
+    }
+   },
+   "seconds": 5129.9,
+   "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+   "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+   "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+   "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+   "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+   "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+   "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+  },
+  "metaqa": {
+   "dataset": "metaqa",
+   "declared_in": "docs/UL2_LAYOUT_ON_E3V.md",
+   "nodes": 43234,
+   "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+   "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+   "kb": true,
+   "versions": [
+    "SRK"
+   ],
+   "inputs": {
+    "ner_npz_sha256": "93065a2311c2b445cc14ce6458457c9e14ec0d3c641a4bc573ef4b175a374cb8",
+    "knn_npz_sha256": "f7c59640e816951148fee791bc8790e026461ee52a5b6741c63859244b5a4a16",
+    "structural_npz_sha256": "1b2027c64b2e62b5cf122f09a246ed4cb485841bf0823fcee246e8bf45bf8570",
+    "w2_s_npz_sha256": "3f2b97d1474552dae2fea1f7f8be5e83f7960950b38c0ca41bd3a78025aa7dd5",
+    "f0t_npz_sha256": "499e8c70d3d7d1375a77a609819aacdd40c8753ac2bf6f3d1ea277c5ae62a7fe",
+    "names_npz_sha256": "0ccad8b4b6a55c2bec41bfd36e6fa83f48dc448964e170cf15a2c191f517d720"
+   },
+   "knn_e3v": {
+    "file": "outputs/enc/e4/knn/e3v/metaqa.npz",
+    "npz_sha256": "2fa9040cc60acbb1e89649a1c6b70cb124f9a74afb94580e228a694704b005f1"
+   },
+   "h": {},
+   "families": {
+    "K": 97920,
+    "S": 124669,
+    "W2_S": 245144,
+    "CN_all": 12605,
+    "F0T": 12605,
+    "TITLE": 0,
+    "K_e3v": 96650
+   },
+   "sizes": {
+    "D83": {
+     "SRK": 231791
+    },
+    "REC": {
+     "SRK": 351892
+    },
+    "L2f": {
+     "SRK": 351892
+    },
+    "L2e": {
+     "SRK": 349818
+    }
+   },
+   "held": {
+    "D83": {
+     "SRK": {
+      "R_parts": {
+       "F0T": 12605
+      },
+      "K_in": 97920,
+      "S": 124669,
+      "R": 12579,
+      "K": 94543,
+      "R_removed_in_S": {
+       "F0T": 26
+      },
+      "K_removed_in_S": 484,
+      "K_removed_in_R": 2893,
+      "union": 231791
+     }
+    },
+    "REC": {
+     "SRK": {
+      "R_parts": {
+       "W2_S": 245144,
+       "F0T": 12605
+      },
+      "K_in": 97920,
+      "S": 124669,
+      "R": 133077,
+      "K": 94146,
+      "R_removed_in_S": {
+       "W2_S": 124579,
+       "F0T": 26
+      },
+      "K_removed_in_S": 484,
+      "K_removed_in_R": 3290,
+      "union": 351892
+     }
+    },
+    "L2e": {
+     "SRK": {
+      "R_parts": {
+       "W2_S": 245144,
+       "F0T": 12605
+      },
+      "K_in": 96650,
+      "S": 124669,
+      "R": 133077,
+      "K": 92072,
+      "R_removed_in_S": {
+       "W2_S": 124579,
+       "F0T": 26
+      },
+      "K_removed_in_S": 737,
+      "K_removed_in_R": 3841,
+      "union": 349818
+     }
+    }
+   },
+   "carves": {
+    "s1sel": {
+     "questions": 1497,
+     "questions_npz_sha256": "a8119a120171b1527a99ef0f1a6e234de3a710f148b976e8fd59b97f8f2ef8e4",
+     "slots": {
+      "GP": 6074
+     },
+     "SRK": {
+      "GP": {
+       "arms": {
+        "D83": {
+         "linked": 248,
+         "share": 4.08
+        },
+        "REC": {
+         "linked": 925,
+         "share": 15.23
+        },
+        "L2f": {
+         "linked": 925,
+         "share": 15.23
+        },
+        "L2e": {
+         "linked": 851,
+         "share": 14.01
+        }
+       },
+       "contrasts": {
+        "L2e-REC": {
+         "diff": -1.22,
+         "lo": -1.74,
+         "hi": -0.75,
+         "call": "BELOW"
+        },
+        "L2f-REC": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        },
+        "L2e-L2f": {
+         "diff": -1.22,
+         "lo": -1.74,
+         "hi": -0.75,
+         "call": "BELOW"
+        },
+        "L2e-D83": {
+         "diff": 9.93,
+         "lo": 7.62,
+         "hi": 12.37,
+         "call": "ABOVE"
+        },
+        "REC-D83": {
+         "diff": 11.15,
+         "lo": 8.87,
+         "hi": 13.5,
+         "call": "ABOVE"
+        }
+       },
+       "price_vs_REC": {
+        "D83": null,
+        "L2f": null,
+        "L2e": null
+       },
+       "labels_L2e": [
+        {
+         "label": "R.mention",
+         "pairs": 245144,
+         "slots": 718,
+         "alone": 678
+        },
+        {
+         "label": "K.knn",
+         "pairs": 96650,
+         "slots": 138,
+         "alone": 121
+        },
+        {
+         "label": "S",
+         "pairs": 124669,
+         "slots": 35,
+         "alone": 0
+        },
+        {
+         "label": "R.name_comention",
+         "pairs": 12605,
+         "slots": 12,
+         "alone": 0
+        },
+        {
+         "label": "R.title_comention",
+         "pairs": 0,
+         "slots": 0,
+         "alone": 0
+        }
+       ]
+      }
+     }
+    },
+    "s1eval": {
+     "questions": 9785,
+     "questions_npz_sha256": "fcb6c401d7ed3e93b1ba8aa4db0400a62ed4bc3a851f6b8324bf8e9baa00248d",
+     "slots": {
+      "GP": 37446
+     },
+     "SRK": {
+      "GP": {
+       "arms": {
+        "D83": {
+         "linked": 1117,
+         "share": 2.98
+        },
+        "REC": {
+         "linked": 5173,
+         "share": 13.81
+        },
+        "L2f": {
+         "linked": 5173,
+         "share": 13.81
+        },
+        "L2e": {
+         "linked": 4912,
+         "share": 13.12
+        }
+       },
+       "contrasts": {
+        "L2e-REC": {
+         "diff": -0.7,
+         "lo": -0.86,
+         "hi": -0.55,
+         "call": "BELOW"
+        },
+        "L2f-REC": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        },
+        "L2e-L2f": {
+         "diff": -0.7,
+         "lo": -0.86,
+         "hi": -0.55,
+         "call": "BELOW"
+        },
+        "L2e-D83": {
+         "diff": 10.13,
+         "lo": 9.22,
+         "hi": 11.04,
+         "call": "ABOVE"
+        },
+        "REC-D83": {
+         "diff": 10.83,
+         "lo": 9.98,
+         "hi": 11.71,
+         "call": "ABOVE"
+        }
+       },
+       "price_vs_REC": {
+        "D83": null,
+        "L2f": null,
+        "L2e": null
+       },
+       "labels_L2e": [
+        {
+         "label": "R.mention",
+         "pairs": 245144,
+         "slots": 4280,
+         "alone": 4060
+        },
+        {
+         "label": "K.knn",
+         "pairs": 96650,
+         "slots": 669,
+         "alone": 607
+        },
+        {
+         "label": "S",
+         "pairs": 124669,
+         "slots": 183,
+         "alone": 0
+        },
+        {
+         "label": "R.name_comention",
+         "pairs": 12605,
+         "slots": 25,
+         "alone": 0
+        },
+        {
+         "label": "R.title_comention",
+         "pairs": 0,
+         "slots": 0,
+         "alone": 0
+        }
+       ]
+      }
+     }
+    }
+   },
+   "ratio_L2e_REC": {
+    "SRK": 0.9941
+   },
+   "labels": {
+    "SRK": {
+     "pairs": {
+      "S": 124669,
+      "R.mention": 245144,
+      "R.name_comention": 12605,
+      "R.title_comention": 0,
+      "K.knn": 96650
+     },
+     "overlaps": {
+      "S&R.mention": 124579,
+      "S&R.name_comention": 26,
+      "S&R.title_comention": 0,
+      "S&K.knn": 737,
+      "R.mention&R.name_comention": 93,
+      "R.mention&R.title_comention": 0,
+      "R.mention&K.knn": 1227,
+      "R.name_comention&R.title_comention": 0,
+      "R.name_comention&K.knn": 3405,
+      "R.title_comention&K.knn": 0
+     }
+    }
+   },
+   "part_b_sizes": {},
+   "part_b_carried": {
+    "applies": false,
+    "why": "the KBs: R.hub and Part B's forms are passage-name rules (section 4)"
+   },
+   "seconds": 2.1,
+   "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+   "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+   "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+   "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+   "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+   "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+   "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+  },
+  "webqsp": {
+   "dataset": "webqsp",
+   "declared_in": "docs/UL2_LAYOUT_ON_E3V.md",
+   "nodes": 2592894,
+   "nodes_sha256": "b39c615122ad55f587eaea0c3fc5c7eff4190e6236fa258006e957dcfda948fe",
+   "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+   "kb": true,
+   "versions": [
+    "SRK"
+   ],
+   "inputs": {
+    "ner_npz_sha256": "8ed08f05db3da877f02d212b2c8ac5b495d12bf15c91c329b33652fdc2e9fb10",
+    "knn_npz_sha256": "75a03f25dfa8c6339773059bffbd8322c2f9bf13e7b48cad0105c2ee189519cd",
+    "structural_npz_sha256": "b7c2c435fc0b9dbab3a238c7db31cd61da9a8bd435864c0eba6990ae12756b95",
+    "w2_s_npz_sha256": "a2e79a93c350f6e4de9455af07b11684b875444d2fb61ed6f2555b443ed093c4",
+    "f0t_npz_sha256": "624684bf80d6605b8a7e9d9f884ee027b35c84f3f51dbdd4d65c10ee29a51edd",
+    "names_npz_sha256": "b567061f6c9fc8653ee964518913a97e72ef42e0d940315528401e80f0140f38"
+   },
+   "knn_e3v": {
+    "file": "outputs/enc/e4/knn/e3v/webqsp.npz",
+    "npz_sha256": "56161b19ed1899467bbc806db21b41a7b99d0c68a8b391e750bd08ced13bdf37"
+   },
+   "h": {},
+   "families": {
+    "K": 6470520,
+    "S": 5882501,
+    "W2_S": 500445467,
+    "CN_all": 995434,
+    "F0T": 997211,
+    "TITLE": 1777,
+    "K_e3v": 6401016
+   },
+   "sizes": {
+    "D83": {
+     "SRK": 12976601
+    },
+    "REC": {
+     "SRK": 507398750
+    },
+    "L2f": {
+     "SRK": 507398750
+    },
+    "L2e": {
+     "SRK": 507129030
+    }
+   },
+   "held": {
+    "D83": {
+     "SRK": {
+      "R_parts": {
+       "F0T": 997211
+      },
+      "K_in": 6470520,
+      "S": 5882501,
+      "R": 945554,
+      "K": 6148546,
+      "R_removed_in_S": {
+       "F0T": 51657
+      },
+      "K_removed_in_S": 156646,
+      "K_removed_in_R": 165328,
+      "union": 12976601
+     }
+    },
+    "REC": {
+     "SRK": {
+      "R_parts": {
+       "W2_S": 500445467,
+       "F0T": 997211
+      },
+      "K_in": 6470520,
+      "S": 5882501,
+      "R": 495465195,
+      "K": 6051054,
+      "R_removed_in_S": {
+       "W2_S": 5866319,
+       "F0T": 51657
+      },
+      "K_removed_in_S": 156646,
+      "K_removed_in_R": 262820,
+      "union": 507398750
+     }
+    },
+    "L2e": {
+     "SRK": {
+      "R_parts": {
+       "W2_S": 500445467,
+       "F0T": 997211
+      },
+      "K_in": 6401016,
+      "S": 5882501,
+      "R": 495465195,
+      "K": 5781334,
+      "R_removed_in_S": {
+       "W2_S": 5866319,
+       "F0T": 51657
+      },
+      "K_removed_in_S": 344952,
+      "K_removed_in_R": 274730,
+      "union": 507129030
+     }
+    }
+   },
+   "carves": {
+    "s1eval": {
+     "questions": 1503,
+     "questions_npz_sha256": "c1d468b74dc8c2309ee09ebf0bec7d65e750a6164179bf9f90f3b668d87c5937",
+     "slots": {
+      "GP": 4369
+     },
+     "SRK": {
+      "GP": {
+       "arms": {
+        "D83": {
+         "linked": 472,
+         "share": 10.8
+        },
+        "REC": {
+         "linked": 908,
+         "share": 20.78
+        },
+        "L2f": {
+         "linked": 908,
+         "share": 20.78
+        },
+        "L2e": {
+         "linked": 833,
+         "share": 19.07
+        }
+       },
+       "contrasts": {
+        "L2e-REC": {
+         "diff": -1.72,
+         "lo": -2.26,
+         "hi": -1.21,
+         "call": "BELOW"
+        },
+        "L2f-REC": {
+         "diff": 0.0,
+         "lo": 0.0,
+         "hi": 0.0,
+         "call": "LEVEL"
+        },
+        "L2e-L2f": {
+         "diff": -1.72,
+         "lo": -2.26,
+         "hi": -1.21,
+         "call": "BELOW"
+        },
+        "L2e-D83": {
+         "diff": 8.26,
+         "lo": 5.83,
+         "hi": 10.85,
+         "call": "ABOVE"
+        },
+        "REC-D83": {
+         "diff": 9.98,
+         "lo": 7.65,
+         "hi": 12.49,
+         "call": "ABOVE"
+        }
+       },
+       "price_vs_REC": {
+        "D83": null,
+        "L2f": null,
+        "L2e": null
+       },
+       "labels_L2e": [
+        {
+         "label": "R.mention",
+         "pairs": 500445467,
+         "slots": 733,
+         "alone": 458
+        },
+        {
+         "label": "S",
+         "pairs": 5882501,
+         "slots": 265,
+         "alone": 15
+        },
+        {
+         "label": "K.knn",
+         "pairs": 6401016,
+         "slots": 128,
+         "alone": 60
+        },
+        {
+         "label": "R.name_comention",
+         "pairs": 995434,
+         "slots": 42,
+         "alone": 14
+        },
+        {
+         "label": "R.title_comention",
+         "pairs": 1777,
+         "slots": 0,
+         "alone": 0
+        }
+       ]
+      }
+     }
+    }
+   },
+   "ratio_L2e_REC": {
+    "SRK": 0.9995
+   },
+   "labels": {
+    "SRK": {
+     "pairs": {
+      "S": 5882501,
+      "R.mention": 500445467,
+      "R.name_comention": 995434,
+      "R.title_comention": 1777,
+      "K.knn": 6401016
+     },
+     "overlaps": {
+      "S&R.mention": 5866319,
+      "S&R.name_comention": 51550,
+      "S&R.title_comention": 107,
+      "S&K.knn": 344952,
+      "R.mention&R.name_comention": 110987,
+      "R.mention&R.title_comention": 151,
+      "R.mention&K.knn": 470827,
+      "R.name_comention&R.title_comention": 0,
+      "R.name_comention&K.knn": 205982,
+      "R.title_comention&K.knn": 374
+     }
+    }
+   },
+   "part_b_sizes": {},
+   "part_b_carried": {
+    "applies": false,
+    "why": "the KBs: R.hub and Part B's forms are passage-name rules (section 4)"
+   },
+   "seconds": 3665.2,
+   "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+   "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+   "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+   "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+   "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+   "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+   "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+  }
+ },
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+ "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}

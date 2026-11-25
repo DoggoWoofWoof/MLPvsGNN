@@ -324,6 +324,53 @@ Neither call (sections 6 and 7) is read yet: Part A needs HotpotQA and 2Wiki, an
 - **WebQSP's grade**, after e4g-knn-webqsp (running again since the host restarted).
 - **ul2-report-s**, which reads all six and writes both calls.
 
+### 11.2 Sections 6 and 7 read on the six datasets (filed 25 November 2026)
+
+No rule is new here. This is section 6's and section 7's call, read with the code and the constants declared in f809831, on the six grades (ul2-grade-musique, -squad-b, -hotpotqa-s, -2wiki-s, -metaqa, -webqsp; the host row ul2-report-s, `zul2.py report`).
+
+- **Record:** outputs/ul2/report.json (sha256 226715bf64a3cb01…; it holds each grade's sha256). 2,000 resamples, seed 0.
+- **The row's report.md was not written.** `render()` in zul2.py raises KeyError 'SRK': on HotpotQA and 2Wiki the D83 arm lists only RK, while the versions list RK and SRK. report.json is written before render, so the call below is complete. zul2.py is pinned and was not edited; the row was taken out of the feed so it stops re-running. These tables are read from report.json.
+- **Superseded for the layout.** Section 12's opening says its call is the one the refit's layout takes, and section 12.6 carries each form by budget (the longest prefix that fits 1.30 × |REC|). The call below is the first declaration's, kept as the record. Section 12.6's chain (ul2c-report, ul2m-report7) is not read yet: ul2c-nt-2wiki and ul2c-grade-2wiki are still queued.
+
+**Part A: NOT_ADOPTED, on the size bound alone.**
+- **Size.** The one failure is HotpotQA RK: |L2e| = 1.3063 × |REC| against 1.30 (SRK 1.285 passes). The other ratios: MuSiQue 1.1272, SQuAD 1.059, 2Wiki 1.1866 (RK) and 1.1682 (SRK), MetaQA 0.9941, WebQSP 0.9995.
+- **Gain.** L2e − REC is BELOW in none of the 12 cells (MuSiQue GP and CH, HotpotQA and 2Wiki GP; both carves, every version): 9 ABOVE, 3 LEVEL.
+
+| Dataset | Carve | Version | Slots | L2e − REC (points) |
+|---|---|---|---|---|
+| MuSiQue | s1sel | RK | GP | +1.19 [+0.85, +1.57] ABOVE |
+| MuSiQue | s1sel | RK | CH | +1.50 [+1.03, +2.03] ABOVE |
+| MuSiQue | s1eval | RK | GP | +1.69 [+1.34, +2.05] ABOVE |
+| MuSiQue | s1eval | RK | CH | +2.21 [+1.72, +2.71] ABOVE |
+| HotpotQA | s1sel | RK | GP | +1.19 [+0.40, +1.99] ABOVE |
+| HotpotQA | s1sel | SRK | GP | +0.07 [+0.00, +0.20] LEVEL |
+| HotpotQA | s1eval | RK | GP | +0.95 [+0.62, +1.27] ABOVE |
+| HotpotQA | s1eval | SRK | GP | +0.12 [+0.04, +0.22] ABOVE |
+| 2Wiki | s1sel | RK | GP | +0.19 [+0.00, +0.42] LEVEL |
+| 2Wiki | s1sel | SRK | GP | +0.10 [+0.00, +0.22] LEVEL |
+| 2Wiki | s1eval | RK | GP | +0.28 [+0.20, +0.35] ABOVE |
+| 2Wiki | s1eval | SRK | GP | +0.10 [+0.05, +0.15] ABOVE |
+
+Read beside, never deciding: the price of e3v's H_5 over REC on s1eval GP (RK), in union pairs per new slot.
+- MuSiQue 4,264.7 pairs per new slot (+1.69 points, 429,747 H_5 pairs); HotpotQA 273,761.2 (+0.95 points, 19,127,180 pairs); 2Wiki 295,586.9 (+0.28 points, 21,676,906 pairs).
+- That is 64 and 69 times MuSiQue's. Section 12.3's price condition (b) is P* = 4,997.1 on the kept pairs, so it is read there, on what each form keeps.
+
+**Part B: NOT_CARRIED_SIZE.**
+- On MuSiQue the chain carried {HK1, NTc}: HK1 +0.75 [+0.50, +1.04] ABOVE at 3,391.6 pairs per new slot; NTc +3.46 [+2.93, +4.03] ABOVE at 3,497.4; |union| 1.2997 × |REC|. HM, NT1, HK2 and H10 were not carried: their prices (HM 7,734.0, NT1 19,149.1, HK2 10,290.9, H10 7,319.9) are all over P*.
+- The size bound is what stops it elsewhere: the same prefixes over REC.
+
+| Dataset | HK1 | HK1 + NTc |
+|---|---|---|
+| MuSiQue | RK 1.1572 | RK 1.2997 |
+| SQuAD | RK 1.0719 | RK 1.143 |
+| HotpotQA | RK 1.3761 / SRK 1.3492 | RK 1.5094 / SRK 1.4734 |
+| 2Wiki | RK 1.2635 / SRK 1.2371 | RK 1.3821 / SRK 1.3448 |
+
+- MetaQA and WebQSP take no passage-name form (section 4). The carried forms are `[]`, so Part B carries nothing under its own rule.
+
+**What this does and does not say.** Part A's gain condition holds in every cell; the layout fails the declared 1.30 bound by 0.0063 on one cell. The size comes from e3v's H_5: on s1eval GP it adds +0.95 points on HotpotQA and +0.28 on 2Wiki for 19.1 and 21.7 million H_5 pairs. Section 12.6's budget decides what is kept; this record decides nothing there.
+
+
 ## 12. Universal rules (declared 21 November 2026, 15:05 IST, 09:35 UTC)
 
 The user ruled on 21 November, verbatim: "we need to have universal rules".
