@@ -1,0 +1,95 @@
+{
+ "stage": "PL6 selftest",
+ "declared_in": "docs/PL6_COVERAGE_ROUND5.md",
+ "utc": "2026-11-25T09:50:51Z",
+ "script_sha256": "8a595176ed6167fa4c79440d576ad9b287b78eece9d19a32776f9a637f6b0b27",
+ "code_path_sha256": "cce8c3fb01e42e11eebf42ac94dacbd360c8abba39142b9278763365a7a105ee",
+ "cells": {
+  "rungs": {
+   "1": {
+    "n": 156,
+    "distinct": 156,
+    "sha256": "1dd177c06a0d5c8895dd0cddb4e1001d45652fd747d9b4e401241b471d817373",
+    "expected": [
+     156,
+     "1dd177c06a0d5c8895dd0cddb4e1001d45652fd747d9b4e401241b471d817373"
+    ]
+   },
+   "2": {
+    "n": 156,
+    "distinct": 156,
+    "sha256": "0b296eb8a030caef3ee13452a9ae0b1a7e679095b1068fbd3550f27fe66b9bbf",
+    "expected": [
+     156,
+     "0b296eb8a030caef3ee13452a9ae0b1a7e679095b1068fbd3550f27fe66b9bbf"
+    ]
+   },
+   "3": {
+    "n": 156,
+    "distinct": 156,
+    "sha256": "f3afe89b1f3e1da581cb8fae83b657bedfc61e4cc4fe0544cb44dc3eb5499644",
+    "expected": [
+     156,
+     "f3afe89b1f3e1da581cb8fae83b657bedfc61e4cc4fe0544cb44dc3eb5499644"
+    ]
+   },
+   "4": {
+    "n": 156,
+    "distinct": 156,
+    "sha256": "1d0d4c56aa6aa194b4d2899f7f3b76004ed9737340fc7a633331fffafe8d8900",
+    "expected": [
+     156,
+     "1d0d4c56aa6aa194b4d2899f7f3b76004ed9737340fc7a633331fffafe8d8900"
+    ]
+   }
+  },
+  "problems": [],
+  "verdict": "PASS"
+ },
+ "G-P": {
+  "problems": [],
+  "hashes": {
+   "pl2": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+   "pl2_script": "97ec4883b41445110b57181b44d2630b7424dfbfd884f7cc9512a65085d7e477",
+   "pl3": "e9d860950c700bdd5e988f16b4b0ef6023d3207b7f5c07b1e7ee36593c13c8c4",
+   "pl4": "aa7c9ac9ddd53327cbb906ed1b68e43c6e932d6bf740278684194abdd4eec006",
+   "pl5": "62a27dbb08c49a81fb4605f211f908935135e01c4cb6dd080e3c54b50066930f",
+   "pl5_script": "c3e8221e4fb4dcde134eead544ceb88f2d90579e88dd8e6d10281072696d427c"
+  },
+  "verdict": "PASS"
+ },
+ "engine": [
+  {
+   "dataset": "multihoprag",
+   "rung": 1,
+   "questions": 1,
+   "checks": 13,
+   "mismatches": [],
+   "n_mismatches": 0,
+   "n_nodes": 609,
+   "verdict": "PASS"
+  },
+  {
+   "dataset": "squad",
+   "rung": 1,
+   "questions": 1,
+   "checks": 13,
+   "mismatches": [],
+   "n_mismatches": 0,
+   "n_nodes": 20233,
+   "verdict": "PASS"
+  },
+  {
+   "dataset": "musique",
+   "rung": 1,
+   "questions": 1,
+   "checks": 13,
+   "mismatches": [],
+   "n_mismatches": 0,
+   "n_nodes": 117534,
+   "verdict": "PASS"
+  }
+ ],
+ "verdict": "PASS",
+ "seconds": 68.6
+}

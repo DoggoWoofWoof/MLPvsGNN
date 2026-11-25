@@ -1,0 +1,30 @@
+{
+ "dataset": "musique",
+ "rung": 1,
+ "v": 10000,
+ "questions": 2,
+ "cells": 156,
+ "walks": 13,
+ "seconds_per_question": 10.052235126495361,
+ "nodes_scored_per_question": 87984.5,
+ "peak_gb": 0.62,
+ "n_nodes": 117534,
+ "per_walk_ms": {
+  "STRUCT:h3_c100_v10000": 727.6360999967437,
+  "STRUCT:h3_c100_v10000~cs-sp-eq": 1746.130749990698,
+  "FULL:h3_c100_v10000~cs-sp-eq": 2318.2531500060577,
+  "FULL:h3_c100_v10000~cs-sp": 851.7439999995986,
+  "FULL:h3_c100_v10000~cs-vr-eq": 773.7694999959785,
+  "FULL:h2_c100_v10000~cs-vr": 30.800749998888932,
+  "FULL:h2_c100_v10000~s10-cs-vr": 48.93189998983871,
+  "FULL:h2_c100_v10000~s20-cs-vr": 90.66074999282137,
+  "FULL:h2_c100_v10000~s20-cs-rk": 73.00725000095554,
+  "FULL:h3_bf_v10000~cs-vr": 729.5133500010706,
+  "FULL:h3_bf_v10000~cs-fu": 1490.8893999818247,
+  "STRUCT:h3_bf_v10000~cs-fu": 1101.262600015616,
+  "FULL:h2_bf_v10000~s10-cs-vr": 64.38590001198463
+ },
+ "labels_read": false,
+ "host": false,
+ "utc": "2026-11-25T09:44:32Z"
+}

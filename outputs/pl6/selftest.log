@@ -1,0 +1,6 @@
+   note: a byte-code cache exists under the package root, not created by this process: canonical.cpython-313.pyc (37614 B, mtime 2026-09-13T15:58:07)
+[15:20:59] zpl2g: engine vs per-node reference, multihoprag, rung 1: 13 checks, 0 mismatches
+[15:21:18] zpl2g: engine vs per-node reference, squad, rung 1: 13 checks, 0 mismatches
+[15:22:00] zpl2g: engine vs per-node reference, musique, rung 1: 13 checks, 0 mismatches
+[15:22:00] zpl2g: selftest: PASS (cells PASS, G-P PASS, engine ['PASS', 'PASS', 'PASS']) in 68.6 s
+done

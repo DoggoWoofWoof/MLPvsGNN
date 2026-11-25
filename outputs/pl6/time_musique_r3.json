@@ -1,0 +1,30 @@
+{
+ "dataset": "musique",
+ "rung": 3,
+ "v": 40000,
+ "questions": 2,
+ "cells": 156,
+ "walks": 13,
+ "seconds_per_question": 14.816544771194458,
+ "nodes_scored_per_question": 93475.5,
+ "peak_gb": 0.63,
+ "n_nodes": 117534,
+ "per_walk_ms": {
+  "STRUCT:h3_c100_v40000": 1001.7874000041047,
+  "STRUCT:h3_c100_v40000~cs-sp-eq": 1411.7328000138514,
+  "FULL:h3_c100_v40000~cs-sp-eq": 2170.808750001015,
+  "FULL:h3_c100_v40000~cs-sp": 813.4888500062516,
+  "FULL:h3_c100_v40000~cs-vr-eq": 740.8541000040714,
+  "FULL:h2_c100_v40000~cs-vr": 18.059200010611676,
+  "FULL:h2_c100_v40000~s10-cs-vr": 35.66475000116043,
+  "FULL:h2_c100_v40000~s20-cs-vr": 87.79594999214169,
+  "FULL:h2_c100_v40000~s20-cs-rk": 78.87144999403972,
+  "FULL:h3_bf_v40000~cs-vr": 2271.8715499941027,
+  "FULL:h3_bf_v40000~cs-fu": 4183.918900002027,
+  "STRUCT:h3_bf_v40000~cs-fu": 1915.879149993998,
+  "FULL:h2_bf_v40000~s10-cs-vr": 80.53549999021925
+ },
+ "labels_read": false,
+ "host": false,
+ "utc": "2026-11-25T09:47:04Z"
+}
