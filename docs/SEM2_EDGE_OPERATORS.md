@@ -1465,6 +1465,45 @@ Pass 1: one streaming pass over all nodes per unit set gives the b branches and 
 - **NOT_CARRIED:** R5 closes the chained form on R1's operators; what it leaves open is named, not queued (the reverse direction, a third hop, a trained path scorer). The reads beside say whether any walk beats cosine anywhere.
 - Either way: no pool, link or PL change follows from R5, and no model is trained.
 
+### 13.12 Records and call (25 November 2026, 23:55 IST, 18:25 UTC)
+
+Read by `zsem2r5.py report` from `outputs/sem2/r5/<dataset>/e3v.json` (every record carries the script's sha). **Six datasets read; MultiHop-RAG has no test unit under the chain labels (0 units, fewer than 20), so it is not a dataset for this read.** R-precision in points, mean over the pooled test units; the interval is the paired bootstrap over units (2,000 resamples, seed 0).
+
+| dataset | units | cosine | chain-cos | chain-point | compose | chain-point minus chain-cos | call |
+|---|---:|---:|---:|---:|---:|---|---|
+| SQuAD | 710 | 15.70 | 17.25 | 24.92 | 20.44 | +7.68 [+6.40, +9.02] | ABOVE |
+| MuSiQue | 900 | 6.43 | 6.11 | 9.25 | 7.66 | +3.14 [+2.32, +3.94] | ABOVE |
+| MetaQA | 1,200 | 2.03 | 1.34 | 3.29 | 2.56 | +1.94 [+1.43, +2.50] | ABOVE |
+| WebQSP | 1,200 | 1.50 | 1.40 | 2.52 | 3.07 | +1.12 [+0.43, +1.85] | ABOVE |
+| HotpotQA | 1,200 | 2.93 | 2.88 | 4.22 | 3.65 | +1.34 [+0.98, +1.66] | ABOVE |
+| 2Wiki | 1,200 | 2.10 | 1.90 | 3.58 | 3.03 | +1.68 [+1.40, +1.98] | ABOVE |
+
+**Rule 13.6: chain-point minus chain-cos is ABOVE on 6 of 6 read and BELOW on none, at least 4 read: BRANCH_CARRIES.** Recall at 4m agrees on all six (chain-point minus chain-cos: SQuAD +10.19, MuSiQue +6.22, MetaQA +6.38, WebQSP +4.51, HotpotQA +3.22, 2Wiki +3.60 points, every interval above 0).
+
+**Size, said plainly.** On four of the six the ABOVE sits near the floor of the scale: chain-point reaches only 2.5 to 4.2 R-precision points (MetaQA 3.29, WebQSP 2.52, HotpotQA 4.22, 2Wiki 3.58), a gap of +1.1 to +1.9 points over chain-cos, so chain-point is 1.5 to 2.5 times chain-cos's level, from a very low one. MuSiQue (9.25) and SQuAD (24.92) are the only two above 5 points. R-precision here is measured against sets that are the stored links themselves, so it says whether the operators reproduce a second hop, not that a pool or a retriever gains.
+
+### 13.13 The reads beside (decide nothing)
+
+- **chain-point minus compose** (does branching matter): ABOVE on SQuAD +4.48, MuSiQue +1.59, MetaQA +0.72, HotpotQA +0.57, 2Wiki +0.55; **BELOW on WebQSP, -0.54 [-1.08, -0.03]** (the upper end of the interval is at the edge).
+- **chain-point minus cosine** (does the walk beat ranking by cosine to s): ABOVE on all six (SQuAD +9.23, MuSiQue +2.82, MetaQA +1.26, WebQSP +1.02, HotpotQA +1.29, 2Wiki +1.48). **chain-cos minus cosine:** ABOVE on SQuAD (+1.55), BELOW on MetaQA (-0.69 [-0.96, -0.43]), LEVEL on the other four. A walk with cosine at both steps is no better than cosine alone on four of the six (ABOVE only on SQuAD, BELOW on MetaQA); the gain comes from R1's operators.
+- **The branches** (first hop, b = 10): chain-point's branches hold more of the true first-hop set than chain-cos's on five datasets (branch recall SQuAD 63.4 vs 53.7, MuSiQue 35.0 vs 23.7, HotpotQA 28.6 vs 20.0, 2Wiki 25.9 vs 16.5, MetaQA 2.5 vs 1.0) and equal on WebQSP (30.0 vs 30.3). On MetaQA neither scorer finds the true first hop (any true first hop 11.3% for chain-point, 3.6% for chain-cos), so its second hop is read at a very low level.
+- **By path kind:** R then R is ABOVE on five (SQuAD, MuSiQue, MetaQA +1.09, HotpotQA +0.88, 2Wiki +1.19) and LEVEL on WebQSP (+0.06 [-0.33, +0.53]); S then S (100 units each, HotpotQA and 2Wiki only) ABOVE, +2.79 and +4.11; mixed ABOVE on all four that have it (MetaQA +2.12, WebQSP +1.22, HotpotQA +1.59, 2Wiki +1.79).
+- **By set size:** the gain is largest where the second-hop set is large (|T2| 11 to 100: ABOVE on all six, +1.21 to +7.25) and mostly LEVEL where it is 2 to 3 (LEVEL on MuSiQue, WebQSP, HotpotQA, 2Wiki; ABOVE on SQuAD +9.78 and MetaQA +2.93). **By |T1|:** ABOVE on every dataset in both bins except WebQSP over 10 (+0.89 [-0.20, +1.93], LEVEL).
+
+### 13.14 Expectations against the outcome (13.7; a failed one is reported, not explained away)
+
+- *Absolute levels fall below the one-hop levels:* **HELD** (chain-point 2.5 to 24.9 points against R4's one-hop 16.7 to 48.6).
+- *NOT_CARRIED, with ABOVE on at most two or three datasets:* **FAILED.** I expected ABOVE on at most two or three datasets; it is ABOVE on all six read, by 1.1 to 7.7 points.
+- *chain-point minus compose ABOVE on most:* **HELD** (five of six; BELOW on WebQSP, at the edge of the interval).
+- *Cosine alone may beat both chains on the text datasets:* **FAILED.** chain-point beats cosine on all six, text datasets included.
+- *LEVEL or BELOW on R-then-R paths:* **FAILED.** ABOVE on five of six; LEVEL only on WebQSP.
+- *A dataset with almost no chain may not be read:* MetaQA was read (1,200 units); the dataset not read is MultiHop-RAG, which has 0 test units under the chain labels.
+
+### 13.15 What this closes and what it leaves (13.11, applied; nothing is queued by this page)
+
+- **Closes:** the question of 13.2 on R1's operators: a two-step branched walk through them reaches the second-hop set better than the same walk by cosine, than one composed point (five of six) and than cosine to s, on all six datasets read, by small absolute amounts on four of them.
+- **Leaves, named and not run:** (a) **the withheld-links read of 13.8**, the one that says whether a semantic branch is worth anything where links are missing or noisy, which is the only place a stored set does not already give R-precision 1; (b) the reverse direction (MetaQA's movie, actor, movie); (c) a third hop and other widths; (d) a trained path scorer. By 13.11 nothing is queued before the user is told. No pool, link or PL change follows, no model is trained, and this is SEM2's work, not the journal's.
+
 ## 14. R6 declared: do link operators cross between passages and a KB? (25 November 2026, 22:05 IST, 16:35 UTC), before any R6 number
 
 ### 14.1 Why, and what was seen

@@ -1,0 +1,552 @@
+{
+ "stage": "SEM2 R5 branching",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 13",
+ "dataset": "metaqa",
+ "arm": "e3v",
+ "smoke": false,
+ "config": {
+  "b": 10,
+  "pool": 3000,
+  "t1_max": 100,
+  "m_min": 2,
+  "m_max": 100,
+  "min_group": 20,
+  "max_groups": 12,
+  "per_group": 100,
+  "kmult": 4,
+  "ck_secs": 240,
+  "mem_cells": 60000000.0,
+  "min_units": 20,
+  "n_gate_u": 50,
+  "n_gate_t": 12
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 245144,
+     "record": 245144
+    },
+    "CN_all": {
+     "pairs": 12605,
+     "record": 12605
+    },
+    "F0T": {
+     "pairs": 12605,
+     "record": 12605
+    },
+    "S": {
+     "pairs": 124669,
+     "record": 124669
+    },
+    "S directed": {
+     "edges": 133571,
+     "pair_relation_rows": 133571,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-U": {
+   "test sources are test nodes": true,
+   "|T1| and |T2| in range": true,
+   "T2 holds neither s nor any T1 node": true,
+   "T1 and T2 equal a direct scan of the graph's keys": true,
+   "units": 1200,
+   "checked": 50,
+   "mismatches": 0,
+   "verdict": "PASS"
+  },
+  "G-T": {
+   "units": 12,
+   "scorers": [
+    "cosine",
+    "chain-cos",
+    "chain-point",
+    "compose"
+   ],
+   "max_score_diff": 5e-07,
+   "list_violations": 0,
+   "verdict": "PASS"
+  }
+ },
+ "chain_labels": [
+  "R.mention",
+  "R.name_comention",
+  "S.directed_by",
+  "S.has_genre",
+  "S.has_tags",
+  "S.in_language",
+  "S.release_year",
+  "S.starred_actors",
+  "S.written_by"
+ ],
+ "pool": {
+  "test_sources_with_edge": 4305,
+  "pool": 3000
+ },
+ "path_groups": {
+  "R.mention > S.starred_actors": {
+   "eligible_candidates": 2086,
+   "units": 100
+  },
+  "R.mention > S.has_tags": {
+   "eligible_candidates": 1705,
+   "units": 100
+  },
+  "R.mention > S.written_by": {
+   "eligible_candidates": 1559,
+   "units": 100
+  },
+  "R.mention > S.release_year": {
+   "eligible_candidates": 1551,
+   "units": 100
+  },
+  "R.mention > S.directed_by": {
+   "eligible_candidates": 1405,
+   "units": 100
+  },
+  "R.mention > S.has_genre": {
+   "eligible_candidates": 1339,
+   "units": 100
+  },
+  "R.mention > R.name_comention": {
+   "eligible_candidates": 1332,
+   "units": 100
+  },
+  "R.mention > R.mention": {
+   "eligible_candidates": 857,
+   "units": 100
+  },
+  "S.directed_by > R.mention": {
+   "eligible_candidates": 845,
+   "units": 100
+  },
+  "S.starred_actors > R.mention": {
+   "eligible_candidates": 705,
+   "units": 100
+  },
+  "S.written_by > R.mention": {
+   "eligible_candidates": 692,
+   "units": 100
+  },
+  "R.mention > S.in_language": {
+   "eligible_candidates": 352,
+   "units": 100
+  }
+ },
+ "units": 1200,
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+  "ner_npz_sha256": "93065a2311c2b445cc14ce6458457c9e14ec0d3c641a4bc573ef4b175a374cb8",
+  "knn_npz_sha256": "f7c59640e816951148fee791bc8790e026461ee52a5b6741c63859244b5a4a16",
+  "structural_npz_sha256": "1b2027c64b2e62b5cf122f09a246ed4cb485841bf0823fcee246e8bf45bf8570",
+  "w2_s_npz_sha256": "3f2b97d1474552dae2fea1f7f8be5e83f7960950b38c0ca41bd3a78025aa7dd5",
+  "f0t_npz_sha256": "499e8c70d3d7d1375a77a609819aacdd40c8753ac2bf6f3d1ea277c5ae62a7fe",
+  "names_npz_sha256": "0ccad8b4b6a55c2bec41bfd36e6fa83f48dc448964e170cf15a2c191f517d720",
+  "vectors": {
+   "shards": 2,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "a1a7727a9128278299ee04c2d6ae4e8912bc44c3251fbbba4f76993720a53fc6"
+  }
+ },
+ "refs": {
+  "r1_record_sha256": "b2fd0a33e1ef601c591d8cf6e62e2b13229c11ac14fb0f34e05aa429ad1f016f",
+  "r1_npz_sha256": "4fd92a218cbf2817185e78af24da5d89dbcf7df719ae1f9c6785b4f5e8b1bc59"
+ },
+ "threads": 8,
+ "script_sha256": "69d287d067c1e139112d5e8c86bda7776067fbba381d7785c4e0e46fe6282f4f",
+ "R-precision": {
+  "chain-point - chain-cos": {
+   "diff": 1.94,
+   "lo": 1.43,
+   "hi": 2.5,
+   "call": "ABOVE"
+  },
+  "chain-point - compose": {
+   "diff": 0.72,
+   "lo": 0.1,
+   "hi": 1.39,
+   "call": "ABOVE"
+  },
+  "chain-point - cosine": {
+   "diff": 1.26,
+   "lo": 0.68,
+   "hi": 1.87,
+   "call": "ABOVE"
+  },
+  "chain-cos - cosine": {
+   "diff": -0.69,
+   "lo": -0.96,
+   "hi": -0.43,
+   "call": "BELOW"
+  }
+ },
+ "recall at 4m": {
+  "chain-point - chain-cos": {
+   "diff": 6.38,
+   "lo": 5.39,
+   "hi": 7.48,
+   "call": "ABOVE"
+  },
+  "chain-point - compose": {
+   "diff": 4.8,
+   "lo": 3.78,
+   "hi": 5.88,
+   "call": "ABOVE"
+  },
+  "chain-point - cosine": {
+   "diff": 5.82,
+   "lo": 4.86,
+   "hi": 6.92,
+   "call": "ABOVE"
+  },
+  "chain-cos - cosine": {
+   "diff": -0.55,
+   "lo": -0.84,
+   "hi": -0.28,
+   "call": "BELOW"
+  }
+ },
+ "means": {
+  "cosine": {
+   "R-precision": 2.03,
+   "recall at 4m": 2.96
+  },
+  "chain-cos": {
+   "R-precision": 1.34,
+   "recall at 4m": 2.4
+  },
+  "chain-point": {
+   "R-precision": 3.29,
+   "recall at 4m": 8.78
+  },
+  "compose": {
+   "R-precision": 2.56,
+   "recall at 4m": 3.98
+  }
+ },
+ "by path kind": {
+  "R then R": {
+   "units": 200,
+   "chain-point - chain-cos": {
+    "diff": 1.09,
+    "lo": 0.6,
+    "hi": 1.65,
+    "call": "ABOVE"
+   },
+   "chain-point - compose": {
+    "diff": 0.16,
+    "lo": -0.88,
+    "hi": 1.09,
+    "call": "LEVEL"
+   },
+   "mean R-precision": {
+    "cosine": 1.95,
+    "chain-cos": 0.78,
+    "chain-point": 1.87,
+    "compose": 1.71
+   }
+  },
+  "S then S": {
+   "units": 0
+  },
+  "mixed": {
+   "units": 1000,
+   "chain-point - chain-cos": {
+    "diff": 2.12,
+    "lo": 1.52,
+    "hi": 2.78,
+    "call": "ABOVE"
+   },
+   "chain-point - compose": {
+    "diff": 0.84,
+    "lo": 0.15,
+    "hi": 1.52,
+    "call": "ABOVE"
+   },
+   "mean R-precision": {
+    "cosine": 2.05,
+    "chain-cos": 1.46,
+    "chain-point": 3.57,
+    "compose": 2.74
+   }
+  }
+ },
+ "by set size": {
+  "m 2-3": {
+   "units": 415,
+   "chain-point - chain-cos": {
+    "diff": 2.93,
+    "lo": 1.77,
+    "hi": 4.18,
+    "call": "ABOVE"
+   },
+   "chain-point - compose": {
+    "diff": 1.65,
+    "lo": 0.28,
+    "hi": 3.09,
+    "call": "ABOVE"
+   },
+   "mean R-precision": {
+    "cosine": 1.12,
+    "chain-cos": 0.6,
+    "chain-point": 3.53,
+    "compose": 1.89
+   }
+  },
+  "m 4-10": {
+   "units": 390,
+   "chain-point - chain-cos": {
+    "diff": 1.63,
+    "lo": 0.88,
+    "hi": 2.44,
+    "call": "ABOVE"
+   },
+   "chain-point - compose": {
+    "diff": 0.11,
+    "lo": -0.89,
+    "hi": 1.11,
+    "call": "LEVEL"
+   },
+   "mean R-precision": {
+    "cosine": 2.83,
+    "chain-cos": 1.7,
+    "chain-point": 3.33,
+    "compose": 3.22
+   }
+  },
+  "m 11-100": {
+   "units": 395,
+   "chain-point - chain-cos": {
+    "diff": 1.21,
+    "lo": 0.64,
+    "hi": 1.85,
+    "call": "ABOVE"
+   },
+   "chain-point - compose": {
+    "diff": 0.36,
+    "lo": -0.2,
+    "hi": 0.96,
+    "call": "LEVEL"
+   },
+   "mean R-precision": {
+    "cosine": 2.19,
+    "chain-cos": 1.78,
+    "chain-point": 2.99,
+    "compose": 2.63
+   }
+  }
+ },
+ "by T1 size": {
+  "|T1| up to 10": {
+   "units": 913,
+   "chain-point - chain-cos": {
+    "diff": 1.17,
+    "lo": 0.68,
+    "hi": 1.72,
+    "call": "ABOVE"
+   },
+   "chain-point - compose": {
+    "diff": -0.27,
+    "lo": -0.92,
+    "hi": 0.41,
+    "call": "LEVEL"
+   },
+   "mean R-precision": {
+    "cosine": 2.4,
+    "chain-cos": 1.59,
+    "chain-point": 2.77,
+    "compose": 3.04
+   }
+  },
+  "|T1| over 10": {
+   "units": 287,
+   "chain-point - chain-cos": {
+    "diff": 4.39,
+    "lo": 3.05,
+    "hi": 5.8,
+    "call": "ABOVE"
+   },
+   "chain-point - compose": {
+    "diff": 3.89,
+    "lo": 2.55,
+    "hi": 5.29,
+    "call": "ABOVE"
+   },
+   "mean R-precision": {
+    "cosine": 0.85,
+    "chain-cos": 0.55,
+    "chain-point": 4.94,
+    "compose": 1.06
+   }
+  }
+ },
+ "per group": {
+  "R.mention > S.starred_actors": {
+   "units": 100,
+   "mean m": 8.71,
+   "mean |T1|": 8.27,
+   "mean R-precision": {
+    "cosine": 0.76,
+    "chain-cos": 0.53,
+    "chain-point": 0.45,
+    "compose": 0.67
+   }
+  },
+  "R.mention > S.has_tags": {
+   "units": 100,
+   "mean m": 9.4,
+   "mean |T1|": 8.21,
+   "mean R-precision": {
+    "cosine": 0.83,
+    "chain-cos": 0.16,
+    "chain-point": 0.78,
+    "compose": 1.13
+   }
+  },
+  "R.mention > S.written_by": {
+   "units": 100,
+   "mean m": 8.28,
+   "mean |T1|": 11.34,
+   "mean R-precision": {
+    "cosine": 1.34,
+    "chain-cos": 0.38,
+    "chain-point": 0.42,
+    "compose": 1.65
+   }
+  },
+  "R.mention > S.release_year": {
+   "units": 100,
+   "mean m": 6.31,
+   "mean |T1|": 9.03,
+   "mean R-precision": {
+    "cosine": 0.0,
+    "chain-cos": 0.0,
+    "chain-point": 2.31,
+    "compose": 0.12
+   }
+  },
+  "R.mention > S.directed_by": {
+   "units": 100,
+   "mean m": 6.54,
+   "mean |T1|": 12.1,
+   "mean R-precision": {
+    "cosine": 0.95,
+    "chain-cos": 0.2,
+    "chain-point": 0.13,
+    "compose": 0.95
+   }
+  },
+  "R.mention > S.has_genre": {
+   "units": 100,
+   "mean m": 3.66,
+   "mean |T1|": 10.25,
+   "mean R-precision": {
+    "cosine": 0.0,
+    "chain-cos": 0.0,
+    "chain-point": 7.8,
+    "compose": 0.64
+   }
+  },
+  "R.mention > R.name_comention": {
+   "units": 100,
+   "mean m": 11.23,
+   "mean |T1|": 14.15,
+   "mean R-precision": {
+    "cosine": 1.91,
+    "chain-cos": 1.25,
+    "chain-point": 1.75,
+    "compose": 1.31
+   }
+  },
+  "R.mention > R.mention": {
+   "units": 100,
+   "mean m": 26.86,
+   "mean |T1|": 1.88,
+   "mean R-precision": {
+    "cosine": 1.98,
+    "chain-cos": 0.31,
+    "chain-point": 1.99,
+    "compose": 2.11
+   }
+  },
+  "S.directed_by > R.mention": {
+   "units": 100,
+   "mean m": 19.41,
+   "mean |T1|": 1.12,
+   "mean R-precision": {
+    "cosine": 3.88,
+    "chain-cos": 2.8,
+    "chain-point": 2.12,
+    "compose": 6.21
+   }
+  },
+  "S.starred_actors > R.mention": {
+   "units": 100,
+   "mean m": 35.16,
+   "mean |T1|": 2.43,
+   "mean R-precision": {
+    "cosine": 5.91,
+    "chain-cos": 5.01,
+    "chain-point": 4.66,
+    "compose": 7.13
+   }
+  },
+  "S.written_by > R.mention": {
+   "units": 100,
+   "mean m": 17.29,
+   "mean |T1|": 1.64,
+   "mean R-precision": {
+    "cosine": 6.2,
+    "chain-cos": 5.17,
+    "chain-point": 4.45,
+    "compose": 7.78
+   }
+  },
+  "R.mention > S.in_language": {
+   "units": 100,
+   "mean m": 2.9,
+   "mean |T1|": 19.94,
+   "mean R-precision": {
+    "cosine": 0.58,
+    "chain-cos": 0.33,
+    "chain-point": 12.61,
+    "compose": 1.06
+   }
+  }
+ },
+ "branches": {
+  "chain-cos": {
+   "branch recall": 0.99,
+   "branch precision": 0.63,
+   "any true first hop": 3.58
+  },
+  "chain-point": {
+   "branch recall": 2.54,
+   "branch precision": 1.77,
+   "any true first hop": 11.33
+  }
+ },
+ "mean_m": 12.98,
+ "mean_n1": 8.36,
+ "seconds": 25.3,
+ "utc": "2026-11-25T16:02:36Z",
+ "not_a_dataset": false,
+ "npz_sha256": "6c091a6a360837030f7d63779c233dedd7f8a8b25ec80092078f98a91ed4b7a9"
+}

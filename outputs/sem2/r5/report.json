@@ -1,0 +1,44 @@
+{
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 13",
+ "datasets": [
+  "2wiki",
+  "hotpotqa",
+  "metaqa",
+  "multihoprag",
+  "musique",
+  "squad",
+  "webqsp"
+ ],
+ "read": [
+  "2wiki",
+  "hotpotqa",
+  "metaqa",
+  "musique",
+  "squad",
+  "webqsp"
+ ],
+ "not_a_dataset": [
+  "multihoprag"
+ ],
+ "calls": {
+  "squad": "ABOVE",
+  "musique": "ABOVE",
+  "metaqa": "ABOVE",
+  "webqsp": "ABOVE",
+  "hotpotqa": "ABOVE",
+  "2wiki": "ABOVE"
+ },
+ "above": [
+  "squad",
+  "musique",
+  "metaqa",
+  "webqsp",
+  "hotpotqa",
+  "2wiki"
+ ],
+ "below": [],
+ "carry_min": 4,
+ "verdict": "BRANCH_CARRIES",
+ "script_sha256": "69d287d067c1e139112d5e8c86bda7776067fbba381d7785c4e0e46fe6282f4f",
+ "utc": "2026-11-25T18:24:00Z"
+}

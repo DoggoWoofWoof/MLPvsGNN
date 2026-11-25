@@ -1,0 +1,473 @@
+{
+ "stage": "SEM2 R5 branching",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 13",
+ "dataset": "musique",
+ "arm": "e3v",
+ "smoke": false,
+ "config": {
+  "b": 10,
+  "pool": 3000,
+  "t1_max": 100,
+  "m_min": 2,
+  "m_max": 100,
+  "min_group": 20,
+  "max_groups": 12,
+  "per_group": 100,
+  "kmult": 4,
+  "ck_secs": 240,
+  "mem_cells": 60000000.0,
+  "min_units": 20,
+  "n_gate_u": 50,
+  "n_gate_t": 12
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 2343920,
+     "record": 2343920
+    },
+    "CN_all": {
+     "pairs": 931069,
+     "record": 931069
+    },
+    "F0T": {
+     "pairs": 973013,
+     "record": 973013
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-U": {
+   "test sources are test nodes": true,
+   "|T1| and |T2| in range": true,
+   "T2 holds neither s nor any T1 node": true,
+   "T1 and T2 equal a direct scan of the graph's keys": true,
+   "units": 900,
+   "checked": 50,
+   "mismatches": 0,
+   "verdict": "PASS"
+  },
+  "G-T": {
+   "units": 12,
+   "scorers": [
+    "cosine",
+    "chain-cos",
+    "chain-point",
+    "compose"
+   ],
+   "max_score_diff": 4e-07,
+   "list_violations": 0,
+   "verdict": "PASS"
+  }
+ },
+ "chain_labels": [
+  "R.mention",
+  "R.name_comention",
+  "R.title_comention"
+ ],
+ "pool": {
+  "test_sources_with_edge": 11519,
+  "pool": 3000
+ },
+ "path_groups": {
+  "R.name_comention > R.title_comention": {
+   "eligible_candidates": 1881,
+   "units": 100
+  },
+  "R.mention > R.title_comention": {
+   "eligible_candidates": 1551,
+   "units": 100
+  },
+  "R.mention > R.name_comention": {
+   "eligible_candidates": 814,
+   "units": 100
+  },
+  "R.name_comention > R.mention": {
+   "eligible_candidates": 743,
+   "units": 100
+  },
+  "R.name_comention > R.name_comention": {
+   "eligible_candidates": 723,
+   "units": 100
+  },
+  "R.title_comention > R.title_comention": {
+   "eligible_candidates": 596,
+   "units": 100
+  },
+  "R.title_comention > R.name_comention": {
+   "eligible_candidates": 497,
+   "units": 100
+  },
+  "R.title_comention > R.mention": {
+   "eligible_candidates": 494,
+   "units": 100
+  },
+  "R.mention > R.mention": {
+   "eligible_candidates": 245,
+   "units": 100
+  }
+ },
+ "units": 900,
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+  "ner_npz_sha256": "f294708600750c48eae9e32d0895d517ac3a8b5d048c736a70e9a566af2fe9c6",
+  "knn_npz_sha256": "6020ac7e0b6773e64866b5e942dc0e02c3b704615ced8de4d557aa543221ef5b",
+  "w2_s_npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+  "f0t_npz_sha256": "a0cea3c450f4a8364d202d7f21fe949e288f2ed0ca325aadea199f7ed2a4eebc",
+  "names_npz_sha256": "279d4b6ff3a2d5e3fbbab9071bcc93328167da1c5d19e805c3a9c5ad7a8f9cda",
+  "vectors": {
+   "shards": 3,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "48ccb700e4baf00235fc67190011b70245f923cdbd11e2bf9d178ba51064c81e"
+  }
+ },
+ "refs": {
+  "r1_record_sha256": "3b767a5e487776d45d9039a8b2b314841c0b19a91da4202c2108256bfdb5ea77",
+  "r1_npz_sha256": "ddd4fd23c9cf724eb03de9c7320155d4fa0b9b286d071685ed30f0653bd94ca7"
+ },
+ "threads": 8,
+ "script_sha256": "69d287d067c1e139112d5e8c86bda7776067fbba381d7785c4e0e46fe6282f4f",
+ "R-precision": {
+  "chain-point - chain-cos": {
+   "diff": 3.14,
+   "lo": 2.32,
+   "hi": 3.94,
+   "call": "ABOVE"
+  },
+  "chain-point - compose": {
+   "diff": 1.59,
+   "lo": 0.87,
+   "hi": 2.32,
+   "call": "ABOVE"
+  },
+  "chain-point - cosine": {
+   "diff": 2.82,
+   "lo": 1.93,
+   "hi": 3.66,
+   "call": "ABOVE"
+  },
+  "chain-cos - cosine": {
+   "diff": -0.32,
+   "lo": -0.72,
+   "hi": 0.07,
+   "call": "LEVEL"
+  }
+ },
+ "recall at 4m": {
+  "chain-point - chain-cos": {
+   "diff": 6.22,
+   "lo": 5.07,
+   "hi": 7.29,
+   "call": "ABOVE"
+  },
+  "chain-point - compose": {
+   "diff": 4.03,
+   "lo": 3.01,
+   "hi": 5.07,
+   "call": "ABOVE"
+  },
+  "chain-point - cosine": {
+   "diff": 6.22,
+   "lo": 4.99,
+   "hi": 7.38,
+   "call": "ABOVE"
+  },
+  "chain-cos - cosine": {
+   "diff": -0.0,
+   "lo": -0.6,
+   "hi": 0.53,
+   "call": "LEVEL"
+  }
+ },
+ "means": {
+  "cosine": {
+   "R-precision": 6.43,
+   "recall at 4m": 11.05
+  },
+  "chain-cos": {
+   "R-precision": 6.11,
+   "recall at 4m": 11.05
+  },
+  "chain-point": {
+   "R-precision": 9.25,
+   "recall at 4m": 17.27
+  },
+  "compose": {
+   "R-precision": 7.66,
+   "recall at 4m": 13.24
+  }
+ },
+ "by path kind": {
+  "R then R": {
+   "units": 900,
+   "chain-point - chain-cos": {
+    "diff": 3.14,
+    "lo": 2.32,
+    "hi": 3.94,
+    "call": "ABOVE"
+   },
+   "chain-point - compose": {
+    "diff": 1.59,
+    "lo": 0.87,
+    "hi": 2.32,
+    "call": "ABOVE"
+   },
+   "mean R-precision": {
+    "cosine": 6.43,
+    "chain-cos": 6.11,
+    "chain-point": 9.25,
+    "compose": 7.66
+   }
+  },
+  "S then S": {
+   "units": 0
+  },
+  "mixed": {
+   "units": 0
+  }
+ },
+ "by set size": {
+  "m 2-3": {
+   "units": 81,
+   "chain-point - chain-cos": {
+    "diff": 0.82,
+    "lo": -1.23,
+    "hi": 3.09,
+    "call": "LEVEL"
+   },
+   "chain-point - compose": {
+    "diff": 0.0,
+    "lo": -2.67,
+    "hi": 2.67,
+    "call": "LEVEL"
+   },
+   "mean R-precision": {
+    "cosine": 5.76,
+    "chain-cos": 4.32,
+    "chain-point": 5.14,
+    "compose": 5.14
+   }
+  },
+  "m 4-10": {
+   "units": 180,
+   "chain-point - chain-cos": {
+    "diff": 2.2,
+    "lo": 0.78,
+    "hi": 3.71,
+    "call": "ABOVE"
+   },
+   "chain-point - compose": {
+    "diff": -0.49,
+    "lo": -2.36,
+    "hi": 1.38,
+    "call": "LEVEL"
+   },
+   "mean R-precision": {
+    "cosine": 7.19,
+    "chain-cos": 4.96,
+    "chain-point": 7.16,
+    "compose": 7.65
+   }
+  },
+  "m 11-100": {
+   "units": 639,
+   "chain-point - chain-cos": {
+    "diff": 3.7,
+    "lo": 2.63,
+    "hi": 4.76,
+    "call": "ABOVE"
+   },
+   "chain-point - compose": {
+    "diff": 2.38,
+    "lo": 1.55,
+    "hi": 3.21,
+    "call": "ABOVE"
+   },
+   "mean R-precision": {
+    "cosine": 6.3,
+    "chain-cos": 6.65,
+    "chain-point": 10.36,
+    "compose": 7.98
+   }
+  }
+ },
+ "by T1 size": {
+  "|T1| up to 10": {
+   "units": 699,
+   "chain-point - chain-cos": {
+    "diff": 2.62,
+    "lo": 1.59,
+    "hi": 3.62,
+    "call": "ABOVE"
+   },
+   "chain-point - compose": {
+    "diff": 1.38,
+    "lo": 0.46,
+    "hi": 2.31,
+    "call": "ABOVE"
+   },
+   "mean R-precision": {
+    "cosine": 7.31,
+    "chain-cos": 6.82,
+    "chain-point": 9.44,
+    "compose": 8.06
+   }
+  },
+  "|T1| over 10": {
+   "units": 201,
+   "chain-point - chain-cos": {
+    "diff": 4.96,
+    "lo": 3.46,
+    "hi": 6.62,
+    "call": "ABOVE"
+   },
+   "chain-point - compose": {
+    "diff": 2.33,
+    "lo": 1.17,
+    "hi": 3.53,
+    "call": "ABOVE"
+   },
+   "mean R-precision": {
+    "cosine": 3.35,
+    "chain-cos": 3.64,
+    "chain-point": 8.6,
+    "compose": 6.26
+   }
+  }
+ },
+ "per group": {
+  "R.name_comention > R.title_comention": {
+   "units": 100,
+   "mean m": 18.41,
+   "mean |T1|": 23.17,
+   "mean R-precision": {
+    "cosine": 3.4,
+    "chain-cos": 4.19,
+    "chain-point": 6.8,
+    "compose": 5.55
+   }
+  },
+  "R.mention > R.title_comention": {
+   "units": 100,
+   "mean m": 12.54,
+   "mean |T1|": 27.0,
+   "mean R-precision": {
+    "cosine": 2.56,
+    "chain-cos": 2.17,
+    "chain-point": 5.05,
+    "compose": 1.63
+   }
+  },
+  "R.mention > R.name_comention": {
+   "units": 100,
+   "mean m": 45.26,
+   "mean |T1|": 3.13,
+   "mean R-precision": {
+    "cosine": 4.26,
+    "chain-cos": 4.75,
+    "chain-point": 6.41,
+    "compose": 4.91
+   }
+  },
+  "R.name_comention > R.mention": {
+   "units": 100,
+   "mean m": 42.97,
+   "mean |T1|": 7.73,
+   "mean R-precision": {
+    "cosine": 2.74,
+    "chain-cos": 2.91,
+    "chain-point": 14.12,
+    "compose": 13.0
+   }
+  },
+  "R.name_comention > R.name_comention": {
+   "units": 100,
+   "mean m": 50.29,
+   "mean |T1|": 5.8,
+   "mean R-precision": {
+    "cosine": 4.45,
+    "chain-cos": 5.2,
+    "chain-point": 6.35,
+    "compose": 5.26
+   }
+  },
+  "R.title_comention > R.title_comention": {
+   "units": 100,
+   "mean m": 13.09,
+   "mean |T1|": 3.78,
+   "mean R-precision": {
+    "cosine": 18.3,
+    "chain-cos": 13.49,
+    "chain-point": 17.14,
+    "compose": 20.45
+   }
+  },
+  "R.title_comention > R.name_comention": {
+   "units": 100,
+   "mean m": 38.05,
+   "mean |T1|": 2.34,
+   "mean R-precision": {
+    "cosine": 4.31,
+    "chain-cos": 4.84,
+    "chain-point": 6.91,
+    "compose": 5.69
+   }
+  },
+  "R.title_comention > R.mention": {
+   "units": 100,
+   "mean m": 30.98,
+   "mean |T1|": 2.47,
+   "mean R-precision": {
+    "cosine": 7.43,
+    "chain-cos": 7.28,
+    "chain-point": 11.81,
+    "compose": 2.63
+   }
+  },
+  "R.mention > R.mention": {
+   "units": 100,
+   "mean m": 36.59,
+   "mean |T1|": 2.93,
+   "mean R-precision": {
+    "cosine": 10.38,
+    "chain-cos": 10.12,
+    "chain-point": 8.67,
+    "compose": 9.81
+   }
+  }
+ },
+ "branches": {
+  "chain-cos": {
+   "branch recall": 23.72,
+   "branch precision": 11.34,
+   "any true first hop": 45.33
+  },
+  "chain-point": {
+   "branch recall": 34.95,
+   "branch precision": 17.17,
+   "any true first hop": 59.67
+  }
+ },
+ "mean_m": 32.02,
+ "mean_n1": 8.71,
+ "seconds": 43.4,
+ "utc": "2026-11-25T16:04:10Z",
+ "not_a_dataset": false,
+ "npz_sha256": "a64773edac559a724ccdbce4ab9c436e8b934a68000c0fae8c099788f96ab73c"
+}
