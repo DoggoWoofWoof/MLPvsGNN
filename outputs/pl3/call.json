@@ -1,7 +1,7 @@
 {
  "stage": "PL3 call",
  "declared_in": "docs/PL3_COVERAGE_ROUND2.md",
- "utc": "2026-11-25T02:33:26Z",
+ "utc": "2026-11-25T03:04:43Z",
  "datasets": {
   "metaqa": {
    "status": "LEVEL",
@@ -211,12 +211,142 @@
    }
   },
   "hotpotqa": {
-   "status": "NOT_READ",
-   "why": "no PL3 select or confirm file here"
+   "status": "ABOVE",
+   "new": "rrf1000_b25+STRUCT:h1_c100~cs+top100",
+   "old": "rrf1000_b25+STRUCT:h1_c100+top100",
+   "same_cell": false,
+   "new_all": 0.9634031060094531,
+   "old_all": 0.962727886563133,
+   "new_nodes": 77.88872383524645,
+   "old_nodes": 77.92140445644834,
+   "new_reaches": true,
+   "old_reaches": true,
+   "within_bound": true,
+   "all_diff": 0.0006752194463200967,
+   "all_diff_ci": [
+    -0.0006752194463199857,
+    0.0018906144496961819
+   ],
+   "nodes_ratio": 0.9995805950697391,
+   "nodes_ratio_ci": [
+    0.999421478995742,
+    0.9997210554036752
+   ],
+   "r98": {
+    "status": "ABOVE",
+    "new": "rrf1000_b100+STRUCT:h1_c100~cs+top200",
+    "old": "rrf1000_b100+STRUCT:h1_c100+top200",
+    "same_cell": false,
+    "new_all": 0.9782579338284942,
+    "old_all": 0.9775827143821743,
+    "new_nodes": 153.50979068197165,
+    "old_nodes": 154.5354490209318,
+    "new_reaches": false,
+    "old_reaches": false,
+    "within_bound": true,
+    "all_diff": 0.0006752194463199857,
+    "all_diff_ci": [
+     0.0,
+     0.0014854827819040795
+    ],
+    "nodes_ratio": 0.9933629575255499,
+    "nodes_ratio_ci": [
+     0.9926914105453912,
+     0.994078549062938
+    ]
+   },
+   "new_only": {
+    "status": "ABOVE",
+    "new": "rrf1000_b25+STRUCT:h1_c100~cs+top100",
+    "old": "rrf1000_b25+STRUCT:h1_c100+top100",
+    "same_cell": false,
+    "new_all": 0.9634031060094531,
+    "old_all": 0.962727886563133,
+    "new_nodes": 77.88872383524645,
+    "old_nodes": 77.92140445644834,
+    "new_reaches": true,
+    "old_reaches": true,
+    "within_bound": true,
+    "all_diff": 0.0006752194463200967,
+    "all_diff_ci": [
+     -0.0005401755570559913,
+     0.0018906144496961819
+    ],
+    "nodes_ratio": 0.9995805950697391,
+    "nodes_ratio_ci": [
+     0.999423469536844,
+     0.9997168382946379
+    ]
+   }
   },
   "2wiki": {
-   "status": "NOT_READ",
-   "why": "no PL3 select or confirm file here"
+   "status": "ABOVE",
+   "new": "rrf1000_b400+FULL:h1_c100~s20+top800",
+   "old": "equal_rrf_budget_200+FULL:h2_c25",
+   "same_cell": false,
+   "new_all": 0.9608778625954199,
+   "old_all": 0.9503021628498728,
+   "new_nodes": 916.9652512722646,
+   "old_nodes": 2140.140903307888,
+   "new_reaches": true,
+   "old_reaches": true,
+   "within_bound": true,
+   "all_diff": 0.010575699745547062,
+   "all_diff_ci": [
+    0.007395038167938961,
+    0.01407442748091603
+   ],
+   "nodes_ratio": 0.4284602242099883,
+   "nodes_ratio_ci": [
+    0.4272151890256184,
+    0.42952978891798343
+   ],
+   "r98": {
+    "status": "ABOVE",
+    "new": "rrf1000_b1600+FULL:h1_c100~s20+top800",
+    "old": "equal_rrf_budget_200+FULL:h2_c25",
+    "same_cell": false,
+    "new_all": 0.9656488549618321,
+    "old_all": 0.9503021628498728,
+    "new_nodes": 2085.7087309160306,
+    "old_nodes": 2140.140903307888,
+    "new_reaches": false,
+    "old_reaches": false,
+    "within_bound": true,
+    "all_diff": 0.01534669211195927,
+    "all_diff_ci": [
+     0.012005009541984728,
+     0.018767891221374077
+    ],
+    "nodes_ratio": 0.9745660800614927,
+    "nodes_ratio_ci": [
+     0.9731556349475698,
+     0.9759599250736479
+    ]
+   },
+   "new_only": {
+    "status": "ABOVE",
+    "new": "rrf1000_b400+FULL:h1_c100~s20+top800",
+    "old": "equal_rrf_budget_200+FULL:h2_c25",
+    "same_cell": false,
+    "new_all": 0.9608778625954199,
+    "old_all": 0.9503021628498728,
+    "new_nodes": 916.9652512722646,
+    "old_nodes": 2140.140903307888,
+    "new_reaches": true,
+    "old_reaches": true,
+    "within_bound": true,
+    "all_diff": 0.010575699745547062,
+    "all_diff_ci": [
+     0.007395038167938961,
+     0.013996898854961871
+    ],
+    "nodes_ratio": 0.4284602242099883,
+    "nodes_ratio_ci": [
+     0.4272632723892195,
+     0.42965255778769895
+    ]
+   }
   },
   "webqsp": {
    "status": "LEVEL",
@@ -232,13 +362,13 @@
    "within_bound": true,
    "all_diff": 0.016633399866932796,
    "all_diff_ci": [
-    -0.003326679973386537,
-    0.03526280771789758
+    -0.0006653359946773296,
+    0.03394876912840984
    ],
    "nodes_ratio": 1.3053734139487354,
    "nodes_ratio_ci": [
-    1.2757736719567372,
-    1.33287784841717
+    1.275663102696754,
+    1.3328715006057825
    ],
    "r98": {
     "status": "LEVEL",
@@ -254,13 +384,13 @@
     "within_bound": true,
     "all_diff": 0.016633399866932796,
     "all_diff_ci": [
-     -0.0019960079840318804,
-     0.03394876912840984
+     -0.0013473053892215888,
+     0.03526280771789747
     ],
     "nodes_ratio": 1.3053734139487354,
     "nodes_ratio_ci": [
-     1.279209068094248,
-     1.3335616498900948
+     1.2740201425273305,
+     1.335741632740696
     ]
    },
    "new_only": {
@@ -277,13 +407,13 @@
     "within_bound": true,
     "all_diff": 0.016633399866932796,
     "all_diff_ci": [
-     0.0,
-     0.0359281437125748
+     -0.0006653359946773296,
+     0.03393213572854292
     ],
     "nodes_ratio": 1.3053734139487354,
     "nodes_ratio_ci": [
-     1.275664822159763,
-     1.334164777572312
+     1.277567501305093,
+     1.3338014141616303
     ]
    }
   },
@@ -323,13 +453,13 @@
     "within_bound": true,
     "all_diff": 0.010619469026548645,
     "all_diff_ci": [
-     0.001769911504424737,
-     0.019469026548672552
+     0.0008849557522124796,
+     0.020376106194690317
     ],
     "nodes_ratio": 0.9667256637168141,
     "nodes_ratio_ci": [
-     0.9530604719764012,
-     0.9793119469026549
+     0.9538185840707964,
+     0.9792522123893805
     ]
    },
    "new_only": {
@@ -346,18 +476,20 @@
     "within_bound": true,
     "all_diff": 0.009734513274336276,
     "all_diff_ci": [
-     0.0035398230088495826,
+     0.0026548672566371057,
      0.016814159292035447
     ],
     "nodes_ratio": 1.160070796460177,
     "nodes_ratio_ci": [
-     1.143570353982301,
-     1.174991150442478
+     1.1449358407079646,
+     1.175558407079646
     ]
    }
   }
  },
  "datasets_read": [
+  "2wiki",
+  "hotpotqa",
   "metaqa",
   "multihoprag",
   "musique",
@@ -365,5 +497,5 @@
   "webqsp"
  ],
  "code_path_equal_everywhere": true,
- "call": "INCOMPLETE"
+ "call": "CARRY_PL3"
 }

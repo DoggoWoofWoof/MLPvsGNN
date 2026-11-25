@@ -1,0 +1,19 @@
+{
+ "stage": "PL3 G-R",
+ "declared_in": "docs/PL3_COVERAGE_ROUND2.md",
+ "dataset": "2wiki",
+ "host": true,
+ "questions": 400,
+ "cells": 804,
+ "elements": 321600,
+ "present_mismatches": 0,
+ "size_mismatches": 0,
+ "first_mismatch": null,
+ "pl2_code_path_sha256": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+ "code_path_sha256": "e9d860950c700bdd5e988f16b4b0ef6023d3207b7f5c07b1e7ee36593c13c8c4",
+ "script_sha256": "20ad63a08f5d6b94b652371d21535ca24fe5fc23c5b504a0e07b7234bb985d4e",
+ "verdict": "PASS",
+ "seconds": 189.4,
+ "peak_gb": 9.75,
+ "utc": "2026-11-25T01:55:03Z"
+}
