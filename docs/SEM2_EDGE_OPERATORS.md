@@ -1092,6 +1092,87 @@ ALL at 20 (the share of questions with every gold in the fused top 20, in percen
 and then a PL round that takes the traversal's list as its seeds (the PL engines are pinned). The gains above are 0.5 to 1.9 points of ALL at 20 on three datasets; the user is told the price and the default is to leave Part B queued last.
 R3's transfer reads (section 4) are declared next, on R2a's form. No call here touches the journal's layout or pools.
 
+## 11. R3(c) declared: an operator for a relation never seen, from its name alone (25 November 2026, 15:21 IST, 09:51 UTC), before any R3 number
+
+### 11.1 Why this is the R3 that is left, and what was seen
+
+- **The user, 25 November:** "yeah sure then we can put it to a generalization test" (after being told that R3 as section 4 wrote it has one part left).
+- **Section 4's R3, read against what is on file:**
+  - **(a)** the left-out dataset "with alpha fit without it": **moot.** R2b was not declared (9.12: no ROOM), so alpha has no weights; the only fitted things are R1's operators, per corpus, and lambda.
+  - **(b)** another encoder's vectors with the operators refit from the links and alpha unchanged: **largely read already.** It is R2a's frozen arm (R1: 7 of 7 LEARN on frozen; R2a: T1 ABOVE and T2 LEVEL on all four small datasets at R@5). No new read.
+  - **(c)** unseen relations through the name net: **not on file.** Section 3 sketches it ("for a label never seen in training, the angles come from the label name's frozen vector through a small shared net") and no code or page defines it. This page does.
+- **Seen before this page:** R1's records (7.12: per-label deltas on the read labels of MetaQA and WebQSP, per-label MRRs of the free-angle operators) and R2a's. The hold-out below is drawn by a hash of the relation's name, blind to all of them.
+- **Not seen:** any score of any operator produced from a name. No name has been encoded for this purpose. No R3 number exists.
+
+### 11.2 The question
+
+R1 fits one free set of angles per relation from that relation's own edges. A KB of a new domain brings relations nobody fitted. **Can a small shared net give such a relation an operator from its name alone, and does that operator rank the relation's true tails above plain cosine, and above what a relation-blind operator does?**
+
+### 11.3 Rows
+
+- **MetaQA and WebQSP, on e3v.** They are the two datasets whose S relations are many and named (MetaQA 7 with an operator of their own; WebQSP 791 operators, nearly all S). 2Wiki and HotpotQA carry one S relation and MuSiQue and SQuAD none (7.2), so there is nothing to hold out there.
+- **frozen is not read** (R2a's rule: e3v decides). **No other dataset or arm is read.**
+- **Relations that can be held out:** the S relations with an operator of their own in R1 (at least 500 training edges, 7.2). S.rare's relations and the R labels are never held out: they are always seen.
+
+### 11.4 The name net
+
+- **Name string of a relation:** the label's name without its family prefix, lower case, "_" and "." read as spaces: S.directed_by is "directed by"; WebQSP's "S.award honor award winner" is "award honor award winner"; the R labels are "mention", "name comention" and "title comention".
+- **Name vector:** the string encoded by the e3v encoder as each part encodes a document (the same function that made the stored node vectors: zenc's load_model and encode_texts, each part at its own token budget, fused and scaled as e3v), then divided by its norm. **Gate G-N:** the same function reproduces 64 stored node vectors from their texts, cosine at least 0.999 each (a CPU float32 encode is allowed if it passes; the stored vectors are float16 GPU).
+- **The net g:** name vector (D = 1,152) -> 256 hidden units (tanh) -> D'/2 = 704 angles. **The last layer starts at zero**, so at the start every relation's angles are 0 and every score is the cosine (gate G-0, as 7.8). Angle theta_r = g(name_r); the operator is R1's rotation, T_r in D' = D + 256 with block-diagonal 2 x 2 planes. **Directed (S) relations:** score = (T_r x_s) . x_d; **undirected (R):** the symmetric part (7.4).
+- **The shared map P** is as R1's (D' = D + 256, start [I; 0] plus N(0, 1e-4^2) extra rows). **No relation has free angles in this fit: seen and unseen relations alike get theirs from g(name).** Parameters: P, and g's two layers (about 0.48 million weights).
+
+### 11.5 The fit (links only; no question, no gold)
+
+- **Relations in three groups, by u = the first 8 bytes of sha256("sem2r3|<dataset>|<label name>") over 2^64:**
+  - **WebQSP:** the S relations eligible in 11.3 with **u < 0.20 are test (held out), 0.20 <= u < 0.30 are dev relations**, the others train. The R labels and S.rare are train. One fold.
+  - **MetaQA:** its 7 eligible S relations, sorted by u, take fold = rank mod 3 (3 folds of 3, 2 and 2 relations). In each fold the fold's relations are test; of the others, **the one with the smallest u is the dev relation**; the rest, with R.mention and R.name_comention, train. Every eligible relation is held out exactly once.
+- **Training edges:** R1's (7.3): the node-inductive split and its train edges, **of train relations only.** Loss, negatives, batch, optimiser, learning rate (1e-3), temperature (0.05) and seed (0) are R1's (7.5); an epoch is up to 200,000 train edges with an equal share per train relation (a relation with fewer gives all it has).
+- **Stop:** after each epoch, the dev MRR of the **dev relations'** dev edges (7.3's dev split, up to 500 edges per dev relation, under g(name)). Two epochs without a gain, or 10 at most; the best epoch is kept. **No test relation's edge enters the fit or the stop.** (R1 stopped on seen relations' dev edges; here the stop is on relations the fit never saw, as P5b2's did on new golds.)
+- **Gate G-S:** every positive of every batch has a train relation (checked on the sampled indices), and the dev and test relations' names are not among the train relations' name strings.
+
+### 11.6 The read
+
+- **Test edges:** for each test relation, up to **200** test edges (7.3: source a test node), numpy default_rng(0) without replacement. Rank of the true tail among all n nodes, filtered as 7.6 (the source and its other true r-tails in any split removed; ties count half). MRR, hits@10, hits@100.
+- **Scorers on the same edges:**
+  - **cosine** (v_s . v_d): the baseline;
+  - **name net** g(name_r): what is called;
+  - **mean name:** the same net on the mean of the train relations' name vectors, the same operator for every test relation (a relation-blind operator the net itself produced);
+  - **shuffled name** (beside): each test relation takes another test relation's name (a derangement, seed 0);
+  - **free angles** (beside, a ceiling): R1's e3v fit, which saw these relations' edges, on the same edges, if the stored model loads and reproduces its record's rank on the sample (WebQSP's e3v model is not on the laptop; R2a loaded it on the host).
+
+### 11.7 The calls (per dataset)
+
+- **d_r = MRR(name net) - MRR(cosine)** on test relation r's edges; **e_r = MRR(name net) - MRR(mean name).** Each test relation counts once.
+- **Delta = the mean of d_r over the dataset's test relations; Gain from the name = the mean of e_r.** Interval for each: **a bootstrap over relations** (2,000 resamples of the test relations, seed 0, 95%), not over edges: a relation is the unit that must generalize. ABOVE, LEVEL or BELOW as 9.6.
+- **TRANSFERS** if Delta is ABOVE and the Gain from the name is ABOVE. **GENERIC** if Delta is ABOVE and the gain from the name is not (the shared map and a relation-blind operator carry it; the name adds nothing). **LOSES** if Delta is BELOW. **NO** otherwise.
+- **R3(c) verdict:** HOLDS if TRANSFERS on both datasets; PARTIAL if TRANSFERS on one; FAILS otherwise. INCOMPLETE while a row is missing.
+- **Beside, deciding nothing:** each relation's d_r with its own interval over edges; how many test relations have d_r > 0; hits@10 and hits@100; shuffled-name against cosine and against the name net; and **the share of the free-angle gain the name recovers** = (MRR(name net) - MRR(cosine)) / (MRR(free) - MRR(cosine)), pooled.
+- **MetaQA has 7 test relations in all, so its interval is wide by construction; a LEVEL there is a statement about power, and is read so.**
+
+### 11.8 Expectations, written before any number (a failed one is reported, not explained away)
+
+- **X18:** WebQSP Delta ABOVE. Its relations come in families whose names share words (award honor award winner, award honor award nominee ...), and a shared net can place a new member near its siblings.
+- **X19:** WebQSP Gain from the name ABOVE (the name carries more than a relation-blind operator).
+- **X20:** MetaQA Delta not ABOVE: three to five train relations and two R labels are too few to learn a map from names to angles.
+- **X21:** shuffled name below the name net on WebQSP (the right name matters).
+
+### 11.9 Gates (a failure stops the row)
+
+- **G-N, G-0, G-S** as above. **G-0:** with g's last layer at zero, every test relation's score equals the cosine on 99% of the sampled edges' ranks (7.8's check).
+- **G-E:** each family's pair count equals the record's (7.8), as R1.
+- **Self-test (toy with planted names):** a graph of 600 nodes and 40 relations in 8 families whose angles are a function of the family's name vector; the fit on 70% of the relations beats cosine on the held-out ones, the mean-name operator does not, the shuffled name is below the right name, and G-0 and G-S hold.
+
+### 11.10 What follows (fixed now)
+
+- **TRANSFERS on at least one dataset:** an operator for a new relation needs no fit, and the claim of SEM2's generalization is **read** (not carried to a layout). A cross-dataset reading (a net fit on WebQSP's relations, applied to MetaQA's) is named, not declared.
+- **GENERIC or NO or LOSES on both:** the operators are fit per corpus from its own links, as R1 says, and the name net adds nothing; SEM2's transfer claim stands on R1 (link recovery per corpus) and R2a's frozen arm.
+- No call here touches the journal's layout or pools. Nothing is fit on a question.
+
+### 11.11 Code, rows and outputs
+
+- **outputs/mp_unified/zsem2r3.py** (new; imports zsem2.py and zsem2t.py and edits neither): `names` (the encode), `fit`, `read`, `report`, `selftest`. It is committed after this page and before any row runs; a code commit changes no rule here. Outputs under outputs/sem2/r3/ (json and md committed, npz not).
+- **Host cost, sized from R1's records** (e3v, 8 threads): MetaQA's fits ran 3,166 s for one fit, so three folds are about 3 hours; WebQSP's ran 12,642 s, and this fit has 70 percent of the relations; the reads are four scorers over about 160 test relations at 200 edges each on 2.59 million nodes. The rows are queued after the code passes its self-test.
+
 ### 8.16 Records completed after the closure (24 November 2026, 23:47 IST, 18:17 UTC): decides nothing
 
 8.15 closed the hub line with five rows still running. They have finished: R1k on WebQSP and 2Wiki, and R1q on
