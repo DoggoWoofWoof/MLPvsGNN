@@ -1,0 +1,310 @@
+{
+ "stage": "SEM2 R4 sets",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 12",
+ "dataset": "squad",
+ "arm": "e3v",
+ "smoke": false,
+ "config": {
+  "u_test": 200,
+  "u_dev": 60,
+  "m_min": 2,
+  "m_max": 100,
+  "kmult": 4,
+  "lams": [
+   1.0,
+   0.5,
+   0.2,
+   0.05
+  ],
+  "fit_edges": 20000,
+  "ck_secs": 240,
+  "mem_cells": 120000000.0,
+  "min_fit": 50,
+  "var_floor": 1e-12
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 878200,
+     "record": 878200
+    },
+    "CN_all": {
+     "pairs": 173645,
+     "record": 173645
+    },
+    "F0T": {
+     "pairs": 176454,
+     "record": 176454
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-U": {
+   "test sources are test nodes": true,
+   "dev sources are dev nodes": true,
+   "set sizes in range": true,
+   "tail sets equal the degree read": true,
+   "units": {
+    "test": 448,
+    "dev": 168
+   },
+   "verdict": "PASS"
+  },
+  "G-T": {
+   "units": 16,
+   "scorers": [
+    "cosine",
+    "point",
+    "shift",
+    "region"
+   ],
+   "max_score_diff": 9e-07,
+   "list_violations": 0,
+   "verdict": "PASS"
+  }
+ },
+ "read_groups": {
+  "R.mention": {
+   "eligible_test": 1493,
+   "eligible_dev": 1538,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "R.name_comention": {
+   "eligible_test": 1546,
+   "eligible_dev": 1511,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "R.title_comention": {
+   "eligible_test": 48,
+   "eligible_dev": 48,
+   "test_units": 48,
+   "dev_units": 48
+  }
+ },
+ "units": {
+  "test": 448,
+  "dev": 168,
+  "mean_m_test": 35.81,
+  "median_m_test": 30.0
+ },
+ "regions": {
+  "operators": 3,
+  "fitted": 3,
+  "min_edges": 3742,
+  "max_edges": 20000
+ },
+ "dev": {
+  "lam grid": {
+   "point": {
+    "R-precision": 49.822,
+    "recall at 4m": 71.53
+   },
+   "lam=1.0": {
+    "R-precision": 49.275,
+    "recall at 4m": 71.501
+   },
+   "lam=0.5": {
+    "R-precision": 47.341,
+    "recall at 4m": 70.15
+   },
+   "lam=0.2": {
+    "R-precision": 46.458,
+    "recall at 4m": 69.373
+   },
+   "lam=0.05": {
+    "R-precision": 45.615,
+    "recall at 4m": 68.796
+   }
+  },
+  "lam_star": 1.0
+ },
+ "R-precision": {
+  "region - point": {
+   "diff": -0.31,
+   "lo": -0.76,
+   "hi": 0.12,
+   "call": "LEVEL"
+  },
+  "point - cosine": {
+   "diff": 11.69,
+   "lo": 9.93,
+   "hi": 13.4,
+   "call": "ABOVE"
+  },
+  "region - cosine": {
+   "diff": 11.38,
+   "lo": 9.65,
+   "hi": 13.07,
+   "call": "ABOVE"
+  },
+  "region - shift": {
+   "diff": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "call": "LEVEL"
+  },
+  "shift - point": {
+   "diff": -0.31,
+   "lo": -0.76,
+   "hi": 0.12,
+   "call": "LEVEL"
+  }
+ },
+ "recall at 4m": {
+  "region - point": {
+   "diff": -0.51,
+   "lo": -0.92,
+   "hi": -0.11,
+   "call": "BELOW"
+  },
+  "point - cosine": {
+   "diff": 11.45,
+   "lo": 9.46,
+   "hi": 13.38,
+   "call": "ABOVE"
+  },
+  "region - cosine": {
+   "diff": 10.94,
+   "lo": 9.06,
+   "hi": 12.76,
+   "call": "ABOVE"
+  }
+ },
+ "means": {
+  "cosine": {
+   "R-precision": 36.92,
+   "recall at 4m": 58.48
+  },
+  "point": {
+   "R-precision": 48.61,
+   "recall at 4m": 69.92
+  },
+  "shift": {
+   "R-precision": 48.3,
+   "recall at 4m": 69.42
+  },
+  "region": {
+   "R-precision": 48.3,
+   "recall at 4m": 69.42
+  }
+ },
+ "by set size": {
+  "m 2-3": {
+   "units": 28,
+   "region - point": {
+    "diff": -4.17,
+    "lo": -8.93,
+    "hi": 0.0,
+    "call": "LEVEL"
+   },
+   "mean R-precision": {
+    "cosine": 11.31,
+    "point": 19.64,
+    "shift": 15.48,
+    "region": 15.48
+   }
+  },
+  "m 4-10": {
+   "units": 45,
+   "region - point": {
+    "diff": -1.12,
+    "lo": -3.66,
+    "hi": 1.18,
+    "call": "LEVEL"
+   },
+   "mean R-precision": {
+    "cosine": 21.84,
+    "point": 29.97,
+    "shift": 28.85,
+    "region": 28.85
+   }
+  },
+  "m 11-100": {
+   "units": 375,
+   "region - point": {
+    "diff": 0.07,
+    "lo": -0.2,
+    "hi": 0.34,
+    "call": "LEVEL"
+   },
+   "mean R-precision": {
+    "cosine": 40.64,
+    "point": 53.01,
+    "shift": 53.08,
+    "region": 53.08
+   }
+  }
+ },
+ "per group": {
+  "R.mention": {
+   "units": 200,
+   "mean m": 54.49,
+   "mean R-precision": {
+    "cosine": 50.56,
+    "point": 63.92,
+    "shift": 64.26,
+    "region": 64.26
+   }
+  },
+  "R.name_comention": {
+   "units": 200,
+   "mean m": 23.21,
+   "mean R-precision": {
+    "cosine": 27.74,
+    "point": 34.38,
+    "shift": 33.86,
+    "region": 33.86
+   }
+  },
+  "R.title_comention": {
+   "units": 48,
+   "mean m": 10.46,
+   "mean R-precision": {
+    "cosine": 18.34,
+    "point": 44.11,
+    "shift": 41.95,
+    "region": 41.95
+   }
+  }
+ },
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "34ac47757e0080f0e2eb6c679009a6090ca97be39d576307ba7281db730c1a8b",
+  "ner_npz_sha256": "e8b061c3dc417d7c481e57d9f360dd98c825049d62c61958ca0fed655fa57a22",
+  "knn_npz_sha256": "fee9cca5435668378d2a139614cec141d0b4977991801a004c8ca43ee8ad796f",
+  "w2_s_npz_sha256": "3f44314052d91556d6d694cb97fc5319dcf84e80ef68790ec9a33800286880c5",
+  "f0t_npz_sha256": "04703c6d42e9d2717fc1a3e659d9ef6d376d85dd2bd2e410904a7573b09157e0",
+  "names_npz_sha256": "082a4c61f0563178da69802dc029008ba39becf12993bd6156ec66a1bd73f906",
+  "vectors": {
+   "shards": 1,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "dc9bda57edde0b4440c8f8b1cfbe3ab28e7aeffa3b5079f2984db4c23e2435d6"
+  }
+ },
+ "refs": {
+  "r1_record_sha256": "81a3f38e5ae98f19625f94c6c9e6ef32b12b7b628823187abcb038317162df2e",
+  "r1_npz_sha256": "7d3a606053a6f11e4e1d7a47069a2df0a168dea548a86619ba5047eeae41cbab"
+ },
+ "threads": 4,
+ "seconds": 43.2,
+ "utc": "2026-11-25T12:09:04Z",
+ "script_sha256": "3a392d42afd4a69913640264d7d66ac0729f677222b578783308a4d2d5c97138",
+ "npz_sha256": "8050e0f9b3c10ae8156f45f9f6cf4f24b46e65f3327e985afbd72ab5f00dd823"
+}

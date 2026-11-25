@@ -1,0 +1,866 @@
+{
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 12",
+ "datasets_read": 7,
+ "verdict": "NOT_CARRIED",
+ "region_above": 0,
+ "region_below": 5,
+ "calls": {
+  "multihoprag": "LEVEL",
+  "squad": "LEVEL",
+  "musique": "BELOW",
+  "metaqa": "BELOW",
+  "webqsp": "BELOW",
+  "hotpotqa": "BELOW",
+  "2wiki": "BELOW"
+ },
+ "records": {
+  "multihoprag": {
+   "script_sha256": "3a392d42afd4a69913640264d7d66ac0729f677222b578783308a4d2d5c97138",
+   "npz_sha256": "ad9e465c8050ce49343c39e87f29efefcb30f3fb2b03b5d48457c6ae79de6bc7"
+  },
+  "squad": {
+   "script_sha256": "3a392d42afd4a69913640264d7d66ac0729f677222b578783308a4d2d5c97138",
+   "npz_sha256": "8050e0f9b3c10ae8156f45f9f6cf4f24b46e65f3327e985afbd72ab5f00dd823"
+  },
+  "musique": {
+   "script_sha256": "3a392d42afd4a69913640264d7d66ac0729f677222b578783308a4d2d5c97138",
+   "npz_sha256": "cfc14f78edcbd40c52b21ef0d943234256694ea373fd87301fbcd329f01f8489"
+  },
+  "metaqa": {
+   "script_sha256": "3a392d42afd4a69913640264d7d66ac0729f677222b578783308a4d2d5c97138",
+   "npz_sha256": "9fd0beb436ac4881836dd95b889e67a8d42cb2a724b76ce9855d750562780e5d"
+  },
+  "webqsp": {
+   "script_sha256": "3a392d42afd4a69913640264d7d66ac0729f677222b578783308a4d2d5c97138",
+   "npz_sha256": "6c29a070c5c5a318b2dace1679e1c763699c8fc64a61f914421c4f015d187f2a"
+  },
+  "hotpotqa": {
+   "script_sha256": "3a392d42afd4a69913640264d7d66ac0729f677222b578783308a4d2d5c97138",
+   "npz_sha256": "14974aba35c0559eab0838b1552e9119831c66697701cfa37a1bf411068c35d0"
+  },
+  "2wiki": {
+   "script_sha256": "3a392d42afd4a69913640264d7d66ac0729f677222b578783308a4d2d5c97138",
+   "npz_sha256": "b730b9bee50e2f2cedf83dc2cb146ed6702dd66416f10e9a9ec21200a7210dca"
+  }
+ },
+ "rows": {
+  "multihoprag": {
+   "R-precision": {
+    "region - point": {
+     "diff": -0.17,
+     "lo": -0.36,
+     "hi": 0.01,
+     "call": "LEVEL"
+    },
+    "point - cosine": {
+     "diff": 7.07,
+     "lo": 4.55,
+     "hi": 9.28,
+     "call": "ABOVE"
+    },
+    "region - cosine": {
+     "diff": 6.9,
+     "lo": 4.32,
+     "hi": 9.11,
+     "call": "ABOVE"
+    },
+    "region - shift": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "shift - point": {
+     "diff": -0.17,
+     "lo": -0.36,
+     "hi": 0.01,
+     "call": "LEVEL"
+    }
+   },
+   "recall at 4m": {
+    "region - point": {
+     "diff": -0.15,
+     "lo": -0.55,
+     "hi": 0.25,
+     "call": "LEVEL"
+    },
+    "point - cosine": {
+     "diff": 4.87,
+     "lo": 2.26,
+     "hi": 7.43,
+     "call": "ABOVE"
+    },
+    "region - cosine": {
+     "diff": 4.72,
+     "lo": 2.11,
+     "hi": 7.34,
+     "call": "ABOVE"
+    }
+   },
+   "means": {
+    "cosine": {
+     "R-precision": 34.85,
+     "recall at 4m": 66.88
+    },
+    "point": {
+     "R-precision": 41.92,
+     "recall at 4m": 71.75
+    },
+    "shift": {
+     "R-precision": 41.75,
+     "recall at 4m": 71.6
+    },
+    "region": {
+     "R-precision": 41.75,
+     "recall at 4m": 71.6
+    }
+   },
+   "lam_star": 1.0,
+   "by set size": {
+    "m 2-3": {
+     "units": 0
+    },
+    "m 4-10": {
+     "units": 0
+    },
+    "m 11-100": {
+     "units": 46,
+     "region - point": {
+      "diff": -0.17,
+      "lo": -0.36,
+      "hi": 0.01,
+      "call": "LEVEL"
+     },
+     "mean R-precision": {
+      "cosine": 34.85,
+      "point": 41.92,
+      "shift": 41.75,
+      "region": 41.75
+     }
+    }
+   }
+  },
+  "squad": {
+   "R-precision": {
+    "region - point": {
+     "diff": -0.31,
+     "lo": -0.76,
+     "hi": 0.12,
+     "call": "LEVEL"
+    },
+    "point - cosine": {
+     "diff": 11.69,
+     "lo": 9.93,
+     "hi": 13.4,
+     "call": "ABOVE"
+    },
+    "region - cosine": {
+     "diff": 11.38,
+     "lo": 9.65,
+     "hi": 13.07,
+     "call": "ABOVE"
+    },
+    "region - shift": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "shift - point": {
+     "diff": -0.31,
+     "lo": -0.76,
+     "hi": 0.12,
+     "call": "LEVEL"
+    }
+   },
+   "recall at 4m": {
+    "region - point": {
+     "diff": -0.51,
+     "lo": -0.92,
+     "hi": -0.11,
+     "call": "BELOW"
+    },
+    "point - cosine": {
+     "diff": 11.45,
+     "lo": 9.46,
+     "hi": 13.38,
+     "call": "ABOVE"
+    },
+    "region - cosine": {
+     "diff": 10.94,
+     "lo": 9.06,
+     "hi": 12.76,
+     "call": "ABOVE"
+    }
+   },
+   "means": {
+    "cosine": {
+     "R-precision": 36.92,
+     "recall at 4m": 58.48
+    },
+    "point": {
+     "R-precision": 48.61,
+     "recall at 4m": 69.92
+    },
+    "shift": {
+     "R-precision": 48.3,
+     "recall at 4m": 69.42
+    },
+    "region": {
+     "R-precision": 48.3,
+     "recall at 4m": 69.42
+    }
+   },
+   "lam_star": 1.0,
+   "by set size": {
+    "m 2-3": {
+     "units": 28,
+     "region - point": {
+      "diff": -4.17,
+      "lo": -8.93,
+      "hi": 0.0,
+      "call": "LEVEL"
+     },
+     "mean R-precision": {
+      "cosine": 11.31,
+      "point": 19.64,
+      "shift": 15.48,
+      "region": 15.48
+     }
+    },
+    "m 4-10": {
+     "units": 45,
+     "region - point": {
+      "diff": -1.12,
+      "lo": -3.66,
+      "hi": 1.18,
+      "call": "LEVEL"
+     },
+     "mean R-precision": {
+      "cosine": 21.84,
+      "point": 29.97,
+      "shift": 28.85,
+      "region": 28.85
+     }
+    },
+    "m 11-100": {
+     "units": 375,
+     "region - point": {
+      "diff": 0.07,
+      "lo": -0.2,
+      "hi": 0.34,
+      "call": "LEVEL"
+     },
+     "mean R-precision": {
+      "cosine": 40.64,
+      "point": 53.01,
+      "shift": 53.08,
+      "region": 53.08
+     }
+    }
+   }
+  },
+  "musique": {
+   "R-precision": {
+    "region - point": {
+     "diff": -3.66,
+     "lo": -4.79,
+     "hi": -2.59,
+     "call": "BELOW"
+    },
+    "point - cosine": {
+     "diff": 11.12,
+     "lo": 9.21,
+     "hi": 12.95,
+     "call": "ABOVE"
+    },
+    "region - cosine": {
+     "diff": 7.46,
+     "lo": 6.03,
+     "hi": 8.83,
+     "call": "ABOVE"
+    },
+    "region - shift": {
+     "diff": -1.3,
+     "lo": -2.19,
+     "hi": -0.46,
+     "call": "BELOW"
+    },
+    "shift - point": {
+     "diff": -2.36,
+     "lo": -3.17,
+     "hi": -1.51,
+     "call": "BELOW"
+    }
+   },
+   "recall at 4m": {
+    "region - point": {
+     "diff": -3.91,
+     "lo": -5.25,
+     "hi": -2.65,
+     "call": "BELOW"
+    },
+    "point - cosine": {
+     "diff": 18.17,
+     "lo": 15.65,
+     "hi": 20.5,
+     "call": "ABOVE"
+    },
+    "region - cosine": {
+     "diff": 14.26,
+     "lo": 12.1,
+     "hi": 16.38,
+     "call": "ABOVE"
+    }
+   },
+   "means": {
+    "cosine": {
+     "R-precision": 11.06,
+     "recall at 4m": 20.51
+    },
+    "point": {
+     "R-precision": 22.19,
+     "recall at 4m": 38.68
+    },
+    "shift": {
+     "R-precision": 19.82,
+     "recall at 4m": 36.54
+    },
+    "region": {
+     "R-precision": 18.52,
+     "recall at 4m": 34.77
+    }
+   },
+   "lam_star": 0.5,
+   "by set size": {
+    "m 2-3": {
+     "units": 168,
+     "region - point": {
+      "diff": -3.17,
+      "lo": -5.65,
+      "hi": -0.89,
+      "call": "BELOW"
+     },
+     "mean R-precision": {
+      "cosine": 4.46,
+      "point": 11.71,
+      "shift": 11.11,
+      "region": 8.53
+     }
+    },
+    "m 4-10": {
+     "units": 188,
+     "region - point": {
+      "diff": -3.46,
+      "lo": -6.04,
+      "hi": -1.11,
+      "call": "BELOW"
+     },
+     "mean R-precision": {
+      "cosine": 11.06,
+      "point": 22.07,
+      "shift": 18.54,
+      "region": 18.61
+     }
+    },
+    "m 11-100": {
+     "units": 244,
+     "region - point": {
+      "diff": -4.16,
+      "lo": -5.46,
+      "hi": -2.9,
+      "call": "BELOW"
+     },
+     "mean R-precision": {
+      "cosine": 15.61,
+      "point": 29.49,
+      "shift": 26.81,
+      "region": 25.34
+     }
+    }
+   }
+  },
+  "metaqa": {
+   "R-precision": {
+    "region - point": {
+     "diff": -1.02,
+     "lo": -1.71,
+     "hi": -0.3,
+     "call": "BELOW"
+    },
+    "point - cosine": {
+     "diff": 10.94,
+     "lo": 9.82,
+     "hi": 12.08,
+     "call": "ABOVE"
+    },
+    "region - cosine": {
+     "diff": 9.91,
+     "lo": 8.76,
+     "hi": 11.18,
+     "call": "ABOVE"
+    },
+    "region - shift": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "shift - point": {
+     "diff": -1.02,
+     "lo": -1.71,
+     "hi": -0.3,
+     "call": "BELOW"
+    }
+   },
+   "recall at 4m": {
+    "region - point": {
+     "diff": 0.61,
+     "lo": -0.07,
+     "hi": 1.34,
+     "call": "LEVEL"
+    },
+    "point - cosine": {
+     "diff": 16.27,
+     "lo": 14.71,
+     "hi": 17.87,
+     "call": "ABOVE"
+    },
+    "region - cosine": {
+     "diff": 16.88,
+     "lo": 15.22,
+     "hi": 18.68,
+     "call": "ABOVE"
+    }
+   },
+   "means": {
+    "cosine": {
+     "R-precision": 5.74,
+     "recall at 4m": 10.54
+    },
+    "point": {
+     "R-precision": 16.68,
+     "recall at 4m": 26.81
+    },
+    "shift": {
+     "R-precision": 15.65,
+     "recall at 4m": 27.42
+    },
+    "region": {
+     "R-precision": 15.65,
+     "recall at 4m": 27.42
+    }
+   },
+   "lam_star": 1.0,
+   "by set size": {
+    "m 2-3": {
+     "units": 956,
+     "region - point": {
+      "diff": 0.24,
+      "lo": -0.75,
+      "hi": 1.26,
+      "call": "LEVEL"
+     },
+     "mean R-precision": {
+      "cosine": 3.38,
+      "point": 14.77,
+      "shift": 15.01,
+      "region": 15.01
+     }
+    },
+    "m 4-10": {
+     "units": 339,
+     "region - point": {
+      "diff": -2.23,
+      "lo": -3.26,
+      "hi": -1.29,
+      "call": "BELOW"
+     },
+     "mean R-precision": {
+      "cosine": 7.4,
+      "point": 13.49,
+      "shift": 11.27,
+      "region": 11.27
+     }
+    },
+    "m 11-100": {
+     "units": 138,
+     "region - point": {
+      "diff": -6.86,
+      "lo": -8.29,
+      "hi": -5.61,
+      "call": "BELOW"
+     },
+     "mean R-precision": {
+      "cosine": 17.97,
+      "point": 37.72,
+      "shift": 30.86,
+      "region": 30.86
+     }
+    }
+   }
+  },
+  "webqsp": {
+   "R-precision": {
+    "region - point": {
+     "diff": -0.61,
+     "lo": -1.18,
+     "hi": -0.01,
+     "call": "BELOW"
+    },
+    "point - cosine": {
+     "diff": 30.67,
+     "lo": 29.29,
+     "hi": 32.1,
+     "call": "ABOVE"
+    },
+    "region - cosine": {
+     "diff": 30.07,
+     "lo": 28.65,
+     "hi": 31.51,
+     "call": "ABOVE"
+    },
+    "region - shift": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "shift - point": {
+     "diff": -0.61,
+     "lo": -1.18,
+     "hi": -0.01,
+     "call": "BELOW"
+    }
+   },
+   "recall at 4m": {
+    "region - point": {
+     "diff": 0.61,
+     "lo": -0.08,
+     "hi": 1.31,
+     "call": "LEVEL"
+    },
+    "point - cosine": {
+     "diff": 34.02,
+     "lo": 32.53,
+     "hi": 35.45,
+     "call": "ABOVE"
+    },
+    "region - cosine": {
+     "diff": 34.63,
+     "lo": 33.05,
+     "hi": 36.12,
+     "call": "ABOVE"
+    }
+   },
+   "means": {
+    "cosine": {
+     "R-precision": 7.84,
+     "recall at 4m": 16.25
+    },
+    "point": {
+     "R-precision": 38.51,
+     "recall at 4m": 50.27
+    },
+    "shift": {
+     "R-precision": 37.9,
+     "recall at 4m": 50.87
+    },
+    "region": {
+     "R-precision": 37.9,
+     "recall at 4m": 50.87
+    }
+   },
+   "lam_star": 1.0,
+   "by set size": {
+    "m 2-3": {
+     "units": 1489,
+     "region - point": {
+      "diff": -0.41,
+      "lo": -1.37,
+      "hi": 0.49,
+      "call": "LEVEL"
+     },
+     "mean R-precision": {
+      "cosine": 3.72,
+      "point": 32.31,
+      "shift": 31.9,
+      "region": 31.9
+     }
+    },
+    "m 4-10": {
+     "units": 827,
+     "region - point": {
+      "diff": -0.33,
+      "lo": -1.3,
+      "hi": 0.61,
+      "call": "LEVEL"
+     },
+     "mean R-precision": {
+      "cosine": 6.43,
+      "point": 41.09,
+      "shift": 40.77,
+      "region": 40.77
+     }
+    },
+    "m 11-100": {
+     "units": 323,
+     "region - point": {
+      "diff": -2.2,
+      "lo": -3.13,
+      "hi": -1.35,
+      "call": "BELOW"
+     },
+     "mean R-precision": {
+      "cosine": 30.42,
+      "point": 60.43,
+      "shift": 58.22,
+      "region": 58.22
+     }
+    }
+   }
+  },
+  "hotpotqa": {
+   "R-precision": {
+    "region - point": {
+     "diff": -1.8,
+     "lo": -2.41,
+     "hi": -1.16,
+     "call": "BELOW"
+    },
+    "point - cosine": {
+     "diff": 5.23,
+     "lo": 4.21,
+     "hi": 6.25,
+     "call": "ABOVE"
+    },
+    "region - cosine": {
+     "diff": 3.44,
+     "lo": 2.58,
+     "hi": 4.33,
+     "call": "ABOVE"
+    },
+    "region - shift": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "shift - point": {
+     "diff": -1.8,
+     "lo": -2.41,
+     "hi": -1.16,
+     "call": "BELOW"
+    }
+   },
+   "recall at 4m": {
+    "region - point": {
+     "diff": -3.72,
+     "lo": -4.67,
+     "hi": -2.86,
+     "call": "BELOW"
+    },
+    "point - cosine": {
+     "diff": 11.5,
+     "lo": 10.02,
+     "hi": 13.13,
+     "call": "ABOVE"
+    },
+    "region - cosine": {
+     "diff": 7.78,
+     "lo": 6.66,
+     "hi": 8.97,
+     "call": "ABOVE"
+    }
+   },
+   "means": {
+    "cosine": {
+     "R-precision": 12.59,
+     "recall at 4m": 19.88
+    },
+    "point": {
+     "R-precision": 17.82,
+     "recall at 4m": 31.38
+    },
+    "shift": {
+     "R-precision": 16.02,
+     "recall at 4m": 27.66
+    },
+    "region": {
+     "R-precision": 16.02,
+     "recall at 4m": 27.66
+    }
+   },
+   "lam_star": 1.0,
+   "by set size": {
+    "m 2-3": {
+     "units": 276,
+     "region - point": {
+      "diff": -2.29,
+      "lo": -3.68,
+      "hi": -0.79,
+      "call": "BELOW"
+     },
+     "mean R-precision": {
+      "cosine": 11.78,
+      "point": 16.79,
+      "shift": 14.49,
+      "region": 14.49
+     }
+    },
+    "m 4-10": {
+     "units": 335,
+     "region - point": {
+      "diff": -2.36,
+      "lo": -3.25,
+      "hi": -1.52,
+      "call": "BELOW"
+     },
+     "mean R-precision": {
+      "cosine": 11.8,
+      "point": 18.14,
+      "shift": 15.77,
+      "region": 15.77
+     }
+    },
+    "m 11-100": {
+     "units": 189,
+     "region - point": {
+      "diff": -0.06,
+      "lo": -0.55,
+      "hi": 0.43,
+      "call": "LEVEL"
+     },
+     "mean R-precision": {
+      "cosine": 15.17,
+      "point": 18.77,
+      "shift": 18.71,
+      "region": 18.71
+     }
+    }
+   }
+  },
+  "2wiki": {
+   "R-precision": {
+    "region - point": {
+     "diff": -2.27,
+     "lo": -2.9,
+     "hi": -1.66,
+     "call": "BELOW"
+    },
+    "point - cosine": {
+     "diff": 6.03,
+     "lo": 5.13,
+     "hi": 6.92,
+     "call": "ABOVE"
+    },
+    "region - cosine": {
+     "diff": 3.76,
+     "lo": 3.08,
+     "hi": 4.46,
+     "call": "ABOVE"
+    },
+    "region - shift": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "shift - point": {
+     "diff": -2.27,
+     "lo": -2.9,
+     "hi": -1.66,
+     "call": "BELOW"
+    }
+   },
+   "recall at 4m": {
+    "region - point": {
+     "diff": -4.25,
+     "lo": -5.12,
+     "hi": -3.42,
+     "call": "BELOW"
+    },
+    "point - cosine": {
+     "diff": 10.86,
+     "lo": 9.55,
+     "hi": 12.21,
+     "call": "ABOVE"
+    },
+    "region - cosine": {
+     "diff": 6.61,
+     "lo": 5.59,
+     "hi": 7.56,
+     "call": "ABOVE"
+    }
+   },
+   "means": {
+    "cosine": {
+     "R-precision": 8.95,
+     "recall at 4m": 15.22
+    },
+    "point": {
+     "R-precision": 14.98,
+     "recall at 4m": 26.08
+    },
+    "shift": {
+     "R-precision": 12.71,
+     "recall at 4m": 21.83
+    },
+    "region": {
+     "R-precision": 12.71,
+     "recall at 4m": 21.83
+    }
+   },
+   "lam_star": 1.0,
+   "by set size": {
+    "m 2-3": {
+     "units": 220,
+     "region - point": {
+      "diff": -2.73,
+      "lo": -4.32,
+      "hi": -1.29,
+      "call": "BELOW"
+     },
+     "mean R-precision": {
+      "cosine": 6.44,
+      "point": 12.88,
+      "shift": 10.15,
+      "region": 10.15
+     }
+    },
+    "m 4-10": {
+     "units": 300,
+     "region - point": {
+      "diff": -2.96,
+      "lo": -4.06,
+      "hi": -1.93,
+      "call": "BELOW"
+     },
+     "mean R-precision": {
+      "cosine": 8.03,
+      "point": 15.15,
+      "shift": 12.18,
+      "region": 12.18
+     }
+    },
+    "m 11-100": {
+     "units": 280,
+     "region - point": {
+      "diff": -1.16,
+      "lo": -1.73,
+      "hi": -0.58,
+      "call": "BELOW"
+     },
+     "mean R-precision": {
+      "cosine": 11.92,
+      "point": 16.45,
+      "shift": 15.29,
+      "region": 15.29
+     }
+    }
+   }
+  }
+ },
+ "script_sha256": "3a392d42afd4a69913640264d7d66ac0729f677222b578783308a4d2d5c97138",
+ "utc": "2026-11-25T15:07:22Z"
+}

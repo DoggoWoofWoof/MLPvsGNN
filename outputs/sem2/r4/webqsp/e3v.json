@@ -1,0 +1,518 @@
+{
+ "stage": "SEM2 R4 sets",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 12",
+ "dataset": "webqsp",
+ "arm": "e3v",
+ "smoke": false,
+ "config": {
+  "u_test": 200,
+  "u_dev": 60,
+  "m_min": 2,
+  "m_max": 100,
+  "kmult": 4,
+  "lams": [
+   1.0,
+   0.5,
+   0.2,
+   0.05
+  ],
+  "fit_edges": 20000,
+  "ck_secs": 240,
+  "mem_cells": 120000000.0,
+  "min_fit": 50,
+  "var_floor": 1e-12
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 500445467,
+     "record": 500445467
+    },
+    "CN_all": {
+     "pairs": 995434,
+     "record": 995434
+    },
+    "F0T": {
+     "pairs": 997211,
+     "record": 997211
+    },
+    "S": {
+     "pairs": 5882501,
+     "record": 5882501
+    },
+    "S directed": {
+     "edges": 8215503,
+     "pair_relation_rows": 8213874,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-U": {
+   "test sources are test nodes": true,
+   "dev sources are dev nodes": true,
+   "set sizes in range": true,
+   "tail sets equal the degree read": true,
+   "units": {
+    "test": 2639,
+    "dev": 809
+   },
+   "verdict": "PASS"
+  },
+  "G-T": {
+   "units": 16,
+   "scorers": [
+    "cosine",
+    "point",
+    "shift",
+    "region"
+   ],
+   "max_score_diff": 1e-06,
+   "list_violations": 0,
+   "verdict": "PASS"
+  }
+ },
+ "read_groups": {
+  "R.mention": {
+   "eligible_test": 221308,
+   "eligible_dev": 221959,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "R.name_comention": {
+   "eligible_test": 19198,
+   "eligible_dev": 19090,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "R.title_comention": {
+   "eligible_test": 37,
+   "eligible_dev": 25,
+   "test_units": 37,
+   "dev_units": 25
+  },
+  "S.topic notable types": {
+   "eligible_test": 1732,
+   "eligible_dev": 1720,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "S.valuenotation is reviewed": {
+   "eligible_test": 4439,
+   "eligible_dev": 4547,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "S.topic notable for": {
+   "eligible_test": 922,
+   "eligible_dev": 937,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "S.performance film": {
+   "eligible_test": 0,
+   "eligible_dev": 0,
+   "test_units": 0,
+   "dev_units": 0
+  },
+  "S.film starring": {
+   "eligible_test": 1153,
+   "eligible_dev": 1146,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "S.valuenotation has value": {
+   "eligible_test": 3884,
+   "eligible_dev": 3934,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "S.person profession": {
+   "eligible_test": 3746,
+   "eligible_dev": 3764,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "S.location containedby": {
+   "eligible_test": 4504,
+   "eligible_dev": 4583,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "S.person gender": {
+   "eligible_test": 2,
+   "eligible_dev": 4,
+   "test_units": 2,
+   "dev_units": 4
+  },
+  "S.netflix title netflix genres": {
+   "eligible_test": 2075,
+   "eligible_dev": 1986,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "S.person nationality": {
+   "eligible_test": 543,
+   "eligible_dev": 532,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "S.film genre": {
+   "eligible_test": 2877,
+   "eligible_dev": 2841,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "S.other": {
+   "eligible_test": 51691,
+   "eligible_dev": 52609,
+   "test_units": 200,
+   "dev_units": 60
+  }
+ },
+ "units": {
+  "test": 2639,
+  "dev": 809,
+  "mean_m_test": 5.93,
+  "median_m_test": 3.0
+ },
+ "regions": {
+  "operators": 791,
+  "fitted": 104,
+  "min_edges": 0,
+  "max_edges": 20000
+ },
+ "dev": {
+  "lam grid": {
+   "point": {
+    "R-precision": 39.25,
+    "recall at 4m": 50.535
+   },
+   "lam=1.0": {
+    "R-precision": 38.846,
+    "recall at 4m": 51.789
+   },
+   "lam=0.5": {
+    "R-precision": 26.345,
+    "recall at 4m": 36.483
+   },
+   "lam=0.2": {
+    "R-precision": 23.072,
+    "recall at 4m": 32.841
+   },
+   "lam=0.05": {
+    "R-precision": 22.161,
+    "recall at 4m": 31.848
+   }
+  },
+  "lam_star": 1.0
+ },
+ "R-precision": {
+  "region - point": {
+   "diff": -0.61,
+   "lo": -1.18,
+   "hi": -0.01,
+   "call": "BELOW"
+  },
+  "point - cosine": {
+   "diff": 30.67,
+   "lo": 29.29,
+   "hi": 32.1,
+   "call": "ABOVE"
+  },
+  "region - cosine": {
+   "diff": 30.07,
+   "lo": 28.65,
+   "hi": 31.51,
+   "call": "ABOVE"
+  },
+  "region - shift": {
+   "diff": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "call": "LEVEL"
+  },
+  "shift - point": {
+   "diff": -0.61,
+   "lo": -1.18,
+   "hi": -0.01,
+   "call": "BELOW"
+  }
+ },
+ "recall at 4m": {
+  "region - point": {
+   "diff": 0.61,
+   "lo": -0.08,
+   "hi": 1.31,
+   "call": "LEVEL"
+  },
+  "point - cosine": {
+   "diff": 34.02,
+   "lo": 32.53,
+   "hi": 35.45,
+   "call": "ABOVE"
+  },
+  "region - cosine": {
+   "diff": 34.63,
+   "lo": 33.05,
+   "hi": 36.12,
+   "call": "ABOVE"
+  }
+ },
+ "means": {
+  "cosine": {
+   "R-precision": 7.84,
+   "recall at 4m": 16.25
+  },
+  "point": {
+   "R-precision": 38.51,
+   "recall at 4m": 50.27
+  },
+  "shift": {
+   "R-precision": 37.9,
+   "recall at 4m": 50.87
+  },
+  "region": {
+   "R-precision": 37.9,
+   "recall at 4m": 50.87
+  }
+ },
+ "by set size": {
+  "m 2-3": {
+   "units": 1489,
+   "region - point": {
+    "diff": -0.41,
+    "lo": -1.37,
+    "hi": 0.49,
+    "call": "LEVEL"
+   },
+   "mean R-precision": {
+    "cosine": 3.72,
+    "point": 32.31,
+    "shift": 31.9,
+    "region": 31.9
+   }
+  },
+  "m 4-10": {
+   "units": 827,
+   "region - point": {
+    "diff": -0.33,
+    "lo": -1.3,
+    "hi": 0.61,
+    "call": "LEVEL"
+   },
+   "mean R-precision": {
+    "cosine": 6.43,
+    "point": 41.09,
+    "shift": 40.77,
+    "region": 40.77
+   }
+  },
+  "m 11-100": {
+   "units": 323,
+   "region - point": {
+    "diff": -2.2,
+    "lo": -3.13,
+    "hi": -1.35,
+    "call": "BELOW"
+   },
+   "mean R-precision": {
+    "cosine": 30.42,
+    "point": 60.43,
+    "shift": 58.22,
+    "region": 58.22
+   }
+  }
+ },
+ "per group": {
+  "R.mention": {
+   "units": 200,
+   "mean m": 16.12,
+   "mean R-precision": {
+    "cosine": 29.41,
+    "point": 29.18,
+    "shift": 27.5,
+    "region": 27.5
+   }
+  },
+  "R.name_comention": {
+   "units": 200,
+   "mean m": 10.46,
+   "mean R-precision": {
+    "cosine": 41.11,
+    "point": 43.92,
+    "shift": 41.24,
+    "region": 41.24
+   }
+  },
+  "R.title_comention": {
+   "units": 37,
+   "mean m": 6.49,
+   "mean R-precision": {
+    "cosine": 31.05,
+    "point": 34.03,
+    "shift": 30.0,
+    "region": 30.0
+   }
+  },
+  "S.topic notable types": {
+   "units": 200,
+   "mean m": 2.41,
+   "mean R-precision": {
+    "cosine": 0.0,
+    "point": 14.53,
+    "shift": 12.52,
+    "region": 12.52
+   }
+  },
+  "S.valuenotation is reviewed": {
+   "units": 200,
+   "mean m": 4.38,
+   "mean R-precision": {
+    "cosine": 0.0,
+    "point": 60.3,
+    "shift": 57.3,
+    "region": 57.3
+   }
+  },
+  "S.topic notable for": {
+   "units": 200,
+   "mean m": 3.08,
+   "mean R-precision": {
+    "cosine": 10.85,
+    "point": 99.32,
+    "shift": 98.54,
+    "region": 98.54
+   }
+  },
+  "S.film starring": {
+   "units": 200,
+   "mean m": 14.74,
+   "mean R-precision": {
+    "cosine": 9.16,
+    "point": 94.16,
+    "shift": 86.8,
+    "region": 86.8
+   }
+  },
+  "S.valuenotation has value": {
+   "units": 200,
+   "mean m": 3.32,
+   "mean R-precision": {
+    "cosine": 0.0,
+    "point": 56.25,
+    "shift": 55.32,
+    "region": 55.32
+   }
+  },
+  "S.person profession": {
+   "units": 200,
+   "mean m": 3.04,
+   "mean R-precision": {
+    "cosine": 0.0,
+    "point": 9.46,
+    "shift": 18.5,
+    "region": 18.5
+   }
+  },
+  "S.location containedby": {
+   "units": 200,
+   "mean m": 2.65,
+   "mean R-precision": {
+    "cosine": 2.25,
+    "point": 9.07,
+    "shift": 7.58,
+    "region": 7.58
+   }
+  },
+  "S.person gender": {
+   "units": 2,
+   "mean m": 2.0,
+   "mean R-precision": {
+    "cosine": 0.0,
+    "point": 50.0,
+    "shift": 75.0,
+    "region": 75.0
+   }
+  },
+  "S.netflix title netflix genres": {
+   "units": 200,
+   "mean m": 5.6,
+   "mean R-precision": {
+    "cosine": 0.0,
+    "point": 9.19,
+    "shift": 6.96,
+    "region": 6.96
+   }
+  },
+  "S.person nationality": {
+   "units": 200,
+   "mean m": 2.08,
+   "mean R-precision": {
+    "cosine": 0.0,
+    "point": 40.21,
+    "shift": 38.42,
+    "region": 38.42
+   }
+  },
+  "S.film genre": {
+   "units": 200,
+   "mean m": 3.45,
+   "mean R-precision": {
+    "cosine": 0.25,
+    "point": 20.6,
+    "shift": 22.39,
+    "region": 22.39
+   }
+  },
+  "S.other": {
+   "units": 200,
+   "mean m": 5.67,
+   "mean R-precision": {
+    "cosine": 4.63,
+    "point": 15.1,
+    "shift": 20.75,
+    "region": 20.75
+   }
+  }
+ },
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "b39c615122ad55f587eaea0c3fc5c7eff4190e6236fa258006e957dcfda948fe",
+  "ner_npz_sha256": "8ed08f05db3da877f02d212b2c8ac5b495d12bf15c91c329b33652fdc2e9fb10",
+  "knn_npz_sha256": "75a03f25dfa8c6339773059bffbd8322c2f9bf13e7b48cad0105c2ee189519cd",
+  "structural_npz_sha256": "b7c2c435fc0b9dbab3a238c7db31cd61da9a8bd435864c0eba6990ae12756b95",
+  "w2_s_npz_sha256": "a2e79a93c350f6e4de9455af07b11684b875444d2fb61ed6f2555b443ed093c4",
+  "f0t_npz_sha256": "624684bf80d6605b8a7e9d9f884ee027b35c84f3f51dbdd4d65c10ee29a51edd",
+  "names_npz_sha256": "b567061f6c9fc8653ee964518913a97e72ef42e0d940315528401e80f0140f38",
+  "vectors": {
+   "shards": 65,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "e171839e9a7376ae102ec00d7fefffc0edc2ef2775707d79c3f76aa779fe4f17"
+  }
+ },
+ "refs": {
+  "r1_record_sha256": "771b1393aa9a159367edf6f3eb16d8d5d35ae0a813ec238794ee3b1e3c990a6f",
+  "r1_npz_sha256": "6a7d1b0316fa4540e857c078fc4fa0d5a9c77814b4a17bf1ee7dc0319c425a62"
+ },
+ "threads": 8,
+ "seconds": 1620.0,
+ "utc": "2026-11-25T14:16:19Z",
+ "script_sha256": "3a392d42afd4a69913640264d7d66ac0729f677222b578783308a4d2d5c97138",
+ "npz_sha256": "6c29a070c5c5a318b2dace1679e1c763699c8fc64a61f914421c4f015d187f2a"
+}

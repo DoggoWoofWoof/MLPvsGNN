@@ -1,0 +1,251 @@
+{
+ "stage": "SEM2 R4 sets",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 12",
+ "dataset": "multihoprag",
+ "arm": "e3v",
+ "smoke": false,
+ "config": {
+  "u_test": 200,
+  "u_dev": 60,
+  "m_min": 2,
+  "m_max": 100,
+  "kmult": 4,
+  "lams": [
+   1.0,
+   0.5,
+   0.2,
+   0.05
+  ],
+  "fit_edges": 20000,
+  "ck_secs": 240,
+  "mem_cells": 120000000.0,
+  "min_fit": 50,
+  "var_floor": 1e-12
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "F0": {
+     "pairs": 25005,
+     "record": 25005
+    },
+    "F0T": {
+     "pairs": 25080,
+     "record": 25080
+    },
+    "W2_S": {
+     "pairs": 2,
+     "record": 2
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-U": {
+   "test sources are test nodes": true,
+   "dev sources are dev nodes": true,
+   "set sizes in range": true,
+   "tail sets equal the degree read": true,
+   "units": {
+    "test": 46,
+    "dev": 43
+   },
+   "verdict": "PASS"
+  },
+  "G-T": {
+   "units": 16,
+   "scorers": [
+    "cosine",
+    "point",
+    "shift",
+    "region"
+   ],
+   "max_score_diff": 6e-07,
+   "list_violations": 0,
+   "verdict": "PASS"
+  }
+ },
+ "read_groups": {
+  "R.name_comention": {
+   "eligible_test": 46,
+   "eligible_dev": 43,
+   "test_units": 46,
+   "dev_units": 43
+  }
+ },
+ "units": {
+  "test": 46,
+  "dev": 43,
+  "mean_m_test": 62.72,
+  "median_m_test": 68.0
+ },
+ "regions": {
+  "operators": 1,
+  "fitted": 1,
+  "min_edges": 20000,
+  "max_edges": 20000
+ },
+ "dev": {
+  "lam grid": {
+   "point": {
+    "R-precision": 52.797,
+    "recall at 4m": 82.146
+   },
+   "lam=1.0": {
+    "R-precision": 52.72,
+    "recall at 4m": 81.894
+   },
+   "lam=0.5": {
+    "R-precision": 52.369,
+    "recall at 4m": 81.865
+   },
+   "lam=0.2": {
+    "R-precision": 51.626,
+    "recall at 4m": 81.443
+   },
+   "lam=0.05": {
+    "R-precision": 50.693,
+    "recall at 4m": 80.366
+   }
+  },
+  "lam_star": 1.0
+ },
+ "R-precision": {
+  "region - point": {
+   "diff": -0.17,
+   "lo": -0.36,
+   "hi": 0.01,
+   "call": "LEVEL"
+  },
+  "point - cosine": {
+   "diff": 7.07,
+   "lo": 4.55,
+   "hi": 9.28,
+   "call": "ABOVE"
+  },
+  "region - cosine": {
+   "diff": 6.9,
+   "lo": 4.32,
+   "hi": 9.11,
+   "call": "ABOVE"
+  },
+  "region - shift": {
+   "diff": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "call": "LEVEL"
+  },
+  "shift - point": {
+   "diff": -0.17,
+   "lo": -0.36,
+   "hi": 0.01,
+   "call": "LEVEL"
+  }
+ },
+ "recall at 4m": {
+  "region - point": {
+   "diff": -0.15,
+   "lo": -0.55,
+   "hi": 0.25,
+   "call": "LEVEL"
+  },
+  "point - cosine": {
+   "diff": 4.87,
+   "lo": 2.26,
+   "hi": 7.43,
+   "call": "ABOVE"
+  },
+  "region - cosine": {
+   "diff": 4.72,
+   "lo": 2.11,
+   "hi": 7.34,
+   "call": "ABOVE"
+  }
+ },
+ "means": {
+  "cosine": {
+   "R-precision": 34.85,
+   "recall at 4m": 66.88
+  },
+  "point": {
+   "R-precision": 41.92,
+   "recall at 4m": 71.75
+  },
+  "shift": {
+   "R-precision": 41.75,
+   "recall at 4m": 71.6
+  },
+  "region": {
+   "R-precision": 41.75,
+   "recall at 4m": 71.6
+  }
+ },
+ "by set size": {
+  "m 2-3": {
+   "units": 0
+  },
+  "m 4-10": {
+   "units": 0
+  },
+  "m 11-100": {
+   "units": 46,
+   "region - point": {
+    "diff": -0.17,
+    "lo": -0.36,
+    "hi": 0.01,
+    "call": "LEVEL"
+   },
+   "mean R-precision": {
+    "cosine": 34.85,
+    "point": 41.92,
+    "shift": 41.75,
+    "region": 41.75
+   }
+  }
+ },
+ "per group": {
+  "R.name_comention": {
+   "units": 46,
+   "mean m": 62.72,
+   "mean R-precision": {
+    "cosine": 34.85,
+    "point": 41.92,
+    "shift": 41.75,
+    "region": 41.75
+   }
+  }
+ },
+ "inputs": {
+  "links_json_sha256": "97a1f768bae0e0256136220f1a6aa037ec71632918053e89b262a523b2455744",
+  "F0_npz_sha256": "345d21c15bfda50834613b27b72bee5122e4e85a258e65973867c762b217305c",
+  "F0T_npz_sha256": "2e884936ec9398f4ce1395021d63cc68580b77c1ce4ec39ad7bdb231109406ec",
+  "W2_S_npz_sha256": "00b5b57909411d1ffae9a23fad257f5294731cc97845625d58b4e1ca254a940a",
+  "vectors": {
+   "shards": 1,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "29722959d04395f0b9dc396bc549e192f090d184d42f4318b20e0ecfdff6d6c3"
+  }
+ },
+ "refs": {
+  "r1_record_sha256": "00379d41120ea0b2e82a98ab8f50e9b2a1dbeab1ddf391793733116bdfcefa0b",
+  "r1_npz_sha256": "b2f120d341cbfb373cde2725ae901062c2ff958a4152b43c8ad1fb08ad8e4275"
+ },
+ "threads": 4,
+ "seconds": 4.1,
+ "utc": "2026-11-25T12:08:24Z",
+ "script_sha256": "3a392d42afd4a69913640264d7d66ac0729f677222b578783308a4d2d5c97138",
+ "npz_sha256": "ad9e465c8050ce49343c39e87f29efefcb30f3fb2b03b5d48457c6ae79de6bc7"
+}

@@ -1,0 +1,310 @@
+{
+ "stage": "SEM2 R4 sets",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 12",
+ "dataset": "musique",
+ "arm": "e3v",
+ "smoke": false,
+ "config": {
+  "u_test": 200,
+  "u_dev": 60,
+  "m_min": 2,
+  "m_max": 100,
+  "kmult": 4,
+  "lams": [
+   1.0,
+   0.5,
+   0.2,
+   0.05
+  ],
+  "fit_edges": 20000,
+  "ck_secs": 240,
+  "mem_cells": 120000000.0,
+  "min_fit": 50,
+  "var_floor": 1e-12
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 2343920,
+     "record": 2343920
+    },
+    "CN_all": {
+     "pairs": 931069,
+     "record": 931069
+    },
+    "F0T": {
+     "pairs": 973013,
+     "record": 973013
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-U": {
+   "test sources are test nodes": true,
+   "dev sources are dev nodes": true,
+   "set sizes in range": true,
+   "tail sets equal the degree read": true,
+   "units": {
+    "test": 600,
+    "dev": 180
+   },
+   "verdict": "PASS"
+  },
+  "G-T": {
+   "units": 16,
+   "scorers": [
+    "cosine",
+    "point",
+    "shift",
+    "region"
+   ],
+   "max_score_diff": 8e-07,
+   "list_violations": 0,
+   "verdict": "PASS"
+  }
+ },
+ "read_groups": {
+  "R.mention": {
+   "eligible_test": 8223,
+   "eligible_dev": 8064,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "R.name_comention": {
+   "eligible_test": 9417,
+   "eligible_dev": 9186,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "R.title_comention": {
+   "eligible_test": 1258,
+   "eligible_dev": 1263,
+   "test_units": 200,
+   "dev_units": 60
+  }
+ },
+ "units": {
+  "test": 600,
+  "dev": 180,
+  "mean_m_test": 14.92,
+  "median_m_test": 8.0
+ },
+ "regions": {
+  "operators": 3,
+  "fitted": 3,
+  "min_edges": 20000,
+  "max_edges": 20000
+ },
+ "dev": {
+  "lam grid": {
+   "point": {
+    "R-precision": 21.319,
+    "recall at 4m": 35.077
+   },
+   "lam=1.0": {
+    "R-precision": 19.383,
+    "recall at 4m": 33.129
+   },
+   "lam=0.5": {
+    "R-precision": 19.445,
+    "recall at 4m": 32.262
+   },
+   "lam=0.2": {
+    "R-precision": 18.73,
+    "recall at 4m": 32.146
+   },
+   "lam=0.05": {
+    "R-precision": 18.305,
+    "recall at 4m": 31.583
+   }
+  },
+  "lam_star": 0.5
+ },
+ "R-precision": {
+  "region - point": {
+   "diff": -3.66,
+   "lo": -4.79,
+   "hi": -2.59,
+   "call": "BELOW"
+  },
+  "point - cosine": {
+   "diff": 11.12,
+   "lo": 9.21,
+   "hi": 12.95,
+   "call": "ABOVE"
+  },
+  "region - cosine": {
+   "diff": 7.46,
+   "lo": 6.03,
+   "hi": 8.83,
+   "call": "ABOVE"
+  },
+  "region - shift": {
+   "diff": -1.3,
+   "lo": -2.19,
+   "hi": -0.46,
+   "call": "BELOW"
+  },
+  "shift - point": {
+   "diff": -2.36,
+   "lo": -3.17,
+   "hi": -1.51,
+   "call": "BELOW"
+  }
+ },
+ "recall at 4m": {
+  "region - point": {
+   "diff": -3.91,
+   "lo": -5.25,
+   "hi": -2.65,
+   "call": "BELOW"
+  },
+  "point - cosine": {
+   "diff": 18.17,
+   "lo": 15.65,
+   "hi": 20.5,
+   "call": "ABOVE"
+  },
+  "region - cosine": {
+   "diff": 14.26,
+   "lo": 12.1,
+   "hi": 16.38,
+   "call": "ABOVE"
+  }
+ },
+ "means": {
+  "cosine": {
+   "R-precision": 11.06,
+   "recall at 4m": 20.51
+  },
+  "point": {
+   "R-precision": 22.19,
+   "recall at 4m": 38.68
+  },
+  "shift": {
+   "R-precision": 19.82,
+   "recall at 4m": 36.54
+  },
+  "region": {
+   "R-precision": 18.52,
+   "recall at 4m": 34.77
+  }
+ },
+ "by set size": {
+  "m 2-3": {
+   "units": 168,
+   "region - point": {
+    "diff": -3.17,
+    "lo": -5.65,
+    "hi": -0.89,
+    "call": "BELOW"
+   },
+   "mean R-precision": {
+    "cosine": 4.46,
+    "point": 11.71,
+    "shift": 11.11,
+    "region": 8.53
+   }
+  },
+  "m 4-10": {
+   "units": 188,
+   "region - point": {
+    "diff": -3.46,
+    "lo": -6.04,
+    "hi": -1.11,
+    "call": "BELOW"
+   },
+   "mean R-precision": {
+    "cosine": 11.06,
+    "point": 22.07,
+    "shift": 18.54,
+    "region": 18.61
+   }
+  },
+  "m 11-100": {
+   "units": 244,
+   "region - point": {
+    "diff": -4.16,
+    "lo": -5.46,
+    "hi": -2.9,
+    "call": "BELOW"
+   },
+   "mean R-precision": {
+    "cosine": 15.61,
+    "point": 29.49,
+    "shift": 26.81,
+    "region": 25.34
+   }
+  }
+ },
+ "per group": {
+  "R.mention": {
+   "units": 200,
+   "mean m": 20.72,
+   "mean R-precision": {
+    "cosine": 11.16,
+    "point": 34.84,
+    "shift": 30.08,
+    "region": 26.25
+   }
+  },
+  "R.name_comention": {
+   "units": 200,
+   "mean m": 18.71,
+   "mean R-precision": {
+    "cosine": 16.4,
+    "point": 19.66,
+    "shift": 18.81,
+    "region": 19.49
+   }
+  },
+  "R.title_comention": {
+   "units": 200,
+   "mean m": 5.33,
+   "mean R-precision": {
+    "cosine": 5.63,
+    "point": 12.05,
+    "shift": 10.58,
+    "region": 9.82
+   }
+  }
+ },
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+  "ner_npz_sha256": "f294708600750c48eae9e32d0895d517ac3a8b5d048c736a70e9a566af2fe9c6",
+  "knn_npz_sha256": "6020ac7e0b6773e64866b5e942dc0e02c3b704615ced8de4d557aa543221ef5b",
+  "w2_s_npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+  "f0t_npz_sha256": "a0cea3c450f4a8364d202d7f21fe949e288f2ed0ca325aadea199f7ed2a4eebc",
+  "names_npz_sha256": "279d4b6ff3a2d5e3fbbab9071bcc93328167da1c5d19e805c3a9c5ad7a8f9cda",
+  "vectors": {
+   "shards": 3,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "48ccb700e4baf00235fc67190011b70245f923cdbd11e2bf9d178ba51064c81e"
+  }
+ },
+ "refs": {
+  "r1_record_sha256": "3b767a5e487776d45d9039a8b2b314841c0b19a91da4202c2108256bfdb5ea77",
+  "r1_npz_sha256": "ddd4fd23c9cf724eb03de9c7320155d4fa0b9b286d071685ed30f0653bd94ca7"
+ },
+ "threads": 8,
+ "seconds": 45.4,
+ "utc": "2026-11-25T12:35:31Z",
+ "script_sha256": "3a392d42afd4a69913640264d7d66ac0729f677222b578783308a4d2d5c97138",
+ "npz_sha256": "cfc14f78edcbd40c52b21ef0d943234256694ea373fd87301fbcd329f01f8489"
+}

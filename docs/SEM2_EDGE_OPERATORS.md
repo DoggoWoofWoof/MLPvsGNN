@@ -1280,6 +1280,63 @@ One streaming pass over all nodes per unit set: every scorer's score for every n
 - **NOT_CARRIED:** R4 closes this form (a diagonal Gaussian over R1's residuals does not beat the point as a set read). What it leaves open is named, not queued: a per-operation box trained by gradient on the sets (Query2Box's form), and the withheld-links read of 12.8. If the shift carries the gain, that is reported as a type prior, which R1's operators already approximate.
 - Either way: no pool, link or PL change follows from R4, and no model is trained.
 
+### 12.12 Records and call (25 November 2026, 20:42 IST, 15:12 UTC)
+
+**Rows and gates.** The seven e3v rows ran (r4-multihoprag, r4-squad and r4-metaqa at 4 threads; r4-musique8, r4-webqsp, r4-hotpotqa and r4-2wiki at 8), all with outputs/mp_unified/zsem2r4.py at sha256 3a392d42afd4a699, and the report read them together at 15:07 UTC (20:37 IST); it stops on a record fitted by other code, and none did. **G-E, G-R, G-U and G-T PASS on all seven.** The first MuSiQue row ran at 4 threads and stopped at G-R (rank agreement 0.998667, below the 0.999 of 12.9): the float32 reduction order of R1's stored operators depends on the thread count, and R1 ran at 8. No number of that row was read; it was re-run at 8 threads under the name r4-musique8 and passed. Reading time per dataset: 4 s (MultiHop-RAG) to 1,620 s (WebQSP; 2Wiki 1,601, HotpotQA 1,227); measured peak memory WebQSP 15.8, HotpotQA 18.0, 2Wiki 20.5 GB (the feed asked 18, 22 and 24; 12.10's 40, 32 and 36 were upper bounds). The smoke rows are code checks and nothing here reads them.
+
+**The calls (R-precision, share of the true tail set in the top m, mean over test units; paired bootstrap, 2,000 resamples, seed 0).**
+
+| dataset | units | mean m | lam* | R-prec cosine | point | shift | region | region - point | region - shift | point - cosine | call |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| multihoprag | 46 | 62.72 | 1.0 | 34.85 | 41.92 | 41.75 | 41.75 | -0.17 [-0.36, +0.01] LEVEL | +0.00 [+0.00, +0.00] LEVEL | +7.07 [+4.55, +9.28] ABOVE | LEVEL |
+| squad | 448 | 35.81 | 1.0 | 36.92 | 48.61 | 48.3 | 48.3 | -0.31 [-0.76, +0.12] LEVEL | +0.00 [+0.00, +0.00] LEVEL | +11.69 [+9.93, +13.40] ABOVE | LEVEL |
+| musique | 600 | 14.92 | 0.5 | 11.06 | 22.19 | 19.82 | 18.52 | -3.66 [-4.79, -2.59] BELOW | -1.30 [-2.19, -0.46] BELOW | +11.12 [+9.21, +12.95] ABOVE | BELOW |
+| metaqa | 1433 | 4.57 | 1.0 | 5.74 | 16.68 | 15.65 | 15.65 | -1.02 [-1.71, -0.30] BELOW | +0.00 [+0.00, +0.00] LEVEL | +10.94 [+9.82, +12.08] ABOVE | BELOW |
+| webqsp | 2639 | 5.93 | 1.0 | 7.84 | 38.51 | 37.9 | 37.9 | -0.61 [-1.18, -0.01] BELOW | +0.00 [+0.00, +0.00] LEVEL | +30.67 [+29.29, +32.10] ABOVE | BELOW |
+| hotpotqa | 800 | 8.02 | 1.0 | 12.59 | 17.82 | 16.02 | 16.02 | -1.80 [-2.41, -1.16] BELOW | +0.00 [+0.00, +0.00] LEVEL | +5.23 [+4.21, +6.25] ABOVE | BELOW |
+| 2wiki | 800 | 11.03 | 1.0 | 8.95 | 14.98 | 12.71 | 12.71 | -2.27 [-2.90, -1.66] BELOW | +0.00 [+0.00, +0.00] LEVEL | +6.03 [+5.13, +6.92] ABOVE | BELOW |
+
+**Region minus point: ABOVE on 0 of 7, BELOW on 5 (MuSiQue, MetaQA, WebQSP, HotpotQA, 2Wiki), LEVEL on 2 (MultiHop-RAG, SQuAD). Rule 12.6 (at least 4 of 7 ABOVE and none BELOW): NOT_CARRIED.** On the dev units no region beat the point either, on all seven (the dev grid: the point's R-precision is at or above every lam; for example MuSiQue 21.32 against 19.45 at lam 0.5, 2Wiki 16.51 against 13.89 at lam 1), so the choice of lam did not hide a region that the test units then lost.
+
+**By set size (region minus point, R-precision).** ABOVE in none of the 19 size bins; BELOW in 11, LEVEL in 8.
+
+| dataset | m 2-3 | m 4-10 | m 11-100 |
+|---|---|---|---|
+| multihoprag | - | - | 46: -0.17 [-0.36, +0.01] LEVEL |
+| squad | 28: -4.17 [-8.93, +0.00] LEVEL | 45: -1.12 [-3.66, +1.18] LEVEL | 375: +0.07 [-0.20, +0.34] LEVEL |
+| musique | 168: -3.17 [-5.65, -0.89] BELOW | 188: -3.46 [-6.04, -1.11] BELOW | 244: -4.16 [-5.46, -2.90] BELOW |
+| metaqa | 956: +0.24 [-0.75, +1.26] LEVEL | 339: -2.23 [-3.26, -1.29] BELOW | 138: -6.86 [-8.29, -5.61] BELOW |
+| webqsp | 1489: -0.41 [-1.37, +0.49] LEVEL | 827: -0.33 [-1.30, +0.61] LEVEL | 323: -2.20 [-3.13, -1.35] BELOW |
+| hotpotqa | 276: -2.29 [-3.68, -0.79] BELOW | 335: -2.36 [-3.25, -1.52] BELOW | 189: -0.06 [-0.55, +0.43] LEVEL |
+| 2wiki | 220: -2.73 [-4.32, -1.29] BELOW | 300: -2.96 [-4.06, -1.93] BELOW | 280: -1.16 [-1.73, -0.58] BELOW |
+
+**Recall at 4m, beside (region minus point: BELOW on SQuAD, MuSiQue, HotpotQA, 2Wiki; LEVEL on MultiHop-RAG, MetaQA, WebQSP).**
+
+| dataset | region - point | region - cosine |
+|---|---|---|
+| multihoprag | -0.15 [-0.55, +0.25] LEVEL | +4.72 [+2.11, +7.34] ABOVE |
+| squad | -0.51 [-0.92, -0.11] BELOW | +10.94 [+9.06, +12.76] ABOVE |
+| musique | -3.91 [-5.25, -2.65] BELOW | +14.26 [+12.10, +16.38] ABOVE |
+| metaqa | +0.61 [-0.07, +1.34] LEVEL | +16.88 [+15.22, +18.68] ABOVE |
+| webqsp | +0.61 [-0.08, +1.31] LEVEL | +34.63 [+33.05, +36.12] ABOVE |
+| hotpotqa | -3.72 [-4.67, -2.86] BELOW | +7.78 [+6.66, +8.97] ABOVE |
+| 2wiki | -4.25 [-5.12, -3.42] BELOW | +6.61 [+5.59, +7.56] ABOVE |
+
+### 12.13 Expectations against the outcome (12.7; a failed one is reported, not explained away)
+
+- **Point minus cosine ABOVE on most datasets: held, 7 of 7** (+5.23 on HotpotQA to +30.67 on WebQSP; at recall 4m the region minus cosine is ABOVE on 7 of 7 too, +4.72 to +34.63). R1's operators, learned on single tails, already put more of a whole tail set in the top m than the cosine does, on every dataset. (The second half of that expectation, that the set gain is smaller than R1's MRR gain, was not tabulated and is not claimed.)
+- **Shift carries a part of any gain, most on typed KB relations (MetaQA, WebQSP): not held.** Shift minus point is BELOW on five datasets (MuSiQue -2.36, MetaQA -1.02, WebQSP -0.61, HotpotQA -1.80, 2Wiki -2.27) and LEVEL on two (-0.17, -0.31); it is ABOVE on none, MetaQA and WebQSP included. **A description of the per-group means in the records (no intervals, not a call, found after the numbers were seen):** the offset is above the point where the relation's tails are a small fixed vocabulary (MetaQA has_genre 38.29 to 44.96, in_language 29.51 to 32.79, release_year 3.37 to 3.97; WebQSP person profession 9.46 to 18.50, film genre 20.60 to 22.39, S.other 15.10 to 20.75) and below it where the tail set depends on the source (MetaQA R.name_comention 63.84 to 52.28, WebQSP film starring 94.16 to 86.80, MuSiQue R.mention 34.84 to 30.08, HotpotQA hyperlink 18.05 to 11.94, 2Wiki hyperlink 16.92 to 11.37). That is a type prior, as 12.7's last bullet says it would be reported, and it nets below the point because the source-dependent groups lose more than the vocabulary groups gain.
+- **Region minus shift is small: held.** It is 0.00 on six datasets, because lam = 1 won on dev there (the region IS the shift, not a distribution), and -1.30 BELOW on MuSiQue, the one dataset where a smaller lam (0.5) won on dev and then lost on the test units. A diagonal Gaussian over R1's residuals gave no shape that the isotropic offset does not.
+- **My expectation, NOT_CARRIED with REGION above on at most two or three datasets: held (0 ABOVE).** "A BELOW on the rule-link groups is plausible": it came, on MuSiQue (whose groups are all R labels: R.mention 30.08 to 26.25 from shift to region, R.title_comention 10.58 to 9.82; R.name_comention went the other way, 18.81 to 19.49), and against the point: under the shift R.mention is below the point in five of its six datasets (SQuAD is +0.34 above).
+- **By set size, any gain rises with m: not seen.** Region minus point is above 0 in no bin; it is at its lowest at large m on MetaQA (-6.86, 138 units at m 11-100) and flat or negative elsewhere. The one-to-many case the idea started from (a genre with many films) is where this read is weakest, not strongest.
+- **If the region equals the shift, the gain is a type prior, not a distribution: that is the finding on six of seven,** and the type prior is below the point at the dataset level.
+
+### 12.14 What this closes and what it leaves (12.11, applied; nothing is queued by this page)
+
+- **R4 closes this form.** A diagonal Gaussian built from R1's train-edge residuals is not a better set read than R1's point on any dataset read. The point itself is a real set read (7 of 7 above the cosine), but the absolute levels are low (R-precision 15 to 49, MetaQA 16.7, 2Wiki 15.0), against 100 for the stored links, so the stored links stay the way sets are retrieved; the value of a semantic set read is only where links are missing or noisy (12.8), which is a different read and is not declared.
+- **Limits.** The region here is the weakest shape (sample mean and per-dimension variance, no gradient, 1,408 dimensions); a box or distribution trained on the sets themselves (Query2Box's form) was not tested, and this page is not a result against it. It is named, not queued.
+- **No pool, link or PL change follows, no model is trained.** The depth of the user's tree (a set read of a set read) was not read by R4; section 13 (R5, branching), declared before this filing, reads it. R5's rows are queued behind the UL2 chain.
+
 ## 13. R5 declared: branching, the second hop through R1's operators (25 November 2026, 20:20 IST, 14:50 UTC), before any R5 number
 
 ### 13.1 Why, and what was seen

@@ -1,0 +1,422 @@
+{
+ "stage": "SEM2 R4 sets",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 12",
+ "dataset": "metaqa",
+ "arm": "e3v",
+ "smoke": false,
+ "config": {
+  "u_test": 200,
+  "u_dev": 60,
+  "m_min": 2,
+  "m_max": 100,
+  "kmult": 4,
+  "lams": [
+   1.0,
+   0.5,
+   0.2,
+   0.05
+  ],
+  "fit_edges": 20000,
+  "ck_secs": 240,
+  "mem_cells": 120000000.0,
+  "min_fit": 50,
+  "var_floor": 1e-12
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 245144,
+     "record": 245144
+    },
+    "CN_all": {
+     "pairs": 12605,
+     "record": 12605
+    },
+    "F0T": {
+     "pairs": 12605,
+     "record": 12605
+    },
+    "S": {
+     "pairs": 124669,
+     "record": 124669
+    },
+    "S directed": {
+     "edges": 133571,
+     "pair_relation_rows": 133571,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-U": {
+   "test sources are test nodes": true,
+   "dev sources are dev nodes": true,
+   "set sizes in range": true,
+   "tail sets equal the degree read": true,
+   "units": {
+    "test": 1433,
+    "dev": 503
+   },
+   "verdict": "PASS"
+  },
+  "G-T": {
+   "units": 16,
+   "scorers": [
+    "cosine",
+    "point",
+    "shift",
+    "region"
+   ],
+   "max_score_diff": 1e-06,
+   "list_violations": 0,
+   "verdict": "PASS"
+  }
+ },
+ "read_groups": {
+  "R.mention": {
+   "eligible_test": 3560,
+   "eligible_dev": 3653,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "R.name_comention": {
+   "eligible_test": 273,
+   "eligible_dev": 309,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "S.starred_actors": {
+   "eligible_test": 973,
+   "eligible_dev": 1033,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "S.has_tags": {
+   "eligible_test": 616,
+   "eligible_dev": 607,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "S.written_by": {
+   "eligible_test": 488,
+   "eligible_dev": 495,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "S.release_year": {
+   "eligible_test": 84,
+   "eligible_dev": 74,
+   "test_units": 84,
+   "dev_units": 60
+  },
+  "S.directed_by": {
+   "eligible_test": 115,
+   "eligible_dev": 106,
+   "test_units": 115,
+   "dev_units": 60
+  },
+  "S.has_genre": {
+   "eligible_test": 328,
+   "eligible_dev": 317,
+   "test_units": 200,
+   "dev_units": 60
+  },
+  "S.in_language": {
+   "eligible_test": 34,
+   "eligible_dev": 23,
+   "test_units": 34,
+   "dev_units": 23
+  },
+  "S.other": {
+   "eligible_test": 0,
+   "eligible_dev": 0,
+   "test_units": 0,
+   "dev_units": 0
+  }
+ },
+ "units": {
+  "test": 1433,
+  "dev": 503,
+  "mean_m_test": 4.57,
+  "median_m_test": 2.0
+ },
+ "regions": {
+  "operators": 10,
+  "fitted": 10,
+  "min_edges": 343,
+  "max_edges": 20000
+ },
+ "dev": {
+  "lam grid": {
+   "point": {
+    "R-precision": 16.13,
+    "recall at 4m": 26.514
+   },
+   "lam=1.0": {
+    "R-precision": 15.507,
+    "recall at 4m": 26.312
+   },
+   "lam=0.5": {
+    "R-precision": 11.013,
+    "recall at 4m": 22.429
+   },
+   "lam=0.2": {
+    "R-precision": 10.507,
+    "recall at 4m": 21.203
+   },
+   "lam=0.05": {
+    "R-precision": 10.107,
+    "recall at 4m": 20.126
+   }
+  },
+  "lam_star": 1.0
+ },
+ "R-precision": {
+  "region - point": {
+   "diff": -1.02,
+   "lo": -1.71,
+   "hi": -0.3,
+   "call": "BELOW"
+  },
+  "point - cosine": {
+   "diff": 10.94,
+   "lo": 9.82,
+   "hi": 12.08,
+   "call": "ABOVE"
+  },
+  "region - cosine": {
+   "diff": 9.91,
+   "lo": 8.76,
+   "hi": 11.18,
+   "call": "ABOVE"
+  },
+  "region - shift": {
+   "diff": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "call": "LEVEL"
+  },
+  "shift - point": {
+   "diff": -1.02,
+   "lo": -1.71,
+   "hi": -0.3,
+   "call": "BELOW"
+  }
+ },
+ "recall at 4m": {
+  "region - point": {
+   "diff": 0.61,
+   "lo": -0.07,
+   "hi": 1.34,
+   "call": "LEVEL"
+  },
+  "point - cosine": {
+   "diff": 16.27,
+   "lo": 14.71,
+   "hi": 17.87,
+   "call": "ABOVE"
+  },
+  "region - cosine": {
+   "diff": 16.88,
+   "lo": 15.22,
+   "hi": 18.68,
+   "call": "ABOVE"
+  }
+ },
+ "means": {
+  "cosine": {
+   "R-precision": 5.74,
+   "recall at 4m": 10.54
+  },
+  "point": {
+   "R-precision": 16.68,
+   "recall at 4m": 26.81
+  },
+  "shift": {
+   "R-precision": 15.65,
+   "recall at 4m": 27.42
+  },
+  "region": {
+   "R-precision": 15.65,
+   "recall at 4m": 27.42
+  }
+ },
+ "by set size": {
+  "m 2-3": {
+   "units": 956,
+   "region - point": {
+    "diff": 0.24,
+    "lo": -0.75,
+    "hi": 1.26,
+    "call": "LEVEL"
+   },
+   "mean R-precision": {
+    "cosine": 3.38,
+    "point": 14.77,
+    "shift": 15.01,
+    "region": 15.01
+   }
+  },
+  "m 4-10": {
+   "units": 339,
+   "region - point": {
+    "diff": -2.23,
+    "lo": -3.26,
+    "hi": -1.29,
+    "call": "BELOW"
+   },
+   "mean R-precision": {
+    "cosine": 7.4,
+    "point": 13.49,
+    "shift": 11.27,
+    "region": 11.27
+   }
+  },
+  "m 11-100": {
+   "units": 138,
+   "region - point": {
+    "diff": -6.86,
+    "lo": -8.29,
+    "hi": -5.61,
+    "call": "BELOW"
+   },
+   "mean R-precision": {
+    "cosine": 17.97,
+    "point": 37.72,
+    "shift": 30.86,
+    "region": 30.86
+   }
+  }
+ },
+ "per group": {
+  "R.mention": {
+   "units": 200,
+   "mean m": 9.44,
+   "mean R-precision": {
+    "cosine": 0.54,
+    "point": 2.42,
+    "shift": 0.89,
+    "region": 0.89
+   }
+  },
+  "R.name_comention": {
+   "units": 200,
+   "mean m": 8.67,
+   "mean R-precision": {
+    "cosine": 38.71,
+    "point": 63.84,
+    "shift": 52.28,
+    "region": 52.28
+   }
+  },
+  "S.starred_actors": {
+   "units": 200,
+   "mean m": 3.17,
+   "mean R-precision": {
+    "cosine": 0.0,
+    "point": 0.46,
+    "shift": 0.12,
+    "region": 0.12
+   }
+  },
+  "S.has_tags": {
+   "units": 200,
+   "mean m": 4.29,
+   "mean R-precision": {
+    "cosine": 1.45,
+    "point": 6.78,
+    "shift": 5.98,
+    "region": 5.98
+   }
+  },
+  "S.written_by": {
+   "units": 200,
+   "mean m": 2.42,
+   "mean R-precision": {
+    "cosine": 0.25,
+    "point": 0.75,
+    "shift": 0.25,
+    "region": 0.25
+   }
+  },
+  "S.release_year": {
+   "units": 84,
+   "mean m": 2.15,
+   "mean R-precision": {
+    "cosine": 0.0,
+    "point": 3.37,
+    "shift": 3.97,
+    "region": 3.97
+   }
+  },
+  "S.directed_by": {
+   "units": 115,
+   "mean m": 2.23,
+   "mean R-precision": {
+    "cosine": 0.0,
+    "point": 0.87,
+    "shift": 0.72,
+    "region": 0.72
+   }
+  },
+  "S.has_genre": {
+   "units": 200,
+   "mean m": 2.15,
+   "mean R-precision": {
+    "cosine": 0.0,
+    "point": 38.29,
+    "shift": 44.96,
+    "region": 44.96
+   }
+  },
+  "S.in_language": {
+   "units": 34,
+   "mean m": 2.32,
+   "mean R-precision": {
+    "cosine": 0.98,
+    "point": 29.51,
+    "shift": 32.79,
+    "region": 32.79
+   }
+  }
+ },
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+  "ner_npz_sha256": "93065a2311c2b445cc14ce6458457c9e14ec0d3c641a4bc573ef4b175a374cb8",
+  "knn_npz_sha256": "f7c59640e816951148fee791bc8790e026461ee52a5b6741c63859244b5a4a16",
+  "structural_npz_sha256": "1b2027c64b2e62b5cf122f09a246ed4cb485841bf0823fcee246e8bf45bf8570",
+  "w2_s_npz_sha256": "3f2b97d1474552dae2fea1f7f8be5e83f7960950b38c0ca41bd3a78025aa7dd5",
+  "f0t_npz_sha256": "499e8c70d3d7d1375a77a609819aacdd40c8753ac2bf6f3d1ea277c5ae62a7fe",
+  "names_npz_sha256": "0ccad8b4b6a55c2bec41bfd36e6fa83f48dc448964e170cf15a2c191f517d720",
+  "vectors": {
+   "shards": 2,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "a1a7727a9128278299ee04c2d6ae4e8912bc44c3251fbbba4f76993720a53fc6"
+  }
+ },
+ "refs": {
+  "r1_record_sha256": "b2fd0a33e1ef601c591d8cf6e62e2b13229c11ac14fb0f34e05aa429ad1f016f",
+  "r1_npz_sha256": "4fd92a218cbf2817185e78af24da5d89dbcf7df719ae1f9c6785b4f5e8b1bc59"
+ },
+ "threads": 4,
+ "seconds": 57.4,
+ "utc": "2026-11-25T12:09:19Z",
+ "script_sha256": "3a392d42afd4a69913640264d7d66ac0729f677222b578783308a4d2d5c97138",
+ "npz_sha256": "9fd0beb436ac4881836dd95b889e67a8d42cb2a724b76ce9855d750562780e5d"
+}
