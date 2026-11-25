@@ -1,0 +1,369 @@
+{
+ "stage": "PL3 call",
+ "declared_in": "docs/PL3_COVERAGE_ROUND2.md",
+ "utc": "2026-11-25T02:33:26Z",
+ "datasets": {
+  "metaqa": {
+   "status": "LEVEL",
+   "new": "rrf1000_b400+STRUCT:h3_c25_v2000",
+   "old": "equal_rrf_budget_200+STRUCT:h3_c25_v2000",
+   "same_cell": false,
+   "new_all": 0.8967807869187532,
+   "old_all": 0.8952478283086357,
+   "new_nodes": 2335.8849259070007,
+   "old_nodes": 2153.502299437915,
+   "new_reaches": false,
+   "old_reaches": false,
+   "within_bound": true,
+   "all_diff": 0.0015329586101174852,
+   "all_diff_ci": [
+    0.0007153806847215449,
+    0.0023505365355135366
+   ],
+   "nodes_ratio": 1.0846911686682152,
+   "nodes_ratio_ci": [
+    1.0845723534215592,
+    1.0848011307242824
+   ],
+   "r98": {
+    "status": "LEVEL",
+    "new": "rrf1000_b400+STRUCT:h3_c25_v2000",
+    "old": "equal_rrf_budget_200+STRUCT:h3_c25_v2000",
+    "same_cell": false,
+    "new_all": 0.8967807869187532,
+    "old_all": 0.8952478283086357,
+    "new_nodes": 2335.8849259070007,
+    "old_nodes": 2153.502299437915,
+    "new_reaches": false,
+    "old_reaches": false,
+    "within_bound": true,
+    "all_diff": 0.0015329586101174852,
+    "all_diff_ci": [
+     0.0008175779253960513,
+     0.002452733776188043
+    ],
+    "nodes_ratio": 1.0846911686682152,
+    "nodes_ratio_ci": [
+     1.0845688083236535,
+     1.084811829017641
+    ]
+   },
+   "new_only": {
+    "status": "LEVEL",
+    "new": "rrf1000_b400+STRUCT:h3_c25_v2000",
+    "old": "equal_rrf_budget_200+STRUCT:h3_c25_v2000",
+    "same_cell": false,
+    "new_all": 0.8967807869187532,
+    "old_all": 0.8952478283086357,
+    "new_nodes": 2335.8849259070007,
+    "old_nodes": 2153.502299437915,
+    "new_reaches": false,
+    "old_reaches": false,
+    "within_bound": true,
+    "all_diff": 0.0015329586101174852,
+    "all_diff_ci": [
+     0.0008175779253960513,
+     0.0023505365355135366
+    ],
+    "nodes_ratio": 1.0846911686682152,
+    "nodes_ratio_ci": [
+     1.0845729143336118,
+     1.0848124831215844
+    ]
+   }
+  },
+  "squad": {
+   "status": "LEVEL",
+   "new": "rrf1000_b15",
+   "old": "rrf1000_b15",
+   "same_cell": true,
+   "new_all": 0.9553609028889076,
+   "old_all": 0.9553609028889076,
+   "new_nodes": 15.0,
+   "old_nodes": 15.0,
+   "new_reaches": true,
+   "old_reaches": true,
+   "within_bound": true,
+   "all_diff": 0.0,
+   "all_diff_ci": [
+    0.0,
+    0.0
+   ],
+   "nodes_ratio": 1.0,
+   "nodes_ratio_ci": [
+    1.0,
+    1.0
+   ],
+   "r98": {
+    "status": "LEVEL",
+    "new": "rrf1000_b50+KNN:h1_c100+top25",
+    "old": "rrf1000_b50+KNN:h1_c100+top25",
+    "same_cell": true,
+    "new_all": 0.9818074623094416,
+    "old_all": 0.9818074623094416,
+    "new_nodes": 63.04185968163059,
+    "old_nodes": 63.04185968163059,
+    "new_reaches": true,
+    "old_reaches": true,
+    "within_bound": true,
+    "all_diff": 0.0,
+    "all_diff_ci": [
+     0.0,
+     0.0
+    ],
+    "nodes_ratio": 1.0,
+    "nodes_ratio_ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "new_only": {
+    "status": "LEVEL",
+    "new": "rrf1000_b25+STRUCT:h3_c25_v2000~cs-vr+top50",
+    "old": "rrf1000_b15",
+    "same_cell": false,
+    "new_all": 0.977259327886802,
+    "old_all": 0.9553609028889076,
+    "new_nodes": 72.79011201886634,
+    "old_nodes": 15.0,
+    "new_reaches": true,
+    "old_reaches": true,
+    "within_bound": true,
+    "all_diff": 0.021898424997894406,
+    "all_diff_ci": [
+     0.01928535332266488,
+     0.02451149667312393
+    ],
+    "nodes_ratio": 4.852674134591089,
+    "nodes_ratio_ci": [
+     4.8413254162104495,
+     4.864095566972683
+    ]
+   }
+  },
+  "musique": {
+   "status": "LEVEL",
+   "new": "rrf1000_b800+FULL:h3_c25_v2000~cs-vr",
+   "old": "rrf1000_b800+FULL:h1_c100",
+   "same_cell": false,
+   "new_all": 0.87877534133223,
+   "old_all": 0.82829954489036,
+   "new_nodes": 2455.0541994207697,
+   "old_nodes": 1064.177079023583,
+   "new_reaches": false,
+   "old_reaches": false,
+   "within_bound": true,
+   "all_diff": 0.05047579644187006,
+   "all_diff_ci": [
+    0.04178733967728587,
+    0.05917459660736456
+   ],
+   "nodes_ratio": 2.3069978181388398,
+   "nodes_ratio_ci": [
+    2.2947739906503055,
+    2.3195096797217793
+   ],
+   "r98": {
+    "status": "LEVEL",
+    "new": "rrf1000_b800+FULL:h3_c25_v2000~cs-vr",
+    "old": "rrf1000_b800+FULL:h1_c100",
+    "same_cell": false,
+    "new_all": 0.87877534133223,
+    "old_all": 0.82829954489036,
+    "new_nodes": 2455.0541994207697,
+    "old_nodes": 1064.177079023583,
+    "new_reaches": false,
+    "old_reaches": false,
+    "within_bound": true,
+    "all_diff": 0.05047579644187006,
+    "all_diff_ci": [
+     0.04178733967728587,
+     0.058750517170045535
+    ],
+    "nodes_ratio": 2.3069978181388398,
+    "nodes_ratio_ci": [
+     2.2955946385011248,
+     2.31880917935935
+    ]
+   },
+   "new_only": {
+    "status": "LEVEL",
+    "new": "rrf1000_b800+FULL:h3_c25_v2000~cs-vr",
+    "old": "rrf1000_b800+FULL:h1_c100",
+    "same_cell": false,
+    "new_all": 0.87877534133223,
+    "old_all": 0.82829954489036,
+    "new_nodes": 2455.0541994207697,
+    "old_nodes": 1064.177079023583,
+    "new_reaches": false,
+    "old_reaches": false,
+    "within_bound": true,
+    "all_diff": 0.05047579644187006,
+    "all_diff_ci": [
+     0.041787339677285984,
+     0.06000206868018198
+    ],
+    "nodes_ratio": 2.3069978181388398,
+    "nodes_ratio_ci": [
+     2.295121140095293,
+     2.3189751832862404
+    ]
+   }
+  },
+  "hotpotqa": {
+   "status": "NOT_READ",
+   "why": "no PL3 select or confirm file here"
+  },
+  "2wiki": {
+   "status": "NOT_READ",
+   "why": "no PL3 select or confirm file here"
+  },
+  "webqsp": {
+   "status": "LEVEL",
+   "new": "dense_top200+FULL:h2_c100_v5000~s10-cs-vr",
+   "old": "dense_top200+FULL:h2_c100_v2000",
+   "same_cell": false,
+   "new_all": 0.780439121756487,
+   "old_all": 0.7638057218895542,
+   "new_nodes": 2468.142381902861,
+   "old_nodes": 1890.7558216899533,
+   "new_reaches": false,
+   "old_reaches": false,
+   "within_bound": true,
+   "all_diff": 0.016633399866932796,
+   "all_diff_ci": [
+    -0.003326679973386537,
+    0.03526280771789758
+   ],
+   "nodes_ratio": 1.3053734139487354,
+   "nodes_ratio_ci": [
+    1.2757736719567372,
+    1.33287784841717
+   ],
+   "r98": {
+    "status": "LEVEL",
+    "new": "dense_top200+FULL:h2_c100_v5000~s10-cs-vr",
+    "old": "dense_top200+FULL:h2_c100_v2000",
+    "same_cell": false,
+    "new_all": 0.780439121756487,
+    "old_all": 0.7638057218895542,
+    "new_nodes": 2468.142381902861,
+    "old_nodes": 1890.7558216899533,
+    "new_reaches": false,
+    "old_reaches": false,
+    "within_bound": true,
+    "all_diff": 0.016633399866932796,
+    "all_diff_ci": [
+     -0.0019960079840318804,
+     0.03394876912840984
+    ],
+    "nodes_ratio": 1.3053734139487354,
+    "nodes_ratio_ci": [
+     1.279209068094248,
+     1.3335616498900948
+    ]
+   },
+   "new_only": {
+    "status": "LEVEL",
+    "new": "dense_top200+FULL:h2_c100_v5000~s10-cs-vr",
+    "old": "dense_top200+FULL:h2_c100_v2000",
+    "same_cell": false,
+    "new_all": 0.780439121756487,
+    "old_all": 0.7638057218895542,
+    "new_nodes": 2468.142381902861,
+    "old_nodes": 1890.7558216899533,
+    "new_reaches": false,
+    "old_reaches": false,
+    "within_bound": true,
+    "all_diff": 0.016633399866932796,
+    "all_diff_ci": [
+     0.0,
+     0.0359281437125748
+    ],
+    "nodes_ratio": 1.3053734139487354,
+    "nodes_ratio_ci": [
+     1.275664822159763,
+     1.334164777572312
+    ]
+   }
+  },
+  "multihoprag": {
+   "status": "LEVEL",
+   "new": "rrf1000_b25+FULL:h1_c100+top25",
+   "old": "rrf1000_b25+FULL:h1_c100+top25",
+   "same_cell": true,
+   "new_all": 0.9690265486725663,
+   "old_all": 0.9690265486725663,
+   "new_nodes": 50.0,
+   "old_nodes": 50.0,
+   "new_reaches": true,
+   "old_reaches": true,
+   "within_bound": true,
+   "all_diff": 0.0,
+   "all_diff_ci": [
+    0.0,
+    0.0
+   ],
+   "nodes_ratio": 1.0,
+   "nodes_ratio_ci": [
+    1.0,
+    1.0
+   ],
+   "r98": {
+    "status": "ABOVE",
+    "new": "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50",
+    "old": "rrf1000_b60",
+    "same_cell": false,
+    "new_all": 0.9787610619469026,
+    "old_all": 0.968141592920354,
+    "new_nodes": 58.00353982300885,
+    "old_nodes": 60.0,
+    "new_reaches": false,
+    "old_reaches": false,
+    "within_bound": true,
+    "all_diff": 0.010619469026548645,
+    "all_diff_ci": [
+     0.001769911504424737,
+     0.019469026548672552
+    ],
+    "nodes_ratio": 0.9667256637168141,
+    "nodes_ratio_ci": [
+     0.9530604719764012,
+     0.9793119469026549
+    ]
+   },
+   "new_only": {
+    "status": "LEVEL",
+    "new": "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50",
+    "old": "rrf1000_b25+FULL:h1_c100+top25",
+    "same_cell": false,
+    "new_all": 0.9787610619469026,
+    "old_all": 0.9690265486725663,
+    "new_nodes": 58.00353982300885,
+    "old_nodes": 50.0,
+    "new_reaches": true,
+    "old_reaches": true,
+    "within_bound": true,
+    "all_diff": 0.009734513274336276,
+    "all_diff_ci": [
+     0.0035398230088495826,
+     0.016814159292035447
+    ],
+    "nodes_ratio": 1.160070796460177,
+    "nodes_ratio_ci": [
+     1.143570353982301,
+     1.174991150442478
+    ]
+   }
+  }
+ },
+ "datasets_read": [
+  "metaqa",
+  "multihoprag",
+  "musique",
+  "squad",
+  "webqsp"
+ ],
+ "code_path_equal_everywhere": true,
+ "call": "INCOMPLETE"
+}

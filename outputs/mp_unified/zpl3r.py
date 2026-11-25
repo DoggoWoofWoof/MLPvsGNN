@@ -6,7 +6,7 @@
 `report` reads outputs/pl3/<dataset>/{select.json, confirm_frozen.json, confirm_e3v.json}, outputs/pl3/call.json, outputs/pl3/{gr_*.json, selftest.json},
 outputs/pl3/<dataset>/miss.json and the filed reachability blocks of outputs/m3a/headroom/<dataset>.json. A dataset without a select.json is listed as
 NOT READ. Nothing in `report` chooses a cell or computes a pool: every number is one a record holds. Writes outputs/pl3/report.md and report.json.
-`miss` classifies, for a dataset whose chosen cell (R95 over all cells) is SHORT, each gold missing from that cell's pool on the first n dev questions:
+`miss` classifies, for a dataset whose chosen cell (R95 over all cells) is SHORT, each gold missing from that cell's pool on n dev questions evenly spaced over the carve:
   R  in the cell's own walk but not in the pool (ranked past M),
   C  not in the cell's own walk but in the uncapped three-hop FULL reach of its seeds (a cap, the visited cap or the order dropped it),
   U  in neither (the reach ceiling); of which `U_in_lists`: in the first stage's top-1000 dense or SPLADE list (a deeper base would hold it).
@@ -254,7 +254,7 @@ def cmd_report(a):
         md.append("")
     mrows = [(ds, rj(PL3 / ds / "miss.json")) for ds in ORDER if (PL3 / ds / "miss.json").is_file()]
     if mrows:
-        md.append("### D1: what remains unreached at the chosen cell of a SHORT dataset (post-hoc; labels read; the first n dev questions)\n")
+        md.append("### D1: what remains unreached at the chosen cell of a SHORT dataset (post-hoc; labels read; n dev questions evenly spaced over the carve)\n")
         md.append("| dataset | chosen cell | n | questions missing a gold | missing golds | per question | R (ranked out) | C (cut by the caps) | U (unreached) | of U: in the top-1000 lists | nodes |")
         md.append("|---|---|---|---|---|---|---|---|---|---|---|")
         for ds, m in mrows:
@@ -299,7 +299,12 @@ def cmd_miss(a):
         tot = {k: 0 for k in ("q_missing", "golds_missing", "R", "C", "U", "U_in_lists", "q_R", "q_C", "q_U")}
         nodes = []
         t0 = Z.time.time()
-        for q, st in Z.iter_states3(op, src, plan, 0, n):
+        idx = np.unique(np.linspace(0, src.nq - 1, n).astype(np.int64))      # evenly spaced over the carve (a prefix is not representative: MetaQA's is ordered by hop count)
+
+        def sample():
+            for q0 in idx:
+                yield from Z.iter_states3(op, src, plan, int(q0), int(q0) + 1)
+        for q, st in sample():
             wk = st.W[p[3]]
             exp = wk.exp
             lst = st.L[p[1]]
@@ -336,12 +341,12 @@ def cmd_miss(a):
             tot["q_R"] += int(r_.any())
             tot["q_C"] += int(c_.any())
             tot["q_U"] += int(u_.any())
-        out = {"stage": "PL3 D1 (post-hoc diagnostic, labels read, decides nothing)", "declared_in": Z.DOC, "dataset": ds, "cell": name, "questions": n,
+        out = {"stage": "PL3 D1 (post-hoc diagnostic, labels read, decides nothing)", "declared_in": Z.DOC, "dataset": ds, "cell": name, "questions": int(idx.size),
                "carve": "dev", "first": "frozen", "nodes_mean": float(np.mean(nodes)), "bound": BOUND, "totals": tot,
                "uncapped_setting": "3 hops, no per-seed, per-frontier or visited cap, FULL families, the cell's own seeds", "seconds": round(Z.time.time() - t0, 1),
                "code_path_sha256": Z.code_path_sha256(), "utc": Z.utc()}
         Z.wjson(Z.PL3 / ds / "miss.json", out)
-        Z.log(f"D1 {ds} {name}: {n} q, {tot['q_missing']} miss a gold ({tot['golds_missing']} golds): R {tot['R']}, C {tot['C']}, U {tot['U']} (in lists {tot['U_in_lists']}) "
+        Z.log(f"D1 {ds} {name}: {idx.size} q, {tot['q_missing']} miss a gold ({tot['golds_missing']} golds): R {tot['R']}, C {tot['C']}, U {tot['U']} (in lists {tot['U_in_lists']}) "
               f"at {np.mean(nodes):.0f} nodes")
     return 0
 

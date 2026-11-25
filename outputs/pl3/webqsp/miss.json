@@ -1,0 +1,26 @@
+{
+ "stage": "PL3 D1 (post-hoc diagnostic, labels read, decides nothing)",
+ "declared_in": "docs/PL3_COVERAGE_ROUND2.md",
+ "dataset": "webqsp",
+ "cell": "dense_top200+FULL:h2_c100_v5000~s10-cs-vr",
+ "questions": 300,
+ "carve": "dev",
+ "first": "frozen",
+ "nodes_mean": 2421.1033333333335,
+ "bound": 2500,
+ "totals": {
+  "q_missing": 63,
+  "golds_missing": 245,
+  "R": 0,
+  "C": 245,
+  "U": 0,
+  "U_in_lists": 0,
+  "q_R": 0,
+  "q_C": 63,
+  "q_U": 0
+ },
+ "uncapped_setting": "3 hops, no per-seed, per-frontier or visited cap, FULL families, the cell's own seeds",
+ "seconds": 274.5,
+ "code_path_sha256": "e9d860950c700bdd5e988f16b4b0ef6023d3207b7f5c07b1e7ee36593c13c8c4",
+ "utc": "2026-11-25T02:33:11Z"
+}
