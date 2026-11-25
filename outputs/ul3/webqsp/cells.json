@@ -1,0 +1,4500 @@
+{
+ "dataset": "webqsp",
+ "declared_in": "docs/UL3_LINK_TIGHTENING.md",
+ "status": "read",
+ "nodes": 2592894,
+ "nodes_sha256": "b39c615122ad55f587eaea0c3fc5c7eff4190e6236fa258006e957dcfda948fe",
+ "sources": {
+  "grade_json_sha256": "c55136cf6644b67937783ac250cc30291efe6d470231e36c1e642373b2ab8aa4",
+  "ranks_npz_sha256": "37143a2a0ce9e4e877987bb9a75bc6edc06fbb96d88b0ad1bd445847847bf9e3"
+ },
+ "gates": {
+  "UL2P": {
+   "G-P1": {
+    "SRK": {
+     "S": 5882501,
+     "R": 495465195,
+     "K": 5781334,
+     "B0": 507129030
+    }
+   },
+   "G-P2": {
+    "H5": 28245530,
+    "HM": 9325326,
+    "HK1": 4821571,
+    "NTc": 1023873,
+    "NT1": 4781062,
+    "HK2": 9263813,
+    "H10": 36479378
+   },
+   "G-P3": {
+    "s1eval/GP": {
+     "slots": 4369,
+     "questions": 1503
+    }
+   }
+  }
+ },
+ "anchor_nodes": 2463,
+ "constants": {
+  "BINS": 5,
+  "RHO": 0.95,
+  "RHOS": [
+   0.99,
+   0.95,
+   0.9,
+   0.8
+  ],
+  "R_MIN": 0.92,
+  "TAU_MAX": 0.5,
+  "variants": [
+   "P",
+   "C",
+   "PC"
+  ],
+  "selection": "dev carve: s1sel; WebQSP: PL's dev (outputs/pl2/webqsp/pop_dev.npz)",
+  "graded": "s1eval"
+ },
+ "versions": {
+  "SRK": {
+   "b0": {
+    "S": 5882501,
+    "R": 495465195,
+    "K": 5781334,
+    "B0": 507129030
+   },
+   "kinds": {
+    "GP": {
+     "any": {
+      "sel": {
+       "candidates": 15787206,
+       "targets": 1700,
+       "covered": 850
+      },
+      "eval": {
+       "candidates": 15584012,
+       "targets": 1666,
+       "covered": 833
+      }
+     },
+     "P": {
+      "cells": {
+       "5": {
+        "class": "S",
+        "bin": 0,
+        "sel": {
+         "candidates": 5859,
+         "covered": 24
+        },
+        "eval": {
+         "candidates": 6451,
+         "covered": 15
+        }
+       },
+       "10": {
+        "class": "R.mention",
+        "bin": 0,
+        "sel": {
+         "candidates": 9942320,
+         "covered": 440
+        },
+        "eval": {
+         "candidates": 9567444,
+         "covered": 458
+        }
+       },
+       "15": {
+        "class": "S+R.mention",
+        "bin": 0,
+        "sel": {
+         "candidates": 5816044,
+         "covered": 273
+        },
+        "eval": {
+         "candidates": 5987776,
+         "covered": 214
+        }
+       },
+       "20": {
+        "class": "R.name_comention",
+        "bin": 0,
+        "sel": {
+         "candidates": 2156,
+         "covered": 2
+        },
+        "eval": {
+         "candidates": 2079,
+         "covered": 14
+        }
+       },
+       "30": {
+        "class": "R.mention+R.name_comention",
+        "bin": 0,
+        "sel": {
+         "candidates": 669,
+         "covered": 5
+        },
+        "eval": {
+         "candidates": 645,
+         "covered": 0
+        }
+       },
+       "35": {
+        "class": "S+R.mention+R.name_comention",
+        "bin": 0,
+        "sel": {
+         "candidates": 656,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 654,
+         "covered": 4
+        }
+       },
+       "40": {
+        "class": "R.title_comention",
+        "bin": 0,
+        "sel": {
+         "candidates": 1,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 3,
+         "covered": 0
+        }
+       },
+       "55": {
+        "class": "S+R.mention+R.title_comention",
+        "bin": 0,
+        "sel": {
+         "candidates": 2,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 0,
+         "covered": 0
+        }
+       },
+       "80": {
+        "class": "K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 10439,
+         "covered": 72
+        },
+        "eval": {
+         "candidates": 9790,
+         "covered": 60
+        }
+       },
+       "85": {
+        "class": "S+K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 88,
+         "covered": 1
+        },
+        "eval": {
+         "candidates": 87,
+         "covered": 1
+        }
+       },
+       "90": {
+        "class": "R.mention+K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 2712,
+         "covered": 5
+        },
+        "eval": {
+         "candidates": 2557,
+         "covered": 19
+        }
+       },
+       "95": {
+        "class": "S+R.mention+K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 4878,
+         "covered": 9
+        },
+        "eval": {
+         "candidates": 5039,
+         "covered": 24
+        }
+       },
+       "100": {
+        "class": "R.name_comention+K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 485,
+         "covered": 7
+        },
+        "eval": {
+         "candidates": 606,
+         "covered": 10
+        }
+       },
+       "105": {
+        "class": "S+R.name_comention+K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 1,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 0,
+         "covered": 0
+        }
+       },
+       "110": {
+        "class": "R.mention+R.name_comention+K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 337,
+         "covered": 11
+        },
+        "eval": {
+         "candidates": 308,
+         "covered": 7
+        }
+       },
+       "115": {
+        "class": "S+R.mention+R.name_comention+K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 556,
+         "covered": 1
+        },
+        "eval": {
+         "candidates": 571,
+         "covered": 7
+        }
+       },
+       "120": {
+        "class": "R.title_comention+K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 1,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 2,
+         "covered": 0
+        }
+       },
+       "135": {
+        "class": "S+R.mention+R.title_comention+K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 2,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 0,
+         "covered": 0
+        }
+       }
+      },
+      "kept": {
+       "0.99": {
+        "cells": [
+         110,
+         100,
+         85,
+         30,
+         80,
+         5,
+         95,
+         90,
+         115,
+         20,
+         15,
+         10
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 15786543,
+          "covered": 850
+         },
+         "reach_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "price_retained": {
+          "pt": 0.99996,
+          "ci": [
+           0.99995,
+           0.99997
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.0,
+           "ci": [
+            0.0,
+            0.0
+           ]
+          },
+          "call": "LEVEL"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 15583353,
+          "covered": 829
+         },
+         "reach_retained": {
+          "pt": 0.9952,
+          "ci": [
+           0.98519,
+           1.0
+          ]
+         },
+         "price_retained": {
+          "pt": 0.99996,
+          "ci": [
+           0.99995,
+           0.99997
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": -0.0,
+           "ci": [
+            -0.0,
+            0.0
+           ]
+          },
+          "call": "LEVEL"
+         },
+         "call": "SCREEN_OUT"
+        }
+       },
+       "0.95": {
+        "cells": [
+         110,
+         100,
+         85,
+         30,
+         80,
+         5,
+         95,
+         90,
+         115,
+         20,
+         15,
+         10
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 15786543,
+          "covered": 850
+         },
+         "reach_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "price_retained": {
+          "pt": 0.99996,
+          "ci": [
+           0.99995,
+           0.99997
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.0,
+           "ci": [
+            0.0,
+            0.0
+           ]
+          },
+          "call": "LEVEL"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 15583353,
+          "covered": 829
+         },
+         "reach_retained": {
+          "pt": 0.9952,
+          "ci": [
+           0.98519,
+           1.0
+          ]
+         },
+         "price_retained": {
+          "pt": 0.99996,
+          "ci": [
+           0.99995,
+           0.99997
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": -0.0,
+           "ci": [
+            -0.0,
+            0.0
+           ]
+          },
+          "call": "LEVEL"
+         },
+         "call": "SCREEN_OUT"
+        }
+       },
+       "0.9": {
+        "cells": [
+         110,
+         100,
+         85,
+         30,
+         80,
+         5,
+         95,
+         90,
+         115,
+         20,
+         15,
+         10
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 15786543,
+          "covered": 850
+         },
+         "reach_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "price_retained": {
+          "pt": 0.99996,
+          "ci": [
+           0.99995,
+           0.99997
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.0,
+           "ci": [
+            0.0,
+            0.0
+           ]
+          },
+          "call": "LEVEL"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 15583353,
+          "covered": 829
+         },
+         "reach_retained": {
+          "pt": 0.9952,
+          "ci": [
+           0.98519,
+           1.0
+          ]
+         },
+         "price_retained": {
+          "pt": 0.99996,
+          "ci": [
+           0.99995,
+           0.99997
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": -0.0,
+           "ci": [
+            -0.0,
+            0.0
+           ]
+          },
+          "call": "LEVEL"
+         },
+         "call": "SCREEN_OUT"
+        }
+       },
+       "0.8": {
+        "cells": [
+         110,
+         100,
+         85,
+         30,
+         80,
+         5,
+         95,
+         90,
+         115,
+         20,
+         15,
+         10
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 15786543,
+          "covered": 850
+         },
+         "reach_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "price_retained": {
+          "pt": 0.99996,
+          "ci": [
+           0.99995,
+           0.99997
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.0,
+           "ci": [
+            0.0,
+            0.0
+           ]
+          },
+          "call": "LEVEL"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 15583353,
+          "covered": 829
+         },
+         "reach_retained": {
+          "pt": 0.9952,
+          "ci": [
+           0.98519,
+           1.0
+          ]
+         },
+         "price_retained": {
+          "pt": 0.99996,
+          "ci": [
+           0.99995,
+           0.99997
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": -0.0,
+           "ci": [
+            -0.0,
+            0.0
+           ]
+          },
+          "call": "LEVEL"
+         },
+         "call": "SCREEN_OUT"
+        }
+       }
+      },
+      "kept_S": {
+       "0.99": {
+        "cells": [
+         5,
+         15,
+         35,
+         55,
+         85,
+         95,
+         105,
+         115,
+         135,
+         110,
+         100,
+         30,
+         80,
+         90,
+         20,
+         10
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 15787204,
+          "covered": 850
+         },
+         "reach_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "price_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.0,
+           "ci": [
+            0.0,
+            0.0
+           ]
+          },
+          "call": "LEVEL"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 15584007,
+          "covered": 833
+         },
+         "reach_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "price_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.0,
+           "ci": [
+            0.0,
+            0.0
+           ]
+          },
+          "call": "LEVEL"
+         },
+         "call": "SCREEN_OUT"
+        }
+       },
+       "0.95": {
+        "cells": [
+         5,
+         15,
+         35,
+         55,
+         85,
+         95,
+         105,
+         115,
+         135,
+         110,
+         100,
+         30,
+         80,
+         90,
+         20,
+         10
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 15787204,
+          "covered": 850
+         },
+         "reach_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "price_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.0,
+           "ci": [
+            0.0,
+            0.0
+           ]
+          },
+          "call": "LEVEL"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 15584007,
+          "covered": 833
+         },
+         "reach_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "price_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.0,
+           "ci": [
+            0.0,
+            0.0
+           ]
+          },
+          "call": "LEVEL"
+         },
+         "call": "SCREEN_OUT"
+        }
+       },
+       "0.9": {
+        "cells": [
+         5,
+         15,
+         35,
+         55,
+         85,
+         95,
+         105,
+         115,
+         135,
+         110,
+         100,
+         30,
+         80,
+         90,
+         20,
+         10
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 15787204,
+          "covered": 850
+         },
+         "reach_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "price_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.0,
+           "ci": [
+            0.0,
+            0.0
+           ]
+          },
+          "call": "LEVEL"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 15584007,
+          "covered": 833
+         },
+         "reach_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "price_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.0,
+           "ci": [
+            0.0,
+            0.0
+           ]
+          },
+          "call": "LEVEL"
+         },
+         "call": "SCREEN_OUT"
+        }
+       },
+       "0.8": {
+        "cells": [
+         5,
+         15,
+         35,
+         55,
+         85,
+         95,
+         105,
+         115,
+         135,
+         110,
+         100,
+         30,
+         80,
+         90,
+         20,
+         10
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 15787204,
+          "covered": 850
+         },
+         "reach_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "price_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.0,
+           "ci": [
+            0.0,
+            0.0
+           ]
+          },
+          "call": "LEVEL"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 15584007,
+          "covered": 833
+         },
+         "reach_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "price_retained": {
+          "pt": 1.0,
+          "ci": [
+           1.0,
+           1.0
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.0,
+           "ci": [
+            0.0,
+            0.0
+           ]
+          },
+          "call": "LEVEL"
+         },
+         "call": "SCREEN_OUT"
+        }
+       }
+      },
+      "s_cells": [
+       5,
+       15,
+       35,
+       55,
+       85,
+       95,
+       105,
+       115,
+       135
+      ],
+      "edges": {}
+     },
+     "C": {
+      "cells": {
+       "0": {
+        "class": "S",
+        "bin": 0,
+        "sel": {
+         "candidates": 1730208,
+         "covered": 5
+        },
+        "eval": {
+         "candidates": 1806935,
+         "covered": 0
+        }
+       },
+       "1": {
+        "class": "S",
+        "bin": 1,
+        "sel": {
+         "candidates": 1662646,
+         "covered": 13
+        },
+        "eval": {
+         "candidates": 1732616,
+         "covered": 2
+        }
+       },
+       "2": {
+        "class": "S",
+        "bin": 2,
+        "sel": {
+         "candidates": 1324936,
+         "covered": 23
+        },
+        "eval": {
+         "candidates": 1320620,
+         "covered": 15
+        }
+       },
+       "3": {
+        "class": "S",
+        "bin": 3,
+        "sel": {
+         "candidates": 827022,
+         "covered": 74
+        },
+        "eval": {
+         "candidates": 884070,
+         "covered": 44
+        }
+       },
+       "4": {
+        "class": "S",
+        "bin": 4,
+        "sel": {
+         "candidates": 283274,
+         "covered": 193
+        },
+        "eval": {
+         "candidates": 256337,
+         "covered": 204
+        }
+       },
+       "5": {
+        "class": "R",
+        "bin": 0,
+        "sel": {
+         "candidates": 1716077,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 1468030,
+         "covered": 0
+        }
+       },
+       "6": {
+        "class": "R",
+        "bin": 1,
+        "sel": {
+         "candidates": 1617115,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 1752059,
+         "covered": 0
+        }
+       },
+       "7": {
+        "class": "R",
+        "bin": 2,
+        "sel": {
+         "candidates": 1699624,
+         "covered": 1
+        },
+        "eval": {
+         "candidates": 1648005,
+         "covered": 2
+        }
+       },
+       "8": {
+        "class": "R",
+        "bin": 3,
+        "sel": {
+         "candidates": 2281476,
+         "covered": 4
+        },
+        "eval": {
+         "candidates": 2117492,
+         "covered": 3
+        }
+       },
+       "9": {
+        "class": "R",
+        "bin": 4,
+        "sel": {
+         "candidates": 2634389,
+         "covered": 465
+        },
+        "eval": {
+         "candidates": 2588058,
+         "covered": 503
+        }
+       },
+       "10": {
+        "class": "K",
+        "bin": 0,
+        "sel": {
+         "candidates": 2109,
+         "covered": 2
+        },
+        "eval": {
+         "candidates": 1930,
+         "covered": 0
+        }
+       },
+       "11": {
+        "class": "K",
+        "bin": 1,
+        "sel": {
+         "candidates": 2135,
+         "covered": 5
+        },
+        "eval": {
+         "candidates": 2052,
+         "covered": 6
+        }
+       },
+       "12": {
+        "class": "K",
+        "bin": 2,
+        "sel": {
+         "candidates": 2116,
+         "covered": 4
+        },
+        "eval": {
+         "candidates": 1990,
+         "covered": 2
+        }
+       },
+       "13": {
+        "class": "K",
+        "bin": 3,
+        "sel": {
+         "candidates": 2009,
+         "covered": 32
+        },
+        "eval": {
+         "candidates": 1907,
+         "covered": 27
+        }
+       },
+       "14": {
+        "class": "K",
+        "bin": 4,
+        "sel": {
+         "candidates": 2070,
+         "covered": 29
+        },
+        "eval": {
+         "candidates": 1911,
+         "covered": 25
+        }
+       }
+      },
+      "kept": {
+       "0.99": {
+        "cells": [
+         13,
+         14,
+         11,
+         12,
+         10,
+         4,
+         9,
+         3,
+         2,
+         1,
+         0
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 8472914,
+          "covered": 845
+         },
+         "reach_retained": {
+          "pt": 0.99412,
+          "ci": [
+           0.98681,
+           0.99894
+          ]
+         },
+         "price_retained": {
+          "pt": 0.53669,
+          "ci": [
+           0.49154,
+           0.57844
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.0002,
+          "ci": [
+           0.00016,
+           0.00024
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 9e-05,
+           "ci": [
+            7e-05,
+            0.00012
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 8598426,
+          "covered": 828
+         },
+         "reach_retained": {
+          "pt": 0.994,
+          "ci": [
+           0.98718,
+           0.99889
+          ]
+         },
+         "price_retained": {
+          "pt": 0.55175,
+          "ci": [
+           0.50569,
+           0.5948
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00019,
+          "ci": [
+           0.00016,
+           0.00023
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 9e-05,
+           "ci": [
+            7e-05,
+            0.00011
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        }
+       },
+       "0.95": {
+        "cells": [
+         13,
+         14,
+         11,
+         12,
+         10,
+         4,
+         9,
+         3,
+         2
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 5080060,
+          "covered": 827
+         },
+         "reach_retained": {
+          "pt": 0.97294,
+          "ci": [
+           0.95801,
+           0.98503
+          ]
+         },
+         "price_retained": {
+          "pt": 0.32178,
+          "ci": [
+           0.30323,
+           0.34068
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00033,
+          "ci": [
+           0.00028,
+           0.00038
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.00022,
+           "ci": [
+            0.00018,
+            0.00026
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_IN"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 5058875,
+          "covered": 826
+         },
+         "reach_retained": {
+          "pt": 0.9916,
+          "ci": [
+           0.9837,
+           0.9978
+          ]
+         },
+         "price_retained": {
+          "pt": 0.32462,
+          "ci": [
+           0.30539,
+           0.34417
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00033,
+          "ci": [
+           0.00028,
+           0.00038
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.00022,
+           "ci": [
+            0.00019,
+            0.00026
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_IN"
+        }
+       },
+       "0.9": {
+        "cells": [
+         13,
+         14,
+         11,
+         12,
+         10,
+         4,
+         9,
+         3
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 3755124,
+          "covered": 804
+         },
+         "reach_retained": {
+          "pt": 0.94588,
+          "ci": [
+           0.92298,
+           0.96526
+          ]
+         },
+         "price_retained": {
+          "pt": 0.23786,
+          "ci": [
+           0.22269,
+           0.25473
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00043,
+          "ci": [
+           0.00037,
+           0.00049
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.00032,
+           "ci": [
+            0.00027,
+            0.00037
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_IN"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 3738255,
+          "covered": 811
+         },
+         "reach_retained": {
+          "pt": 0.97359,
+          "ci": [
+           0.95768,
+           0.98616
+          ]
+         },
+         "price_retained": {
+          "pt": 0.23988,
+          "ci": [
+           0.22349,
+           0.25822
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00043,
+          "ci": [
+           0.00038,
+           0.0005
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.00033,
+           "ci": [
+            0.00028,
+            0.00038
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_IN"
+        }
+       },
+       "0.8": {
+        "cells": [
+         13,
+         14,
+         11,
+         12,
+         10,
+         4,
+         9
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 2928102,
+          "covered": 730
+         },
+         "reach_retained": {
+          "pt": 0.85882,
+          "ci": [
+           0.81567,
+           0.90013
+          ]
+         },
+         "price_retained": {
+          "pt": 0.18547,
+          "ci": [
+           0.17186,
+           0.20046
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.0005,
+          "ci": [
+           0.00043,
+           0.00058
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.00039,
+           "ci": [
+            0.00033,
+            0.00046
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 2854185,
+          "covered": 767
+         },
+         "reach_retained": {
+          "pt": 0.92077,
+          "ci": [
+           0.89138,
+           0.94548
+          ]
+         },
+         "price_retained": {
+          "pt": 0.18315,
+          "ci": [
+           0.16812,
+           0.19961
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00054,
+          "ci": [
+           0.00046,
+           0.00062
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.00043,
+           "ci": [
+            0.00037,
+            0.0005
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_IN"
+        }
+       }
+      },
+      "kept_S": {
+       "0.99": {
+        "cells": [
+         0,
+         1,
+         2,
+         3,
+         4,
+         13,
+         14,
+         11,
+         12,
+         10,
+         9
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 8472914,
+          "covered": 845
+         },
+         "reach_retained": {
+          "pt": 0.99412,
+          "ci": [
+           0.98681,
+           0.99894
+          ]
+         },
+         "price_retained": {
+          "pt": 0.53669,
+          "ci": [
+           0.49154,
+           0.57844
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.0002,
+          "ci": [
+           0.00016,
+           0.00024
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 9e-05,
+           "ci": [
+            7e-05,
+            0.00012
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 8598426,
+          "covered": 828
+         },
+         "reach_retained": {
+          "pt": 0.994,
+          "ci": [
+           0.98718,
+           0.99889
+          ]
+         },
+         "price_retained": {
+          "pt": 0.55175,
+          "ci": [
+           0.50569,
+           0.5948
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00019,
+          "ci": [
+           0.00016,
+           0.00023
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 9e-05,
+           "ci": [
+            7e-05,
+            0.00011
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        }
+       },
+       "0.95": {
+        "cells": [
+         0,
+         1,
+         2,
+         3,
+         4,
+         13,
+         14,
+         11,
+         12,
+         10,
+         9
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 8472914,
+          "covered": 845
+         },
+         "reach_retained": {
+          "pt": 0.99412,
+          "ci": [
+           0.98681,
+           0.99894
+          ]
+         },
+         "price_retained": {
+          "pt": 0.53669,
+          "ci": [
+           0.49154,
+           0.57844
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.0002,
+          "ci": [
+           0.00016,
+           0.00024
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 9e-05,
+           "ci": [
+            7e-05,
+            0.00012
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 8598426,
+          "covered": 828
+         },
+         "reach_retained": {
+          "pt": 0.994,
+          "ci": [
+           0.98718,
+           0.99889
+          ]
+         },
+         "price_retained": {
+          "pt": 0.55175,
+          "ci": [
+           0.50569,
+           0.5948
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00019,
+          "ci": [
+           0.00016,
+           0.00023
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 9e-05,
+           "ci": [
+            7e-05,
+            0.00011
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        }
+       },
+       "0.9": {
+        "cells": [
+         0,
+         1,
+         2,
+         3,
+         4,
+         13,
+         14,
+         11,
+         12,
+         10,
+         9
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 8472914,
+          "covered": 845
+         },
+         "reach_retained": {
+          "pt": 0.99412,
+          "ci": [
+           0.98681,
+           0.99894
+          ]
+         },
+         "price_retained": {
+          "pt": 0.53669,
+          "ci": [
+           0.49154,
+           0.57844
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.0002,
+          "ci": [
+           0.00016,
+           0.00024
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 9e-05,
+           "ci": [
+            7e-05,
+            0.00012
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 8598426,
+          "covered": 828
+         },
+         "reach_retained": {
+          "pt": 0.994,
+          "ci": [
+           0.98718,
+           0.99889
+          ]
+         },
+         "price_retained": {
+          "pt": 0.55175,
+          "ci": [
+           0.50569,
+           0.5948
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00019,
+          "ci": [
+           0.00016,
+           0.00023
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 9e-05,
+           "ci": [
+            7e-05,
+            0.00011
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        }
+       },
+       "0.8": {
+        "cells": [
+         0,
+         1,
+         2,
+         3,
+         4,
+         13,
+         14,
+         11,
+         12,
+         10,
+         9
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 8472914,
+          "covered": 845
+         },
+         "reach_retained": {
+          "pt": 0.99412,
+          "ci": [
+           0.98681,
+           0.99894
+          ]
+         },
+         "price_retained": {
+          "pt": 0.53669,
+          "ci": [
+           0.49154,
+           0.57844
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.0002,
+          "ci": [
+           0.00016,
+           0.00024
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 9e-05,
+           "ci": [
+            7e-05,
+            0.00012
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 8598426,
+          "covered": 828
+         },
+         "reach_retained": {
+          "pt": 0.994,
+          "ci": [
+           0.98718,
+           0.99889
+          ]
+         },
+         "price_retained": {
+          "pt": 0.55175,
+          "ci": [
+           0.50569,
+           0.5948
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00019,
+          "ci": [
+           0.00016,
+           0.00023
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 9e-05,
+           "ci": [
+            7e-05,
+            0.00011
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        }
+       }
+      },
+      "s_cells": [
+       0,
+       1,
+       2,
+       3,
+       4
+      ],
+      "edges": {
+       "0": [
+        0.6342855095863342,
+        0.6531615257263184,
+        0.6772415637969971,
+        0.7373513579368591
+       ],
+       "1": [
+        0.5894902944564819,
+        0.6081284284591675,
+        0.6238860487937927,
+        0.6495693922042847
+       ],
+       "2": [
+        0.833382248878479,
+        0.852042555809021,
+        0.8679401278495789,
+        0.887914776802063
+       ]
+      }
+     },
+     "PC": {
+      "cells": {
+       "5": {
+        "class": "S",
+        "bin": 0,
+        "sel": {
+         "candidates": 907,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 746,
+         "covered": 0
+        }
+       },
+       "6": {
+        "class": "S",
+        "bin": 1,
+        "sel": {
+         "candidates": 1247,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 1163,
+         "covered": 0
+        }
+       },
+       "7": {
+        "class": "S",
+        "bin": 2,
+        "sel": {
+         "candidates": 1393,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 1717,
+         "covered": 0
+        }
+       },
+       "8": {
+        "class": "S",
+        "bin": 3,
+        "sel": {
+         "candidates": 1157,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 1709,
+         "covered": 0
+        }
+       },
+       "9": {
+        "class": "S",
+        "bin": 4,
+        "sel": {
+         "candidates": 1155,
+         "covered": 24
+        },
+        "eval": {
+         "candidates": 1116,
+         "covered": 15
+        }
+       },
+       "10": {
+        "class": "R.mention",
+        "bin": 0,
+        "sel": {
+         "candidates": 1715286,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 1467998,
+         "covered": 0
+        }
+       },
+       "11": {
+        "class": "R.mention",
+        "bin": 1,
+        "sel": {
+         "candidates": 1617883,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 1752083,
+         "covered": 0
+        }
+       },
+       "12": {
+        "class": "R.mention",
+        "bin": 2,
+        "sel": {
+         "candidates": 1695494,
+         "covered": 1
+        },
+        "eval": {
+         "candidates": 1646025,
+         "covered": 2
+        }
+       },
+       "13": {
+        "class": "R.mention",
+        "bin": 3,
+        "sel": {
+         "candidates": 2279609,
+         "covered": 4
+        },
+        "eval": {
+         "candidates": 2115715,
+         "covered": 3
+        }
+       },
+       "14": {
+        "class": "R.mention",
+        "bin": 4,
+        "sel": {
+         "candidates": 2634048,
+         "covered": 435
+        },
+        "eval": {
+         "candidates": 2585623,
+         "covered": 453
+        }
+       },
+       "15": {
+        "class": "S+R.mention",
+        "bin": 0,
+        "sel": {
+         "candidates": 1719123,
+         "covered": 5
+        },
+        "eval": {
+         "candidates": 1795378,
+         "covered": 0
+        }
+       },
+       "16": {
+        "class": "S+R.mention",
+        "bin": 1,
+        "sel": {
+         "candidates": 1655187,
+         "covered": 13
+        },
+        "eval": {
+         "candidates": 1725549,
+         "covered": 2
+        }
+       },
+       "17": {
+        "class": "S+R.mention",
+        "bin": 2,
+        "sel": {
+         "candidates": 1319906,
+         "covered": 23
+        },
+        "eval": {
+         "candidates": 1316109,
+         "covered": 15
+        }
+       },
+       "18": {
+        "class": "S+R.mention",
+        "bin": 3,
+        "sel": {
+         "candidates": 836903,
+         "covered": 68
+        },
+        "eval": {
+         "candidates": 892199,
+         "covered": 37
+        }
+       },
+       "19": {
+        "class": "S+R.mention",
+        "bin": 4,
+        "sel": {
+         "candidates": 284925,
+         "covered": 164
+        },
+        "eval": {
+         "candidates": 258541,
+         "covered": 160
+        }
+       },
+       "20": {
+        "class": "R.name_comention",
+        "bin": 0,
+        "sel": {
+         "candidates": 500,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 428,
+         "covered": 0
+        }
+       },
+       "21": {
+        "class": "R.name_comention",
+        "bin": 1,
+        "sel": {
+         "candidates": 479,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 387,
+         "covered": 0
+        }
+       },
+       "22": {
+        "class": "R.name_comention",
+        "bin": 2,
+        "sel": {
+         "candidates": 379,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 361,
+         "covered": 0
+        }
+       },
+       "23": {
+        "class": "R.name_comention",
+        "bin": 3,
+        "sel": {
+         "candidates": 367,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 354,
+         "covered": 0
+        }
+       },
+       "24": {
+        "class": "R.name_comention",
+        "bin": 4,
+        "sel": {
+         "candidates": 431,
+         "covered": 2
+        },
+        "eval": {
+         "candidates": 549,
+         "covered": 14
+        }
+       },
+       "30": {
+        "class": "R.mention+R.name_comention",
+        "bin": 0,
+        "sel": {
+         "candidates": 142,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 132,
+         "covered": 0
+        }
+       },
+       "31": {
+        "class": "R.mention+R.name_comention",
+        "bin": 1,
+        "sel": {
+         "candidates": 134,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 111,
+         "covered": 0
+        }
+       },
+       "32": {
+        "class": "R.mention+R.name_comention",
+        "bin": 2,
+        "sel": {
+         "candidates": 123,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 133,
+         "covered": 0
+        }
+       },
+       "33": {
+        "class": "R.mention+R.name_comention",
+        "bin": 3,
+        "sel": {
+         "candidates": 136,
+         "covered": 1
+        },
+        "eval": {
+         "candidates": 136,
+         "covered": 0
+        }
+       },
+       "34": {
+        "class": "R.mention+R.name_comention",
+        "bin": 4,
+        "sel": {
+         "candidates": 134,
+         "covered": 4
+        },
+        "eval": {
+         "candidates": 133,
+         "covered": 0
+        }
+       },
+       "35": {
+        "class": "S+R.mention+R.name_comention",
+        "bin": 0,
+        "sel": {
+         "candidates": 128,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 149,
+         "covered": 0
+        }
+       },
+       "36": {
+        "class": "S+R.mention+R.name_comention",
+        "bin": 1,
+        "sel": {
+         "candidates": 138,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 158,
+         "covered": 0
+        }
+       },
+       "37": {
+        "class": "S+R.mention+R.name_comention",
+        "bin": 2,
+        "sel": {
+         "candidates": 139,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 145,
+         "covered": 0
+        }
+       },
+       "38": {
+        "class": "S+R.mention+R.name_comention",
+        "bin": 3,
+        "sel": {
+         "candidates": 133,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 98,
+         "covered": 0
+        }
+       },
+       "39": {
+        "class": "S+R.mention+R.name_comention",
+        "bin": 4,
+        "sel": {
+         "candidates": 118,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 104,
+         "covered": 4
+        }
+       },
+       "40": {
+        "class": "R.title_comention",
+        "bin": 0,
+        "sel": {
+         "candidates": 1,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 3,
+         "covered": 0
+        }
+       },
+       "55": {
+        "class": "S+R.mention+R.title_comention",
+        "bin": 0,
+        "sel": {
+         "candidates": 2,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 0,
+         "covered": 0
+        }
+       },
+       "80": {
+        "class": "K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 2109,
+         "covered": 2
+        },
+        "eval": {
+         "candidates": 1930,
+         "covered": 0
+        }
+       },
+       "81": {
+        "class": "K.knn",
+        "bin": 1,
+        "sel": {
+         "candidates": 2135,
+         "covered": 5
+        },
+        "eval": {
+         "candidates": 2052,
+         "covered": 6
+        }
+       },
+       "82": {
+        "class": "K.knn",
+        "bin": 2,
+        "sel": {
+         "candidates": 2116,
+         "covered": 4
+        },
+        "eval": {
+         "candidates": 1990,
+         "covered": 2
+        }
+       },
+       "83": {
+        "class": "K.knn",
+        "bin": 3,
+        "sel": {
+         "candidates": 2009,
+         "covered": 32
+        },
+        "eval": {
+         "candidates": 1907,
+         "covered": 27
+        }
+       },
+       "84": {
+        "class": "K.knn",
+        "bin": 4,
+        "sel": {
+         "candidates": 2070,
+         "covered": 29
+        },
+        "eval": {
+         "candidates": 1911,
+         "covered": 25
+        }
+       },
+       "85": {
+        "class": "S+K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 26,
+         "covered": 1
+        },
+        "eval": {
+         "candidates": 31,
+         "covered": 1
+        }
+       },
+       "86": {
+        "class": "S+K.knn",
+        "bin": 1,
+        "sel": {
+         "candidates": 20,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 14,
+         "covered": 0
+        }
+       },
+       "87": {
+        "class": "S+K.knn",
+        "bin": 2,
+        "sel": {
+         "candidates": 13,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 13,
+         "covered": 0
+        }
+       },
+       "88": {
+        "class": "S+K.knn",
+        "bin": 3,
+        "sel": {
+         "candidates": 11,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 16,
+         "covered": 0
+        }
+       },
+       "89": {
+        "class": "S+K.knn",
+        "bin": 4,
+        "sel": {
+         "candidates": 18,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 13,
+         "covered": 0
+        }
+       },
+       "90": {
+        "class": "R.mention+K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 565,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 549,
+         "covered": 1
+        }
+       },
+       "91": {
+        "class": "R.mention+K.knn",
+        "bin": 1,
+        "sel": {
+         "candidates": 544,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 509,
+         "covered": 2
+        }
+       },
+       "92": {
+        "class": "R.mention+K.knn",
+        "bin": 2,
+        "sel": {
+         "candidates": 486,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 460,
+         "covered": 0
+        }
+       },
+       "93": {
+        "class": "R.mention+K.knn",
+        "bin": 3,
+        "sel": {
+         "candidates": 565,
+         "covered": 4
+        },
+        "eval": {
+         "candidates": 513,
+         "covered": 9
+        }
+       },
+       "94": {
+        "class": "R.mention+K.knn",
+        "bin": 4,
+        "sel": {
+         "candidates": 552,
+         "covered": 1
+        },
+        "eval": {
+         "candidates": 526,
+         "covered": 7
+        }
+       },
+       "95": {
+        "class": "S+R.mention+K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 982,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 881,
+         "covered": 0
+        }
+       },
+       "96": {
+        "class": "S+R.mention+K.knn",
+        "bin": 1,
+        "sel": {
+         "candidates": 977,
+         "covered": 2
+        },
+        "eval": {
+         "candidates": 1034,
+         "covered": 4
+        }
+       },
+       "97": {
+        "class": "S+R.mention+K.knn",
+        "bin": 2,
+        "sel": {
+         "candidates": 928,
+         "covered": 3
+        },
+        "eval": {
+         "candidates": 998,
+         "covered": 2
+        }
+       },
+       "98": {
+        "class": "S+R.mention+K.knn",
+        "bin": 3,
+        "sel": {
+         "candidates": 1078,
+         "covered": 4
+        },
+        "eval": {
+         "candidates": 1144,
+         "covered": 8
+        }
+       },
+       "99": {
+        "class": "S+R.mention+K.knn",
+        "bin": 4,
+        "sel": {
+         "candidates": 913,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 982,
+         "covered": 10
+        }
+       },
+       "100": {
+        "class": "R.name_comention+K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 87,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 113,
+         "covered": 0
+        }
+       },
+       "101": {
+        "class": "R.name_comention+K.knn",
+        "bin": 1,
+        "sel": {
+         "candidates": 94,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 115,
+         "covered": 0
+        }
+       },
+       "102": {
+        "class": "R.name_comention+K.knn",
+        "bin": 2,
+        "sel": {
+         "candidates": 88,
+         "covered": 1
+        },
+        "eval": {
+         "candidates": 119,
+         "covered": 0
+        }
+       },
+       "103": {
+        "class": "R.name_comention+K.knn",
+        "bin": 3,
+        "sel": {
+         "candidates": 99,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 106,
+         "covered": 2
+        }
+       },
+       "104": {
+        "class": "R.name_comention+K.knn",
+        "bin": 4,
+        "sel": {
+         "candidates": 117,
+         "covered": 6
+        },
+        "eval": {
+         "candidates": 153,
+         "covered": 8
+        }
+       },
+       "105": {
+        "class": "S+R.name_comention+K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 1,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 0,
+         "covered": 0
+        }
+       },
+       "110": {
+        "class": "R.mention+R.name_comention+K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 69,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 70,
+         "covered": 1
+        }
+       },
+       "111": {
+        "class": "R.mention+R.name_comention+K.knn",
+        "bin": 1,
+        "sel": {
+         "candidates": 60,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 50,
+         "covered": 0
+        }
+       },
+       "112": {
+        "class": "R.mention+R.name_comention+K.knn",
+        "bin": 2,
+        "sel": {
+         "candidates": 64,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 70,
+         "covered": 0
+        }
+       },
+       "113": {
+        "class": "R.mention+R.name_comention+K.knn",
+        "bin": 3,
+        "sel": {
+         "candidates": 70,
+         "covered": 7
+        },
+        "eval": {
+         "candidates": 58,
+         "covered": 1
+        }
+       },
+       "114": {
+        "class": "R.mention+R.name_comention+K.knn",
+        "bin": 4,
+        "sel": {
+         "candidates": 74,
+         "covered": 4
+        },
+        "eval": {
+         "candidates": 60,
+         "covered": 5
+        }
+       },
+       "115": {
+        "class": "S+R.mention+R.name_comention+K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 129,
+         "covered": 1
+        },
+        "eval": {
+         "candidates": 122,
+         "covered": 0
+        }
+       },
+       "116": {
+        "class": "S+R.mention+R.name_comention+K.knn",
+        "bin": 1,
+        "sel": {
+         "candidates": 108,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 88,
+         "covered": 0
+        }
+       },
+       "117": {
+        "class": "S+R.mention+R.name_comention+K.knn",
+        "bin": 2,
+        "sel": {
+         "candidates": 100,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 109,
+         "covered": 2
+        }
+       },
+       "118": {
+        "class": "S+R.mention+R.name_comention+K.knn",
+        "bin": 3,
+        "sel": {
+         "candidates": 96,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 116,
+         "covered": 1
+        }
+       },
+       "119": {
+        "class": "S+R.mention+R.name_comention+K.knn",
+        "bin": 4,
+        "sel": {
+         "candidates": 123,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 136,
+         "covered": 4
+        }
+       },
+       "120": {
+        "class": "R.title_comention+K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 1,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 2,
+         "covered": 0
+        }
+       },
+       "135": {
+        "class": "S+R.mention+R.title_comention+K.knn",
+        "bin": 0,
+        "sel": {
+         "candidates": 2,
+         "covered": 0
+        },
+        "eval": {
+         "candidates": 0,
+         "covered": 0
+        }
+       }
+      },
+      "kept": {
+       "0.99": {
+        "cells": [
+         113,
+         114,
+         104,
+         85,
+         34,
+         9,
+         83,
+         84,
+         102,
+         115,
+         33,
+         93,
+         24,
+         98,
+         97,
+         81,
+         96,
+         82,
+         94,
+         80,
+         19,
+         14,
+         18,
+         17,
+         16,
+         15
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 8466991,
+          "covered": 845
+         },
+         "reach_retained": {
+          "pt": 0.99412,
+          "ci": [
+           0.98681,
+           0.99894
+          ]
+         },
+         "price_retained": {
+          "pt": 0.53632,
+          "ci": [
+           0.49129,
+           0.57803
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.0002,
+          "ci": [
+           0.00016,
+           0.00024
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 9e-05,
+           "ci": [
+            7e-05,
+            0.00012
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 8589881,
+          "covered": 801
+         },
+         "reach_retained": {
+          "pt": 0.96158,
+          "ci": [
+           0.93732,
+           0.98184
+          ]
+         },
+         "price_retained": {
+          "pt": 0.5512,
+          "ci": [
+           0.50511,
+           0.5944
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00019,
+          "ci": [
+           0.00016,
+           0.00022
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 8e-05,
+           "ci": [
+            6e-05,
+            0.0001
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        }
+       },
+       "0.95": {
+        "cells": [
+         113,
+         114,
+         104,
+         85,
+         34,
+         9,
+         83,
+         84,
+         102,
+         115,
+         33,
+         93,
+         24,
+         98,
+         97,
+         81,
+         96,
+         82,
+         94,
+         80,
+         19,
+         14,
+         18,
+         17
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 5092681,
+          "covered": 827
+         },
+         "reach_retained": {
+          "pt": 0.97294,
+          "ci": [
+           0.95801,
+           0.98503
+          ]
+         },
+         "price_retained": {
+          "pt": 0.32258,
+          "ci": [
+           0.304,
+           0.34144
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00032,
+          "ci": [
+           0.00028,
+           0.00038
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.00022,
+           "ci": [
+            0.00018,
+            0.00026
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_IN"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 5068954,
+          "covered": 799
+         },
+         "reach_retained": {
+          "pt": 0.95918,
+          "ci": [
+           0.93498,
+           0.98037
+          ]
+         },
+         "price_retained": {
+          "pt": 0.32527,
+          "ci": [
+           0.30593,
+           0.34472
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00032,
+          "ci": [
+           0.00027,
+           0.00037
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.00021,
+           "ci": [
+            0.00018,
+            0.00024
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_IN"
+        }
+       },
+       "0.9": {
+        "cells": [
+         113,
+         114,
+         104,
+         85,
+         34,
+         9,
+         83,
+         84,
+         102,
+         115,
+         33,
+         93,
+         24,
+         98,
+         97,
+         81,
+         96,
+         82,
+         94,
+         80,
+         19,
+         14,
+         18
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 3772775,
+          "covered": 804
+         },
+         "reach_retained": {
+          "pt": 0.94588,
+          "ci": [
+           0.92298,
+           0.96526
+          ]
+         },
+         "price_retained": {
+          "pt": 0.23898,
+          "ci": [
+           0.22389,
+           0.25564
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00043,
+          "ci": [
+           0.00037,
+           0.00049
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.00032,
+           "ci": [
+            0.00027,
+            0.00037
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_IN"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 3752845,
+          "covered": 784
+         },
+         "reach_retained": {
+          "pt": 0.94118,
+          "ci": [
+           0.91519,
+           0.96415
+          ]
+         },
+         "price_retained": {
+          "pt": 0.24081,
+          "ci": [
+           0.2245,
+           0.25904
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00042,
+          "ci": [
+           0.00036,
+           0.00048
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.00031,
+           "ci": [
+            0.00027,
+            0.00036
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_IN"
+        }
+       },
+       "0.8": {
+        "cells": [
+         113,
+         114,
+         104,
+         85,
+         34,
+         9,
+         83,
+         84,
+         102,
+         115,
+         33,
+         93,
+         24,
+         98,
+         97,
+         81,
+         96,
+         82,
+         94,
+         80,
+         19,
+         14
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 2935872,
+          "covered": 736
+         },
+         "reach_retained": {
+          "pt": 0.86588,
+          "ci": [
+           0.82224,
+           0.90701
+          ]
+         },
+         "price_retained": {
+          "pt": 0.18597,
+          "ci": [
+           0.1723,
+           0.20091
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.0005,
+          "ci": [
+           0.00043,
+           0.00058
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.00039,
+           "ci": [
+            0.00034,
+            0.00046
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 2860646,
+          "covered": 747
+         },
+         "reach_retained": {
+          "pt": 0.89676,
+          "ci": [
+           0.86236,
+           0.92723
+          ]
+         },
+         "price_retained": {
+          "pt": 0.18356,
+          "ci": [
+           0.16849,
+           0.19998
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00052,
+          "ci": [
+           0.00045,
+           0.0006
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 0.00042,
+           "ci": [
+            0.00036,
+            0.00048
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        }
+       }
+      },
+      "kept_S": {
+       "0.99": {
+        "cells": [
+         5,
+         6,
+         7,
+         8,
+         9,
+         15,
+         16,
+         17,
+         18,
+         19,
+         35,
+         36,
+         37,
+         38,
+         39,
+         55,
+         85,
+         86,
+         87,
+         88,
+         89,
+         95,
+         96,
+         97,
+         98,
+         99,
+         105,
+         115,
+         116,
+         117,
+         118,
+         119,
+         135,
+         113,
+         114,
+         104,
+         34,
+         83,
+         84,
+         102,
+         33,
+         93,
+         24,
+         81,
+         82,
+         94,
+         80,
+         14
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 8474740,
+          "covered": 845
+         },
+         "reach_retained": {
+          "pt": 0.99412,
+          "ci": [
+           0.98681,
+           0.99894
+          ]
+         },
+         "price_retained": {
+          "pt": 0.53681,
+          "ci": [
+           0.49178,
+           0.57858
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.0002,
+          "ci": [
+           0.00016,
+           0.00024
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 9e-05,
+           "ci": [
+            7e-05,
+            0.00012
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 8598238,
+          "covered": 822
+         },
+         "reach_retained": {
+          "pt": 0.98679,
+          "ci": [
+           0.97685,
+           0.99521
+          ]
+         },
+         "price_retained": {
+          "pt": 0.55173,
+          "ci": [
+           0.50564,
+           0.59483
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00019,
+          "ci": [
+           0.00016,
+           0.00023
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 8e-05,
+           "ci": [
+            6e-05,
+            0.00011
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        }
+       },
+       "0.95": {
+        "cells": [
+         5,
+         6,
+         7,
+         8,
+         9,
+         15,
+         16,
+         17,
+         18,
+         19,
+         35,
+         36,
+         37,
+         38,
+         39,
+         55,
+         85,
+         86,
+         87,
+         88,
+         89,
+         95,
+         96,
+         97,
+         98,
+         99,
+         105,
+         115,
+         116,
+         117,
+         118,
+         119,
+         135,
+         113,
+         114,
+         104,
+         34,
+         83,
+         84,
+         102,
+         33,
+         93,
+         24,
+         81,
+         82,
+         94,
+         80,
+         14
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 8474740,
+          "covered": 845
+         },
+         "reach_retained": {
+          "pt": 0.99412,
+          "ci": [
+           0.98681,
+           0.99894
+          ]
+         },
+         "price_retained": {
+          "pt": 0.53681,
+          "ci": [
+           0.49178,
+           0.57858
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.0002,
+          "ci": [
+           0.00016,
+           0.00024
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 9e-05,
+           "ci": [
+            7e-05,
+            0.00012
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 8598238,
+          "covered": 822
+         },
+         "reach_retained": {
+          "pt": 0.98679,
+          "ci": [
+           0.97685,
+           0.99521
+          ]
+         },
+         "price_retained": {
+          "pt": 0.55173,
+          "ci": [
+           0.50564,
+           0.59483
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00019,
+          "ci": [
+           0.00016,
+           0.00023
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 8e-05,
+           "ci": [
+            6e-05,
+            0.00011
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        }
+       },
+       "0.9": {
+        "cells": [
+         5,
+         6,
+         7,
+         8,
+         9,
+         15,
+         16,
+         17,
+         18,
+         19,
+         35,
+         36,
+         37,
+         38,
+         39,
+         55,
+         85,
+         86,
+         87,
+         88,
+         89,
+         95,
+         96,
+         97,
+         98,
+         99,
+         105,
+         115,
+         116,
+         117,
+         118,
+         119,
+         135,
+         113,
+         114,
+         104,
+         34,
+         83,
+         84,
+         102,
+         33,
+         93,
+         24,
+         81,
+         82,
+         94,
+         80,
+         14
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 8474740,
+          "covered": 845
+         },
+         "reach_retained": {
+          "pt": 0.99412,
+          "ci": [
+           0.98681,
+           0.99894
+          ]
+         },
+         "price_retained": {
+          "pt": 0.53681,
+          "ci": [
+           0.49178,
+           0.57858
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.0002,
+          "ci": [
+           0.00016,
+           0.00024
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 9e-05,
+           "ci": [
+            7e-05,
+            0.00012
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 8598238,
+          "covered": 822
+         },
+         "reach_retained": {
+          "pt": 0.98679,
+          "ci": [
+           0.97685,
+           0.99521
+          ]
+         },
+         "price_retained": {
+          "pt": 0.55173,
+          "ci": [
+           0.50564,
+           0.59483
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00019,
+          "ci": [
+           0.00016,
+           0.00023
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 8e-05,
+           "ci": [
+            6e-05,
+            0.00011
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        }
+       },
+       "0.8": {
+        "cells": [
+         5,
+         6,
+         7,
+         8,
+         9,
+         15,
+         16,
+         17,
+         18,
+         19,
+         35,
+         36,
+         37,
+         38,
+         39,
+         55,
+         85,
+         86,
+         87,
+         88,
+         89,
+         95,
+         96,
+         97,
+         98,
+         99,
+         105,
+         115,
+         116,
+         117,
+         118,
+         119,
+         135,
+         113,
+         114,
+         104,
+         34,
+         83,
+         84,
+         102,
+         33,
+         93,
+         24,
+         81,
+         82,
+         94,
+         80,
+         14
+        ],
+        "sel": {
+         "questions": 573,
+         "any": {
+          "candidates": 15787206,
+          "covered": 850
+         },
+         "kept": {
+          "candidates": 8474740,
+          "covered": 845
+         },
+         "reach_retained": {
+          "pt": 0.99412,
+          "ci": [
+           0.98681,
+           0.99894
+          ]
+         },
+         "price_retained": {
+          "pt": 0.53681,
+          "ci": [
+           0.49178,
+           0.57858
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.0002,
+          "ci": [
+           0.00016,
+           0.00024
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 9e-05,
+           "ci": [
+            7e-05,
+            0.00012
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        },
+        "eval": {
+         "questions": 566,
+         "any": {
+          "candidates": 15584012,
+          "covered": 833
+         },
+         "kept": {
+          "candidates": 8598238,
+          "covered": 822
+         },
+         "reach_retained": {
+          "pt": 0.98679,
+          "ci": [
+           0.97685,
+           0.99521
+          ]
+         },
+         "price_retained": {
+          "pt": 0.55173,
+          "ci": [
+           0.50564,
+           0.59483
+          ]
+         },
+         "precision_kept": {
+          "pt": 0.00019,
+          "ci": [
+           0.00016,
+           0.00023
+          ]
+         },
+         "precision_any": {
+          "pt": 0.00011,
+          "ci": [
+           9e-05,
+           0.00012
+          ]
+         },
+         "vs_any": {
+          "diff": {
+           "pt": 8e-05,
+           "ci": [
+            6e-05,
+            0.00011
+           ]
+          },
+          "call": "ABOVE"
+         },
+         "call": "SCREEN_OUT"
+        }
+       }
+      },
+      "s_cells": [
+       5,
+       6,
+       7,
+       8,
+       9,
+       15,
+       16,
+       17,
+       18,
+       19,
+       35,
+       36,
+       37,
+       38,
+       39,
+       55,
+       85,
+       86,
+       87,
+       88,
+       89,
+       95,
+       96,
+       97,
+       98,
+       99,
+       105,
+       115,
+       116,
+       117,
+       118,
+       119,
+       135
+      ],
+      "edges": {
+       "1": [
+        0.6484899520874023,
+        0.6714305877685547,
+        0.6929990649223328,
+        0.7231523990631104
+       ],
+       "2": [
+        0.5894760489463806,
+        0.6081284284591675,
+        0.6238400936126709,
+        0.6494264006614685
+       ],
+       "3": [
+        0.6341711282730103,
+        0.652916669845581,
+        0.6767206192016602,
+        0.7353971004486084
+       ],
+       "4": [
+        0.7310851812362671,
+        0.7698925733566284,
+        0.797311544418335,
+        0.8262401223182678
+       ],
+       "6": [
+        0.7646754384040833,
+        0.7971755266189575,
+        0.825153648853302,
+        0.8455480337142944
+       ],
+       "7": [
+        0.8066127300262451,
+        0.8270153403282166,
+        0.8469977378845215,
+        0.8663970232009888
+       ],
+       "8": null,
+       "11": null,
+       "16": [
+        0.833382248878479,
+        0.852042555809021,
+        0.8679401278495789,
+        0.887914776802063
+       ],
+       "17": [
+        0.8760669231414795,
+        0.8932832479476929,
+        0.9246165156364441,
+        0.9439797401428223
+       ],
+       "18": [
+        0.8463970422744751,
+        0.8637795448303223,
+        0.8791640996932983,
+        0.8979883790016174
+       ],
+       "19": [
+        0.8528201580047607,
+        0.8720637559890747,
+        0.8882876634597778,
+        0.9061071872711182
+       ],
+       "20": [
+        0.8453543186187744,
+        0.866610586643219,
+        0.8847790956497192,
+        0.9072561264038086
+       ],
+       "21": null,
+       "22": [
+        0.8576767444610596,
+        0.8750178813934326,
+        0.8924161195755005,
+        0.9172724485397339
+       ],
+       "23": [
+        0.8633519411087036,
+        0.8831148743629456,
+        0.8987426161766052,
+        0.9222885370254517
+       ],
+       "24": null,
+       "27": null
+      }
+     }
+    }
+   }
+  }
+ },
+ "g3_2": {
+  "SRK/GP/s1eval": {
+   "checked": true,
+   "candidates": 15584012,
+   "covered": 833
+  }
+ },
+ "g3_3": {
+  "SRK": {
+   "sample": 512,
+   "max_abs_err": 1.255729102922487e-07,
+   "max_abs_dot": 1.0006366968154907,
+   "mean_norm": 0.9999909397886153
+  }
+ },
+ "memory": {
+  "peak_working_set_gb": 11.73,
+  "peak_commit_gb": 11.75
+ },
+ "seconds": 296.2,
+ "utc": "2026-11-25T18:39:58Z",
+ "zul3a_sha256": "96643e761e5708b601584e9b7dc1b9efd75041eaa22dcdd14647469aa94ac579",
+ "zul2p_sha256": "ba7a5d5af124e0af13306a75502239a421f9f4557555a015e0e65fc31e802c8a"
+}

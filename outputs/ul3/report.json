@@ -1,0 +1,96 @@
+{
+ "declared_in": "docs/UL3_LINK_TIGHTENING.md",
+ "datasets": [
+  "multihoprag",
+  "musique",
+  "metaqa",
+  "webqsp",
+  "hotpotqa",
+  "2wiki"
+ ],
+ "screen": {
+  "P": {
+   "all_six_read": true,
+   "cells": {
+    "multihoprag/RK/GP": "SCREEN_OUT",
+    "musique/RK/CH": "SCREEN_OUT",
+    "musique/RK/GP": "SCREEN_OUT",
+    "metaqa/SRK/GP": "SCREEN_OUT",
+    "webqsp/SRK/GP": "SCREEN_OUT",
+    "hotpotqa/RK/GP": "SCREEN_OUT",
+    "hotpotqa/SRK/GP": "SCREEN_OUT",
+    "2wiki/RK/GP": "SCREEN_OUT",
+    "2wiki/SRK/GP": "SCREEN_IN"
+   },
+   "call": "FAILS_SCREEN",
+   "cells_S_unprotected": {
+    "multihoprag/RK/GP": "SCREEN_OUT",
+    "musique/RK/CH": "SCREEN_OUT",
+    "musique/RK/GP": "SCREEN_OUT",
+    "metaqa/SRK/GP": "SCREEN_IN",
+    "webqsp/SRK/GP": "SCREEN_OUT",
+    "hotpotqa/RK/GP": "SCREEN_OUT",
+    "hotpotqa/SRK/GP": "SCREEN_OUT",
+    "2wiki/RK/GP": "SCREEN_OUT",
+    "2wiki/SRK/GP": "SCREEN_IN"
+   },
+   "call_S_unprotected": "FAILS_SCREEN"
+  },
+  "C": {
+   "all_six_read": true,
+   "cells": {
+    "multihoprag/RK/GP": "SCREEN_IN",
+    "musique/RK/CH": "SCREEN_OUT",
+    "musique/RK/GP": "SCREEN_OUT",
+    "metaqa/SRK/GP": "SCREEN_OUT",
+    "webqsp/SRK/GP": "SCREEN_OUT",
+    "hotpotqa/RK/GP": "SCREEN_OUT",
+    "hotpotqa/SRK/GP": "SCREEN_OUT",
+    "2wiki/RK/GP": "SCREEN_OUT",
+    "2wiki/SRK/GP": "SCREEN_IN"
+   },
+   "call": "FAILS_SCREEN",
+   "cells_S_unprotected": {
+    "multihoprag/RK/GP": "SCREEN_IN",
+    "musique/RK/CH": "SCREEN_OUT",
+    "musique/RK/GP": "SCREEN_OUT",
+    "metaqa/SRK/GP": "SCREEN_IN",
+    "webqsp/SRK/GP": "SCREEN_IN",
+    "hotpotqa/RK/GP": "SCREEN_OUT",
+    "hotpotqa/SRK/GP": "SCREEN_OUT",
+    "2wiki/RK/GP": "SCREEN_OUT",
+    "2wiki/SRK/GP": "SCREEN_IN"
+   },
+   "call_S_unprotected": "FAILS_SCREEN"
+  },
+  "PC": {
+   "all_six_read": true,
+   "cells": {
+    "multihoprag/RK/GP": "SCREEN_IN",
+    "musique/RK/CH": "SCREEN_OUT",
+    "musique/RK/GP": "SCREEN_OUT",
+    "metaqa/SRK/GP": "SCREEN_OUT",
+    "webqsp/SRK/GP": "SCREEN_OUT",
+    "hotpotqa/RK/GP": "SCREEN_OUT",
+    "hotpotqa/SRK/GP": "SCREEN_OUT",
+    "2wiki/RK/GP": "SCREEN_IN",
+    "2wiki/SRK/GP": "SCREEN_IN"
+   },
+   "call": "FAILS_SCREEN",
+   "cells_S_unprotected": {
+    "multihoprag/RK/GP": "SCREEN_IN",
+    "musique/RK/CH": "SCREEN_OUT",
+    "musique/RK/GP": "SCREEN_OUT",
+    "metaqa/SRK/GP": "SCREEN_IN",
+    "webqsp/SRK/GP": "SCREEN_IN",
+    "hotpotqa/RK/GP": "SCREEN_OUT",
+    "hotpotqa/SRK/GP": "SCREEN_IN",
+    "2wiki/RK/GP": "SCREEN_IN",
+    "2wiki/SRK/GP": "SCREEN_IN"
+   },
+   "call_S_unprotected": "FAILS_SCREEN"
+  }
+ },
+ "utc": "2026-11-25T18:57:45Z",
+ "zul3a_sha256": "96643e761e5708b601584e9b7dc1b9efd75041eaa22dcdd14647469aa94ac579"
+}

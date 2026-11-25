@@ -1,0 +1,14 @@
+{
+ "declared_in": "docs/UL3_LINK_TIGHTENING.md",
+ "mode": "sub",
+ "datasets": [
+  "multihoprag",
+  "musique",
+  "metaqa",
+  "webqsp",
+  "hotpotqa",
+  "2wiki"
+ ],
+ "utc": "2026-11-25T18:57:44Z",
+ "zul3a_sha256": "96643e761e5708b601584e9b7dc1b9efd75041eaa22dcdd14647469aa94ac579"
+}

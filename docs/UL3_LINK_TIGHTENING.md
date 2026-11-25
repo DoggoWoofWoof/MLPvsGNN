@@ -164,3 +164,46 @@ PL8 re-run starts only then, and the int8 world, the vectors and the models foll
   tables (section 1) rather than from the grid itself.
 - The MultiHop-RAG self-test read UL2P's filed any-link counts and 512 dots as gates; it printed no screen number.
 - A screen that passes proves nothing about pools; a screen that fails on one dataset says nothing about the pool grid there.
+
+## 14. Results: part A read (26 November 2026, 03:11 IST, 21:41 UTC)
+
+**Read before this section:** the six `cells` records (`outputs/ul3/<d>/cells.json`, s1eval graded, selection on dev) and `outputs/ul3/report.md`, the six `sub` records and `outputs/ul3/sub_report.md`, written by `zul3a.py` (sha 96643e76...; every record carries it and UL2P's). All gates passed on every dataset (G-P1 to G-P3, G3-1 to G3-4). Reach and price retained are shares of the any-link graph's covered slots and candidates on s1eval, at RHO = 0.95, point values (the call's), S cells protected (A.1). The page's rule decides; intervals are beside.
+
+**The call: all three variants are FAILS_SCREEN: P passes 1 of 9 judged cells, C 2 of 9, PC 3 of 9.**
+
+| judged cell | P: reach / price | C: reach / price | PC: reach / price |
+|---|---|---|---|
+| MultiHop-RAG RK GP | 99.6 / 99.2 OUT | 97.1 / 45.4 **IN** | 97.3 / 47.8 **IN** |
+| MuSiQue RK GP | 98.3 / 99.5 OUT | 97.2 / 86.4 OUT | 96.9 / 89.3 OUT |
+| MuSiQue RK CH | 98.2 / 99.5 OUT | 97.4 / 86.4 OUT | 97.2 / 89.3 OUT |
+| MetaQA SRK GP | 100.0 / 99.9 OUT | 95.0 / 83.2 OUT | 95.0 / 83.7 OUT |
+| WebQSP SRK GP | 100.0 / 100.0 OUT | 99.4 / 55.2 OUT | 98.7 / 55.2 OUT |
+| HotpotQA RK GP | 94.8 / 88.2 OUT | 96.4 / 63.2 OUT | 97.2 / 62.2 OUT |
+| HotpotQA SRK GP | 99.9 / 52.1 OUT | 99.9 / 52.1 OUT | 99.9 / 52.1 OUT |
+| 2Wiki RK GP | 95.5 / 63.3 OUT | 95.4 / 57.5 OUT | 94.9 / 41.0 **IN** |
+| 2Wiki SRK GP | 95.8 / 36.7 **IN** | 97.9 / 47.6 **IN** | 94.5 / 35.7 **IN** |
+
+**Size, said plainly.** Reach is not what fails: every keep set retains 94.5 to 100% of the covered slots. **Price is**: 35.7 to 100.0% of the candidates remain, and the precision of the kept set exceeds the whole graph's by only -0.01 to +2.0 points (PC: +0.06 MuSiQue, +0.01 MetaQA, +0.01 WebQSP, +0.31 HotpotQA RK, +0.53 HotpotQA SRK, +1.51 and +1.86 on 2Wiki, +1.83 on MultiHop-RAG; the report's unit). Where the screen passes it cuts 52 to 64% of the candidates for 2 to 6 points of reach; where it fails it cuts little or nothing.
+
+**Why each failing cell fails** (all numbers s1eval):
+
+- **MetaQA and HotpotQA SRK are set by A.1 itself.** The S cells hold **72.3% of MetaQA's candidates (and 3.7% of its covered slots)** and **52.1% of HotpotQA SRK's (and 99.9% of its covered slots)**, so protecting them puts a floor of 72.3% and 52.1% under the price; no rule can read SCREEN_IN there under A.1 (HotpotQA SRK's interval [45.8, 57.3] straddles the 0.50 line; the call is by point value as declared). WebQSP: S is 38.5% of the candidates and 31.8% of the covered slots, and the other cells needed for reach add 16.7 points to the price (55.2% [50.6, 59.5], 5.2 points over). 2Wiki SRK: S is 35.3% of the candidates and 93.1% of the covered slots; it passes on all three.
+- **MuSiQue (both kinds) does not shrink.** There is no S; the any-link set is R and K, and the cells' precisions are nearly flat, so the cheapest set holding 95% of the covered slots holds 86 to 89% of the candidates for C and PC and 99.5% for P (the frontier beside: PC at RHO 0.8 gives 85.1 / 48.8 on CH and 84.5 / 46.0 on GP, both below 92 on reach).
+- **HotpotQA RK:** the best is PC with 97.2 / 62.2, 12 points over the price line. **2Wiki RK:** PC passes (94.9 / 41.0); C is 7.5 points over (57.5) and P 13.3 points over (63.3). MultiHop-RAG: C and PC pass, P (99.6 / 99.2) does not.
+
+**Read beside, not the call: S not protected (the rule as first declared).** SCREEN_IN on P 2 of 9, C 4 of 9, PC 6 of 9. Under PC the six are MultiHop-RAG, MetaQA (95.3 / 18.2), WebQSP (95.9 / 32.5), HotpotQA SRK (94.0 / 32.9), 2Wiki RK and SRK; the three left out are MuSiQue GP, MuSiQue CH and HotpotQA RK. Dropping the S cells would be the larger saving on MetaQA (price 83.7% falls to 18.2%), but the one-hop screen cannot see what UL2H showed: MetaQA's S has 0.005% one-hop precision and is the only unit that reaches ALL-gold coverage 1.0 at three hops. So this is a record, not a rule; and it still fails on three cells.
+
+**The subset against the full call (post hoc; the sub report files no call, so I applied the same thresholds to its rest-of-dev numbers at RHO 0.95).** The quarter-dev subset gives the same call as the full run on **25 of the 27 cell-by-variant calls**: PC 9 of 9, C 8, P 8. The two it misses are both 2Wiki SRK (P: price 67.6 on the subset against 36.7 on s1eval; C: 50.2 against 47.6): a quarter of the dev anchors sees fewer profiles and so over-prices. Its price is higher than the full call's on some cells and lower on others (MuSiQue PC: 69.8 on the subset, 89.3 on s1eval): the subset's price is a diagnostic, not an estimate. **The staging saved little here**: per dataset the sub row took 2.8 to 402 s and the cells row 7.8 to 574 s (the records' own seconds), the heavy datasets' cells rows finished 12 to 22 minutes after their sub rows, and no rule was changed between the stages, so the subset informed nothing it did not also confirm.
+
+**Expectations against the outcome (section 7; a failed one is reported, not explained away).**
+
+- **"Most likely FAILS_SCREEN for every variant":** held.
+- **The KB sentence** was withdrawn by A.1, and **A.1's own premise was also off, in the harsher direction.** A.1 took the ledger's B0 header shares (S: 36% of B0 on MetaQA, 1.2% WebQSP, 22.6% HotpotQA SRK, 22.3% 2Wiki SRK) to mean that keeping all of S is cheap. The price is measured on the question's candidates (s1eval), where S is 72.3%, 38.5%, 52.1% and 35.3%: S pairs sit close to the anchors. I did not trace why the two measures differ. The effect: MetaQA and HotpotQA SRK cannot pass under A.1 at any RHO.
+- **"On MuSiQue and the passage datasets P, C, PC may well keep 92% of reach at well under half the candidates":** **half held, half failed.** It held on MultiHop-RAG (C 45.4, PC 47.8) and 2Wiki RK (PC 41.0); it failed on MuSiQue (both kinds; price 86 to 99.5%) and on HotpotQA RK (best 62.2%); P failed on every RK dataset.
+- **"A reads as a split between structured and passage datasets":** **not what happened.** The split runs through both groups: 2Wiki (both versions) and MultiHop-RAG pass, MuSiQue and HotpotQA RK do not, and the KB datasets fail on the S protection, not on a feature of structure. What separates the passing from the failing cells is not read here.
+
+**What this says.** No one-hop cut of the any-link graph by label profile, by dot quintile or by both is a universal link-removal rule: it prices near the whole graph on MuSiQue and HotpotQA RK, and under A.1 it cannot get under the S floor on MetaQA and HotpotQA SRK. Where it works (MultiHop-RAG, 2Wiki), it saves 52 to 64% of the candidates for 2 to 6 points of reach. **It does not say** that no link is useless (a screen at one hop with cells this coarse is one test of it), nor that pools cannot tighten (they already do, through caps and ranking: PL5 to PL7), nor anything about a path-level rule (part B was never run: section 3 makes it conditional on a SCREEN_IN on every cell, and a SCREEN_OUT closes the variant).
+
+**What follows (section 11, applied).** Part B is **not declared on these variants**. I name the failed cells above and do not carry any of P, C, PC. **A universal rule is carried everywhere or nowhere (the user's ruling): on this evidence nowhere, so the link set stays the filed base layout (UL2 section 12, a70ec8cc: NONE_CARRIED), and UL3 part A is its record.** What can still remove links per question is the walk itself, which is where PL5 to PL7 work (question-ranked expansion under caps and budgets), and that restriction is read there, on eval. The decision to close the link line at the base, and to unlock PL8 on it (the PL agent declares it only when told the link set is final), is the user's; if the user wants one more link rule, the candidates are a path-level guard (part B's walker) on a different cell attribute for MuSiQue and HotpotQA RK, which this screen cannot supply. **Nothing is queued by this section.**
+
+**Disclosed.** The thresholds (0.92, 0.50), RHO = 0.95, the quarter fraction and the cell partition were fixed before any UL3 number, from UL2P/UL2H's tables (sections 1 and 13). The S-cell shares above were computed from `cells.json` after the call, to explain it, not to change it. The subset's 25-of-27 agreement is a post-hoc comparison. One call sits at the line: HotpotQA SRK's price (52.1, interval [45.8, 57.3], which is the S floor itself); WebQSP's (55.2, [50.6, 59.5]) is about 5 points over, and every other failing cell is 7 or more points over.
