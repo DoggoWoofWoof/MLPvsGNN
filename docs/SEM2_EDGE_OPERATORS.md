@@ -1280,6 +1280,85 @@ One streaming pass over all nodes per unit set: every scorer's score for every n
 - **NOT_CARRIED:** R4 closes this form (a diagonal Gaussian over R1's residuals does not beat the point as a set read). What it leaves open is named, not queued: a per-operation box trained by gradient on the sets (Query2Box's form), and the withheld-links read of 12.8. If the shift carries the gain, that is reported as a type prior, which R1's operators already approximate.
 - Either way: no pool, link or PL change follows from R4, and no model is trained.
 
+## 13. R5 declared: branching, the second hop through R1's operators (25 November 2026, 20:20 IST, 14:50 UTC), before any R5 number
+
+### 13.1 Why, and what was seen
+
+- **The user, 25 November:** put the walks themselves in the semantic space as "a semantic tree or neuron where each vector entity is linked in different rotations or operations denoting the relation and branches out further and further". R4 (section 12) tested the first part of it, a set at ONE step. Later the same day: "what about the new type of semantic branching i told you to test?" and "if we are sure it doesnt improve do not waste time".
+- **What R4 settled (six of seven datasets read; 2Wiki's row was still running; the carry rule of 12.6 is already failed by the four BELOW, so its verdict cannot change):** region minus point is BELOW on MuSiQue (-3.66 R-precision points), HotpotQA (-1.80), MetaQA (-1.02) and WebQSP (-0.61), LEVEL on MultiHop-RAG and SQuAD, ABOVE on none; the region equals the shift on four of the six. **The distribution is closed: no more time goes to a region, a box or a shape over R1's residuals.**
+- **What R4 also showed, and R5 builds on:** R1's point, used as a ranker of a relation's WHOLE tail set (the moved source's nearest neighbours), is ABOVE cosine on all six read, by +5.2 to +30.7 R-precision points. That is one step of the tree working with no stored link. The depth ("branches out further and further") is what R4 did not read.
+- **A correction to 12.11.** Section 12.11 tied composition to the region carrying ("the next page is the reverse direction and one composition step"). That tied the tree to the region, and the tree does not need it: a branch is a node the first step lands on, and the next step starts from that node. R5 is declared on R1's point, whose one-hop win R4 recorded.
+- **Prior art (from memory, not rechecked; recheck before any claim):** path queries by projection in embedding space (GQE, Query2Box, BetaE, CQD's beam over the first hop), multi-hop retrieval by chained dense lookups. This page claims no novelty.
+- **Seen before this page:** R4's six records (one hop only), R1's records, R2a and R2c's one-hop traversals. **Not seen:** any second-hop number, by any chain of operators or of cosines. No R5 number exists.
+
+### 13.2 The question
+
+From a test source s, apply operator L1 to s, keep the **b = 10** nodes it ranks highest (the branches), apply operator L2 from each branch, and rank every node by its best branch. **Does this walk reach the second-hop set T2 of (s, L1, L2) better than** (a) the same walk with cosine at both steps, (b) one composed point with no branching, (c) cosine to s alone? Main measure: R-precision, the share of T2 in the top m = |T2|; beside it, recall at 4m.
+
+### 13.3 Units (no parameter is tuned, so there is no dev pass)
+
+- **Chain labels:** the labels that have their own operator in R1's plan: every R label with an operator and every S relation with its own operator (a relation pooled into S.rare is not a chain label). T(x, L) is every neighbour of x under L (any split; both ends of an undirected R pair; the destination of a directed S edge).
+- **A unit is (s, L1, L2):** s a **test** node (R1's node split); T1 = T(s, L1) with 1 <= |T1| <= 100; **T2 = (union over a in T1 of T(a, L2)) minus ({s} union T1)**, with **2 <= |T2| <= 100**. T2 is the set of nodes the second hop reaches that the first hop did not already give.
+- **Draw (seeded, seed 0, streams 5/0 and 5/1):** a pool of up to 3,000 test sources that have an edge under some chain label; every (L1, L2) the pool realises is a candidate unit; the path group of a unit is (name of L1, name of L2); **groups with at least 20 candidate units are kept, the 12 largest by candidate count, up to 100 units per group.** A dataset with fewer than 20 test units in all is **not a dataset for this read** (listed, not counted). The eligible counts are recorded.
+- Datasets: all seven, on **e3v**; R1's records are the operators (never refit); the frozen arm is not run.
+
+### 13.4 The four scorers (x = P v / |P v|; q(x, L) = R1's operator L applied to x, as in R4's point)
+
+| scorer | score of node y | what it is |
+|---|---|---|
+| cosine | v_s . v_y | no structure at all |
+| chain-cos | max over branches a in B_cos of [ v_s . v_a + v_a . v_y ] | the same walk with cosine at both steps (B_cos: the b nodes with the highest v_s . v_a, s left out) |
+| chain-point | max over branches a in B_pt of [ q(x_s, L1) . x_a + q(x_a, L2) . x_y ] | R1's operators, branching (B_pt: the b nodes with the highest q(x_s, L1) . x_a, s left out) |
+| compose | q( q(x_s, L1) / |q(x_s, L1)| , L2 ) . x_y | the same two operators on ONE point, no branching |
+
+- **Left out of every ranking:** s, every node of T1 (the first hop's own answers do not count as second-hop answers; the same for every scorer), and, for a chain scorer, y = a on the row of branch a (a node is not its own neighbour). Other branches are not left out.
+- b = 10 is fixed here. No other value is read (the first hop's T1 can hold up to 100 nodes: the branch recall is capped by b, and is reported, not repaired).
+- The score of a chain is a sum of two first-order scores of the same kind (cosines, or R1's dot products of unit vectors); nothing is weighted or learned.
+
+### 13.5 The read
+
+Pass 1: one streaming pass over all nodes per unit set gives the b branches and their first-hop scores for chain-cos and chain-point (R4's streaming read, K = b). Pass 2: one streaming pass over all nodes gives the top K = 400 of every scorer (exact, as in 12.5). Checkpoints: the units after they are built, the running lists every four minutes (a kill costs minutes). Measures per unit: R-precision, recall at 4m, and (beside) the **branch recall**: the share of T1 inside the b branches (min(|T1|, b) is the most it can be), and whether any branch is a true first-hop node.
+
+### 13.6 The calls and the carry rule (fixed now)
+
+- **Per dataset, main call:** chain-point minus chain-cos, mean R-precision over the pooled test units (equal share per path group by the cap), paired bootstrap over units (2,000 resamples, seed 0, zsem2.paired): ABOVE (the 95% interval above 0), LEVEL, BELOW.
+- **Carry rule: BRANCH_CARRIES if chain-point minus chain-cos is ABOVE on at least 4 of the datasets read and BELOW on none; otherwise NOT_CARRIED.** At least 4 datasets must be read, or the call is INCOMPLETE.
+- **Read beside (named, decide nothing):** chain-point minus compose (does branching matter), chain-point minus cosine and chain-cos minus cosine (does a walk beat ranking by cosine to s), the same on recall at 4m, by path kind (R then R, S then S, mixed), by |T2| (2-3, 4-10, 11-100), by |T1| (up to 10, over 10), per path group, and the branch recall.
+
+### 13.7 Expectations, written before any number (a failed one is reported, not explained away)
+
+- **Absolute levels fall.** R4's one-hop point reached 16.7 to 48.6 R-precision points on the six; a second hop needs a correct branch first, and b = 10 caps the branches. I expect chain-point R-precision in single digits to the low twenties, below the one-hop levels.
+- **chain-point minus chain-cos:** ABOVE where R1's operators beat cosine most at one hop (WebQSP, the typed KB relations; the hyperlink relation of 2Wiki and HotpotQA), LEVEL or BELOW on R-then-R paths (the cosine neighbourhood already is the set). **My expectation is NOT_CARRIED, with ABOVE on at most two or three datasets.**
+- **chain-point minus compose:** ABOVE on most (branching lands on real nodes and corrects the first step; one composed point carries both steps' error), smallest where R1's rotation is nearly exact.
+- **cosine to s alone** may beat both chains on the text datasets (the second hop is often near s in a text encoder's space); where it does, the tree adds nothing over cosine there, and that is said.
+- A dataset with almost no chain (MetaQA's relations all start at a movie) may be "not a dataset for this read"; that is a finding about the graph, not a failure.
+
+### 13.8 What this does not test (named, not run)
+
+- **The reverse direction** and any path through an inverse relation (MetaQA's real two-hop questions go movie, actor, movie): R1's directed operators were trained forward; a rotation's inverse is its transpose, but no read of it exists yet.
+- **Three hops** and any width other than 10.
+- **Whether a chain replaces an explicit walk in a pool or in retrieval** (the stored links ARE the sets, R-precision 1 by definition; the value of a semantic branch is where links are missing or noisy). That needs a withheld-links read and is not declared here.
+- This is SEM2's, not the journal's work.
+
+### 13.9 Gates (a failure stops the row)
+
+- **G-E**, **G-R** as in 12.9 (R1's operators reproduced; `--threads 8`).
+- **G-U:** unit sources are test nodes; |T1| and |T2| are in range; T2 contains neither s nor any node of T1; for 50 units T1 and T2 recomputed by a direct scan of the graph's keys (independent of the enumeration) equal the stored sets.
+- **G-T:** for 12 units and every scorer, the stored top-K scores equal the definition's scores (to 5e-3) and no node outside the stored list, among the list's neighbours and 20,000 random nodes, scores above the K-th stored score (the chain scorers recomputed from the definition over the stored branches).
+- **Self-test** (planted toy: a forward chain with noise at each step, a relation with a planted second hop, an undirected clique relation): the streaming lists equal a full read for every scorer; the exclusions hold; the planted chain beats the cosine chain and the cosine; branching beats the composed point where the first step is noisy.
+
+### 13.10 Code, rows and outputs
+
+- **outputs/mp_unified/zsem2r5.py** (mine; imports zsem2, zsem2t.operators and zsem2r4's streaming read, read-only; edits none): `selftest`, `run --ds D --host --threads 8` (per dataset), `report` (laptop). Run records carry script_sha256 and `report` stops on a mismatch.
+- **Rows:** `r5-<dataset>` for the seven, 8 CPUs, memory sized from R4's measured peaks (WebQSP 15.8 GB, HotpotQA 18.0 GB); the small datasets first; `--threads 8`. The feeder retries a failed row once by its own name.
+- **Outputs:** outputs/sem2/r5/<dataset>/e3v.json and .npz, then `report` writes outputs/sem2/r5/report.json and report.md.
+
+### 13.11 What follows (fixed now)
+
+- **BRANCH_CARRIES:** the next pages are the reverse direction and the withheld-links read of 13.8, on the datasets that carried; nothing is queued before the user is told.
+- **NOT_CARRIED:** R5 closes the chained form on R1's operators; what it leaves open is named, not queued (the reverse direction, a third hop, a trained path scorer). The reads beside say whether any walk beats cosine anywhere.
+- Either way: no pool, link or PL change follows from R5, and no model is trained.
+
 ### 8.16 Records completed after the closure (24 November 2026, 23:47 IST, 18:17 UTC): decides nothing
 
 8.15 closed the hub line with five rows still running. They have finished: R1k on WebQSP and 2Wiki, and R1q on
