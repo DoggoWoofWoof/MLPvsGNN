@@ -1048,6 +1048,50 @@ Every read ran with 8 threads. Outputs: outputs/sem2/r2/{sel,read}/..., report.j
 - **outputs/mp_unified/zsem2tr.py** (committed with this page; imports zsem2t.py and zsem1.py, edits neither): `selftest`, `report`. Outputs: outputs/sem2/r2/r2c/report.json and report.md (committed; npz are R2a's).
 - The numbers are filed in 10.7 after the commit of this page.
 
+### 10.7 R2c Part A results (25 November 2026, 15:13 IST, 09:43 UTC): PARTIAL on both measures, ADDS on MuSiQue, HotpotQA and 2Wiki, Part B NAMED
+
+**What ran:** `python outputs/mp_unified/zsem2tr.py report` on the laptop (a few seconds; the code is the commit of section 10, c6c71c2f; no traversal, no host job). Gates **G-R2 and G-A PASS on all eleven rows**
+(every record's script_sha256 is zsem2t.py's, every npz hashes to its record, the stored r_base20, r_trav_fused20 and r_trav0_fused20 average to the records' values). Outputs: outputs/sem2/r2/r2c/report.json and report.md.
+
+**The calls (e3v decides; points; paired bootstrap of 9.6; the frozen four are in report.md, beside):**
+
+Recall at 20 (min(hits, golds) / golds of the fused list at 20, in percent):
+
+| e3v dataset | base | trav0 | trav | oracle | T1 = trav - base | T2 = trav - trav0 | C = oracle - trav | ADDS (recall at 20) |
+|---|---|---|---|---|---|---|---|---|
+| MultiHop-RAG | 91.54 | 93.48 | 93.73 | 93.73 | +2.19 [+1.53, +2.92] ABOVE | +0.25 [-0.16, +0.67] LEVEL | +0.00 [+0.00, +0.00] LEVEL | no |
+| SQuAD | 95.28 | 95.33 | 95.19 | 95.23 | -0.08 [-0.32, +0.16] LEVEL | -0.13 [-0.30, +0.03] LEVEL | +0.04 [-0.02, +0.10] LEVEL | no |
+| MuSiQue | 60.42 | 60.70 | 61.44 | 61.88 | +1.02 [+0.45, +1.57] ABOVE | +0.74 [+0.36, +1.13] ABOVE | +0.43 [+0.17, +0.73] ABOVE | yes |
+| MetaQA | 1.25 | 1.45 | 1.38 | 2.07 | +0.13 [+0.01, +0.25] ABOVE | -0.07 [-0.19, +0.05] LEVEL | +0.69 [+0.54, +0.84] ABOVE | no |
+| WebQSP | 8.34 | 9.42 | 9.68 | 9.60 | +1.33 [+0.70, +2.00] ABOVE | +0.26 [-0.16, +0.71] LEVEL | -0.08 [-0.40, +0.21] LEVEL | no |
+| HotpotQA | 77.59 | 77.73 | 78.20 | 78.18 | +0.61 [+0.34, +0.90] ABOVE | +0.47 [+0.30, +0.63] ABOVE | -0.01 [-0.14, +0.11] LEVEL | yes |
+| 2Wiki | 69.98 | 70.52 | 70.83 | 71.10 | +0.85 [+0.69, +1.00] ABOVE | +0.31 [+0.23, +0.40] ABOVE | +0.27 [+0.19, +0.34] ABOVE | yes |
+
+ALL at 20 (the share of questions with every gold in the fused top 20, in percent):
+
+| e3v dataset | base | trav0 | trav | oracle | T1 = trav - base | T2 = trav - trav0 | C = oracle - trav | ADDS (ALL at 20) |
+|---|---|---|---|---|---|---|---|---|
+| MultiHop-RAG | 78.05 | 83.89 | 84.69 | 84.69 | +6.64 [+4.87, +8.50] ABOVE | +0.80 [-0.35, +1.95] LEVEL | +0.00 [+0.00, +0.00] LEVEL | no |
+| SQuAD | 95.28 | 95.33 | 95.19 | 95.23 | -0.08 [-0.32, +0.16] LEVEL | -0.13 [-0.30, +0.03] LEVEL | +0.04 [-0.02, +0.10] LEVEL | no |
+| MuSiQue | 24.91 | 25.45 | 26.81 | 27.18 | +1.90 [+0.99, +2.81] ABOVE | +1.37 [+0.70, +2.03] ABOVE | +0.37 [-0.08, +0.87] LEVEL | yes |
+| MetaQA | 0.91 | 1.00 | 0.98 | 1.46 | +0.07 [-0.04, +0.18] LEVEL | -0.02 [-0.13, +0.09] LEVEL | +0.48 [+0.34, +0.61] ABOVE | no |
+| WebQSP | 5.92 | 7.12 | 7.05 | 6.99 | +1.13 [+0.53, +1.80] ABOVE | -0.07 [-0.47, +0.33] LEVEL | -0.07 [-0.33, +0.20] LEVEL | no |
+| HotpotQA | 57.61 | 57.95 | 58.74 | 58.69 | +1.13 [+0.62, +1.66] ABOVE | +0.80 [+0.49, +1.09] ABOVE | -0.05 [-0.30, +0.19] LEVEL | yes |
+| 2Wiki | 38.92 | 39.84 | 40.32 | 40.79 | +1.40 [+1.11, +1.69] ABOVE | +0.49 [+0.32, +0.64] ABOVE | +0.47 [+0.31, +0.62] ABOVE | yes |
+
+- **The e3v verdict at 20 is PARTIAL on recall and PARTIAL on ALL.** ADDS (T1 and T2 ABOVE) on **MuSiQue, HotpotQA and 2Wiki, on both measures**; not on MultiHop-RAG, SQuAD, MetaQA or WebQSP. **T1 is BELOW on none** of the seven, on either measure.
+- **The effect sizes are small.** T2 on ALL at 20 (what the operators add at 20 candidates) is +1.37 points on MuSiQue (base 24.91), +0.80 on HotpotQA (base 57.61) and +0.49 on 2Wiki (base 38.92); T1 on ALL is +1.90, +1.13 and +1.40.
+  The seeds' own cosine neighbourhood (trav0 - base, difference of means on ALL at 20) is +0.54, +0.34 and +0.91 on those three, and +5.84 on MultiHop-RAG, where T2 is LEVEL (+0.80 [-0.35, +1.95]): there the whole gain is the neighbourhood and no operator is needed.
+- **ROOM at 20: none.** C = oracle - trav is below 1 point on all seven e3v datasets on both measures (the largest are MetaQA, +0.69 on recall and +0.48 on ALL), so a better choice of operator still has no room at 20.
+- **Expectations: X15 held** (ADDS on recall at 20 on MuSiQue, HotpotQA and 2Wiki, not on SQuAD). **X16 held** (ADDS on ALL at 20 on MuSiQue, and not on MetaQA, WebQSP or SQuAD). **X17 held** (Part B is NAMED, through MuSiQue, HotpotQA and 2Wiki).
+- **The frozen four, beside, no verdict:** ADDS on ALL at 20 on MuSiQue (T2 +1.78) and MetaQA (T2 +0.42); none on MultiHop-RAG or SQuAD.
+- **Said once, as in 9.12:** λ was chosen on R@5, not on R@20; the R@20 means and three T2 intervals were seen before section 10 (10.1); and ALL at 20 is a first-stage measure, not a pool's coverage.
+  On 2Wiki and HotpotQA, whose pools already reach the target (PL3: 2Wiki 0.961 at 917 nodes), a better seed list could make a pool cheaper, not more complete; on MuSiQue the pool is cap-bound (D1), not seed-bound.
+
+**What follows (10.3, fixed before the numbers): Part B is NAMED, and it is not declared or queued.** It is a new host read of the seven datasets that saves the fused top 50 (about 18,000 s of 8-thread host time, sized from R2a's records)
+and then a PL round that takes the traversal's list as its seeds (the PL engines are pinned). The gains above are 0.5 to 1.9 points of ALL at 20 on three datasets; the user is told the price and the default is to leave Part B queued last.
+R3's transfer reads (section 4) are declared next, on R2a's form. No call here touches the journal's layout or pools.
+
 ### 8.16 Records completed after the closure (24 November 2026, 23:47 IST, 18:17 UTC): decides nothing
 
 8.15 closed the hub line with five rows still running. They have finished: R1k on WebQSP and 2Wiki, and R1q on

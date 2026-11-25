@@ -1,0 +1,1041 @@
+{
+ "stage": "SEM2 R2c Part A",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 10",
+ "verdict_e3v": {
+  "recall at 20": "PARTIAL",
+  "ALL at 20": "PARTIAL"
+ },
+ "adds_all_at_20": [
+  "musique",
+  "hotpotqa",
+  "2wiki"
+ ],
+ "part_b": "NAMED",
+ "calls": {
+  "e3v/multihoprag": {
+   "recall at 20": {
+    "T1 trav - base": {
+     "diff": 2.19,
+     "lo": 1.53,
+     "hi": 2.92,
+     "call": "ABOVE"
+    },
+    "T2 trav - trav0": {
+     "diff": 0.25,
+     "lo": -0.16,
+     "hi": 0.67,
+     "call": "LEVEL"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": 0.75,
+      "lo": 0.09,
+      "hi": 1.46,
+      "call": "ABOVE"
+     },
+     "trav0 - base": {
+      "diff": 1.94,
+      "lo": 1.25,
+      "hi": 2.66,
+      "call": "ABOVE"
+     },
+     "C oracle - trav": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL"
+     }
+    },
+    "mean": {
+     "base20": 91.541,
+     "ctrl20": 92.979,
+     "trav_fused20": 93.732,
+     "trav0_fused20": 93.481,
+     "oracle_fused20": 93.732
+    },
+    "ADDS": false,
+    "ROOM": false
+   },
+   "ALL at 20": {
+    "T1 trav - base": {
+     "diff": 6.64,
+     "lo": 4.87,
+     "hi": 8.5,
+     "call": "ABOVE"
+    },
+    "T2 trav - trav0": {
+     "diff": 0.8,
+     "lo": -0.35,
+     "hi": 1.95,
+     "call": "LEVEL"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": 3.19,
+      "lo": 1.5,
+      "hi": 4.96,
+      "call": "ABOVE"
+     },
+     "trav0 - base": {
+      "diff": 5.84,
+      "lo": 4.16,
+      "hi": 7.61,
+      "call": "ABOVE"
+     },
+     "C oracle - trav": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL"
+     }
+    },
+    "mean": {
+     "base20": 78.053,
+     "ctrl20": 81.504,
+     "trav_fused20": 84.69,
+     "trav0_fused20": 83.894,
+     "oracle_fused20": 84.69
+    },
+    "ADDS": false,
+    "ROOM": false
+   },
+   "chosen": {
+    "trav": 0.0,
+    "trav0": 0.0
+   },
+   "questions": 1130
+  },
+  "e3v/squad": {
+   "recall at 20": {
+    "T1 trav - base": {
+     "diff": -0.08,
+     "lo": -0.32,
+     "hi": 0.16,
+     "call": "LEVEL"
+    },
+    "T2 trav - trav0": {
+     "diff": -0.13,
+     "lo": -0.3,
+     "hi": 0.03,
+     "call": "LEVEL"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": 0.79,
+      "lo": 0.53,
+      "hi": 1.06,
+      "call": "ABOVE"
+     },
+     "trav0 - base": {
+      "diff": 0.05,
+      "lo": -0.16,
+      "hi": 0.26,
+      "call": "LEVEL"
+     },
+     "C oracle - trav": {
+      "diff": 0.04,
+      "lo": -0.02,
+      "hi": 0.1,
+      "call": "LEVEL"
+     }
+    },
+    "mean": {
+     "base20": 95.275,
+     "ctrl20": 94.399,
+     "trav_fused20": 95.191,
+     "trav0_fused20": 95.326,
+     "oracle_fused20": 95.233
+    },
+    "ADDS": false,
+    "ROOM": false
+   },
+   "ALL at 20": {
+    "T1 trav - base": {
+     "diff": -0.08,
+     "lo": -0.32,
+     "hi": 0.16,
+     "call": "LEVEL"
+    },
+    "T2 trav - trav0": {
+     "diff": -0.13,
+     "lo": -0.3,
+     "hi": 0.03,
+     "call": "LEVEL"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": 0.79,
+      "lo": 0.53,
+      "hi": 1.06,
+      "call": "ABOVE"
+     },
+     "trav0 - base": {
+      "diff": 0.05,
+      "lo": -0.16,
+      "hi": 0.26,
+      "call": "LEVEL"
+     },
+     "C oracle - trav": {
+      "diff": 0.04,
+      "lo": -0.02,
+      "hi": 0.1,
+      "call": "LEVEL"
+     }
+    },
+    "mean": {
+     "base20": 95.275,
+     "ctrl20": 94.399,
+     "trav_fused20": 95.191,
+     "trav0_fused20": 95.326,
+     "oracle_fused20": 95.233
+    },
+    "ADDS": false,
+    "ROOM": false
+   },
+   "chosen": {
+    "trav": 2.0,
+    "trav0": 1.0
+   },
+   "questions": 11873
+  },
+  "e3v/musique": {
+   "recall at 20": {
+    "T1 trav - base": {
+     "diff": 1.02,
+     "lo": 0.45,
+     "hi": 1.57,
+     "call": "ABOVE"
+    },
+    "T2 trav - trav0": {
+     "diff": 0.74,
+     "lo": 0.36,
+     "hi": 1.13,
+     "call": "ABOVE"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": 0.68,
+      "lo": 0.12,
+      "hi": 1.2,
+      "call": "ABOVE"
+     },
+     "trav0 - base": {
+      "diff": 0.28,
+      "lo": -0.26,
+      "hi": 0.83,
+      "call": "LEVEL"
+     },
+     "C oracle - trav": {
+      "diff": 0.43,
+      "lo": 0.17,
+      "hi": 0.73,
+      "call": "ABOVE"
+     }
+    },
+    "mean": {
+     "base20": 60.419,
+     "ctrl20": 60.767,
+     "trav_fused20": 61.443,
+     "trav0_fused20": 60.699,
+     "oracle_fused20": 61.878
+    },
+    "ADDS": true,
+    "ROOM": false
+   },
+   "ALL at 20": {
+    "T1 trav - base": {
+     "diff": 1.9,
+     "lo": 0.99,
+     "hi": 2.81,
+     "call": "ABOVE"
+    },
+    "T2 trav - trav0": {
+     "diff": 1.37,
+     "lo": 0.7,
+     "hi": 2.03,
+     "call": "ABOVE"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": 1.41,
+      "lo": 0.5,
+      "hi": 2.28,
+      "call": "ABOVE"
+     },
+     "trav0 - base": {
+      "diff": 0.54,
+      "lo": -0.33,
+      "hi": 1.41,
+      "call": "LEVEL"
+     },
+     "C oracle - trav": {
+      "diff": 0.37,
+      "lo": -0.08,
+      "hi": 0.87,
+      "call": "LEVEL"
+     }
+    },
+    "mean": {
+     "base20": 24.907,
+     "ctrl20": 25.403,
+     "trav_fused20": 26.81,
+     "trav0_fused20": 25.445,
+     "oracle_fused20": 27.182
+    },
+    "ADDS": true,
+    "ROOM": false
+   },
+   "chosen": {
+    "trav": 0.0,
+    "trav0": 0.0
+   },
+   "questions": 2417
+  },
+  "e3v/metaqa": {
+   "recall at 20": {
+    "T1 trav - base": {
+     "diff": 0.13,
+     "lo": 0.01,
+     "hi": 0.25,
+     "call": "ABOVE"
+    },
+    "T2 trav - trav0": {
+     "diff": -0.07,
+     "lo": -0.19,
+     "hi": 0.05,
+     "call": "LEVEL"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": -0.08,
+      "lo": -0.2,
+      "hi": 0.05,
+      "call": "LEVEL"
+     },
+     "trav0 - base": {
+      "diff": 0.2,
+      "lo": 0.09,
+      "hi": 0.31,
+      "call": "ABOVE"
+     },
+     "C oracle - trav": {
+      "diff": 0.69,
+      "lo": 0.54,
+      "hi": 0.84,
+      "call": "ABOVE"
+     }
+    },
+    "mean": {
+     "base20": 1.252,
+     "ctrl20": 1.456,
+     "trav_fused20": 1.379,
+     "trav0_fused20": 1.453,
+     "oracle_fused20": 2.067
+    },
+    "ADDS": false,
+    "ROOM": false
+   },
+   "ALL at 20": {
+    "T1 trav - base": {
+     "diff": 0.07,
+     "lo": -0.04,
+     "hi": 0.18,
+     "call": "LEVEL"
+    },
+    "T2 trav - trav0": {
+     "diff": -0.02,
+     "lo": -0.13,
+     "hi": 0.09,
+     "call": "LEVEL"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": -0.09,
+      "lo": -0.2,
+      "hi": 0.03,
+      "call": "LEVEL"
+     },
+     "trav0 - base": {
+      "diff": 0.09,
+      "lo": -0.01,
+      "hi": 0.19,
+      "call": "LEVEL"
+     },
+     "C oracle - trav": {
+      "diff": 0.48,
+      "lo": 0.34,
+      "hi": 0.61,
+      "call": "ABOVE"
+     }
+    },
+    "mean": {
+     "base20": 0.91,
+     "ctrl20": 1.073,
+     "trav_fused20": 0.981,
+     "trav0_fused20": 1.002,
+     "oracle_fused20": 1.461
+    },
+    "ADDS": false,
+    "ROOM": false
+   },
+   "chosen": {
+    "trav": 0.0,
+    "trav0": 0.0
+   },
+   "questions": 9785
+  },
+  "e3v/webqsp": {
+   "recall at 20": {
+    "T1 trav - base": {
+     "diff": 1.33,
+     "lo": 0.7,
+     "hi": 2.0,
+     "call": "ABOVE"
+    },
+    "T2 trav - trav0": {
+     "diff": 0.26,
+     "lo": -0.16,
+     "hi": 0.71,
+     "call": "LEVEL"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": -0.1,
+      "lo": -0.67,
+      "hi": 0.51,
+      "call": "LEVEL"
+     },
+     "trav0 - base": {
+      "diff": 1.08,
+      "lo": 0.46,
+      "hi": 1.75,
+      "call": "ABOVE"
+     },
+     "C oracle - trav": {
+      "diff": -0.08,
+      "lo": -0.4,
+      "hi": 0.21,
+      "call": "LEVEL"
+     }
+    },
+    "mean": {
+     "base20": 8.343,
+     "ctrl20": 9.778,
+     "trav_fused20": 9.675,
+     "trav0_fused20": 9.418,
+     "oracle_fused20": 9.596
+    },
+    "ADDS": false,
+    "ROOM": false
+   },
+   "ALL at 20": {
+    "T1 trav - base": {
+     "diff": 1.13,
+     "lo": 0.53,
+     "hi": 1.8,
+     "call": "ABOVE"
+    },
+    "T2 trav - trav0": {
+     "diff": -0.07,
+     "lo": -0.47,
+     "hi": 0.33,
+     "call": "LEVEL"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": -0.27,
+      "lo": -0.8,
+      "hi": 0.33,
+      "call": "LEVEL"
+     },
+     "trav0 - base": {
+      "diff": 1.2,
+      "lo": 0.6,
+      "hi": 1.86,
+      "call": "ABOVE"
+     },
+     "C oracle - trav": {
+      "diff": -0.07,
+      "lo": -0.33,
+      "hi": 0.2,
+      "call": "LEVEL"
+     }
+    },
+    "mean": {
+     "base20": 5.921,
+     "ctrl20": 7.319,
+     "trav_fused20": 7.053,
+     "trav0_fused20": 7.119,
+     "oracle_fused20": 6.986
+    },
+    "ADDS": false,
+    "ROOM": false
+   },
+   "chosen": {
+    "trav": 0.0,
+    "trav0": 0.0
+   },
+   "questions": 1503
+  },
+  "e3v/hotpotqa": {
+   "recall at 20": {
+    "T1 trav - base": {
+     "diff": 0.61,
+     "lo": 0.34,
+     "hi": 0.9,
+     "call": "ABOVE"
+    },
+    "T2 trav - trav0": {
+     "diff": 0.47,
+     "lo": 0.3,
+     "hi": 0.63,
+     "call": "ABOVE"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": 1.52,
+      "lo": 1.2,
+      "hi": 1.84,
+      "call": "ABOVE"
+     },
+     "trav0 - base": {
+      "diff": 0.14,
+      "lo": -0.14,
+      "hi": 0.45,
+      "call": "LEVEL"
+     },
+     "C oracle - trav": {
+      "diff": -0.01,
+      "lo": -0.14,
+      "hi": 0.11,
+      "call": "LEVEL"
+     }
+    },
+    "mean": {
+     "base20": 77.589,
+     "ctrl20": 76.678,
+     "trav_fused20": 78.197,
+     "trav0_fused20": 77.731,
+     "oracle_fused20": 78.184
+    },
+    "ADDS": true,
+    "ROOM": false
+   },
+   "ALL at 20": {
+    "T1 trav - base": {
+     "diff": 1.13,
+     "lo": 0.62,
+     "hi": 1.66,
+     "call": "ABOVE"
+    },
+    "T2 trav - trav0": {
+     "diff": 0.8,
+     "lo": 0.49,
+     "hi": 1.09,
+     "call": "ABOVE"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": 2.5,
+      "lo": 1.96,
+      "hi": 3.09,
+      "call": "ABOVE"
+     },
+     "trav0 - base": {
+      "diff": 0.34,
+      "lo": -0.18,
+      "hi": 0.9,
+      "call": "LEVEL"
+     },
+     "C oracle - trav": {
+      "diff": -0.05,
+      "lo": -0.3,
+      "hi": 0.19,
+      "call": "LEVEL"
+     }
+    },
+    "mean": {
+     "base20": 57.61,
+     "ctrl20": 56.246,
+     "trav_fused20": 58.744,
+     "trav0_fused20": 57.947,
+     "oracle_fused20": 58.69
+    },
+    "ADDS": true,
+    "ROOM": false
+   },
+   "chosen": {
+    "trav": 0.25,
+    "trav0": 0.0
+   },
+   "questions": 7405
+  },
+  "e3v/2wiki": {
+   "recall at 20": {
+    "T1 trav - base": {
+     "diff": 0.85,
+     "lo": 0.69,
+     "hi": 1.0,
+     "call": "ABOVE"
+    },
+    "T2 trav - trav0": {
+     "diff": 0.31,
+     "lo": 0.23,
+     "hi": 0.4,
+     "call": "ABOVE"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": 1.28,
+      "lo": 1.12,
+      "hi": 1.46,
+      "call": "ABOVE"
+     },
+     "trav0 - base": {
+      "diff": 0.53,
+      "lo": 0.39,
+      "hi": 0.69,
+      "call": "ABOVE"
+     },
+     "C oracle - trav": {
+      "diff": 0.27,
+      "lo": 0.19,
+      "hi": 0.34,
+      "call": "ABOVE"
+     }
+    },
+    "mean": {
+     "base20": 69.983,
+     "ctrl20": 69.547,
+     "trav_fused20": 70.831,
+     "trav0_fused20": 70.517,
+     "oracle_fused20": 71.098
+    },
+    "ADDS": true,
+    "ROOM": false
+   },
+   "ALL at 20": {
+    "T1 trav - base": {
+     "diff": 1.4,
+     "lo": 1.11,
+     "hi": 1.69,
+     "call": "ABOVE"
+    },
+    "T2 trav - trav0": {
+     "diff": 0.49,
+     "lo": 0.32,
+     "hi": 0.64,
+     "call": "ABOVE"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": 1.86,
+      "lo": 1.55,
+      "hi": 2.17,
+      "call": "ABOVE"
+     },
+     "trav0 - base": {
+      "diff": 0.91,
+      "lo": 0.64,
+      "hi": 1.19,
+      "call": "ABOVE"
+     },
+     "C oracle - trav": {
+      "diff": 0.47,
+      "lo": 0.31,
+      "hi": 0.62,
+      "call": "ABOVE"
+     }
+    },
+    "mean": {
+     "base20": 38.923,
+     "ctrl20": 38.462,
+     "trav_fused20": 40.323,
+     "trav0_fused20": 39.838,
+     "oracle_fused20": 40.792
+    },
+    "ADDS": true,
+    "ROOM": false
+   },
+   "chosen": {
+    "trav": 0.25,
+    "trav0": 0.25
+   },
+   "questions": 12576
+  },
+  "frozen/multihoprag": {
+   "recall at 20": {
+    "T1 trav - base": {
+     "diff": 2.64,
+     "lo": 1.98,
+     "hi": 3.33,
+     "call": "ABOVE"
+    },
+    "T2 trav - trav0": {
+     "diff": -0.04,
+     "lo": -0.52,
+     "hi": 0.41,
+     "call": "LEVEL"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": 0.14,
+      "lo": -0.39,
+      "hi": 0.71,
+      "call": "LEVEL"
+     },
+     "trav0 - base": {
+      "diff": 2.68,
+      "lo": 2.04,
+      "hi": 3.38,
+      "call": "ABOVE"
+     },
+     "C oracle - trav": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL"
+     }
+    },
+    "mean": {
+     "base20": 92.05,
+     "ctrl20": 94.55,
+     "trav_fused20": 94.69,
+     "trav0_fused20": 94.735,
+     "oracle_fused20": 94.69
+    },
+    "ADDS": false,
+    "ROOM": false
+   },
+   "ALL at 20": {
+    "T1 trav - base": {
+     "diff": 6.81,
+     "lo": 5.13,
+     "hi": 8.67,
+     "call": "ABOVE"
+    },
+    "T2 trav - trav0": {
+     "diff": 0.09,
+     "lo": -1.15,
+     "hi": 1.33,
+     "call": "LEVEL"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": 0.88,
+      "lo": -0.53,
+      "hi": 2.39,
+      "call": "LEVEL"
+     },
+     "trav0 - base": {
+      "diff": 6.73,
+      "lo": 5.13,
+      "hi": 8.41,
+      "call": "ABOVE"
+     },
+     "C oracle - trav": {
+      "diff": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "call": "LEVEL"
+     }
+    },
+    "mean": {
+     "base20": 79.646,
+     "ctrl20": 85.575,
+     "trav_fused20": 86.46,
+     "trav0_fused20": 86.372,
+     "oracle_fused20": 86.46
+    },
+    "ADDS": false,
+    "ROOM": false
+   },
+   "chosen": {
+    "trav": 2.0,
+    "trav0": 1.0
+   },
+   "questions": 1130
+  },
+  "frozen/squad": {
+   "recall at 20": {
+    "T1 trav - base": {
+     "diff": -0.13,
+     "lo": -0.35,
+     "hi": 0.07,
+     "call": "LEVEL"
+    },
+    "T2 trav - trav0": {
+     "diff": 0.17,
+     "lo": 0.02,
+     "hi": 0.34,
+     "call": "ABOVE"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": 0.07,
+      "lo": -0.17,
+      "hi": 0.29,
+      "call": "LEVEL"
+     },
+     "trav0 - base": {
+      "diff": -0.3,
+      "lo": -0.53,
+      "hi": -0.08,
+      "call": "BELOW"
+     },
+     "C oracle - trav": {
+      "diff": 0.02,
+      "lo": -0.03,
+      "hi": 0.07,
+      "call": "LEVEL"
+     }
+    },
+    "mean": {
+     "base20": 96.395,
+     "ctrl20": 96.193,
+     "trav_fused20": 96.26,
+     "trav0_fused20": 96.092,
+     "oracle_fused20": 96.277
+    },
+    "ADDS": false,
+    "ROOM": false
+   },
+   "ALL at 20": {
+    "T1 trav - base": {
+     "diff": -0.13,
+     "lo": -0.35,
+     "hi": 0.07,
+     "call": "LEVEL"
+    },
+    "T2 trav - trav0": {
+     "diff": 0.17,
+     "lo": 0.02,
+     "hi": 0.34,
+     "call": "ABOVE"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": 0.07,
+      "lo": -0.17,
+      "hi": 0.29,
+      "call": "LEVEL"
+     },
+     "trav0 - base": {
+      "diff": -0.3,
+      "lo": -0.53,
+      "hi": -0.08,
+      "call": "BELOW"
+     },
+     "C oracle - trav": {
+      "diff": 0.02,
+      "lo": -0.03,
+      "hi": 0.07,
+      "call": "LEVEL"
+     }
+    },
+    "mean": {
+     "base20": 96.395,
+     "ctrl20": 96.193,
+     "trav_fused20": 96.26,
+     "trav0_fused20": 96.092,
+     "oracle_fused20": 96.277
+    },
+    "ADDS": false,
+    "ROOM": false
+   },
+   "chosen": {
+    "trav": 2.0,
+    "trav0": 0.0
+   },
+   "questions": 11873
+  },
+  "frozen/musique": {
+   "recall at 20": {
+    "T1 trav - base": {
+     "diff": 0.99,
+     "lo": 0.46,
+     "hi": 1.48,
+     "call": "ABOVE"
+    },
+    "T2 trav - trav0": {
+     "diff": 1.31,
+     "lo": 0.87,
+     "hi": 1.74,
+     "call": "ABOVE"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": 0.81,
+      "lo": 0.27,
+      "hi": 1.32,
+      "call": "ABOVE"
+     },
+     "trav0 - base": {
+      "diff": -0.32,
+      "lo": -0.88,
+      "hi": 0.21,
+      "call": "LEVEL"
+     },
+     "C oracle - trav": {
+      "diff": 0.34,
+      "lo": 0.14,
+      "hi": 0.53,
+      "call": "ABOVE"
+     }
+    },
+    "mean": {
+     "base20": 61.888,
+     "ctrl20": 62.071,
+     "trav_fused20": 62.878,
+     "trav0_fused20": 61.564,
+     "oracle_fused20": 63.215
+    },
+    "ADDS": true,
+    "ROOM": false
+   },
+   "ALL at 20": {
+    "T1 trav - base": {
+     "diff": 1.82,
+     "lo": 0.83,
+     "hi": 2.73,
+     "call": "ABOVE"
+    },
+    "T2 trav - trav0": {
+     "diff": 1.78,
+     "lo": 1.03,
+     "hi": 2.52,
+     "call": "ABOVE"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": 0.41,
+      "lo": -0.46,
+      "hi": 1.24,
+      "call": "LEVEL"
+     },
+     "trav0 - base": {
+      "diff": 0.04,
+      "lo": -0.87,
+      "hi": 0.99,
+      "call": "LEVEL"
+     },
+     "C oracle - trav": {
+      "diff": 0.5,
+      "lo": 0.12,
+      "hi": 0.87,
+      "call": "ABOVE"
+     }
+    },
+    "mean": {
+     "base20": 27.72,
+     "ctrl20": 29.127,
+     "trav_fused20": 29.541,
+     "trav0_fused20": 27.762,
+     "oracle_fused20": 30.037
+    },
+    "ADDS": true,
+    "ROOM": false
+   },
+   "chosen": {
+    "trav": 2.0,
+    "trav0": 0.25
+   },
+   "questions": 2417
+  },
+  "frozen/metaqa": {
+   "recall at 20": {
+    "T1 trav - base": {
+     "diff": 0.77,
+     "lo": 0.59,
+     "hi": 0.93,
+     "call": "ABOVE"
+    },
+    "T2 trav - trav0": {
+     "diff": 0.65,
+     "lo": 0.48,
+     "hi": 0.8,
+     "call": "ABOVE"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": 0.32,
+      "lo": 0.16,
+      "hi": 0.48,
+      "call": "ABOVE"
+     },
+     "trav0 - base": {
+      "diff": 0.12,
+      "lo": -0.01,
+      "hi": 0.25,
+      "call": "LEVEL"
+     },
+     "C oracle - trav": {
+      "diff": 0.09,
+      "lo": 0.04,
+      "hi": 0.15,
+      "call": "ABOVE"
+     }
+    },
+    "mean": {
+     "base20": 1.477,
+     "ctrl20": 1.925,
+     "trav_fused20": 2.243,
+     "trav0_fused20": 1.594,
+     "oracle_fused20": 2.334
+    },
+    "ADDS": true,
+    "ROOM": false
+   },
+   "ALL at 20": {
+    "T1 trav - base": {
+     "diff": 0.45,
+     "lo": 0.29,
+     "hi": 0.6,
+     "call": "ABOVE"
+    },
+    "T2 trav - trav0": {
+     "diff": 0.42,
+     "lo": 0.27,
+     "hi": 0.57,
+     "call": "ABOVE"
+    },
+    "beside": {
+     "trav - SEM1 control": {
+      "diff": 0.24,
+      "lo": 0.08,
+      "hi": 0.39,
+      "call": "ABOVE"
+     },
+     "trav0 - base": {
+      "diff": 0.03,
+      "lo": -0.09,
+      "hi": 0.15,
+      "call": "LEVEL"
+     },
+     "C oracle - trav": {
+      "diff": 0.05,
+      "lo": 0.0,
+      "hi": 0.11,
+      "call": "LEVEL"
+     }
+    },
+    "mean": {
+     "base20": 0.858,
+     "ctrl20": 1.073,
+     "trav_fused20": 1.308,
+     "trav0_fused20": 0.889,
+     "oracle_fused20": 1.359
+    },
+    "ADDS": true,
+    "ROOM": false
+   },
+   "chosen": {
+    "trav": 2.0,
+    "trav0": 0.25
+   },
+   "questions": 9785
+  }
+ },
+ "script_sha256_of_reads": "7d7cf31987dfcee7227978db2e136b1dde30b0aad8a4b6424b164aaf256838da",
+ "utc": "2026-11-25T09:43:04Z"
+}
