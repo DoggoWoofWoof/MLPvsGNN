@@ -1,0 +1,5435 @@
+{
+ "dataset": "multihoprag",
+ "declared_in": "docs/UL2H_HOP_COVERAGE_LEDGER.md",
+ "status": "read",
+ "nodes": 609,
+ "nodes_sha256": "4cf1f51f9af49c4c1312d933985e1608808a2517bcd941919eb225170bdb79cf",
+ "sources": {
+  "grade_json_sha256": "f1e9ef955cd200dac108322a6e25c1a5c8fe11417f9bf26edd008591984671a0",
+  "ranks_npz_sha256": "b0f98e6f178b4fd86638b13865fa3d750f1a4a7f5350236d3ea706223cf73dd9",
+  "links_json_sha256": "97a1f768bae0e0256136220f1a6aa037ec71632918053e89b262a523b2455744",
+  "first_e3v": {
+   "file": "outputs/pl1/multihoprag/RK/s0/first_e3v.npz",
+   "sha256": "ffa67f41b3d51f1fcdfdad186f965795ae61b192f7ca325a86b550305edf5e4f"
+  },
+  "gold": {
+   "file": "outputs/pl1/multihoprag/RK/s0/gold.npz",
+   "sha256": "6705327f4d2b29df447619c474fe302bd70a5c98b7d83de03b582aae2f0dc7d3"
+  },
+  "splade_top1000_sha256": "11ba765983a8c667e69dcc1d907ec5a4899b4768936231f0b31d8968e2170945",
+  "pl1_first_json_sha256": "46399bc8dc3cd914e3da44f3fc1157166013ca07370aedd01dd7b4490dc6d1c2"
+ },
+ "gates": {
+  "G-P1": {
+   "RK": {
+    "S": 0,
+    "R": 25080,
+    "K": 263,
+    "B0": 25343
+   }
+  },
+  "G-P2": {
+   "H5": 2387,
+   "HM": 1332,
+   "HK1": 2712,
+   "NTc": 13668,
+   "NT1": 4604,
+   "HK2": 4886,
+   "H10": 4588
+  },
+  "G-P3": {
+   "s1eval/GP": {
+    "slots": 2747,
+    "questions": 1130
+   },
+   "s1sel/GP": {
+    "slots": 504,
+    "questions": 224
+   }
+  },
+  "G-S1": {
+   "gold_table_equals_golds_splits": true,
+   "lists_sha_equals_first_json": true
+  },
+  "G-S2": {
+   "dense_d5_recomputed": 64.29,
+   "first_json_d5": 64.29,
+   "equal": true
+  },
+  "G-S5": "PASS",
+  "G-S3": {
+   "lists_and_gold_sha256_equal_first_json": true,
+   "golds_equal_golds_splits": true
+  },
+  "G-S4": {
+   "s1eval": {
+    "questions": 1130,
+    "zero_gold_excluded": 0
+   },
+   "s1sel": {
+    "questions": 224,
+    "zero_gold_excluded": 0
+   }
+  },
+  "G-H1": {
+   "s1eval": {
+    "questions": 1130,
+    "mean_union": 7.4398,
+    "min_union": 5,
+    "max_union": 10
+   },
+   "s1sel": {
+    "questions": 224,
+    "mean_union": 7.4107,
+    "min_union": 5,
+    "max_union": 10
+   }
+  }
+ },
+ "constants": {
+  "seeds": "dense5 U splade5",
+  "budget3": 16777216,
+  "big_n": 100000,
+  "sample_every": 10,
+  "hops": [
+   1,
+   2,
+   3
+  ]
+ },
+ "multi_gold": true,
+ "population": {
+  "s1eval": {
+   "questions": 1130,
+   "zero_gold_excluded": 0,
+   "golds": 2985
+  },
+  "s1sel": {
+   "questions": 224,
+   "zero_gold_excluded": 0,
+   "golds": 575
+  }
+ },
+ "versions": {
+  "RK": {
+   "cells": {
+    "s1eval": {
+     "questions": 1130,
+     "zero_gold_excluded": 0,
+     "seeds": {
+      "questions": 1130,
+      "golds": 2985,
+      "found_golds": 2134,
+      "missed_golds": 851,
+      "questions_with_missed": 627,
+      "seeds_mean": 7.4398,
+      "ALL": {
+       "pt": 0.44513,
+       "ci": [
+        0.41593,
+        0.47434
+       ]
+      },
+      "ANY": {
+       "pt": 0.97965,
+       "ci": [
+        0.9708,
+        0.98761
+       ]
+      },
+      "recall": {
+       "pt": 0.71491,
+       "ci": [
+        0.7,
+        0.73034
+       ]
+      }
+     },
+     "units": {
+      "label:R.mention": {
+       "pairs": 2,
+       "h1": {
+        "ALL": {
+         "pt": 0.44602,
+         "ci": [
+          0.41681,
+          0.47522
+         ]
+        },
+        "ANY": {
+         "pt": 0.97965,
+         "ci": [
+          0.9708,
+          0.98761
+         ]
+        },
+        "recall": {
+         "pt": 0.71524,
+         "ci": [
+          0.70036,
+          0.73083
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.00118,
+         "ci": [
+          0.0,
+          0.00374
+         ]
+        },
+        "reached_missed": 1,
+        "measured_share": 1.0,
+        "nodes": 7.481,
+        "nodes_lb": 7.481,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 0.44602,
+         "ci": [
+          0.41681,
+          0.47522
+         ]
+        },
+        "ANY": {
+         "pt": 0.97965,
+         "ci": [
+          0.9708,
+          0.98761
+         ]
+        },
+        "recall": {
+         "pt": 0.71524,
+         "ci": [
+          0.70036,
+          0.73083
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.00118,
+         "ci": [
+          0.0,
+          0.00374
+         ]
+        },
+        "reached_missed": 1,
+        "measured_share": 1.0,
+        "nodes": 7.481,
+        "nodes_lb": 7.481,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 0.44602,
+         "ci": [
+          0.41681,
+          0.47522
+         ]
+        },
+        "ANY": {
+         "pt": 0.97965,
+         "ci": [
+          0.9708,
+          0.98761
+         ]
+        },
+        "recall": {
+         "pt": 0.71524,
+         "ci": [
+          0.70036,
+          0.73083
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.00118,
+         "ci": [
+          0.0,
+          0.00374
+         ]
+        },
+        "reached_missed": 1,
+        "measured_share": 1.0,
+        "nodes": 7.481,
+        "nodes_lb": 7.481,
+        "bound": false
+       },
+       "price_per_seed": 0.0055,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": -268.096,
+         "questions": 1130
+        },
+        "h2": {
+         "mean_diff": -601.213,
+         "questions": 1130
+        },
+        "h3": {
+         "mean_diff": -601.519,
+         "questions": 1130
+        }
+       }
+      },
+      "label:R.name_comention": {
+       "pairs": 25005,
+       "h1": {
+        "ALL": {
+         "pt": 0.98584,
+         "ci": [
+          0.97876,
+          0.99204
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.99464,
+         "ci": [
+          0.99193,
+          0.99701
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.9812,
+         "ci": [
+          0.97156,
+          0.98975
+         ]
+        },
+        "reached_missed": 835,
+        "measured_share": 1.0,
+        "nodes": 273.884,
+        "nodes_lb": 273.884,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 607.816,
+        "nodes_lb": 607.816,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 608.002,
+        "nodes_lb": 608.002,
+        "bound": false
+       },
+       "price_per_seed": 35.8133,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": -1.692,
+         "questions": 1130
+        },
+        "h2": {
+         "mean_diff": -0.878,
+         "questions": 1130
+        },
+        "h3": {
+         "mean_diff": -0.998,
+         "questions": 1130
+        }
+       }
+      },
+      "label:R.title_comention": {
+       "pairs": 75,
+       "h1": {
+        "ALL": {
+         "pt": 0.45398,
+         "ci": [
+          0.42478,
+          0.48319
+         ]
+        },
+        "ANY": {
+         "pt": 0.97965,
+         "ci": [
+          0.9708,
+          0.98761
+         ]
+        },
+        "recall": {
+         "pt": 0.71859,
+         "ci": [
+          0.70327,
+          0.73387
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.01293,
+         "ci": [
+          0.00583,
+          0.02101
+         ]
+        },
+        "reached_missed": 11,
+        "measured_share": 1.0,
+        "nodes": 8.913,
+        "nodes_lb": 8.913,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 0.47788,
+         "ci": [
+          0.44779,
+          0.50708
+         ]
+        },
+        "ANY": {
+         "pt": 0.98142,
+         "ci": [
+          0.97345,
+          0.98852
+         ]
+        },
+        "recall": {
+         "pt": 0.73266,
+         "ci": [
+          0.71743,
+          0.74798
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.06228,
+         "ci": [
+          0.04634,
+          0.07962
+         ]
+        },
+        "reached_missed": 53,
+        "measured_share": 1.0,
+        "nodes": 22.649,
+        "nodes_lb": 22.649,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 0.48584,
+         "ci": [
+          0.45575,
+          0.51504
+         ]
+        },
+        "ANY": {
+         "pt": 0.98142,
+         "ci": [
+          0.97345,
+          0.98852
+         ]
+        },
+        "recall": {
+         "pt": 0.73601,
+         "ci": [
+          0.72102,
+          0.75127
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.07403,
+         "ci": [
+          0.05647,
+          0.093
+         ]
+        },
+        "reached_missed": 63,
+        "measured_share": 1.0,
+        "nodes": 25.271,
+        "nodes_lb": 25.271,
+        "bound": false
+       },
+       "price_per_seed": 0.198,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": -266.663,
+         "questions": 1130
+        },
+        "h2": {
+         "mean_diff": -586.045,
+         "questions": 1130
+        },
+        "h3": {
+         "mean_diff": -583.729,
+         "questions": 1130
+        }
+       }
+      },
+      "label:K.knn": {
+       "pairs": 1366,
+       "h1": {
+        "ALL": {
+         "pt": 0.65221,
+         "ci": [
+          0.62478,
+          0.68142
+         ]
+        },
+        "ANY": {
+         "pt": 0.99823,
+         "ci": [
+          0.99558,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.86164,
+         "ci": [
+          0.85134,
+          0.8726
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.51469,
+         "ci": [
+          0.48488,
+          0.54426
+         ]
+        },
+        "reached_missed": 438,
+        "measured_share": 1.0,
+        "nodes": 24.726,
+        "nodes_lb": 24.726,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 0.72212,
+         "ci": [
+          0.69646,
+          0.74867
+         ]
+        },
+        "ANY": {
+         "pt": 0.99823,
+         "ci": [
+          0.99558,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.8938,
+         "ci": [
+          0.88475,
+          0.90346
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.6275,
+         "ci": [
+          0.59954,
+          0.65509
+         ]
+        },
+        "reached_missed": 534,
+        "measured_share": 1.0,
+        "nodes": 48.959,
+        "nodes_lb": 48.959,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 0.75221,
+         "ci": [
+          0.72743,
+          0.77788
+         ]
+        },
+        "ANY": {
+         "pt": 0.99823,
+         "ci": [
+          0.99558,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.90519,
+         "ci": [
+          0.89646,
+          0.91392
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.66745,
+         "ci": [
+          0.64019,
+          0.6958
+         ]
+        },
+        "reached_missed": 568,
+        "measured_share": 1.0,
+        "nodes": 90.19,
+        "nodes_lb": 90.19,
+        "bound": false
+       },
+       "price_per_seed": 2.3234,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": -250.85,
+         "questions": 1130
+        },
+        "h2": {
+         "mean_diff": -559.735,
+         "questions": 1130
+        },
+        "h3": {
+         "mean_diff": -518.81,
+         "questions": 1130
+        }
+       }
+      },
+      "any": {
+       "pairs": 26448,
+       "h1": {
+        "ALL": {
+         "pt": 0.98584,
+         "ci": [
+          0.97876,
+          0.99204
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.99464,
+         "ci": [
+          0.99193,
+          0.99701
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.9812,
+         "ci": [
+          0.97156,
+          0.98975
+         ]
+        },
+        "reached_missed": 835,
+        "measured_share": 1.0,
+        "nodes": 275.576,
+        "nodes_lb": 275.576,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 608.694,
+        "nodes_lb": 608.694,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "price_per_seed": 36.0407
+      },
+      "plus:H5": {
+       "pairs": 28835,
+       "h1": {
+        "ALL": {
+         "pt": 0.98938,
+         "ci": [
+          0.98319,
+          0.99469
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.99598,
+         "ci": [
+          0.99359,
+          0.99801
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.9859,
+         "ci": [
+          0.97751,
+          0.99315
+         ]
+        },
+        "reached_missed": 839,
+        "measured_share": 1.0,
+        "nodes": 289.196,
+        "nodes_lb": 289.196,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 608.749,
+        "nodes_lb": 608.749,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "price_per_seed": 37.8714,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 13.62,
+         "questions": 1130
+        },
+        "h2": {
+         "mean_diff": 0.055,
+         "questions": 1130
+        },
+        "h3": {
+         "mean_diff": 0.0,
+         "questions": 1130
+        }
+       }
+      },
+      "plus:HM": {
+       "pairs": 27780,
+       "h1": {
+        "ALL": {
+         "pt": 0.9885,
+         "ci": [
+          0.98142,
+          0.99469
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.99564,
+         "ci": [
+          0.99305,
+          0.99797
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.98472,
+         "ci": [
+          0.97572,
+          0.99258
+         ]
+        },
+        "reached_missed": 838,
+        "measured_share": 1.0,
+        "nodes": 281.57,
+        "nodes_lb": 281.57,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 608.711,
+        "nodes_lb": 608.711,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "price_per_seed": 36.8463,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 5.994,
+         "questions": 1130
+        },
+        "h2": {
+         "mean_diff": 0.017,
+         "questions": 1130
+        },
+        "h3": {
+         "mean_diff": 0.0,
+         "questions": 1130
+        }
+       }
+      },
+      "plus:HK1": {
+       "pairs": 29160,
+       "h1": {
+        "ALL": {
+         "pt": 0.98938,
+         "ci": [
+          0.98319,
+          0.99469
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.99598,
+         "ci": [
+          0.99359,
+          0.99801
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.9859,
+         "ci": [
+          0.97751,
+          0.99315
+         ]
+        },
+        "reached_missed": 839,
+        "measured_share": 1.0,
+        "nodes": 292.578,
+        "nodes_lb": 292.578,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 608.758,
+        "nodes_lb": 608.758,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "price_per_seed": 38.3259,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 17.002,
+         "questions": 1130
+        },
+        "h2": {
+         "mean_diff": 0.064,
+         "questions": 1130
+        },
+        "h3": {
+         "mean_diff": 0.0,
+         "questions": 1130
+        }
+       }
+      },
+      "plus:NTc": {
+       "pairs": 40116,
+       "h1": {
+        "ALL": {
+         "pt": 0.99204,
+         "ci": [
+          0.98673,
+          0.99646
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.99698,
+         "ci": [
+          0.99496,
+          0.99867
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.98942,
+         "ci": [
+          0.98214,
+          0.99539
+         ]
+        },
+        "reached_missed": 842,
+        "measured_share": 1.0,
+        "nodes": 376.535,
+        "nodes_lb": 376.535,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "price_per_seed": 49.6107,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 100.958,
+         "questions": 1130
+        },
+        "h2": {
+         "mean_diff": 0.306,
+         "questions": 1130
+        },
+        "h3": {
+         "mean_diff": 0.0,
+         "questions": 1130
+        }
+       }
+      },
+      "plus:NT1": {
+       "pairs": 31052,
+       "h1": {
+        "ALL": {
+         "pt": 0.99292,
+         "ci": [
+          0.98761,
+          0.99735
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.99732,
+         "ci": [
+          0.9953,
+          0.999
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.9906,
+         "ci": [
+          0.98357,
+          0.9965
+         ]
+        },
+        "reached_missed": 843,
+        "measured_share": 1.0,
+        "nodes": 312.204,
+        "nodes_lb": 312.204,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 608.794,
+        "nodes_lb": 608.794,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "price_per_seed": 40.964,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 36.628,
+         "questions": 1130
+        },
+        "h2": {
+         "mean_diff": 0.1,
+         "questions": 1130
+        },
+        "h3": {
+         "mean_diff": 0.0,
+         "questions": 1130
+        }
+       }
+      },
+      "plus:HK2": {
+       "pairs": 31334,
+       "h1": {
+        "ALL": {
+         "pt": 0.99204,
+         "ci": [
+          0.98584,
+          0.99646
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.99698,
+         "ci": [
+          0.99471,
+          0.99868
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.98942,
+         "ci": [
+          0.98173,
+          0.99549
+         ]
+        },
+        "reached_missed": 842,
+        "measured_share": 1.0,
+        "nodes": 308.13,
+        "nodes_lb": 308.13,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 608.778,
+        "nodes_lb": 608.778,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "price_per_seed": 40.4163,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 32.554,
+         "questions": 1130
+        },
+        "h2": {
+         "mean_diff": 0.084,
+         "questions": 1130
+        },
+        "h3": {
+         "mean_diff": 0.0,
+         "questions": 1130
+        }
+       }
+      },
+      "plus:H10": {
+       "pairs": 31036,
+       "h1": {
+        "ALL": {
+         "pt": 0.99115,
+         "ci": [
+          0.98496,
+          0.99646
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.99665,
+         "ci": [
+          0.99431,
+          0.99865
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.98825,
+         "ci": [
+          0.98007,
+          0.99506
+         ]
+        },
+        "reached_missed": 841,
+        "measured_share": 1.0,
+        "nodes": 303.258,
+        "nodes_lb": 303.258,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 608.778,
+        "nodes_lb": 608.778,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "price_per_seed": 39.7614,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 27.681,
+         "questions": 1130
+        },
+        "h2": {
+         "mean_diff": 0.084,
+         "questions": 1130
+        },
+        "h3": {
+         "mean_diff": 0.0,
+         "questions": 1130
+        }
+       }
+      },
+      "all": {
+       "pairs": 60625,
+       "h1": {
+        "ALL": {
+         "pt": 0.99823,
+         "ci": [
+          0.99558,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.99933,
+         "ci": [
+          0.99832,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.99765,
+         "ci": [
+          0.99401,
+          1.0
+         ]
+        },
+        "reached_missed": 849,
+        "measured_share": 1.0,
+        "nodes": 415.142,
+        "nodes_lb": 415.142,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 851,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "price_per_seed": 54.7999,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 139.565,
+         "questions": 1130
+        },
+        "h2": {
+         "mean_diff": 0.306,
+         "questions": 1130
+        },
+        "h3": {
+         "mean_diff": 0.0,
+         "questions": 1130
+        }
+       }
+      }
+     },
+     "classes": {
+      "missed": 851,
+      "questions_with_missed": 627,
+      "dist_any": {
+       "1": {
+        "count": 835,
+        "share": {
+         "pt": 0.9812,
+         "ci": [
+          0.97183,
+          0.98951
+         ]
+        }
+       },
+       "2": {
+        "count": 16,
+        "share": {
+         "pt": 0.0188,
+         "ci": [
+          0.01049,
+          0.02817
+         ]
+        }
+       },
+       "3": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "4": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       }
+      },
+      "isolated_in_all": {
+       "count": 0,
+       "share": {
+        "pt": 0.0,
+        "ci": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "h1": {
+       "any": {
+        "count": 835,
+        "share": {
+         "pt": 0.9812,
+         "ci": [
+          0.97183,
+          0.98951
+         ]
+        }
+       },
+       "label:R.mention": {
+        "count": 1,
+        "share": {
+         "pt": 0.00118,
+         "ci": [
+          0.0,
+          0.00361
+         ]
+        }
+       },
+       "ONLY:label:R.mention": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "label:R.name_comention": {
+        "count": 835,
+        "share": {
+         "pt": 0.9812,
+         "ci": [
+          0.97183,
+          0.98951
+         ]
+        }
+       },
+       "ONLY:label:R.name_comention": {
+        "count": 391,
+        "share": {
+         "pt": 0.45946,
+         "ci": [
+          0.42956,
+          0.48857
+         ]
+        }
+       },
+       "label:R.title_comention": {
+        "count": 11,
+        "share": {
+         "pt": 0.01293,
+         "ci": [
+          0.00594,
+          0.02058
+         ]
+        }
+       },
+       "ONLY:label:R.title_comention": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "label:K.knn": {
+        "count": 438,
+        "share": {
+         "pt": 0.51469,
+         "ci": [
+          0.483,
+          0.54442
+         ]
+        }
+       },
+       "ONLY:label:K.knn": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "MULTI_ALONE": {
+        "count": 444,
+        "share": {
+         "pt": 0.52174,
+         "ci": [
+          0.49108,
+          0.55248
+         ]
+        }
+       },
+       "MIXED": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "unreached": {
+        "count": 16,
+        "share": {
+         "pt": 0.0188,
+         "ci": [
+          0.01049,
+          0.02817
+         ]
+        }
+       },
+       "rescue:H5": {
+        "count": 4,
+        "share": {
+         "pt": 0.0047,
+         "ci": [
+          0.00116,
+          0.00951
+         ]
+        }
+       },
+       "ONLY_F:H5": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HM": {
+        "count": 3,
+        "share": {
+         "pt": 0.00353,
+         "ci": [
+          0.0,
+          0.00815
+         ]
+        }
+       },
+       "ONLY_F:HM": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HK1": {
+        "count": 4,
+        "share": {
+         "pt": 0.0047,
+         "ci": [
+          0.00116,
+          0.00951
+         ]
+        }
+       },
+       "ONLY_F:HK1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:NTc": {
+        "count": 7,
+        "share": {
+         "pt": 0.00823,
+         "ci": [
+          0.00238,
+          0.01444
+         ]
+        }
+       },
+       "ONLY_F:NTc": {
+        "count": 2,
+        "share": {
+         "pt": 0.00235,
+         "ci": [
+          0.0,
+          0.0059
+         ]
+        }
+       },
+       "rescue:NT1": {
+        "count": 8,
+        "share": {
+         "pt": 0.0094,
+         "ci": [
+          0.00353,
+          0.01639
+         ]
+        }
+       },
+       "ONLY_F:NT1": {
+        "count": 1,
+        "share": {
+         "pt": 0.00118,
+         "ci": [
+          0.0,
+          0.00367
+         ]
+        }
+       },
+       "rescue:HK2": {
+        "count": 7,
+        "share": {
+         "pt": 0.00823,
+         "ci": [
+          0.00338,
+          0.01513
+         ]
+        }
+       },
+       "ONLY_F:HK2": {
+        "count": 1,
+        "share": {
+         "pt": 0.00118,
+         "ci": [
+          0.0,
+          0.00359
+         ]
+        }
+       },
+       "rescue:H10": {
+        "count": 6,
+        "share": {
+         "pt": 0.00705,
+         "ci": [
+          0.00233,
+          0.01305
+         ]
+        }
+       },
+       "ONLY_F:H10": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue_all": {
+        "count": 14,
+        "share": {
+         "pt": 0.01645,
+         "ci": [
+          0.00831,
+          0.02527
+         ]
+        }
+       },
+       "ALL_ONLY": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "NONE": {
+        "count": 2,
+        "share": {
+         "pt": 0.00235,
+         "ci": [
+          0.0,
+          0.00595
+         ]
+        }
+       },
+       "ISOLATED": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "FAR": {
+        "count": 2,
+        "share": {
+         "pt": 0.00235,
+         "ci": [
+          0.0,
+          0.00595
+         ]
+        }
+       }
+      },
+      "h2": {
+       "any": {
+        "count": 851,
+        "share": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        }
+       },
+       "label:R.mention": {
+        "count": 1,
+        "share": {
+         "pt": 0.00118,
+         "ci": [
+          0.0,
+          0.00361
+         ]
+        }
+       },
+       "ONLY:label:R.mention": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "label:R.name_comention": {
+        "count": 851,
+        "share": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        }
+       },
+       "ONLY:label:R.name_comention": {
+        "count": 313,
+        "share": {
+         "pt": 0.3678,
+         "ci": [
+          0.33966,
+          0.39496
+         ]
+        }
+       },
+       "label:R.title_comention": {
+        "count": 53,
+        "share": {
+         "pt": 0.06228,
+         "ci": [
+          0.0464,
+          0.07852
+         ]
+        }
+       },
+       "ONLY:label:R.title_comention": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "label:K.knn": {
+        "count": 534,
+        "share": {
+         "pt": 0.6275,
+         "ci": [
+          0.59976,
+          0.65525
+         ]
+        }
+       },
+       "ONLY:label:K.knn": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "MULTI_ALONE": {
+        "count": 538,
+        "share": {
+         "pt": 0.6322,
+         "ci": [
+          0.60504,
+          0.66034
+         ]
+        }
+       },
+       "MIXED": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "unreached": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:H5": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:H5": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HM": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:HM": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HK1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:HK1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:NTc": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:NTc": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:NT1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:NT1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HK2": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:HK2": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:H10": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:H10": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue_all": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ALL_ONLY": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "NONE": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ISOLATED": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "FAR": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       }
+      },
+      "h3": {
+       "any": {
+        "count": 851,
+        "share": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        }
+       },
+       "label:R.mention": {
+        "count": 1,
+        "share": {
+         "pt": 0.00118,
+         "ci": [
+          0.0,
+          0.00361
+         ]
+        }
+       },
+       "ONLY:label:R.mention": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "label:R.name_comention": {
+        "count": 851,
+        "share": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        }
+       },
+       "ONLY:label:R.name_comention": {
+        "count": 278,
+        "share": {
+         "pt": 0.32667,
+         "ci": [
+          0.29873,
+          0.35362
+         ]
+        }
+       },
+       "label:R.title_comention": {
+        "count": 63,
+        "share": {
+         "pt": 0.07403,
+         "ci": [
+          0.05704,
+          0.09144
+         ]
+        }
+       },
+       "ONLY:label:R.title_comention": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "label:K.knn": {
+        "count": 568,
+        "share": {
+         "pt": 0.66745,
+         "ci": [
+          0.64005,
+          0.69506
+         ]
+        }
+       },
+       "ONLY:label:K.knn": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "MULTI_ALONE": {
+        "count": 573,
+        "share": {
+         "pt": 0.67333,
+         "ci": [
+          0.64638,
+          0.70127
+         ]
+        }
+       },
+       "MIXED": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "unreached": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:H5": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:H5": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HM": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:HM": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HK1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:HK1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:NTc": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:NTc": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:NT1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:NT1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HK2": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:HK2": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:H10": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:H10": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue_all": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ALL_ONLY": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "NONE": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ISOLATED": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "FAR": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       }
+      }
+     },
+     "floors": {
+      "G95": {
+       "unit": "label:R.name_comention",
+       "hop": 1,
+       "ALL": 0.98584,
+       "nodes": 273.884,
+       "bound": false
+      },
+      "G98": {
+       "unit": "label:R.name_comention",
+       "hop": 1,
+       "ALL": 0.98584,
+       "nodes": 273.884,
+       "bound": false
+      },
+      "best_ALL": {
+       "unit": "label:R.name_comention",
+       "hop": 2,
+       "ALL": 1.0,
+       "nodes": 607.816,
+       "bound": false
+      }
+     },
+     "gates": {
+      "G-H2": {
+       "call": "PASS",
+       "mine": {
+        "missed": 1157,
+        "reached": 1127
+       },
+       "ul2s": {
+        "missed": 1157,
+        "reached": 1127
+       }
+      },
+      "G-H3": {
+       "pairs_checked": 18,
+       "violations": []
+      }
+     }
+    },
+    "s1sel": {
+     "questions": 224,
+     "zero_gold_excluded": 0,
+     "seeds": {
+      "questions": 224,
+      "golds": 575,
+      "found_golds": 412,
+      "missed_golds": 163,
+      "questions_with_missed": 129,
+      "seeds_mean": 7.4107,
+      "ALL": {
+       "pt": 0.42411,
+       "ci": [
+        0.36161,
+        0.49107
+       ]
+      },
+      "ANY": {
+       "pt": 0.98661,
+       "ci": [
+        0.96875,
+        1.0
+       ]
+      },
+      "recall": {
+       "pt": 0.71652,
+       "ci": [
+        0.68491,
+        0.74738
+       ]
+      }
+     },
+     "units": {
+      "label:R.mention": {
+       "pairs": 2,
+       "h1": {
+        "ALL": {
+         "pt": 0.42411,
+         "ci": [
+          0.36161,
+          0.49107
+         ]
+        },
+        "ANY": {
+         "pt": 0.98661,
+         "ci": [
+          0.96875,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.71652,
+         "ci": [
+          0.68491,
+          0.74738
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "reached_missed": 0,
+        "measured_share": 1.0,
+        "nodes": 7.469,
+        "nodes_lb": 7.469,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 0.42411,
+         "ci": [
+          0.36161,
+          0.49107
+         ]
+        },
+        "ANY": {
+         "pt": 0.98661,
+         "ci": [
+          0.96875,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.71652,
+         "ci": [
+          0.68491,
+          0.74738
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "reached_missed": 0,
+        "measured_share": 1.0,
+        "nodes": 7.469,
+        "nodes_lb": 7.469,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 0.42411,
+         "ci": [
+          0.36161,
+          0.49107
+         ]
+        },
+        "ANY": {
+         "pt": 0.98661,
+         "ci": [
+          0.96875,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.71652,
+         "ci": [
+          0.68491,
+          0.74738
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "reached_missed": 0,
+        "measured_share": 1.0,
+        "nodes": 7.469,
+        "nodes_lb": 7.469,
+        "bound": false
+       },
+       "price_per_seed": 0.0078,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": -268.375,
+         "questions": 224
+        },
+        "h2": {
+         "mean_diff": -601.147,
+         "questions": 224
+        },
+        "h3": {
+         "mean_diff": -601.531,
+         "questions": 224
+        }
+       }
+      },
+      "label:R.name_comention": {
+       "pairs": 25005,
+       "h1": {
+        "ALL": {
+         "pt": 0.97768,
+         "ci": [
+          0.95536,
+          0.99554
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.9913,
+         "ci": [
+          0.98282,
+          0.99826
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.96933,
+         "ci": [
+          0.94039,
+          0.99351
+         ]
+        },
+        "reached_missed": 158,
+        "measured_share": 1.0,
+        "nodes": 274.237,
+        "nodes_lb": 274.237,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 607.79,
+        "nodes_lb": 607.79,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 608.0,
+        "nodes_lb": 608.0,
+        "bound": false
+       },
+       "price_per_seed": 36.0054,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": -1.607,
+         "questions": 224
+        },
+        "h2": {
+         "mean_diff": -0.826,
+         "questions": 224
+        },
+        "h3": {
+         "mean_diff": -1.0,
+         "questions": 224
+        }
+       }
+      },
+      "label:R.title_comention": {
+       "pairs": 75,
+       "h1": {
+        "ALL": {
+         "pt": 0.4375,
+         "ci": [
+          0.375,
+          0.50446
+         ]
+        },
+        "ANY": {
+         "pt": 0.98661,
+         "ci": [
+          0.96875,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.72174,
+         "ci": [
+          0.68941,
+          0.75348
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.0184,
+         "ci": [
+          0.0,
+          0.04217
+         ]
+        },
+        "reached_missed": 3,
+        "measured_share": 1.0,
+        "nodes": 8.75,
+        "nodes_lb": 8.75,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 0.47768,
+         "ci": [
+          0.41518,
+          0.54464
+         ]
+        },
+        "ANY": {
+         "pt": 0.98661,
+         "ci": [
+          0.96875,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.74087,
+         "ci": [
+          0.70719,
+          0.775
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.08589,
+         "ci": [
+          0.04598,
+          0.13636
+         ]
+        },
+        "reached_missed": 14,
+        "measured_share": 1.0,
+        "nodes": 22.259,
+        "nodes_lb": 22.259,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 0.47768,
+         "ci": [
+          0.41518,
+          0.54464
+         ]
+        },
+        "ANY": {
+         "pt": 0.98661,
+         "ci": [
+          0.96875,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.74261,
+         "ci": [
+          0.70877,
+          0.77641
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.09202,
+         "ci": [
+          0.05084,
+          0.14198
+         ]
+        },
+        "reached_missed": 15,
+        "measured_share": 1.0,
+        "nodes": 24.777,
+        "nodes_lb": 24.777,
+        "bound": false
+       },
+       "price_per_seed": 0.1807,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": -267.094,
+         "questions": 224
+        },
+        "h2": {
+         "mean_diff": -586.357,
+         "questions": 224
+        },
+        "h3": {
+         "mean_diff": -584.223,
+         "questions": 224
+        }
+       }
+      },
+      "label:K.knn": {
+       "pairs": 1366,
+       "h1": {
+        "ALL": {
+         "pt": 0.66964,
+         "ci": [
+          0.60714,
+          0.73214
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.86783,
+         "ci": [
+          0.84324,
+          0.89267
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.53374,
+         "ci": [
+          0.46626,
+          0.60366
+         ]
+        },
+        "reached_missed": 87,
+        "measured_share": 1.0,
+        "nodes": 24.576,
+        "nodes_lb": 24.576,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 0.72768,
+         "ci": [
+          0.66518,
+          0.78571
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.89217,
+         "ci": [
+          0.86956,
+          0.91383
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.61963,
+         "ci": [
+          0.55413,
+          0.68791
+         ]
+        },
+        "reached_missed": 101,
+        "measured_share": 1.0,
+        "nodes": 49.924,
+        "nodes_lb": 49.924,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 0.76786,
+         "ci": [
+          0.70982,
+          0.82143
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.90957,
+         "ci": [
+          0.88777,
+          0.92907
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.68098,
+         "ci": [
+          0.61494,
+          0.75
+         ]
+        },
+        "reached_missed": 111,
+        "measured_share": 1.0,
+        "nodes": 90.487,
+        "nodes_lb": 90.487,
+        "bound": false
+       },
+       "price_per_seed": 2.3163,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": -251.268,
+         "questions": 224
+        },
+        "h2": {
+         "mean_diff": -558.692,
+         "questions": 224
+        },
+        "h3": {
+         "mean_diff": -518.513,
+         "questions": 224
+        }
+       }
+      },
+      "any": {
+       "pairs": 26448,
+       "h1": {
+        "ALL": {
+         "pt": 0.97768,
+         "ci": [
+          0.95536,
+          0.99554
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.9913,
+         "ci": [
+          0.98282,
+          0.99826
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.96933,
+         "ci": [
+          0.94039,
+          0.99351
+         ]
+        },
+        "reached_missed": 158,
+        "measured_share": 1.0,
+        "nodes": 275.844,
+        "nodes_lb": 275.844,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 608.616,
+        "nodes_lb": 608.616,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "price_per_seed": 36.2223
+      },
+      "plus:H5": {
+       "pairs": 28835,
+       "h1": {
+        "ALL": {
+         "pt": 0.98661,
+         "ci": [
+          0.96875,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.99478,
+         "ci": [
+          0.98793,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.9816,
+         "ci": [
+          0.95889,
+          1.0
+         ]
+        },
+        "reached_missed": 160,
+        "measured_share": 1.0,
+        "nodes": 289.085,
+        "nodes_lb": 289.085,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 608.701,
+        "nodes_lb": 608.701,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "price_per_seed": 38.009,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 13.241,
+         "questions": 224
+        },
+        "h2": {
+         "mean_diff": 0.085,
+         "questions": 224
+        },
+        "h3": {
+         "mean_diff": 0.0,
+         "questions": 224
+        }
+       }
+      },
+      "plus:HM": {
+       "pairs": 27780,
+       "h1": {
+        "ALL": {
+         "pt": 0.98214,
+         "ci": [
+          0.96429,
+          0.99554
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.99304,
+         "ci": [
+          0.98584,
+          0.9983
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.97546,
+         "ci": [
+          0.94872,
+          0.99422
+         ]
+        },
+        "reached_missed": 159,
+        "measured_share": 1.0,
+        "nodes": 281.902,
+        "nodes_lb": 281.902,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 608.656,
+        "nodes_lb": 608.656,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "price_per_seed": 37.0398,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 6.058,
+         "questions": 224
+        },
+        "h2": {
+         "mean_diff": 0.04,
+         "questions": 224
+        },
+        "h3": {
+         "mean_diff": 0.0,
+         "questions": 224
+        }
+       }
+      },
+      "plus:HK1": {
+       "pairs": 29160,
+       "h1": {
+        "ALL": {
+         "pt": 0.98661,
+         "ci": [
+          0.96875,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.99478,
+         "ci": [
+          0.98793,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.9816,
+         "ci": [
+          0.95889,
+          1.0
+         ]
+        },
+        "reached_missed": 160,
+        "measured_share": 1.0,
+        "nodes": 292.433,
+        "nodes_lb": 292.433,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 608.701,
+        "nodes_lb": 608.701,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "price_per_seed": 38.4608,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 16.589,
+         "questions": 224
+        },
+        "h2": {
+         "mean_diff": 0.085,
+         "questions": 224
+        },
+        "h3": {
+         "mean_diff": 0.0,
+         "questions": 224
+        }
+       }
+      },
+      "plus:NTc": {
+       "pairs": 40116,
+       "h1": {
+        "ALL": {
+         "pt": 0.98661,
+         "ci": [
+          0.96875,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.99478,
+         "ci": [
+          0.98793,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.9816,
+         "ci": [
+          0.95889,
+          1.0
+         ]
+        },
+        "reached_missed": 160,
+        "measured_share": 1.0,
+        "nodes": 377.705,
+        "nodes_lb": 377.705,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "price_per_seed": 49.9675,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 101.862,
+         "questions": 224
+        },
+        "h2": {
+         "mean_diff": 0.384,
+         "questions": 224
+        },
+        "h3": {
+         "mean_diff": 0.0,
+         "questions": 224
+        }
+       }
+      },
+      "plus:NT1": {
+       "pairs": 31052,
+       "h1": {
+        "ALL": {
+         "pt": 0.98661,
+         "ci": [
+          0.96875,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.99478,
+         "ci": [
+          0.98783,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.9816,
+         "ci": [
+          0.95758,
+          1.0
+         ]
+        },
+        "reached_missed": 160,
+        "measured_share": 1.0,
+        "nodes": 311.263,
+        "nodes_lb": 311.263,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 608.772,
+        "nodes_lb": 608.772,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "price_per_seed": 41.0018,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 35.42,
+         "questions": 224
+        },
+        "h2": {
+         "mean_diff": 0.156,
+         "questions": 224
+        },
+        "h3": {
+         "mean_diff": 0.0,
+         "questions": 224
+        }
+       }
+      },
+      "plus:HK2": {
+       "pairs": 31334,
+       "h1": {
+        "ALL": {
+         "pt": 0.99107,
+         "ci": [
+          0.97768,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.99652,
+         "ci": [
+          0.99126,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.98773,
+         "ci": [
+          0.96875,
+          1.0
+         ]
+        },
+        "reached_missed": 161,
+        "measured_share": 1.0,
+        "nodes": 307.638,
+        "nodes_lb": 307.638,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 608.719,
+        "nodes_lb": 608.719,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "price_per_seed": 40.5127,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 31.795,
+         "questions": 224
+        },
+        "h2": {
+         "mean_diff": 0.103,
+         "questions": 224
+        },
+        "h3": {
+         "mean_diff": 0.0,
+         "questions": 224
+        }
+       }
+      },
+      "plus:H10": {
+       "pairs": 31036,
+       "h1": {
+        "ALL": {
+         "pt": 0.98661,
+         "ci": [
+          0.96875,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.99478,
+         "ci": [
+          0.98793,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.9816,
+         "ci": [
+          0.95889,
+          1.0
+         ]
+        },
+        "reached_missed": 160,
+        "measured_share": 1.0,
+        "nodes": 302.759,
+        "nodes_lb": 302.759,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 608.71,
+        "nodes_lb": 608.71,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "price_per_seed": 39.8542,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 26.915,
+         "questions": 224
+        },
+        "h2": {
+         "mean_diff": 0.094,
+         "questions": 224
+        },
+        "h3": {
+         "mean_diff": 0.0,
+         "questions": 224
+        }
+       }
+      },
+      "all": {
+       "pairs": 60625,
+       "h1": {
+        "ALL": {
+         "pt": 0.99554,
+         "ci": [
+          0.98661,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.99826,
+         "ci": [
+          0.99463,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.99387,
+         "ci": [
+          0.98013,
+          1.0
+         ]
+        },
+        "reached_missed": 162,
+        "measured_share": 1.0,
+        "nodes": 414.723,
+        "nodes_lb": 414.723,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        },
+        "reached_missed": 163,
+        "measured_share": 1.0,
+        "nodes": 609.0,
+        "nodes_lb": 609.0,
+        "bound": false
+       },
+       "price_per_seed": 54.9627,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 138.879,
+         "questions": 224
+        },
+        "h2": {
+         "mean_diff": 0.384,
+         "questions": 224
+        },
+        "h3": {
+         "mean_diff": 0.0,
+         "questions": 224
+        }
+       }
+      }
+     },
+     "classes": {
+      "missed": 163,
+      "questions_with_missed": 129,
+      "dist_any": {
+       "1": {
+        "count": 158,
+        "share": {
+         "pt": 0.96933,
+         "ci": [
+          0.93902,
+          0.99367
+         ]
+        }
+       },
+       "2": {
+        "count": 5,
+        "share": {
+         "pt": 0.03067,
+         "ci": [
+          0.00633,
+          0.06098
+         ]
+        }
+       },
+       "3": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "4": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       }
+      },
+      "isolated_in_all": {
+       "count": 0,
+       "share": {
+        "pt": 0.0,
+        "ci": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "h1": {
+       "any": {
+        "count": 158,
+        "share": {
+         "pt": 0.96933,
+         "ci": [
+          0.93902,
+          0.99367
+         ]
+        }
+       },
+       "label:R.mention": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY:label:R.mention": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "label:R.name_comention": {
+        "count": 158,
+        "share": {
+         "pt": 0.96933,
+         "ci": [
+          0.93902,
+          0.99367
+         ]
+        }
+       },
+       "ONLY:label:R.name_comention": {
+        "count": 69,
+        "share": {
+         "pt": 0.42331,
+         "ci": [
+          0.35404,
+          0.49057
+         ]
+        }
+       },
+       "label:R.title_comention": {
+        "count": 3,
+        "share": {
+         "pt": 0.0184,
+         "ci": [
+          0.0,
+          0.0407
+         ]
+        }
+       },
+       "ONLY:label:R.title_comention": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "label:K.knn": {
+        "count": 87,
+        "share": {
+         "pt": 0.53374,
+         "ci": [
+          0.46296,
+          0.60356
+         ]
+        }
+       },
+       "ONLY:label:K.knn": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "MULTI_ALONE": {
+        "count": 89,
+        "share": {
+         "pt": 0.54601,
+         "ci": [
+          0.4756,
+          0.61538
+         ]
+        }
+       },
+       "MIXED": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "unreached": {
+        "count": 5,
+        "share": {
+         "pt": 0.03067,
+         "ci": [
+          0.00633,
+          0.06098
+         ]
+        }
+       },
+       "rescue:H5": {
+        "count": 2,
+        "share": {
+         "pt": 0.01227,
+         "ci": [
+          0.0,
+          0.03145
+         ]
+        }
+       },
+       "ONLY_F:H5": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HM": {
+        "count": 1,
+        "share": {
+         "pt": 0.00613,
+         "ci": [
+          0.0,
+          0.01899
+         ]
+        }
+       },
+       "ONLY_F:HM": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HK1": {
+        "count": 2,
+        "share": {
+         "pt": 0.01227,
+         "ci": [
+          0.0,
+          0.03145
+         ]
+        }
+       },
+       "ONLY_F:HK1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:NTc": {
+        "count": 2,
+        "share": {
+         "pt": 0.01227,
+         "ci": [
+          0.0,
+          0.03145
+         ]
+        }
+       },
+       "ONLY_F:NTc": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:NT1": {
+        "count": 2,
+        "share": {
+         "pt": 0.01227,
+         "ci": [
+          0.0,
+          0.03125
+         ]
+        }
+       },
+       "ONLY_F:NT1": {
+        "count": 1,
+        "share": {
+         "pt": 0.00613,
+         "ci": [
+          0.0,
+          0.01935
+         ]
+        }
+       },
+       "rescue:HK2": {
+        "count": 3,
+        "share": {
+         "pt": 0.0184,
+         "ci": [
+          0.0,
+          0.04269
+         ]
+        }
+       },
+       "ONLY_F:HK2": {
+        "count": 1,
+        "share": {
+         "pt": 0.00613,
+         "ci": [
+          0.0,
+          0.01923
+         ]
+        }
+       },
+       "rescue:H10": {
+        "count": 2,
+        "share": {
+         "pt": 0.01227,
+         "ci": [
+          0.0,
+          0.03145
+         ]
+        }
+       },
+       "ONLY_F:H10": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue_all": {
+        "count": 4,
+        "share": {
+         "pt": 0.02454,
+         "ci": [
+          0.00592,
+          0.05096
+         ]
+        }
+       },
+       "ALL_ONLY": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "NONE": {
+        "count": 1,
+        "share": {
+         "pt": 0.00613,
+         "ci": [
+          0.0,
+          0.01948
+         ]
+        }
+       },
+       "ISOLATED": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "FAR": {
+        "count": 1,
+        "share": {
+         "pt": 0.00613,
+         "ci": [
+          0.0,
+          0.01948
+         ]
+        }
+       }
+      },
+      "h2": {
+       "any": {
+        "count": 163,
+        "share": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        }
+       },
+       "label:R.mention": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY:label:R.mention": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "label:R.name_comention": {
+        "count": 163,
+        "share": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        }
+       },
+       "ONLY:label:R.name_comention": {
+        "count": 61,
+        "share": {
+         "pt": 0.37423,
+         "ci": [
+          0.30538,
+          0.44444
+         ]
+        }
+       },
+       "label:R.title_comention": {
+        "count": 14,
+        "share": {
+         "pt": 0.08589,
+         "ci": [
+          0.04733,
+          0.13043
+         ]
+        }
+       },
+       "ONLY:label:R.title_comention": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "label:K.knn": {
+        "count": 101,
+        "share": {
+         "pt": 0.61963,
+         "ci": [
+          0.55,
+          0.68902
+         ]
+        }
+       },
+       "ONLY:label:K.knn": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "MULTI_ALONE": {
+        "count": 102,
+        "share": {
+         "pt": 0.62577,
+         "ci": [
+          0.55556,
+          0.69462
+         ]
+        }
+       },
+       "MIXED": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "unreached": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:H5": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:H5": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HM": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:HM": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HK1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:HK1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:NTc": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:NTc": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:NT1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:NT1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HK2": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:HK2": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:H10": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:H10": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue_all": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ALL_ONLY": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "NONE": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ISOLATED": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "FAR": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       }
+      },
+      "h3": {
+       "any": {
+        "count": 163,
+        "share": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        }
+       },
+       "label:R.mention": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY:label:R.mention": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "label:R.name_comention": {
+        "count": 163,
+        "share": {
+         "pt": 1.0,
+         "ci": [
+          1.0,
+          1.0
+         ]
+        }
+       },
+       "ONLY:label:R.name_comention": {
+        "count": 51,
+        "share": {
+         "pt": 0.31288,
+         "ci": [
+          0.24845,
+          0.37975
+         ]
+        }
+       },
+       "label:R.title_comention": {
+        "count": 15,
+        "share": {
+         "pt": 0.09202,
+         "ci": [
+          0.04999,
+          0.13837
+         ]
+        }
+       },
+       "ONLY:label:R.title_comention": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "label:K.knn": {
+        "count": 111,
+        "share": {
+         "pt": 0.68098,
+         "ci": [
+          0.61391,
+          0.7456
+         ]
+        }
+       },
+       "ONLY:label:K.knn": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "MULTI_ALONE": {
+        "count": 112,
+        "share": {
+         "pt": 0.68712,
+         "ci": [
+          0.62025,
+          0.75155
+         ]
+        }
+       },
+       "MIXED": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "unreached": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:H5": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:H5": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HM": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:HM": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HK1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:HK1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:NTc": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:NTc": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:NT1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:NT1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HK2": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:HK2": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:H10": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY_F:H10": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue_all": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ALL_ONLY": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "NONE": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ISOLATED": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "FAR": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       }
+      }
+     },
+     "floors": {
+      "G95": {
+       "unit": "label:R.name_comention",
+       "hop": 1,
+       "ALL": 0.97768,
+       "nodes": 274.237,
+       "bound": false
+      },
+      "G98": {
+       "unit": "plus:HM",
+       "hop": 1,
+       "ALL": 0.98214,
+       "nodes": 281.902,
+       "bound": false
+      },
+      "best_ALL": {
+       "unit": "label:R.name_comention",
+       "hop": 2,
+       "ALL": 1.0,
+       "nodes": 607.79,
+       "bound": false
+      }
+     },
+     "gates": {
+      "G-H2": {
+       "call": "PASS",
+       "mine": {
+        "missed": 222,
+        "reached": 214
+       },
+       "ul2s": {
+        "missed": 222,
+        "reached": 214
+       }
+      },
+      "G-H3": {
+       "pairs_checked": 18,
+       "violations": []
+      }
+     }
+    }
+   }
+  }
+ },
+ "memory": {
+  "peak_working_set_gb": 0.09,
+  "peak_commit_gb": 0.08
+ },
+ "seconds": 40.8,
+ "utc": "2026-11-25T00:06:32Z",
+ "zul2h_sha256": "a0fea9a22bcfda1ec2d2e0d31a1140225e0e89ef6af570b01b5ab077613a0b8a",
+ "zul2s_sha256": "6d43c35928442a2998b5e2003aac2b4b73c8a9570e6493102abce124faa16bba",
+ "zul2p_sha256": "ba7a5d5af124e0af13306a75502239a421f9f4557555a015e0e65fc31e802c8a",
+ "zul2c_sha256": "fb4a3356931308cba6333fde66d55d9b23d0c973fffe219b92ce21dcb25e533e",
+ "zul2u_sha256": "bf41636269905d1a4c4f7a6f704dc723fbce152ef5c4e9852ee1e2621ab9cb6e",
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136"
+}

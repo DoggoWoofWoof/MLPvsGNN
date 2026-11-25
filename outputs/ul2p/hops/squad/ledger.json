@@ -1,0 +1,2759 @@
+{
+ "dataset": "squad",
+ "declared_in": "docs/UL2H_HOP_COVERAGE_LEDGER.md",
+ "status": "read",
+ "nodes": 20233,
+ "nodes_sha256": "34ac47757e0080f0e2eb6c679009a6090ca97be39d576307ba7281db730c1a8b",
+ "sources": {
+  "grade_json_sha256": "bdc8bc428e7c615d7d95dc3db42a6c2f1fdb982f8d735960125110003bec1351",
+  "ranks_npz_sha256": "79cd3de5ffd7deacc502ef17315de47b0eeb30e01af245a9f1074efe1a2998ca",
+  "e0_e3v": {
+   "file": "outputs/enc/e0/e3v/squad.npz",
+   "sha256": "f86c31c6cd66c1375948d5b3533bf62a7a8d5cc52320d5a70a8ca71e306feec1"
+  },
+  "e0_gold": {
+   "file": "outputs/enc/e0/gold/squad.npz",
+   "sha256": "705195dc8b4fc2fec8274db1f4592112220819306277ad012738ae6581c33c8f"
+  },
+  "questions_npz_sha256": "d859795e2b409d42d2e147677c9a64bcbcf57600d5e30d49334821850e9bdd3e",
+  "splade": {
+   "file": "squad/retrieval_cache/splade_top1000.npz",
+   "rows": 11873
+  }
+ },
+ "gates": {
+  "G-P1": {
+   "RK": {
+    "S": 0,
+    "R": 989371,
+    "K": 6498,
+    "B0": 995869
+   }
+  },
+  "G-P2": {
+   "H5": 60681,
+   "HM": 34187,
+   "HK1": 38713,
+   "NTc": 72853,
+   "NT1": 55061,
+   "HK2": 72729,
+   "H10": 116928
+  },
+  "G-P3": {},
+  "G-S1": {
+   "ids_equal_e0": true,
+   "ids_equal_gold_cache": true,
+   "golds_equal_gold_cache": true,
+   "gold_total_equals_sizes": true
+  },
+  "G-S4": {
+   "questions": 11873,
+   "cells_nq": [],
+   "ids_sha256": "e0e12103bba3b048b9968066845ea6b9f7784193294c2b90ecf5e67b101fdba8"
+  },
+  "G-S5": "PASS",
+  "G-S2": {
+   "dense_top5_hits_equal_h_d5": true
+  },
+  "G-S3": {
+   "rrf_top5_hits_equal_h_rrf5": true
+  },
+  "G-H1": {
+   "s1eval": {
+    "questions": 11873,
+    "mean_union": 7.5134,
+    "min_union": 5,
+    "max_union": 10
+   }
+  }
+ },
+ "constants": {
+  "seeds": "dense5 U splade5",
+  "budget3": 16777216,
+  "big_n": 100000,
+  "sample_every": 10,
+  "hops": [
+   1,
+   2,
+   3
+  ]
+ },
+ "multi_gold": false,
+ "population": {
+  "s1eval": {
+   "questions": 11873,
+   "zero_gold_excluded": 0,
+   "golds": 11873
+  }
+ },
+ "versions": {
+  "RK": {
+   "cells": {
+    "s1eval": {
+     "questions": 11873,
+     "zero_gold_excluded": 0,
+     "seeds": {
+      "questions": 11873,
+      "golds": 11873,
+      "found_golds": 10900,
+      "missed_golds": 973,
+      "questions_with_missed": 973,
+      "seeds_mean": 7.5134,
+      "ALL": {
+       "pt": 0.91805,
+       "ci": [
+        0.91291,
+        0.92277
+       ]
+      },
+      "ANY": {
+       "pt": 0.91805,
+       "ci": [
+        0.91291,
+        0.92277
+       ]
+      },
+      "recall": {
+       "pt": 0.91805,
+       "ci": [
+        0.91291,
+        0.92277
+       ]
+      }
+     },
+     "units": {
+      "label:R.mention": {
+       "pairs": 878200,
+       "h1": {
+        "ALL": {
+         "pt": 0.95435,
+         "ci": [
+          0.95056,
+          0.95814
+         ]
+        },
+        "ANY": {
+         "pt": 0.95435,
+         "ci": [
+          0.95056,
+          0.95814
+         ]
+        },
+        "recall": {
+         "pt": 0.95435,
+         "ci": [
+          0.95056,
+          0.95814
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.44296,
+         "ci": [
+          0.41093,
+          0.47569
+         ]
+        },
+        "reached_missed": 431,
+        "measured_share": 1.0,
+        "nodes": 343.988,
+        "nodes_lb": 343.988,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 0.97077,
+         "ci": [
+          0.96774,
+          0.97372
+         ]
+        },
+        "ANY": {
+         "pt": 0.97077,
+         "ci": [
+          0.96774,
+          0.97372
+         ]
+        },
+        "recall": {
+         "pt": 0.97077,
+         "ci": [
+          0.96774,
+          0.97372
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.64337,
+         "ci": [
+          0.61239,
+          0.67348
+         ]
+        },
+        "reached_missed": 626,
+        "measured_share": 1.0,
+        "nodes": 3336.295,
+        "nodes_lb": 3336.295,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 0.98753,
+         "ci": [
+          0.98543,
+          0.98947
+         ]
+        },
+        "ANY": {
+         "pt": 0.98753,
+         "ci": [
+          0.98543,
+          0.98947
+         ]
+        },
+        "recall": {
+         "pt": 0.98753,
+         "ci": [
+          0.98543,
+          0.98947
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.84789,
+         "ci": [
+          0.82436,
+          0.87084
+         ]
+        },
+        "reached_missed": 825,
+        "measured_share": 1.0,
+        "nodes": 11053.434,
+        "nodes_lb": 11053.434,
+        "bound": false
+       },
+       "price_per_seed": 44.783,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": -69.44,
+         "questions": 11873
+        },
+        "h2": {
+         "mean_diff": -3175.333,
+         "questions": 11873
+        },
+        "h3": {
+         "mean_diff": -6909.975,
+         "questions": 11873
+        }
+       }
+      },
+      "label:R.name_comention": {
+       "pairs": 173645,
+       "h1": {
+        "ALL": {
+         "pt": 0.94239,
+         "ci": [
+          0.93818,
+          0.94652
+         ]
+        },
+        "ANY": {
+         "pt": 0.94239,
+         "ci": [
+          0.93818,
+          0.94652
+         ]
+        },
+        "recall": {
+         "pt": 0.94239,
+         "ci": [
+          0.93818,
+          0.94652
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.29702,
+         "ci": [
+          0.26729,
+          0.32549
+         ]
+        },
+        "reached_missed": 289,
+        "measured_share": 1.0,
+        "nodes": 108.606,
+        "nodes_lb": 108.606,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 0.95814,
+         "ci": [
+          0.9546,
+          0.96151
+         ]
+        },
+        "ANY": {
+         "pt": 0.95814,
+         "ci": [
+          0.9546,
+          0.96151
+         ]
+        },
+        "recall": {
+         "pt": 0.95814,
+         "ci": [
+          0.9546,
+          0.96151
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.48921,
+         "ci": [
+          0.4575,
+          0.51951
+         ]
+        },
+        "reached_missed": 476,
+        "measured_share": 1.0,
+        "nodes": 1475.914,
+        "nodes_lb": 1475.914,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 0.97608,
+         "ci": [
+          0.97338,
+          0.97878
+         ]
+        },
+        "ANY": {
+         "pt": 0.97608,
+         "ci": [
+          0.97338,
+          0.97878
+         ]
+        },
+        "recall": {
+         "pt": 0.97608,
+         "ci": [
+          0.97338,
+          0.97878
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.70812,
+         "ci": [
+          0.68013,
+          0.73591
+         ]
+        },
+        "reached_missed": 689,
+        "measured_share": 1.0,
+        "nodes": 8151.74,
+        "nodes_lb": 8151.74,
+        "bound": false
+       },
+       "price_per_seed": 13.4549,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": -304.822,
+         "questions": 11873
+        },
+        "h2": {
+         "mean_diff": -5035.714,
+         "questions": 11873
+        },
+        "h3": {
+         "mean_diff": -9811.669,
+         "questions": 11873
+        }
+       }
+      },
+      "label:R.title_comention": {
+       "pairs": 2809,
+       "h1": {
+        "ALL": {
+         "pt": 0.91805,
+         "ci": [
+          0.91291,
+          0.92277
+         ]
+        },
+        "ANY": {
+         "pt": 0.91805,
+         "ci": [
+          0.91291,
+          0.92277
+         ]
+        },
+        "recall": {
+         "pt": 0.91805,
+         "ci": [
+          0.91291,
+          0.92277
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        },
+        "reached_missed": 0,
+        "measured_share": 1.0,
+        "nodes": 8.801,
+        "nodes_lb": 8.801,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 0.9183,
+         "ci": [
+          0.91316,
+          0.92294
+         ]
+        },
+        "ANY": {
+         "pt": 0.9183,
+         "ci": [
+          0.91316,
+          0.92294
+         ]
+        },
+        "recall": {
+         "pt": 0.9183,
+         "ci": [
+          0.91316,
+          0.92294
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.00308,
+         "ci": [
+          0.0,
+          0.00706
+         ]
+        },
+        "reached_missed": 3,
+        "measured_share": 1.0,
+        "nodes": 9.851,
+        "nodes_lb": 9.851,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 0.9183,
+         "ci": [
+          0.91316,
+          0.92294
+         ]
+        },
+        "ANY": {
+         "pt": 0.9183,
+         "ci": [
+          0.91316,
+          0.92294
+         ]
+        },
+        "recall": {
+         "pt": 0.9183,
+         "ci": [
+          0.91316,
+          0.92294
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.00308,
+         "ci": [
+          0.0,
+          0.00706
+         ]
+        },
+        "reached_missed": 3,
+        "measured_share": 1.0,
+        "nodes": 9.852,
+        "nodes_lb": 9.852,
+        "bound": false
+       },
+       "price_per_seed": 0.1714,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": -404.627,
+         "questions": 11873
+        },
+        "h2": {
+         "mean_diff": -6501.778,
+         "questions": 11873
+        },
+        "h3": {
+         "mean_diff": -17953.558,
+         "questions": 11873
+        }
+       }
+      },
+      "label:K.knn": {
+       "pairs": 43350,
+       "h1": {
+        "ALL": {
+         "pt": 0.94239,
+         "ci": [
+          0.93809,
+          0.94652
+         ]
+        },
+        "ANY": {
+         "pt": 0.94239,
+         "ci": [
+          0.93809,
+          0.94652
+         ]
+        },
+        "recall": {
+         "pt": 0.94239,
+         "ci": [
+          0.93809,
+          0.94652
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.29702,
+         "ci": [
+          0.26789,
+          0.32702
+         ]
+        },
+        "reached_missed": 289,
+        "measured_share": 1.0,
+        "nodes": 30.246,
+        "nodes_lb": 30.246,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 0.95191,
+         "ci": [
+          0.94778,
+          0.95587
+         ]
+        },
+        "ANY": {
+         "pt": 0.95191,
+         "ci": [
+          0.94778,
+          0.95587
+         ]
+        },
+        "recall": {
+         "pt": 0.95191,
+         "ci": [
+          0.94778,
+          0.95587
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.41316,
+         "ci": [
+          0.38199,
+          0.44523
+         ]
+        },
+        "reached_missed": 402,
+        "measured_share": 1.0,
+        "nodes": 77.934,
+        "nodes_lb": 77.934,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 0.95924,
+         "ci": [
+          0.95561,
+          0.96286
+         ]
+        },
+        "ANY": {
+         "pt": 0.95924,
+         "ci": [
+          0.95561,
+          0.96286
+         ]
+        },
+        "recall": {
+         "pt": 0.95924,
+         "ci": [
+          0.95561,
+          0.96286
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.50257,
+         "ci": [
+          0.47065,
+          0.53407
+         ]
+        },
+        "reached_missed": 489,
+        "measured_share": 1.0,
+        "nodes": 171.323,
+        "nodes_lb": 171.323,
+        "bound": false
+       },
+       "price_per_seed": 3.0256,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": -383.182,
+         "questions": 11873
+        },
+        "h2": {
+         "mean_diff": -6433.695,
+         "questions": 11873
+        },
+        "h3": {
+         "mean_diff": -17792.086,
+         "questions": 11873
+        }
+       }
+      },
+      "any": {
+       "pairs": 1098004,
+       "h1": {
+        "ALL": {
+         "pt": 0.96404,
+         "ci": [
+          0.96058,
+          0.96749
+         ]
+        },
+        "ANY": {
+         "pt": 0.96404,
+         "ci": [
+          0.96058,
+          0.96749
+         ]
+        },
+        "recall": {
+         "pt": 0.96404,
+         "ci": [
+          0.96058,
+          0.96749
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.56115,
+         "ci": [
+          0.52884,
+          0.59454
+         ]
+        },
+        "reached_missed": 546,
+        "measured_share": 1.0,
+        "nodes": 413.428,
+        "nodes_lb": 413.428,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 0.98796,
+         "ci": [
+          0.98593,
+          0.98989
+         ]
+        },
+        "ANY": {
+         "pt": 0.98796,
+         "ci": [
+          0.98593,
+          0.98989
+         ]
+        },
+        "recall": {
+         "pt": 0.98796,
+         "ci": [
+          0.98593,
+          0.98989
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.85303,
+         "ci": [
+          0.82968,
+          0.87527
+         ]
+        },
+        "reached_missed": 830,
+        "measured_share": 1.0,
+        "nodes": 6511.628,
+        "nodes_lb": 6511.628,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 0.99874,
+         "ci": [
+          0.99806,
+          0.99933
+         ]
+        },
+        "ANY": {
+         "pt": 0.99874,
+         "ci": [
+          0.99806,
+          0.99933
+         ]
+        },
+        "recall": {
+         "pt": 0.99874,
+         "ci": [
+          0.99806,
+          0.99933
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.98458,
+         "ci": [
+          0.97629,
+          0.99146
+         ]
+        },
+        "reached_missed": 958,
+        "measured_share": 1.0,
+        "nodes": 17963.409,
+        "nodes_lb": 17963.409,
+        "bound": false
+       },
+       "price_per_seed": 54.0252
+      },
+      "plus:H5": {
+       "pairs": 1158685,
+       "h1": {
+        "ALL": {
+         "pt": 0.96833,
+         "ci": [
+          0.96513,
+          0.97145
+         ]
+        },
+        "ANY": {
+         "pt": 0.96833,
+         "ci": [
+          0.96513,
+          0.97145
+         ]
+        },
+        "recall": {
+         "pt": 0.96833,
+         "ci": [
+          0.96513,
+          0.97145
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.61357,
+         "ci": [
+          0.58252,
+          0.64487
+         ]
+        },
+        "reached_missed": 597,
+        "measured_share": 1.0,
+        "nodes": 441.934,
+        "nodes_lb": 441.934,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 0.992,
+         "ci": [
+          0.9904,
+          0.99352
+         ]
+        },
+        "ANY": {
+         "pt": 0.992,
+         "ci": [
+          0.9904,
+          0.99352
+         ]
+        },
+        "recall": {
+         "pt": 0.992,
+         "ci": [
+          0.9904,
+          0.99352
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.90236,
+         "ci": [
+          0.88264,
+          0.92044
+         ]
+        },
+        "reached_missed": 878,
+        "measured_share": 1.0,
+        "nodes": 7418.394,
+        "nodes_lb": 7418.394,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 0.99949,
+         "ci": [
+          0.99907,
+          0.99983
+         ]
+        },
+        "ANY": {
+         "pt": 0.99949,
+         "ci": [
+          0.99907,
+          0.99983
+         ]
+        },
+        "recall": {
+         "pt": 0.99949,
+         "ci": [
+          0.99907,
+          0.99983
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.99383,
+         "ci": [
+          0.98825,
+          0.998
+         ]
+        },
+        "reached_missed": 967,
+        "measured_share": 1.0,
+        "nodes": 18735.365,
+        "nodes_lb": 18735.365,
+        "bound": false
+       },
+       "price_per_seed": 57.8192,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 28.506,
+         "questions": 11873
+        },
+        "h2": {
+         "mean_diff": 906.765,
+         "questions": 11873
+        },
+        "h3": {
+         "mean_diff": 771.956,
+         "questions": 11873
+        }
+       }
+      },
+      "plus:HM": {
+       "pairs": 1132191,
+       "h1": {
+        "ALL": {
+         "pt": 0.96724,
+         "ci": [
+          0.96387,
+          0.97044
+         ]
+        },
+        "ANY": {
+         "pt": 0.96724,
+         "ci": [
+          0.96387,
+          0.97044
+         ]
+        },
+        "recall": {
+         "pt": 0.96724,
+         "ci": [
+          0.96387,
+          0.97044
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.60021,
+         "ci": [
+          0.56971,
+          0.63195
+         ]
+        },
+        "reached_missed": 584,
+        "measured_share": 1.0,
+        "nodes": 429.214,
+        "nodes_lb": 429.214,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 0.99074,
+         "ci": [
+          0.98897,
+          0.99242
+         ]
+        },
+        "ANY": {
+         "pt": 0.99074,
+         "ci": [
+          0.98897,
+          0.99242
+         ]
+        },
+        "recall": {
+         "pt": 0.99074,
+         "ci": [
+          0.98897,
+          0.99242
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.88695,
+         "ci": [
+          0.86556,
+          0.90683
+         ]
+        },
+        "reached_missed": 863,
+        "measured_share": 1.0,
+        "nodes": 6997.561,
+        "nodes_lb": 6997.561,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 0.99924,
+         "ci": [
+          0.99874,
+          0.99966
+         ]
+        },
+        "ANY": {
+         "pt": 0.99924,
+         "ci": [
+          0.99874,
+          0.99966
+         ]
+        },
+        "recall": {
+         "pt": 0.99924,
+         "ci": [
+          0.99874,
+          0.99966
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.99075,
+         "ci": [
+          0.98422,
+          0.99597
+         ]
+        },
+        "reached_missed": 964,
+        "measured_share": 1.0,
+        "nodes": 18355.381,
+        "nodes_lb": 18355.381,
+        "bound": false
+       },
+       "price_per_seed": 56.1262,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 15.786,
+         "questions": 11873
+        },
+        "h2": {
+         "mean_diff": 485.933,
+         "questions": 11873
+        },
+        "h3": {
+         "mean_diff": 391.971,
+         "questions": 11873
+        }
+       }
+      },
+      "plus:HK1": {
+       "pairs": 1136717,
+       "h1": {
+        "ALL": {
+         "pt": 0.96698,
+         "ci": [
+          0.96378,
+          0.97018
+         ]
+        },
+        "ANY": {
+         "pt": 0.96698,
+         "ci": [
+          0.96378,
+          0.97018
+         ]
+        },
+        "recall": {
+         "pt": 0.96698,
+         "ci": [
+          0.96378,
+          0.97018
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.59712,
+         "ci": [
+          0.56633,
+          0.62952
+         ]
+        },
+        "reached_missed": 581,
+        "measured_share": 1.0,
+        "nodes": 432.338,
+        "nodes_lb": 432.338,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 0.99074,
+         "ci": [
+          0.98888,
+          0.99234
+         ]
+        },
+        "ANY": {
+         "pt": 0.99074,
+         "ci": [
+          0.98888,
+          0.99234
+         ]
+        },
+        "recall": {
+         "pt": 0.99074,
+         "ci": [
+          0.98888,
+          0.99234
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.88695,
+         "ci": [
+          0.86523,
+          0.90619
+         ]
+        },
+        "reached_missed": 863,
+        "measured_share": 1.0,
+        "nodes": 7123.325,
+        "nodes_lb": 7123.325,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 0.99933,
+         "ci": [
+          0.99882,
+          0.99975
+         ]
+        },
+        "ANY": {
+         "pt": 0.99933,
+         "ci": [
+          0.99882,
+          0.99975
+         ]
+        },
+        "recall": {
+         "pt": 0.99933,
+         "ci": [
+          0.99882,
+          0.99975
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.99178,
+         "ci": [
+          0.98546,
+          0.99687
+         ]
+        },
+        "reached_missed": 965,
+        "measured_share": 1.0,
+        "nodes": 18407.885,
+        "nodes_lb": 18407.885,
+        "bound": false
+       },
+       "price_per_seed": 56.542,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 18.91,
+         "questions": 11873
+        },
+        "h2": {
+         "mean_diff": 611.697,
+         "questions": 11873
+        },
+        "h3": {
+         "mean_diff": 444.476,
+         "questions": 11873
+        }
+       }
+      },
+      "plus:NTc": {
+       "pairs": 1170857,
+       "h1": {
+        "ALL": {
+         "pt": 0.96606,
+         "ci": [
+          0.96286,
+          0.96926
+         ]
+        },
+        "ANY": {
+         "pt": 0.96606,
+         "ci": [
+          0.96286,
+          0.96926
+         ]
+        },
+        "recall": {
+         "pt": 0.96606,
+         "ci": [
+          0.96286,
+          0.96926
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.58582,
+         "ci": [
+          0.55406,
+          0.61749
+         ]
+        },
+        "reached_missed": 570,
+        "measured_share": 1.0,
+        "nodes": 457.437,
+        "nodes_lb": 457.437,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 0.99107,
+         "ci": [
+          0.98939,
+          0.99267
+         ]
+        },
+        "ANY": {
+         "pt": 0.99107,
+         "ci": [
+          0.98939,
+          0.99267
+         ]
+        },
+        "recall": {
+         "pt": 0.99107,
+         "ci": [
+          0.98939,
+          0.99267
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.89106,
+         "ci": [
+          0.87174,
+          0.91028
+         ]
+        },
+        "reached_missed": 867,
+        "measured_share": 1.0,
+        "nodes": 8327.183,
+        "nodes_lb": 8327.183,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 0.99949,
+         "ci": [
+          0.99907,
+          0.99983
+         ]
+        },
+        "ANY": {
+         "pt": 0.99949,
+         "ci": [
+          0.99907,
+          0.99983
+         ]
+        },
+        "recall": {
+         "pt": 0.99949,
+         "ci": [
+          0.99907,
+          0.99983
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.99383,
+         "ci": [
+          0.98832,
+          0.99799
+         ]
+        },
+        "reached_missed": 967,
+        "measured_share": 1.0,
+        "nodes": 19226.987,
+        "nodes_lb": 19226.987,
+        "bound": false
+       },
+       "price_per_seed": 59.8826,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 44.009,
+         "questions": 11873
+        },
+        "h2": {
+         "mean_diff": 1815.555,
+         "questions": 11873
+        },
+        "h3": {
+         "mean_diff": 1263.578,
+         "questions": 11873
+        }
+       }
+      },
+      "plus:NT1": {
+       "pairs": 1153065,
+       "h1": {
+        "ALL": {
+         "pt": 0.96698,
+         "ci": [
+          0.96378,
+          0.97019
+         ]
+        },
+        "ANY": {
+         "pt": 0.96698,
+         "ci": [
+          0.96378,
+          0.97019
+         ]
+        },
+        "recall": {
+         "pt": 0.96698,
+         "ci": [
+          0.96378,
+          0.97019
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.59712,
+         "ci": [
+          0.56535,
+          0.62908
+         ]
+        },
+        "reached_missed": 581,
+        "measured_share": 1.0,
+        "nodes": 442.916,
+        "nodes_lb": 442.916,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 0.99116,
+         "ci": [
+          0.98947,
+          0.99276
+         ]
+        },
+        "ANY": {
+         "pt": 0.99116,
+         "ci": [
+          0.98947,
+          0.99276
+         ]
+        },
+        "recall": {
+         "pt": 0.99116,
+         "ci": [
+          0.98947,
+          0.99276
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.89209,
+         "ci": [
+          0.87185,
+          0.91084
+         ]
+        },
+        "reached_missed": 868,
+        "measured_share": 1.0,
+        "nodes": 7580.583,
+        "nodes_lb": 7580.583,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 0.99966,
+         "ci": [
+          0.99933,
+          0.99992
+         ]
+        },
+        "ANY": {
+         "pt": 0.99966,
+         "ci": [
+          0.99933,
+          0.99992
+         ]
+        },
+        "recall": {
+         "pt": 0.99966,
+         "ci": [
+          0.99933,
+          0.99992
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.99589,
+         "ci": [
+          0.99161,
+          0.99901
+         ]
+        },
+        "reached_missed": 969,
+        "measured_share": 1.0,
+        "nodes": 18624.728,
+        "nodes_lb": 18624.728,
+        "bound": false
+       },
+       "price_per_seed": 57.9498,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 29.488,
+         "questions": 11873
+        },
+        "h2": {
+         "mean_diff": 1068.955,
+         "questions": 11873
+        },
+        "h3": {
+         "mean_diff": 661.318,
+         "questions": 11873
+        }
+       }
+      },
+      "plus:HK2": {
+       "pairs": 1170733,
+       "h1": {
+        "ALL": {
+         "pt": 0.96799,
+         "ci": [
+          0.96471,
+          0.9712
+         ]
+        },
+        "ANY": {
+         "pt": 0.96799,
+         "ci": [
+          0.96471,
+          0.9712
+         ]
+        },
+        "recall": {
+         "pt": 0.96799,
+         "ci": [
+          0.96471,
+          0.9712
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.60946,
+         "ci": [
+          0.57835,
+          0.64128
+         ]
+        },
+        "reached_missed": 593,
+        "measured_share": 1.0,
+        "nodes": 449.275,
+        "nodes_lb": 449.275,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 0.99141,
+         "ci": [
+          0.98964,
+          0.99293
+         ]
+        },
+        "ANY": {
+         "pt": 0.99141,
+         "ci": [
+          0.98964,
+          0.99293
+         ]
+        },
+        "recall": {
+         "pt": 0.99141,
+         "ci": [
+          0.98964,
+          0.99293
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.89517,
+         "ci": [
+          0.8744,
+          0.9136
+         ]
+        },
+        "reached_missed": 871,
+        "measured_share": 1.0,
+        "nodes": 7605.773,
+        "nodes_lb": 7605.773,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 0.99941,
+         "ci": [
+          0.99891,
+          0.99975
+         ]
+        },
+        "ANY": {
+         "pt": 0.99941,
+         "ci": [
+          0.99891,
+          0.99975
+         ]
+        },
+        "recall": {
+         "pt": 0.99941,
+         "ci": [
+          0.99891,
+          0.99975
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.99281,
+         "ci": [
+          0.98695,
+          0.99716
+         ]
+        },
+        "reached_missed": 966,
+        "measured_share": 1.0,
+        "nodes": 18668.881,
+        "nodes_lb": 18668.881,
+        "bound": false
+       },
+       "price_per_seed": 58.7963,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 35.847,
+         "questions": 11873
+        },
+        "h2": {
+         "mean_diff": 1094.144,
+         "questions": 11873
+        },
+        "h3": {
+         "mean_diff": 705.472,
+         "questions": 11873
+        }
+       }
+      },
+      "plus:H10": {
+       "pairs": 1214932,
+       "h1": {
+        "ALL": {
+         "pt": 0.96976,
+         "ci": [
+          0.96656,
+          0.9728
+         ]
+        },
+        "ANY": {
+         "pt": 0.96976,
+         "ci": [
+          0.96656,
+          0.9728
+         ]
+        },
+        "recall": {
+         "pt": 0.96976,
+         "ci": [
+          0.96656,
+          0.9728
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.63104,
+         "ci": [
+          0.60039,
+          0.66154
+         ]
+        },
+        "reached_missed": 614,
+        "measured_share": 1.0,
+        "nodes": 469.034,
+        "nodes_lb": 469.034,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 0.99326,
+         "ci": [
+          0.99174,
+          0.99461
+         ]
+        },
+        "ANY": {
+         "pt": 0.99326,
+         "ci": [
+          0.99174,
+          0.99461
+         ]
+        },
+        "recall": {
+         "pt": 0.99326,
+         "ci": [
+          0.99174,
+          0.99461
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.91778,
+         "ci": [
+          0.89949,
+          0.93449
+         ]
+        },
+        "reached_missed": 893,
+        "measured_share": 1.0,
+        "nodes": 8206.403,
+        "nodes_lb": 8206.403,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 0.99958,
+         "ci": [
+          0.99916,
+          0.99992
+         ]
+        },
+        "ANY": {
+         "pt": 0.99958,
+         "ci": [
+          0.99916,
+          0.99992
+         ]
+        },
+        "recall": {
+         "pt": 0.99958,
+         "ci": [
+          0.99916,
+          0.99992
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.99486,
+         "ci": [
+          0.98969,
+          0.99897
+         ]
+        },
+        "reached_missed": 968,
+        "measured_share": 1.0,
+        "nodes": 19141.394,
+        "nodes_lb": 19141.394,
+        "bound": false
+       },
+       "price_per_seed": 61.426,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 55.606,
+         "questions": 11873
+        },
+        "h2": {
+         "mean_diff": 1694.775,
+         "questions": 11873
+        },
+        "h3": {
+         "mean_diff": 1177.984,
+         "questions": 11873
+        }
+       }
+      },
+      "all": {
+       "pairs": 1549156,
+       "h1": {
+        "ALL": {
+         "pt": 0.97296,
+         "ci": [
+          0.97001,
+          0.97591
+         ]
+        },
+        "ANY": {
+         "pt": 0.97296,
+         "ci": [
+          0.97001,
+          0.97591
+         ]
+        },
+        "recall": {
+         "pt": 0.97296,
+         "ci": [
+          0.97001,
+          0.97591
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.67009,
+         "ci": [
+          0.6402,
+          0.69931
+         ]
+        },
+        "reached_missed": 652,
+        "measured_share": 1.0,
+        "nodes": 544.531,
+        "nodes_lb": 544.531,
+        "bound": false
+       },
+       "h2": {
+        "ALL": {
+         "pt": 0.99511,
+         "ci": [
+          0.99385,
+          0.99629
+         ]
+        },
+        "ANY": {
+         "pt": 0.99511,
+         "ci": [
+          0.99385,
+          0.99629
+         ]
+        },
+        "recall": {
+         "pt": 0.99511,
+         "ci": [
+          0.99385,
+          0.99629
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.94039,
+         "ci": [
+          0.925,
+          0.95469
+         ]
+        },
+        "reached_missed": 915,
+        "measured_share": 1.0,
+        "nodes": 10487.947,
+        "nodes_lb": 10487.947,
+        "bound": false
+       },
+       "h3": {
+        "ALL": {
+         "pt": 0.99983,
+         "ci": [
+          0.99958,
+          1.0
+         ]
+        },
+        "ANY": {
+         "pt": 0.99983,
+         "ci": [
+          0.99958,
+          1.0
+         ]
+        },
+        "recall": {
+         "pt": 0.99983,
+         "ci": [
+          0.99958,
+          1.0
+         ]
+        },
+        "missed_reach": {
+         "pt": 0.99794,
+         "ci": [
+          0.99471,
+          1.0
+         ]
+        },
+        "reached_missed": 971,
+        "measured_share": 1.0,
+        "nodes": 19813.719,
+        "nodes_lb": 19813.719,
+        "bound": false
+       },
+       "price_per_seed": 71.4744,
+       "nodes_vs_any": {
+        "h1": {
+         "mean_diff": 131.103,
+         "questions": 11873
+        },
+        "h2": {
+         "mean_diff": 3976.318,
+         "questions": 11873
+        },
+        "h3": {
+         "mean_diff": 1850.31,
+         "questions": 11873
+        }
+       }
+      }
+     },
+     "classes": {
+      "missed": 973,
+      "questions_with_missed": 973,
+      "dist_any": {
+       "1": {
+        "count": 546,
+        "share": {
+         "pt": 0.56115,
+         "ci": [
+          0.52826,
+          0.59301
+         ]
+        }
+       },
+       "2": {
+        "count": 284,
+        "share": {
+         "pt": 0.29188,
+         "ci": [
+          0.26413,
+          0.32066
+         ]
+        }
+       },
+       "3": {
+        "count": 128,
+        "share": {
+         "pt": 0.13155,
+         "ci": [
+          0.10997,
+          0.15313
+         ]
+        }
+       },
+       "4": {
+        "count": 15,
+        "share": {
+         "pt": 0.01542,
+         "ci": [
+          0.00822,
+          0.02364
+         ]
+        }
+       }
+      },
+      "isolated_in_all": {
+       "count": 0,
+       "share": {
+        "pt": 0.0,
+        "ci": [
+         0.0,
+         0.0
+        ]
+       }
+      },
+      "h1": {
+       "any": {
+        "count": 546,
+        "share": {
+         "pt": 0.56115,
+         "ci": [
+          0.52826,
+          0.59301
+         ]
+        }
+       },
+       "label:R.mention": {
+        "count": 431,
+        "share": {
+         "pt": 0.44296,
+         "ci": [
+          0.4111,
+          0.47379
+         ]
+        }
+       },
+       "ONLY:label:R.mention": {
+        "count": 112,
+        "share": {
+         "pt": 0.11511,
+         "ci": [
+          0.09558,
+          0.13566
+         ]
+        }
+       },
+       "label:R.name_comention": {
+        "count": 289,
+        "share": {
+         "pt": 0.29702,
+         "ci": [
+          0.26824,
+          0.32477
+         ]
+        }
+       },
+       "ONLY:label:R.name_comention": {
+        "count": 65,
+        "share": {
+         "pt": 0.0668,
+         "ci": [
+          0.05242,
+          0.08222
+         ]
+        }
+       },
+       "label:R.title_comention": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "ONLY:label:R.title_comention": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "label:K.knn": {
+        "count": 289,
+        "share": {
+         "pt": 0.29702,
+         "ci": [
+          0.26927,
+          0.32582
+         ]
+        }
+       },
+       "ONLY:label:K.knn": {
+        "count": 29,
+        "share": {
+         "pt": 0.0298,
+         "ci": [
+          0.01953,
+          0.04111
+         ]
+        }
+       },
+       "MULTI_ALONE": {
+        "count": 340,
+        "share": {
+         "pt": 0.34943,
+         "ci": [
+          0.32066,
+          0.38027
+         ]
+        }
+       },
+       "MIXED": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "unreached": {
+        "count": 427,
+        "share": {
+         "pt": 0.43885,
+         "ci": [
+          0.40699,
+          0.47174
+         ]
+        }
+       },
+       "rescue:H5": {
+        "count": 51,
+        "share": {
+         "pt": 0.05242,
+         "ci": [
+          0.03803,
+          0.0668
+         ]
+        }
+       },
+       "ONLY_F:H5": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HM": {
+        "count": 38,
+        "share": {
+         "pt": 0.03905,
+         "ci": [
+          0.02672,
+          0.05139
+         ]
+        }
+       },
+       "ONLY_F:HM": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HK1": {
+        "count": 35,
+        "share": {
+         "pt": 0.03597,
+         "ci": [
+          0.02467,
+          0.04728
+         ]
+        }
+       },
+       "ONLY_F:HK1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:NTc": {
+        "count": 24,
+        "share": {
+         "pt": 0.02467,
+         "ci": [
+          0.01542,
+          0.03494
+         ]
+        }
+       },
+       "ONLY_F:NTc": {
+        "count": 14,
+        "share": {
+         "pt": 0.01439,
+         "ci": [
+          0.00719,
+          0.02261
+         ]
+        }
+       },
+       "rescue:NT1": {
+        "count": 35,
+        "share": {
+         "pt": 0.03597,
+         "ci": [
+          0.02467,
+          0.04728
+         ]
+        }
+       },
+       "ONLY_F:NT1": {
+        "count": 16,
+        "share": {
+         "pt": 0.01644,
+         "ci": [
+          0.00925,
+          0.02467
+         ]
+        }
+       },
+       "rescue:HK2": {
+        "count": 47,
+        "share": {
+         "pt": 0.0483,
+         "ci": [
+          0.03597,
+          0.06269
+         ]
+        }
+       },
+       "ONLY_F:HK2": {
+        "count": 4,
+        "share": {
+         "pt": 0.00411,
+         "ci": [
+          0.00103,
+          0.00822
+         ]
+        }
+       },
+       "rescue:H10": {
+        "count": 68,
+        "share": {
+         "pt": 0.06989,
+         "ci": [
+          0.05344,
+          0.08633
+         ]
+        }
+       },
+       "ONLY_F:H10": {
+        "count": 8,
+        "share": {
+         "pt": 0.00822,
+         "ci": [
+          0.00308,
+          0.01439
+         ]
+        }
+       },
+       "rescue_all": {
+        "count": 106,
+        "share": {
+         "pt": 0.10894,
+         "ci": [
+          0.09044,
+          0.12847
+         ]
+        }
+       },
+       "ALL_ONLY": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "NONE": {
+        "count": 321,
+        "share": {
+         "pt": 0.32991,
+         "ci": [
+          0.3001,
+          0.36177
+         ]
+        }
+       },
+       "ISOLATED": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "FAR": {
+        "count": 321,
+        "share": {
+         "pt": 0.32991,
+         "ci": [
+          0.3001,
+          0.36177
+         ]
+        }
+       }
+      },
+      "h2": {
+       "any": {
+        "count": 830,
+        "share": {
+         "pt": 0.85303,
+         "ci": [
+          0.82939,
+          0.87564
+         ]
+        }
+       },
+       "label:R.mention": {
+        "count": 626,
+        "share": {
+         "pt": 0.64337,
+         "ci": [
+          0.61151,
+          0.67318
+         ]
+        }
+       },
+       "ONLY:label:R.mention": {
+        "count": 125,
+        "share": {
+         "pt": 0.12847,
+         "ci": [
+          0.10689,
+          0.15108
+         ]
+        }
+       },
+       "label:R.name_comention": {
+        "count": 476,
+        "share": {
+         "pt": 0.48921,
+         "ci": [
+          0.45735,
+          0.52004
+         ]
+        }
+       },
+       "ONLY:label:R.name_comention": {
+        "count": 86,
+        "share": {
+         "pt": 0.08839,
+         "ci": [
+          0.07091,
+          0.10486
+         ]
+        }
+       },
+       "label:R.title_comention": {
+        "count": 3,
+        "share": {
+         "pt": 0.00308,
+         "ci": [
+          0.0,
+          0.00719
+         ]
+        }
+       },
+       "ONLY:label:R.title_comention": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "label:K.knn": {
+        "count": 402,
+        "share": {
+         "pt": 0.41316,
+         "ci": [
+          0.38232,
+          0.44296
+         ]
+        }
+       },
+       "ONLY:label:K.knn": {
+        "count": 20,
+        "share": {
+         "pt": 0.02055,
+         "ci": [
+          0.01233,
+          0.03083
+         ]
+        }
+       },
+       "MULTI_ALONE": {
+        "count": 520,
+        "share": {
+         "pt": 0.53443,
+         "ci": [
+          0.5036,
+          0.56526
+         ]
+        }
+       },
+       "MIXED": {
+        "count": 79,
+        "share": {
+         "pt": 0.08119,
+         "ci": [
+          0.06475,
+          0.09866
+         ]
+        }
+       },
+       "unreached": {
+        "count": 143,
+        "share": {
+         "pt": 0.14697,
+         "ci": [
+          0.12436,
+          0.17061
+         ]
+        }
+       },
+       "rescue:H5": {
+        "count": 48,
+        "share": {
+         "pt": 0.04933,
+         "ci": [
+          0.03597,
+          0.06372
+         ]
+        }
+       },
+       "ONLY_F:H5": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HM": {
+        "count": 33,
+        "share": {
+         "pt": 0.03392,
+         "ci": [
+          0.02261,
+          0.04625
+         ]
+        }
+       },
+       "ONLY_F:HM": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HK1": {
+        "count": 33,
+        "share": {
+         "pt": 0.03392,
+         "ci": [
+          0.02261,
+          0.04728
+         ]
+        }
+       },
+       "ONLY_F:HK1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:NTc": {
+        "count": 37,
+        "share": {
+         "pt": 0.03803,
+         "ci": [
+          0.02672,
+          0.05036
+         ]
+        }
+       },
+       "ONLY_F:NTc": {
+        "count": 10,
+        "share": {
+         "pt": 0.01028,
+         "ci": [
+          0.00411,
+          0.01644
+         ]
+        }
+       },
+       "rescue:NT1": {
+        "count": 38,
+        "share": {
+         "pt": 0.03905,
+         "ci": [
+          0.02775,
+          0.05139
+         ]
+        }
+       },
+       "ONLY_F:NT1": {
+        "count": 6,
+        "share": {
+         "pt": 0.00617,
+         "ci": [
+          0.00206,
+          0.01131
+         ]
+        }
+       },
+       "rescue:HK2": {
+        "count": 41,
+        "share": {
+         "pt": 0.04214,
+         "ci": [
+          0.0298,
+          0.0555
+         ]
+        }
+       },
+       "ONLY_F:HK2": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:H10": {
+        "count": 63,
+        "share": {
+         "pt": 0.06475,
+         "ci": [
+          0.04933,
+          0.08119
+         ]
+        }
+       },
+       "ONLY_F:H10": {
+        "count": 3,
+        "share": {
+         "pt": 0.00308,
+         "ci": [
+          0.0,
+          0.00719
+         ]
+        }
+       },
+       "rescue_all": {
+        "count": 85,
+        "share": {
+         "pt": 0.08736,
+         "ci": [
+          0.06989,
+          0.10586
+         ]
+        }
+       },
+       "ALL_ONLY": {
+        "count": 1,
+        "share": {
+         "pt": 0.00103,
+         "ci": [
+          0.0,
+          0.00308
+         ]
+        }
+       },
+       "NONE": {
+        "count": 58,
+        "share": {
+         "pt": 0.05961,
+         "ci": [
+          0.04522,
+          0.07503
+         ]
+        }
+       },
+       "ISOLATED": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "FAR": {
+        "count": 58,
+        "share": {
+         "pt": 0.05961,
+         "ci": [
+          0.04522,
+          0.07503
+         ]
+        }
+       }
+      },
+      "h3": {
+       "any": {
+        "count": 958,
+        "share": {
+         "pt": 0.98458,
+         "ci": [
+          0.97636,
+          0.99178
+         ]
+        }
+       },
+       "label:R.mention": {
+        "count": 825,
+        "share": {
+         "pt": 0.84789,
+         "ci": [
+          0.82528,
+          0.8705
+         ]
+        }
+       },
+       "ONLY:label:R.mention": {
+        "count": 83,
+        "share": {
+         "pt": 0.0853,
+         "ci": [
+          0.06886,
+          0.1038
+         ]
+        }
+       },
+       "label:R.name_comention": {
+        "count": 689,
+        "share": {
+         "pt": 0.70812,
+         "ci": [
+          0.67934,
+          0.7369
+         ]
+        }
+       },
+       "ONLY:label:R.name_comention": {
+        "count": 57,
+        "share": {
+         "pt": 0.05858,
+         "ci": [
+          0.04419,
+          0.074
+         ]
+        }
+       },
+       "label:R.title_comention": {
+        "count": 3,
+        "share": {
+         "pt": 0.00308,
+         "ci": [
+          0.0,
+          0.00719
+         ]
+        }
+       },
+       "ONLY:label:R.title_comention": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "label:K.knn": {
+        "count": 489,
+        "share": {
+         "pt": 0.50257,
+         "ci": [
+          0.47071,
+          0.53343
+         ]
+        }
+       },
+       "ONLY:label:K.knn": {
+        "count": 14,
+        "share": {
+         "pt": 0.01439,
+         "ci": [
+          0.00719,
+          0.02261
+         ]
+        }
+       },
+       "MULTI_ALONE": {
+        "count": 753,
+        "share": {
+         "pt": 0.7739,
+         "ci": [
+          0.74615,
+          0.79961
+         ]
+        }
+       },
+       "MIXED": {
+        "count": 51,
+        "share": {
+         "pt": 0.05242,
+         "ci": [
+          0.03905,
+          0.0668
+         ]
+        }
+       },
+       "unreached": {
+        "count": 15,
+        "share": {
+         "pt": 0.01542,
+         "ci": [
+          0.00822,
+          0.02364
+         ]
+        }
+       },
+       "rescue:H5": {
+        "count": 9,
+        "share": {
+         "pt": 0.00925,
+         "ci": [
+          0.00411,
+          0.01542
+         ]
+        }
+       },
+       "ONLY_F:H5": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HM": {
+        "count": 6,
+        "share": {
+         "pt": 0.00617,
+         "ci": [
+          0.00206,
+          0.01131
+         ]
+        }
+       },
+       "ONLY_F:HM": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:HK1": {
+        "count": 7,
+        "share": {
+         "pt": 0.00719,
+         "ci": [
+          0.00308,
+          0.01336
+         ]
+        }
+       },
+       "ONLY_F:HK1": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:NTc": {
+        "count": 9,
+        "share": {
+         "pt": 0.00925,
+         "ci": [
+          0.00411,
+          0.01542
+         ]
+        }
+       },
+       "ONLY_F:NTc": {
+        "count": 1,
+        "share": {
+         "pt": 0.00103,
+         "ci": [
+          0.0,
+          0.00308
+         ]
+        }
+       },
+       "rescue:NT1": {
+        "count": 11,
+        "share": {
+         "pt": 0.01131,
+         "ci": [
+          0.00514,
+          0.0185
+         ]
+        }
+       },
+       "ONLY_F:NT1": {
+        "count": 2,
+        "share": {
+         "pt": 0.00206,
+         "ci": [
+          0.0,
+          0.00514
+         ]
+        }
+       },
+       "rescue:HK2": {
+        "count": 8,
+        "share": {
+         "pt": 0.00822,
+         "ci": [
+          0.00308,
+          0.01439
+         ]
+        }
+       },
+       "ONLY_F:HK2": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue:H10": {
+        "count": 10,
+        "share": {
+         "pt": 0.01028,
+         "ci": [
+          0.00514,
+          0.01747
+         ]
+        }
+       },
+       "ONLY_F:H10": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "rescue_all": {
+        "count": 13,
+        "share": {
+         "pt": 0.01336,
+         "ci": [
+          0.00719,
+          0.02055
+         ]
+        }
+       },
+       "ALL_ONLY": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "NONE": {
+        "count": 2,
+        "share": {
+         "pt": 0.00206,
+         "ci": [
+          0.0,
+          0.00514
+         ]
+        }
+       },
+       "ISOLATED": {
+        "count": 0,
+        "share": {
+         "pt": 0.0,
+         "ci": [
+          0.0,
+          0.0
+         ]
+        }
+       },
+       "FAR": {
+        "count": 2,
+        "share": {
+         "pt": 0.00206,
+         "ci": [
+          0.0,
+          0.00514
+         ]
+        }
+       }
+      }
+     },
+     "floors": {
+      "G95": {
+       "unit": "label:K.knn",
+       "hop": 2,
+       "ALL": 0.95191,
+       "nodes": 77.934,
+       "bound": false
+      },
+      "G98": {
+       "unit": "any",
+       "hop": 2,
+       "ALL": 0.98796,
+       "nodes": 6511.628,
+       "bound": false
+      },
+      "best_ALL": {
+       "unit": "all",
+       "hop": 3,
+       "ALL": 0.99983,
+       "nodes": 19813.719,
+       "bound": false
+      }
+     },
+     "gates": {
+      "G-H2": {
+       "call": "PASS",
+       "mine": {
+        "missed": 1936,
+        "reached": 1000
+       },
+       "ul2s": {
+        "missed": 1936,
+        "reached": 1000
+       }
+      },
+      "G-H3": {
+       "pairs_checked": 18,
+       "violations": []
+      }
+     }
+    }
+   }
+  }
+ },
+ "memory": {
+  "peak_working_set_gb": 0.7,
+  "peak_commit_gb": 0.7
+ },
+ "seconds": 2949.7,
+ "utc": "2026-11-25T00:55:59Z",
+ "zul2h_sha256": "a0fea9a22bcfda1ec2d2e0d31a1140225e0e89ef6af570b01b5ab077613a0b8a",
+ "zul2s_sha256": "6d43c35928442a2998b5e2003aac2b4b73c8a9570e6493102abce124faa16bba",
+ "zul2p_sha256": "ba7a5d5af124e0af13306a75502239a421f9f4557555a015e0e65fc31e802c8a",
+ "zul2c_sha256": "fb4a3356931308cba6333fde66d55d9b23d0c973fffe219b92ce21dcb25e533e",
+ "zul2u_sha256": "bf41636269905d1a4c4f7a6f704dc723fbce152ef5c4e9852ee1e2621ab9cb6e",
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136"
+}

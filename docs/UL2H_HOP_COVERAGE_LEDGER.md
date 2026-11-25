@@ -149,13 +149,161 @@ Pool prices of each unit are read beside these (the table of nodes per unit and 
 
 ## 9. Results
 
-(not filed; the runs have not been made)
+Read 25 November 2026 on the laptop with `outputs/mp_unified/zul2h.py` (committed `082cedc` before any run; the declaration is `29bb293`). MultiHop-RAG
+and SQuAD are read (RK; MultiHop-RAG's test split decides, its dev split is beside; SQuAD's s1eval); **MuSiQue, MetaQA, WebQSP, HotpotQA and 2Wiki are host
+rows and are not read** (section 7), so nothing below speaks for the four datasets the lead named first. Points in percent with 95% intervals over questions
+unless a count is given; nodes are the mean uncapped pool size per question.
+
+### 9.1 Runs and gates
+
+- MultiHop-RAG 40.8 s, peak working set 0.09 GB; SQuAD 2,949.7 s, 0.7 GB. Hop-3 sizes are exact on both
+  (graphs under 100,000 nodes, no question over the 2^24 budget: every `bound` is false).
+- Gates passed: the loader gates (G-P1 to G-P3, G-S1 to G-S5, UL2S's), G-H1 (every union 5 to 10 distinct rows, dense five first: mean 7.4398 rows
+  on MultiHop-RAG, 7.5134 on SQuAD), G-H2 (the dense five alone, one hop, any-link: missed/reached golds 1157/1127 on
+  MultiHop-RAG's s1eval, 222/214 on s1sel, 1936/1000 on SQuAD: equal to UL2S's filed counts), G-H3 (18 subset pairs per dataset, no violation), and G-H4
+  (in the code beside G-H1 to G-H3, not named on the declaration page: R.name_comention is inside F0T, so every label's graph is inside the any-link graph; the run stops otherwise). `zul2h.py` sha256 `a0fea9a22bcfda1ec2d2e0d31a1140225e0e89ef6af570b01b5ab077613a0b8a` (both ledgers).
+- Population: MultiHop-RAG 1130 questions, 2,985 golds, 2,134 in the seeds, 851 missed (mean 7.4398 seeds); SQuAD 11,873 questions,
+  one gold each, 10,900 in the seeds, 973 missed (mean 7.5134 seeds). Seeds only: ALL = ANY = recall 91.81 [91.29, 92.28] on SQuAD; MultiHop-RAG ALL 44.51 [41.59, 47.43],
+  ANY 97.97 [97.08, 98.76], recall 71.49 [70.00, 73.03].
+
+### 9.2 The expectations
+
+| id | call | read |
+|---|---|---|
+| H1 | **HELD** | multihoprag: ALL in any at 3 hops 1.0; squad: ALL in any at 3 hops 0.99874 |
+| H2 | **HELD** | multihoprag: G95 ('label:R.name_comention', 1, 273.884); squad: G95 ('label:K.knn', 2, 77.934) |
+| H3 | **NOT_HELD** | multihoprag: cheapest label at hop 1 label:R.mention (0.0055); squad: cheapest label at hop 1 label:R.title_comention (0.1714) |
+| H4 | **HELD** | squad: 15 beyond 3 hops in any; all reaches 13 |
+| H5 | **HELD** | multihoprag: ALL in any at 1 hop 0.98584 |
+
+H3 is NOT_HELD as declared and the reason is plain: the label with the fewest pairs has the smallest price per seed (MultiHop-RAG's R.mention has 2 pairs,
+SQuAD's R.title_comention 2,809); K.knn's price per seed is 2.3234 on MultiHop-RAG and 3.0256 on SQuAD. H2 is HELD on MultiHop-RAG
+by a hair that means nothing (G95 is R.name_comention at hop 1 with 273.884 nodes against 275.576 for the whole any-link graph: the same graph in effect), and on SQuAD
+clearly (K.knn at 2 hops, 77.934 nodes against 6,512 for the any-link graph at 2 hops).
+
+### 9.3 MultiHop-RAG (609 nodes: a small-corpus read, UL2S 10.6 applies)
+
+Graph floors: G95 and G98 are label:R.name_comention at 1 hop, ALL 98.58% at 273.884 nodes; the best ALL is 100% (R.name_comention at 2 hops, 607.816 nodes of 609: nearly the whole corpus).
+
+| unit | hop | ALL | recall | mean nodes |
+|---|---:|---|---|---:|
+| label:R.name_comention | 1 | 98.58 [97.88, 99.20] | 99.46 [99.19, 99.70] | 273.9 |
+| label:R.name_comention | 2 | 100.00 [100.00, 100.00] | 100.00 [100.00, 100.00] | 607.8 |
+| label:R.name_comention | 3 | 100.00 [100.00, 100.00] | 100.00 [100.00, 100.00] | 608.0 |
+| label:K.knn | 1 | 65.22 [62.48, 68.14] | 86.16 [85.13, 87.26] | 24.7 |
+| label:K.knn | 2 | 72.21 [69.65, 74.87] | 89.38 [88.48, 90.35] | 49.0 |
+| label:K.knn | 3 | 75.22 [72.74, 77.79] | 90.52 [89.65, 91.39] | 90.2 |
+| any | 1 | 98.58 [97.88, 99.20] | 99.46 [99.19, 99.70] | 275.6 |
+| any | 2 | 100.00 [100.00, 100.00] | 100.00 [100.00, 100.00] | 608.7 |
+| any | 3 | 100.00 [100.00, 100.00] | 100.00 [100.00, 100.00] | 609.0 |
+| all | 1 | 99.82 [99.56, 100.00] | 99.93 [99.83, 100.00] | 415.1 |
+| all | 2 | 100.00 [100.00, 100.00] | 100.00 [100.00, 100.00] | 609.0 |
+| all | 3 | 100.00 [100.00, 100.00] | 100.00 [100.00, 100.00] | 609.0 |
+
+The missed golds' distance in the any-link graph: 1 hop(s): 835 (98.12 [97.18, 98.95] %) ; 2 hop(s): 16 (1.88 [1.05, 2.82] %) ; 3 hop(s): 0 (0.00 [0.00, 0.00] %) ; beyond 3: 0 (0.00 [0.00, 0.00] %); none is isolated, and at 2 hops every missed gold is reached. One hop of the any-link graph covers
+45% of the corpus (275.576 of 609 nodes), which is why ALL is high at every unit that holds the name co-mention label: coverage here is a corpus-size fact
+(UL2S 10.6), not evidence about the rules. K.knn alone reaches 65.22 [62.48, 68.14] at one hop for 24.726 nodes; R.mention, with 2 pairs, adds nothing.
+The dev split (s1sel) reads the same way (any-link ALL at one hop 97.77 [95.54, 99.55], G95 label:R.name_comention at 1 hop).
+
+### 9.4 SQuAD (20,233 nodes; one gold per question, so ALL = ANY = recall)
+
+Graph floors: **G95 = label:K.knn at 2 hops, ALL 95.19% at 77.934 nodes; G98 = any at 2 hops, ALL 98.80% at 6,512 nodes**
+(a third of the corpus); the best ALL is 99.98% (all at 3 hops, 19,814 nodes, 98% of the corpus).
+
+| unit | hop | ALL | recall | mean nodes |
+|---|---:|---|---|---:|
+| label:K.knn | 1 | 94.24 [93.81, 94.65] | 94.24 [93.81, 94.65] | 30.2 |
+| label:K.knn | 2 | 95.19 [94.78, 95.59] | 95.19 [94.78, 95.59] | 77.9 |
+| label:K.knn | 3 | 95.92 [95.56, 96.29] | 95.92 [95.56, 96.29] | 171.3 |
+| label:R.name_comention | 1 | 94.24 [93.82, 94.65] | 94.24 [93.82, 94.65] | 108.6 |
+| label:R.name_comention | 2 | 95.81 [95.46, 96.15] | 95.81 [95.46, 96.15] | 1,475.9 |
+| label:R.name_comention | 3 | 97.61 [97.34, 97.88] | 97.61 [97.34, 97.88] | 8,151.7 |
+| label:R.mention | 1 | 95.44 [95.06, 95.81] | 95.44 [95.06, 95.81] | 344.0 |
+| label:R.mention | 2 | 97.08 [96.77, 97.37] | 97.08 [96.77, 97.37] | 3,336.3 |
+| label:R.mention | 3 | 98.75 [98.54, 98.95] | 98.75 [98.54, 98.95] | 11,053.4 |
+| any | 1 | 96.40 [96.06, 96.75] | 96.40 [96.06, 96.75] | 413.4 |
+| any | 2 | 98.80 [98.59, 98.99] | 98.80 [98.59, 98.99] | 6,511.6 |
+| any | 3 | 99.87 [99.81, 99.93] | 99.87 [99.81, 99.93] | 17,963.4 |
+| plus:H10 | 1 | 96.98 [96.66, 97.28] | 96.98 [96.66, 97.28] | 469.0 |
+| plus:H10 | 2 | 99.33 [99.17, 99.46] | 99.33 [99.17, 99.46] | 8,206.4 |
+| plus:H10 | 3 | 99.96 [99.92, 99.99] | 99.96 [99.92, 99.99] | 19,141.4 |
+| all | 1 | 97.30 [97.00, 97.59] | 97.30 [97.00, 97.59] | 544.5 |
+| all | 2 | 99.51 [99.39, 99.63] | 99.51 [99.39, 99.63] | 10,487.9 |
+| all | 3 | 99.98 [99.96, 100.00] | 99.98 [99.96, 100.00] | 19,813.7 |
+
+The 973 missed golds by distance in the any-link graph: 1 hop(s): 546 (56.12 [52.83, 59.30] %) ; 2 hop(s): 284 (29.19 [26.41, 32.07] %) ; 3 hop(s): 128 (13.15 [11.00, 15.31] %) ; beyond 3: 15 (1.54 [0.82, 2.36] %). None is isolated in the all graph (0); the 15 beyond three hops
+of the any-link graph: the all graph reaches 13 of them at three hops and 2 stay out (both FAR, with pairs but too far).
+
+Which label reaches them (the 546 missed golds the any-link graph reaches at one hop; the other 427 of the 973 are the rescue question below): R.mention 431, R.name_comention 289, K.knn 289, R.title_comention 0; reached by one label
+alone: R.mention 112, R.name_comention 65, K.knn 29; by two or more alone 340. At one hop K.knn reaches the same number of missed golds as R.name_comention
+(289) for 30.246 nodes against 108.606. At two hops 79 missed golds are reached in the any-link graph by no single label alone (a path needing two labels).
+
+What the forms rescue (missed golds the any-link graph does not reach, 427 at one hop, 143 at two):
+
+One hop:
+
+| form | missed golds rescued | share of the missed golds (%) | mean nodes added to any |
+|---|---:|---|---:|
+| H5 | 51 | 5.24 [3.80, 6.68] | 28.5 |
+| HM | 38 | 3.91 [2.67, 5.14] | 15.8 |
+| HK1 | 35 | 3.60 [2.47, 4.73] | 18.9 |
+| NTc | 24 | 2.47 [1.54, 3.49] | 44.0 |
+| NT1 | 35 | 3.60 [2.47, 4.73] | 29.5 |
+| HK2 | 47 | 4.83 [3.60, 6.27] | 35.8 |
+| H10 | 68 | 6.99 [5.34, 8.63] | 55.6 |
+
+Two hops:
+
+| form | missed golds rescued | share of the missed golds (%) | mean nodes added to any |
+|---|---:|---|---:|
+| H5 | 48 | 4.93 [3.60, 6.37] | 906.8 |
+| HM | 33 | 3.39 [2.26, 4.62] | 485.9 |
+| HK1 | 33 | 3.39 [2.26, 4.73] | 611.7 |
+| NTc | 37 | 3.80 [2.67, 5.04] | 1,815.6 |
+| NT1 | 38 | 3.91 [2.77, 5.14] | 1,069.0 |
+| HK2 | 41 | 4.21 [2.98, 5.55] | 1,094.1 |
+| H10 | 63 | 6.48 [4.93, 8.12] | 1,694.8 |
+
+### 9.5 Named, not adopted (each is read on all seven before any carry; the lead's four first)
+
+- **A cheap graph floor exists on SQuAD:** K.knn alone at 2 hops holds ALL 95.19% for 77.934 nodes on average, against 6,512 for the whole any-link graph at 2 hops (ALL 98.80 [98.59, 98.99]).
+  PL2's filed grid reaches 0.95 on SQuAD at 50 nodes with a ranked, capped pool; these balls are uncapped, so the two sizes are not like for like, and a ranking can hold the floor
+  at fewer nodes than a ball does.
+- **Forms rescue golds the any-link graph cannot reach, at a price:** every form's rescue share has its low end above 0 at hops 1, 2 and 3 on SQuAD (section 6's rule for a candidate); at one hop
+  HM adds 15.786 nodes for 38 rescued golds, H10 adds 55.606 for 68. Only NTc, NT1, HK2 and H10 reach golds no other single form does (ONLY_F at one hop:
+  NTc 14, NT1 16, HK2 4, H10 8). On MultiHop-RAG forms rescue 14 golds at one hop and none at two (the corpus is covered).
+- **Label priority:** at one hop on SQuAD R.mention reaches the most missed golds (431, of which 112 no other label reaches alone) and K.knn the most per node
+  (289 for 30.246 nodes); on MultiHop-RAG R.name_comention carries the corpus. No weight or priority is named from two datasets.
+- **No new family is named:** no gold is isolated on either dataset, and the golds beyond three hops are few (15 on SQuAD, 0 on MultiHop-RAG); the open question is MuSiQue, MetaQA, WebQSP and 2Wiki, where PL2's grids fall short.
+
+### 9.6 What to distrust
+
+- These are the two datasets whose target PL2 already meets (SQuAD 50 nodes, MultiHop-RAG 50-100): the read says the graphs hold the golds there; it says nothing about MuSiQue, MetaQA, WebQSP and 2Wiki, the four the lead named, where PL2's grids fall short of the floor.
+- Mean sizes are over all questions; a hub seed inflates a ball and no median is read. A ball is not a pool: coverage here is what a pool of that unit *could* hold.
+- MultiHop-RAG's balls reach most of a 609-node corpus within two hops: its floors are a corpus-size fact. H2's margin there is 1.7 nodes.
+- The hop-3 rows of SQuAD's large units are balls of 89% of the corpus: ALL near 100% there is again corpus size.
+- The floor cells are chosen on points, not intervals (section 4); a cell whose interval crosses 0.95 is still a floor cell.
+- The seeds are the record's first stage (dense five and SPLADE five), not a model's top rows; four hops and more were not walked (distance 4 = beyond three).
+
+### 9.7 Still to read
+
+MuSiQue, MetaQA, WebQSP, HotpotQA and 2Wiki: host rows `ul2h-<dataset>` (section 7), then `ul2h-report`. H1 to H5 are called again on all seven then; the graph floors, the gap and the candidate lists of section 6 are
+filed for the four datasets the lead named first only when those rows are read.
 
 ## 10. Development log (disclosed before any UL2H number)
 
 - No `zul2h` code existed before this page. Before it I read PL2's page (its section 1 for the filed grid, 2a for the seeds) and the filed pair counts in
   UL2P's ledgers (`b0` sizes: MuSiQue 3.39M, MetaQA 0.35M, WebQSP 507M, MultiHop-RAG 25K pairs); no hop measure was computed.
 - UL2S's and UL2P's code and filed numbers are unchanged.
+- The declaration was committed first (`29bb293`), then `zul2h.py` (`082cedc`) with its self-test PASS (set loops on random graphs and on MultiHop-RAG's real any-link and
+  all-forms graphs, two wrong engines caught, hand-made measures, G-H2 against UL2S's filed MultiHop-RAG counts); no UL2H number was read before that commit. A review of the
+  module before its first run fixed slips in the module and its self-test (three hand-made expected values, a toy population that could repeat a row, a pair count that was 0
+  for a resumed checkpoint, one measure that differed on resume and was dropped, the MultiHop-RAG population selected with the decided cell); the self-test passed on the fixed code.
+- MultiHop-RAG was read first (40.8 s) and the report code was run once on that ledger alone to check its format (it then called H4 NOT_APPLICABLE: no missed gold beyond
+  three hops); SQuAD followed (2,949.7 s) and the report was rebuilt from both ledgers, which is the report filed here. No code changed after the first run. The checkpoints
+  (`ckpt/`) are working files, not filed.
+- The hop-3 sizes are exact on both datasets (no `bound`, measured share 1); the sampling and budget rules of section 4 did not fire.
+- The code carries a fourth gate, G-H4 (R.name_comention inside F0T), that section 2 does not name; it only stops a run, it moves no number.
 
 ## 11. Files
 

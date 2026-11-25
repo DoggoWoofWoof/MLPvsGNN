@@ -1,0 +1,917 @@
+{
+ "declared_in": "docs/UL2H_HOP_COVERAGE_LEDGER.md",
+ "datasets": [
+  "multihoprag",
+  "squad"
+ ],
+ "expectations": {
+  "H1": {
+   "call": "HELD",
+   "held": 2,
+   "reads": 2,
+   "detail": [
+    "multihoprag: ALL in any at 3 hops 1.0",
+    "squad: ALL in any at 3 hops 0.99874"
+   ]
+  },
+  "H2": {
+   "call": "HELD",
+   "held": 2,
+   "reads": 2,
+   "detail": [
+    "multihoprag: G95 ('label:R.name_comention', 1, 273.884)",
+    "squad: G95 ('label:K.knn', 2, 77.934)"
+   ]
+  },
+  "H3": {
+   "call": "NOT_HELD",
+   "held": 0,
+   "reads": 2,
+   "detail": [
+    "multihoprag: cheapest label at hop 1 label:R.mention (0.0055)",
+    "squad: cheapest label at hop 1 label:R.title_comention (0.1714)"
+   ]
+  },
+  "H4": {
+   "call": "HELD",
+   "held": 1,
+   "reads": 1,
+   "detail": [
+    "squad: 15 beyond 3 hops in any; all reaches 13"
+   ]
+  },
+  "H5": {
+   "call": "HELD",
+   "held": 1,
+   "reads": 1,
+   "detail": [
+    "multihoprag: ALL in any at 1 hop 0.98584"
+   ]
+  }
+ },
+ "follows": {
+  "squad": {
+   "version": "RK",
+   "floors": {
+    "G95": {
+     "unit": "label:K.knn",
+     "hop": 2,
+     "ALL": 0.95191,
+     "nodes": 77.934,
+     "bound": false
+    },
+    "G98": {
+     "unit": "any",
+     "hop": 2,
+     "ALL": 0.98796,
+     "nodes": 6511.628,
+     "bound": false
+    },
+    "best_ALL": {
+     "unit": "all",
+     "hop": 3,
+     "ALL": 0.99983,
+     "nodes": 19813.719,
+     "bound": false
+    }
+   },
+   "dist_any": {
+    "1": [
+     546,
+     0.56115
+    ],
+    "2": [
+     284,
+     0.29188
+    ],
+    "3": [
+     128,
+     0.13155
+    ],
+    "4": [
+     15,
+     0.01542
+    ]
+   },
+   "hops": {
+    "h1": {
+     "rescue": [
+      {
+       "form": "H5",
+       "count": 51,
+       "share": {
+        "pt": 0.05242,
+        "ci": [
+         0.03803,
+         0.0668
+        ]
+       },
+       "nodes_vs_any": 28.506,
+       "low_above_0": true
+      },
+      {
+       "form": "HM",
+       "count": 38,
+       "share": {
+        "pt": 0.03905,
+        "ci": [
+         0.02672,
+         0.05139
+        ]
+       },
+       "nodes_vs_any": 15.786,
+       "low_above_0": true
+      },
+      {
+       "form": "HK1",
+       "count": 35,
+       "share": {
+        "pt": 0.03597,
+        "ci": [
+         0.02467,
+         0.04728
+        ]
+       },
+       "nodes_vs_any": 18.91,
+       "low_above_0": true
+      },
+      {
+       "form": "NTc",
+       "count": 24,
+       "share": {
+        "pt": 0.02467,
+        "ci": [
+         0.01542,
+         0.03494
+        ]
+       },
+       "nodes_vs_any": 44.009,
+       "low_above_0": true
+      },
+      {
+       "form": "NT1",
+       "count": 35,
+       "share": {
+        "pt": 0.03597,
+        "ci": [
+         0.02467,
+         0.04728
+        ]
+       },
+       "nodes_vs_any": 29.488,
+       "low_above_0": true
+      },
+      {
+       "form": "HK2",
+       "count": 47,
+       "share": {
+        "pt": 0.0483,
+        "ci": [
+         0.03597,
+         0.06269
+        ]
+       },
+       "nodes_vs_any": 35.847,
+       "low_above_0": true
+      },
+      {
+       "form": "H10",
+       "count": 68,
+       "share": {
+        "pt": 0.06989,
+        "ci": [
+         0.05344,
+         0.08633
+        ]
+       },
+       "nodes_vs_any": 55.606,
+       "low_above_0": true
+      }
+     ],
+     "only_label": [
+      [
+       "label:R.mention",
+       112
+      ],
+      [
+       "label:R.name_comention",
+       65
+      ],
+      [
+       "label:R.title_comention",
+       0
+      ],
+      [
+       "label:K.knn",
+       29
+      ]
+     ],
+     "top_only_label": "label:R.mention",
+     "rescue_all": 106,
+     "ALL_ONLY": 0,
+     "NONE": 321,
+     "ISOLATED": 0,
+     "FAR": 321,
+     "unreached": 427,
+     "MULTI_ALONE": 340,
+     "MIXED": 0
+    },
+    "h2": {
+     "rescue": [
+      {
+       "form": "H5",
+       "count": 48,
+       "share": {
+        "pt": 0.04933,
+        "ci": [
+         0.03597,
+         0.06372
+        ]
+       },
+       "nodes_vs_any": 906.765,
+       "low_above_0": true
+      },
+      {
+       "form": "HM",
+       "count": 33,
+       "share": {
+        "pt": 0.03392,
+        "ci": [
+         0.02261,
+         0.04625
+        ]
+       },
+       "nodes_vs_any": 485.933,
+       "low_above_0": true
+      },
+      {
+       "form": "HK1",
+       "count": 33,
+       "share": {
+        "pt": 0.03392,
+        "ci": [
+         0.02261,
+         0.04728
+        ]
+       },
+       "nodes_vs_any": 611.697,
+       "low_above_0": true
+      },
+      {
+       "form": "NTc",
+       "count": 37,
+       "share": {
+        "pt": 0.03803,
+        "ci": [
+         0.02672,
+         0.05036
+        ]
+       },
+       "nodes_vs_any": 1815.555,
+       "low_above_0": true
+      },
+      {
+       "form": "NT1",
+       "count": 38,
+       "share": {
+        "pt": 0.03905,
+        "ci": [
+         0.02775,
+         0.05139
+        ]
+       },
+       "nodes_vs_any": 1068.955,
+       "low_above_0": true
+      },
+      {
+       "form": "HK2",
+       "count": 41,
+       "share": {
+        "pt": 0.04214,
+        "ci": [
+         0.0298,
+         0.0555
+        ]
+       },
+       "nodes_vs_any": 1094.144,
+       "low_above_0": true
+      },
+      {
+       "form": "H10",
+       "count": 63,
+       "share": {
+        "pt": 0.06475,
+        "ci": [
+         0.04933,
+         0.08119
+        ]
+       },
+       "nodes_vs_any": 1694.775,
+       "low_above_0": true
+      }
+     ],
+     "only_label": [
+      [
+       "label:R.mention",
+       125
+      ],
+      [
+       "label:R.name_comention",
+       86
+      ],
+      [
+       "label:R.title_comention",
+       0
+      ],
+      [
+       "label:K.knn",
+       20
+      ]
+     ],
+     "top_only_label": "label:R.mention",
+     "rescue_all": 85,
+     "ALL_ONLY": 1,
+     "NONE": 58,
+     "ISOLATED": 0,
+     "FAR": 58,
+     "unreached": 143,
+     "MULTI_ALONE": 520,
+     "MIXED": 79
+    },
+    "h3": {
+     "rescue": [
+      {
+       "form": "H5",
+       "count": 9,
+       "share": {
+        "pt": 0.00925,
+        "ci": [
+         0.00411,
+         0.01542
+        ]
+       },
+       "nodes_vs_any": 771.956,
+       "low_above_0": true
+      },
+      {
+       "form": "HM",
+       "count": 6,
+       "share": {
+        "pt": 0.00617,
+        "ci": [
+         0.00206,
+         0.01131
+        ]
+       },
+       "nodes_vs_any": 391.971,
+       "low_above_0": true
+      },
+      {
+       "form": "HK1",
+       "count": 7,
+       "share": {
+        "pt": 0.00719,
+        "ci": [
+         0.00308,
+         0.01336
+        ]
+       },
+       "nodes_vs_any": 444.476,
+       "low_above_0": true
+      },
+      {
+       "form": "NTc",
+       "count": 9,
+       "share": {
+        "pt": 0.00925,
+        "ci": [
+         0.00411,
+         0.01542
+        ]
+       },
+       "nodes_vs_any": 1263.578,
+       "low_above_0": true
+      },
+      {
+       "form": "NT1",
+       "count": 11,
+       "share": {
+        "pt": 0.01131,
+        "ci": [
+         0.00514,
+         0.0185
+        ]
+       },
+       "nodes_vs_any": 661.318,
+       "low_above_0": true
+      },
+      {
+       "form": "HK2",
+       "count": 8,
+       "share": {
+        "pt": 0.00822,
+        "ci": [
+         0.00308,
+         0.01439
+        ]
+       },
+       "nodes_vs_any": 705.472,
+       "low_above_0": true
+      },
+      {
+       "form": "H10",
+       "count": 10,
+       "share": {
+        "pt": 0.01028,
+        "ci": [
+         0.00514,
+         0.01747
+        ]
+       },
+       "nodes_vs_any": 1177.984,
+       "low_above_0": true
+      }
+     ],
+     "only_label": [
+      [
+       "label:R.mention",
+       83
+      ],
+      [
+       "label:R.name_comention",
+       57
+      ],
+      [
+       "label:R.title_comention",
+       0
+      ],
+      [
+       "label:K.knn",
+       14
+      ]
+     ],
+     "top_only_label": "label:R.mention",
+     "rescue_all": 13,
+     "ALL_ONLY": 0,
+     "NONE": 2,
+     "ISOLATED": 0,
+     "FAR": 2,
+     "unreached": 15,
+     "MULTI_ALONE": 753,
+     "MIXED": 51
+    }
+   },
+   "candidates": [
+    "ADD form H5 at 1 hop(s): rescues 51 missed golds (5.24%) for 28.506 more nodes per question",
+    "ADD form HM at 1 hop(s): rescues 38 missed golds (3.91%) for 15.786 more nodes per question",
+    "ADD form HK1 at 1 hop(s): rescues 35 missed golds (3.60%) for 18.91 more nodes per question",
+    "ADD form NTc at 1 hop(s): rescues 24 missed golds (2.47%) for 44.009 more nodes per question",
+    "ADD form NT1 at 1 hop(s): rescues 35 missed golds (3.60%) for 29.488 more nodes per question",
+    "ADD form HK2 at 1 hop(s): rescues 47 missed golds (4.83%) for 35.847 more nodes per question",
+    "ADD form H10 at 1 hop(s): rescues 68 missed golds (6.99%) for 55.606 more nodes per question",
+    "PRIORITISE label label:R.mention at 1 hop(s): it alone links the most golds the other labels alone do not",
+    "ADD form H5 at 2 hop(s): rescues 48 missed golds (4.93%) for 906.765 more nodes per question",
+    "ADD form HM at 2 hop(s): rescues 33 missed golds (3.39%) for 485.933 more nodes per question",
+    "ADD form HK1 at 2 hop(s): rescues 33 missed golds (3.39%) for 611.697 more nodes per question",
+    "ADD form NTc at 2 hop(s): rescues 37 missed golds (3.80%) for 1815.555 more nodes per question",
+    "ADD form NT1 at 2 hop(s): rescues 38 missed golds (3.91%) for 1068.955 more nodes per question",
+    "ADD form HK2 at 2 hop(s): rescues 41 missed golds (4.21%) for 1094.144 more nodes per question",
+    "ADD form H10 at 2 hop(s): rescues 63 missed golds (6.48%) for 1694.775 more nodes per question",
+    "PRIORITISE label label:R.mention at 2 hop(s): it alone links the most golds the other labels alone do not",
+    "ADD form H5 at 3 hop(s): rescues 9 missed golds (0.92%) for 771.956 more nodes per question",
+    "ADD form HM at 3 hop(s): rescues 6 missed golds (0.62%) for 391.971 more nodes per question",
+    "ADD form HK1 at 3 hop(s): rescues 7 missed golds (0.72%) for 444.476 more nodes per question",
+    "ADD form NTc at 3 hop(s): rescues 9 missed golds (0.92%) for 1263.578 more nodes per question",
+    "ADD form NT1 at 3 hop(s): rescues 11 missed golds (1.13%) for 661.318 more nodes per question",
+    "ADD form HK2 at 3 hop(s): rescues 8 missed golds (0.82%) for 705.472 more nodes per question",
+    "ADD form H10 at 3 hop(s): rescues 10 missed golds (1.03%) for 1177.984 more nodes per question",
+    "PRIORITISE label label:R.mention at 3 hop(s): it alone links the most golds the other labels alone do not"
+   ]
+  },
+  "multihoprag": {
+   "version": "RK",
+   "floors": {
+    "G95": {
+     "unit": "label:R.name_comention",
+     "hop": 1,
+     "ALL": 0.98584,
+     "nodes": 273.884,
+     "bound": false
+    },
+    "G98": {
+     "unit": "label:R.name_comention",
+     "hop": 1,
+     "ALL": 0.98584,
+     "nodes": 273.884,
+     "bound": false
+    },
+    "best_ALL": {
+     "unit": "label:R.name_comention",
+     "hop": 2,
+     "ALL": 1.0,
+     "nodes": 607.816,
+     "bound": false
+    }
+   },
+   "dist_any": {
+    "1": [
+     835,
+     0.9812
+    ],
+    "2": [
+     16,
+     0.0188
+    ],
+    "3": [
+     0,
+     0.0
+    ],
+    "4": [
+     0,
+     0.0
+    ]
+   },
+   "hops": {
+    "h1": {
+     "rescue": [
+      {
+       "form": "H5",
+       "count": 4,
+       "share": {
+        "pt": 0.0047,
+        "ci": [
+         0.00116,
+         0.00951
+        ]
+       },
+       "nodes_vs_any": 13.62,
+       "low_above_0": true
+      },
+      {
+       "form": "HM",
+       "count": 3,
+       "share": {
+        "pt": 0.00353,
+        "ci": [
+         0.0,
+         0.00815
+        ]
+       },
+       "nodes_vs_any": 5.994,
+       "low_above_0": false
+      },
+      {
+       "form": "HK1",
+       "count": 4,
+       "share": {
+        "pt": 0.0047,
+        "ci": [
+         0.00116,
+         0.00951
+        ]
+       },
+       "nodes_vs_any": 17.002,
+       "low_above_0": true
+      },
+      {
+       "form": "NTc",
+       "count": 7,
+       "share": {
+        "pt": 0.00823,
+        "ci": [
+         0.00238,
+         0.01444
+        ]
+       },
+       "nodes_vs_any": 100.958,
+       "low_above_0": true
+      },
+      {
+       "form": "NT1",
+       "count": 8,
+       "share": {
+        "pt": 0.0094,
+        "ci": [
+         0.00353,
+         0.01639
+        ]
+       },
+       "nodes_vs_any": 36.628,
+       "low_above_0": true
+      },
+      {
+       "form": "HK2",
+       "count": 7,
+       "share": {
+        "pt": 0.00823,
+        "ci": [
+         0.00338,
+         0.01513
+        ]
+       },
+       "nodes_vs_any": 32.554,
+       "low_above_0": true
+      },
+      {
+       "form": "H10",
+       "count": 6,
+       "share": {
+        "pt": 0.00705,
+        "ci": [
+         0.00233,
+         0.01305
+        ]
+       },
+       "nodes_vs_any": 27.681,
+       "low_above_0": true
+      }
+     ],
+     "only_label": [
+      [
+       "label:R.mention",
+       0
+      ],
+      [
+       "label:R.name_comention",
+       391
+      ],
+      [
+       "label:R.title_comention",
+       0
+      ],
+      [
+       "label:K.knn",
+       0
+      ]
+     ],
+     "top_only_label": "label:R.name_comention",
+     "rescue_all": 14,
+     "ALL_ONLY": 0,
+     "NONE": 2,
+     "ISOLATED": 0,
+     "FAR": 2,
+     "unreached": 16,
+     "MULTI_ALONE": 444,
+     "MIXED": 0
+    },
+    "h2": {
+     "rescue": [
+      {
+       "form": "H5",
+       "count": 0,
+       "share": {
+        "pt": 0.0,
+        "ci": [
+         0.0,
+         0.0
+        ]
+       },
+       "nodes_vs_any": 0.055,
+       "low_above_0": false
+      },
+      {
+       "form": "HM",
+       "count": 0,
+       "share": {
+        "pt": 0.0,
+        "ci": [
+         0.0,
+         0.0
+        ]
+       },
+       "nodes_vs_any": 0.017,
+       "low_above_0": false
+      },
+      {
+       "form": "HK1",
+       "count": 0,
+       "share": {
+        "pt": 0.0,
+        "ci": [
+         0.0,
+         0.0
+        ]
+       },
+       "nodes_vs_any": 0.064,
+       "low_above_0": false
+      },
+      {
+       "form": "NTc",
+       "count": 0,
+       "share": {
+        "pt": 0.0,
+        "ci": [
+         0.0,
+         0.0
+        ]
+       },
+       "nodes_vs_any": 0.306,
+       "low_above_0": false
+      },
+      {
+       "form": "NT1",
+       "count": 0,
+       "share": {
+        "pt": 0.0,
+        "ci": [
+         0.0,
+         0.0
+        ]
+       },
+       "nodes_vs_any": 0.1,
+       "low_above_0": false
+      },
+      {
+       "form": "HK2",
+       "count": 0,
+       "share": {
+        "pt": 0.0,
+        "ci": [
+         0.0,
+         0.0
+        ]
+       },
+       "nodes_vs_any": 0.084,
+       "low_above_0": false
+      },
+      {
+       "form": "H10",
+       "count": 0,
+       "share": {
+        "pt": 0.0,
+        "ci": [
+         0.0,
+         0.0
+        ]
+       },
+       "nodes_vs_any": 0.084,
+       "low_above_0": false
+      }
+     ],
+     "only_label": [
+      [
+       "label:R.mention",
+       0
+      ],
+      [
+       "label:R.name_comention",
+       313
+      ],
+      [
+       "label:R.title_comention",
+       0
+      ],
+      [
+       "label:K.knn",
+       0
+      ]
+     ],
+     "top_only_label": "label:R.name_comention",
+     "rescue_all": 0,
+     "ALL_ONLY": 0,
+     "NONE": 0,
+     "ISOLATED": 0,
+     "FAR": 0,
+     "unreached": 0,
+     "MULTI_ALONE": 538,
+     "MIXED": 0
+    },
+    "h3": {
+     "rescue": [
+      {
+       "form": "H5",
+       "count": 0,
+       "share": {
+        "pt": 0.0,
+        "ci": [
+         0.0,
+         0.0
+        ]
+       },
+       "nodes_vs_any": 0.0,
+       "low_above_0": false
+      },
+      {
+       "form": "HM",
+       "count": 0,
+       "share": {
+        "pt": 0.0,
+        "ci": [
+         0.0,
+         0.0
+        ]
+       },
+       "nodes_vs_any": 0.0,
+       "low_above_0": false
+      },
+      {
+       "form": "HK1",
+       "count": 0,
+       "share": {
+        "pt": 0.0,
+        "ci": [
+         0.0,
+         0.0
+        ]
+       },
+       "nodes_vs_any": 0.0,
+       "low_above_0": false
+      },
+      {
+       "form": "NTc",
+       "count": 0,
+       "share": {
+        "pt": 0.0,
+        "ci": [
+         0.0,
+         0.0
+        ]
+       },
+       "nodes_vs_any": 0.0,
+       "low_above_0": false
+      },
+      {
+       "form": "NT1",
+       "count": 0,
+       "share": {
+        "pt": 0.0,
+        "ci": [
+         0.0,
+         0.0
+        ]
+       },
+       "nodes_vs_any": 0.0,
+       "low_above_0": false
+      },
+      {
+       "form": "HK2",
+       "count": 0,
+       "share": {
+        "pt": 0.0,
+        "ci": [
+         0.0,
+         0.0
+        ]
+       },
+       "nodes_vs_any": 0.0,
+       "low_above_0": false
+      },
+      {
+       "form": "H10",
+       "count": 0,
+       "share": {
+        "pt": 0.0,
+        "ci": [
+         0.0,
+         0.0
+        ]
+       },
+       "nodes_vs_any": 0.0,
+       "low_above_0": false
+      }
+     ],
+     "only_label": [
+      [
+       "label:R.mention",
+       0
+      ],
+      [
+       "label:R.name_comention",
+       278
+      ],
+      [
+       "label:R.title_comention",
+       0
+      ],
+      [
+       "label:K.knn",
+       0
+      ]
+     ],
+     "top_only_label": "label:R.name_comention",
+     "rescue_all": 0,
+     "ALL_ONLY": 0,
+     "NONE": 0,
+     "ISOLATED": 0,
+     "FAR": 0,
+     "unreached": 0,
+     "MULTI_ALONE": 573,
+     "MIXED": 0
+    }
+   },
+   "candidates": [
+    "ADD form H5 at 1 hop(s): rescues 4 missed golds (0.47%) for 13.62 more nodes per question",
+    "ADD form HK1 at 1 hop(s): rescues 4 missed golds (0.47%) for 17.002 more nodes per question",
+    "ADD form NTc at 1 hop(s): rescues 7 missed golds (0.82%) for 100.958 more nodes per question",
+    "ADD form NT1 at 1 hop(s): rescues 8 missed golds (0.94%) for 36.628 more nodes per question",
+    "ADD form HK2 at 1 hop(s): rescues 7 missed golds (0.82%) for 32.554 more nodes per question",
+    "ADD form H10 at 1 hop(s): rescues 6 missed golds (0.70%) for 27.681 more nodes per question",
+    "PRIORITISE label label:R.name_comention at 1 hop(s): it alone links the most golds the other labels alone do not",
+    "PRIORITISE label label:R.name_comention at 2 hop(s): it alone links the most golds the other labels alone do not",
+    "PRIORITISE label label:R.name_comention at 3 hop(s): it alone links the most golds the other labels alone do not"
+   ]
+  }
+ },
+ "utc": "2026-11-25T00:56:25Z",
+ "zul2h_sha256": "a0fea9a22bcfda1ec2d2e0d31a1140225e0e89ef6af570b01b5ab077613a0b8a"
+}
