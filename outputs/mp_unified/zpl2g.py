@@ -710,17 +710,25 @@ def cell_row(present, gold_counts, sizes, **labels):
     return {**labels, **metrics}
 
 
+_SHA = {}
+
+
 def code_path_sha256():
-    """One hash of the pool code and the constants (G-U): the same on every dataset or the report refuses to file."""
-    h = hashlib.sha256()
-    for fn in (parse, base_of, Plan, Lst, dot64, pool_state, grade, iter_states, evaluate, cell_row, size_stats_arr):
-        h.update(inspect.getsource(fn).replace("\r\n", "\n").encode("utf-8"))
-    h.update(json.dumps(constants(), sort_keys=True).encode("utf-8"))
-    return h.hexdigest()
+    """One hash of the pool code and the constants (G-U): the same on every dataset or the report refuses to file. Computed once, when
+    main starts: a file edited or pushed while a long run is going would otherwise be read at the old line numbers at its end."""
+    if "code" not in _SHA:
+        h = hashlib.sha256()
+        for fn in (parse, base_of, Plan, Lst, dot64, pool_state, grade, iter_states, evaluate, cell_row, size_stats_arr):
+            h.update(inspect.getsource(fn).replace("\r\n", "\n").encode("utf-8"))
+        h.update(json.dumps(constants(), sort_keys=True).encode("utf-8"))
+        _SHA["code"] = h.hexdigest()
+    return _SHA["code"]
 
 
 def script_sha256():
-    return hashlib.sha256(Path(__file__).read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+    if "script" not in _SHA:
+        _SHA["script"] = hashlib.sha256(Path(__file__).read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+    return _SHA["script"]
 
 
 def cell_names_of(spec):
@@ -939,12 +947,22 @@ def cmd_select(a):
     names = g["names"]
     if cells_sha256(names) != EXPECT_CELLS_SHA256:
         stop("the dev grid is not the declared cell list")
+    hdir = grid_path(a.ds, "dev", "frozen").parent
+    heads = sorted(hdir.glob("grid_dev_frozen.json")) or sorted(hdir.glob("grid_dev_frozen.part*of*.json"))
+    if not heads:
+        stop(f"{a.ds}: no grid heads beside the dev grid")
+    for hp in heads:
+        hd = rjson(hp)
+        if hd["code_path_sha256"] != code_path_sha256() or hd["cells_sha256"] != EXPECT_CELLS_SHA256:
+            stop(f"G-U: {hp.name} was written by other pool code or another cell list than this one")
     rows = rows_of_grid(g, a.ds, "dev")
     table = [{"name": n, "family": family_of(n), "nodes": r["candidates_mean"], "all": r["all_gold_at_pool"], "any": r["any_gold_at_pool"],
               "coverage": r["coverage_micro"], "p95": r["candidates_p95"], "max": r["candidates_max"]} for n, r in zip(names, rows)]
     readings = {"all": table, "retrieval": [t for t in table if t["family"] in ("R0", "R1")], "graph": [t for t in table if t["family"] not in ("R0", "R1")]}
     out = {"stage": "PL2 select", "declared_in": DOC, "dataset": a.ds, "carve": "dev", "first": "frozen", "questions": len(g["qids"]), "bound": BOUND,
-           "cells_sha256": cells_sha256(names), "code_path_sha256": code_path_sha256(), "utc": utc(), "script_sha256": script_sha256()}
+           "cells_sha256": cells_sha256(names), "code_path_sha256": code_path_sha256(), "utc": utc(), "script_sha256": script_sha256(),
+           "grid_heads": [{"file": rel(hp), "code_path_sha256": rjson(hp)["code_path_sha256"], "script_sha256": rjson(hp)["script_sha256"],
+                           "npz_sha256": rjson(hp)["npz_sha256"], "seconds": rjson(hp)["seconds"], "peak_gb": rjson(hp)["peak_gb"]} for hp in heads]}
     out["picks"] = {}
     for floor in FLOORS:
         for rd, rs in readings.items():
@@ -1311,6 +1329,8 @@ def main(argv=None):
         sub.choices[name].add_argument("--host", action="store_true", help="open the package as the lab host's mirror")
     a = ap.parse_args(argv)
     HOST = bool(getattr(a, "host", False))
+    code_path_sha256()
+    script_sha256()
     return {"cells": cmd_cells, "gk": cmd_gk, "grid": cmd_grid, "select": cmd_select, "confirm": cmd_confirm, "call": cmd_call,
             "selftest": cmd_selftest, "gd": cmd_gd}[a.cmd](a)
 
