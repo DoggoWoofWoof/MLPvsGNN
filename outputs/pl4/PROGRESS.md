@@ -14,7 +14,7 @@ Needed: HotpotQA confirm_frozen.json + grid_eval_frozen_confirm.{json,npz}, conf
 ## To re-file when they land (about 5 minutes of laptop work)
 1. `python outputs/mp_unified/zpl4g.py call`  (writes outputs/pl4/call.json; reads confirm_frozen + select + grid_eval_frozen_confirm.npz per dataset)
 2. `python outputs/mp_unified/zpl4r.py report`  (outputs/pl4/report.md and report.json)
-3. `python <scratchpad>/build_pl4_results.py`  (rewrites section 14 of docs/PL4_COVERAGE_ROUND3.md from the records; the script is in the session scratchpad, not in the repo)
+3. `python outputs/pl4/filing/build_section14.py`  (rewrites section 14 of docs/PL4_COVERAGE_ROUND3.md from the records; it replaces any earlier section 14; read the generated text once: the per-dataset prose for HotpotQA and 2Wiki is generic, and 14.4/14.5/14.7 carry hand-written sentences about the five datasets read at c25eddf that must be re-checked against the new numbers)
 4. If HotpotQA or 2Wiki is SHORT on dev: `python outputs/mp_unified/zpl4r.py miss --ds <d> --host` is a host job; on the laptop it needs the dev vectors (not here).
 5. Commit: git add -f the page, zpl4r.py and the json/md under outputs/pl4 (never the npz), `git commit -F msg -- paths`.
 
