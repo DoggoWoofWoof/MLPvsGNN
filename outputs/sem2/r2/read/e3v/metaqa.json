@@ -1,0 +1,173 @@
+{
+ "stage": "SEM2 R2 read",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 9",
+ "dataset": "metaqa",
+ "arm": "e3v",
+ "carve": {
+  "carve": "s1eval",
+  "path": "outputs/screen/fits/scr-gnx-nx-s0/reads/metaqa__s1eval.npz",
+  "sha256": "c61b5036739d223a94b059cbb539ebe0d265ec8a63fc005feb82009780211c7e",
+  "questions": 9785,
+  "with_gold": 9785
+ },
+ "chosen": {
+  "trav": {
+   "lambda": 0.0,
+   "means": {
+    "0.0": 0.670694,
+    "0.25": 0.67069,
+    "0.5": 0.670188,
+    "1.0": 0.670243,
+    "2.0": 0.670105
+   },
+   "over": [
+    "multihoprag",
+    "squad",
+    "musique",
+    "hotpotqa",
+    "2wiki"
+   ]
+  },
+  "trav0": {
+   "lambda": 0.0,
+   "means": {
+    "0.0": 0.670113,
+    "0.25": 0.669976,
+    "0.5": 0.669931,
+    "1.0": 0.669892,
+    "2.0": 0.669174
+   },
+   "over": [
+    "multihoprag",
+    "squad",
+    "musique",
+    "hotpotqa",
+    "2wiki"
+   ]
+  }
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 245144,
+     "record": 245144
+    },
+    "CN_all": {
+     "pairs": 12605,
+     "record": 12605
+    },
+    "F0T": {
+     "pairs": 12605,
+     "record": 12605
+    },
+    "S": {
+     "pairs": 124669,
+     "record": 124669
+    },
+    "S directed": {
+     "edges": 133571,
+     "pair_relation_rows": 133571,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G2": {
+   "hits_equal_share": 1.0,
+   "base5": 0.004454,
+   "e0_rrf5": 0.004454,
+   "verdict": "PASS"
+  },
+  "G-X": "PASS"
+ },
+ "recall": {
+  "base5": 0.004454,
+  "base20": 0.012523,
+  "ctrl5": 0.005906,
+  "ctrl20": 0.014559,
+  "v5": 0.00653,
+  "v1000": 0.202816,
+  "trav_fused5": 0.005563,
+  "trav_fused20": 0.013787,
+  "trav_alone5": 0.00653,
+  "trav_alone1000": 0.10752,
+  "trav0_fused5": 0.004984,
+  "trav0_fused20": 0.014526,
+  "trav0_alone5": 0.00653,
+  "trav0_alone1000": 0.169887,
+  "oracle_fused5": 0.005785,
+  "oracle_fused20": 0.020674,
+  "oracle_alone5": 0.00653,
+  "oracle_alone1000": 0.350032,
+  "trav_hop1_20": 0.009758,
+  "trav0_hop1_20": 0.009818,
+  "oracle_hop1_20": 0.131846
+ },
+ "oracle_reach": {
+  "questions": 5360,
+  "share": 0.547777,
+  "seeds_with_a_pick": 10126
+ },
+ "seeds_mean": 8.217,
+ "alpha_mean": {
+  "R.mention": 0.0626,
+  "R.name_comention": 0.028,
+  "S.directed_by": 0.0679,
+  "S.has_genre": 0.0581,
+  "S.rare": 0.052,
+  "S.has_tags": 0.4901,
+  "S.in_language": 0.0482,
+  "S.release_year": 0.0801,
+  "S.starred_actors": 0.0465,
+  "S.written_by": 0.0665
+ },
+ "operators": [
+  "R.mention",
+  "R.name_comention",
+  "S.directed_by",
+  "S.has_genre",
+  "S.rare",
+  "S.has_tags",
+  "S.in_language",
+  "S.release_year",
+  "S.starred_actors",
+  "S.written_by"
+ ],
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+  "ner_npz_sha256": "93065a2311c2b445cc14ce6458457c9e14ec0d3c641a4bc573ef4b175a374cb8",
+  "knn_npz_sha256": "f7c59640e816951148fee791bc8790e026461ee52a5b6741c63859244b5a4a16",
+  "structural_npz_sha256": "1b2027c64b2e62b5cf122f09a246ed4cb485841bf0823fcee246e8bf45bf8570",
+  "w2_s_npz_sha256": "3f2b97d1474552dae2fea1f7f8be5e83f7960950b38c0ca41bd3a78025aa7dd5",
+  "f0t_npz_sha256": "499e8c70d3d7d1375a77a609819aacdd40c8753ac2bf6f3d1ea277c5ae62a7fe",
+  "names_npz_sha256": "0ccad8b4b6a55c2bec41bfd36e6fa83f48dc448964e170cf15a2c191f517d720",
+  "vectors": {
+   "shards": 2,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "a1a7727a9128278299ee04c2d6ae4e8912bc44c3251fbbba4f76993720a53fc6"
+  },
+  "r1_record_sha256": "b2fd0a33e1ef601c591d8cf6e62e2b13229c11ac14fb0f34e05aa429ad1f016f",
+  "r1_npz_sha256": "4fd92a218cbf2817185e78af24da5d89dbcf7df719ae1f9c6785b4f5e8b1bc59"
+ },
+ "threads": 8,
+ "npz_sha256": "fb5876883ce7636028d6eb1d30ac1f9d961da321f44902312ca2d3e82b52f2cb",
+ "seconds": 358.4,
+ "utc": "2026-11-24T17:38:42Z",
+ "script_sha256": "7d7cf31987dfcee7227978db2e136b1dde30b0aad8a4b6424b164aaf256838da"
+}

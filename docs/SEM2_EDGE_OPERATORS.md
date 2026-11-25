@@ -942,6 +942,58 @@ of memory and wrote no number.
 **What does not change:** the seeds, the operators, the attention, the lists, lambda's selection, the calls, the gates
 and the expectations. No R2 number has been read on either dataset.
 
+### 9.12 R2a results (25 November 2026, 08:15 IST, 02:45 UTC): the e3v verdict is PARTIAL, and there is no ROOM anywhere
+
+**What ran:** every read of section 9 on the host, on the CPU: the seven e3v reads and the four frozen reads (MultiHop-RAG, SQuAD, MuSiQue, MetaQA), at the λ that 9.4 chose on the
+selection carves (chosen λ for trav and trav0 per dataset in each record). Gates **G-E, G-R, G2 and G-X PASS on all eleven reads**, and every record's script_sha256 is zsem2t.py's
+(`7d7cf31987df`). Two reads ran through wrappers, and neither changes a list (a wrapper calls zsem2t.py's own main; the record's script_sha256 stays zsem2t.py's): WebQSP through
+zsem2tb.py (9.11: traversal batch 32, record field traversal_batch) on top of zsem2tc.py's checkpointing (4 saves, no resume), and HotpotQA through zsem2tc.py (a running state written every 300 s;
+the row sem2t-read-hotpotqa-e3v-b, 48 GB, was replaced by sem2t-read-hotpotqa-e3v-r, 26 GB; the read resumed from question 4,608 of 7,405 and the record carries the checkpoint, 8 saves).
+Every read ran with 8 threads. Outputs: outputs/sem2/r2/{sel,read}/..., report.json and report.md (json and md committed, npz not).
+
+**The reads (fused R@5 on the read carve, in %; control = SEM1's RRF(v, v, SPLADE); the calls are the paired intervals of 9.6, in points):**
+
+| arm/dataset | base | control | trav | trav0 | oracle | T1 = trav - base (points, 95% interval) | T2 = trav - trav0 | trav - control | C = oracle - trav | reach | ADDS |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| e3v/multihoprag | 60.94 | 62.50 | 62.78 | 62.60 | 62.78 | +1.84 [+1.01, +2.65] ABOVE | +0.18 [+0.00, +0.38] LEVEL | +0.28 | +0.00 | 0.997 | no |
+| e3v/squad | 88.25 | 87.36 | 88.53 | 88.42 | 88.52 | +0.28 [+0.04, +0.51] ABOVE | +0.11 [+0.03, +0.19] ABOVE | +1.17 | -0.01 | 0.813 | yes |
+| e3v/musique | 47.77 | 48.62 | 48.98 | 49.21 | 49.01 | +1.22 [+0.76, +1.67] ABOVE | -0.22 [-0.37, -0.09] BELOW | +0.36 | +0.03 | 0.891 | no |
+| e3v/metaqa | 0.45 | 0.59 | 0.56 | 0.50 | 0.58 | +0.11 [+0.04, +0.19] ABOVE | +0.06 [+0.02, +0.11] ABOVE | -0.03 | +0.02 | 0.548 | yes |
+| e3v/webqsp | 4.56 | 4.88 | 4.94 | 4.94 | 4.92 | +0.38 [+0.09, +0.72] ABOVE | +0.00 [+0.00, +0.01] LEVEL | +0.06 | -0.02 | 0.925 | no |
+| e3v/hotpotqa | 68.17 | 68.05 | 69.14 | 69.06 | 69.12 | +0.97 [+0.71, +1.22] ABOVE | +0.08 [-0.02, +0.18] LEVEL | +1.09 | -0.02 | 0.936 | no |
+| e3v/2wiki | 63.97 | 64.19 | 64.62 | 64.59 | 64.65 | +0.65 [+0.51, +0.80] ABOVE | +0.03 [-0.02, +0.08] LEVEL | +0.43 | +0.04 | 0.866 | no |
+| frozen/multihoprag | 63.02 | 64.62 | 65.07 | 64.85 | 65.07 | +2.04 [+1.21, +2.87] ABOVE | +0.21 [-0.05, +0.50] LEVEL | +0.44 | +0.00 | 0.998 | no |
+| frozen/squad | 90.53 | 90.30 | 90.98 | 90.90 | 90.99 | +0.45 [+0.21, +0.67] ABOVE | +0.08 [-0.02, +0.18] LEVEL | +0.68 | +0.01 | 0.824 | no |
+| frozen/musique | 47.34 | 47.64 | 48.56 | 48.43 | 48.61 | +1.22 [+0.77, +1.67] ABOVE | +0.13 [-0.08, +0.34] LEVEL | +0.92 | +0.05 | 0.894 | no |
+| frozen/metaqa | 0.47 | 0.76 | 0.70 | 0.68 | 0.70 | +0.22 [+0.15, +0.30] ABOVE | +0.01 [-0.04, +0.07] LEVEL | -0.06 | +0.00 | 0.545 | no |
+
+**The calls (9.6):**
+- **The e3v verdict is PARTIAL** (ADDS on at least one dataset, T1 BELOW on none): **ADDS on SQuAD and MetaQA only** (T1 and T2 both ABOVE). T1 is ABOVE on all 11 of 11 reads, but T1 alone cannot credit the operators:
+  T1 is the traversal against the base list, and trav0 (the cosine neighbourhood of the same seeds, no operator, 9.3) is already most of it. **trav0 - base** over the seven e3v datasets (MultiHop-RAG, SQuAD, MuSiQue, MetaQA,
+  WebQSP, HotpotQA, 2Wiki) is +1.66, +0.17, +1.44, +0.05, +0.38, +0.89, +0.61 points, against T1's +1.84, +0.28, +1.22, +0.11, +0.38, +0.97, +0.65. T2 = trav - trav0 is what the operators add: **ABOVE on SQuAD and MetaQA, LEVEL on MultiHop-RAG, WebQSP, HotpotQA and 2Wiki, and BELOW on MuSiQue**
+  (-0.22 [-0.37, -0.09] BELOW: on that dataset the operators move the seeds' neighbourhood the wrong way, a little).
+  Beside the SEM1 control, **trav - control** is ABOVE on SQuAD, HotpotQA and 2Wiki and LEVEL on the other four e3v datasets (-0.06 to +1.17 points over all eleven reads).
+- **The effect sizes are small.** The two ABOVE T2s are +0.11 [+0.03, +0.19] ABOVE on SQuAD and +0.06 [+0.02, +0.11] ABOVE on MetaQA; the other five e3v T2s lie between -0.22 and +0.18.
+  T1, the first-stage R@5 gain of the whole traversal over the base, is +0.11 (MetaQA) to +1.84 (MultiHop-RAG). The scales differ: MetaQA's R@5 is 0.45 in the base and
+  0.56 after the traversal (WebQSP 4.56 and 4.94), against SQuAD's 88.25 and 88.53.
+- **ROOM: none.** C = oracle - trav is -0.02 to +0.04 points on the seven e3v datasets, LEVEL on every one (every interval includes 0 or ends at it), and at most 0.05 on any of the eleven reads
+  (frozen MuSiQue, +0.05 [+0.01, +0.11] ABOVE, still twenty times below ROOM's 1-point line). Choosing the best operator per seed, which is what a learned α would do, buys at most hundredths of a point beyond the parameter-free α.
+  The oracle keeps the traversal's seeds and operators, so it is bounded by their **reach**, the share of questions with a seed that has a record edge to a gold: 0.548 (MetaQA) to 0.997 (MultiHop-RAG);
+  C is also about 0 where reach is high (MultiHop-RAG, WebQSP, HotpotQA, MuSiQue), so the choice of operator is not what limits these lists.
+- **Beside, deciding nothing (9.6): the operators show deeper in the list.** T2 at R@20 (what the operators add at 20 candidates instead of 5) is ABOVE on MuSiQue (+0.74 [+0.36, +1.13] ABOVE), HotpotQA (+0.47 [+0.30, +0.63] ABOVE) and 2Wiki (+0.31 [+0.23, +0.40] ABOVE), LEVEL on the other four e3v datasets, BELOW on none.
+  The traversal's list alone against v's alone at R@1,000 is ABOVE on 2Wiki only (+9.41 [+9.04, +9.76] ABOVE), LEVEL on MultiHop-RAG and HotpotQA, and BELOW on SQuAD (-0.93), MuSiQue (-1.06), MetaQA (-9.53) and WebQSP (-3.61).
+  These reads call nothing and no rule depends on them; they say where an operator effect, if there is one, shows: below the top 5, on MuSiQue, HotpotQA and 2Wiki.
+- **Expectations:** X12 (T1 ABOVE on MuSiQue) **held** (+1.22 [+0.76, +1.67] ABOVE). **X13 (T1 not ABOVE on SQuAD) failed**: T1 is +0.28 [+0.04, +0.51] ABOVE, and SQuAD is one of the two ADDS datasets, by +0.11 points of T2.
+  **X14 (ROOM on MetaQA) failed**: C is +0.02.
+- **The frozen arm** (the four small datasets) agrees in sign: T1 ABOVE on all four, T2 LEVEL on all four, ROOM none (C is within 0.05 points on all four); no verdict is drawn on it (9.6 draws it on e3v).
+
+**What follows (9.8, fixed before the numbers):**
+- **No ROOM anywhere: α is not learned and nothing is fit.** R2b is not declared.
+- **PARTIAL: R3's transfer reads (section 4) are declared on R2a's form,** which is the form that carries. They are not declared here, and no R3 number exists.
+- The reading of this section, said once: the parameter-free traversal's first-stage gain over the base is mostly the seeds' own cosine neighbourhood (trav0), which needs no operator; the operators add +0.11 and +0.06
+  points on two datasets at R@5, nothing measurable on four, and lose 0.22 on one; the beside reads at R@20 show an operator effect on three datasets (MuSiQue, HotpotQA, 2Wiki), which no call rests on;
+  and a better choice of operator has no room (C). R2a gives no reason to learn α. No call here touches the journal's layout or pools.
+
 ### 8.16 Records completed after the closure (24 November 2026, 23:47 IST, 18:17 UTC): decides nothing
 
 8.15 closed the hub line with five rows still running. They have finished: R1k on WebQSP and 2Wiki, and R1q on

@@ -1,0 +1,161 @@
+{
+ "stage": "SEM2 R2 read",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 9",
+ "dataset": "2wiki",
+ "arm": "e3v",
+ "carve": {
+  "carve": "s1eval",
+  "path": "outputs/screen/fits/scr-gnx-nx-s0/reads/2wiki__s1eval.npz",
+  "sha256": "aec5f40c2dfadf0e6e5b97c4ebacdb5e302412d741207a783e42cdcc691b6c9c",
+  "questions": 12576,
+  "with_gold": 12576
+ },
+ "chosen": {
+  "trav": {
+   "lambda": 0.25,
+   "means": {
+    "0.0": 0.547459,
+    "0.25": 0.547655,
+    "0.5": 0.54732,
+    "1.0": 0.547442,
+    "2.0": 0.547457
+   },
+   "over": [
+    "multihoprag",
+    "squad",
+    "musique",
+    "metaqa",
+    "hotpotqa"
+   ]
+  },
+  "trav0": {
+   "lambda": 0.25,
+   "means": {
+    "0.0": 0.547279,
+    "0.25": 0.547342,
+    "0.5": 0.547263,
+    "1.0": 0.547325,
+    "2.0": 0.546908
+   },
+   "over": [
+    "multihoprag",
+    "squad",
+    "musique",
+    "metaqa",
+    "hotpotqa"
+   ]
+  }
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 71483746,
+     "record": 71483746
+    },
+    "CN_all": {
+     "pairs": 38242751,
+     "record": 38242751
+    },
+    "F0T": {
+     "pairs": 39863302,
+     "record": 39863302
+    },
+    "S": {
+     "pairs": 28208857,
+     "record": 28208857
+    },
+    "S directed": {
+     "edges": 28963600,
+     "pair_relation_rows": 28208857,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G2": {
+   "hits_equal_share": 1.0,
+   "base5": 0.63973,
+   "e0_rrf5": 0.63973,
+   "verdict": "PASS"
+  },
+  "G-X": "PASS"
+ },
+ "recall": {
+  "base5": 0.63973,
+  "base20": 0.699825,
+  "ctrl5": 0.641877,
+  "ctrl20": 0.695472,
+  "v5": 0.625517,
+  "v1000": 0.77791,
+  "trav_fused5": 0.646191,
+  "trav_fused20": 0.708313,
+  "trav_alone5": 0.625517,
+  "trav_alone1000": 0.871978,
+  "trav0_fused5": 0.645873,
+  "trav0_fused20": 0.705173,
+  "trav0_alone5": 0.625517,
+  "trav0_alone1000": 0.84868,
+  "oracle_fused5": 0.646549,
+  "oracle_fused20": 0.710977,
+  "oracle_alone5": 0.625517,
+  "oracle_alone1000": 0.875477,
+  "trav_hop1_20": 0.059379,
+  "trav0_hop1_20": 0.050254,
+  "oracle_hop1_20": 0.072857
+ },
+ "oracle_reach": {
+  "questions": 10885,
+  "share": 0.865538,
+  "seeds_with_a_pick": 28168
+ },
+ "seeds_mean": 7.848,
+ "alpha_mean": {
+  "R.mention": 0.1242,
+  "R.name_comention": 0.4486,
+  "R.title_comention": 0.2748,
+  "S.hyperlink": 0.1524
+ },
+ "operators": [
+  "R.mention",
+  "R.name_comention",
+  "R.title_comention",
+  "S.hyperlink"
+ ],
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "73fb822f3e4dd255c2555af717f4664c78a01fec4b5dce892fdec25d5de2426a",
+  "ner_npz_sha256": "fd462a9c08740d57af79855efe37c1d77f30dc593ca6ad6242681c99b51a008a",
+  "knn_npz_sha256": "a7151f6bbebdb13d7e817abcc199fd5feae17585a955f781b0690d7ee1897f99",
+  "structural_npz_sha256": "1e380eaaa62b21eaf24f6dec8302d81482bf35695bfa6cdda2421fa90cfe9c85",
+  "w2_s_npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+  "f0t_npz_sha256": "d6c49214c935c6166fcaa9c3494827cf85aaeafdb1f84f9eb3679b84de52ad5e",
+  "names_npz_sha256": "56269a557dae67578c3c05c6b7c4350f82c28fe51edd44a024104a729d43c020",
+  "vectors": {
+   "shards": 150,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "97669fbeb024ccd647cf0ab3538e855783361b0d02ee2364b1e5bf75e56eaa96"
+  },
+  "r1_record_sha256": "cdfb0be0cd96082b6ef6cb105d1e2d86aa8e3ca8e651b816e8aef2273c724187",
+  "r1_npz_sha256": "7684e6e3189933f664b56c90dd60a4029c28a78a0f0722f5bd8c47981342f92b"
+ },
+ "threads": 8,
+ "npz_sha256": "182d839829577c733cbd28d908501fe9908269b1fc3875bbf40bb7d709dd8005",
+ "seconds": 11914.2,
+ "utc": "2026-11-24T21:19:21Z",
+ "script_sha256": "7d7cf31987dfcee7227978db2e136b1dde30b0aad8a4b6424b164aaf256838da"
+}

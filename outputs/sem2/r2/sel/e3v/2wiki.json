@@ -1,0 +1,108 @@
+{
+ "stage": "SEM2 R2 selection",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 9",
+ "dataset": "2wiki",
+ "arm": "e3v",
+ "carve": {
+  "carve": "s1sel",
+  "npz_sha256": "be025627b9ae6beac340023262849bcffb2364d793c28a171e88ff093f2f3824",
+  "questions": 1496,
+  "with_gold": 1496
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 71483746,
+     "record": 71483746
+    },
+    "CN_all": {
+     "pairs": 38242751,
+     "record": 38242751
+    },
+    "F0T": {
+     "pairs": 39863302,
+     "record": 39863302
+    },
+    "S": {
+     "pairs": 28208857,
+     "record": 28208857
+    },
+    "S directed": {
+     "edges": 28963600,
+     "pair_relation_rows": 28208857,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-X": "PASS"
+ },
+ "base5": 0.615642,
+ "ctrl5": 0.613302,
+ "fused5": {
+  "trav": {
+   "0.0": 0.622159,
+   "0.25": 0.621156,
+   "0.5": 0.620321,
+   "1.0": 0.619987,
+   "2.0": 0.61982
+  },
+  "trav0": {
+   "0.0": 0.620822,
+   "0.25": 0.61982,
+   "0.5": 0.619987,
+   "1.0": 0.619485,
+   "2.0": 0.617981
+  }
+ },
+ "lambdas": [
+  0.0,
+  0.25,
+  0.5,
+  1.0,
+  2.0
+ ],
+ "seeds_mean": 7.905,
+ "alpha_mean": {
+  "R.mention": 0.1225,
+  "R.name_comention": 0.4373,
+  "R.title_comention": 0.2847,
+  "S.hyperlink": 0.1555
+ },
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "73fb822f3e4dd255c2555af717f4664c78a01fec4b5dce892fdec25d5de2426a",
+  "ner_npz_sha256": "fd462a9c08740d57af79855efe37c1d77f30dc593ca6ad6242681c99b51a008a",
+  "knn_npz_sha256": "a7151f6bbebdb13d7e817abcc199fd5feae17585a955f781b0690d7ee1897f99",
+  "structural_npz_sha256": "1e380eaaa62b21eaf24f6dec8302d81482bf35695bfa6cdda2421fa90cfe9c85",
+  "w2_s_npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+  "f0t_npz_sha256": "d6c49214c935c6166fcaa9c3494827cf85aaeafdb1f84f9eb3679b84de52ad5e",
+  "names_npz_sha256": "56269a557dae67578c3c05c6b7c4350f82c28fe51edd44a024104a729d43c020",
+  "vectors": {
+   "shards": 150,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "97669fbeb024ccd647cf0ab3538e855783361b0d02ee2364b1e5bf75e56eaa96"
+  },
+  "r1_record_sha256": "cdfb0be0cd96082b6ef6cb105d1e2d86aa8e3ca8e651b816e8aef2273c724187",
+  "r1_npz_sha256": "7684e6e3189933f664b56c90dd60a4029c28a78a0f0722f5bd8c47981342f92b"
+ },
+ "threads": 8,
+ "seconds": 4394.1,
+ "utc": "2026-11-24T14:50:04Z",
+ "script_sha256": "7d7cf31987dfcee7227978db2e136b1dde30b0aad8a4b6424b164aaf256838da"
+}

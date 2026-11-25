@@ -1,0 +1,91 @@
+{
+ "stage": "SEM2 R2 selection",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 9",
+ "dataset": "multihoprag",
+ "arm": "frozen",
+ "carve": {
+  "split": "dev",
+  "dataset_json_sha256": "0fff110d09c4c2447ba9d5304682a8c982d53bb4786e020d813d0cc2660467cc",
+  "questions": 224,
+  "with_gold": 224
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "F0": {
+     "pairs": 25005,
+     "record": 25005
+    },
+    "F0T": {
+     "pairs": 25080,
+     "record": 25080
+    },
+    "W2_S": {
+     "pairs": 2,
+     "record": 2
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-X": "PASS"
+ },
+ "base5": 0.639509,
+ "ctrl5": 0.667411,
+ "fused5": {
+  "trav": {
+   "0.0": 0.65439,
+   "0.25": 0.653274,
+   "0.5": 0.654762,
+   "1.0": 0.654762,
+   "2.0": 0.654762
+  },
+  "trav0": {
+   "0.0": 0.655878,
+   "0.25": 0.655878,
+   "0.5": 0.654762,
+   "1.0": 0.653274,
+   "2.0": 0.653274
+  }
+ },
+ "lambdas": [
+  0.0,
+  0.25,
+  0.5,
+  1.0,
+  2.0
+ ],
+ "seeds_mean": 7.438,
+ "alpha_mean": {
+  "R.name_comention": 1.0
+ },
+ "inputs": {
+  "links_json_sha256": "97a1f768bae0e0256136220f1a6aa037ec71632918053e89b262a523b2455744",
+  "F0_npz_sha256": "345d21c15bfda50834613b27b72bee5122e4e85a258e65973867c762b217305c",
+  "F0T_npz_sha256": "2e884936ec9398f4ce1395021d63cc68580b77c1ce4ec39ad7bdb231109406ec",
+  "W2_S_npz_sha256": "00b5b57909411d1ffae9a23fad257f5294731cc97845625d58b4e1ca254a940a",
+  "vectors": {
+   "shards": 1,
+   "dim": 1536,
+   "dtype": "float16"
+  },
+  "r1_record_sha256": "4e840a140964e4213fa1c9611457c3df0eccf547eecac7364f7f3cb50d7af683",
+  "r1_npz_sha256": "1c199cafbca656764b6b00c6a1a74a5ac2d6094cf4bdc02f36e43a3ffacd7bc3"
+ },
+ "threads": 8,
+ "seconds": 5.4,
+ "utc": "2026-11-24T17:22:04Z",
+ "script_sha256": "7d7cf31987dfcee7227978db2e136b1dde30b0aad8a4b6424b164aaf256838da"
+}

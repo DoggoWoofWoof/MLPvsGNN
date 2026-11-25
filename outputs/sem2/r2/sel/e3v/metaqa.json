@@ -1,0 +1,114 @@
+{
+ "stage": "SEM2 R2 selection",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 9",
+ "dataset": "metaqa",
+ "arm": "e3v",
+ "carve": {
+  "carve": "s1sel",
+  "npz_sha256": "a8119a120171b1527a99ef0f1a6e234de3a710f148b976e8fd59b97f8f2ef8e4",
+  "questions": 1497,
+  "with_gold": 1497
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 245144,
+     "record": 245144
+    },
+    "CN_all": {
+     "pairs": 12605,
+     "record": 12605
+    },
+    "F0T": {
+     "pairs": 12605,
+     "record": 12605
+    },
+    "S": {
+     "pairs": 124669,
+     "record": 124669
+    },
+    "S directed": {
+     "edges": 133571,
+     "pair_relation_rows": 133571,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-X": "PASS"
+ },
+ "base5": 0.005288,
+ "ctrl5": 0.007292,
+ "fused5": {
+  "trav": {
+   "0.0": 0.005982,
+   "0.25": 0.005982,
+   "0.5": 0.005982,
+   "1.0": 0.005982,
+   "2.0": 0.006584
+  },
+  "trav0": {
+   "0.0": 0.00665,
+   "0.25": 0.00665,
+   "0.5": 0.00665,
+   "1.0": 0.00665,
+   "2.0": 0.00665
+  }
+ },
+ "lambdas": [
+  0.0,
+  0.25,
+  0.5,
+  1.0,
+  2.0
+ ],
+ "seeds_mean": 8.182,
+ "alpha_mean": {
+  "R.mention": 0.0619,
+  "R.name_comention": 0.0276,
+  "S.directed_by": 0.0663,
+  "S.has_genre": 0.058,
+  "S.rare": 0.0519,
+  "S.has_tags": 0.4922,
+  "S.in_language": 0.0508,
+  "S.release_year": 0.0799,
+  "S.starred_actors": 0.0465,
+  "S.written_by": 0.065
+ },
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+  "ner_npz_sha256": "93065a2311c2b445cc14ce6458457c9e14ec0d3c641a4bc573ef4b175a374cb8",
+  "knn_npz_sha256": "f7c59640e816951148fee791bc8790e026461ee52a5b6741c63859244b5a4a16",
+  "structural_npz_sha256": "1b2027c64b2e62b5cf122f09a246ed4cb485841bf0823fcee246e8bf45bf8570",
+  "w2_s_npz_sha256": "3f2b97d1474552dae2fea1f7f8be5e83f7960950b38c0ca41bd3a78025aa7dd5",
+  "f0t_npz_sha256": "499e8c70d3d7d1375a77a609819aacdd40c8753ac2bf6f3d1ea277c5ae62a7fe",
+  "names_npz_sha256": "0ccad8b4b6a55c2bec41bfd36e6fa83f48dc448964e170cf15a2c191f517d720",
+  "vectors": {
+   "shards": 2,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "a1a7727a9128278299ee04c2d6ae4e8912bc44c3251fbbba4f76993720a53fc6"
+  },
+  "r1_record_sha256": "b2fd0a33e1ef601c591d8cf6e62e2b13229c11ac14fb0f34e05aa429ad1f016f",
+  "r1_npz_sha256": "4fd92a218cbf2817185e78af24da5d89dbcf7df719ae1f9c6785b4f5e8b1bc59"
+ },
+ "threads": 8,
+ "seconds": 84.5,
+ "utc": "2026-11-24T13:21:12Z",
+ "script_sha256": "7d7cf31987dfcee7227978db2e136b1dde30b0aad8a4b6424b164aaf256838da"
+}

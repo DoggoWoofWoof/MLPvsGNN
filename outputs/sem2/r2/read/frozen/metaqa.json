@@ -1,0 +1,168 @@
+{
+ "stage": "SEM2 R2 read",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 9",
+ "dataset": "metaqa",
+ "arm": "frozen",
+ "carve": {
+  "carve": "s1eval",
+  "path": "outputs/screen/fits/scr-gnx-nx-s0/reads/metaqa__s1eval.npz",
+  "sha256": "c61b5036739d223a94b059cbb539ebe0d265ec8a63fc005feb82009780211c7e",
+  "questions": 9785,
+  "with_gold": 9785
+ },
+ "chosen": {
+  "trav": {
+   "lambda": 2.0,
+   "means": {
+    "0.0": 0.68238,
+    "0.25": 0.682231,
+    "0.5": 0.683094,
+    "1.0": 0.683889,
+    "2.0": 0.684424
+   },
+   "over": [
+    "multihoprag",
+    "squad",
+    "musique"
+   ]
+  },
+  "trav0": {
+   "lambda": 0.25,
+   "means": {
+    "0.0": 0.682504,
+    "0.25": 0.682527,
+    "0.5": 0.682427,
+    "1.0": 0.681925,
+    "2.0": 0.682003
+   },
+   "over": [
+    "multihoprag",
+    "squad",
+    "musique"
+   ]
+  }
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 245144,
+     "record": 245144
+    },
+    "CN_all": {
+     "pairs": 12605,
+     "record": 12605
+    },
+    "F0T": {
+     "pairs": 12605,
+     "record": 12605
+    },
+    "S": {
+     "pairs": 124669,
+     "record": 124669
+    },
+    "S directed": {
+     "edges": 133571,
+     "pair_relation_rows": 133571,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G2": {
+   "hits_equal_share": 1.0,
+   "base5": 0.004749,
+   "e0_rrf5": 0.004749,
+   "verdict": "PASS"
+  },
+  "G-X": "PASS"
+ },
+ "recall": {
+  "base5": 0.004749,
+  "base20": 0.014772,
+  "ctrl5": 0.007586,
+  "ctrl20": 0.019252,
+  "v5": 0.008682,
+  "v1000": 0.153443,
+  "trav_fused5": 0.00698,
+  "trav_fused20": 0.022428,
+  "trav_alone5": 0.008682,
+  "trav_alone1000": 0.314391,
+  "trav0_fused5": 0.006847,
+  "trav0_fused20": 0.015941,
+  "trav0_alone5": 0.008682,
+  "trav0_alone1000": 0.125796,
+  "oracle_fused5": 0.00698,
+  "oracle_fused20": 0.023342,
+  "oracle_alone5": 0.008682,
+  "oracle_alone1000": 0.381246,
+  "trav_hop1_20": 0.047871,
+  "trav0_hop1_20": 0.008347,
+  "oracle_hop1_20": 0.074973
+ },
+ "oracle_reach": {
+  "questions": 5334,
+  "share": 0.54512,
+  "seeds_with_a_pick": 9757
+ },
+ "seeds_mean": 8.687,
+ "alpha_mean": {
+  "R.mention": 0.0792,
+  "R.name_comention": 0.1035,
+  "S.directed_by": 0.1556,
+  "S.has_genre": 0.0625,
+  "S.rare": 0.067,
+  "S.has_tags": 0.0769,
+  "S.in_language": 0.0705,
+  "S.release_year": 0.1267,
+  "S.starred_actors": 0.1239,
+  "S.written_by": 0.1342
+ },
+ "operators": [
+  "R.mention",
+  "R.name_comention",
+  "S.directed_by",
+  "S.has_genre",
+  "S.rare",
+  "S.has_tags",
+  "S.in_language",
+  "S.release_year",
+  "S.starred_actors",
+  "S.written_by"
+ ],
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+  "ner_npz_sha256": "93065a2311c2b445cc14ce6458457c9e14ec0d3c641a4bc573ef4b175a374cb8",
+  "knn_npz_sha256": "f7c59640e816951148fee791bc8790e026461ee52a5b6741c63859244b5a4a16",
+  "structural_npz_sha256": "1b2027c64b2e62b5cf122f09a246ed4cb485841bf0823fcee246e8bf45bf8570",
+  "w2_s_npz_sha256": "3f2b97d1474552dae2fea1f7f8be5e83f7960950b38c0ca41bd3a78025aa7dd5",
+  "f0t_npz_sha256": "499e8c70d3d7d1375a77a609819aacdd40c8753ac2bf6f3d1ea277c5ae62a7fe",
+  "names_npz_sha256": "0ccad8b4b6a55c2bec41bfd36e6fa83f48dc448964e170cf15a2c191f517d720",
+  "vectors": {
+   "shards": 2,
+   "dim": 1536,
+   "dtype": "float16"
+  },
+  "r1_record_sha256": "929e44b78635feb8cbca68e65b3a63a1b0ea31f9fbb2e4b0b467b84c328c2be8",
+  "r1_npz_sha256": "f9d6c3e2cf4acc1b18d9b09900da498e472a0467d00ec82631f64aa9d570b51f"
+ },
+ "threads": 8,
+ "npz_sha256": "b8783fd9cf3da8555df40ba8e2b668f605e18ed4dfbf485ceea987e0bd39d498",
+ "seconds": 352.5,
+ "utc": "2026-11-24T18:16:45Z",
+ "script_sha256": "7d7cf31987dfcee7227978db2e136b1dde30b0aad8a4b6424b164aaf256838da"
+}

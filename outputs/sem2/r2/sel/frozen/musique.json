@@ -1,0 +1,96 @@
+{
+ "stage": "SEM2 R2 selection",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 9",
+ "dataset": "musique",
+ "arm": "frozen",
+ "carve": {
+  "carve": "s1sel",
+  "npz_sha256": "0c3d07208f7cbfe263038ce65600020068e91b083e7a1a84a8b22a5f1e1187e6",
+  "questions": 1534,
+  "with_gold": 1534
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 2343920,
+     "record": 2343920
+    },
+    "CN_all": {
+     "pairs": 931069,
+     "record": 931069
+    },
+    "F0T": {
+     "pairs": 973013,
+     "record": 973013
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-X": "PASS"
+ },
+ "base5": 0.484518,
+ "ctrl5": 0.482616,
+ "fused5": {
+  "trav": {
+   "0.0": 0.488212,
+   "0.25": 0.488212,
+   "0.5": 0.488646,
+   "1.0": 0.489027,
+   "2.0": 0.489298
+  },
+  "trav0": {
+   "0.0": 0.488429,
+   "0.25": 0.487831,
+   "0.5": 0.488646,
+   "1.0": 0.489298,
+   "2.0": 0.488864
+  }
+ },
+ "lambdas": [
+  0.0,
+  0.25,
+  0.5,
+  1.0,
+  2.0
+ ],
+ "seeds_mean": 8.161,
+ "alpha_mean": {
+  "R.mention": 0.4499,
+  "R.name_comention": 0.3,
+  "R.title_comention": 0.2501
+ },
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+  "ner_npz_sha256": "f294708600750c48eae9e32d0895d517ac3a8b5d048c736a70e9a566af2fe9c6",
+  "knn_npz_sha256": "6020ac7e0b6773e64866b5e942dc0e02c3b704615ced8de4d557aa543221ef5b",
+  "w2_s_npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+  "f0t_npz_sha256": "a0cea3c450f4a8364d202d7f21fe949e288f2ed0ca325aadea199f7ed2a4eebc",
+  "names_npz_sha256": "279d4b6ff3a2d5e3fbbab9071bcc93328167da1c5d19e805c3a9c5ad7a8f9cda",
+  "vectors": {
+   "shards": 3,
+   "dim": 1536,
+   "dtype": "float16"
+  },
+  "r1_record_sha256": "23db3eeabdd858cb40fedc022a0ef7a0d8192be95140a98df4ec916ed2a0e9b2",
+  "r1_npz_sha256": "c8f827f17c7b1744c7e462d564c5bebdb90de314bb7a4088aebf4ac681e882f0"
+ },
+ "threads": 8,
+ "seconds": 168.3,
+ "utc": "2026-11-24T14:36:15Z",
+ "script_sha256": "7d7cf31987dfcee7227978db2e136b1dde30b0aad8a4b6424b164aaf256838da"
+}

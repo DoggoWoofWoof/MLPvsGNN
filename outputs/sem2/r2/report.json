@@ -1,0 +1,961 @@
+{
+ "stage": "SEM2 R2 report",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 9",
+ "verdict_e3v": "PARTIAL",
+ "room_e3v": [],
+ "expectations": {
+  "X12 T1 ABOVE on MuSiQue": true,
+  "X13 T1 not ABOVE on SQuAD": false,
+  "X14 ROOM on MetaQA": false
+ },
+ "calls": {
+  "e3v/multihoprag": {
+   "T1 trav - base (R@5)": {
+    "diff": 1.84,
+    "lo": 1.01,
+    "hi": 2.65,
+    "call": "ABOVE"
+   },
+   "T2 trav - trav0 (R@5)": {
+    "diff": 0.18,
+    "lo": 0.0,
+    "hi": 0.38,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "trav - SEM1 control (R@5)": {
+     "diff": 0.28,
+     "lo": -0.4,
+     "hi": 0.98,
+     "call": "LEVEL"
+    },
+    "trav0 - base (R@5)": {
+     "diff": 1.66,
+     "lo": 0.87,
+     "hi": 2.48,
+     "call": "ABOVE"
+    },
+    "T1 at R@20": {
+     "diff": 2.19,
+     "lo": 1.53,
+     "hi": 2.92,
+     "call": "ABOVE"
+    },
+    "T2 at R@20": {
+     "diff": 0.25,
+     "lo": -0.16,
+     "hi": 0.67,
+     "call": "LEVEL"
+    },
+    "trav alone - v alone (R@1000)": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    }
+   },
+   "C oracle - trav (R@5)": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL"
+   },
+   "oracle_reach": {
+    "questions": 1127,
+    "share": 0.997345,
+    "seeds_with_a_pick": 7559
+   },
+   "chosen": {
+    "trav": 0.0,
+    "trav0": 0.0
+   },
+   "recall": {
+    "base5": 0.60944,
+    "base20": 0.915413,
+    "ctrl5": 0.625,
+    "ctrl20": 0.929794,
+    "v5": 0.638938,
+    "v1000": 1.0,
+    "trav_fused5": 0.627802,
+    "trav_fused20": 0.937316,
+    "trav_alone5": 0.638938,
+    "trav_alone1000": 1.0,
+    "trav0_fused5": 0.626032,
+    "trav0_fused20": 0.934808,
+    "trav0_alone5": 0.638938,
+    "trav0_alone1000": 1.0,
+    "oracle_fused5": 0.627802,
+    "oracle_fused20": 0.937316,
+    "oracle_alone5": 0.638938,
+    "oracle_alone1000": 1.0,
+    "trav_hop1_20": 0.19174,
+    "trav0_hop1_20": 0.200811,
+    "oracle_hop1_20": 0.19174
+   },
+   "ADDS": false,
+   "ROOM": false
+  },
+  "e3v/squad": {
+   "T1 trav - base (R@5)": {
+    "diff": 0.28,
+    "lo": 0.04,
+    "hi": 0.51,
+    "call": "ABOVE"
+   },
+   "T2 trav - trav0 (R@5)": {
+    "diff": 0.11,
+    "lo": 0.03,
+    "hi": 0.19,
+    "call": "ABOVE"
+   },
+   "beside": {
+    "trav - SEM1 control (R@5)": {
+     "diff": 1.17,
+     "lo": 0.93,
+     "hi": 1.44,
+     "call": "ABOVE"
+    },
+    "trav0 - base (R@5)": {
+     "diff": 0.17,
+     "lo": -0.06,
+     "hi": 0.4,
+     "call": "LEVEL"
+    },
+    "T1 at R@20": {
+     "diff": -0.08,
+     "lo": -0.32,
+     "hi": 0.16,
+     "call": "LEVEL"
+    },
+    "T2 at R@20": {
+     "diff": -0.13,
+     "lo": -0.3,
+     "hi": 0.03,
+     "call": "LEVEL"
+    },
+    "trav alone - v alone (R@1000)": {
+     "diff": -0.93,
+     "lo": -1.13,
+     "hi": -0.72,
+     "call": "BELOW"
+    }
+   },
+   "C oracle - trav (R@5)": {
+    "diff": -0.01,
+    "lo": -0.03,
+    "hi": 0.02,
+    "call": "LEVEL"
+   },
+   "oracle_reach": {
+    "questions": 9653,
+    "share": 0.813021,
+    "seeds_with_a_pick": 37588
+   },
+   "chosen": {
+    "trav": 2.0,
+    "trav0": 1.0
+   },
+   "recall": {
+    "base5": 0.882507,
+    "base20": 0.95275,
+    "ctrl5": 0.873579,
+    "ctrl20": 0.943991,
+    "v5": 0.836941,
+    "v1000": 0.994525,
+    "trav_fused5": 0.885286,
+    "trav_fused20": 0.951908,
+    "trav_alone5": 0.836941,
+    "trav_alone1000": 0.985261,
+    "trav0_fused5": 0.884191,
+    "trav0_fused20": 0.953255,
+    "trav0_alone5": 0.836941,
+    "trav0_alone1000": 0.992336,
+    "oracle_fused5": 0.885202,
+    "oracle_fused20": 0.952329,
+    "oracle_alone5": 0.836941,
+    "oracle_alone1000": 0.985429,
+    "trav_hop1_20": 0.024846,
+    "trav0_hop1_20": 0.028384,
+    "oracle_hop1_20": 0.026783
+   },
+   "ADDS": true,
+   "ROOM": false
+  },
+  "e3v/musique": {
+   "T1 trav - base (R@5)": {
+    "diff": 1.22,
+    "lo": 0.76,
+    "hi": 1.67,
+    "call": "ABOVE"
+   },
+   "T2 trav - trav0 (R@5)": {
+    "diff": -0.22,
+    "lo": -0.37,
+    "hi": -0.09,
+    "call": "BELOW"
+   },
+   "beside": {
+    "trav - SEM1 control (R@5)": {
+     "diff": 0.36,
+     "lo": -0.02,
+     "hi": 0.78,
+     "call": "LEVEL"
+    },
+    "trav0 - base (R@5)": {
+     "diff": 1.44,
+     "lo": 0.98,
+     "hi": 1.9,
+     "call": "ABOVE"
+    },
+    "T1 at R@20": {
+     "diff": 1.02,
+     "lo": 0.45,
+     "hi": 1.57,
+     "call": "ABOVE"
+    },
+    "T2 at R@20": {
+     "diff": 0.74,
+     "lo": 0.36,
+     "hi": 1.13,
+     "call": "ABOVE"
+    },
+    "trav alone - v alone (R@1000)": {
+     "diff": -1.06,
+     "lo": -2.04,
+     "hi": -0.09,
+     "call": "BELOW"
+    }
+   },
+   "C oracle - trav (R@5)": {
+    "diff": 0.03,
+    "lo": -0.06,
+    "hi": 0.12,
+    "call": "LEVEL"
+   },
+   "oracle_reach": {
+    "questions": 2153,
+    "share": 0.890774,
+    "seeds_with_a_pick": 6774
+   },
+   "chosen": {
+    "trav": 0.0,
+    "trav0": 0.0
+   },
+   "recall": {
+    "base5": 0.477658,
+    "base20": 0.604193,
+    "ctrl5": 0.486209,
+    "ctrl20": 0.607675,
+    "v5": 0.476865,
+    "v1000": 0.853606,
+    "trav_fused5": 0.489829,
+    "trav_fused20": 0.614432,
+    "trav_alone5": 0.476865,
+    "trav_alone1000": 0.842987,
+    "trav0_fused5": 0.49207,
+    "trav0_fused20": 0.606985,
+    "trav0_alone5": 0.476865,
+    "trav0_alone1000": 0.825817,
+    "oracle_fused5": 0.490105,
+    "oracle_fused20": 0.618777,
+    "oracle_alone5": 0.476865,
+    "oracle_alone1000": 0.851055,
+    "trav_hop1_20": 0.077782,
+    "trav0_hop1_20": 0.0783,
+    "oracle_hop1_20": 0.105537
+   },
+   "ADDS": false,
+   "ROOM": false
+  },
+  "e3v/metaqa": {
+   "T1 trav - base (R@5)": {
+    "diff": 0.11,
+    "lo": 0.04,
+    "hi": 0.19,
+    "call": "ABOVE"
+   },
+   "T2 trav - trav0 (R@5)": {
+    "diff": 0.06,
+    "lo": 0.02,
+    "hi": 0.11,
+    "call": "ABOVE"
+   },
+   "beside": {
+    "trav - SEM1 control (R@5)": {
+     "diff": -0.03,
+     "lo": -0.09,
+     "hi": 0.02,
+     "call": "LEVEL"
+    },
+    "trav0 - base (R@5)": {
+     "diff": 0.05,
+     "lo": -0.03,
+     "hi": 0.13,
+     "call": "LEVEL"
+    },
+    "T1 at R@20": {
+     "diff": 0.13,
+     "lo": 0.01,
+     "hi": 0.25,
+     "call": "ABOVE"
+    },
+    "T2 at R@20": {
+     "diff": -0.07,
+     "lo": -0.19,
+     "hi": 0.05,
+     "call": "LEVEL"
+    },
+    "trav alone - v alone (R@1000)": {
+     "diff": -9.53,
+     "lo": -10.23,
+     "hi": -8.84,
+     "call": "BELOW"
+    }
+   },
+   "C oracle - trav (R@5)": {
+    "diff": 0.02,
+    "lo": 0.0,
+    "hi": 0.05,
+    "call": "LEVEL"
+   },
+   "oracle_reach": {
+    "questions": 5360,
+    "share": 0.547777,
+    "seeds_with_a_pick": 10126
+   },
+   "chosen": {
+    "trav": 0.0,
+    "trav0": 0.0
+   },
+   "recall": {
+    "base5": 0.004454,
+    "base20": 0.012523,
+    "ctrl5": 0.005906,
+    "ctrl20": 0.014559,
+    "v5": 0.00653,
+    "v1000": 0.202816,
+    "trav_fused5": 0.005563,
+    "trav_fused20": 0.013787,
+    "trav_alone5": 0.00653,
+    "trav_alone1000": 0.10752,
+    "trav0_fused5": 0.004984,
+    "trav0_fused20": 0.014526,
+    "trav0_alone5": 0.00653,
+    "trav0_alone1000": 0.169887,
+    "oracle_fused5": 0.005785,
+    "oracle_fused20": 0.020674,
+    "oracle_alone5": 0.00653,
+    "oracle_alone1000": 0.350032,
+    "trav_hop1_20": 0.009758,
+    "trav0_hop1_20": 0.009818,
+    "oracle_hop1_20": 0.131846
+   },
+   "ADDS": true,
+   "ROOM": false
+  },
+  "e3v/webqsp": {
+   "T1 trav - base (R@5)": {
+    "diff": 0.38,
+    "lo": 0.09,
+    "hi": 0.72,
+    "call": "ABOVE"
+   },
+   "T2 trav - trav0 (R@5)": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.01,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "trav - SEM1 control (R@5)": {
+     "diff": 0.06,
+     "lo": -0.15,
+     "hi": 0.28,
+     "call": "LEVEL"
+    },
+    "trav0 - base (R@5)": {
+     "diff": 0.38,
+     "lo": 0.09,
+     "hi": 0.72,
+     "call": "ABOVE"
+    },
+    "T1 at R@20": {
+     "diff": 1.33,
+     "lo": 0.7,
+     "hi": 2.0,
+     "call": "ABOVE"
+    },
+    "T2 at R@20": {
+     "diff": 0.26,
+     "lo": -0.16,
+     "hi": 0.71,
+     "call": "LEVEL"
+    },
+    "trav alone - v alone (R@1000)": {
+     "diff": -3.61,
+     "lo": -5.48,
+     "hi": -1.85,
+     "call": "BELOW"
+    }
+   },
+   "C oracle - trav (R@5)": {
+    "diff": -0.02,
+    "lo": -0.07,
+    "hi": 0.0,
+    "call": "LEVEL"
+   },
+   "oracle_reach": {
+    "questions": 1391,
+    "share": 0.925482,
+    "seeds_with_a_pick": 3482
+   },
+   "chosen": {
+    "trav": 0.0,
+    "trav0": 0.0
+   },
+   "recall": {
+    "base5": 0.045563,
+    "base20": 0.083427,
+    "ctrl5": 0.048787,
+    "ctrl20": 0.097777,
+    "v5": 0.067291,
+    "v1000": 0.367222,
+    "trav_fused5": 0.049408,
+    "trav_fused20": 0.096752,
+    "trav_alone5": 0.067291,
+    "trav_alone1000": 0.3311,
+    "trav0_fused5": 0.049386,
+    "trav0_fused20": 0.094179,
+    "trav0_alone5": 0.067291,
+    "trav0_alone1000": 0.244849,
+    "oracle_fused5": 0.049186,
+    "oracle_fused20": 0.095957,
+    "oracle_alone5": 0.067291,
+    "oracle_alone1000": 0.349337,
+    "trav_hop1_20": 0.032463,
+    "trav0_hop1_20": 0.023501,
+    "oracle_hop1_20": 0.037921
+   },
+   "ADDS": false,
+   "ROOM": false
+  },
+  "e3v/hotpotqa": {
+   "T1 trav - base (R@5)": {
+    "diff": 0.97,
+    "lo": 0.71,
+    "hi": 1.22,
+    "call": "ABOVE"
+   },
+   "T2 trav - trav0 (R@5)": {
+    "diff": 0.08,
+    "lo": -0.02,
+    "hi": 0.18,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "trav - SEM1 control (R@5)": {
+     "diff": 1.09,
+     "lo": 0.84,
+     "hi": 1.37,
+     "call": "ABOVE"
+    },
+    "trav0 - base (R@5)": {
+     "diff": 0.89,
+     "lo": 0.61,
+     "hi": 1.16,
+     "call": "ABOVE"
+    },
+    "T1 at R@20": {
+     "diff": 0.61,
+     "lo": 0.34,
+     "hi": 0.9,
+     "call": "ABOVE"
+    },
+    "T2 at R@20": {
+     "diff": 0.47,
+     "lo": 0.3,
+     "hi": 0.63,
+     "call": "ABOVE"
+    },
+    "trav alone - v alone (R@1000)": {
+     "diff": -0.12,
+     "lo": -0.55,
+     "hi": 0.36,
+     "call": "LEVEL"
+    }
+   },
+   "C oracle - trav (R@5)": {
+    "diff": -0.02,
+    "lo": -0.08,
+    "hi": 0.04,
+    "call": "LEVEL"
+   },
+   "oracle_reach": {
+    "questions": 6929,
+    "share": 0.935719,
+    "seeds_with_a_pick": 20196
+   },
+   "chosen": {
+    "trav": 0.25,
+    "trav0": 0.0
+   },
+   "recall": {
+    "base5": 0.681702,
+    "base20": 0.775895,
+    "ctrl5": 0.680486,
+    "ctrl20": 0.766779,
+    "v5": 0.653477,
+    "v1000": 0.903511,
+    "trav_fused5": 0.691425,
+    "trav_fused20": 0.781972,
+    "trav_alone5": 0.653477,
+    "trav_alone1000": 0.902296,
+    "trav0_fused5": 0.690614,
+    "trav0_fused20": 0.777313,
+    "trav0_alone5": 0.653477,
+    "trav0_alone1000": 0.867792,
+    "oracle_fused5": 0.691222,
+    "oracle_fused20": 0.781837,
+    "oracle_alone5": 0.653477,
+    "oracle_alone1000": 0.905604,
+    "trav_hop1_20": 0.042741,
+    "trav0_hop1_20": 0.0316,
+    "oracle_hop1_20": 0.049764
+   },
+   "ADDS": false,
+   "ROOM": false
+  },
+  "e3v/2wiki": {
+   "T1 trav - base (R@5)": {
+    "diff": 0.65,
+    "lo": 0.51,
+    "hi": 0.8,
+    "call": "ABOVE"
+   },
+   "T2 trav - trav0 (R@5)": {
+    "diff": 0.03,
+    "lo": -0.02,
+    "hi": 0.08,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "trav - SEM1 control (R@5)": {
+     "diff": 0.43,
+     "lo": 0.3,
+     "hi": 0.57,
+     "call": "ABOVE"
+    },
+    "trav0 - base (R@5)": {
+     "diff": 0.61,
+     "lo": 0.47,
+     "hi": 0.76,
+     "call": "ABOVE"
+    },
+    "T1 at R@20": {
+     "diff": 0.85,
+     "lo": 0.69,
+     "hi": 1.0,
+     "call": "ABOVE"
+    },
+    "T2 at R@20": {
+     "diff": 0.31,
+     "lo": 0.23,
+     "hi": 0.4,
+     "call": "ABOVE"
+    },
+    "trav alone - v alone (R@1000)": {
+     "diff": 9.41,
+     "lo": 9.04,
+     "hi": 9.76,
+     "call": "ABOVE"
+    }
+   },
+   "C oracle - trav (R@5)": {
+    "diff": 0.04,
+    "lo": -0.0,
+    "hi": 0.08,
+    "call": "LEVEL"
+   },
+   "oracle_reach": {
+    "questions": 10885,
+    "share": 0.865538,
+    "seeds_with_a_pick": 28168
+   },
+   "chosen": {
+    "trav": 0.25,
+    "trav0": 0.25
+   },
+   "recall": {
+    "base5": 0.63973,
+    "base20": 0.699825,
+    "ctrl5": 0.641877,
+    "ctrl20": 0.695472,
+    "v5": 0.625517,
+    "v1000": 0.77791,
+    "trav_fused5": 0.646191,
+    "trav_fused20": 0.708313,
+    "trav_alone5": 0.625517,
+    "trav_alone1000": 0.871978,
+    "trav0_fused5": 0.645873,
+    "trav0_fused20": 0.705173,
+    "trav0_alone5": 0.625517,
+    "trav0_alone1000": 0.84868,
+    "oracle_fused5": 0.646549,
+    "oracle_fused20": 0.710977,
+    "oracle_alone5": 0.625517,
+    "oracle_alone1000": 0.875477,
+    "trav_hop1_20": 0.059379,
+    "trav0_hop1_20": 0.050254,
+    "oracle_hop1_20": 0.072857
+   },
+   "ADDS": false,
+   "ROOM": false
+  },
+  "frozen/multihoprag": {
+   "T1 trav - base (R@5)": {
+    "diff": 2.04,
+    "lo": 1.21,
+    "hi": 2.87,
+    "call": "ABOVE"
+   },
+   "T2 trav - trav0 (R@5)": {
+    "diff": 0.21,
+    "lo": -0.05,
+    "hi": 0.5,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "trav - SEM1 control (R@5)": {
+     "diff": 0.44,
+     "lo": -0.28,
+     "hi": 1.16,
+     "call": "LEVEL"
+    },
+    "trav0 - base (R@5)": {
+     "diff": 1.83,
+     "lo": 1.0,
+     "hi": 2.65,
+     "call": "ABOVE"
+    },
+    "T1 at R@20": {
+     "diff": 2.64,
+     "lo": 1.98,
+     "hi": 3.33,
+     "call": "ABOVE"
+    },
+    "T2 at R@20": {
+     "diff": -0.04,
+     "lo": -0.52,
+     "hi": 0.41,
+     "call": "LEVEL"
+    },
+    "trav alone - v alone (R@1000)": {
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    }
+   },
+   "C oracle - trav (R@5)": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL"
+   },
+   "oracle_reach": {
+    "questions": 1128,
+    "share": 0.99823,
+    "seeds_with_a_pick": 7592
+   },
+   "chosen": {
+    "trav": 2.0,
+    "trav0": 1.0
+   },
+   "recall": {
+    "base5": 0.630236,
+    "base20": 0.920501,
+    "ctrl5": 0.646239,
+    "ctrl20": 0.945501,
+    "v5": 0.660841,
+    "v1000": 1.0,
+    "trav_fused5": 0.650664,
+    "trav_fused20": 0.946903,
+    "trav_alone5": 0.660841,
+    "trav_alone1000": 1.0,
+    "trav0_fused5": 0.648525,
+    "trav0_fused20": 0.947345,
+    "trav0_alone5": 0.660841,
+    "trav0_alone1000": 1.0,
+    "oracle_fused5": 0.650664,
+    "oracle_fused20": 0.946903,
+    "oracle_alone5": 0.660841,
+    "oracle_alone1000": 1.0,
+    "trav_hop1_20": 0.186652,
+    "trav0_hop1_20": 0.205678,
+    "oracle_hop1_20": 0.186652
+   },
+   "ADDS": false,
+   "ROOM": false
+  },
+  "frozen/squad": {
+   "T1 trav - base (R@5)": {
+    "diff": 0.45,
+    "lo": 0.21,
+    "hi": 0.67,
+    "call": "ABOVE"
+   },
+   "T2 trav - trav0 (R@5)": {
+    "diff": 0.08,
+    "lo": -0.02,
+    "hi": 0.18,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "trav - SEM1 control (R@5)": {
+     "diff": 0.68,
+     "lo": 0.44,
+     "hi": 0.93,
+     "call": "ABOVE"
+    },
+    "trav0 - base (R@5)": {
+     "diff": 0.37,
+     "lo": 0.13,
+     "hi": 0.6,
+     "call": "ABOVE"
+    },
+    "T1 at R@20": {
+     "diff": -0.13,
+     "lo": -0.35,
+     "hi": 0.07,
+     "call": "LEVEL"
+    },
+    "T2 at R@20": {
+     "diff": 0.17,
+     "lo": 0.02,
+     "hi": 0.34,
+     "call": "ABOVE"
+    },
+    "trav alone - v alone (R@1000)": {
+     "diff": -0.75,
+     "lo": -0.93,
+     "hi": -0.58,
+     "call": "BELOW"
+    }
+   },
+   "C oracle - trav (R@5)": {
+    "diff": 0.01,
+    "lo": -0.03,
+    "hi": 0.04,
+    "call": "LEVEL"
+   },
+   "oracle_reach": {
+    "questions": 9789,
+    "share": 0.824476,
+    "seeds_with_a_pick": 38087
+   },
+   "chosen": {
+    "trav": 2.0,
+    "trav0": 0.0
+   },
+   "recall": {
+    "base5": 0.905331,
+    "base20": 0.963952,
+    "ctrl5": 0.902973,
+    "ctrl20": 0.96193,
+    "v5": 0.876948,
+    "v1000": 0.997557,
+    "trav_fused5": 0.909795,
+    "trav_fused20": 0.962604,
+    "trav_alone5": 0.876948,
+    "trav_alone1000": 0.990061,
+    "trav0_fused5": 0.909037,
+    "trav0_fused20": 0.96092,
+    "trav0_alone5": 0.876948,
+    "trav0_alone1000": 0.98804,
+    "oracle_fused5": 0.90988,
+    "oracle_fused20": 0.962773,
+    "oracle_alone5": 0.876948,
+    "oracle_alone1000": 0.990398,
+    "trav_hop1_20": 0.02013,
+    "trav0_hop1_20": 0.016845,
+    "oracle_hop1_20": 0.021477
+   },
+   "ADDS": false,
+   "ROOM": false
+  },
+  "frozen/musique": {
+   "T1 trav - base (R@5)": {
+    "diff": 1.22,
+    "lo": 0.77,
+    "hi": 1.67,
+    "call": "ABOVE"
+   },
+   "T2 trav - trav0 (R@5)": {
+    "diff": 0.13,
+    "lo": -0.08,
+    "hi": 0.34,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "trav - SEM1 control (R@5)": {
+     "diff": 0.92,
+     "lo": 0.48,
+     "hi": 1.34,
+     "call": "ABOVE"
+    },
+    "trav0 - base (R@5)": {
+     "diff": 1.09,
+     "lo": 0.61,
+     "hi": 1.54,
+     "call": "ABOVE"
+    },
+    "T1 at R@20": {
+     "diff": 0.99,
+     "lo": 0.46,
+     "hi": 1.48,
+     "call": "ABOVE"
+    },
+    "T2 at R@20": {
+     "diff": 1.31,
+     "lo": 0.87,
+     "hi": 1.74,
+     "call": "ABOVE"
+    },
+    "trav alone - v alone (R@1000)": {
+     "diff": 0.45,
+     "lo": -0.25,
+     "hi": 1.17,
+     "call": "LEVEL"
+    }
+   },
+   "C oracle - trav (R@5)": {
+    "diff": 0.05,
+    "lo": 0.01,
+    "hi": 0.11,
+    "call": "ABOVE"
+   },
+   "oracle_reach": {
+    "questions": 2160,
+    "share": 0.89367,
+    "seeds_with_a_pick": 6950
+   },
+   "chosen": {
+    "trav": 2.0,
+    "trav0": 0.25
+   },
+   "recall": {
+    "base5": 0.473417,
+    "base20": 0.61888,
+    "ctrl5": 0.476383,
+    "ctrl20": 0.620707,
+    "v5": 0.457178,
+    "v1000": 0.872535,
+    "trav_fused5": 0.485623,
+    "trav_fused20": 0.628775,
+    "trav_alone5": 0.457178,
+    "trav_alone1000": 0.877017,
+    "trav0_fused5": 0.484278,
+    "trav0_fused20": 0.615639,
+    "trav0_alone5": 0.457178,
+    "trav0_alone1000": 0.854917,
+    "oracle_fused5": 0.48614,
+    "oracle_fused20": 0.632154,
+    "oracle_alone5": 0.457178,
+    "oracle_alone1000": 0.884843,
+    "trav_hop1_20": 0.107054,
+    "trav0_hop1_20": 0.090298,
+    "oracle_hop1_20": 0.117536
+   },
+   "ADDS": false,
+   "ROOM": false
+  },
+  "frozen/metaqa": {
+   "T1 trav - base (R@5)": {
+    "diff": 0.22,
+    "lo": 0.15,
+    "hi": 0.3,
+    "call": "ABOVE"
+   },
+   "T2 trav - trav0 (R@5)": {
+    "diff": 0.01,
+    "lo": -0.04,
+    "hi": 0.07,
+    "call": "LEVEL"
+   },
+   "beside": {
+    "trav - SEM1 control (R@5)": {
+     "diff": -0.06,
+     "lo": -0.14,
+     "hi": 0.01,
+     "call": "LEVEL"
+    },
+    "trav0 - base (R@5)": {
+     "diff": 0.21,
+     "lo": 0.12,
+     "hi": 0.31,
+     "call": "ABOVE"
+    },
+    "T1 at R@20": {
+     "diff": 0.77,
+     "lo": 0.59,
+     "hi": 0.93,
+     "call": "ABOVE"
+    },
+    "T2 at R@20": {
+     "diff": 0.65,
+     "lo": 0.48,
+     "hi": 0.8,
+     "call": "ABOVE"
+    },
+    "trav alone - v alone (R@1000)": {
+     "diff": 16.09,
+     "lo": 15.33,
+     "hi": 16.88,
+     "call": "ABOVE"
+    }
+   },
+   "C oracle - trav (R@5)": {
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "call": "LEVEL"
+   },
+   "oracle_reach": {
+    "questions": 5334,
+    "share": 0.54512,
+    "seeds_with_a_pick": 9757
+   },
+   "chosen": {
+    "trav": 2.0,
+    "trav0": 0.25
+   },
+   "recall": {
+    "base5": 0.004749,
+    "base20": 0.014772,
+    "ctrl5": 0.007586,
+    "ctrl20": 0.019252,
+    "v5": 0.008682,
+    "v1000": 0.153443,
+    "trav_fused5": 0.00698,
+    "trav_fused20": 0.022428,
+    "trav_alone5": 0.008682,
+    "trav_alone1000": 0.314391,
+    "trav0_fused5": 0.006847,
+    "trav0_fused20": 0.015941,
+    "trav0_alone5": 0.008682,
+    "trav0_alone1000": 0.125796,
+    "oracle_fused5": 0.00698,
+    "oracle_fused20": 0.023342,
+    "oracle_alone5": 0.008682,
+    "oracle_alone1000": 0.381246,
+    "trav_hop1_20": 0.047871,
+    "trav0_hop1_20": 0.008347,
+    "oracle_hop1_20": 0.074973
+   },
+   "ADDS": false,
+   "ROOM": false
+  }
+ },
+ "script_sha256": "7d7cf31987dfcee7227978db2e136b1dde30b0aad8a4b6424b164aaf256838da",
+ "utc": "2026-11-25T02:32:43Z"
+}

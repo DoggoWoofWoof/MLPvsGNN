@@ -1,0 +1,97 @@
+{
+ "stage": "SEM2 R2 selection",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 9",
+ "dataset": "squad",
+ "arm": "e3v",
+ "carve": {
+  "carve": "s1sel",
+  "npz_sha256": "248cffbd842ba2909f16ee7ef9055c72b90a016834d952858befa397053af1ae",
+  "questions": 1498,
+  "with_gold": 1498
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 878200,
+     "record": 878200
+    },
+    "CN_all": {
+     "pairs": 173645,
+     "record": 173645
+    },
+    "F0T": {
+     "pairs": 176454,
+     "record": 176454
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-X": "PASS"
+ },
+ "base5": 0.873164,
+ "ctrl5": 0.878505,
+ "fused5": {
+  "trav": {
+   "0.0": 0.88785,
+   "0.25": 0.887183,
+   "0.5": 0.885848,
+   "1.0": 0.885848,
+   "2.0": 0.884513
+  },
+  "trav0": {
+   "0.0": 0.885848,
+   "0.25": 0.88518,
+   "0.5": 0.884513,
+   "1.0": 0.883845,
+   "2.0": 0.883178
+  }
+ },
+ "lambdas": [
+  0.0,
+  0.25,
+  0.5,
+  1.0,
+  2.0
+ ],
+ "seeds_mean": 7.564,
+ "alpha_mean": {
+  "R.mention": 0.3586,
+  "R.name_comention": 0.4022,
+  "R.title_comention": 0.2392
+ },
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "34ac47757e0080f0e2eb6c679009a6090ca97be39d576307ba7281db730c1a8b",
+  "ner_npz_sha256": "e8b061c3dc417d7c481e57d9f360dd98c825049d62c61958ca0fed655fa57a22",
+  "knn_npz_sha256": "fee9cca5435668378d2a139614cec141d0b4977991801a004c8ca43ee8ad796f",
+  "w2_s_npz_sha256": "3f44314052d91556d6d694cb97fc5319dcf84e80ef68790ec9a33800286880c5",
+  "f0t_npz_sha256": "04703c6d42e9d2717fc1a3e659d9ef6d376d85dd2bd2e410904a7573b09157e0",
+  "names_npz_sha256": "082a4c61f0563178da69802dc029008ba39becf12993bd6156ec66a1bd73f906",
+  "vectors": {
+   "shards": 1,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "dc9bda57edde0b4440c8f8b1cfbe3ab28e7aeffa3b5079f2984db4c23e2435d6"
+  },
+  "r1_record_sha256": "81a3f38e5ae98f19625f94c6c9e6ef32b12b7b628823187abcb038317162df2e",
+  "r1_npz_sha256": "7d3a606053a6f11e4e1d7a47069a2df0a168dea548a86619ba5047eeae41cbab"
+ },
+ "threads": 8,
+ "seconds": 77.6,
+ "utc": "2026-11-24T13:14:47Z",
+ "script_sha256": "7d7cf31987dfcee7227978db2e136b1dde30b0aad8a4b6424b164aaf256838da"
+}

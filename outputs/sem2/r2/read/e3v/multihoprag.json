@@ -1,0 +1,140 @@
+{
+ "stage": "SEM2 R2 read",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 9",
+ "dataset": "multihoprag",
+ "arm": "e3v",
+ "carve": {
+  "split": "test",
+  "dataset_json_sha256": "0fff110d09c4c2447ba9d5304682a8c982d53bb4786e020d813d0cc2660467cc",
+  "questions": 1130,
+  "with_gold": 1130
+ },
+ "chosen": {
+  "trav": {
+   "lambda": 0.0,
+   "means": {
+    "0.0": 0.542203,
+    "0.25": 0.541901,
+    "0.5": 0.541399,
+    "1.0": 0.541454,
+    "2.0": 0.541436
+   },
+   "over": [
+    "squad",
+    "musique",
+    "metaqa",
+    "hotpotqa",
+    "2wiki"
+   ]
+  },
+  "trav0": {
+   "lambda": 0.0,
+   "means": {
+    "0.0": 0.541458,
+    "0.25": 0.541321,
+    "0.5": 0.541275,
+    "1.0": 0.541237,
+    "2.0": 0.540519
+   },
+   "over": [
+    "squad",
+    "musique",
+    "metaqa",
+    "hotpotqa",
+    "2wiki"
+   ]
+  }
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "F0": {
+     "pairs": 25005,
+     "record": 25005
+    },
+    "F0T": {
+     "pairs": 25080,
+     "record": 25080
+    },
+    "W2_S": {
+     "pairs": 2,
+     "record": 2
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G2": {
+   "rows_equal_share": 1.0,
+   "reference": "outputs/mhr1/first/lists.npz",
+   "verdict": "PASS"
+  },
+  "G-X": "PASS"
+ },
+ "recall": {
+  "base5": 0.60944,
+  "base20": 0.915413,
+  "ctrl5": 0.625,
+  "ctrl20": 0.929794,
+  "v5": 0.638938,
+  "v1000": 1.0,
+  "trav_fused5": 0.627802,
+  "trav_fused20": 0.937316,
+  "trav_alone5": 0.638938,
+  "trav_alone1000": 1.0,
+  "trav0_fused5": 0.626032,
+  "trav0_fused20": 0.934808,
+  "trav0_alone5": 0.638938,
+  "trav0_alone1000": 1.0,
+  "oracle_fused5": 0.627802,
+  "oracle_fused20": 0.937316,
+  "oracle_alone5": 0.638938,
+  "oracle_alone1000": 1.0,
+  "trav_hop1_20": 0.19174,
+  "trav0_hop1_20": 0.200811,
+  "oracle_hop1_20": 0.19174
+ },
+ "oracle_reach": {
+  "questions": 1127,
+  "share": 0.997345,
+  "seeds_with_a_pick": 7559
+ },
+ "seeds_mean": 7.44,
+ "alpha_mean": {
+  "R.name_comention": 1.0
+ },
+ "operators": [
+  "R.name_comention"
+ ],
+ "inputs": {
+  "links_json_sha256": "97a1f768bae0e0256136220f1a6aa037ec71632918053e89b262a523b2455744",
+  "F0_npz_sha256": "345d21c15bfda50834613b27b72bee5122e4e85a258e65973867c762b217305c",
+  "F0T_npz_sha256": "2e884936ec9398f4ce1395021d63cc68580b77c1ce4ec39ad7bdb231109406ec",
+  "W2_S_npz_sha256": "00b5b57909411d1ffae9a23fad257f5294731cc97845625d58b4e1ca254a940a",
+  "vectors": {
+   "shards": 1,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "29722959d04395f0b9dc396bc549e192f090d184d42f4318b20e0ecfdff6d6c3"
+  },
+  "r1_record_sha256": "00379d41120ea0b2e82a98ab8f50e9b2a1dbeab1ddf391793733116bdfcefa0b",
+  "r1_npz_sha256": "b2f120d341cbfb373cde2725ae901062c2ff958a4152b43c8ad1fb08ad8e4275"
+ },
+ "threads": 8,
+ "npz_sha256": "60b69a9dd0a84dc1c5ab5f55f85e9108f7f61f3e46c5b838c5dc0efcf09aba39",
+ "seconds": 11.7,
+ "utc": "2026-11-24T17:23:40Z",
+ "script_sha256": "7d7cf31987dfcee7227978db2e136b1dde30b0aad8a4b6424b164aaf256838da"
+}

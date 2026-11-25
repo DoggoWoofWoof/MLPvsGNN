@@ -1,0 +1,166 @@
+{
+ "stage": "SEM2 R2 read",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 9",
+ "dataset": "hotpotqa",
+ "arm": "e3v",
+ "carve": {
+  "carve": "s1eval",
+  "path": "outputs/screen/fits/scr-gnx-nx-s0/reads/hotpotqa__s1eval.npz",
+  "sha256": "c9833e0390f086b6b475b0df1b475f1211f9338197e519fed6cc3c0cccb6535b",
+  "questions": 7405,
+  "with_gold": 7405
+ },
+ "chosen": {
+  "trav": {
+   "lambda": 0.25,
+   "means": {
+    "0.0": 0.532766,
+    "0.25": 0.532828,
+    "0.5": 0.532459,
+    "1.0": 0.532381,
+    "2.0": 0.532429
+   },
+   "over": [
+    "multihoprag",
+    "squad",
+    "musique",
+    "metaqa",
+    "2wiki"
+   ]
+  },
+  "trav0": {
+   "lambda": 0.0,
+   "means": {
+    "0.0": 0.532584,
+    "0.25": 0.53238,
+    "0.5": 0.532335,
+    "1.0": 0.532296,
+    "2.0": 0.531645
+   },
+   "over": [
+    "multihoprag",
+    "squad",
+    "musique",
+    "metaqa",
+    "2wiki"
+   ]
+  }
+ },
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 32159229,
+     "record": 32159229
+    },
+    "CN_all": {
+     "pairs": 23218108,
+     "record": 23218108
+    },
+    "F0T": {
+     "pairs": 24450229,
+     "record": 24450229
+    },
+    "S": {
+     "pairs": 15095287,
+     "record": 15095287
+    },
+    "S directed": {
+     "edges": 15367541,
+     "pair_relation_rows": 15095287,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G2": {
+   "hits_equal_share": 1.0,
+   "base5": 0.681702,
+   "e0_rrf5": 0.681702,
+   "verdict": "PASS"
+  },
+  "G-X": "PASS"
+ },
+ "recall": {
+  "base5": 0.681702,
+  "base20": 0.775895,
+  "ctrl5": 0.680486,
+  "ctrl20": 0.766779,
+  "v5": 0.653477,
+  "v1000": 0.903511,
+  "trav_fused5": 0.691425,
+  "trav_fused20": 0.781972,
+  "trav_alone5": 0.653477,
+  "trav_alone1000": 0.902296,
+  "trav0_fused5": 0.690614,
+  "trav0_fused20": 0.777313,
+  "trav0_alone5": 0.653477,
+  "trav0_alone1000": 0.867792,
+  "oracle_fused5": 0.691222,
+  "oracle_fused20": 0.781837,
+  "oracle_alone5": 0.653477,
+  "oracle_alone1000": 0.905604,
+  "trav_hop1_20": 0.042741,
+  "trav0_hop1_20": 0.0316,
+  "oracle_hop1_20": 0.049764
+ },
+ "oracle_reach": {
+  "questions": 6929,
+  "share": 0.935719,
+  "seeds_with_a_pick": 20196
+ },
+ "seeds_mean": 7.917,
+ "alpha_mean": {
+  "R.mention": 0.1328,
+  "R.name_comention": 0.4245,
+  "R.title_comention": 0.2823,
+  "S.hyperlink": 0.1604
+ },
+ "operators": [
+  "R.mention",
+  "R.name_comention",
+  "R.title_comention",
+  "S.hyperlink"
+ ],
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "c777ab4b7a64eaaa5af852265daf6ba9f9debb4658a67f0c96595662e43f182a",
+  "ner_npz_sha256": "744da64a5f356b89241b2539085c9a0bf673750abd0b1822891c26f069a37137",
+  "knn_npz_sha256": "a82ee3d96ff6943678444f12279fe666ff5e03465b818bc229844597488222ae",
+  "structural_npz_sha256": "bc27173133e69cc821a14733a2f3dfe9d56442aeb867cf2cdcdcc4fff9c17608",
+  "w2_s_npz_sha256": "c46e17ee41b6a36540d46b5f0775dc707c128d352288aa27e4d1e1a54ff0234c",
+  "f0t_npz_sha256": "7b3bb50b1cc8ee03e4a76e1e7dd8c078000dbc68c3f4f7e32fbb6e0310cd53e7",
+  "names_npz_sha256": "8ae1d1cb11afcda4217ca8a33a6e8df743310489f8decb9a75baf07832da3f04",
+  "vectors": {
+   "shards": 131,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "956a389cf0dc79e0c745d6d59124e25b3a6591f8d33e14e147754261bb23c3cb"
+  },
+  "r1_record_sha256": "d91a43f178cbc43dbaed1c16229e994358e0f4c50a56b71db01b8b986282a477",
+  "r1_npz_sha256": "2589d71fba21ef4ea1c62619397b22804fd81b389166241fcb391ee0488f152d"
+ },
+ "threads": 8,
+ "npz_sha256": "aaf2b55f71810592e765678d3c5b59d42e928fe197501e0ceaae42dc1dde3625",
+ "seconds": 3746.4,
+ "utc": "2026-11-25T02:30:33Z",
+ "script_sha256": "7d7cf31987dfcee7227978db2e136b1dde30b0aad8a4b6424b164aaf256838da",
+ "traversal_checkpoint": {
+  "wrapper": "outputs/mp_unified/zsem2tc.py",
+  "resumed_from_question": 4608,
+  "saves": 8
+ }
+}
