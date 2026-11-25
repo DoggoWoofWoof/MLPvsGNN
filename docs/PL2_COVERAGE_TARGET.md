@@ -206,3 +206,209 @@ SHORT, the report names what was tried and the next change, and that change is a
 - The six datasets' graph here is the old package graph (its ner family is the spaCy one). It is the graph the filed grids
   were measured on, which is what lets G-K close; PL1's layout (F0T, W2_S, carried forms, K_e3v) will differ, and section 8.2
   is where that is read.
+
+## 10. Results (25 Nov 2026; five of seven datasets read)
+
+Read: MultiHop-RAG, SQuAD, MuSiQue, MetaQA, WebQSP (all on the laptop). **Not read: HotpotQA and 2Wiki** (their graphs and vectors need
+the host; the rows are in `outputs/pl2/feed_rows.txt`, none has run). The e3v confirmation is read for MultiHop-RAG only; the
+other four e3v confirmations need the vectors that sit on the host (rows `pl2-ce-*`). Every number below is a record's
+(`outputs/pl2/<d>/{select,confirm_frozen,confirm_e3v}.json`, `outputs/pl2/call.json`); the tables are written from those records
+by `outputs/mp_unified/zpl2r.py` into `outputs/pl2/report.md` and are pasted here unchanged. The pool functions were not edited after the
+code commit 656cc37; the host flag, the population cache's atomic write, the host gate check, the G-U check in `select` and the
+once-at-start hashes were added around it (commits fb4b1a9, fbc83eb, a9810ac; the code-path sha256 `18c31653...` is the same
+before and after each).
+
+### 10.1 Gates and cost
+
+- **G-K** MuSiQue: all 31 filed cells equal to 1e-9 (max difference 0), the three CSR stores equal the family CSRs (laptop,
+  64 s; the host's own G-K is row `pl2-gk-musique`, and every host select and confirm refuses to run without it). **G-K2**
+  MultiHop-RAG e3v and frozen: PASS against `knee_e3v.json` and `knee_frozen.json`. **Self-test** (the engine against a
+  brute-force pool builder, G-X, G-F, G-D at 1 and 4 threads): PASS (`selftest.json`). **G-U**: every dev grid head of the five
+  datasets carries code-path sha256 `18c31653...` and the declared cell list's `76bdf3a8...`; `select` now refuses a head that
+  does not (the SQuAD and MuSiQue heads first written had been hashed after this file was edited under the running job, so their
+  hash differed from the code that ran; both grids were re-run and are the ones read, section 10.7).
+- **Cost** (one process, one core, no GPU; dev grid of 804 cells): MultiHop-RAG 12 s (224 questions), MetaQA 314 s (1,497; 0.43 GB),
+  SQuAD 488 s (1,498; 0.35 GB), MuSiQue 505 s (1,534; 0.65 GB), WebQSP 534 s (1,507; 0.5 GB private, 4.9 GB resident as mapped
+  vector pages). A host smoke of 14 to 16 dev questions with the host's package mirror ran on 2Wiki (32 s with the population
+  built; 1.85 GB), HotpotQA (48 s; 1.70 GB), MetaQA (5.5 s; 0.39 GB) and WebQSP (21 s; 0.84 GB): the mirror opens, the e3v lists
+  and vectors read, nothing was graded for the record.
+
+### 10.2 Tables
+
+### Dev reading (the rule's own numbers, dev carve, frozen lists)
+
+| dataset | dev q | R95 retrieval-only | R95 with links | R98 retrieval-only | R98 with links | OLD (own construction) |
+|---|---|---|---|---|---|---|
+| multihoprag | 224 | `rrf1000_b50` (0.9732 at 50.0) | `rrf1000_b25+FULL:h1_c100+top25` (0.9777 at 50.0) | `rrf1000_b60` (0.9866 at 60.0) | `rrf1000_b50+FULL:h1_c100+top25` (0.9955 at 75.0) | `equal_rrf_budget_50` (0.9643 at 50.0) |
+| squad | 1498 | `rrf1000_b15` (0.9519 at 15.0) | `dense_top25+KNN:h1_c100+top25` (0.9579 at 41.4) | `rrf1000_b75` (0.9833 at 75.0) | `rrf1000_b50+KNN:h1_c100+top25` (0.9806 at 63.3) | `equal_rrf_budget_50` (0.9793 at 50.0) |
+| hotpotqa | NOT READ | | | | | |
+| 2wiki | NOT READ | | | | | |
+| musique | 1534 | `rrf1000_b2000` (0.7353 at 1,698.3, SHORT) | `rrf1000_b800+FULL:h1_c100` (0.8012 at 1,082.6, SHORT) | `rrf1000_b2000` (0.7353 at 1,698.3, SHORT) | `rrf1000_b800+FULL:h1_c100` (0.8012 at 1,082.6, SHORT) | `equal_rrf_budget_200+FULL:h2_c25` (0.7679 at 2,093.5) |
+| metaqa | 1497 | `rrf1000_b2000` (0.2712 at 1,894.9, SHORT) | `equal_rrf_budget_200+STRUCT:h3_c25_v2000` (0.8958 at 2,157.6, SHORT) | `rrf1000_b2000` (0.2712 at 1,894.9, SHORT) | `equal_rrf_budget_200+STRUCT:h3_c25_v2000` (0.8958 at 2,157.6, SHORT) | `equal_rrf_budget_50+STRUCT:h3_c25_v2000` (0.8938 at 2,021.7) |
+| webqsp | 1507 | `rrf1000_b2000` (0.4154 at 1,666.3, SHORT) | `dense_top200+FULL:h2_c100_v2000` (0.7505 at 1,888.2, SHORT) | `rrf1000_b2000` (0.4154 at 1,666.3, SHORT) | `dense_top200+FULL:h2_c100_v2000` (0.7505 at 1,888.2, SHORT) | `dense_top200+FULL:h3_c25_v2000` (0.6967 at 2,118.8) |
+
+### The chosen cell (R95 over all cells) and its confirmation on eval
+
+| dataset | chosen cell | dev ALL | dev nodes | eval ALL frozen (nodes) | eval ALL e3v | OLD eval ALL frozen | OLD eval ALL e3v |
+|---|---|---|---|---|---|---|---|
+| multihoprag | `rrf1000_b25+FULL:h1_c100+top25` | 0.9777 | 50.0 | 0.9690 (50.0) | 0.9699 (50.0) | 0.9540 | 0.9451 |
+| squad | `rrf1000_b15` | 0.9519 | 15.0 | 0.9554 (15.0) | not read | 0.9798 | not read |
+| musique | `rrf1000_b800+FULL:h1_c100` (SHORT) | 0.8012 | 1,082.6 | 0.8283 (1,064.2) SHORT | not read | 0.8026 | not read |
+| metaqa | `equal_rrf_budget_200+STRUCT:h3_c25_v2000` (SHORT) | 0.8958 | 2,157.6 | 0.8952 (2,153.5) SHORT | not read | 0.8949 | not read |
+| webqsp | `dense_top200+FULL:h2_c100_v2000` (SHORT) | 0.7505 | 1,888.2 | 0.7638 (1,890.8) SHORT | not read | 0.6880 | not read |
+
+### The same at 0.98 (R98 over all cells) on eval
+
+| dataset | chosen cell | dev ALL | dev nodes | eval ALL frozen (nodes) | eval ALL e3v (nodes) |
+|---|---|---|---|---|---|
+| multihoprag | `rrf1000_b60` | 0.9866 | 60.0 | 0.9681 (60.0) SHORT | 0.9664 (60.0) SHORT |
+| squad | `rrf1000_b50+KNN:h1_c100+top25` | 0.9806 | 63.3 | 0.9818 (63.0) | not read |
+| musique | `rrf1000_b800+FULL:h1_c100` (SHORT) | 0.8012 | 1,082.6 | 0.8283 (1,064.2) SHORT | not read |
+| metaqa | `equal_rrf_budget_200+STRUCT:h3_c25_v2000` (SHORT) | 0.8958 | 2,157.6 | 0.8952 (2,153.5) SHORT | not read |
+| webqsp | `dense_top200+FULL:h2_c100_v2000` (SHORT) | 0.7505 | 1,888.2 | 0.7638 (1,890.8) SHORT | not read |
+
+### The smallest cell at 0.95 and at 0.98 on dev, at any size (the bound is not applied here), retrieval-only and with links
+
+| dataset | retrieval-only 0.95 | with links 0.95 | retrieval-only 0.98 | with links 0.98 |
+|---|---|---|---|---|
+| multihoprag | `rrf1000_b50` 0.9732 at 50.0 | `rrf1000_b25+FULL:h1_c100+top25` 0.9777 at 50.0 | `rrf1000_b60` 0.9866 at 60.0 | `rrf1000_b50+FULL:h1_c100+top25` 0.9955 at 75.0 |
+| squad | `rrf1000_b15` 0.9519 at 15.0 | `dense_top25+KNN:h1_c100+top25` 0.9579 at 41.4 | `rrf1000_b75` 0.9833 at 75.0 | `rrf1000_b50+KNN:h1_c100+top25` 0.9806 at 63.3 |
+| musique | none on the grid (best 0.7353) | none on the grid (best 0.8449) | none on the grid (best 0.7353) | none on the grid (best 0.8449) |
+| metaqa | none on the grid (best 0.2712) | `equal_rrf_budget_50+STRUCT:h3_c100_v5000` 0.9613 at 5,003.7 | none on the grid (best 0.2712) | none on the grid (best 0.9613) |
+| webqsp | none on the grid (best 0.4154) | none on the grid (best 0.8016) | none on the grid (best 0.4154) | none on the grid (best 0.8016) |
+
+### The highest ALL on dev (any cell; the bound is 2,500 mean nodes), retrieval-only and with links
+
+| dataset | retrieval-only, within the bound | retrieval-only, any size | with links, within the bound | with links, any size |
+|---|---|---|---|---|
+| multihoprag | `rrf1000_b125` 1.0000 at 125.0 | `rrf1000_b125` 1.0000 at 125.0 | `rrf1000_b50+FULL:h2_c100_v5000+top50` 1.0000 at 100.0 | `rrf1000_b50+FULL:h2_c100_v5000+top50` 1.0000 at 100.0 |
+| squad | `rrf1000_b1600` 0.9980 at 1,544.8 | `rrf1000_b1600` 0.9980 at 1,544.8 | `rrf1000_b800+FULL:h2_c25` 0.9973 at 2,319.9 | `rrf1000_b800+FULL:h2_c25` 0.9973 at 2,319.9 |
+| musique | `rrf1000_b2000` 0.7353 at 1,698.3 | `rrf1000_b2000` 0.7353 at 1,698.3 | `rrf1000_b800+FULL:h1_c100` 0.8012 at 1,082.6 | `rrf1000_b800+FULL:h2_c25` 0.8449 at 2,611.7 |
+| metaqa | `rrf1000_b2000` 0.2712 at 1,894.9 | `rrf1000_b2000` 0.2712 at 1,894.9 | `equal_rrf_budget_200+STRUCT:h3_c25_v2000` 0.8958 at 2,157.6 | `equal_rrf_budget_50+STRUCT:h3_c100_v5000` 0.9613 at 5,003.7 |
+| webqsp | `rrf1000_b2000` 0.4154 at 1,666.3 | `rrf1000_b2000` 0.4154 at 1,666.3 | `dense_top200+FULL:h2_c100_v2000` 0.7505 at 1,888.2 | `dense_top200+FULL:h3_c100_v5000` 0.8016 at 5,100.2 |
+
+### What the links bought (dev frontier of the graph cells minus the retrieval cells, at equal mean nodes; ALL)
+
+| dataset | 25 | 50 | 75 | 100 | 150 | 200 | 300 | 500 | 1000 | 2000 | 2500 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| multihoprag | 0.8973 / none | 0.9732 / 0.9777 (+0.45) | 0.9866 / 0.9955 (+0.89) | 0.9955 / 1.0000 (+0.45) | 1.0000 / 1.0000 (+0.00) | 1.0000 / 1.0000 (+0.00) | 1.0000 / 1.0000 (+0.00) | 1.0000 / 1.0000 (+0.00) | 1.0000 / 1.0000 (+0.00) | 1.0000 / 1.0000 (+0.00) | 1.0000 / 1.0000 (+0.00) |
+| squad | 0.9666 / none | 0.9793 / 0.9773 (-0.20) | 0.9833 / 0.9846 (+0.13) | 0.9887 / 0.9853 (-0.33) | 0.9920 / 0.9907 (-0.13) | 0.9933 / 0.9913 (-0.20) | 0.9940 / 0.9947 (+0.07) | 0.9953 / 0.9953 (+0.00) | 0.9973 / 0.9967 (-0.07) | 0.9980 / 0.9967 (-0.13) | 0.9980 / 0.9973 (-0.07) |
+| musique | 0.2979 / none | 0.3696 / 0.4146 (+4.50) | 0.4153 / 0.4733 (+5.80) | 0.4407 / 0.5261 (+8.54) | 0.4778 / 0.5906 (+11.28) | 0.5111 / 0.6271 (+11.60) | 0.5600 / 0.6734 (+11.34) | 0.6206 / 0.7066 (+8.60) | 0.6812 / 0.7881 (+10.69) | 0.7353 / 0.8012 (+6.58) | 0.7353 / 0.8012 (+6.58) |
+| metaqa | 0.0147 / none | 0.0200 / 0.2325 (+21.24) | 0.0234 / 0.3039 (+28.06) | 0.0261 / 0.3267 (+30.06) | 0.0321 / 0.3280 (+29.59) | 0.0588 / 0.3300 (+27.12) | 0.0675 / 0.3641 (+29.66) | 0.1102 / 0.5638 (+45.36) | 0.1864 / 0.6927 (+50.63) | 0.2712 / 0.7408 (+46.96) | 0.2712 / 0.8958 (+62.46) |
+| webqsp | 0.1526 / none | 0.1772 / 0.3676 (+19.04) | 0.1977 / 0.4625 (+26.48) | 0.2150 / 0.5601 (+34.51) | 0.2455 / 0.5886 (+34.31) | 0.2694 / 0.6025 (+33.31) | 0.3026 / 0.6251 (+32.25) | 0.3278 / 0.6251 (+29.73) | 0.3988 / 0.6676 (+26.87) | 0.4154 / 0.7505 (+33.51) | 0.4154 / 0.7505 (+33.51) |
+
+(each entry: retrieval-only frontier / graph frontier (links bought in points); `none` = no graph cell is that small)
+
+### The ceiling the filed reach blocks set (M3A's populations: the share of questions missing a gold from the union pool, and where the missing golds sit)
+
+| dataset | questions | with a gold missing | STRUCT within 1/2/3 hops | NER within 1/2/3 | KNN within 1/2/3 | FULL within 1/2/3 | questions whose missing golds all lie within 3 (FULL) |
+|---|---|---|---|---|---|---|---|
+| squad | 11873 | 54 | 0.074 / 0.519 / 0.741 | 0.037 / 0.222 / 0.685 | 0.000 / 0.074 / 0.093 | 0.111 / 0.722 / 0.981 | 53 of 54 |
+| hotpotqa | 1852 | 378 | 0.914 / 0.945 / 0.977 | 0.203 / 0.278 / 0.364 | 0.101 / 0.184 / 0.252 | 0.927 / 0.963 / 0.992 | 373 of 378 |
+| 2wiki | 2096 | 1038 | 0.878 / 0.930 / 0.987 | 0.352 / 0.445 / 0.568 | 0.089 / 0.164 / 0.213 | 0.921 / 0.982 / 0.998 | 991 of 1038 |
+| musique | 2417 | 1003 | 0.262 / 0.770 / 0.935 | 0.347 / 0.485 / 0.627 | 0.111 / 0.178 / 0.256 | 0.464 / 0.892 / 1.000 | 1003 of 1003 |
+| metaqa | 39138 | 36160 | 0.118 / 0.486 / 0.996 | 0.000 / 0.000 / 0.000 | 0.001 / 0.006 / 0.017 | 0.119 / 0.551 / 0.998 | 35989 of 36160 |
+| webqsp | 1503 | 1074 | 0.366 / 0.898 / 0.989 | 0.022 / 0.024 / 0.025 | 0.005 / 0.014 / 0.032 | 0.364 / 0.927 / 0.996 | 1053 of 1074 |
+
+### The call: INCOMPLETE (read 5 of 7: metaqa, multihoprag, musique, squad, webqsp)
+
+| dataset | status | NEW | NEW ALL (nodes) | OLD | OLD ALL (nodes) | ALL diff, 95% CI | nodes ratio, 95% CI |
+|---|---|---|---|---|---|---|---|
+| multihoprag | ABOVE | `rrf1000_b25+FULL:h1_c100+top25` | 0.9690 (50.0) | `equal_rrf_budget_50` | 0.9540 (50.0) | +1.50 [+0.53, +2.48] | 1.000 [1.000, 1.000] |
+| squad | ABOVE | `rrf1000_b15` | 0.9554 (15.0) | `equal_rrf_budget_50` | 0.9798 (50.0) | -2.44 [-2.71, -2.20] | 0.300 [0.300, 0.300] |
+| hotpotqa | NOT READ | | | | | | |
+| 2wiki | NOT READ | | | | | | |
+| musique | ABOVE | `rrf1000_b800+FULL:h1_c100` | 0.8283 (1,064.2) | `equal_rrf_budget_200+FULL:h2_c25` | 0.8026 (2,092.4) | +2.57 [+1.41, +3.72] | 0.509 [0.506, 0.511] |
+| metaqa | LEVEL | `equal_rrf_budget_200+STRUCT:h3_c25_v2000` | 0.8952 (2,153.5) | `equal_rrf_budget_50+STRUCT:h3_c25_v2000` | 0.8949 (2,017.6) | +0.03 [+0.00, +0.07] | 1.067 [1.067, 1.067] |
+| webqsp | ABOVE | `dense_top200+FULL:h2_c100_v2000` | 0.7638 (1,890.8) | `dense_top200+FULL:h3_c25_v2000` | 0.6880 (2,119.6) | +7.58 [+5.92, +9.38] | 0.892 [0.883, 0.902] |
+
+### 10.3 What each dataset says (dev reading, eval confirmation, frozen lists)
+
+- **MultiHop-RAG** (224 dev questions, so about +/- 2 points). 0.95 is reached at 50 mean nodes with and without links; links buy +0.45
+  point at 50, +0.89 at 75 and +0.45 at 100 nodes. The chosen R95 cell (`rrf1000_b25+FULL:h1_c100+top25`, ranked expansion of a
+  25-node base) holds 0.969 on eval (frozen) and 0.970 (e3v) at 50 nodes against the old own construction's 0.954 / 0.945: ABOVE,
+  +1.50 points [+0.53, +2.48] at the same price. At 0.98 the retrieval-only cell (60 nodes) is SHORT on eval (0.968 / 0.966); the
+  link cell (75 nodes) is confirmed (0.988 / 0.981). Dev is 224 questions: the 60-node dev read (0.987) was optimistic by 1.8 points.
+- **SQuAD**. Retrieval depth is the lever, not links. The fused full lists give 0.952 dev / 0.955 eval at **15 nodes** (`rrf1000_b15`);
+  the smallest link cell at 0.95 is larger (41 nodes). At equal nodes the graph frontier is below the retrieval frontier at 50, 100,
+  150 and 200 nodes (-0.2, -0.33, -0.13, -0.20 points) and above it by 0.1 point at 75 and 300: links buy nothing measurable here (the retrieval ladder has 37 depths, the graph cells 12 bases, so a small negative is the finer ladder, not harm).
+  At 0.98: retrieval-only 75 nodes (eval 0.985), with links 63 nodes (eval 0.982). The call is ABOVE on the price rule (15 nodes
+  against 50 at a pool that still holds 0.95), with ALL 2.4 points below the old cell's 0.980: it is a smaller pool, not a better one.
+- **MuSiQue: cannot reach 0.95.** Best within the bound 0.801 dev (0.828 eval) at 1,083 nodes (`rrf1000_b800+FULL:h1_c100`); best at
+  any size on the grid 0.845 at 2,612 nodes (`rrf1000_b800+FULL:h2_c25`); retrieval-only best 0.735 at 1,698 (eval 0.757). Links buy
+  +4.5 to +11.6 points at equal nodes from 50 to 1,000 nodes and +6.6 at 2,000. ANY is 0.999 at the chosen cell and micro-coverage
+  0.918: every question has a gold, the second or third is the one missing. The old cell (`equal_rrf_budget_200+FULL:h2_c25`,
+  2,092 nodes) holds 0.803 on eval; the new one 0.828 at 1,064 nodes (ABOVE, +2.57 points [+1.41, +3.72] at 0.51 of the nodes).
+- **MetaQA: reaches 0.95 only past the bound.** Retrieval-only is 0.27 at 1,895 nodes; typed structure is the whole result. Within the
+  bound the best is 0.896 dev / 0.895 eval at 2,154 nodes (`equal_rrf_budget_200+STRUCT:h3_c25_v2000`); the smallest cell at 0.95 on
+  the grid is `equal_rrf_budget_50+STRUCT:h3_c100_v5000` at **5,004 nodes** (0.961). The best STRUCT cell (0.961) is above the best FULL cell (0.911): NER reaches 0.000 and KNN 0.017 of MetaQA's
+  missing golds in 3 hops. LEVEL against the old cell (+0.03 point, nodes 1.07x).
+- **WebQSP: cannot reach 0.95.** Best within the bound 0.751 dev (0.764 eval) at 1,888 nodes (`dense_top200+FULL:h2_c100_v2000`); best at
+  any size 0.802 at 5,100 nodes. Retrieval-only best 0.415. The questions that miss a gold miss about 8 each; ANY is 0.942 and
+  micro-coverage 0.592 at the chosen cell. ABOVE the old cell (+7.58 points [+5.92, +9.38] at 0.89 of the nodes).
+- **HotpotQA, 2Wiki: not read.**
+
+### 10.4 The call so far
+
+`call.json`: **INCOMPLETE (5 of 7 read): BELOW 0, ABOVE 4 (MultiHop-RAG, SQuAD, MuSiQue, WebQSP), LEVEL 1 (MetaQA).** Every chosen cell
+is inside the 2,500-node bound. The three datasets that miss 0.95 (MuSiQue, MetaQA, WebQSP) are called on the rule's SHORT branch
+(highest ALL within the bound), and the call does not read them as meeting the target. HotpotQA and 2Wiki decide whether the
+universal rule carries; nothing here is a verdict on it.
+
+### 10.5 Why the short datasets are short (the filed reach blocks, M3A's populations)
+
+The filed `reachability` blocks say where the golds missing from the first-stage union sit. They are ceilings for an uncapped walk;
+the walk here is capped (first `per_seed_cap` neighbours in CSR order, first `per_frontier_cap` per frontier node, `visited_cap` in
+order of appearance), so a cell is far below its ceiling when the caps cut before the gold.
+
+| dataset | questions with a missing gold | STRUCT within 1 / 2 / 3 hops | FULL within 1 / 2 / 3 hops | best cell on the grid |
+|---|---|---|---|---|
+| MuSiQue | 1,003 of 2,417 | 0.262 / 0.770 / 0.935 | 0.464 / 0.892 / 1.000 | 0.845 at 2,612 (h2, base 800) |
+| MetaQA | 36,160 of 39,138 | 0.118 / 0.486 / 0.996 | 0.119 / 0.551 / 0.998 | 0.961 at 5,004 (STRUCT h3, cap 100, visited 5,000) |
+| WebQSP | 1,074 of 1,503 | 0.366 / 0.898 / 0.989 | 0.364 / 0.927 / 0.996 | 0.802 at 5,100 (FULL h3, cap 100, visited 5,000) |
+| SQuAD | 54 of 11,873 | 0.074 / 0.519 / 0.741 | 0.111 / 0.722 / 0.981 | 0.998 at 1,545 (retrieval) |
+
+- **MuSiQue** needs three hops of FULL (hop 2 reaches 0.89 of the missing golds, hop 3 all of them), and FULL beats every single family
+  on the grid (STRUCT 0.738, NER 0.777, KNN 0.709, FULL 0.845). At these node counts the walk's depth is bought by the base: the best
+  cell is a deep base (800) with a hop-2 walk, better than a 200 base with the deepest walk (0.822 at 5,119 nodes). The walk stops at
+  caps that were set for the old 2,000-node pools.
+- **MetaQA** and **WebQSP** are answer-entity questions (a question with a gold missing from the first stage misses about 7.7 and 8.1 golds). STRUCT within 3 hops
+  holds 99.6% / 98.9% of them, but ALL needs every one of about eight, so ALL is the product of eight caps' luck; the pool that
+  holds them is 2 to 5 thousand nodes. NER and KNN reach nothing here (WebQSP NER 0.025, KNN 0.032 within 3 hops) and only add nodes.
+- **SQuAD** is the contrast: 54 questions in 11,873 miss a gold from the union, so there is nothing for links to buy; the
+  frontier is the retrieval depth.
+
+### 10.6 Candidate link-rule changes the diagnosis points to (names only; none is adopted, none is in the grid)
+
+1. **Similarity-ordered caps**: the per-seed and per-frontier caps keep the neighbours with the highest question cosine instead of the
+   first in CSR order (the cut that now drops golds before ranking sees them).
+2. **Regime per hop**: STRUCT at hop 3 with NER and KNN confined to hop 1 (MetaQA, WebQSP: NER and KNN reach under 4% of the missing
+   golds in three hops, and the best STRUCT cell on each is above the best FULL cell or within 2 points of it).
+3. **Deeper base before the walk**: `rrf1000_b1200` to `b1600` with the hop-2 walk (MuSiQue's best cell is the deepest base the walk grid
+   has, b800).
+4. **Seed widening**: seeds from the top 10 or 20 of the fused list, not dense top 5 union splade top 5 (more first golds to walk from;
+   MuSiQue ANY is 0.999 and ALL 0.80).
+5. **Bridge-conditioned ranking**: rank the expansion by cosine to the question and to the base's best documents, for the second gold
+   the question text alone does not point at.
+6. **Visited cap by budget, not by order of appearance** (a cap on the expansion's rank, not on its arrival).
+
+### 10.7 Surprises and contradictions with filed numbers
+
+- Some filed numbers quoted in the task statement differ from the filed eval-population rows (probably the legacy-continuity rows);
+  section 1 holds the eval-population rows. Every OLD number above is the filed construction read again by this engine on its own
+  questions (G-K ties the engine to the filed cells on MuSiQue exactly; the OLD ALL on eval is MetaQA 0.895 against the filed 0.894,
+  WebQSP 0.688 against 0.688, MuSiQue 0.803 against 0.803, SQuAD 0.980 against 0.980).
+- SQuAD's R95 cell is 15 nodes and the retrieval-only frontier is on or above the graph frontier from 50 to 200 nodes: the claim that links lift
+  the pools at the small end holds on MultiHop-RAG, MuSiQue, MetaQA and WebQSP and not on SQuAD.
+- MuSiQue's dev carve is harder than its eval population (+2.7 points for the chosen cell, +3.5 for the old one); MetaQA's and
+  WebQSP's agree within 1.3 points.
+- The two dev grids written first (SQuAD, MuSiQue) carried a code-path hash computed after an edit of this file under the running job. The
+  code that ran was the committed pool code; the check was added to `select` and both grids were re-run. The numbers read are the
+  re-runs'; they equal the first runs' arrays element for element (see the note filed with the re-run in `outputs/pl2/rerun_check.json`).
+- WebQSP's mapped vector pages put its resident set at 4.9 GB while its private memory stays at 0.5 GB; the host rows ask for the mapped size.
+
+### 10.8 Undone (rows in `outputs/pl2/feed_rows.txt`, `pl2-*`, CPU only, none sent)
+
+HotpotQA and 2Wiki dev grids (3 parts each), select, frozen and e3v confirmations; the e3v confirmations of SQuAD, MuSiQue, MetaQA,
+WebQSP; the host's own G-K on MuSiQue (a precondition of every host select and confirm). After they have run: `rx fetch` of
+`outputs/pl2`, `zpl2g.py call` over all seven on the laptop, `zpl2r.py`, and this section re-filed with the two datasets read.

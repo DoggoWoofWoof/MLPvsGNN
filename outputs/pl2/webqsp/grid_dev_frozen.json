@@ -1,0 +1,25 @@
+{
+ "stage": "PL2 grid",
+ "declared_in": "docs/PL2_COVERAGE_TARGET.md",
+ "dataset": "webqsp",
+ "carve": "dev",
+ "first": "frozen",
+ "questions": 1507,
+ "rows": [
+  0,
+  1507
+ ],
+ "part": null,
+ "cells": 804,
+ "cells_sha256": "76bdf3a822e6bb8caf21121f853c9a8383e7844f99425e004d18c75f2aededc1",
+ "graph": "package",
+ "population_digest": "054470184ac70aa264554657ecac85ca0fdb4e6cae6d958d0e1c967cc01e3e4a",
+ "code_path_sha256": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+ "constants_sha256": "1f89d64fad950dbd2f6f49a34f8f29339a34ef57ab69918fa247fc79dab03cb1",
+ "script_sha256": "c49234cde789a843d537e2b5a7aeb1cef0bebd7be607c1bcdd51ce3ad8987eb6",
+ "npz": "outputs/pl2/webqsp/grid_dev_frozen.npz",
+ "npz_sha256": "cf6dae07590ddab2039431c312bdac9982486af4311fbbd082a77a8919b51a29",
+ "seconds": 534.3,
+ "peak_gb": 4.92,
+ "utc": "2026-11-25T00:13:17Z"
+}

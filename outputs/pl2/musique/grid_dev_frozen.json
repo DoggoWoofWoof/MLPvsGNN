@@ -1,0 +1,25 @@
+{
+ "stage": "PL2 grid",
+ "declared_in": "docs/PL2_COVERAGE_TARGET.md",
+ "dataset": "musique",
+ "carve": "dev",
+ "first": "frozen",
+ "questions": 1534,
+ "rows": [
+  0,
+  1534
+ ],
+ "part": null,
+ "cells": 804,
+ "cells_sha256": "76bdf3a822e6bb8caf21121f853c9a8383e7844f99425e004d18c75f2aededc1",
+ "graph": "package",
+ "population_digest": "58c6bd197a6cac8052f3b8b36b64a1f934a26ea082a6cc0217a75c9933b52d90",
+ "code_path_sha256": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+ "constants_sha256": "1f89d64fad950dbd2f6f49a34f8f29339a34ef57ab69918fa247fc79dab03cb1",
+ "script_sha256": "97ec4883b41445110b57181b44d2630b7424dfbfd884f7cc9512a65085d7e477",
+ "npz": "outputs/pl2/musique/grid_dev_frozen.npz",
+ "npz_sha256": "d2ea6d120489de8f69d0993a2381fc45e3c37223c5519f6d59b3ad7bb4830b80",
+ "seconds": 565.2,
+ "peak_gb": 0.63,
+ "utc": "2026-11-25T00:25:38Z"
+}

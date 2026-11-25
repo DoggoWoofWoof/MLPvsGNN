@@ -1,0 +1,25 @@
+{
+ "stage": "PL2 grid",
+ "declared_in": "docs/PL2_COVERAGE_TARGET.md",
+ "dataset": "multihoprag",
+ "carve": "dev",
+ "first": "frozen",
+ "questions": 224,
+ "rows": [
+  0,
+  224
+ ],
+ "part": null,
+ "cells": 804,
+ "cells_sha256": "76bdf3a822e6bb8caf21121f853c9a8383e7844f99425e004d18c75f2aededc1",
+ "graph": "layout:B0",
+ "population_digest": "63f5a2fffabab51620851ada4c4f9fdc7355fff2efc3b5ee9842a2782f5bad79",
+ "code_path_sha256": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+ "constants_sha256": "1f89d64fad950dbd2f6f49a34f8f29339a34ef57ab69918fa247fc79dab03cb1",
+ "script_sha256": "6e0da643a9cc358b1ad9da3c466985281f85ca6511d0ad3afecc1c36761502af",
+ "npz": "outputs/pl2/multihoprag/grid_dev_frozen.npz",
+ "npz_sha256": "9fb6e0881c4eee7fec7c0465e57c5afed61f7df83e4ebf0cc78ce76ec0def994",
+ "seconds": 11.8,
+ "peak_gb": 0.28,
+ "utc": "2026-11-24T23:45:16Z"
+}

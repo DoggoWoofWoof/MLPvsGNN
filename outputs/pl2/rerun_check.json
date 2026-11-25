@@ -1,0 +1,29 @@
+{
+ "stage": "PL2 rerun check",
+ "utc": "2026-11-25T00:26:12Z",
+ "datasets": {
+  "squad": {
+   "arrays_equal": {
+    "names": true,
+    "present": true,
+    "size": true,
+    "qids": true,
+    "gold_counts": true
+   },
+   "rerun_code_path_sha256": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+   "rerun_script_sha256": "97ec4883b41445110b57181b44d2630b7424dfbfd884f7cc9512a65085d7e477"
+  },
+  "musique": {
+   "arrays_equal": {
+    "names": true,
+    "present": true,
+    "size": true,
+    "qids": true,
+    "gold_counts": true
+   },
+   "rerun_code_path_sha256": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+   "rerun_script_sha256": "97ec4883b41445110b57181b44d2630b7424dfbfd884f7cc9512a65085d7e477"
+  }
+ },
+ "verdict": "IDENTICAL"
+}

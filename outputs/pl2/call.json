@@ -1,0 +1,134 @@
+{
+ "stage": "PL2 call",
+ "declared_in": "docs/PL2_COVERAGE_TARGET.md",
+ "utc": "2026-11-25T00:26:49Z",
+ "datasets": {
+  "metaqa": {
+   "status": "LEVEL",
+   "new": "equal_rrf_budget_200+STRUCT:h3_c25_v2000",
+   "old": "equal_rrf_budget_50+STRUCT:h3_c25_v2000",
+   "new_all": 0.8952478283086357,
+   "old_all": 0.8949412365866122,
+   "new_nodes": 2153.502299437915,
+   "old_nodes": 2017.6083801737352,
+   "new_reaches": false,
+   "old_reaches": false,
+   "within_bound": true,
+   "all_diff": 0.00030659172202351925,
+   "all_diff_ci": [
+    0.0,
+    0.0007153806847215449
+   ],
+   "nodes_ratio": 1.0673539625427597,
+   "nodes_ratio_ci": [
+    1.067247325021256,
+    1.0674532141533446
+   ]
+  },
+  "squad": {
+   "status": "ABOVE",
+   "new": "rrf1000_b15",
+   "old": "equal_rrf_budget_50",
+   "new_all": 0.9553609028889076,
+   "old_all": 0.9797860692327128,
+   "new_nodes": 15.0,
+   "old_nodes": 50.0,
+   "new_reaches": true,
+   "old_reaches": true,
+   "within_bound": true,
+   "all_diff": -0.024425166343805205,
+   "all_diff_ci": [
+    -0.027122462730565195,
+    -0.021980544091636398
+   ],
+   "nodes_ratio": 0.3,
+   "nodes_ratio_ci": [
+    0.3,
+    0.3
+   ]
+  },
+  "musique": {
+   "status": "ABOVE",
+   "new": "rrf1000_b800+FULL:h1_c100",
+   "old": "equal_rrf_budget_200+FULL:h2_c25",
+   "new_all": 0.82829954489036,
+   "old_all": 0.8026479106330161,
+   "new_nodes": 1064.177079023583,
+   "old_nodes": 2092.4435250310303,
+   "new_reaches": false,
+   "old_reaches": false,
+   "within_bound": true,
+   "all_diff": 0.025651634257343847,
+   "all_diff_ci": [
+    0.014067025237898264,
+    0.03723624327678943
+   ],
+   "nodes_ratio": 0.5085810280149863,
+   "nodes_ratio_ci": [
+    0.5063014657107423,
+    0.5109020607588617
+   ]
+  },
+  "hotpotqa": {
+   "status": "NOT_READ",
+   "why": "no select or confirm file here"
+  },
+  "2wiki": {
+   "status": "NOT_READ",
+   "why": "no select or confirm file here"
+  },
+  "webqsp": {
+   "status": "ABOVE",
+   "new": "dense_top200+FULL:h2_c100_v2000",
+   "old": "dense_top200+FULL:h3_c25_v2000",
+   "new_all": 0.7638057218895542,
+   "old_all": 0.6879574184963406,
+   "new_nodes": 1890.7558216899533,
+   "old_nodes": 2119.596141051231,
+   "new_reaches": false,
+   "old_reaches": false,
+   "within_bound": true,
+   "all_diff": 0.07584830339321358,
+   "all_diff_ci": [
+    0.059198270126413745,
+    0.09381237524950103
+   ],
+   "nodes_ratio": 0.8920358860212954,
+   "nodes_ratio_ci": [
+    0.8826101782348202,
+    0.9015339007198538
+   ]
+  },
+  "multihoprag": {
+   "status": "ABOVE",
+   "new": "rrf1000_b25+FULL:h1_c100+top25",
+   "old": "equal_rrf_budget_50",
+   "new_all": 0.9690265486725663,
+   "old_all": 0.9539823008849557,
+   "new_nodes": 50.0,
+   "old_nodes": 50.0,
+   "new_reaches": true,
+   "old_reaches": true,
+   "within_bound": true,
+   "all_diff": 0.015044247787610598,
+   "all_diff_ci": [
+    0.005309734513274322,
+    0.024778761061946875
+   ],
+   "nodes_ratio": 1.0,
+   "nodes_ratio_ci": [
+    1.0,
+    1.0
+   ]
+  }
+ },
+ "datasets_read": [
+  "metaqa",
+  "multihoprag",
+  "musique",
+  "squad",
+  "webqsp"
+ ],
+ "code_path_equal_everywhere": true,
+ "call": "INCOMPLETE"
+}

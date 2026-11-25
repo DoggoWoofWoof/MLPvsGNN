@@ -1,0 +1,25 @@
+{
+ "stage": "PL2 grid",
+ "declared_in": "docs/PL2_COVERAGE_TARGET.md",
+ "dataset": "metaqa",
+ "carve": "eval",
+ "first": "frozen",
+ "questions": 9785,
+ "rows": [
+  0,
+  9785
+ ],
+ "part": null,
+ "cells": 3,
+ "cells_sha256": "9dcd9a76051d94328455c3c1e48c4d864fcdd3f05fc1c54f8d87e1d5a83fdd8f",
+ "graph": "package",
+ "population_digest": "baf65d95e7b449f80ddd53541c4a43dff6ac1c584faab5b98977595b95f523fe",
+ "code_path_sha256": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+ "constants_sha256": "1f89d64fad950dbd2f6f49a34f8f29339a34ef57ab69918fa247fc79dab03cb1",
+ "script_sha256": "c49234cde789a843d537e2b5a7aeb1cef0bebd7be607c1bcdd51ce3ad8987eb6",
+ "npz": "outputs/pl2/metaqa/grid_eval_frozen_confirm.npz",
+ "npz_sha256": "da03852a2da3a1ea63514b2ab866b8c63c3ecf931b451b79089e312b79cc5b95",
+ "seconds": 45.3,
+ "peak_gb": 0.12,
+ "utc": "2026-11-25T00:07:53Z"
+}
