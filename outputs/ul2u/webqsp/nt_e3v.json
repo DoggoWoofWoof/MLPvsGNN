@@ -1,0 +1,49 @@
+{
+ "dataset": "webqsp",
+ "enc": "e3v",
+ "declared_in": "docs/UL2_LAYOUT_ON_E3V.md, section 12",
+ "rule_text": "ABL-U (ABL section 8)",
+ "nodes": 2592894,
+ "nodes_sha256": "b39c615122ad55f587eaea0c3fc5c7eff4190e6236fa258006e957dcfda948fe",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "win": 8,
+ "cap": 25,
+ "dfmax": 100000,
+ "knn": {
+  "file": "outputs/enc/e4/knn/e3v/webqsp.npz",
+  "npz_sha256": "56161b19ed1899467bbc806db21b41a7b99d0c68a8b391e750bd08ced13bdf37"
+ },
+ "vectors": {
+  "shards": 65,
+  "dim": 1152,
+  "dtype": "float16",
+  "manifest_sha256": "e171839e9a7376ae102ec00d7fefffc0edc2ef2775707d79c3f76aa779fe4f17"
+ },
+ "inputs": {
+  "ner_npz_sha256": "8ed08f05db3da877f02d212b2c8ac5b495d12bf15c91c329b33652fdc2e9fb10",
+  "knn_npz_sha256": "75a03f25dfa8c6339773059bffbd8322c2f9bf13e7b48cad0105c2ee189519cd",
+  "structural_npz_sha256": "b7c2c435fc0b9dbab3a238c7db31cd61da9a8bd435864c0eba6990ae12756b95",
+  "w2_s_npz_sha256": "a2e79a93c350f6e4de9455af07b11684b875444d2fb61ed6f2555b443ed093c4",
+  "f0t_npz_sha256": "624684bf80d6605b8a7e9d9f884ee027b35c84f3f51dbdd4d65c10ee29a51edd",
+  "names_npz_sha256": "b567061f6c9fc8653ee964518913a97e72ef42e0d940315528401e80f0140f38"
+ },
+ "f0t_u_npz_sha256": "4572c146acff57720b5b5de7fb12472899a63b9c499424b8b260a4b4e4d00463",
+ "written_entries": 13572236,
+ "keys_written": 90375,
+ "ntc_keys": 44132,
+ "nt1_keys": 46237,
+ "ntc_pairs": 1263186,
+ "nt1_pairs": 4792516,
+ "npz_sha256": "aff8175b2da96a7cb68f8fe27602582a2edd88fb4d6ca26915c314c58503208d",
+ "seconds": 4138.5,
+ "build_sha256": "6e6f22c0f93161c401008e9290f0f7fa2b94fa3b2a3570b5da90254537ffe387",
+ "zul2u_sha256": "bf41636269905d1a4c4f7a6f704dc723fbce152ef5c4e9852ee1e2621ab9cb6e",
+ "zabl_u_sha256": "dafde17682eec75cbcb14c45428e4f02068d71db4a2450d896fa4fa4a0fd2451",
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+ "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}

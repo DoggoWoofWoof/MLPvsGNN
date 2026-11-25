@@ -1,0 +1,5202 @@
+{
+ "declared_in": "docs/UL2_LAYOUT_ON_E3V.md, section 12.6",
+ "datasets": [
+  "musique",
+  "squad",
+  "hotpotqa",
+  "2wiki",
+  "metaqa",
+  "webqsp"
+ ],
+ "pending": [
+  "multihop-rag (joins when MHR1 files its package)"
+ ],
+ "P_star": 4997.1,
+ "bound": "130/100",
+ "boot": 2000,
+ "seed": 0,
+ "order": [
+  "H5",
+  "HM",
+  "HK1",
+  "NTc",
+  "NT1",
+  "HK2",
+  "H10"
+ ],
+ "scores": {
+  "H5": "R.hub table score: float32 dot of the two stored e3v rows (tab_s; ov_s on flagged rows), a pair's highest",
+  "H10": "as H5",
+  "HM": "as H5 (H10's pairs picked from both ends)",
+  "HK1": "the hub key's score (hk_s1), a pair's highest",
+  "HK2": "the hub key's scores (hk_s1, hk_s2), a pair's highest",
+  "NTc": "no score in its build: the group size (a key's namers + writers, at most 25), smallest first; stored as minus the size",
+  "NT1": "its build's score: the namer-writer float32 dot of the stored e3v rows (recomputed by ntrank)"
+ },
+ "verdict": "NONE_CARRIED",
+ "forms": [],
+ "base_over_bound": [],
+ "layout": {
+  "musique": {
+   "forms": {},
+   "union": {
+    "RK": 3388584
+   },
+   "ratio_to_REC": {
+    "RK": 1.0003
+   },
+   "carried_npz_sha256": "70e75a995bcbe7f4802e699719c8f4f21e56edc48573a9d5cd4593f740c7806f"
+  },
+  "squad": {
+   "forms": {},
+   "union": {
+    "RK": 995869
+   },
+   "ratio_to_REC": {
+    "RK": 0.9982
+   },
+   "carried_npz_sha256": "70e75a995bcbe7f4802e699719c8f4f21e56edc48573a9d5cd4593f740c7806f"
+  },
+  "hotpotqa": {
+   "forms": {},
+   "union": {
+    "RK": 62601137,
+    "SRK": 66832556
+   },
+   "ratio_to_REC": {
+    "RK": 1.0006,
+    "SRK": 1.0009
+   },
+   "carried_npz_sha256": "70e75a995bcbe7f4802e699719c8f4f21e56edc48573a9d5cd4593f740c7806f"
+  },
+  "2wiki": {
+   "forms": {},
+   "union": {
+    "RK": 115555310,
+    "SRK": 126541999
+   },
+   "ratio_to_REC": {
+    "RK": 0.9991,
+    "SRK": 0.9993
+   },
+   "carried_npz_sha256": "70e75a995bcbe7f4802e699719c8f4f21e56edc48573a9d5cd4593f740c7806f"
+  },
+  "metaqa": {
+   "forms": {},
+   "union": {
+    "SRK": 349818
+   },
+   "ratio_to_REC": {
+    "SRK": 0.9941
+   },
+   "carried_npz_sha256": "70e75a995bcbe7f4802e699719c8f4f21e56edc48573a9d5cd4593f740c7806f"
+  },
+  "webqsp": {
+   "forms": {},
+   "union": {
+    "SRK": 507129030
+   },
+   "ratio_to_REC": {
+    "SRK": 0.9995
+   },
+   "carried_npz_sha256": "70e75a995bcbe7f4802e699719c8f4f21e56edc48573a9d5cd4593f740c7806f"
+  }
+ },
+ "steps": [
+  {
+   "form": "H5",
+   "label": "R.hub",
+   "order": "R.hub table score: float32 dot of the two stored e3v rows (tab_s; ov_s on flagged rows), a pair's highest",
+   "over": [],
+   "carried": false,
+   "conditions": {
+    "a_gain": true,
+    "b_price": false,
+    "c_size": "by construction"
+   },
+   "price_over_P_star": [
+    {
+     "cell": "hotpotqa/RK/GP",
+     "price": 170303.7,
+     "over_P_star": 165306.6
+    },
+    {
+     "cell": "hotpotqa/SRK/GP",
+     "price": 2064767.9,
+     "over_P_star": 2059770.8
+    },
+    {
+     "cell": "2wiki/RK/GP",
+     "price": 255022.4,
+     "over_P_star": 250025.3
+    },
+    {
+     "cell": "2wiki/SRK/GP",
+     "price": 668666.4,
+     "over_P_star": 663669.3
+    },
+    {
+     "cell": "webqsp/SRK/GP",
+     "price": 151043.7,
+     "over_P_star": 146046.6
+    }
+   ],
+   "datasets": {
+    "musique": {
+     "cut": {
+      "new_pairs": 429747,
+      "kept_new_pairs": 429747,
+      "kept_rank": 429747,
+      "of": 429747,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.46894410252571106,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 429747,
+       "union": 3818331,
+       "ratio_to_REC": 1.1272,
+       "fits": true
+      }
+     }
+    },
+    "squad": {
+     "cut": {
+      "new_pairs": 60681,
+      "kept_new_pairs": 60681,
+      "kept_rank": 60681,
+      "of": 60681,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.4993346929550171,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 60681,
+       "union": 1056550,
+       "ratio_to_REC": 1.059,
+       "fits": true
+      }
+     }
+    },
+    "hotpotqa": {
+     "cut": {
+      "new_pairs": 19127180,
+      "kept_new_pairs": 18733402,
+      "kept_rank": 18733402,
+      "of": 19127180,
+      "cut": true,
+      "score": "score",
+      "last_kept": 0.7101612687110901,
+      "first_dropped": 0.7101612091064453
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 18733402,
+       "union": 81334539,
+       "ratio_to_REC": 1.3,
+       "fits": true
+      },
+      "SRK": {
+       "pairs_added": 18582911,
+       "union": 85415467,
+       "ratio_to_REC": 1.2792,
+       "fits": true
+      }
+     }
+    },
+    "2wiki": {
+     "cut": {
+      "new_pairs": 21676906,
+      "kept_new_pairs": 21676906,
+      "kept_rank": 21676906,
+      "of": 21676906,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.41941016912460327,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 21676906,
+       "union": 137232216,
+       "ratio_to_REC": 1.1866,
+       "fits": true
+      },
+      "SRK": {
+       "pairs_added": 21397324,
+       "union": 147939323,
+       "ratio_to_REC": 1.1682,
+       "fits": true
+      }
+     }
+    },
+    "metaqa": {
+     "cut": {
+      "new_pairs": 82016,
+      "kept_new_pairs": 82016,
+      "kept_rank": 86189,
+      "of": 86189,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.5494033098220825,
+      "first_dropped": null
+     },
+     "size": {
+      "SRK": {
+       "pairs_added": 82016,
+       "union": 431834,
+       "ratio_to_REC": 1.2272,
+       "fits": true
+      }
+     }
+    },
+    "webqsp": {
+     "cut": {
+      "new_pairs": 28245530,
+      "kept_new_pairs": 28245530,
+      "kept_rank": 28422317,
+      "of": 28422317,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.522808849811554,
+      "first_dropped": null
+     },
+     "size": {
+      "SRK": {
+       "pairs_added": 28245180,
+       "union": 535374210,
+       "ratio_to_REC": 1.0551,
+       "fits": true
+      }
+     }
+    }
+   },
+   "cells": [
+    {
+     "dataset": "musique",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 5962,
+     "new": 93,
+     "pairs_added": 429747,
+     "price": 4620.9,
+     "scale_free": 8.133,
+     "gain": {
+      "diff": 1.56,
+      "lo": 1.24,
+      "hi": 1.89,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "musique",
+     "version": "RK",
+     "kind": "CH",
+     "carve": "s1eval",
+     "slots": 3987,
+     "new": 86,
+     "pairs_added": 429747,
+     "price": 4997.1,
+     "scale_free": 5.881,
+     "gain": {
+      "diff": 2.16,
+      "lo": 1.71,
+      "hi": 2.62,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "hotpotqa",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 7405,
+     "new": 110,
+     "pairs_added": 18733402,
+     "price": 170303.7,
+     "scale_free": 20.157,
+     "gain": {
+      "diff": 1.49,
+      "lo": 1.22,
+      "hi": 1.77,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "hotpotqa",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 7405,
+     "new": 9,
+     "pairs_added": 18582911,
+     "price": 2064767.9,
+     "scale_free": 228.976,
+     "gain": {
+      "diff": 0.12,
+      "lo": 0.05,
+      "hi": 0.2,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "2wiki",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 26331,
+     "new": 85,
+     "pairs_added": 21676906,
+     "price": 255022.4,
+     "scale_free": 58.061,
+     "gain": {
+      "diff": 0.32,
+      "lo": 0.26,
+      "hi": 0.39,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "2wiki",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 26331,
+     "new": 32,
+     "pairs_added": 21397324,
+     "price": 668666.4,
+     "scale_free": 139.034,
+     "gain": {
+      "diff": 0.12,
+      "lo": 0.08,
+      "hi": 0.16,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "metaqa",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 37446,
+     "new": 931,
+     "pairs_added": 82016,
+     "price": 88.1,
+     "scale_free": 9.374,
+     "gain": {
+      "diff": 2.49,
+      "lo": 2.22,
+      "hi": 2.78,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "webqsp",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 4369,
+     "new": 187,
+     "pairs_added": 28245180,
+     "price": 151043.7,
+     "scale_free": 1.301,
+     "gain": {
+      "diff": 4.28,
+      "lo": 3.4,
+      "hi": 5.23,
+      "call": "ABOVE"
+     }
+    }
+   ],
+   "beside": {
+    "s1sel": [
+     {
+      "dataset": "musique",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3783,
+      "new": 37,
+      "pairs_added": 429747,
+      "price": 11614.8,
+      "scale_free": 12.97,
+      "gain": {
+       "diff": 0.98,
+       "lo": 0.67,
+       "hi": 1.31,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "musique",
+      "version": "RK",
+      "kind": "CH",
+      "carve": "s1sel",
+      "slots": 2530,
+      "new": 33,
+      "pairs_added": 429747,
+      "price": 13022.6,
+      "scale_free": 9.726,
+      "gain": {
+       "diff": 1.3,
+       "lo": 0.88,
+       "hi": 1.77,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "hotpotqa",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 1508,
+      "new": 25,
+      "pairs_added": 18733402,
+      "price": 749336.1,
+      "scale_free": 18.061,
+      "gain": {
+       "diff": 1.66,
+       "lo": 0.99,
+       "hi": 2.32,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "hotpotqa",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 1508,
+      "new": 3,
+      "pairs_added": 18582911,
+      "price": 6194303.7,
+      "scale_free": 139.89,
+      "gain": {
+       "diff": 0.2,
+       "lo": 0.0,
+       "hi": 0.46,
+       "call": "LEVEL"
+      }
+     },
+     {
+      "dataset": "2wiki",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3131,
+      "new": 9,
+      "pairs_added": 21676906,
+      "price": 2408545.1,
+      "scale_free": 65.204,
+      "gain": {
+       "diff": 0.29,
+       "lo": 0.12,
+       "hi": 0.49,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "2wiki",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3131,
+      "new": 2,
+      "pairs_added": 21397324,
+      "price": 10698662.0,
+      "scale_free": 264.519,
+      "gain": {
+       "diff": 0.06,
+       "lo": 0.0,
+       "hi": 0.16,
+       "call": "LEVEL"
+      }
+     },
+     {
+      "dataset": "metaqa",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 6074,
+      "new": 155,
+      "pairs_added": 82016,
+      "price": 529.1,
+      "scale_free": 9.133,
+      "gain": {
+       "diff": 2.55,
+       "lo": 1.87,
+       "hi": 3.31,
+       "call": "ABOVE"
+      }
+     }
+    ],
+    "uncut": {
+     "datasets": {
+      "musique": {
+       "cut": {
+        "new_pairs": 429747,
+        "kept_new_pairs": 429747,
+        "kept_rank": 429747,
+        "of": 429747,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.46894410252571106,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 429747,
+         "union": 3818331,
+         "ratio_to_REC": 1.1272,
+         "fits": true
+        }
+       }
+      },
+      "squad": {
+       "cut": {
+        "new_pairs": 60681,
+        "kept_new_pairs": 60681,
+        "kept_rank": 60681,
+        "of": 60681,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.4993346929550171,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 60681,
+         "union": 1056550,
+         "ratio_to_REC": 1.059,
+         "fits": true
+        }
+       }
+      },
+      "hotpotqa": {
+       "cut": {
+        "new_pairs": 19127180,
+        "kept_new_pairs": 19127180,
+        "kept_rank": 19127180,
+        "of": 19127180,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.4525277018547058,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 19127180,
+         "union": 81728317,
+         "ratio_to_REC": 1.3063,
+         "fits": false
+        },
+        "SRK": {
+         "pairs_added": 18975094,
+         "union": 85807650,
+         "ratio_to_REC": 1.285,
+         "fits": true
+        }
+       }
+      },
+      "2wiki": {
+       "cut": {
+        "new_pairs": 21676906,
+        "kept_new_pairs": 21676906,
+        "kept_rank": 21676906,
+        "of": 21676906,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.41941016912460327,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 21676906,
+         "union": 137232216,
+         "ratio_to_REC": 1.1866,
+         "fits": true
+        },
+        "SRK": {
+         "pairs_added": 21397324,
+         "union": 147939323,
+         "ratio_to_REC": 1.1682,
+         "fits": true
+        }
+       }
+      },
+      "metaqa": {
+       "cut": {
+        "new_pairs": 82016,
+        "kept_new_pairs": 82016,
+        "kept_rank": 86189,
+        "of": 86189,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.5494033098220825,
+        "first_dropped": null
+       },
+       "size": {
+        "SRK": {
+         "pairs_added": 82016,
+         "union": 431834,
+         "ratio_to_REC": 1.2272,
+         "fits": true
+        }
+       }
+      },
+      "webqsp": {
+       "cut": {
+        "new_pairs": 28245530,
+        "kept_new_pairs": 28245530,
+        "kept_rank": 28422317,
+        "of": 28422317,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.522808849811554,
+        "first_dropped": null
+       },
+       "size": {
+        "SRK": {
+         "pairs_added": 28245180,
+         "union": 535374210,
+         "ratio_to_REC": 1.0551,
+         "fits": true
+        }
+       }
+      }
+     },
+     "cells": [
+      {
+       "dataset": "musique",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 5962,
+       "new": 93,
+       "pairs_added": 429747,
+       "price": 4620.9,
+       "scale_free": 8.133,
+       "gain": {
+        "diff": 1.56,
+        "lo": 1.24,
+        "hi": 1.89,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "musique",
+       "version": "RK",
+       "kind": "CH",
+       "carve": "s1eval",
+       "slots": 3987,
+       "new": 86,
+       "pairs_added": 429747,
+       "price": 4997.1,
+       "scale_free": 5.881,
+       "gain": {
+        "diff": 2.16,
+        "lo": 1.71,
+        "hi": 2.62,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "hotpotqa",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 7405,
+       "new": 114,
+       "pairs_added": 19127180,
+       "price": 167782.3,
+       "scale_free": 19.858,
+       "gain": {
+        "diff": 1.54,
+        "lo": 1.27,
+        "hi": 1.84,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "hotpotqa",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 7405,
+       "new": 9,
+       "pairs_added": 18975094,
+       "price": 2108343.8,
+       "scale_free": 233.808,
+       "gain": {
+        "diff": 0.12,
+        "lo": 0.05,
+        "hi": 0.2,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "2wiki",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 26331,
+       "new": 85,
+       "pairs_added": 21676906,
+       "price": 255022.4,
+       "scale_free": 58.061,
+       "gain": {
+        "diff": 0.32,
+        "lo": 0.26,
+        "hi": 0.39,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "2wiki",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 26331,
+       "new": 32,
+       "pairs_added": 21397324,
+       "price": 668666.4,
+       "scale_free": 139.034,
+       "gain": {
+        "diff": 0.12,
+        "lo": 0.08,
+        "hi": 0.16,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "metaqa",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 37446,
+       "new": 931,
+       "pairs_added": 82016,
+       "price": 88.1,
+       "scale_free": 9.374,
+       "gain": {
+        "diff": 2.49,
+        "lo": 2.22,
+        "hi": 2.78,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "webqsp",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 4369,
+       "new": 187,
+       "pairs_added": 28245180,
+       "price": 151043.7,
+       "scale_free": 1.301,
+       "gain": {
+        "diff": 4.28,
+        "lo": 3.4,
+        "hi": 5.23,
+        "call": "ABOVE"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "form": "HM",
+   "label": "R.hub",
+   "order": "as H5 (H10's pairs picked from both ends)",
+   "over": [],
+   "carried": false,
+   "conditions": {
+    "a_gain": true,
+    "b_price": false,
+    "c_size": "by construction"
+   },
+   "price_over_P_star": [
+    {
+     "cell": "musique/RK/GP",
+     "price": 5414.1,
+     "over_P_star": 417.0
+    },
+    {
+     "cell": "musique/RK/CH",
+     "price": 5526.9,
+     "over_P_star": 529.8
+    },
+    {
+     "cell": "hotpotqa/RK/GP",
+     "price": 158460.8,
+     "over_P_star": 153463.7
+    },
+    {
+     "cell": "hotpotqa/SRK/GP",
+     "price": 1296639.0,
+     "over_P_star": 1291641.9
+    },
+    {
+     "cell": "2wiki/RK/GP",
+     "price": 210507.1,
+     "over_P_star": 205510.0
+    },
+    {
+     "cell": "2wiki/SRK/GP",
+     "price": 473209.5,
+     "over_P_star": 468212.4
+    },
+    {
+     "cell": "webqsp/SRK/GP",
+     "price": 75202.5,
+     "over_P_star": 70205.4
+    }
+   ],
+   "datasets": {
+    "musique": {
+     "cut": {
+      "new_pairs": 265292,
+      "kept_new_pairs": 265292,
+      "kept_rank": 265292,
+      "of": 265292,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.5759170651435852,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 265292,
+       "union": 3653876,
+       "ratio_to_REC": 1.0786,
+       "fits": true
+      }
+     }
+    },
+    "squad": {
+     "cut": {
+      "new_pairs": 34187,
+      "kept_new_pairs": 34187,
+      "kept_rank": 34187,
+      "of": 34187,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.5561336278915405,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 34187,
+       "union": 1030056,
+       "ratio_to_REC": 1.0325,
+       "fits": true
+      }
+     }
+    },
+    "hotpotqa": {
+     "cut": {
+      "new_pairs": 10458416,
+      "kept_new_pairs": 10458416,
+      "kept_rank": 10458416,
+      "of": 10458416,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.5576672554016113,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 10458416,
+       "union": 73059553,
+       "ratio_to_REC": 1.1677,
+       "fits": true
+      },
+      "SRK": {
+       "pairs_added": 10373112,
+       "union": 77205668,
+       "ratio_to_REC": 1.1562,
+       "fits": true
+      }
+     }
+    },
+    "2wiki": {
+     "cut": {
+      "new_pairs": 11998902,
+      "kept_new_pairs": 11998902,
+      "kept_rank": 11998902,
+      "of": 11998902,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.5530705451965332,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 11998902,
+       "union": 127554212,
+       "ratio_to_REC": 1.1029,
+       "fits": true
+      },
+      "SRK": {
+       "pairs_added": 11830237,
+       "union": 138372236,
+       "ratio_to_REC": 1.0927,
+       "fits": true
+      }
+     }
+    },
+    "metaqa": {
+     "cut": {
+      "new_pairs": 40626,
+      "kept_new_pairs": 40626,
+      "kept_rank": 44272,
+      "of": 44272,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.6110551357269287,
+      "first_dropped": null
+     },
+     "size": {
+      "SRK": {
+       "pairs_added": 40626,
+       "union": 390444,
+       "ratio_to_REC": 1.1096,
+       "fits": true
+      }
+     }
+    },
+    "webqsp": {
+     "cut": {
+      "new_pairs": 9325326,
+      "kept_new_pairs": 9325326,
+      "kept_rank": 9472634,
+      "of": 9472634,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.5398985743522644,
+      "first_dropped": null
+     },
+     "size": {
+      "SRK": {
+       "pairs_added": 9325116,
+       "union": 516454146,
+       "ratio_to_REC": 1.0178,
+       "fits": true
+      }
+     }
+    }
+   },
+   "cells": [
+    {
+     "dataset": "musique",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 5962,
+     "new": 49,
+     "pairs_added": 265292,
+     "price": 5414.1,
+     "scale_free": 9.529,
+     "gain": {
+      "diff": 0.82,
+      "lo": 0.6,
+      "hi": 1.06,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "musique",
+     "version": "RK",
+     "kind": "CH",
+     "carve": "s1eval",
+     "slots": 3987,
+     "new": 48,
+     "pairs_added": 265292,
+     "price": 5526.9,
+     "scale_free": 6.505,
+     "gain": {
+      "diff": 1.2,
+      "lo": 0.87,
+      "hi": 1.55,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "hotpotqa",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 7405,
+     "new": 66,
+     "pairs_added": 10458416,
+     "price": 158460.8,
+     "scale_free": 18.755,
+     "gain": {
+      "diff": 0.89,
+      "lo": 0.69,
+      "hi": 1.11,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "hotpotqa",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 7405,
+     "new": 8,
+     "pairs_added": 10373112,
+     "price": 1296639.0,
+     "scale_free": 143.793,
+     "gain": {
+      "diff": 0.11,
+      "lo": 0.04,
+      "hi": 0.19,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "2wiki",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 26331,
+     "new": 57,
+     "pairs_added": 11998902,
+     "price": 210507.1,
+     "scale_free": 47.926,
+     "gain": {
+      "diff": 0.22,
+      "lo": 0.16,
+      "hi": 0.27,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "2wiki",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 26331,
+     "new": 25,
+     "pairs_added": 11830237,
+     "price": 473209.5,
+     "scale_free": 98.393,
+     "gain": {
+      "diff": 0.09,
+      "lo": 0.06,
+      "hi": 0.13,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "metaqa",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 37446,
+     "new": 850,
+     "pairs_added": 40626,
+     "price": 47.8,
+     "scale_free": 5.086,
+     "gain": {
+      "diff": 2.27,
+      "lo": 2.0,
+      "hi": 2.56,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "webqsp",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 4369,
+     "new": 124,
+     "pairs_added": 9325116,
+     "price": 75202.5,
+     "scale_free": 0.648,
+     "gain": {
+      "diff": 2.84,
+      "lo": 2.12,
+      "hi": 3.73,
+      "call": "ABOVE"
+     }
+    }
+   ],
+   "beside": {
+    "s1sel": [
+     {
+      "dataset": "musique",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3783,
+      "new": 29,
+      "pairs_added": 265292,
+      "price": 9148.0,
+      "scale_free": 10.216,
+      "gain": {
+       "diff": 0.77,
+       "lo": 0.5,
+       "hi": 1.07,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "musique",
+      "version": "RK",
+      "kind": "CH",
+      "carve": "s1sel",
+      "slots": 2530,
+      "new": 26,
+      "pairs_added": 265292,
+      "price": 10203.5,
+      "scale_free": 7.62,
+      "gain": {
+       "diff": 1.03,
+       "lo": 0.64,
+       "hi": 1.46,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "hotpotqa",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 1508,
+      "new": 16,
+      "pairs_added": 10458416,
+      "price": 653651.0,
+      "scale_free": 15.755,
+      "gain": {
+       "diff": 1.06,
+       "lo": 0.53,
+       "hi": 1.53,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "hotpotqa",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 1508,
+      "new": 1,
+      "pairs_added": 10373112,
+      "price": 10373112.0,
+      "scale_free": 234.263,
+      "gain": {
+       "diff": 0.07,
+       "lo": 0.0,
+       "hi": 0.2,
+       "call": "LEVEL"
+      }
+     },
+     {
+      "dataset": "2wiki",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3131,
+      "new": 6,
+      "pairs_added": 11998902,
+      "price": 1999817.0,
+      "scale_free": 54.139,
+      "gain": {
+       "diff": 0.19,
+       "lo": 0.06,
+       "hi": 0.36,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "2wiki",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3131,
+      "new": 1,
+      "pairs_added": 11830237,
+      "price": 11830237.0,
+      "scale_free": 292.497,
+      "gain": {
+       "diff": 0.03,
+       "lo": 0.0,
+       "hi": 0.1,
+       "call": "LEVEL"
+      }
+     },
+     {
+      "dataset": "metaqa",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 6074,
+      "new": 151,
+      "pairs_added": 40626,
+      "price": 269.0,
+      "scale_free": 4.644,
+      "gain": {
+       "diff": 2.49,
+       "lo": 1.8,
+       "hi": 3.27,
+       "call": "ABOVE"
+      }
+     }
+    ],
+    "uncut": {
+     "datasets": {
+      "musique": {
+       "cut": {
+        "new_pairs": 265292,
+        "kept_new_pairs": 265292,
+        "kept_rank": 265292,
+        "of": 265292,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.5759170651435852,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 265292,
+         "union": 3653876,
+         "ratio_to_REC": 1.0786,
+         "fits": true
+        }
+       }
+      },
+      "squad": {
+       "cut": {
+        "new_pairs": 34187,
+        "kept_new_pairs": 34187,
+        "kept_rank": 34187,
+        "of": 34187,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.5561336278915405,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 34187,
+         "union": 1030056,
+         "ratio_to_REC": 1.0325,
+         "fits": true
+        }
+       }
+      },
+      "hotpotqa": {
+       "cut": {
+        "new_pairs": 10458416,
+        "kept_new_pairs": 10458416,
+        "kept_rank": 10458416,
+        "of": 10458416,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.5576672554016113,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 10458416,
+         "union": 73059553,
+         "ratio_to_REC": 1.1677,
+         "fits": true
+        },
+        "SRK": {
+         "pairs_added": 10373112,
+         "union": 77205668,
+         "ratio_to_REC": 1.1562,
+         "fits": true
+        }
+       }
+      },
+      "2wiki": {
+       "cut": {
+        "new_pairs": 11998902,
+        "kept_new_pairs": 11998902,
+        "kept_rank": 11998902,
+        "of": 11998902,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.5530705451965332,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 11998902,
+         "union": 127554212,
+         "ratio_to_REC": 1.1029,
+         "fits": true
+        },
+        "SRK": {
+         "pairs_added": 11830237,
+         "union": 138372236,
+         "ratio_to_REC": 1.0927,
+         "fits": true
+        }
+       }
+      },
+      "metaqa": {
+       "cut": {
+        "new_pairs": 40626,
+        "kept_new_pairs": 40626,
+        "kept_rank": 44272,
+        "of": 44272,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.6110551357269287,
+        "first_dropped": null
+       },
+       "size": {
+        "SRK": {
+         "pairs_added": 40626,
+         "union": 390444,
+         "ratio_to_REC": 1.1096,
+         "fits": true
+        }
+       }
+      },
+      "webqsp": {
+       "cut": {
+        "new_pairs": 9325326,
+        "kept_new_pairs": 9325326,
+        "kept_rank": 9472634,
+        "of": 9472634,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.5398985743522644,
+        "first_dropped": null
+       },
+       "size": {
+        "SRK": {
+         "pairs_added": 9325116,
+         "union": 516454146,
+         "ratio_to_REC": 1.0178,
+         "fits": true
+        }
+       }
+      }
+     },
+     "cells": [
+      {
+       "dataset": "musique",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 5962,
+       "new": 49,
+       "pairs_added": 265292,
+       "price": 5414.1,
+       "scale_free": 9.529,
+       "gain": {
+        "diff": 0.82,
+        "lo": 0.6,
+        "hi": 1.06,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "musique",
+       "version": "RK",
+       "kind": "CH",
+       "carve": "s1eval",
+       "slots": 3987,
+       "new": 48,
+       "pairs_added": 265292,
+       "price": 5526.9,
+       "scale_free": 6.505,
+       "gain": {
+        "diff": 1.2,
+        "lo": 0.87,
+        "hi": 1.55,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "hotpotqa",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 7405,
+       "new": 66,
+       "pairs_added": 10458416,
+       "price": 158460.8,
+       "scale_free": 18.755,
+       "gain": {
+        "diff": 0.89,
+        "lo": 0.69,
+        "hi": 1.11,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "hotpotqa",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 7405,
+       "new": 8,
+       "pairs_added": 10373112,
+       "price": 1296639.0,
+       "scale_free": 143.793,
+       "gain": {
+        "diff": 0.11,
+        "lo": 0.04,
+        "hi": 0.19,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "2wiki",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 26331,
+       "new": 57,
+       "pairs_added": 11998902,
+       "price": 210507.1,
+       "scale_free": 47.926,
+       "gain": {
+        "diff": 0.22,
+        "lo": 0.16,
+        "hi": 0.27,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "2wiki",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 26331,
+       "new": 25,
+       "pairs_added": 11830237,
+       "price": 473209.5,
+       "scale_free": 98.393,
+       "gain": {
+        "diff": 0.09,
+        "lo": 0.06,
+        "hi": 0.13,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "metaqa",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 37446,
+       "new": 850,
+       "pairs_added": 40626,
+       "price": 47.8,
+       "scale_free": 5.086,
+       "gain": {
+        "diff": 2.27,
+        "lo": 2.0,
+        "hi": 2.56,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "webqsp",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 4369,
+       "new": 124,
+       "pairs_added": 9325116,
+       "price": 75202.5,
+       "scale_free": 0.648,
+       "gain": {
+        "diff": 2.84,
+        "lo": 2.12,
+        "hi": 3.73,
+        "call": "ABOVE"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "form": "HK1",
+   "label": "R.hub_key",
+   "order": "the hub key's score (hk_s1), a pair's highest",
+   "over": [],
+   "carried": false,
+   "conditions": {
+    "a_gain": true,
+    "b_price": false,
+    "c_size": "by construction"
+   },
+   "price_over_P_star": [
+    {
+     "cell": "hotpotqa/RK/GP",
+     "price": 79320.2,
+     "over_P_star": 74323.1
+    },
+    {
+     "cell": "hotpotqa/SRK/GP",
+     "price": 2751684.0,
+     "over_P_star": 2746686.9
+    },
+    {
+     "cell": "2wiki/RK/GP",
+     "price": 163934.6,
+     "over_P_star": 158937.5
+    },
+    {
+     "cell": "2wiki/SRK/GP",
+     "price": 520918.2,
+     "over_P_star": 515921.1
+    },
+    {
+     "cell": "webqsp/SRK/GP",
+     "price": 9233.8,
+     "over_P_star": 4236.7
+    }
+   ],
+   "datasets": {
+    "musique": {
+     "cut": {
+      "new_pairs": 281823,
+      "kept_new_pairs": 281823,
+      "kept_rank": 281823,
+      "of": 281823,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.46894410252571106,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 281823,
+       "union": 3670407,
+       "ratio_to_REC": 1.0835,
+       "fits": true
+      }
+     }
+    },
+    "squad": {
+     "cut": {
+      "new_pairs": 38713,
+      "kept_new_pairs": 38713,
+      "kept_rank": 38713,
+      "of": 38713,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.4742480218410492,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 38713,
+       "union": 1034582,
+       "ratio_to_REC": 1.037,
+       "fits": true
+      }
+     }
+    },
+    "hotpotqa": {
+     "cut": {
+      "new_pairs": 11184149,
+      "kept_new_pairs": 11184149,
+      "kept_rank": 11184149,
+      "of": 11184149,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.4685385823249817,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 11184149,
+       "union": 73785286,
+       "ratio_to_REC": 1.1793,
+       "fits": true
+      },
+      "SRK": {
+       "pairs_added": 11006736,
+       "union": 77839292,
+       "ratio_to_REC": 1.1657,
+       "fits": true
+      }
+     }
+    },
+    "2wiki": {
+     "cut": {
+      "new_pairs": 17541000,
+      "kept_new_pairs": 17541000,
+      "kept_rank": 17541000,
+      "of": 17541000,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.4317649006843567,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 17541000,
+       "union": 133096310,
+       "ratio_to_REC": 1.1508,
+       "fits": true
+      },
+      "SRK": {
+       "pairs_added": 17190299,
+       "union": 143732298,
+       "ratio_to_REC": 1.135,
+       "fits": true
+      }
+     }
+    },
+    "metaqa": {
+     "cut": {
+      "new_pairs": 35663,
+      "kept_new_pairs": 35663,
+      "kept_rank": 37512,
+      "of": 37512,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.5108611583709717,
+      "first_dropped": null
+     },
+     "size": {
+      "SRK": {
+       "pairs_added": 35660,
+       "union": 385478,
+       "ratio_to_REC": 1.0954,
+       "fits": true
+      }
+     }
+    },
+    "webqsp": {
+     "cut": {
+      "new_pairs": 4821571,
+      "kept_new_pairs": 4821571,
+      "kept_rank": 4910857,
+      "of": 4910857,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.4736173748970032,
+      "first_dropped": null
+     },
+     "size": {
+      "SRK": {
+       "pairs_added": 4820032,
+       "union": 511949062,
+       "ratio_to_REC": 1.009,
+       "fits": true
+      }
+     }
+    }
+   },
+   "cells": [
+    {
+     "dataset": "musique",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 5962,
+     "new": 87,
+     "pairs_added": 281823,
+     "price": 3239.3,
+     "scale_free": 5.701,
+     "gain": {
+      "diff": 1.46,
+      "lo": 1.15,
+      "hi": 1.78,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "musique",
+     "version": "RK",
+     "kind": "CH",
+     "carve": "s1eval",
+     "slots": 3987,
+     "new": 77,
+     "pairs_added": 281823,
+     "price": 3660.0,
+     "scale_free": 4.308,
+     "gain": {
+      "diff": 1.93,
+      "lo": 1.53,
+      "hi": 2.35,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "hotpotqa",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 7405,
+     "new": 141,
+     "pairs_added": 11184149,
+     "price": 79320.2,
+     "scale_free": 9.388,
+     "gain": {
+      "diff": 1.9,
+      "lo": 1.59,
+      "hi": 2.21,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "hotpotqa",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 7405,
+     "new": 4,
+     "pairs_added": 11006736,
+     "price": 2751684.0,
+     "scale_free": 305.153,
+     "gain": {
+      "diff": 0.05,
+      "lo": 0.01,
+      "hi": 0.11,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "2wiki",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 26331,
+     "new": 107,
+     "pairs_added": 17541000,
+     "price": 163934.6,
+     "scale_free": 37.323,
+     "gain": {
+      "diff": 0.41,
+      "lo": 0.33,
+      "hi": 0.48,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "2wiki",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 26331,
+     "new": 33,
+     "pairs_added": 17190299,
+     "price": 520918.2,
+     "scale_free": 108.313,
+     "gain": {
+      "diff": 0.13,
+      "lo": 0.08,
+      "hi": 0.17,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "metaqa",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 37446,
+     "new": 1549,
+     "pairs_added": 35660,
+     "price": 23.0,
+     "scale_free": 2.45,
+     "gain": {
+      "diff": 4.14,
+      "lo": 3.69,
+      "hi": 4.59,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "webqsp",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 4369,
+     "new": 522,
+     "pairs_added": 4820032,
+     "price": 9233.8,
+     "scale_free": 0.08,
+     "gain": {
+      "diff": 11.95,
+      "lo": 10.69,
+      "hi": 13.23,
+      "call": "ABOVE"
+     }
+    }
+   ],
+   "beside": {
+    "s1sel": [
+     {
+      "dataset": "musique",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3783,
+      "new": 19,
+      "pairs_added": 281823,
+      "price": 14832.8,
+      "scale_free": 16.564,
+      "gain": {
+       "diff": 0.5,
+       "lo": 0.29,
+       "hi": 0.74,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "musique",
+      "version": "RK",
+      "kind": "CH",
+      "carve": "s1sel",
+      "slots": 2530,
+      "new": 17,
+      "pairs_added": 281823,
+      "price": 16577.8,
+      "scale_free": 12.381,
+      "gain": {
+       "diff": 0.67,
+       "lo": 0.36,
+       "hi": 1.02,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "hotpotqa",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 1508,
+      "new": 28,
+      "pairs_added": 11184149,
+      "price": 399433.9,
+      "scale_free": 9.628,
+      "gain": {
+       "diff": 1.86,
+       "lo": 1.19,
+       "hi": 2.59,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "hotpotqa",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 1508,
+      "new": 2,
+      "pairs_added": 11006736,
+      "price": 5503368.0,
+      "scale_free": 124.286,
+      "gain": {
+       "diff": 0.13,
+       "lo": 0.0,
+       "hi": 0.33,
+       "call": "LEVEL"
+      }
+     },
+     {
+      "dataset": "2wiki",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3131,
+      "new": 13,
+      "pairs_added": 17541000,
+      "price": 1349307.7,
+      "scale_free": 36.529,
+      "gain": {
+       "diff": 0.42,
+       "lo": 0.22,
+       "hi": 0.67,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "2wiki",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3131,
+      "new": 2,
+      "pairs_added": 17190299,
+      "price": 8595149.5,
+      "scale_free": 212.511,
+      "gain": {
+       "diff": 0.06,
+       "lo": 0.0,
+       "hi": 0.17,
+       "call": "LEVEL"
+      }
+     },
+     {
+      "dataset": "metaqa",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 6074,
+      "new": 261,
+      "pairs_added": 35660,
+      "price": 136.6,
+      "scale_free": 2.358,
+      "gain": {
+       "diff": 4.3,
+       "lo": 3.18,
+       "hi": 5.54,
+       "call": "ABOVE"
+      }
+     }
+    ],
+    "uncut": {
+     "datasets": {
+      "musique": {
+       "cut": {
+        "new_pairs": 281823,
+        "kept_new_pairs": 281823,
+        "kept_rank": 281823,
+        "of": 281823,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.46894410252571106,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 281823,
+         "union": 3670407,
+         "ratio_to_REC": 1.0835,
+         "fits": true
+        }
+       }
+      },
+      "squad": {
+       "cut": {
+        "new_pairs": 38713,
+        "kept_new_pairs": 38713,
+        "kept_rank": 38713,
+        "of": 38713,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.4742480218410492,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 38713,
+         "union": 1034582,
+         "ratio_to_REC": 1.037,
+         "fits": true
+        }
+       }
+      },
+      "hotpotqa": {
+       "cut": {
+        "new_pairs": 11184149,
+        "kept_new_pairs": 11184149,
+        "kept_rank": 11184149,
+        "of": 11184149,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.4685385823249817,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 11184149,
+         "union": 73785286,
+         "ratio_to_REC": 1.1793,
+         "fits": true
+        },
+        "SRK": {
+         "pairs_added": 11006736,
+         "union": 77839292,
+         "ratio_to_REC": 1.1657,
+         "fits": true
+        }
+       }
+      },
+      "2wiki": {
+       "cut": {
+        "new_pairs": 17541000,
+        "kept_new_pairs": 17541000,
+        "kept_rank": 17541000,
+        "of": 17541000,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.4317649006843567,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 17541000,
+         "union": 133096310,
+         "ratio_to_REC": 1.1508,
+         "fits": true
+        },
+        "SRK": {
+         "pairs_added": 17190299,
+         "union": 143732298,
+         "ratio_to_REC": 1.135,
+         "fits": true
+        }
+       }
+      },
+      "metaqa": {
+       "cut": {
+        "new_pairs": 35663,
+        "kept_new_pairs": 35663,
+        "kept_rank": 37512,
+        "of": 37512,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.5108611583709717,
+        "first_dropped": null
+       },
+       "size": {
+        "SRK": {
+         "pairs_added": 35660,
+         "union": 385478,
+         "ratio_to_REC": 1.0954,
+         "fits": true
+        }
+       }
+      },
+      "webqsp": {
+       "cut": {
+        "new_pairs": 4821571,
+        "kept_new_pairs": 4821571,
+        "kept_rank": 4910857,
+        "of": 4910857,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.4736173748970032,
+        "first_dropped": null
+       },
+       "size": {
+        "SRK": {
+         "pairs_added": 4820032,
+         "union": 511949062,
+         "ratio_to_REC": 1.009,
+         "fits": true
+        }
+       }
+      }
+     },
+     "cells": [
+      {
+       "dataset": "musique",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 5962,
+       "new": 87,
+       "pairs_added": 281823,
+       "price": 3239.3,
+       "scale_free": 5.701,
+       "gain": {
+        "diff": 1.46,
+        "lo": 1.15,
+        "hi": 1.78,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "musique",
+       "version": "RK",
+       "kind": "CH",
+       "carve": "s1eval",
+       "slots": 3987,
+       "new": 77,
+       "pairs_added": 281823,
+       "price": 3660.0,
+       "scale_free": 4.308,
+       "gain": {
+        "diff": 1.93,
+        "lo": 1.53,
+        "hi": 2.35,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "hotpotqa",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 7405,
+       "new": 141,
+       "pairs_added": 11184149,
+       "price": 79320.2,
+       "scale_free": 9.388,
+       "gain": {
+        "diff": 1.9,
+        "lo": 1.59,
+        "hi": 2.21,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "hotpotqa",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 7405,
+       "new": 4,
+       "pairs_added": 11006736,
+       "price": 2751684.0,
+       "scale_free": 305.153,
+       "gain": {
+        "diff": 0.05,
+        "lo": 0.01,
+        "hi": 0.11,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "2wiki",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 26331,
+       "new": 107,
+       "pairs_added": 17541000,
+       "price": 163934.6,
+       "scale_free": 37.323,
+       "gain": {
+        "diff": 0.41,
+        "lo": 0.33,
+        "hi": 0.48,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "2wiki",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 26331,
+       "new": 33,
+       "pairs_added": 17190299,
+       "price": 520918.2,
+       "scale_free": 108.313,
+       "gain": {
+        "diff": 0.13,
+        "lo": 0.08,
+        "hi": 0.17,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "metaqa",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 37446,
+       "new": 1549,
+       "pairs_added": 35660,
+       "price": 23.0,
+       "scale_free": 2.45,
+       "gain": {
+        "diff": 4.14,
+        "lo": 3.69,
+        "hi": 4.59,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "webqsp",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 4369,
+       "new": 522,
+       "pairs_added": 4820032,
+       "price": 9233.8,
+       "scale_free": 0.08,
+       "gain": {
+        "diff": 11.95,
+        "lo": 10.69,
+        "hi": 13.23,
+        "call": "ABOVE"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "form": "NTc",
+   "label": "R.written",
+   "order": "no score in its build: the group size (a key's namers + writers, at most 25), smallest first; stored as minus the size",
+   "over": [],
+   "carried": false,
+   "conditions": {
+    "a_gain": true,
+    "b_price": false,
+    "c_size": "by construction"
+   },
+   "price_over_P_star": [
+    {
+     "cell": "hotpotqa/RK/GP",
+     "price": 251742.4,
+     "over_P_star": 246745.3
+    },
+    {
+     "cell": "hotpotqa/SRK/GP",
+     "price": 4248849.5,
+     "over_P_star": 4243852.4
+    },
+    {
+     "cell": "2wiki/RK/GP",
+     "price": 326314.3,
+     "over_P_star": 321317.2
+    },
+    {
+     "cell": "2wiki/SRK/GP",
+     "price": 579978.4,
+     "over_P_star": 574981.3
+    },
+    {
+     "cell": "webqsp/SRK/GP",
+     "price": 6777.7,
+     "over_P_star": 1780.6
+    }
+   ],
+   "datasets": {
+    "musique": {
+     "cut": {
+      "new_pairs": 493720,
+      "kept_new_pairs": 493720,
+      "kept_rank": 573098,
+      "of": 573098,
+      "cut": false,
+      "score": "group size",
+      "last_kept": 25.0,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 493720,
+       "union": 3882304,
+       "ratio_to_REC": 1.146,
+       "fits": true
+      }
+     }
+    },
+    "squad": {
+     "cut": {
+      "new_pairs": 72853,
+      "kept_new_pairs": 72853,
+      "kept_rank": 100108,
+      "of": 100108,
+      "cut": false,
+      "score": "group size",
+      "last_kept": 25.0,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 72853,
+       "union": 1068722,
+       "ratio_to_REC": 1.0712,
+       "fits": true
+      }
+     }
+    },
+    "hotpotqa": {
+     "cut": {
+      "new_pairs": 8559240,
+      "kept_new_pairs": 8559240,
+      "kept_rank": 10357645,
+      "of": 10357645,
+      "cut": false,
+      "score": "group size",
+      "last_kept": 25.0,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 8559240,
+       "union": 71160377,
+       "ratio_to_REC": 1.1374,
+       "fits": true
+      },
+      "SRK": {
+       "pairs_added": 8497699,
+       "union": 75330255,
+       "ratio_to_REC": 1.1281,
+       "fits": true
+      }
+     }
+    },
+    "2wiki": {
+     "cut": {
+      "new_pairs": 14031514,
+      "kept_new_pairs": 14031514,
+      "kept_rank": 17076370,
+      "of": 17076370,
+      "cut": false,
+      "score": "group size",
+      "last_kept": 25.0,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 14031514,
+       "union": 129586824,
+       "ratio_to_REC": 1.1205,
+       "fits": true
+      },
+      "SRK": {
+       "pairs_added": 13919481,
+       "union": 140461480,
+       "ratio_to_REC": 1.1092,
+       "fits": true
+      }
+     }
+    },
+    "metaqa": {
+     "cut": {
+      "new_pairs": 83377,
+      "kept_new_pairs": 83377,
+      "kept_rank": 89882,
+      "of": 89882,
+      "cut": false,
+      "score": "group size",
+      "last_kept": 25.0,
+      "first_dropped": null
+     },
+     "size": {
+      "SRK": {
+       "pairs_added": 83376,
+       "union": 433194,
+       "ratio_to_REC": 1.231,
+       "fits": true
+      }
+     }
+    },
+    "webqsp": {
+     "cut": {
+      "new_pairs": 1023873,
+      "kept_new_pairs": 1023873,
+      "kept_rank": 1263186,
+      "of": 1263186,
+      "cut": false,
+      "score": "group size",
+      "last_kept": 25.0,
+      "first_dropped": null
+     },
+     "size": {
+      "SRK": {
+       "pairs_added": 1023435,
+       "union": 508152465,
+       "ratio_to_REC": 1.0015,
+       "fits": true
+      }
+     }
+    }
+   },
+   "cells": [
+    {
+     "dataset": "musique",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 5962,
+     "new": 153,
+     "pairs_added": 493720,
+     "price": 3226.9,
+     "scale_free": 5.679,
+     "gain": {
+      "diff": 2.57,
+      "lo": 2.17,
+      "hi": 2.98,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "musique",
+     "version": "RK",
+     "kind": "CH",
+     "carve": "s1eval",
+     "slots": 3987,
+     "new": 147,
+     "pairs_added": 493720,
+     "price": 3358.6,
+     "scale_free": 3.953,
+     "gain": {
+      "diff": 3.69,
+      "lo": 3.13,
+      "hi": 4.28,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "hotpotqa",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 7405,
+     "new": 34,
+     "pairs_added": 8559240,
+     "price": 251742.4,
+     "scale_free": 29.795,
+     "gain": {
+      "diff": 0.46,
+      "lo": 0.31,
+      "hi": 0.62,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "hotpotqa",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 7405,
+     "new": 2,
+     "pairs_added": 8497699,
+     "price": 4248849.5,
+     "scale_free": 471.183,
+     "gain": {
+      "diff": 0.03,
+      "lo": 0.0,
+      "hi": 0.07,
+      "call": "LEVEL"
+     }
+    },
+    {
+     "dataset": "2wiki",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 26331,
+     "new": 43,
+     "pairs_added": 14031514,
+     "price": 326314.3,
+     "scale_free": 74.292,
+     "gain": {
+      "diff": 0.16,
+      "lo": 0.12,
+      "hi": 0.21,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "2wiki",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 26331,
+     "new": 24,
+     "pairs_added": 13919481,
+     "price": 579978.4,
+     "scale_free": 120.594,
+     "gain": {
+      "diff": 0.09,
+      "lo": 0.06,
+      "hi": 0.13,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "metaqa",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 37446,
+     "new": 6181,
+     "pairs_added": 83376,
+     "price": 13.5,
+     "scale_free": 1.435,
+     "gain": {
+      "diff": 16.51,
+      "lo": 15.46,
+      "hi": 17.57,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "webqsp",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 4369,
+     "new": 151,
+     "pairs_added": 1023435,
+     "price": 6777.7,
+     "scale_free": 0.058,
+     "gain": {
+      "diff": 3.46,
+      "lo": 2.41,
+      "hi": 4.63,
+      "call": "ABOVE"
+     }
+    }
+   ],
+   "beside": {
+    "s1sel": [
+     {
+      "dataset": "musique",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3783,
+      "new": 27,
+      "pairs_added": 493720,
+      "price": 18285.9,
+      "scale_free": 20.42,
+      "gain": {
+       "diff": 0.71,
+       "lo": 0.47,
+       "hi": 0.99,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "musique",
+      "version": "RK",
+      "kind": "CH",
+      "carve": "s1sel",
+      "slots": 2530,
+      "new": 15,
+      "pairs_added": 493720,
+      "price": 32914.7,
+      "scale_free": 24.582,
+      "gain": {
+       "diff": 0.59,
+       "lo": 0.32,
+       "hi": 0.94,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "hotpotqa",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 1508,
+      "new": 6,
+      "pairs_added": 8559240,
+      "price": 1426540.0,
+      "scale_free": 34.384,
+      "gain": {
+       "diff": 0.4,
+       "lo": 0.13,
+       "hi": 0.73,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "hotpotqa",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 1508,
+      "new": 0,
+      "pairs_added": 8497699,
+      "price": null,
+      "scale_free": null,
+      "gain": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      }
+     },
+     {
+      "dataset": "2wiki",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3131,
+      "new": 1,
+      "pairs_added": 14031514,
+      "price": 14031514.0,
+      "scale_free": 379.862,
+      "gain": {
+       "diff": 0.03,
+       "lo": 0.0,
+       "hi": 0.1,
+       "call": "LEVEL"
+      }
+     },
+     {
+      "dataset": "2wiki",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3131,
+      "new": 1,
+      "pairs_added": 13919481,
+      "price": 13919481.0,
+      "scale_free": 344.153,
+      "gain": {
+       "diff": 0.03,
+       "lo": 0.0,
+       "hi": 0.1,
+       "call": "LEVEL"
+      }
+     },
+     {
+      "dataset": "metaqa",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 6074,
+      "new": 1077,
+      "pairs_added": 83376,
+      "price": 77.4,
+      "scale_free": 1.336,
+      "gain": {
+       "diff": 17.73,
+       "lo": 15.0,
+       "hi": 20.5,
+       "call": "ABOVE"
+      }
+     }
+    ],
+    "uncut": {
+     "datasets": {
+      "musique": {
+       "cut": {
+        "new_pairs": 493720,
+        "kept_new_pairs": 493720,
+        "kept_rank": 573098,
+        "of": 573098,
+        "cut": false,
+        "score": "group size",
+        "last_kept": 25.0,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 493720,
+         "union": 3882304,
+         "ratio_to_REC": 1.146,
+         "fits": true
+        }
+       }
+      },
+      "squad": {
+       "cut": {
+        "new_pairs": 72853,
+        "kept_new_pairs": 72853,
+        "kept_rank": 100108,
+        "of": 100108,
+        "cut": false,
+        "score": "group size",
+        "last_kept": 25.0,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 72853,
+         "union": 1068722,
+         "ratio_to_REC": 1.0712,
+         "fits": true
+        }
+       }
+      },
+      "hotpotqa": {
+       "cut": {
+        "new_pairs": 8559240,
+        "kept_new_pairs": 8559240,
+        "kept_rank": 10357645,
+        "of": 10357645,
+        "cut": false,
+        "score": "group size",
+        "last_kept": 25.0,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 8559240,
+         "union": 71160377,
+         "ratio_to_REC": 1.1374,
+         "fits": true
+        },
+        "SRK": {
+         "pairs_added": 8497699,
+         "union": 75330255,
+         "ratio_to_REC": 1.1281,
+         "fits": true
+        }
+       }
+      },
+      "2wiki": {
+       "cut": {
+        "new_pairs": 14031514,
+        "kept_new_pairs": 14031514,
+        "kept_rank": 17076370,
+        "of": 17076370,
+        "cut": false,
+        "score": "group size",
+        "last_kept": 25.0,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 14031514,
+         "union": 129586824,
+         "ratio_to_REC": 1.1205,
+         "fits": true
+        },
+        "SRK": {
+         "pairs_added": 13919481,
+         "union": 140461480,
+         "ratio_to_REC": 1.1092,
+         "fits": true
+        }
+       }
+      },
+      "metaqa": {
+       "cut": {
+        "new_pairs": 83377,
+        "kept_new_pairs": 83377,
+        "kept_rank": 89882,
+        "of": 89882,
+        "cut": false,
+        "score": "group size",
+        "last_kept": 25.0,
+        "first_dropped": null
+       },
+       "size": {
+        "SRK": {
+         "pairs_added": 83376,
+         "union": 433194,
+         "ratio_to_REC": 1.231,
+         "fits": true
+        }
+       }
+      },
+      "webqsp": {
+       "cut": {
+        "new_pairs": 1023873,
+        "kept_new_pairs": 1023873,
+        "kept_rank": 1263186,
+        "of": 1263186,
+        "cut": false,
+        "score": "group size",
+        "last_kept": 25.0,
+        "first_dropped": null
+       },
+       "size": {
+        "SRK": {
+         "pairs_added": 1023435,
+         "union": 508152465,
+         "ratio_to_REC": 1.0015,
+         "fits": true
+        }
+       }
+      }
+     },
+     "cells": [
+      {
+       "dataset": "musique",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 5962,
+       "new": 153,
+       "pairs_added": 493720,
+       "price": 3226.9,
+       "scale_free": 5.679,
+       "gain": {
+        "diff": 2.57,
+        "lo": 2.17,
+        "hi": 2.98,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "musique",
+       "version": "RK",
+       "kind": "CH",
+       "carve": "s1eval",
+       "slots": 3987,
+       "new": 147,
+       "pairs_added": 493720,
+       "price": 3358.6,
+       "scale_free": 3.953,
+       "gain": {
+        "diff": 3.69,
+        "lo": 3.13,
+        "hi": 4.28,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "hotpotqa",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 7405,
+       "new": 34,
+       "pairs_added": 8559240,
+       "price": 251742.4,
+       "scale_free": 29.795,
+       "gain": {
+        "diff": 0.46,
+        "lo": 0.31,
+        "hi": 0.62,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "hotpotqa",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 7405,
+       "new": 2,
+       "pairs_added": 8497699,
+       "price": 4248849.5,
+       "scale_free": 471.183,
+       "gain": {
+        "diff": 0.03,
+        "lo": 0.0,
+        "hi": 0.07,
+        "call": "LEVEL"
+       }
+      },
+      {
+       "dataset": "2wiki",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 26331,
+       "new": 43,
+       "pairs_added": 14031514,
+       "price": 326314.3,
+       "scale_free": 74.292,
+       "gain": {
+        "diff": 0.16,
+        "lo": 0.12,
+        "hi": 0.21,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "2wiki",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 26331,
+       "new": 24,
+       "pairs_added": 13919481,
+       "price": 579978.4,
+       "scale_free": 120.594,
+       "gain": {
+        "diff": 0.09,
+        "lo": 0.06,
+        "hi": 0.13,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "metaqa",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 37446,
+       "new": 6181,
+       "pairs_added": 83376,
+       "price": 13.5,
+       "scale_free": 1.435,
+       "gain": {
+        "diff": 16.51,
+        "lo": 15.46,
+        "hi": 17.57,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "webqsp",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 4369,
+       "new": 151,
+       "pairs_added": 1023435,
+       "price": 6777.7,
+       "scale_free": 0.058,
+       "gain": {
+        "diff": 3.46,
+        "lo": 2.41,
+        "hi": 4.63,
+        "call": "ABOVE"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "form": "NT1",
+   "label": "R.written",
+   "order": "its build's score: the namer-writer float32 dot of the stored e3v rows (recomputed by ntrank)",
+   "over": [],
+   "carried": false,
+   "conditions": {
+    "a_gain": true,
+    "b_price": false,
+    "c_size": "by construction"
+   },
+   "price_over_P_star": [
+    {
+     "cell": "musique/RK/GP",
+     "price": 7877.8,
+     "over_P_star": 2880.7
+    },
+    {
+     "cell": "musique/RK/CH",
+     "price": 7877.8,
+     "over_P_star": 2880.7
+    },
+    {
+     "cell": "hotpotqa/RK/GP",
+     "price": 286728.0,
+     "over_P_star": 281730.9
+    },
+    {
+     "cell": "hotpotqa/SRK/GP",
+     "price": 7693336.5,
+     "over_P_star": 7688339.4
+    },
+    {
+     "cell": "2wiki/RK/GP",
+     "price": 421550.8,
+     "over_P_star": 416553.7
+    },
+    {
+     "cell": "2wiki/SRK/GP",
+     "price": 1101952.4,
+     "over_P_star": 1096955.3
+    },
+    {
+     "cell": "webqsp/SRK/GP",
+     "price": 26855.1,
+     "over_P_star": 21858.0
+    }
+   ],
+   "datasets": {
+    "musique": {
+     "cut": {
+      "new_pairs": 417521,
+      "kept_new_pairs": 417521,
+      "kept_rank": 417521,
+      "of": 417521,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.47690048813819885,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 417521,
+       "union": 3806105,
+       "ratio_to_REC": 1.1235,
+       "fits": true
+      }
+     }
+    },
+    "squad": {
+     "cut": {
+      "new_pairs": 55061,
+      "kept_new_pairs": 55061,
+      "kept_rank": 55061,
+      "of": 55061,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.5087778568267822,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 55061,
+       "union": 1050930,
+       "ratio_to_REC": 1.0534,
+       "fits": true
+      }
+     }
+    },
+    "hotpotqa": {
+     "cut": {
+      "new_pairs": 15483311,
+      "kept_new_pairs": 15483311,
+      "kept_rank": 15483311,
+      "of": 15483311,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.4107038676738739,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 15483311,
+       "union": 78084448,
+       "ratio_to_REC": 1.2481,
+       "fits": true
+      },
+      "SRK": {
+       "pairs_added": 15386673,
+       "union": 82219229,
+       "ratio_to_REC": 1.2313,
+       "fits": true
+      }
+     }
+    },
+    "2wiki": {
+     "cut": {
+      "new_pairs": 24449948,
+      "kept_new_pairs": 24449948,
+      "kept_rank": 24449948,
+      "of": 24449948,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.4286343455314636,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 24449948,
+       "union": 140005258,
+       "ratio_to_REC": 1.2105,
+       "fits": true
+      },
+      "SRK": {
+       "pairs_added": 24242952,
+       "union": 150784951,
+       "ratio_to_REC": 1.1907,
+       "fits": true
+      }
+     }
+    },
+    "metaqa": {
+     "cut": {
+      "new_pairs": 54102,
+      "kept_new_pairs": 54102,
+      "kept_rank": 54134,
+      "of": 54134,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.5341396331787109,
+      "first_dropped": null
+     },
+     "size": {
+      "SRK": {
+       "pairs_added": 54099,
+       "union": 403917,
+       "ratio_to_REC": 1.1478,
+       "fits": true
+      }
+     }
+    },
+    "webqsp": {
+     "cut": {
+      "new_pairs": 4781062,
+      "kept_new_pairs": 4781062,
+      "kept_rank": 4792516,
+      "of": 4792516,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.4864342510700226,
+      "first_dropped": null
+     },
+     "size": {
+      "SRK": {
+       "pairs_added": 4780207,
+       "union": 511909237,
+       "ratio_to_REC": 1.0089,
+       "fits": true
+      }
+     }
+    }
+   },
+   "cells": [
+    {
+     "dataset": "musique",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 5962,
+     "new": 53,
+     "pairs_added": 417521,
+     "price": 7877.8,
+     "scale_free": 13.864,
+     "gain": {
+      "diff": 0.89,
+      "lo": 0.66,
+      "hi": 1.14,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "musique",
+     "version": "RK",
+     "kind": "CH",
+     "carve": "s1eval",
+     "slots": 3987,
+     "new": 53,
+     "pairs_added": 417521,
+     "price": 7877.8,
+     "scale_free": 9.272,
+     "gain": {
+      "diff": 1.33,
+      "lo": 0.99,
+      "hi": 1.71,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "hotpotqa",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 7405,
+     "new": 54,
+     "pairs_added": 15483311,
+     "price": 286728.0,
+     "scale_free": 33.936,
+     "gain": {
+      "diff": 0.73,
+      "lo": 0.55,
+      "hi": 0.93,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "hotpotqa",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 7405,
+     "new": 2,
+     "pairs_added": 15386673,
+     "price": 7693336.5,
+     "scale_free": 853.165,
+     "gain": {
+      "diff": 0.03,
+      "lo": 0.0,
+      "hi": 0.07,
+      "call": "LEVEL"
+     }
+    },
+    {
+     "dataset": "2wiki",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 26331,
+     "new": 58,
+     "pairs_added": 24449948,
+     "price": 421550.8,
+     "scale_free": 95.974,
+     "gain": {
+      "diff": 0.22,
+      "lo": 0.16,
+      "hi": 0.28,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "2wiki",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 26331,
+     "new": 22,
+     "pairs_added": 24242952,
+     "price": 1101952.4,
+     "scale_free": 229.126,
+     "gain": {
+      "diff": 0.08,
+      "lo": 0.05,
+      "hi": 0.12,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "metaqa",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 37446,
+     "new": 1727,
+     "pairs_added": 54099,
+     "price": 31.3,
+     "scale_free": 3.333,
+     "gain": {
+      "diff": 4.61,
+      "lo": 4.08,
+      "hi": 5.18,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "webqsp",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 4369,
+     "new": 178,
+     "pairs_added": 4780207,
+     "price": 26855.1,
+     "scale_free": 0.231,
+     "gain": {
+      "diff": 4.07,
+      "lo": 3.3,
+      "hi": 4.89,
+      "call": "ABOVE"
+     }
+    }
+   ],
+   "beside": {
+    "s1sel": [
+     {
+      "dataset": "musique",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3783,
+      "new": 26,
+      "pairs_added": 417521,
+      "price": 16058.5,
+      "scale_free": 17.933,
+      "gain": {
+       "diff": 0.69,
+       "lo": 0.43,
+       "hi": 0.97,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "musique",
+      "version": "RK",
+      "kind": "CH",
+      "carve": "s1sel",
+      "slots": 2530,
+      "new": 25,
+      "pairs_added": 417521,
+      "price": 16700.8,
+      "scale_free": 12.473,
+      "gain": {
+       "diff": 0.99,
+       "lo": 0.62,
+       "hi": 1.4,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "hotpotqa",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 1508,
+      "new": 10,
+      "pairs_added": 15483311,
+      "price": 1548331.1,
+      "scale_free": 37.319,
+      "gain": {
+       "diff": 0.66,
+       "lo": 0.27,
+       "hi": 1.06,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "hotpotqa",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 1508,
+      "new": 0,
+      "pairs_added": 15386673,
+      "price": null,
+      "scale_free": null,
+      "gain": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      }
+     },
+     {
+      "dataset": "2wiki",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3131,
+      "new": 1,
+      "pairs_added": 24449948,
+      "price": 24449948.0,
+      "scale_free": 661.91,
+      "gain": {
+       "diff": 0.03,
+       "lo": 0.0,
+       "hi": 0.1,
+       "call": "LEVEL"
+      }
+     },
+     {
+      "dataset": "2wiki",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3131,
+      "new": 1,
+      "pairs_added": 24242952,
+      "price": 24242952.0,
+      "scale_free": 599.395,
+      "gain": {
+       "diff": 0.03,
+       "lo": 0.0,
+       "hi": 0.1,
+       "call": "LEVEL"
+      }
+     },
+     {
+      "dataset": "metaqa",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 6074,
+      "new": 303,
+      "pairs_added": 54099,
+      "price": 178.5,
+      "scale_free": 3.082,
+      "gain": {
+       "diff": 4.99,
+       "lo": 3.7,
+       "hi": 6.38,
+       "call": "ABOVE"
+      }
+     }
+    ],
+    "uncut": {
+     "datasets": {
+      "musique": {
+       "cut": {
+        "new_pairs": 417521,
+        "kept_new_pairs": 417521,
+        "kept_rank": 417521,
+        "of": 417521,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.47690048813819885,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 417521,
+         "union": 3806105,
+         "ratio_to_REC": 1.1235,
+         "fits": true
+        }
+       }
+      },
+      "squad": {
+       "cut": {
+        "new_pairs": 55061,
+        "kept_new_pairs": 55061,
+        "kept_rank": 55061,
+        "of": 55061,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.5087778568267822,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 55061,
+         "union": 1050930,
+         "ratio_to_REC": 1.0534,
+         "fits": true
+        }
+       }
+      },
+      "hotpotqa": {
+       "cut": {
+        "new_pairs": 15483311,
+        "kept_new_pairs": 15483311,
+        "kept_rank": 15483311,
+        "of": 15483311,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.4107038676738739,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 15483311,
+         "union": 78084448,
+         "ratio_to_REC": 1.2481,
+         "fits": true
+        },
+        "SRK": {
+         "pairs_added": 15386673,
+         "union": 82219229,
+         "ratio_to_REC": 1.2313,
+         "fits": true
+        }
+       }
+      },
+      "2wiki": {
+       "cut": {
+        "new_pairs": 24449948,
+        "kept_new_pairs": 24449948,
+        "kept_rank": 24449948,
+        "of": 24449948,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.4286343455314636,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 24449948,
+         "union": 140005258,
+         "ratio_to_REC": 1.2105,
+         "fits": true
+        },
+        "SRK": {
+         "pairs_added": 24242952,
+         "union": 150784951,
+         "ratio_to_REC": 1.1907,
+         "fits": true
+        }
+       }
+      },
+      "metaqa": {
+       "cut": {
+        "new_pairs": 54102,
+        "kept_new_pairs": 54102,
+        "kept_rank": 54134,
+        "of": 54134,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.5341396331787109,
+        "first_dropped": null
+       },
+       "size": {
+        "SRK": {
+         "pairs_added": 54099,
+         "union": 403917,
+         "ratio_to_REC": 1.1478,
+         "fits": true
+        }
+       }
+      },
+      "webqsp": {
+       "cut": {
+        "new_pairs": 4781062,
+        "kept_new_pairs": 4781062,
+        "kept_rank": 4792516,
+        "of": 4792516,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.4864342510700226,
+        "first_dropped": null
+       },
+       "size": {
+        "SRK": {
+         "pairs_added": 4780207,
+         "union": 511909237,
+         "ratio_to_REC": 1.0089,
+         "fits": true
+        }
+       }
+      }
+     },
+     "cells": [
+      {
+       "dataset": "musique",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 5962,
+       "new": 53,
+       "pairs_added": 417521,
+       "price": 7877.8,
+       "scale_free": 13.864,
+       "gain": {
+        "diff": 0.89,
+        "lo": 0.66,
+        "hi": 1.14,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "musique",
+       "version": "RK",
+       "kind": "CH",
+       "carve": "s1eval",
+       "slots": 3987,
+       "new": 53,
+       "pairs_added": 417521,
+       "price": 7877.8,
+       "scale_free": 9.272,
+       "gain": {
+        "diff": 1.33,
+        "lo": 0.99,
+        "hi": 1.71,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "hotpotqa",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 7405,
+       "new": 54,
+       "pairs_added": 15483311,
+       "price": 286728.0,
+       "scale_free": 33.936,
+       "gain": {
+        "diff": 0.73,
+        "lo": 0.55,
+        "hi": 0.93,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "hotpotqa",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 7405,
+       "new": 2,
+       "pairs_added": 15386673,
+       "price": 7693336.5,
+       "scale_free": 853.165,
+       "gain": {
+        "diff": 0.03,
+        "lo": 0.0,
+        "hi": 0.07,
+        "call": "LEVEL"
+       }
+      },
+      {
+       "dataset": "2wiki",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 26331,
+       "new": 58,
+       "pairs_added": 24449948,
+       "price": 421550.8,
+       "scale_free": 95.974,
+       "gain": {
+        "diff": 0.22,
+        "lo": 0.16,
+        "hi": 0.28,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "2wiki",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 26331,
+       "new": 22,
+       "pairs_added": 24242952,
+       "price": 1101952.4,
+       "scale_free": 229.126,
+       "gain": {
+        "diff": 0.08,
+        "lo": 0.05,
+        "hi": 0.12,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "metaqa",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 37446,
+       "new": 1727,
+       "pairs_added": 54099,
+       "price": 31.3,
+       "scale_free": 3.333,
+       "gain": {
+        "diff": 4.61,
+        "lo": 4.08,
+        "hi": 5.18,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "webqsp",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 4369,
+       "new": 178,
+       "pairs_added": 4780207,
+       "price": 26855.1,
+       "scale_free": 0.231,
+       "gain": {
+        "diff": 4.07,
+        "lo": 3.3,
+        "hi": 4.89,
+        "call": "ABOVE"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "form": "HK2",
+   "label": "R.hub_key",
+   "order": "the hub key's scores (hk_s1, hk_s2), a pair's highest",
+   "over": [],
+   "carried": false,
+   "conditions": {
+    "a_gain": true,
+    "b_price": false,
+    "c_size": "by construction"
+   },
+   "price_over_P_star": [
+    {
+     "cell": "hotpotqa/RK/GP",
+     "price": 106439.8,
+     "over_P_star": 101442.7
+    },
+    {
+     "cell": "hotpotqa/SRK/GP",
+     "price": 2310955.0,
+     "over_P_star": 2305957.9
+    },
+    {
+     "cell": "2wiki/RK/GP",
+     "price": 188773.4,
+     "over_P_star": 183776.3
+    },
+    {
+     "cell": "2wiki/SRK/GP",
+     "price": 620442.2,
+     "over_P_star": 615445.1
+    },
+    {
+     "cell": "webqsp/SRK/GP",
+     "price": 11649.7,
+     "over_P_star": 6652.6
+    }
+   ],
+   "datasets": {
+    "musique": {
+     "cut": {
+      "new_pairs": 529407,
+      "kept_new_pairs": 529407,
+      "kept_rank": 529407,
+      "of": 529407,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.46894410252571106,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 529407,
+       "union": 3917991,
+       "ratio_to_REC": 1.1566,
+       "fits": true
+      }
+     }
+    },
+    "squad": {
+     "cut": {
+      "new_pairs": 72729,
+      "kept_new_pairs": 72729,
+      "kept_rank": 72729,
+      "of": 72729,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.4742480218410492,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 72729,
+       "union": 1068598,
+       "ratio_to_REC": 1.0711,
+       "fits": true
+      }
+     }
+    },
+    "hotpotqa": {
+     "cut": {
+      "new_pairs": 21334758,
+      "kept_new_pairs": 18733402,
+      "kept_rank": 18733402,
+      "of": 21334758,
+      "cut": true,
+      "score": "score",
+      "last_kept": 0.7218599319458008,
+      "first_dropped": 0.7218599319458008
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 18733402,
+       "union": 81334539,
+       "ratio_to_REC": 1.3,
+       "fits": true
+      },
+      "SRK": {
+       "pairs_added": 18487640,
+       "union": 85320196,
+       "ratio_to_REC": 1.2777,
+       "fits": true
+      }
+     }
+    },
+    "2wiki": {
+     "cut": {
+      "new_pairs": 33412899,
+      "kept_new_pairs": 33412899,
+      "kept_rank": 33412899,
+      "of": 33412899,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.41941016912460327,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 33412899,
+       "union": 148968209,
+       "ratio_to_REC": 1.288,
+       "fits": true
+      },
+      "SRK": {
+       "pairs_added": 32883436,
+       "union": 159425435,
+       "ratio_to_REC": 1.2589,
+       "fits": true
+      }
+     }
+    },
+    "metaqa": {
+     "cut": {
+      "new_pairs": 67184,
+      "kept_new_pairs": 67184,
+      "kept_rank": 70226,
+      "of": 70226,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.5108611583709717,
+      "first_dropped": null
+     },
+     "size": {
+      "SRK": {
+       "pairs_added": 67179,
+       "union": 416997,
+       "ratio_to_REC": 1.185,
+       "fits": true
+      }
+     }
+    },
+    "webqsp": {
+     "cut": {
+      "new_pairs": 9263813,
+      "kept_new_pairs": 9263813,
+      "kept_rank": 9412224,
+      "of": 9412224,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.4736173748970032,
+      "first_dropped": null
+     },
+     "size": {
+      "SRK": {
+       "pairs_added": 9261477,
+       "union": 516390507,
+       "ratio_to_REC": 1.0177,
+       "fits": true
+      }
+     }
+    }
+   },
+   "cells": [
+    {
+     "dataset": "musique",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 5962,
+     "new": 129,
+     "pairs_added": 529407,
+     "price": 4103.9,
+     "scale_free": 7.223,
+     "gain": {
+      "diff": 2.16,
+      "lo": 1.79,
+      "hi": 2.54,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "musique",
+     "version": "RK",
+     "kind": "CH",
+     "carve": "s1eval",
+     "slots": 3987,
+     "new": 116,
+     "pairs_added": 529407,
+     "price": 4563.9,
+     "scale_free": 5.371,
+     "gain": {
+      "diff": 2.91,
+      "lo": 2.4,
+      "hi": 3.43,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "hotpotqa",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 7405,
+     "new": 176,
+     "pairs_added": 18733402,
+     "price": 106439.8,
+     "scale_free": 12.598,
+     "gain": {
+      "diff": 2.38,
+      "lo": 2.04,
+      "hi": 2.73,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "hotpotqa",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 7405,
+     "new": 8,
+     "pairs_added": 18487640,
+     "price": 2310955.0,
+     "scale_free": 256.277,
+     "gain": {
+      "diff": 0.11,
+      "lo": 0.04,
+      "hi": 0.19,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "2wiki",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 26331,
+     "new": 177,
+     "pairs_added": 33412899,
+     "price": 188773.4,
+     "scale_free": 42.978,
+     "gain": {
+      "diff": 0.67,
+      "lo": 0.58,
+      "hi": 0.77,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "2wiki",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 26331,
+     "new": 53,
+     "pairs_added": 32883436,
+     "price": 620442.2,
+     "scale_free": 129.007,
+     "gain": {
+      "diff": 0.2,
+      "lo": 0.15,
+      "hi": 0.26,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "metaqa",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 37446,
+     "new": 1903,
+     "pairs_added": 67179,
+     "price": 35.3,
+     "scale_free": 3.757,
+     "gain": {
+      "diff": 5.08,
+      "lo": 4.55,
+      "hi": 5.65,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "webqsp",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 4369,
+     "new": 795,
+     "pairs_added": 9261477,
+     "price": 11649.7,
+     "scale_free": 0.1,
+     "gain": {
+      "diff": 18.2,
+      "lo": 16.49,
+      "hi": 20.02,
+      "call": "ABOVE"
+     }
+    }
+   ],
+   "beside": {
+    "s1sel": [
+     {
+      "dataset": "musique",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3783,
+      "new": 46,
+      "pairs_added": 529407,
+      "price": 11508.8,
+      "scale_free": 12.852,
+      "gain": {
+       "diff": 1.22,
+       "lo": 0.87,
+       "hi": 1.58,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "musique",
+      "version": "RK",
+      "kind": "CH",
+      "carve": "s1sel",
+      "slots": 2530,
+      "new": 42,
+      "pairs_added": 529407,
+      "price": 12604.9,
+      "scale_free": 9.414,
+      "gain": {
+       "diff": 1.66,
+       "lo": 1.17,
+       "hi": 2.18,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "hotpotqa",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 1508,
+      "new": 36,
+      "pairs_added": 18733402,
+      "price": 520372.3,
+      "scale_free": 12.542,
+      "gain": {
+       "diff": 2.39,
+       "lo": 1.66,
+       "hi": 3.18,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "hotpotqa",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 1508,
+      "new": 4,
+      "pairs_added": 18487640,
+      "price": 4621910.0,
+      "scale_free": 104.38,
+      "gain": {
+       "diff": 0.27,
+       "lo": 0.07,
+       "hi": 0.53,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "2wiki",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3131,
+      "new": 16,
+      "pairs_added": 33412899,
+      "price": 2088306.2,
+      "scale_free": 56.535,
+      "gain": {
+       "diff": 0.51,
+       "lo": 0.26,
+       "hi": 0.79,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "2wiki",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3131,
+      "new": 3,
+      "pairs_added": 32883436,
+      "price": 10961145.3,
+      "scale_free": 271.009,
+      "gain": {
+       "diff": 0.1,
+       "lo": 0.0,
+       "hi": 0.22,
+       "call": "LEVEL"
+      }
+     },
+     {
+      "dataset": "metaqa",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 6074,
+      "new": 325,
+      "pairs_added": 67179,
+      "price": 206.7,
+      "scale_free": 3.568,
+      "gain": {
+       "diff": 5.35,
+       "lo": 3.95,
+       "hi": 6.92,
+       "call": "ABOVE"
+      }
+     }
+    ],
+    "uncut": {
+     "datasets": {
+      "musique": {
+       "cut": {
+        "new_pairs": 529407,
+        "kept_new_pairs": 529407,
+        "kept_rank": 529407,
+        "of": 529407,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.46894410252571106,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 529407,
+         "union": 3917991,
+         "ratio_to_REC": 1.1566,
+         "fits": true
+        }
+       }
+      },
+      "squad": {
+       "cut": {
+        "new_pairs": 72729,
+        "kept_new_pairs": 72729,
+        "kept_rank": 72729,
+        "of": 72729,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.4742480218410492,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 72729,
+         "union": 1068598,
+         "ratio_to_REC": 1.0711,
+         "fits": true
+        }
+       }
+      },
+      "hotpotqa": {
+       "cut": {
+        "new_pairs": 21334758,
+        "kept_new_pairs": 21334758,
+        "kept_rank": 21334758,
+        "of": 21334758,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.46514075994491577,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 21334758,
+         "union": 83935895,
+         "ratio_to_REC": 1.3416,
+         "fits": false
+        },
+        "SRK": {
+         "pairs_added": 21065275,
+         "union": 87897831,
+         "ratio_to_REC": 1.3164,
+         "fits": false
+        }
+       }
+      },
+      "2wiki": {
+       "cut": {
+        "new_pairs": 33412899,
+        "kept_new_pairs": 33412899,
+        "kept_rank": 33412899,
+        "of": 33412899,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.41941016912460327,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 33412899,
+         "union": 148968209,
+         "ratio_to_REC": 1.288,
+         "fits": true
+        },
+        "SRK": {
+         "pairs_added": 32883436,
+         "union": 159425435,
+         "ratio_to_REC": 1.2589,
+         "fits": true
+        }
+       }
+      },
+      "metaqa": {
+       "cut": {
+        "new_pairs": 67184,
+        "kept_new_pairs": 67184,
+        "kept_rank": 70226,
+        "of": 70226,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.5108611583709717,
+        "first_dropped": null
+       },
+       "size": {
+        "SRK": {
+         "pairs_added": 67179,
+         "union": 416997,
+         "ratio_to_REC": 1.185,
+         "fits": true
+        }
+       }
+      },
+      "webqsp": {
+       "cut": {
+        "new_pairs": 9263813,
+        "kept_new_pairs": 9263813,
+        "kept_rank": 9412224,
+        "of": 9412224,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.4736173748970032,
+        "first_dropped": null
+       },
+       "size": {
+        "SRK": {
+         "pairs_added": 9261477,
+         "union": 516390507,
+         "ratio_to_REC": 1.0177,
+         "fits": true
+        }
+       }
+      }
+     },
+     "cells": [
+      {
+       "dataset": "musique",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 5962,
+       "new": 129,
+       "pairs_added": 529407,
+       "price": 4103.9,
+       "scale_free": 7.223,
+       "gain": {
+        "diff": 2.16,
+        "lo": 1.79,
+        "hi": 2.54,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "musique",
+       "version": "RK",
+       "kind": "CH",
+       "carve": "s1eval",
+       "slots": 3987,
+       "new": 116,
+       "pairs_added": 529407,
+       "price": 4563.9,
+       "scale_free": 5.371,
+       "gain": {
+        "diff": 2.91,
+        "lo": 2.4,
+        "hi": 3.43,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "hotpotqa",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 7405,
+       "new": 212,
+       "pairs_added": 21334758,
+       "price": 100635.7,
+       "scale_free": 11.911,
+       "gain": {
+        "diff": 2.86,
+        "lo": 2.48,
+        "hi": 3.24,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "hotpotqa",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 7405,
+       "new": 9,
+       "pairs_added": 21065275,
+       "price": 2340586.1,
+       "scale_free": 259.563,
+       "gain": {
+        "diff": 0.12,
+        "lo": 0.05,
+        "hi": 0.2,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "2wiki",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 26331,
+       "new": 177,
+       "pairs_added": 33412899,
+       "price": 188773.4,
+       "scale_free": 42.978,
+       "gain": {
+        "diff": 0.67,
+        "lo": 0.58,
+        "hi": 0.77,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "2wiki",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 26331,
+       "new": 53,
+       "pairs_added": 32883436,
+       "price": 620442.2,
+       "scale_free": 129.007,
+       "gain": {
+        "diff": 0.2,
+        "lo": 0.15,
+        "hi": 0.26,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "metaqa",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 37446,
+       "new": 1903,
+       "pairs_added": 67179,
+       "price": 35.3,
+       "scale_free": 3.757,
+       "gain": {
+        "diff": 5.08,
+        "lo": 4.55,
+        "hi": 5.65,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "webqsp",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 4369,
+       "new": 795,
+       "pairs_added": 9261477,
+       "price": 11649.7,
+       "scale_free": 0.1,
+       "gain": {
+        "diff": 18.2,
+        "lo": 16.49,
+        "hi": 20.02,
+        "call": "ABOVE"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "form": "H10",
+   "label": "R.hub",
+   "order": "as H5",
+   "over": [],
+   "carried": false,
+   "conditions": {
+    "a_gain": true,
+    "b_price": false,
+    "c_size": "by construction"
+   },
+   "price_over_P_star": [
+    {
+     "cell": "musique/RK/CH",
+     "price": 5947.1,
+     "over_P_star": 950.0
+    },
+    {
+     "cell": "hotpotqa/RK/GP",
+     "price": 288206.2,
+     "over_P_star": 283209.1
+    },
+    {
+     "cell": "hotpotqa/SRK/GP",
+     "price": 3099630.5,
+     "over_P_star": 3094633.4
+    },
+    {
+     "cell": "2wiki/RK/GP",
+     "price": 341131.1,
+     "over_P_star": 336134.0
+    },
+    {
+     "cell": "2wiki/SRK/GP",
+     "price": 905825.1,
+     "over_P_star": 900828.0
+    },
+    {
+     "cell": "webqsp/SRK/GP",
+     "price": 121596.3,
+     "over_P_star": 116599.2
+    }
+   ],
+   "datasets": {
+    "musique": {
+     "cut": {
+      "new_pairs": 826642,
+      "kept_new_pairs": 826642,
+      "kept_rank": 826642,
+      "of": 826642,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.46894410252571106,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 826642,
+       "union": 4215226,
+       "ratio_to_REC": 1.2443,
+       "fits": true
+      }
+     }
+    },
+    "squad": {
+     "cut": {
+      "new_pairs": 116928,
+      "kept_new_pairs": 116928,
+      "kept_rank": 116928,
+      "of": 116928,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.4898821711540222,
+      "first_dropped": null
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 116928,
+       "union": 1112797,
+       "ratio_to_REC": 1.1154,
+       "fits": true
+      }
+     }
+    },
+    "hotpotqa": {
+     "cut": {
+      "new_pairs": 36691954,
+      "kept_new_pairs": 18733402,
+      "kept_rank": 18733402,
+      "of": 36691954,
+      "cut": true,
+      "score": "score",
+      "last_kept": 0.7864152193069458,
+      "first_dropped": 0.7864152193069458
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 18733402,
+       "union": 81334539,
+       "ratio_to_REC": 1.3,
+       "fits": true
+      },
+      "SRK": {
+       "pairs_added": 18597783,
+       "union": 85430339,
+       "ratio_to_REC": 1.2794,
+       "fits": true
+      }
+     }
+    },
+    "2wiki": {
+     "cut": {
+      "new_pairs": 41661546,
+      "kept_new_pairs": 34795373,
+      "kept_rank": 34795373,
+      "of": 41661546,
+      "cut": true,
+      "score": "score",
+      "last_kept": 0.7492921352386475,
+      "first_dropped": 0.7492921352386475
+     },
+     "size": {
+      "RK": {
+       "pairs_added": 34795373,
+       "union": 150350683,
+       "ratio_to_REC": 1.3,
+       "fits": true
+      },
+      "SRK": {
+       "pairs_added": 34421354,
+       "union": 160963353,
+       "ratio_to_REC": 1.2711,
+       "fits": true
+      }
+     }
+    },
+    "metaqa": {
+     "cut": {
+      "new_pairs": 162921,
+      "kept_new_pairs": 107641,
+      "kept_rank": 113547,
+      "of": 168883,
+      "cut": true,
+      "score": "score",
+      "last_kept": 0.6912950277328491,
+      "first_dropped": 0.6912946701049805
+     },
+     "size": {
+      "SRK": {
+       "pairs_added": 107641,
+       "union": 457459,
+       "ratio_to_REC": 1.3,
+       "fits": true
+      }
+     }
+    },
+    "webqsp": {
+     "cut": {
+      "new_pairs": 36479378,
+      "kept_new_pairs": 36479378,
+      "kept_rank": 36748389,
+      "of": 36748389,
+      "cut": false,
+      "score": "score",
+      "last_kept": 0.5065262913703918,
+      "first_dropped": null
+     },
+     "size": {
+      "SRK": {
+       "pairs_added": 36478893,
+       "union": 543607923,
+       "ratio_to_REC": 1.0714,
+       "fits": true
+      }
+     }
+    }
+   },
+   "cells": [
+    {
+     "dataset": "musique",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 5962,
+     "new": 174,
+     "pairs_added": 826642,
+     "price": 4750.8,
+     "scale_free": 8.361,
+     "gain": {
+      "diff": 2.92,
+      "lo": 2.5,
+      "hi": 3.36,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "musique",
+     "version": "RK",
+     "kind": "CH",
+     "carve": "s1eval",
+     "slots": 3987,
+     "new": 139,
+     "pairs_added": 826642,
+     "price": 5947.1,
+     "scale_free": 6.999,
+     "gain": {
+      "diff": 3.49,
+      "lo": 2.93,
+      "hi": 4.07,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "hotpotqa",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 7405,
+     "new": 65,
+     "pairs_added": 18733402,
+     "price": 288206.2,
+     "scale_free": 34.111,
+     "gain": {
+      "diff": 0.88,
+      "lo": 0.68,
+      "hi": 1.09,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "hotpotqa",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 7405,
+     "new": 6,
+     "pairs_added": 18597783,
+     "price": 3099630.5,
+     "scale_free": 343.739,
+     "gain": {
+      "diff": 0.08,
+      "lo": 0.03,
+      "hi": 0.15,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "2wiki",
+     "version": "RK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 26331,
+     "new": 102,
+     "pairs_added": 34795373,
+     "price": 341131.1,
+     "scale_free": 77.665,
+     "gain": {
+      "diff": 0.39,
+      "lo": 0.31,
+      "hi": 0.46,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "2wiki",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 26331,
+     "new": 38,
+     "pairs_added": 34421354,
+     "price": 905825.1,
+     "scale_free": 188.346,
+     "gain": {
+      "diff": 0.14,
+      "lo": 0.1,
+      "hi": 0.19,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "metaqa",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 37446,
+     "new": 1225,
+     "pairs_added": 107641,
+     "price": 87.9,
+     "scale_free": 9.351,
+     "gain": {
+      "diff": 3.27,
+      "lo": 2.91,
+      "hi": 3.65,
+      "call": "ABOVE"
+     }
+    },
+    {
+     "dataset": "webqsp",
+     "version": "SRK",
+     "kind": "GP",
+     "carve": "s1eval",
+     "slots": 4369,
+     "new": 300,
+     "pairs_added": 36478893,
+     "price": 121596.3,
+     "scale_free": 1.047,
+     "gain": {
+      "diff": 6.87,
+      "lo": 5.56,
+      "hi": 8.3,
+      "call": "ABOVE"
+     }
+    }
+   ],
+   "beside": {
+    "s1sel": [
+     {
+      "dataset": "musique",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3783,
+      "new": 64,
+      "pairs_added": 826642,
+      "price": 12916.3,
+      "scale_free": 14.424,
+      "gain": {
+       "diff": 1.69,
+       "lo": 1.3,
+       "hi": 2.13,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "musique",
+      "version": "RK",
+      "kind": "CH",
+      "carve": "s1sel",
+      "slots": 2530,
+      "new": 55,
+      "pairs_added": 826642,
+      "price": 15029.9,
+      "scale_free": 11.225,
+      "gain": {
+       "diff": 2.17,
+       "lo": 1.62,
+       "hi": 2.75,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "hotpotqa",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 1508,
+      "new": 20,
+      "pairs_added": 18733402,
+      "price": 936670.1,
+      "scale_free": 22.576,
+      "gain": {
+       "diff": 1.33,
+       "lo": 0.8,
+       "hi": 1.92,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "hotpotqa",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 1508,
+      "new": 2,
+      "pairs_added": 18597783,
+      "price": 9298891.5,
+      "scale_free": 210.003,
+      "gain": {
+       "diff": 0.13,
+       "lo": 0.0,
+       "hi": 0.33,
+       "call": "LEVEL"
+      }
+     },
+     {
+      "dataset": "2wiki",
+      "version": "RK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3131,
+      "new": 9,
+      "pairs_added": 34795373,
+      "price": 3866152.6,
+      "scale_free": 104.665,
+      "gain": {
+       "diff": 0.29,
+       "lo": 0.1,
+       "hi": 0.49,
+       "call": "ABOVE"
+      }
+     },
+     {
+      "dataset": "2wiki",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 3131,
+      "new": 3,
+      "pairs_added": 34421354,
+      "price": 11473784.7,
+      "scale_free": 283.684,
+      "gain": {
+       "diff": 0.1,
+       "lo": 0.0,
+       "hi": 0.22,
+       "call": "LEVEL"
+      }
+     },
+     {
+      "dataset": "metaqa",
+      "version": "SRK",
+      "kind": "GP",
+      "carve": "s1sel",
+      "slots": 6074,
+      "new": 202,
+      "pairs_added": 107641,
+      "price": 532.9,
+      "scale_free": 9.198,
+      "gain": {
+       "diff": 3.33,
+       "lo": 2.44,
+       "hi": 4.29,
+       "call": "ABOVE"
+      }
+     }
+    ],
+    "uncut": {
+     "datasets": {
+      "musique": {
+       "cut": {
+        "new_pairs": 826642,
+        "kept_new_pairs": 826642,
+        "kept_rank": 826642,
+        "of": 826642,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.46894410252571106,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 826642,
+         "union": 4215226,
+         "ratio_to_REC": 1.2443,
+         "fits": true
+        }
+       }
+      },
+      "squad": {
+       "cut": {
+        "new_pairs": 116928,
+        "kept_new_pairs": 116928,
+        "kept_rank": 116928,
+        "of": 116928,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.4898821711540222,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 116928,
+         "union": 1112797,
+         "ratio_to_REC": 1.1154,
+         "fits": true
+        }
+       }
+      },
+      "hotpotqa": {
+       "cut": {
+        "new_pairs": 36691954,
+        "kept_new_pairs": 36691954,
+        "kept_rank": 36691954,
+        "of": 36691954,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.4525277018547058,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 36691954,
+         "union": 99293091,
+         "ratio_to_REC": 1.587,
+         "fits": false
+        },
+        "SRK": {
+         "pairs_added": 36465908,
+         "union": 103298464,
+         "ratio_to_REC": 1.547,
+         "fits": false
+        }
+       }
+      },
+      "2wiki": {
+       "cut": {
+        "new_pairs": 41661546,
+        "kept_new_pairs": 41661546,
+        "kept_rank": 41661546,
+        "of": 41661546,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.40495923161506653,
+        "first_dropped": null
+       },
+       "size": {
+        "RK": {
+         "pairs_added": 41661546,
+         "union": 157216856,
+         "ratio_to_REC": 1.3594,
+         "fits": false
+        },
+        "SRK": {
+         "pairs_added": 41243947,
+         "union": 167785946,
+         "ratio_to_REC": 1.325,
+         "fits": false
+        }
+       }
+      },
+      "metaqa": {
+       "cut": {
+        "new_pairs": 162921,
+        "kept_new_pairs": 162921,
+        "kept_rank": 168883,
+        "of": 168883,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.5412983894348145,
+        "first_dropped": null
+       },
+       "size": {
+        "SRK": {
+         "pairs_added": 162921,
+         "union": 512739,
+         "ratio_to_REC": 1.4571,
+         "fits": false
+        }
+       }
+      },
+      "webqsp": {
+       "cut": {
+        "new_pairs": 36479378,
+        "kept_new_pairs": 36479378,
+        "kept_rank": 36748389,
+        "of": 36748389,
+        "cut": false,
+        "score": "score",
+        "last_kept": 0.5065262913703918,
+        "first_dropped": null
+       },
+       "size": {
+        "SRK": {
+         "pairs_added": 36478893,
+         "union": 543607923,
+         "ratio_to_REC": 1.0714,
+         "fits": true
+        }
+       }
+      }
+     },
+     "cells": [
+      {
+       "dataset": "musique",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 5962,
+       "new": 174,
+       "pairs_added": 826642,
+       "price": 4750.8,
+       "scale_free": 8.361,
+       "gain": {
+        "diff": 2.92,
+        "lo": 2.5,
+        "hi": 3.36,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "musique",
+       "version": "RK",
+       "kind": "CH",
+       "carve": "s1eval",
+       "slots": 3987,
+       "new": 139,
+       "pairs_added": 826642,
+       "price": 5947.1,
+       "scale_free": 6.999,
+       "gain": {
+        "diff": 3.49,
+        "lo": 2.93,
+        "hi": 4.07,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "hotpotqa",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 7405,
+       "new": 167,
+       "pairs_added": 36691954,
+       "price": 219712.3,
+       "scale_free": 26.004,
+       "gain": {
+        "diff": 2.26,
+        "lo": 1.93,
+        "hi": 2.59,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "hotpotqa",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 7405,
+       "new": 12,
+       "pairs_added": 36465908,
+       "price": 3038825.7,
+       "scale_free": 336.996,
+       "gain": {
+        "diff": 0.16,
+        "lo": 0.08,
+        "hi": 0.26,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "2wiki",
+       "version": "RK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 26331,
+       "new": 150,
+       "pairs_added": 41661546,
+       "price": 277743.6,
+       "scale_free": 63.234,
+       "gain": {
+        "diff": 0.57,
+        "lo": 0.48,
+        "hi": 0.66,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "2wiki",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 26331,
+       "new": 44,
+       "pairs_added": 41243947,
+       "price": 937362.4,
+       "scale_free": 194.904,
+       "gain": {
+        "diff": 0.17,
+        "lo": 0.12,
+        "hi": 0.22,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "metaqa",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 37446,
+       "new": 1476,
+       "pairs_added": 162921,
+       "price": 110.4,
+       "scale_free": 11.746,
+       "gain": {
+        "diff": 3.94,
+        "lo": 3.53,
+        "hi": 4.38,
+        "call": "ABOVE"
+       }
+      },
+      {
+       "dataset": "webqsp",
+       "version": "SRK",
+       "kind": "GP",
+       "carve": "s1eval",
+       "slots": 4369,
+       "new": 300,
+       "pairs_added": 36478893,
+       "price": 121596.3,
+       "scale_free": 1.047,
+       "gain": {
+        "diff": 6.87,
+        "lo": 5.56,
+        "hi": 8.3,
+        "call": "ABOVE"
+       }
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "beside": {
+  "section_12": null,
+  "musique_only_chain_as_filed": {
+   "carried": [
+    "HK1",
+    "NTc"
+   ],
+   "zul2_grade_sha256": "47ad0e7c030877e0fec42836b0a900063118e59300a9656de0b8458ac10d08bd"
+  }
+ },
+ "bases": {
+  "musique": {
+   "sizes": {
+    "REC": {
+     "RK": 3387597
+    },
+    "B0": {
+     "RK": 3388584
+    }
+   },
+   "ratio_to_REC": {
+    "RK": 1.0003
+   }
+  },
+  "squad": {
+   "sizes": {
+    "REC": {
+     "RK": 997652
+    },
+    "B0": {
+     "RK": 995869
+    }
+   },
+   "ratio_to_REC": {
+    "RK": 0.9982
+   }
+  },
+  "hotpotqa": {
+   "sizes": {
+    "REC": {
+     "RK": 62565030,
+     "SRK": 66773876
+    },
+    "B0": {
+     "RK": 62601137,
+     "SRK": 66832556
+    }
+   },
+   "ratio_to_REC": {
+    "RK": 1.0006,
+    "SRK": 1.0009
+   }
+  },
+  "2wiki": {
+   "sizes": {
+    "REC": {
+     "RK": 115654372,
+     "SRK": 126635390
+    },
+    "B0": {
+     "RK": 115555310,
+     "SRK": 126541999
+    }
+   },
+   "ratio_to_REC": {
+    "RK": 0.9991,
+    "SRK": 0.9993
+   }
+  },
+  "metaqa": {
+   "sizes": {
+    "REC": {
+     "SRK": 351892
+    },
+    "B0": {
+     "SRK": 349818
+    }
+   },
+   "ratio_to_REC": {
+    "SRK": 0.9941
+   }
+  },
+  "webqsp": {
+   "sizes": {
+    "REC": {
+     "SRK": 507398750
+    },
+    "B0": {
+     "SRK": 507129030
+    }
+   },
+   "ratio_to_REC": {
+    "SRK": 0.9995
+   }
+  }
+ },
+ "grades_sha256": {
+  "musique": "2b14e74691577deffa984870f0b6e9b37f8533af736778f2f01b717faf5e0d70",
+  "squad": "bdc8bc428e7c615d7d95dc3db42a6c2f1fdb982f8d735960125110003bec1351",
+  "hotpotqa": "5eddcd94420d961c23c1fb91ec46e4f92884748f44bc4af0af28959259ec98f0",
+  "2wiki": "4e34addb62019ce4ed776e30c6e1fd5ef2eaaf6c71a1b592f38da57814d0219c",
+  "metaqa": "477cbf141e20909efeb91f67c944aabbd3d6433d59042340ad2c09541d0bf905",
+  "webqsp": "c55136cf6644b67937783ac250cc30291efe6d470231e36c1e642373b2ab8aa4"
+ },
+ "zul2c_sha256": "fb4a3356931308cba6333fde66d55d9b23d0c973fffe219b92ce21dcb25e533e",
+ "zul2u_sha256": "bf41636269905d1a4c4f7a6f704dc723fbce152ef5c4e9852ee1e2621ab9cb6e",
+ "zabl_u_sha256": "dafde17682eec75cbcb14c45428e4f02068d71db4a2450d896fa4fa4a0fd2451",
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+ "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}

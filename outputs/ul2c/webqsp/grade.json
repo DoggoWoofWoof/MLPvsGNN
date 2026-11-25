@@ -1,0 +1,197 @@
+{
+ "dataset": "webqsp",
+ "declared_in": "docs/UL2_LAYOUT_ON_E3V.md, section 12.6",
+ "nodes": 2592894,
+ "nodes_sha256": "b39c615122ad55f587eaea0c3fc5c7eff4190e6236fa258006e957dcfda948fe",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "kb": true,
+ "versions": [
+  "SRK"
+ ],
+ "inputs": {
+  "ner_npz_sha256": "8ed08f05db3da877f02d212b2c8ac5b495d12bf15c91c329b33652fdc2e9fb10",
+  "knn_npz_sha256": "75a03f25dfa8c6339773059bffbd8322c2f9bf13e7b48cad0105c2ee189519cd",
+  "structural_npz_sha256": "b7c2c435fc0b9dbab3a238c7db31cd61da9a8bd435864c0eba6990ae12756b95",
+  "w2_s_npz_sha256": "a2e79a93c350f6e4de9455af07b11684b875444d2fb61ed6f2555b443ed093c4",
+  "f0t_npz_sha256": "624684bf80d6605b8a7e9d9f884ee027b35c84f3f51dbdd4d65c10ee29a51edd",
+  "names_npz_sha256": "b567061f6c9fc8653ee964518913a97e72ef42e0d940315528401e80f0140f38"
+ },
+ "knn_e3v": {
+  "file": "outputs/enc/e4/knn/e3v/webqsp.npz",
+  "npz_sha256": "56161b19ed1899467bbc806db21b41a7b99d0c68a8b391e750bd08ced13bdf37"
+ },
+ "table": {
+  "gate_GH": null,
+  "npz_sha256": "25325c387cd038996f49243b339d254a7f8c198ad304c6bfa3c6ad4e05f2cedb",
+  "sizes": {
+   "H3": 24561939,
+   "H5": 28422317,
+   "H10": 36748389,
+   "HM10": 9472634,
+   "HK1": 4910857,
+   "HK2": 9412224
+  },
+  "flagged_rows": {
+   "RK": {
+    "rows": 2592894,
+    "flagged": 267691
+   }
+  },
+  "build_sha256": "aaa5b026b65148fe95e841c4fbb333520ad7acd461361dca2b25c328aeff6633",
+  "exclusion_pairs": 513519276
+ },
+ "ntrank": {
+  "npz_sha256": "ca24b76c40d4cf6426e2fd05ac5d40268efc96b4b7e49831b18c06a897cc6035",
+  "gate_GN": {
+   "ntc_pairs": 1263186,
+   "ntc_recomputed": 1263186,
+   "ntc_keys": 44132,
+   "ntc_same": true,
+   "nt1_pairs": 4792516,
+   "nt1_scored": 4792516,
+   "nt1_same": true,
+   "verdict": "PASS"
+  }
+ },
+ "gate_GR": {
+  "H5": {
+   "pairs": 28422317,
+   "verdict": "PASS"
+  },
+  "H10": {
+   "pairs": 36748389,
+   "verdict": "PASS"
+  },
+  "HM": {
+   "pairs": 9472634,
+   "verdict": "PASS"
+  },
+  "HK1": {
+   "pairs": 4910857,
+   "verdict": "PASS"
+  },
+  "HK2": {
+   "pairs": 9412224,
+   "verdict": "PASS"
+  }
+ },
+ "order": {
+  "H5": "R.hub table score: float32 dot of the two stored e3v rows (tab_s; ov_s on flagged rows), a pair's highest",
+  "H10": "as H5",
+  "HM": "as H5 (H10's pairs picked from both ends)",
+  "HK1": "the hub key's score (hk_s1), a pair's highest",
+  "HK2": "the hub key's scores (hk_s1, hk_s2), a pair's highest",
+  "NTc": "no score in its build: the group size (a key's namers + writers, at most 25), smallest first; stored as minus the size",
+  "NT1": "its build's score: the namer-writer float32 dot of the stored e3v rows (recomputed by ntrank)"
+ },
+ "form_pairs": {
+  "H5": 28422317,
+  "HM": 9472634,
+  "HK1": 4910857,
+  "NTc": 1263186,
+  "NT1": 4792516,
+  "HK2": 9412224,
+  "H10": 36748389
+ },
+ "score_range": {
+  "H5": {
+   "first": 0.9998114705085754,
+   "last": 0.522808849811554
+  },
+  "HM": {
+   "first": 0.9998114705085754,
+   "last": 0.5398985743522644
+  },
+  "HK1": {
+   "first": 0.9998114705085754,
+   "last": 0.4736173748970032
+  },
+  "NTc": {
+   "first": -2.0,
+   "last": -25.0
+  },
+  "NT1": {
+   "first": 0.9990764856338501,
+   "last": 0.4864342510700226
+  },
+  "HK2": {
+   "first": 0.9998114705085754,
+   "last": 0.4736173748970032
+  },
+  "H10": {
+   "first": 0.9998114705085754,
+   "last": 0.5065262913703918
+  }
+ },
+ "pairs_beyond_B0": {
+  "any": 45814679,
+  "H5": 28245530,
+  "HM": 9325326,
+  "HK1": 4821571,
+  "NTc": 1023873,
+  "NT1": 4781062,
+  "HK2": 9263813,
+  "H10": 36479378
+ },
+ "in_S": 3088,
+ "sizes": {
+  "REC": {
+   "SRK": 507398750
+  },
+  "B0": {
+   "SRK": 507129030
+  }
+ },
+ "ratio_to_REC": {
+  "SRK": 0.9995
+ },
+ "room": {
+  "SRK": 152489345
+ },
+ "against": {
+  "zul2": {
+   "grade_sha256": "4e87657fcf10d343beae6a9ae4d079cf1ddef0c2fd2ad3111bd7788a3ab60a65",
+   "REC": "same",
+   "L2e": "same as B0"
+  }
+ },
+ "cells": {
+  "s1eval": {
+   "GP": {
+    "questions": 1503,
+    "slots": 4369,
+    "questions_npz_sha256": "c1d468b74dc8c2309ee09ebf0bec7d65e750a6164179bf9f90f3b668d87c5937",
+    "SRK": {
+     "linked": {
+      "REC": 908,
+      "B0": 833
+     },
+     "B0-REC": {
+      "diff": -1.72,
+      "lo": -2.26,
+      "hi": -1.21,
+      "call": "BELOW"
+     }
+    }
+   }
+  }
+ },
+ "ranks_npz_sha256": "37143a2a0ce9e4e877987bb9a75bc6edc06fbb96d88b0ad1bd445847847bf9e3",
+ "seconds": 761.3,
+ "utc": "2026-11-24T00:47:54Z",
+ "memory": {
+  "peak_working_set_gb": 11.73,
+  "peak_commit_gb": 11.75
+ },
+ "build_sha256": "8c3081396b95443621cd6e081b43efc0884bef134f4180e3fc5685d66c8edec0",
+ "zul2c_sha256": "fb4a3356931308cba6333fde66d55d9b23d0c973fffe219b92ce21dcb25e533e",
+ "zul2u_sha256": "bf41636269905d1a4c4f7a6f704dc723fbce152ef5c4e9852ee1e2621ab9cb6e",
+ "zabl_u_sha256": "dafde17682eec75cbcb14c45428e4f02068d71db4a2450d896fa4fa4a0fd2451",
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+ "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}

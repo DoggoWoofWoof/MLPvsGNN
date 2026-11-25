@@ -1,0 +1,77 @@
+{
+ "dataset": "webqsp",
+ "declared_in": "docs/UL2_LAYOUT_ON_E3V.md, section 12.6",
+ "nodes": 2592894,
+ "nodes_sha256": "b39c615122ad55f587eaea0c3fc5c7eff4190e6236fa258006e957dcfda948fe",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "text": "ABL-U's rule text (section 12.1)",
+ "nt_record": "outputs/ul2u/webqsp/nt_e3v.json",
+ "vectors": {
+  "enc": "e3v",
+  "shards": 65,
+  "dim": 1152,
+  "manifest_sha256": "e171839e9a7376ae102ec00d7fefffc0edc2ef2775707d79c3f76aa779fe4f17"
+ },
+ "gate_GN": {
+  "ntc_pairs": 1263186,
+  "ntc_recomputed": 1263186,
+  "ntc_keys": 44132,
+  "ntc_same": true,
+  "nt1_pairs": 4792516,
+  "nt1_scored": 4792516,
+  "nt1_same": true,
+  "verdict": "PASS"
+ },
+ "ntc_group_sizes": {
+  "2": 339,
+  "3": 6230,
+  "4": 7260,
+  "5": 11385,
+  "6": 17572,
+  "7": 24559,
+  "8": 29589,
+  "9": 34890,
+  "10": 40544,
+  "11": 48552,
+  "12": 54292,
+  "13": 57560,
+  "14": 65116,
+  "15": 63623,
+  "16": 68998,
+  "17": 76901,
+  "18": 78136,
+  "19": 74914,
+  "20": 78093,
+  "21": 82326,
+  "22": 82773,
+  "23": 88190,
+  "24": 85057,
+  "25": 86287
+ },
+ "nt1_score": {
+  "max": 0.9990764856338501,
+  "min": 0.4864342510700226
+ },
+ "order": {
+  "NTc": "no score in its build: the group size (a key's namers + writers, at most 25), smallest first; stored as minus the size",
+  "NT1": "its build's score: the namer-writer float32 dot of the stored e3v rows (recomputed by ntrank)"
+ },
+ "npz_sha256": "ca24b76c40d4cf6426e2fd05ac5d40268efc96b4b7e49831b18c06a897cc6035",
+ "seconds": 637.5,
+ "utc": "2026-11-24T00:03:00Z",
+ "memory": {
+  "peak_working_set_gb": 6.3,
+  "peak_commit_gb": 1.95
+ },
+ "build_sha256": "2b3420545aa6d38b10a1228a2c066a39db63dc39847730ca2529bb16a6d8efdd",
+ "zul2c_sha256": "fb4a3356931308cba6333fde66d55d9b23d0c973fffe219b92ce21dcb25e533e",
+ "zul2u_sha256": "bf41636269905d1a4c4f7a6f704dc723fbce152ef5c4e9852ee1e2621ab9cb6e",
+ "zabl_u_sha256": "dafde17682eec75cbcb14c45428e4f02068d71db4a2450d896fa4fa4a0fd2451",
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+ "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}

@@ -682,3 +682,107 @@ edits none of them. Its commands:
 
 **Outputs.** outputs/ul2m/multihoprag/ and outputs/ul2m/report.*. The json records are committed. The arrays (npz)
 are not.
+
+## 14. Results: sections 12, 12.6 and 13 read (filed 25 November 2026, 22:57 IST, 17:27 UTC)
+
+No rule is new here. This is section 12's, section 12.6's and section 13's call, read with the code and the constants declared in 73b171c, 0984f00 and 10d7960, on the grades named below. Nothing was edited and no threshold was moved.
+
+### 14.1 What was read
+
+| call | host row | record | sha256 of the record |
+|---|---|---|---|
+| section 12 (first declaration, six datasets) | ul2u-report | outputs/ul2u/report.json | 18b885a8e9557fe7... |
+| section 12.6 (carrying by budget, six datasets) | ul2c-report | outputs/ul2c/report.json | 3fd8e697b01d9e88... |
+| section 13 (carrying by budget, seven datasets) | ul2m-report7 | outputs/ul2m/report.json | ff8a2fd5562a5627... |
+
+- 2,000 resamples, seed 0. P* = 4,997.1 pairs per new slot; bound 130/100 x |REC|.
+- None of the three reports stopped a dataset on a gate or refused a grade, and no gate field in the ul2u, ul2c and ul2m grade records is False or FAIL (the passage datasets' G-C and G-H sit in zul2's records, filed with section 11). The six grades' sha256 are the same in ul2c's and ul2m's record. zul2.py, zul2u.py, zul2c.py and zul2m.py were not edited.
+- Section 12.6.3 and section 13.4 say the seven-dataset call replaces the six-dataset call. Both read NONE_CARRIED, so the replacement changes no verdict.
+
+### 14.2 The calls
+
+- **Section 12 (the first declaration): BASE_OVER_BOUND.** MetaQA SRK's base alone is 2.599 x |REC|, because ABL-U's rule text appends each entity's KB neighbours and F0T on that text (F0T_u) pairs entities that share a neighbour's name. Beside, U-name (the KBs' F0T as UL1 filed it) reads NONE_CARRIED, and MuSiQue's own chain reads {HK1, NTc} as filed. Section 12.6 was declared for this.
+- **Section 12.6 (six datasets): NONE_CARRIED.** Every one of the seven forms passes (a) (ABOVE in at least one judged cell, BELOW in none) and fails (b).
+- **Section 13 (seven datasets): NONE_CARRIED.** The same, with MultiHop-RAG added. **No form is carried on any dataset**, because the rule carries a form on all datasets or on none.
+- (c) holds by construction, as declared: the union is 0.9941 to 1.0015 x |REC| on every dataset and version (14.5).
+
+### 14.3 Why (b) fails
+
+(b) is a price in pairs per new slot, at most P* = 4,997.1, in every judged cell where the form adds slots. P* is H_5e's price on MuSiQue s1eval CH.
+
+| form | datasets with a cell over P* (worst multiple of P*) | cells over P* / judged cells |
+|---|---|---|
+| H5 | HotpotQA 413.2x; 2Wiki 133.8x; WebQSP 30.2x | 5 / 9 |
+| HM | MuSiQue 1.1x; HotpotQA 259.5x; 2Wiki 94.7x; WebQSP 15.0x | 7 / 9 |
+| HK1 | HotpotQA 550.7x; 2Wiki 104.2x; WebQSP 1.8x | 5 / 9 |
+| NTc | HotpotQA 850.3x; 2Wiki 116.1x; WebQSP 1.4x | 5 / 9 |
+| NT1 | MuSiQue 1.6x; HotpotQA 1,539.6x; 2Wiki 220.5x; WebQSP 5.4x | 7 / 9 |
+| HK2 | HotpotQA 462.5x; 2Wiki 124.2x; WebQSP 2.3x | 5 / 9 |
+| H10 | MuSiQue 1.2x; HotpotQA 620.3x; 2Wiki 181.3x; WebQSP 24.3x | 6 / 9 |
+
+- The cells that break (b) are on HotpotQA, 2Wiki and WebQSP, whose graphs are many times MuSiQue's (union 62.6 million, 115.6 million and 507.1 million pairs against MuSiQue's 3.4 million). One reading (not tested): a form that adds a fixed share of a large graph adds that share in pairs, so its pairs per new slot grow with the graph. The worst multiples are the SRK cells, where S already links most gold pairs: a form adds 2 to 9 slots on HotpotQA SRK and 22 to 53 on 2Wiki SRK (s1eval GP, as cut), and the price divides the same pairs by far fewer slots.
+- On MetaQA and MultiHop-RAG every form's price is inside P* in every cell (checked in code when this page was built). On MuSiQue the forms over P* are, by (form, cell kind): H10 CH, HM CH, HM GP, NT1 CH, NT1 GP; H5's CH price is P* itself (4,997.1, by construction, since P* is H_5e's price there).
+- The scale-free price (pairs added over |REC|, divided by the share of slots gained) was declared beside and never deciding (12.3, item 4). It is in each form's record, and this page does not use it.
+
+Price in P* units (pairs per new slot, divided by P*; GP cells, s1eval; RK then SRK where a dataset has both):
+
+| form | MuSiQue | SQuAD | HotpotQA | 2Wiki | MetaQA | WebQSP | MultiHop-RAG |
+|---|---|---|---|---|---|---|---|
+| H5 | 0.92 | no slots | 34.08/413.19 | 51.03/133.81 | 0.02 | 30.23 | <0.01 |
+| HM | 1.08 | no slots | 31.71/259.48 | 42.13/94.70 | <0.01 | 15.05 | <0.01 |
+| HK1 | 0.65 | no slots | 15.87/550.66 | 32.81/104.24 | <0.01 | 1.85 | <0.01 |
+| NTc | 0.65 | no slots | 50.38/850.26 | 65.30/116.06 | <0.01 | 1.36 | <0.01 |
+| NT1 | 1.58 | no slots | 57.38/1539.56 | 84.36/220.52 | <0.01 | 5.37 | 0.01 |
+| HK2 | 0.82 | no slots | 21.30/462.46 | 37.78/124.16 | <0.01 | 2.33 | <0.01 |
+| H10 | 0.95 | no slots | 57.67/620.29 | 68.27/181.27 | 0.02 | 24.33 | <0.01 |
+
+### 14.4 What the gain side says
+
+(a) holds for all seven forms. The gains are at graph level, on s1eval, over the gold pairs of each question (a linked slot), and are not retrieval scores. Read in points (GP cells; a call other than ABOVE is named; RK then SRK where a dataset has both):
+
+| form | MuSiQue | SQuAD | HotpotQA | 2Wiki | MetaQA | WebQSP | MultiHop-RAG |
+|---|---|---|---|---|---|---|---|
+| H5 | +1.56 | no slots | +1.49/+0.12 | +0.32/+0.12 | +2.49 | +4.28 | +6.26 |
+| HM | +0.82 | no slots | +0.89/+0.11 | +0.22/+0.09 | +2.27 | +2.84 | +5.53 |
+| HK1 | +1.46 | no slots | +1.90/+0.05 | +0.41/+0.13 | +4.14 | +11.95 | +4.95 |
+| NTc | +2.57 | no slots | +0.46/+0.03 LEVEL | +0.16/+0.09 | +16.51 | +3.46 | +5.72 |
+| NT1 | +0.89 | no slots | +0.73/+0.03 LEVEL | +0.22/+0.08 | +4.61 | +4.07 | +2.33 |
+| HK2 | +2.16 | no slots | +2.38/+0.11 | +0.67/+0.20 | +5.08 | +18.20 | +7.03 |
+| H10 | +2.92 | no slots | +0.88/+0.08 | +0.39/+0.14 | +3.27 | +6.87 | +7.83 |
+
+The largest gain per dataset over the seven forms:
+
+| dataset | form with the largest GP gain | version | gain (points) | pairs added | price (pairs per new slot) |
+|---|---|---|---|---|---|
+| MuSiQue | H10 | RK | +2.92 [+2.50, +3.36] ABOVE | 826,642 | 4,750.8 |
+| HotpotQA | HK2 | RK | +2.38 [+2.04, +2.73] ABOVE | 18,733,402 | 106,439.8 |
+| 2Wiki | HK2 | RK | +0.67 [+0.58, +0.77] ABOVE | 33,412,899 | 188,773.4 |
+| MetaQA | NTc | SRK | +16.51 [+15.46, +17.57] ABOVE | 83,376 | 13.5 |
+| WebQSP | HK2 | SRK | +18.20 [+16.49, +20.02] ABOVE | 9,261,477 | 11,649.7 |
+| MultiHop-RAG | H10 | RK | +7.83 [+6.61, +9.08] ABOVE | 4,588 | 21.3 |
+
+- Cells whose call is not ABOVE: hotpotqa/SRK/GP NT1 +0.03 LEVEL; hotpotqa/SRK/GP NTc +0.03 LEVEL. Every other s1eval cell is ABOVE. Some ABOVE cells sit near the floor (HK1 on HotpotQA SRK: +0.05 [+0.01, +0.11]); (a) has no size margin, so an ABOVE at +0.05 points says the interval clears zero and nothing more.
+- **What the universal rule gives up.** The large gains are on the KBs, where the prices are small: NTc +16.51 on MetaQA at 13.5 pairs per new slot, HK2 +18.20 on WebQSP at 11,649.7 (the latter over P* by 2.33 x). Both are vetoed by (b) on large graphs: on HotpotQA and 2Wiki the GP gains of the seven forms run from +0.03 to +2.38 points at prices of 79,320.2 (HK1 on HotpotQA RK, 15.9 x P*) to 7,693,336.5 (NT1 on HotpotQA SRK, 1539.6 x P*) pairs per new slot, and WebQSP's own cells are over P* too. That is the cost of carried-everywhere-or-nowhere, stated, not hidden.
+
+### 14.5 The layout that stands
+
+No form is added, so the layout every dataset takes is the base: B0 = S | W2_S | F0T | K_e3v (section 12.6.1: F0T reads a node's own text, a passage's body and a KB entity's name; no S on MultiHop-RAG). Its size over the filed REC:
+
+| dataset | version | union (B0) / REC |
+|---|---|---|
+| MuSiQue | RK | 1.0003 |
+| SQuAD | RK | 0.9982 |
+| HotpotQA | RK | 1.0006 |
+| HotpotQA | SRK | 1.0009 |
+| 2Wiki | RK | 0.9991 |
+| 2Wiki | SRK | 0.9993 |
+| MetaQA | SRK | 0.9941 |
+| WebQSP | SRK | 0.9995 |
+| MultiHop-RAG | RK | 1.0015 |
+
+### 14.6 What this does and does not say
+
+- **It says:** under the declared rule, none of the seven forms (R.hub at 5 and 10, its mutual form, the hub key's best one and two, and the two written-name forms) is carried, so the links for the unified refit are the base's. This closes the link layout under the rule as declared.
+- **It does not say** that the forms add nothing: (a) is met on all seven. It says each costs more pairs per new slot than P* in at least one cell on HotpotQA, 2Wiki or WebQSP.
+- **Not tested here, and not declared:** a price that scales with graph size, or a carry per dataset family. Either is a new rule and would be declared before any number, on all seven; the user's ruling of 21 November is that rules are universal and carried everywhere or nowhere. Which of these, if any, to declare is the user's call.
+- Memory: each record holds its process's peak working set and commit (ul2c's and ul2m's grades), for sizing later rows.

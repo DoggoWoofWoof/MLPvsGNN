@@ -1,0 +1,77 @@
+{
+ "dataset": "2wiki",
+ "declared_in": "docs/UL2_LAYOUT_ON_E3V.md, section 12.6",
+ "nodes": 5989847,
+ "nodes_sha256": "73fb822f3e4dd255c2555af717f4664c78a01fec4b5dce892fdec25d5de2426a",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "text": "the passage's own text",
+ "nt_record": "outputs/ul2/2wiki/nt_e3v.json",
+ "vectors": {
+  "enc": "e3v",
+  "shards": 150,
+  "dim": 1152,
+  "manifest_sha256": "97669fbeb024ccd647cf0ab3538e855783361b0d02ee2364b1e5bf75e56eaa96"
+ },
+ "gate_GN": {
+  "ntc_pairs": 17076370,
+  "ntc_recomputed": 17076370,
+  "ntc_keys": 1603685,
+  "ntc_same": true,
+  "nt1_pairs": 24449948,
+  "nt1_scored": 24449948,
+  "nt1_same": true,
+  "verdict": "PASS"
+ },
+ "ntc_group_sizes": {
+  "2": 382952,
+  "3": 489324,
+  "4": 550576,
+  "5": 590967,
+  "6": 626235,
+  "7": 648089,
+  "8": 668246,
+  "9": 685982,
+  "10": 705595,
+  "11": 713037,
+  "12": 733939,
+  "13": 732266,
+  "14": 749231,
+  "15": 754603,
+  "16": 779912,
+  "17": 785025,
+  "18": 778170,
+  "19": 788899,
+  "20": 806393,
+  "21": 804801,
+  "22": 815749,
+  "23": 814906,
+  "24": 835075,
+  "25": 836398
+ },
+ "nt1_score": {
+  "max": 1.0009349584579468,
+  "min": 0.4286343455314636
+ },
+ "order": {
+  "NTc": "no score in its build: the group size (a key's namers + writers, at most 25), smallest first; stored as minus the size",
+  "NT1": "its build's score: the namer-writer float32 dot of the stored e3v rows (recomputed by ntrank)"
+ },
+ "npz_sha256": "43bbdd4493c6756c1a8dd3bc2ab0c59d88161bff1be9d44c3665cbf485270a79",
+ "seconds": 4592.9,
+ "utc": "2026-11-25T08:21:53Z",
+ "memory": {
+  "peak_working_set_gb": 14.77,
+  "peak_commit_gb": 7.18
+ },
+ "build_sha256": "2b3420545aa6d38b10a1228a2c066a39db63dc39847730ca2529bb16a6d8efdd",
+ "zul2c_sha256": "fb4a3356931308cba6333fde66d55d9b23d0c973fffe219b92ce21dcb25e533e",
+ "zul2u_sha256": "bf41636269905d1a4c4f7a6f704dc723fbce152ef5c4e9852ee1e2621ab9cb6e",
+ "zabl_u_sha256": "dafde17682eec75cbcb14c45428e4f02068d71db4a2450d896fa4fa4a0fd2451",
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+ "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}

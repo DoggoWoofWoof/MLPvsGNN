@@ -1,0 +1,88 @@
+{
+ "dataset": "webqsp",
+ "enc": "frozen",
+ "declared_in": "docs/UL2_LAYOUT_ON_E3V.md, section 12",
+ "rule_text": "ABL-U (ABL section 8)",
+ "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+ "nodes": 2592894,
+ "nodes_sha256": "b39c615122ad55f587eaea0c3fc5c7eff4190e6236fa258006e957dcfda948fe",
+ "R": 24,
+ "ks": [
+  3,
+  5,
+  10
+ ],
+ "eps": 1e-06,
+ "dfmax": 100000,
+ "hub_lo": 25,
+ "exclusion_pairs": 513808094,
+ "knn": {
+  "file": "package graph/knn.npz",
+  "npz_sha256": "75a03f25dfa8c6339773059bffbd8322c2f9bf13e7b48cad0105c2ee189519cd"
+ },
+ "vectors": {
+  "shards": 65,
+  "dim": 1536,
+  "dtype": "float16"
+ },
+ "inputs": {
+  "ner_npz_sha256": "8ed08f05db3da877f02d212b2c8ac5b495d12bf15c91c329b33652fdc2e9fb10",
+  "knn_npz_sha256": "75a03f25dfa8c6339773059bffbd8322c2f9bf13e7b48cad0105c2ee189519cd",
+  "structural_npz_sha256": "b7c2c435fc0b9dbab3a238c7db31cd61da9a8bd435864c0eba6990ae12756b95",
+  "w2_s_npz_sha256": "a2e79a93c350f6e4de9455af07b11684b875444d2fb61ed6f2555b443ed093c4",
+  "f0t_npz_sha256": "624684bf80d6605b8a7e9d9f884ee027b35c84f3f51dbdd4d65c10ee29a51edd",
+  "names_npz_sha256": "b567061f6c9fc8653ee964518913a97e72ef42e0d940315528401e80f0140f38"
+ },
+ "f0t_u_npz_sha256": "4572c146acff57720b5b5de7fb12472899a63b9c499424b8b260a4b4e4d00463",
+ "gate_GC": {
+  "keys": 618500,
+  "pairs_checked": 17070218,
+  "missing": 0,
+  "verdict": "PASS"
+ },
+ "pass": {
+  "keys": 57436,
+  "skip_le": 25,
+  "keys_skipped": 618500,
+  "entries": 7457678,
+  "sum_df2": 31231383566,
+  "hub_keys": 57436,
+  "keys_over_dfmax": 2,
+  "threads": 8,
+  "offered": 170756752,
+  "merges": 2,
+  "seconds_pass": 2714.0,
+  "hk_rows": 7375149,
+  "truncated_rows": 2196191
+ },
+ "flagged_rows": {
+  "RK": {
+   "rows": 2592894,
+   "flagged": 286214
+  }
+ },
+ "variants": [
+  "RK"
+ ],
+ "sizes": {
+  "H3": 25926257,
+  "H5": 29696088,
+  "H10": 37935639,
+  "HM10": 20648797,
+  "HK1": 4894621,
+  "HK2": 9391224
+ },
+ "npz_sha256": "11aef3449fa368f2db4a6d249780e008b474cf4efd59941e3b869176aeee81e9",
+ "seconds": 15142.6,
+ "utc": "2026-11-23T09:50:44Z",
+ "build_sha256": "aaa5b026b65148fe95e841c4fbb333520ad7acd461361dca2b25c328aeff6633",
+ "zul2u_sha256": "bf41636269905d1a4c4f7a6f704dc723fbce152ef5c4e9852ee1e2621ab9cb6e",
+ "zabl_u_sha256": "dafde17682eec75cbcb14c45428e4f02068d71db4a2450d896fa4fa4a0fd2451",
+ "zul2_sha256": "2c8cc299c8cd3d556413d9228ff259c003f80aabdf329299a0ec96a2ff228136",
+ "zmhb_sha256": "d112d348550c5a082c989c1c31784a0abeefc0029de8bfe9fcd968bd2d08c21a",
+ "script_sha256": "9f0e614502812a5cfff2823bf64abb55e27db208c1d78880109b79c572605286",
+ "zap1_sha256": "484127556667d6b949e73c7ad152d8c1f1b3bf1d206e8d99a524739cf736bda8",
+ "zap1b_sha256": "25adc053266103f67f9ec254b819edaf41f33e9d48eaa7f4507a89b268f20f20",
+ "zu2r_sha256": "4070ac34bffc1124044ee07ae45e4b23084a8c3399c828e648e4dcbe3983a403",
+ "zu2l_el_sha256": "6d5e64631921712bd714afd5b239fa964907583d64327d7c842c1a17d328879a"
+}
