@@ -1,0 +1,39 @@
+{
+ "stage": "PL6 grid",
+ "declared_in": "docs/PL6_COVERAGE_ROUND5.md",
+ "dataset": "musique",
+ "carve": "dev",
+ "first": "frozen",
+ "rung": 1,
+ "v": 10000,
+ "questions": 511,
+ "rows": [
+  511,
+  1022
+ ],
+ "part": [
+  1,
+  3
+ ],
+ "cells": 156,
+ "cells_sha256": "1dd177c06a0d5c8895dd0cddb4e1001d45652fd747d9b4e401241b471d817373",
+ "n_nodes": 117534,
+ "population_digest": "58c6bd197a6cac8052f3b8b36b64a1f934a26ea082a6cc0217a75c9933b52d90",
+ "code_path_sha256": "cce8c3fb01e42e11eebf42ac94dacbd360c8abba39142b9278763365a7a105ee",
+ "pinned": {
+  "pl2": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+  "pl2_script": "97ec4883b41445110b57181b44d2630b7424dfbfd884f7cc9512a65085d7e477",
+  "pl3": "e9d860950c700bdd5e988f16b4b0ef6023d3207b7f5c07b1e7ee36593c13c8c4",
+  "pl4": "aa7c9ac9ddd53327cbb906ed1b68e43c6e932d6bf740278684194abdd4eec006",
+  "pl5": "62a27dbb08c49a81fb4605f211f908935135e01c4cb6dd080e3c54b50066930f",
+  "pl5_script": "c3e8221e4fb4dcde134eead544ceb88f2d90579e88dd8e6d10281072696d427c"
+ },
+ "script_sha256": "8a595176ed6167fa4c79440d576ad9b287b78eece9d19a32776f9a637f6b0b27",
+ "constants_sha256": "67b542dd43c1174fb1e01754acb16c64fffd9c062615c48149a1bb371e234963",
+ "npz": "outputs/pl6/musique/grid_dev_frozen_r1.part1of3.npz",
+ "npz_sha256": "29a3768aeccd6b79c39b0dc3fdfbfd3659f8533836e21ead859736e619458fc7",
+ "seconds": 2770.1,
+ "peak_gb": 0.63,
+ "host": true,
+ "utc": "2026-11-25T12:24:53Z"
+}

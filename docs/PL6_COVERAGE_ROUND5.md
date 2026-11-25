@@ -177,3 +177,178 @@ nodes on MuSiQue), the ladder ends by STOPPED_RISING and the answer is that the 
 - **A pool of 5,000 to 6,000 nodes per question is large** for the stages that read it (a re-ranker or a graph model's forward pass over the pool); the price is filed beside every call so that the user can weigh it. The price clause of the old rule (the nodes ratio) can credit a gain bought with fewer nodes at an unchanged ALL, as in PL4's MuSiQue,
   and cannot say that 2.13 times the nodes is worth 6.1 points: the ALL-only status and the price columns say what was bought.
 - The six datasets' graph is the old package graph (as PL2 to PL5 disclosed); MultiHop-RAG reads its B0 layout. The UL2 layout is not materialized on the six.
+
+## 13. Results (26 Nov 2026; 7 of 7 datasets read)
+
+Everything here is read by the rules of sections 5 to 8 from the filed records (`outputs/pl6/<d>/{select,select_r<k>,confirm_frozen,miss}.json`, `outputs/pl6/call.json`, `outputs/pl6/gr_*.json`, the grid heads) by
+`outputs/mp_unified/zpl6g.py` (`select`, `ladder`, `confirm`, `call`) and `zpl5r.py miss`. PL5's pages and records are not changed; PL5's selects are this page's rung 0. Nothing was changed in the rule, the cells or the engine after a number was read.
+Section 12 of this page is the declaration's own disclosures; this results section is therefore 13 (section 11 of the declaration says 12).
+
+**How to read this page (the rulings that came after the declaration).** The user's ruling of 25 Nov about 15:00 lifted the 2,500 bound only under one rule on all seven (section 0); he then said (relayed by the coordinator, 25 Nov, before PL7) "by lifting that bound i asked you to do analysis, we still need to start restricting it and bring towards 2.5k". **This page is therefore the analysis he asked for: the map of what reaching 0.95 costs when nothing bounds the pool.** The call below carries its rule's name, but no cell above 2,500 nodes is taken downstream from this page: the restriction is PL7 (`docs/PL7_COVERAGE_RESTRICTION.md`, 24f4892e, declared before any number, one rule on all seven, on the current links, provisional until the link set is final), which reads the carry at 2,500 only. Nothing of PL2 to PL5 is changed by this page.
+
+### 13.1 Gates and cost
+
+The engine `zpl6g.py` is the declaration commit's (744811e6): script sha256 starts `8a595176ed61`, the code-path hash `cce8c3fb01e4` is equal in every select head and `call.json` (`code_path_equal_everywhere` true; G-U PASS). **G-P** and the engine self-test PASSED before the commit (`selftest.json`). **G-R** (PL5's 1,872 cells on the first 100 dev questions and PL4's 1,932 on the first 40, rebuilt by this engine with the ladder's settings added, compared element for element) PASSED with 0 present and 0 size mismatches on: laptop none; host (MuSiQue's, read for every host rung) MuSiQue. Cost of the ladder's dev grids (sum of the three parts): MuSiQue rung 1 8,178 s, 0.63 GB peak (host); MuSiQue rung 2 12,755 s, 0.63 GB peak (host); WebQSP rung 1 4,929 s, 7.67 GB peak (host); WebQSP rung 2 6,555 s, 7.72 GB peak (host); WebQSP rung 3 8,869 s, 7.74 GB peak (host). The two-question probes filed before the runs: MuSiQue rung 1: 10.1 s/q, 87,984 nodes scored; MuSiQue rung 2: 15.0 s/q, 93,232 nodes scored; MuSiQue rung 3: 14.8 s/q, 93,476 nodes scored; MuSiQue rung 4: 15.4 s/q, 93,476 nodes scored; WebQSP rung 1: 18.1 s/q, 167,900 nodes scored; WebQSP rung 2: 14.7 s/q, 245,484 nodes scored; WebQSP rung 3: 14.1 s/q, 294,674 nodes scored; WebQSP rung 4: 9.5 s/q, 294,674 nodes scored.
+
+### 13.2 The ladder: what the rule asked for, per dataset
+
+The stop rule reads `best[r]` = the best dev ALL over rungs 0 to r: REACHED when it is 0.95 or more, STOPPED_RISING when the last rung raised it by less than 0.005, GRAPH_END when V has met the graph, LADDER_END after rung 4, otherwise the next rung is asked for.
+
+| dataset | ladder state | rungs read | best dev ALL, rung 0 -> last rung | U95 of all cells (dev ALL at dev nodes) | PL5's bounded pick (dev ALL at dev nodes) | graph nodes |
+|---|---|---|---|---|---|---|
+| MultiHop-RAG | REACHED | 0 | 1.0000 | `rrf1000_b25+FULL:h1_c100+top25` 0.9777 at 50.0 | `rrf1000_b25+FULL:h1_c100+top25` 0.9777 at 50.0 | 609 |
+| SQuAD | REACHED | 0 | 1.0000 | `rrf1000_b15` 0.9519 at 15.0 | `rrf1000_b15` 0.9519 at 15.0 | 20,233 |
+| HotpotQA | REACHED | 0 | 0.9980 | `rrf1000_b25+STRUCT:h1_c100~cs+top100` 0.9622 at 77.3 | `rrf1000_b25+STRUCT:h1_c100~cs+top100` 0.9622 at 77.3 | not filed here |
+| 2Wiki | REACHED | 0 | 0.9786 | `rrf1000_b400+FULL:h1_c100~s20+top800` 0.9545 at 908.2 | `rrf1000_b400+FULL:h1_c100~s20+top800` 0.9545 at 908.2 | not filed here |
+| MuSiQue | REACHED | 2 | 0.9355 -> 0.9485 -> 0.9668 | `rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000` 0.9550 at 15,400.0 | `rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr` 0.8898 at 2,464.3 (SHORT) | 117,534 |
+| MetaQA | REACHED | 0 | 0.9653 | `rrf1000_b25+STRUCT:h3_c100_v5000` 0.9613 at 4,983.6 | `rrf1000_b400+STRUCT:h3_c25_v2000` 0.8978 at 2,339.7 (SHORT) | not filed here |
+| WebQSP | REACHED | 3 | 0.9257 -> 0.9416 -> 0.9496 -> 0.9569 | `rrf1000_b400+FULL:h3_bf_v40000~cs-vr` 0.9555 at 39,571.6 | `dense_top200+STRUCT:h3_bf_v2000~cs-fu` 0.8759 at 2,094.2 (SHORT) | 2,592,894 |
+
+- **MuSiQue** asked for two rungs. Rung 0 (PL5's cells) reaches 0.9355 on dev at best; rung 1 (visited budget V = 10,000) 0.9485, a rise of 0.0130 and still under 0.95; rung 2 (V = 20,000) 0.9668: REACHED, so rungs 3 and 4 were not run. U95 is the smallest cell at 0.95 or more on dev: a hard cut of the V = 20,000 budget-following walk, `+top15000` (dev 0.9550 at 15,400.0 nodes; a pool never exceeds the base's 400 plus the 15,000 the cut keeps).
+- **WebQSP** asked for three rungs: 0.9257 (rung 0), 0.9416 (V = 10,000), 0.9496 (V = 20,000, a rise of 0.0080 and still under 0.95), 0.9569 (V = 40,000): REACHED at rung 3, so rung 4 was not run. U95 is the V = 40,000 walk with base 400 and no cut (dev 0.9555 at 39,571.6 nodes, 1.5% of the graph's 2,592,894).
+- **MetaQA** reaches 0.95 on dev at rung 0 above the bound (U95 `rrf1000_b25+STRUCT:h3_c100_v5000`, dev 0.9613 at 4,983.6 nodes): no rung was run for it, as declared in section 6.
+- **MultiHop-RAG, SQuAD, HotpotQA and 2Wiki** reach the target inside the bound at rung 0; their U95 is PL5's bounded pick (the universality check, below). **No dataset ended short on dev (every ladder state is REACHED), so section 7 of the declaration asks for no D1 or D2 on this page** (13.6).
+
+
+### 13.3 The call (read 7 of 7: CARRY_PL6)
+
+NEW = U95 of the reading `all` (rule U, no node bound), OLD = PL5's bounded pick (R95 of PL5's reading `all` inside 2,500, what PL2 to PL5 carried); eval, frozen lists, paired bootstrap, one generator per dataset. Clauses as section 5:
+BELOW (1) NEW misses where OLD reaches / (2) ALL difference upper end < 0 with ratio lower end >= 1; ABOVE (1) NEW reaches where OLD does not / (2) ratio upper end < 1 (not BELOW) / (3) ALL difference lower end > 0 with ratio upper end <= 1. The ALL-only status ignores nodes.
+
+| dataset | NEW (U95, eval ALL at mean nodes) | OLD (PL5 bounded pick, eval ALL at mean nodes) | NEW / OLD reaches 0.95 | ALL difference NEW - OLD (points), 95% CI | nodes ratio NEW / OLD, 95% CI | status | ALL-only status | BELOW 1 / 2; ABOVE 1 / 2 / 3 |
+|---|---|---|---|---|---|---|---|---|
+| MultiHop-RAG | `rrf1000_b25+FULL:h1_c100+top25` 0.9690 at 50.0 | `rrf1000_b25+FULL:h1_c100+top25` 0.9690 at 50.0 | yes / yes | +0.00 [+0.00, +0.00] | 1.0000 [1.0000, 1.0000] | **LEVEL** (the same cell) | LEVEL | no / no; no / no / no |
+| SQuAD | `rrf1000_b15` 0.9554 at 15.0 | `rrf1000_b15` 0.9554 at 15.0 | yes / yes | +0.00 [+0.00, +0.00] | 1.0000 [1.0000, 1.0000] | **LEVEL** (the same cell) | LEVEL | no / no; no / no / no |
+| HotpotQA | `rrf1000_b25+STRUCT:h1_c100~cs+top100` 0.9634 at 77.9 | `rrf1000_b25+STRUCT:h1_c100~cs+top100` 0.9634 at 77.9 | yes / yes | +0.00 [+0.00, +0.00] | 1.0000 [1.0000, 1.0000] | **LEVEL** (the same cell) | LEVEL | no / no; no / no / no |
+| 2Wiki | `rrf1000_b400+FULL:h1_c100~s20+top800` 0.9609 at 917.0 | `rrf1000_b400+FULL:h1_c100~s20+top800` 0.9609 at 917.0 | yes / yes | +0.00 [+0.00, +0.00] | 1.0000 [1.0000, 1.0000] | **LEVEL** (the same cell) | LEVEL | no / no; no / no / no |
+| MuSiQue | `rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000` 0.9640 at 15,400.0 | `rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr` 0.8846 at 2,438.2 | yes / no | +7.94 [+6.91, +8.98] | 6.3160 [6.3025, 6.3303] | **ABOVE** | ABOVE | no / no; yes / no / no |
+| MetaQA | `rrf1000_b25+STRUCT:h3_c100_v5000` 0.9582 at 4,972.8 | `rrf1000_b400+STRUCT:h3_c25_v2000` 0.8968 at 2,335.9 | yes / no | +6.14 [+5.68, +6.64] | 2.1289 [2.1280, 2.1298] | **ABOVE** | ABOVE | no / no; yes / no / no |
+| WebQSP | `rrf1000_b400+FULL:h3_bf_v40000~cs-vr` 0.9474 at 39,529.5 | `dense_top200+STRUCT:h3_bf_v2000~cs-fu` 0.8789 at 2,094.6 | no / no | +6.85 [+5.59, +8.12] | 18.8722 [18.7922, 18.9507] | **LEVEL** | ABOVE | no / no; no / no / no |
+
+- **BELOW: 0.** ABOVE: 2 (MuSiQue, MetaQA); LEVEL: 5 of the 7 read.
+- **The universality check** (on every dataset whose bounded pick reached 0.95 on dev, U95 is that same cell): datasets 2Wiki, HotpotQA, MultiHop-RAG, SQuAD; unchanged on all of them: **yes** (an identity by construction, recorded as a code check).
+- **The call: CARRY_PL6** (BELOW 0, ABOVE 2, LEVEL 5; read 7 of 7). CARRY_PL6 needs all seven read, the universality check, no BELOW, and at least one ABOVE.
+
+- **What decides each status.** MuSiQue and MetaQA are ABOVE through clause 1: the new pick reaches 0.95 on eval (MuSiQue 0.9640, MetaQA 0.9582) where the bounded pick does not (0.8846, 0.8968). **WebQSP is LEVEL**: its new pick does not reach 0.95 on eval either (0.9474, short by 0.26 points, where it reached 0.9555 on dev), so clause 1 does not fire, and the ALL difference's lower end is above 0 (+6.85 [+5.59, +8.12] points) but the nodes ratio is 18.87, so clause 3 does not either. The ALL-only status says ABOVE: the 37,435 extra nodes per question bought coverage, and not enough of it.
+- **The price in nodes.** The three datasets whose pick moved use 2.13 times (MetaQA), 6.32 times (MuSiQue) and 18.87 times (WebQSP) the nodes of the bounded pick, with 95th percentiles and maxima within 2.1% of the means (the hard cut and the budget-following walks make the pools nearly constant in size).
+- **The call is CARRY_PL6 on all seven** (BELOW 0, ABOVE 2, LEVEL 5). Under the user's later ruling (head of this section) it is the name of the reading, not a decision to take a cell above 2,500 downstream; PL7 reads the carry at 2,500 only.
+
+
+**Which datasets meet the target on eval, frozen lists (ALL >= 0.95), of the 7 read: 6**: MultiHop-RAG, SQuAD, HotpotQA, 2Wiki, MuSiQue, MetaQA. **They do not:** WebQSP (0.9474).
+
+**The price, filed beside the call and deciding nothing** (eval, frozen lists; nodes per question of the pool the rule hands to the next stage):
+
+| dataset | NEW mean nodes | OLD mean nodes | extra nodes per question (ratio) | NEW 95th percentile | NEW maximum | NEW mean as a share of the graph |
+|---|---|---|---|---|---|---|
+| MultiHop-RAG | 50.0 | 50.0 | +0.0 (1.00x) | 50 | 50 | 8.21% (609) |
+| SQuAD | 15.0 | 15.0 | +0.0 (1.00x) | 15 | 15 | 0.07% (20,233) |
+| HotpotQA | 77.9 | 77.9 | +0.0 (1.00x) | 125 | 125 | n/a |
+| 2Wiki | 917.0 | 917.0 | +0.0 (1.00x) | 1,192 | 1,200 | n/a |
+| MuSiQue | 15,400.0 | 2,438.2 | +12,961.8 (6.32x) | 15,400 | 15,400 | 13.10% (117,534) |
+| MetaQA | 4,972.8 | 2,335.9 | +2,637.0 (2.13x) | 5,016 | 5,019 | n/a |
+| WebQSP | 39,529.5 | 2,094.6 | +37,435.0 (18.87x) | 40,259 | 40,342 | 1.52% (2,592,894) |
+
+The share of the graph is filed where a record holds the graph's node count (MultiHop-RAG, SQuAD, MuSiQue, WebQSP; HotpotQA, 2Wiki and MetaQA hold none in these records). Two costs are different: the pool's size is what the next stage reads per question; the first stage's own cost is the walk, filed by the grid heads' seconds (section 13.1) and the two-question probes (15.0 s per question for all 156 cells of MuSiQue's rung 2, 14.1 s for WebQSP's rung 3), and it is not read from the pool's size.
+
+
+### 13.4 What the ladder bought beside the call (U95 and U98 of all cells against rule U over rung 0's 6,078 cells; eval; decides nothing)
+
+| dataset | floor | ladder + rung 0 (rule U, eval) | rung 0 alone (rule U, eval) | ALL difference, 95% CI | nodes ratio, 95% CI | status (ALL-only) |
+|---|---|---|---|---|---|---|
+| MultiHop-RAG | U95 | `rrf1000_b25+FULL:h1_c100+top25` 0.9690 at 50.0 | `rrf1000_b25+FULL:h1_c100+top25` 0.9690 at 50.0 | +0.00 [+0.00, +0.00] | 1.0000 [1.0000, 1.0000] | LEVEL (LEVEL) same cell |
+| MultiHop-RAG | U98 | `rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50` 0.9788 at 58.0 | `rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50` 0.9788 at 58.0 | +0.00 [+0.00, +0.00] | 1.0000 [1.0000, 1.0000] | LEVEL (LEVEL) same cell |
+| SQuAD | U95 | `rrf1000_b15` 0.9554 at 15.0 | `rrf1000_b15` 0.9554 at 15.0 | +0.00 [+0.00, +0.00] | 1.0000 [1.0000, 1.0000] | LEVEL (LEVEL) same cell |
+| SQuAD | U98 | `rrf1000_b50+KNN:h1_c100+top25` 0.9818 at 63.0 | `rrf1000_b50+KNN:h1_c100+top25` 0.9818 at 63.0 | +0.00 [+0.00, +0.00] | 1.0000 [1.0000, 1.0000] | LEVEL (LEVEL) same cell |
+| HotpotQA | U95 | `rrf1000_b25+STRUCT:h1_c100~cs+top100` 0.9634 at 77.9 | `rrf1000_b25+STRUCT:h1_c100~cs+top100` 0.9634 at 77.9 | +0.00 [+0.00, +0.00] | 1.0000 [1.0000, 1.0000] | LEVEL (LEVEL) same cell |
+| HotpotQA | U98 | `rrf1000_b100+STRUCT:h1_c100~cs+top200` 0.9783 at 153.5 | `rrf1000_b100+STRUCT:h1_c100~cs+top200` 0.9783 at 153.5 | +0.00 [+0.00, +0.00] | 1.0000 [1.0000, 1.0000] | LEVEL (LEVEL) same cell |
+| 2Wiki | U95 | `rrf1000_b400+FULL:h1_c100~s20+top800` 0.9609 at 917.0 | `rrf1000_b400+FULL:h1_c100~s20+top800` 0.9609 at 917.0 | +0.00 [+0.00, +0.00] | 1.0000 [1.0000, 1.0000] | LEVEL (LEVEL) same cell |
+| 2Wiki | U98 | `rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk` 0.9785 at 6,275.0 | `rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk` 0.9785 at 6,275.0 | +0.00 [+0.00, +0.00] | 1.0000 [1.0000, 1.0000] | LEVEL (LEVEL) same cell |
+| MuSiQue | U95 | `rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000` 0.9640 at 15,400.0 | `rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr` 0.9222 at 5,742.4 | +4.18 [+3.27, +5.13] | 2.6818 [2.6770, 2.6860] | ABOVE (ABOVE) |
+| MuSiQue | U98 | `rrf1000_b1600+FULL:h3_bf_v20000~cs-fu` 0.9710 at 20,235.7 | `rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr` 0.9222 at 5,742.4 | +4.88 [+3.97, +5.83] | 3.5239 [3.5186, 3.5292] | LEVEL (ABOVE) |
+| MetaQA | U95 | `rrf1000_b25+STRUCT:h3_c100_v5000` 0.9582 at 4,972.8 | `rrf1000_b25+STRUCT:h3_c100_v5000` 0.9582 at 4,972.8 | +0.00 [+0.00, +0.00] | 1.0000 [1.0000, 1.0000] | LEVEL (LEVEL) same cell |
+| MetaQA | U98 | `rrf1000_b1600+STRUCT:h3_c100_v5000` 0.9615 at 6,259.3 | `rrf1000_b1600+STRUCT:h3_c100_v5000` 0.9615 at 6,259.3 | +0.00 [+0.00, +0.00] | 1.0000 [1.0000, 1.0000] | LEVEL (LEVEL) same cell |
+| WebQSP | U95 | `rrf1000_b400+FULL:h3_bf_v40000~cs-vr` 0.9474 at 39,529.5 | `rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu` 0.9175 at 6,079.5 | +2.99 [+2.13, +3.93] | 6.5021 [6.4742, 6.5307] | LEVEL (ABOVE) |
+| WebQSP | U98 | `rrf1000_b1600+FULL:h3_bf_v40000~cs-vr` 0.9481 at 40,164.1 | `rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu` 0.9175 at 6,079.5 | +3.06 [+2.13, +3.99] | 6.6064 [6.5769, 6.6339] | LEVEL (ABOVE) |
+
+On **MuSiQue** the ladder buys +4.18 points [+3.27, +5.13] at 2.68 times the nodes of the best rung-0 cell (rung 0's rule-U pick is `rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr`, 0.9222 at 5,742.4: the any-size reading of PL5), and U98 reaches 0.9710 at 20,235.7 (the uncut V = 20,000 walk). On **WebQSP** it buys +2.99 points [+2.13, +3.93] at 6.50 times the nodes (0.9474 at 39,529.5 against 0.9175 at 6,079.5): ALL-only ABOVE, LEVEL by the rule, and neither floor is reached on eval (U98 0.9481 at 40,164.1). On the five datasets that ran no rung (MultiHop-RAG, SQuAD, HotpotQA, 2Wiki, MetaQA) the ladder buys nothing: the same cell on both sides, difference exactly 0.
+
+
+### 13.5 The frontier above the bound (matched node counts; eval ALL difference of the ladder's cells against rung 0's, points; decides nothing)
+
+A dataset is BELOW if any budget is BELOW, ABOVE if at least two budgets are ABOVE and none BELOW, else LEVEL (ALL-only status; `=` marks the same cell on both sides):
+
+| dataset | 3,000 | 4,000 | 5,000 | 6,000 | 7,000 | 10,000 | 15,000 | 20,000 | 30,000 | 40,000 | 60,000 | 80,000 | frontier status |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| MultiHop-RAG | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | **LEVEL** |
+| SQuAD | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | **LEVEL** |
+| HotpotQA | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | **LEVEL** |
+| 2Wiki | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | **LEVEL** |
+| MuSiQue | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +1.28 [+0.58, +2.03] ABOVE | +2.07 [+1.57, +2.65] ABOVE | +4.39 [+3.52, +5.34] ABOVE | +4.88 [+4.01, +5.79] ABOVE | +4.88 [+3.97, +5.79] ABOVE | +4.88 [+3.85, +5.75] ABOVE | +4.88 [+3.97, +5.75] ABOVE | **ABOVE** |
+| MetaQA | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | **LEVEL** |
+| WebQSP | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +0.00 [+0.00, +0.00] LEVEL = | +1.53 [+0.93, +2.20] ABOVE | +1.53 [+0.93, +2.26] ABOVE | +2.46 [+1.73, +3.19] ABOVE | +2.99 [+2.13, +3.93] ABOVE | +3.06 [+2.20, +3.99] ABOVE | +3.06 [+2.26, +3.93] ABOVE | **ABOVE** |
+
+- **Frontier counts:** BELOW 0, ABOVE 2, LEVEL 5 (read 7 of 7).
+
+Where the ladder's cell and rung 0's differ (dev ALL at dev nodes; eval ALL at eval nodes):
+
+| dataset | budget | cells | dev | eval | difference |
+|---|---|---|---|---|---|
+| MuSiQue | 10,000 | ladder `rrf1000_b1600+FULL:h3_bf_v10000~cs-fu+top7500`; rung 0 `rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr` | 0.9420 at 9,086.3; 0.9355 at 5,783.4 | 0.9350 at 9,076.2; 0.9222 at 5,742.4 | +1.28 ABOVE |
+| MuSiQue | 15,000 | ladder `rrf1000_b1600+FULL:h2_c100_v20000~s20-cs-rk+top15000`; rung 0 `rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr` | 0.9492 at 13,970.0; 0.9355 at 5,783.4 | 0.9429 at 13,614.8; 0.9222 at 5,742.4 | +2.07 ABOVE |
+| MuSiQue | 20,000 | ladder `rrf1000_b1600+FULL:h3_bf_v20000~cs-fu+top15000`; rung 0 `rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr` | 0.9622 at 16,586.3; 0.9355 at 5,783.4 | 0.9661 at 16,576.2; 0.9222 at 5,742.4 | +4.39 ABOVE |
+| MuSiQue | 30,000 | ladder `rrf1000_b1600+FULL:h3_bf_v20000~cs-fu`; rung 0 `rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr` | 0.9668 at 20,264.2; 0.9355 at 5,783.4 | 0.9710 at 20,235.7; 0.9222 at 5,742.4 | +4.88 ABOVE |
+| MuSiQue | 40,000 | ladder `rrf1000_b1600+FULL:h3_bf_v20000~cs-fu`; rung 0 `rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr` | 0.9668 at 20,264.2; 0.9355 at 5,783.4 | 0.9710 at 20,235.7; 0.9222 at 5,742.4 | +4.88 ABOVE |
+| MuSiQue | 60,000 | ladder `rrf1000_b1600+FULL:h3_bf_v20000~cs-fu`; rung 0 `rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr` | 0.9668 at 20,264.2; 0.9355 at 5,783.4 | 0.9710 at 20,235.7; 0.9222 at 5,742.4 | +4.88 ABOVE |
+| MuSiQue | 80,000 | ladder `rrf1000_b1600+FULL:h3_bf_v20000~cs-fu`; rung 0 `rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr` | 0.9668 at 20,264.2; 0.9355 at 5,783.4 | 0.9710 at 20,235.7; 0.9222 at 5,742.4 | +4.88 ABOVE |
+| WebQSP | 15,000 | ladder `rrf1000_b1600+FULL:h3_bf_v10000~cs-fu`; rung 0 `rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu` | 0.9416 at 10,810.7; 0.9257 at 6,070.5 | 0.9328 at 10,817.4; 0.9175 at 6,079.5 | +1.53 ABOVE |
+| WebQSP | 20,000 | ladder `rrf1000_b1600+FULL:h3_bf_v10000~cs-fu`; rung 0 `rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu` | 0.9416 at 10,810.7; 0.9257 at 6,070.5 | 0.9328 at 10,817.4; 0.9175 at 6,079.5 | +1.53 ABOVE |
+| WebQSP | 30,000 | ladder `rrf1000_b1600+FULL:h3_bf_v20000~cs-fu`; rung 0 `rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu` | 0.9496 at 20,744.3; 0.9257 at 6,070.5 | 0.9421 at 20,737.5; 0.9175 at 6,079.5 | +2.46 ABOVE |
+| WebQSP | 40,000 | ladder `rrf1000_b400+FULL:h3_bf_v40000~cs-vr`; rung 0 `rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu` | 0.9555 at 39,571.6; 0.9257 at 6,070.5 | 0.9474 at 39,529.5; 0.9175 at 6,079.5 | +2.99 ABOVE |
+| WebQSP | 60,000 | ladder `rrf1000_b1600+FULL:h3_bf_v40000~cs-vr`; rung 0 `rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu` | 0.9569 at 40,201.1; 0.9257 at 6,070.5 | 0.9481 at 40,164.1; 0.9175 at 6,079.5 | +3.06 ABOVE |
+| WebQSP | 80,000 | ladder `rrf1000_b1600+FULL:h3_bf_v40000~cs-vr`; rung 0 `rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu` | 0.9569 at 40,201.1; 0.9257 at 6,070.5 | 0.9481 at 40,164.1; 0.9175 at 6,079.5 | +3.06 ABOVE |
+
+- **MuSiQue's frontier (eval) rises from 7,000 nodes upward**: the matched cells equal rung 0's up to 7,000, then 0.9350 at 9,076 (+1.28 points, ABOVE), 0.9429 at 13,615 (+2.07), 0.9661 at 16,576 (+4.39) and 0.9710 at 20,236 (+4.88). From 30,000 to 80,000 the cell is the same and the difference stays at +4.88: **that flat tail is where the ladder stopped (REACHED at rung 2), not a measurement that more nodes would buy nothing.**
+- **WebQSP's** matched cells equal rung 0's up to 10,000 nodes, then 0.9328 at 10,817 (+1.53 points), 0.9421 at 20,738 (+2.46), 0.9474 at 39,530 (+2.99) and 0.9481 at 40,164 (+3.06): about +1.5, +0.9 and +0.5 points of eval ALL for each step of 1.8 to 1.9 times the nodes. The 60,000 and 80,000 cells are the V = 40,000 cell, again where the ladder stopped.
+- **The shapes differ**: WebQSP's gain per step falls (+1.5, +0.9, +0.5 points); MuSiQue's is uneven, its largest single step (+2.32 points: 0.9429 at 13,615 to 0.9661 at 16,576) falling between 15,000 and 20,000 budgets and its last (+0.49, to 0.9710 at 20,236) at the ladder's end. The frontier reading counts MuSiQue and WebQSP ABOVE (two or more budgets ABOVE and none BELOW). MetaQA ran no rung, so its frontier is rung 0 read against itself (the same cell at every budget, difference exactly 0).
+
+
+### 13.6 What is still short, in numbers (diagnostics D1 and D2, post-hoc, labels read, 300 dev questions evenly spaced over the carve; decides nothing)
+
+**None to report.** Section 7 of the declaration asks for D1 and D2 at the chosen cell of a dataset that ends STOPPED_RISING or LADDER_END; every ladder here ended REACHED on dev, and `zpl5r.py miss --pl6` skips a dataset whose pick reaches 0.95 (it runs only with `--all`). PL5's D1 and D2 at the bounded picks (section 14 of PL5's page) stand as the account of what the 2,500 bound cuts. **The one shortfall left is WebQSP on eval**: dev 0.9555, eval 0.9474; a gap of 0.8 points, which is the kind selection over about 6,700 cells on a 1.5k-question carve produces (section 12 of the declaration); no diagnostic was run to separate it from a difference between the two carves, and none reads what the walk misses.
+
+| dataset | cell | questions missing a gold | missing golds | R | C | U | nodes |
+|---|---|---|---|---|---|---|---|
+
+
+| dataset | C golds | cap, hop 1 | cap, hop 2 | cap, hop 3 | budget, hop 1 | budget, hop 2 | budget, hop 3 | upstream | trace = engine walk |
+|---|---|---|---|---|---|---|---|---|---|
+
+
+
+### 13.7 What the call means, and what it leaves unread
+
+- **What the map says.** The three datasets that PL2 to PL5 left SHORT inside 2,500 nodes reach the target on dev above it: MetaQA at 4,984 nodes on dev (4,973 on eval, 2.13 times the bounded pick's), MuSiQue at 15,400 (6.32 times), WebQSP at 39,572 (39,530 on eval, 18.87 times). On eval MetaQA (0.9582) and MuSiQue (0.9640) meet 0.95; WebQSP (0.9474) does not. The cost of coverage on these three is not small and not flat: MuSiQue's frontier stands 4.88 points above rung 0's at 20,236 nodes and WebQSP's 3.06 points above at 40,164, and WebQSP's gain per step of nodes is falling.
+- **What the bound was doing.** At 2,500 nodes the three datasets read 0.8846, 0.8968 and 0.8789 on eval; the extra points are bought at nodes per question that are 13.1% of MuSiQue's graph at the pick and 1.5% of WebQSP's. The first four datasets are untouched by lifting the bound (their picks are inside it and rule U names them).
+- **What it leaves unread.** (a) No cell above 2,500 is read on e3v lists here (the beside-read `zpl6g.py confirm --first e3v` was not run; it decides nothing). (b) No rung beyond 2 (MuSiQue) or 3 (WebQSP) was run, so the frontier above 20,000 and 40,000 nodes is unread, and WebQSP's eval shortfall of 0.26 points is not mapped. (c) The pool size is the mean of the pool the walk hands on; the walk's cost is filed by the grid heads' seconds and the two-question probes only. (d) The links are the current ones: the UL2 per-label table (cited in section 1 of PL7's page) puts 98.7% of WebQSP's candidate pairs in one label at 0.009% precision, so a smaller pool at the same ALL is partly a question for the link set, which the next stages address (PL7, then the link-tightening stage and one pool re-run).
+
+
+### 13.8 The next changes (names only; none is adopted)
+
+**Declared before any number: PL7** (`docs/PL7_COVERAGE_RESTRICTION.md`, 24f4892e): restrict the pool back toward 2,500 nodes under one rule on all seven (a ladder of ceilings from this page's picks down to 2,500; hard-cut cells; the carry is read at 2,500 only; the node cost and a floor caveat beside every reading). It is provisional on the current links. After it: a link-tightening stage (per-label and per-class keep-or-drop against gold reach, one rule on all seven, selected on dev carves and graded on eval), declared by the coordinator, then one pool re-run on the final link set. Names only here: a parent-conditioned rank, a hop-weighted schedule and a window wider than 4,096 (PL5 section 14) stay unadopted.
+
+
+### 13.9 Surprises and contradictions with filed numbers
+
+- **WebQSP reaches 0.95 on dev and not on eval** (0.9555 against 0.9474) with 39,530 nodes per question: a dev ladder state of REACHED is not a reading of the target; the eval call is.
+- **The flat tails of the frontier are the ladder's end, not the data's** (13.5): MuSiQue's cells at 30,000 to 80,000 are one cell, as are WebQSP's at 60,000 and 80,000.
+- **The pools are nearly constant in size** (the 95th percentile and the maximum are within 2.1% of the mean at every new pick), because the pick is a hard cut or a budget-following walk that spends its budget; a mean node count is therefore close to every question's.
+- **Nothing contradicts a filed number.** PL5's selects are rung 0 unchanged, and the laptop's PL5 confirmation grid and the host's PL6 confirmation grid agree bit for bit on the cells both hold (see 13.10).
+
+
+### 13.10 Disclosed and undone
+- **The two confirmations ran as host rows, not on the laptop** (the declaration's section 6 says the laptop reads them): `pl6-musiquecf` (2,417 eval questions) and `pl6-webqspcf` (1,503), so as not to wait for the laptop, whose chain was still running PL5's reads (one heavy laptop job at a time). The host builds only the cells PL5's confirmation grid does not hold. **Cells held by both agree exactly**: WebQSP 7 cells over 1,503 questions and MuSiQue 5 cells over 2,417, 0 differing (present counts and pool sizes, element for element; `grid_eval_frozen_confirm.*` against PL5's laptop grid).
+- **G-R ran on the host for MuSiQue only** (`gr_musique_host.json`), as section 8 of the declaration says ("host: the host's G-R on MuSiQue, as PL5's"); the WebQSP rungs depend on that row in the feed and have no G-R of their own. The laptop ran none for PL6 (it ran no rung).
+- **Rows of later rungs were added to the feed after the stop rule asked for them**: MuSiQue rung 2 and WebQSP rungs 2 and 3 were appended to `outputs/pl6/feed_rows.txt` after the previous rung's select (section 6: "rung 2 and later rows are not in the file"), and `feed_rows_confirm.txt` holds the two confirmation rows; no cell, rule or constant changed.
+- **This page is an analysis**, by the user's ruling relayed before PL7 (head of this section); the call is filed under its rule's name and carries nothing above 2,500 downstream.
+- The grid arrays (`*.npz`) are not committed (as PL2 to PL5); the heads, selects, confirmations, the call, the probes and this page are.
+

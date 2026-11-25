@@ -1,0 +1,32 @@
+{
+ "stage": "PL6 confirm",
+ "declared_in": "docs/PL6_COVERAGE_ROUND5.md",
+ "dataset": "musique",
+ "first": "frozen",
+ "needed": [
+  "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000",
+  "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+  "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+  "rrf1000_b1600+FULL:h3_bf_v20000~cs-fu",
+  "rrf1000_b1600+FULL:h2_bf_v2000~s10-cs-vr",
+  "rrf1000_b1600+FULL:h2_bf_v2000~cs-vr-rr+top1600",
+  "rrf1000_b1600+FULL:h3_bf_v10000~cs-fu+top7500",
+  "rrf1000_b1600+FULL:h2_c100_v20000~s20-cs-rk+top15000",
+  "rrf1000_b1600+FULL:h3_bf_v20000~cs-fu+top15000",
+  "equal_rrf_budget_200+FULL:h2_c25"
+ ],
+ "built_here": [
+  "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000",
+  "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+  "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+  "rrf1000_b1600+FULL:h3_bf_v20000~cs-fu",
+  "rrf1000_b1600+FULL:h2_bf_v2000~s10-cs-vr",
+  "rrf1000_b1600+FULL:h2_bf_v2000~cs-vr-rr+top1600",
+  "rrf1000_b1600+FULL:h3_bf_v10000~cs-fu+top7500",
+  "rrf1000_b1600+FULL:h2_c100_v20000~s20-cs-rk+top15000",
+  "rrf1000_b1600+FULL:h3_bf_v20000~cs-fu+top15000",
+  "equal_rrf_budget_200+FULL:h2_c25"
+ ],
+ "in_pl5_confirm_grid": [],
+ "utc": "2026-11-25T17:10:25Z"
+}

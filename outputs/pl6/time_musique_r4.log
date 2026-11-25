@@ -1,0 +1,15 @@
+   note: a byte-code cache exists under the package root, not created by this process: canonical.cpython-313.pyc (37614 B, mtime 2026-09-13T15:58:07)
+[15:16:26] zpl2g: musique rung 4 (V 80000): 2 questions, 156 cells, 13 walks, 30.7 s = 15.36 s/question; nodes scored 93,476/question; peak 0.64 GB; graph 117,534 nodes
+[15:16:26] zpl2g:    FULL:h3_bf_v80000~cs-fu                         4152.0 ms/question
+[15:16:26] zpl2g:    FULL:h3_c100_v80000~cs-sp-eq                    2494.8 ms/question
+[15:16:26] zpl2g:    FULL:h3_bf_v80000~cs-vr                         2444.6 ms/question
+[15:16:26] zpl2g:    STRUCT:h3_bf_v80000~cs-fu                       2128.1 ms/question
+[15:16:26] zpl2g:    STRUCT:h3_c100_v80000~cs-sp-eq                  1205.3 ms/question
+[15:16:26] zpl2g:    STRUCT:h3_c100_v80000                           1129.2 ms/question
+[15:16:26] zpl2g:    FULL:h3_c100_v80000~cs-sp                        806.8 ms/question
+[15:16:26] zpl2g:    FULL:h3_c100_v80000~cs-vr-eq                     680.9 ms/question
+[15:16:26] zpl2g:    FULL:h2_c100_v80000~s20-cs-vr                     93.3 ms/question
+[15:16:26] zpl2g:    FULL:h2_bf_v80000~s10-cs-vr                       81.8 ms/question
+[15:16:26] zpl2g:    FULL:h2_c100_v80000~s20-cs-rk                     78.8 ms/question
+[15:16:26] zpl2g:    FULL:h2_c100_v80000~s10-cs-vr                     39.7 ms/question
+[15:16:26] zpl2g:    FULL:h2_c100_v80000~cs-vr                         20.3 ms/question

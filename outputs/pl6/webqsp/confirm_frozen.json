@@ -1,0 +1,34 @@
+{
+ "stage": "PL6 confirm",
+ "declared_in": "docs/PL6_COVERAGE_ROUND5.md",
+ "dataset": "webqsp",
+ "first": "frozen",
+ "needed": [
+  "rrf1000_b400+FULL:h3_bf_v40000~cs-vr",
+  "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+  "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+  "rrf1000_b1600+FULL:h3_bf_v40000~cs-vr",
+  "rrf1000_b800+STRUCT:h3_bf_v2000~cs-fu",
+  "rrf1000_b1600+STRUCT:h2_bf_v2000~cs-fu",
+  "rrf1000_b800+FULL:h2_bf_v5000~cs-fu",
+  "rrf1000_b800+STRUCT:h3_bf_v5000~cs-fu",
+  "rrf1000_b1600+FULL:h3_bf_v10000~cs-fu",
+  "rrf1000_b1600+FULL:h3_bf_v20000~cs-fu",
+  "dense_top200+FULL:h3_c25_v2000"
+ ],
+ "built_here": [
+  "rrf1000_b400+FULL:h3_bf_v40000~cs-vr",
+  "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+  "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+  "rrf1000_b1600+FULL:h3_bf_v40000~cs-vr",
+  "rrf1000_b800+STRUCT:h3_bf_v2000~cs-fu",
+  "rrf1000_b1600+STRUCT:h2_bf_v2000~cs-fu",
+  "rrf1000_b800+FULL:h2_bf_v5000~cs-fu",
+  "rrf1000_b800+STRUCT:h3_bf_v5000~cs-fu",
+  "rrf1000_b1600+FULL:h3_bf_v10000~cs-fu",
+  "rrf1000_b1600+FULL:h3_bf_v20000~cs-fu",
+  "dense_top200+FULL:h3_c25_v2000"
+ ],
+ "in_pl5_confirm_grid": [],
+ "utc": "2026-11-25T16:48:57Z"
+}

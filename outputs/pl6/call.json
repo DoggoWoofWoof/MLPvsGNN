@@ -1,0 +1,3084 @@
+{
+ "stage": "PL6 call",
+ "declared_in": "docs/PL6_COVERAGE_ROUND5.md",
+ "utc": "2026-11-25T18:37:53Z",
+ "datasets": {
+  "metaqa": {
+   "status": "ABOVE",
+   "all_status": "ABOVE",
+   "new": "rrf1000_b25+STRUCT:h3_c100_v5000",
+   "old": "rrf1000_b400+STRUCT:h3_c25_v2000",
+   "same_cell": false,
+   "new_all": 0.9582013285641288,
+   "old_all": 0.8967807869187532,
+   "new_nodes": 4972.8394481349005,
+   "old_nodes": 2335.8849259070007,
+   "new_p95": 5016.0,
+   "new_max": 5019.0,
+   "new_reaches": true,
+   "old_reaches": false,
+   "all_diff": 0.06142054164537558,
+   "all_diff_ci": [
+    0.056821665815023015,
+    0.06642820643842617
+   ],
+   "nodes_ratio": 2.128888881888733,
+   "nodes_ratio_ci": [
+    2.127991050516496,
+    2.1297759785009522
+   ],
+   "ladder_cmp": {
+    "status": "LEVEL",
+    "all_status": "LEVEL",
+    "new": "rrf1000_b25+STRUCT:h3_c100_v5000",
+    "old": "rrf1000_b25+STRUCT:h3_c100_v5000",
+    "same_cell": true,
+    "new_all": 0.9582013285641288,
+    "old_all": 0.9582013285641288,
+    "new_nodes": 4972.8394481349005,
+    "old_nodes": 4972.8394481349005,
+    "new_p95": 5016.0,
+    "new_max": 5019.0,
+    "new_reaches": true,
+    "old_reaches": true,
+    "all_diff": 0.0,
+    "all_diff_ci": [
+     0.0,
+     0.0
+    ],
+    "nodes_ratio": 1.0,
+    "nodes_ratio_ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "r98": {
+    "status": "LEVEL",
+    "all_status": "LEVEL",
+    "new": "rrf1000_b1600+STRUCT:h3_c100_v5000",
+    "old": "rrf1000_b1600+STRUCT:h3_c100_v5000",
+    "same_cell": true,
+    "new_all": 0.9614716402657129,
+    "old_all": 0.9614716402657129,
+    "new_nodes": 6259.332549821155,
+    "old_nodes": 6259.332549821155,
+    "new_p95": 6432.0,
+    "new_max": 6549.0,
+    "new_reaches": false,
+    "old_reaches": false,
+    "all_diff": 0.0,
+    "all_diff_ci": [
+     0.0,
+     0.0
+    ],
+    "nodes_ratio": 1.0,
+    "nodes_ratio_ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "frontier": {
+    "3000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b800+STRUCT:h3_c25_v2000",
+     "old": "rrf1000_b800+STRUCT:h3_c25_v2000",
+     "same_cell": true,
+     "new_all": 0.8999489013796628,
+     "old_all": 0.8999489013796628,
+     "new_nodes": 2699.3017884517117,
+     "old_nodes": 2699.3017884517117,
+     "new_p95": 2757.0,
+     "new_max": 2786.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.8997995991983968,
+     "old_dev_all": 0.8997995991983968,
+     "new_dev_nodes": 2702.9058116232463,
+     "old_dev_nodes": 2702.9058116232463
+    },
+    "4000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "dense_top200+STRUCT:h3_c25_v4000",
+     "old": "dense_top200+STRUCT:h3_c25_v4000",
+     "same_cell": true,
+     "new_all": 0.9243740419008687,
+     "old_all": 0.9243740419008687,
+     "new_nodes": 3600.2714358712315,
+     "old_nodes": 3600.2714358712315,
+     "new_p95": 4172.0,
+     "new_max": 4189.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.927187708750835,
+     "old_dev_all": 0.927187708750835,
+     "new_dev_nodes": 3602.005344021376,
+     "old_dev_nodes": 3602.005344021376
+    },
+    "5000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b25+STRUCT:h3_c100_v5000",
+     "old": "rrf1000_b25+STRUCT:h3_c100_v5000",
+     "same_cell": true,
+     "new_all": 0.9582013285641288,
+     "old_all": 0.9582013285641288,
+     "new_nodes": 4972.8394481349005,
+     "old_nodes": 4972.8394481349005,
+     "new_p95": 5016.0,
+     "new_max": 5019.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9612558450233801,
+     "old_dev_all": 0.9612558450233801,
+     "new_dev_nodes": 4983.559786239145,
+     "old_dev_nodes": 4983.559786239145
+    },
+    "6000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b800+STRUCT:h3_c100_v5000",
+     "old": "rrf1000_b800+STRUCT:h3_c100_v5000",
+     "same_cell": true,
+     "new_all": 0.9599386816555953,
+     "old_all": 0.9599386816555953,
+     "new_nodes": 5601.940521205927,
+     "old_nodes": 5601.940521205927,
+     "new_p95": 5716.0,
+     "new_max": 5771.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9645958583834335,
+     "old_dev_all": 0.9645958583834335,
+     "new_dev_nodes": 5611.919839679359,
+     "old_dev_nodes": 5611.919839679359
+    },
+    "7000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h3_c100_v5000",
+     "old": "rrf1000_b1600+STRUCT:h3_c100_v5000",
+     "same_cell": true,
+     "new_all": 0.9614716402657129,
+     "old_all": 0.9614716402657129,
+     "new_nodes": 6259.332549821155,
+     "old_nodes": 6259.332549821155,
+     "new_p95": 6432.0,
+     "new_max": 6549.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9652638610554443,
+     "old_dev_all": 0.9652638610554443,
+     "new_dev_nodes": 6268.156980627922,
+     "old_dev_nodes": 6268.156980627922
+    },
+    "10000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h3_c100_v5000",
+     "old": "rrf1000_b1600+STRUCT:h3_c100_v5000",
+     "same_cell": true,
+     "new_all": 0.9614716402657129,
+     "old_all": 0.9614716402657129,
+     "new_nodes": 6259.332549821155,
+     "old_nodes": 6259.332549821155,
+     "new_p95": 6432.0,
+     "new_max": 6549.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9652638610554443,
+     "old_dev_all": 0.9652638610554443,
+     "new_dev_nodes": 6268.156980627922,
+     "old_dev_nodes": 6268.156980627922
+    },
+    "15000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h3_c100_v5000",
+     "old": "rrf1000_b1600+STRUCT:h3_c100_v5000",
+     "same_cell": true,
+     "new_all": 0.9614716402657129,
+     "old_all": 0.9614716402657129,
+     "new_nodes": 6259.332549821155,
+     "old_nodes": 6259.332549821155,
+     "new_p95": 6432.0,
+     "new_max": 6549.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9652638610554443,
+     "old_dev_all": 0.9652638610554443,
+     "new_dev_nodes": 6268.156980627922,
+     "old_dev_nodes": 6268.156980627922
+    },
+    "20000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h3_c100_v5000",
+     "old": "rrf1000_b1600+STRUCT:h3_c100_v5000",
+     "same_cell": true,
+     "new_all": 0.9614716402657129,
+     "old_all": 0.9614716402657129,
+     "new_nodes": 6259.332549821155,
+     "old_nodes": 6259.332549821155,
+     "new_p95": 6432.0,
+     "new_max": 6549.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9652638610554443,
+     "old_dev_all": 0.9652638610554443,
+     "new_dev_nodes": 6268.156980627922,
+     "old_dev_nodes": 6268.156980627922
+    },
+    "30000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h3_c100_v5000",
+     "old": "rrf1000_b1600+STRUCT:h3_c100_v5000",
+     "same_cell": true,
+     "new_all": 0.9614716402657129,
+     "old_all": 0.9614716402657129,
+     "new_nodes": 6259.332549821155,
+     "old_nodes": 6259.332549821155,
+     "new_p95": 6432.0,
+     "new_max": 6549.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9652638610554443,
+     "old_dev_all": 0.9652638610554443,
+     "new_dev_nodes": 6268.156980627922,
+     "old_dev_nodes": 6268.156980627922
+    },
+    "40000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h3_c100_v5000",
+     "old": "rrf1000_b1600+STRUCT:h3_c100_v5000",
+     "same_cell": true,
+     "new_all": 0.9614716402657129,
+     "old_all": 0.9614716402657129,
+     "new_nodes": 6259.332549821155,
+     "old_nodes": 6259.332549821155,
+     "new_p95": 6432.0,
+     "new_max": 6549.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9652638610554443,
+     "old_dev_all": 0.9652638610554443,
+     "new_dev_nodes": 6268.156980627922,
+     "old_dev_nodes": 6268.156980627922
+    },
+    "60000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h3_c100_v5000",
+     "old": "rrf1000_b1600+STRUCT:h3_c100_v5000",
+     "same_cell": true,
+     "new_all": 0.9614716402657129,
+     "old_all": 0.9614716402657129,
+     "new_nodes": 6259.332549821155,
+     "old_nodes": 6259.332549821155,
+     "new_p95": 6432.0,
+     "new_max": 6549.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9652638610554443,
+     "old_dev_all": 0.9652638610554443,
+     "new_dev_nodes": 6268.156980627922,
+     "old_dev_nodes": 6268.156980627922
+    },
+    "80000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h3_c100_v5000",
+     "old": "rrf1000_b1600+STRUCT:h3_c100_v5000",
+     "same_cell": true,
+     "new_all": 0.9614716402657129,
+     "old_all": 0.9614716402657129,
+     "new_nodes": 6259.332549821155,
+     "old_nodes": 6259.332549821155,
+     "new_p95": 6432.0,
+     "new_max": 6549.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9652638610554443,
+     "old_dev_all": 0.9652638610554443,
+     "new_dev_nodes": 6268.156980627922,
+     "old_dev_nodes": 6268.156980627922
+    }
+   },
+   "frontier_status": "LEVEL",
+   "dev_reached": true,
+   "eval_reached": true,
+   "dev_all": 0.9612558450233801,
+   "dev_nodes": 4983.559786239145,
+   "rung": 0,
+   "ladder_state": "REACHED",
+   "bounded_pick_reached_dev": false,
+   "universal_same_as_bounded": null,
+   "n_nodes": null
+  },
+  "squad": {
+   "status": "LEVEL",
+   "all_status": "LEVEL",
+   "new": "rrf1000_b15",
+   "old": "rrf1000_b15",
+   "same_cell": true,
+   "new_all": 0.9553609028889076,
+   "old_all": 0.9553609028889076,
+   "new_nodes": 15.0,
+   "old_nodes": 15.0,
+   "new_p95": 15.0,
+   "new_max": 15.0,
+   "new_reaches": true,
+   "old_reaches": true,
+   "all_diff": 0.0,
+   "all_diff_ci": [
+    0.0,
+    0.0
+   ],
+   "nodes_ratio": 1.0,
+   "nodes_ratio_ci": [
+    1.0,
+    1.0
+   ],
+   "ladder_cmp": {
+    "status": "LEVEL",
+    "all_status": "LEVEL",
+    "new": "rrf1000_b15",
+    "old": "rrf1000_b15",
+    "same_cell": true,
+    "new_all": 0.9553609028889076,
+    "old_all": 0.9553609028889076,
+    "new_nodes": 15.0,
+    "old_nodes": 15.0,
+    "new_p95": 15.0,
+    "new_max": 15.0,
+    "new_reaches": true,
+    "old_reaches": true,
+    "all_diff": 0.0,
+    "all_diff_ci": [
+     0.0,
+     0.0
+    ],
+    "nodes_ratio": 1.0,
+    "nodes_ratio_ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "r98": {
+    "status": "LEVEL",
+    "all_status": "LEVEL",
+    "new": "rrf1000_b50+KNN:h1_c100+top25",
+    "old": "rrf1000_b50+KNN:h1_c100+top25",
+    "same_cell": true,
+    "new_all": 0.9818074623094416,
+    "old_all": 0.9818074623094416,
+    "new_nodes": 63.04185968163059,
+    "old_nodes": 63.04185968163059,
+    "new_p95": 75.0,
+    "new_max": 75.0,
+    "new_reaches": true,
+    "old_reaches": true,
+    "all_diff": 0.0,
+    "all_diff_ci": [
+     0.0,
+     0.0
+    ],
+    "nodes_ratio": 1.0,
+    "nodes_ratio_ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "frontier": {
+    "3000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "old": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "same_cell": true,
+     "new_all": 0.9991577528846963,
+     "old_all": 0.9991577528846963,
+     "new_nodes": 2200.0112018866334,
+     "old_nodes": 2200.0112018866334,
+     "new_p95": 2400.0,
+     "new_max": 2400.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 2190.361815754339,
+     "old_dev_nodes": 2190.361815754339
+    },
+    "4000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "old": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "same_cell": true,
+     "new_all": 0.9991577528846963,
+     "old_all": 0.9991577528846963,
+     "new_nodes": 2200.0112018866334,
+     "old_nodes": 2200.0112018866334,
+     "new_p95": 2400.0,
+     "new_max": 2400.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 2190.361815754339,
+     "old_dev_nodes": 2190.361815754339
+    },
+    "5000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "old": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "same_cell": true,
+     "new_all": 0.9991577528846963,
+     "old_all": 0.9991577528846963,
+     "new_nodes": 2200.0112018866334,
+     "old_nodes": 2200.0112018866334,
+     "new_p95": 2400.0,
+     "new_max": 2400.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 2190.361815754339,
+     "old_dev_nodes": 2190.361815754339
+    },
+    "6000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "old": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "same_cell": true,
+     "new_all": 0.9991577528846963,
+     "old_all": 0.9991577528846963,
+     "new_nodes": 2200.0112018866334,
+     "old_nodes": 2200.0112018866334,
+     "new_p95": 2400.0,
+     "new_max": 2400.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 2190.361815754339,
+     "old_dev_nodes": 2190.361815754339
+    },
+    "7000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "old": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "same_cell": true,
+     "new_all": 0.9991577528846963,
+     "old_all": 0.9991577528846963,
+     "new_nodes": 2200.0112018866334,
+     "old_nodes": 2200.0112018866334,
+     "new_p95": 2400.0,
+     "new_max": 2400.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 2190.361815754339,
+     "old_dev_nodes": 2190.361815754339
+    },
+    "10000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "old": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "same_cell": true,
+     "new_all": 0.9991577528846963,
+     "old_all": 0.9991577528846963,
+     "new_nodes": 2200.0112018866334,
+     "old_nodes": 2200.0112018866334,
+     "new_p95": 2400.0,
+     "new_max": 2400.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 2190.361815754339,
+     "old_dev_nodes": 2190.361815754339
+    },
+    "15000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "old": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "same_cell": true,
+     "new_all": 0.9991577528846963,
+     "old_all": 0.9991577528846963,
+     "new_nodes": 2200.0112018866334,
+     "old_nodes": 2200.0112018866334,
+     "new_p95": 2400.0,
+     "new_max": 2400.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 2190.361815754339,
+     "old_dev_nodes": 2190.361815754339
+    },
+    "20000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "old": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "same_cell": true,
+     "new_all": 0.9991577528846963,
+     "old_all": 0.9991577528846963,
+     "new_nodes": 2200.0112018866334,
+     "old_nodes": 2200.0112018866334,
+     "new_p95": 2400.0,
+     "new_max": 2400.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 2190.361815754339,
+     "old_dev_nodes": 2190.361815754339
+    },
+    "30000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "old": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "same_cell": true,
+     "new_all": 0.9991577528846963,
+     "old_all": 0.9991577528846963,
+     "new_nodes": 2200.0112018866334,
+     "old_nodes": 2200.0112018866334,
+     "new_p95": 2400.0,
+     "new_max": 2400.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 2190.361815754339,
+     "old_dev_nodes": 2190.361815754339
+    },
+    "40000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "old": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "same_cell": true,
+     "new_all": 0.9991577528846963,
+     "old_all": 0.9991577528846963,
+     "new_nodes": 2200.0112018866334,
+     "old_nodes": 2200.0112018866334,
+     "new_p95": 2400.0,
+     "new_max": 2400.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 2190.361815754339,
+     "old_dev_nodes": 2190.361815754339
+    },
+    "60000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "old": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "same_cell": true,
+     "new_all": 0.9991577528846963,
+     "old_all": 0.9991577528846963,
+     "new_nodes": 2200.0112018866334,
+     "old_nodes": 2200.0112018866334,
+     "new_p95": 2400.0,
+     "new_max": 2400.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 2190.361815754339,
+     "old_dev_nodes": 2190.361815754339
+    },
+    "80000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "old": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+     "same_cell": true,
+     "new_all": 0.9991577528846963,
+     "old_all": 0.9991577528846963,
+     "new_nodes": 2200.0112018866334,
+     "old_nodes": 2200.0112018866334,
+     "new_p95": 2400.0,
+     "new_max": 2400.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 2190.361815754339,
+     "old_dev_nodes": 2190.361815754339
+    }
+   },
+   "frontier_status": "LEVEL",
+   "dev_reached": true,
+   "eval_reached": true,
+   "dev_all": 0.951935914552737,
+   "dev_nodes": 15.0,
+   "rung": 0,
+   "ladder_state": "REACHED",
+   "bounded_pick_reached_dev": true,
+   "universal_same_as_bounded": true,
+   "n_nodes": null
+  },
+  "musique": {
+   "status": "ABOVE",
+   "all_status": "ABOVE",
+   "new": "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000",
+   "old": "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+   "same_cell": false,
+   "new_all": 0.9640049648324369,
+   "old_all": 0.8845676458419528,
+   "new_nodes": 15400.0,
+   "old_nodes": 2438.235829540753,
+   "new_p95": 15400.0,
+   "new_max": 15400.0,
+   "new_reaches": true,
+   "old_reaches": false,
+   "all_diff": 0.07943731899048412,
+   "all_diff_ci": [
+    0.06908357467935455,
+    0.08978071990070335
+   ],
+   "nodes_ratio": 6.316042038846022,
+   "nodes_ratio_ci": [
+    6.302460696420641,
+    6.330299541138577
+   ],
+   "ladder_cmp": {
+    "status": "ABOVE",
+    "all_status": "ABOVE",
+    "new": "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000",
+    "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+    "same_cell": false,
+    "new_all": 0.9640049648324369,
+    "old_all": 0.922217625155151,
+    "new_nodes": 15400.0,
+    "old_nodes": 5742.3624327678945,
+    "new_p95": 15400.0,
+    "new_max": 15400.0,
+    "new_reaches": true,
+    "old_reaches": false,
+    "all_diff": 0.04178733967728587,
+    "all_diff_ci": [
+     0.03268514687629298,
+     0.05130326851468758
+    ],
+    "nodes_ratio": 2.6818230615543013,
+    "nodes_ratio_ci": [
+     2.6770278168121826,
+     2.6859972916500814
+    ]
+   },
+   "r98": {
+    "status": "LEVEL",
+    "all_status": "ABOVE",
+    "new": "rrf1000_b1600+FULL:h3_bf_v20000~cs-fu",
+    "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+    "same_cell": false,
+    "new_all": 0.971038477451386,
+    "old_all": 0.922217625155151,
+    "new_nodes": 20235.6727347952,
+    "old_nodes": 5742.3624327678945,
+    "new_p95": 20460.2,
+    "new_max": 20720.0,
+    "new_reaches": false,
+    "old_reaches": false,
+    "all_diff": 0.04882085229623501,
+    "all_diff_ci": [
+     0.039718659495242004,
+     0.05833678113363683
+    ],
+    "nodes_ratio": 3.5239281692363225,
+    "nodes_ratio_ci": [
+     3.5185817278348623,
+     3.5292130689571177
+    ]
+   },
+   "frontier": {
+    "3000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+FULL:h2_bf_v2000~s10-cs-vr",
+     "old": "rrf1000_b1600+FULL:h2_bf_v2000~s10-cs-vr",
+     "same_cell": true,
+     "new_all": 0.8903599503516756,
+     "old_all": 0.8903599503516756,
+     "new_nodes": 2950.2395531650805,
+     "old_nodes": 2950.2395531650805,
+     "new_p95": 3267.2,
+     "new_max": 3480.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.894393741851369,
+     "old_dev_all": 0.894393741851369,
+     "new_dev_nodes": 2993.2705345501954,
+     "old_dev_nodes": 2993.2705345501954
+    },
+    "4000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+FULL:h2_bf_v2000~cs-vr-rr+top1600",
+     "old": "rrf1000_b1600+FULL:h2_bf_v2000~cs-vr-rr+top1600",
+     "same_cell": true,
+     "new_all": 0.8944973107157633,
+     "old_all": 0.8944973107157633,
+     "new_nodes": 2980.1857674803477,
+     "old_nodes": 2980.1857674803477,
+     "new_p95": 3200.0,
+     "new_max": 3200.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9009126466753585,
+     "old_dev_all": 0.9009126466753585,
+     "new_dev_nodes": 3020.35593220339,
+     "old_dev_nodes": 3020.35593220339
+    },
+    "5000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+FULL:h2_bf_v2000~cs-vr-rr+top1600",
+     "old": "rrf1000_b1600+FULL:h2_bf_v2000~cs-vr-rr+top1600",
+     "same_cell": true,
+     "new_all": 0.8944973107157633,
+     "old_all": 0.8944973107157633,
+     "new_nodes": 2980.1857674803477,
+     "old_nodes": 2980.1857674803477,
+     "new_p95": 3200.0,
+     "new_max": 3200.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9009126466753585,
+     "old_dev_all": 0.9009126466753585,
+     "new_dev_nodes": 3020.35593220339,
+     "old_dev_nodes": 3020.35593220339
+    },
+    "6000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+     "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+     "same_cell": true,
+     "new_all": 0.922217625155151,
+     "old_all": 0.922217625155151,
+     "new_nodes": 5742.3624327678945,
+     "old_nodes": 5742.3624327678945,
+     "new_p95": 6067.2,
+     "new_max": 6354.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9354628422425033,
+     "old_dev_all": 0.9354628422425033,
+     "new_dev_nodes": 5783.431551499348,
+     "old_dev_nodes": 5783.431551499348
+    },
+    "7000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+     "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+     "same_cell": true,
+     "new_all": 0.922217625155151,
+     "old_all": 0.922217625155151,
+     "new_nodes": 5742.3624327678945,
+     "old_nodes": 5742.3624327678945,
+     "new_p95": 6067.2,
+     "new_max": 6354.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9354628422425033,
+     "old_dev_all": 0.9354628422425033,
+     "new_dev_nodes": 5783.431551499348,
+     "old_dev_nodes": 5783.431551499348
+    },
+    "10000": {
+     "status": "ABOVE",
+     "all_status": "ABOVE",
+     "new": "rrf1000_b1600+FULL:h3_bf_v10000~cs-fu+top7500",
+     "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+     "same_cell": false,
+     "new_all": 0.935043442283823,
+     "old_all": 0.922217625155151,
+     "new_nodes": 9076.197765825404,
+     "old_nodes": 5742.3624327678945,
+     "new_p95": 9100.0,
+     "new_max": 9100.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.012825817128671924,
+     "all_diff_ci": [
+      0.00579230450972279,
+      0.020273065784029765
+     ],
+     "nodes_ratio": 1.58056860257261,
+     "nodes_ratio_ci": [
+      1.5780582115930741,
+      1.582954263942417
+     ],
+     "new_dev_all": 0.9419817470664928,
+     "old_dev_all": 0.9354628422425033,
+     "new_dev_nodes": 9086.278357235984,
+     "old_dev_nodes": 5783.431551499348
+    },
+    "15000": {
+     "status": "ABOVE",
+     "all_status": "ABOVE",
+     "new": "rrf1000_b1600+FULL:h2_c100_v20000~s20-cs-rk+top15000",
+     "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+     "same_cell": false,
+     "new_all": 0.9429044269755896,
+     "old_all": 0.922217625155151,
+     "new_nodes": 13614.768307819611,
+     "old_nodes": 5742.3624327678945,
+     "new_p95": 16600.0,
+     "new_max": 16600.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.020686801820438583,
+     "all_diff_ci": [
+      0.01572196938353332,
+      0.026479106330161373
+     ],
+     "nodes_ratio": 2.3709350406252767,
+     "nodes_ratio_ci": [
+      2.350845346919691,
+      2.3906621521905174
+     ],
+     "new_dev_all": 0.9491525423728814,
+     "old_dev_all": 0.9354628422425033,
+     "new_dev_nodes": 13970.037157757497,
+     "old_dev_nodes": 5783.431551499348
+    },
+    "20000": {
+     "status": "ABOVE",
+     "all_status": "ABOVE",
+     "new": "rrf1000_b1600+FULL:h3_bf_v20000~cs-fu+top15000",
+     "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+     "same_cell": false,
+     "new_all": 0.9660736450144808,
+     "old_all": 0.922217625155151,
+     "new_nodes": 16576.197765825404,
+     "old_nodes": 5742.3624327678945,
+     "new_p95": 16600.0,
+     "new_max": 16600.0,
+     "new_reaches": true,
+     "old_reaches": false,
+     "all_diff": 0.04385601985932974,
+     "all_diff_ci": [
+      0.03515721969383534,
+      0.05337194869673145
+     ],
+     "nodes_ratio": 2.886651262420484,
+     "nodes_ratio_ci": [
+      2.8820156549729354,
+      2.891852376616992
+     ],
+     "new_dev_all": 0.9621903520208605,
+     "old_dev_all": 0.9354628422425033,
+     "new_dev_nodes": 16586.278357235984,
+     "old_dev_nodes": 5783.431551499348
+    },
+    "30000": {
+     "status": "ABOVE",
+     "all_status": "ABOVE",
+     "new": "rrf1000_b1600+FULL:h3_bf_v20000~cs-fu",
+     "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+     "same_cell": false,
+     "new_all": 0.971038477451386,
+     "old_all": 0.922217625155151,
+     "new_nodes": 20235.6727347952,
+     "old_nodes": 5742.3624327678945,
+     "new_p95": 20460.2,
+     "new_max": 20720.0,
+     "new_reaches": true,
+     "old_reaches": false,
+     "all_diff": 0.04882085229623501,
+     "all_diff_ci": [
+      0.04012205213074049,
+      0.05793338849813822
+     ],
+     "nodes_ratio": 3.5239281692363225,
+     "nodes_ratio_ci": [
+      3.518620037318862,
+      3.529190673008583
+     ],
+     "new_dev_all": 0.9667535853976532,
+     "old_dev_all": 0.9354628422425033,
+     "new_dev_nodes": 20264.229465449804,
+     "old_dev_nodes": 5783.431551499348
+    },
+    "40000": {
+     "status": "ABOVE",
+     "all_status": "ABOVE",
+     "new": "rrf1000_b1600+FULL:h3_bf_v20000~cs-fu",
+     "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+     "same_cell": false,
+     "new_all": 0.971038477451386,
+     "old_all": 0.922217625155151,
+     "new_nodes": 20235.6727347952,
+     "old_nodes": 5742.3624327678945,
+     "new_p95": 20460.2,
+     "new_max": 20720.0,
+     "new_reaches": true,
+     "old_reaches": false,
+     "all_diff": 0.04882085229623501,
+     "all_diff_ci": [
+      0.039718659495242004,
+      0.05792304509722801
+     ],
+     "nodes_ratio": 3.5239281692363225,
+     "nodes_ratio_ci": [
+      3.518774888997042,
+      3.5291738017433696
+     ],
+     "new_dev_all": 0.9667535853976532,
+     "old_dev_all": 0.9354628422425033,
+     "new_dev_nodes": 20264.229465449804,
+     "old_dev_nodes": 5783.431551499348
+    },
+    "60000": {
+     "status": "ABOVE",
+     "all_status": "ABOVE",
+     "new": "rrf1000_b1600+FULL:h3_bf_v20000~cs-fu",
+     "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+     "same_cell": false,
+     "new_all": 0.971038477451386,
+     "old_all": 0.922217625155151,
+     "new_nodes": 20235.6727347952,
+     "old_nodes": 5742.3624327678945,
+     "new_p95": 20460.2,
+     "new_max": 20720.0,
+     "new_reaches": true,
+     "old_reaches": false,
+     "all_diff": 0.04882085229623501,
+     "all_diff_ci": [
+      0.03847745138601577,
+      0.05750930906081919
+     ],
+     "nodes_ratio": 3.5239281692363225,
+     "nodes_ratio_ci": [
+      3.5181897628095986,
+      3.5296430859689254
+     ],
+     "new_dev_all": 0.9667535853976532,
+     "old_dev_all": 0.9354628422425033,
+     "new_dev_nodes": 20264.229465449804,
+     "old_dev_nodes": 5783.431551499348
+    },
+    "80000": {
+     "status": "ABOVE",
+     "all_status": "ABOVE",
+     "new": "rrf1000_b1600+FULL:h3_bf_v20000~cs-fu",
+     "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+     "same_cell": false,
+     "new_all": 0.971038477451386,
+     "old_all": 0.922217625155151,
+     "new_nodes": 20235.6727347952,
+     "old_nodes": 5742.3624327678945,
+     "new_p95": 20460.2,
+     "new_max": 20720.0,
+     "new_reaches": true,
+     "old_reaches": false,
+     "all_diff": 0.04882085229623501,
+     "all_diff_ci": [
+      0.039718659495242004,
+      0.05750930906081919
+     ],
+     "nodes_ratio": 3.5239281692363225,
+     "nodes_ratio_ci": [
+      3.518727975707604,
+      3.5295444190184972
+     ],
+     "new_dev_all": 0.9667535853976532,
+     "old_dev_all": 0.9354628422425033,
+     "new_dev_nodes": 20264.229465449804,
+     "old_dev_nodes": 5783.431551499348
+    }
+   },
+   "frontier_status": "ABOVE",
+   "dev_reached": true,
+   "eval_reached": true,
+   "dev_all": 0.9550195567144719,
+   "dev_nodes": 15400.0,
+   "rung": 2,
+   "ladder_state": "REACHED",
+   "bounded_pick_reached_dev": false,
+   "universal_same_as_bounded": null,
+   "n_nodes": 117534
+  },
+  "hotpotqa": {
+   "status": "LEVEL",
+   "all_status": "LEVEL",
+   "new": "rrf1000_b25+STRUCT:h1_c100~cs+top100",
+   "old": "rrf1000_b25+STRUCT:h1_c100~cs+top100",
+   "same_cell": true,
+   "new_all": 0.9634031060094531,
+   "old_all": 0.9634031060094531,
+   "new_nodes": 77.88872383524645,
+   "old_nodes": 77.88872383524645,
+   "new_p95": 125.0,
+   "new_max": 125.0,
+   "new_reaches": true,
+   "old_reaches": true,
+   "all_diff": 0.0,
+   "all_diff_ci": [
+    0.0,
+    0.0
+   ],
+   "nodes_ratio": 1.0,
+   "nodes_ratio_ci": [
+    1.0,
+    1.0
+   ],
+   "ladder_cmp": {
+    "status": "LEVEL",
+    "all_status": "LEVEL",
+    "new": "rrf1000_b25+STRUCT:h1_c100~cs+top100",
+    "old": "rrf1000_b25+STRUCT:h1_c100~cs+top100",
+    "same_cell": true,
+    "new_all": 0.9634031060094531,
+    "old_all": 0.9634031060094531,
+    "new_nodes": 77.88872383524645,
+    "old_nodes": 77.88872383524645,
+    "new_p95": 125.0,
+    "new_max": 125.0,
+    "new_reaches": true,
+    "old_reaches": true,
+    "all_diff": 0.0,
+    "all_diff_ci": [
+     0.0,
+     0.0
+    ],
+    "nodes_ratio": 1.0,
+    "nodes_ratio_ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "r98": {
+    "status": "LEVEL",
+    "all_status": "LEVEL",
+    "new": "rrf1000_b100+STRUCT:h1_c100~cs+top200",
+    "old": "rrf1000_b100+STRUCT:h1_c100~cs+top200",
+    "same_cell": true,
+    "new_all": 0.9782579338284942,
+    "old_all": 0.9782579338284942,
+    "new_nodes": 153.50979068197165,
+    "old_nodes": 153.50979068197165,
+    "new_p95": 239.79999999999927,
+    "new_max": 300.0,
+    "new_reaches": false,
+    "old_reaches": false,
+    "all_diff": 0.0,
+    "all_diff_ci": [
+     0.0,
+     0.0
+    ],
+    "nodes_ratio": 1.0,
+    "nodes_ratio_ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "frontier": {
+    "3000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs-vr",
+     "old": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs-vr",
+     "same_cell": true,
+     "new_all": 0.9936529372045915,
+     "old_all": 0.9936529372045915,
+     "new_nodes": 2963.5778528021606,
+     "old_nodes": 2963.5778528021606,
+     "new_p95": 4160.399999999998,
+     "new_max": 6481.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.996684350132626,
+     "old_dev_all": 0.996684350132626,
+     "new_dev_nodes": 2980.129973474801,
+     "old_dev_nodes": 2980.129973474801
+    },
+    "4000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs-vr",
+     "old": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs-vr",
+     "same_cell": true,
+     "new_all": 0.9936529372045915,
+     "old_all": 0.9936529372045915,
+     "new_nodes": 2963.5778528021606,
+     "old_nodes": 2963.5778528021606,
+     "new_p95": 4160.399999999998,
+     "new_max": 6481.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.996684350132626,
+     "old_dev_all": 0.996684350132626,
+     "new_dev_nodes": 2980.129973474801,
+     "old_dev_nodes": 2980.129973474801
+    },
+    "5000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs-vr",
+     "old": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs-vr",
+     "same_cell": true,
+     "new_all": 0.9936529372045915,
+     "old_all": 0.9936529372045915,
+     "new_nodes": 2963.5778528021606,
+     "old_nodes": 2963.5778528021606,
+     "new_p95": 4160.399999999998,
+     "new_max": 6481.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.996684350132626,
+     "old_dev_all": 0.996684350132626,
+     "new_dev_nodes": 2980.129973474801,
+     "old_dev_nodes": 2980.129973474801
+    },
+    "6000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b400+FULL:h3_bf_v5000~cs-fu",
+     "old": "rrf1000_b400+FULL:h3_bf_v5000~cs-fu",
+     "same_cell": true,
+     "new_all": 0.9945982444294396,
+     "old_all": 0.9945982444294396,
+     "new_nodes": 5178.167454422687,
+     "old_nodes": 5178.167454422687,
+     "new_p95": 5317.0,
+     "new_max": 5385.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9980106100795756,
+     "old_dev_all": 0.9980106100795756,
+     "new_dev_nodes": 5173.929045092838,
+     "old_dev_nodes": 5173.929045092838
+    },
+    "7000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b400+FULL:h3_bf_v5000~cs-fu",
+     "old": "rrf1000_b400+FULL:h3_bf_v5000~cs-fu",
+     "same_cell": true,
+     "new_all": 0.9945982444294396,
+     "old_all": 0.9945982444294396,
+     "new_nodes": 5178.167454422687,
+     "old_nodes": 5178.167454422687,
+     "new_p95": 5317.0,
+     "new_max": 5385.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9980106100795756,
+     "old_dev_all": 0.9980106100795756,
+     "new_dev_nodes": 5173.929045092838,
+     "old_dev_nodes": 5173.929045092838
+    },
+    "10000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b400+FULL:h3_bf_v5000~cs-fu",
+     "old": "rrf1000_b400+FULL:h3_bf_v5000~cs-fu",
+     "same_cell": true,
+     "new_all": 0.9945982444294396,
+     "old_all": 0.9945982444294396,
+     "new_nodes": 5178.167454422687,
+     "old_nodes": 5178.167454422687,
+     "new_p95": 5317.0,
+     "new_max": 5385.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9980106100795756,
+     "old_dev_all": 0.9980106100795756,
+     "new_dev_nodes": 5173.929045092838,
+     "old_dev_nodes": 5173.929045092838
+    },
+    "15000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b400+FULL:h3_bf_v5000~cs-fu",
+     "old": "rrf1000_b400+FULL:h3_bf_v5000~cs-fu",
+     "same_cell": true,
+     "new_all": 0.9945982444294396,
+     "old_all": 0.9945982444294396,
+     "new_nodes": 5178.167454422687,
+     "old_nodes": 5178.167454422687,
+     "new_p95": 5317.0,
+     "new_max": 5385.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9980106100795756,
+     "old_dev_all": 0.9980106100795756,
+     "new_dev_nodes": 5173.929045092838,
+     "old_dev_nodes": 5173.929045092838
+    },
+    "20000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b400+FULL:h3_bf_v5000~cs-fu",
+     "old": "rrf1000_b400+FULL:h3_bf_v5000~cs-fu",
+     "same_cell": true,
+     "new_all": 0.9945982444294396,
+     "old_all": 0.9945982444294396,
+     "new_nodes": 5178.167454422687,
+     "old_nodes": 5178.167454422687,
+     "new_p95": 5317.0,
+     "new_max": 5385.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9980106100795756,
+     "old_dev_all": 0.9980106100795756,
+     "new_dev_nodes": 5173.929045092838,
+     "old_dev_nodes": 5173.929045092838
+    },
+    "30000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b400+FULL:h3_bf_v5000~cs-fu",
+     "old": "rrf1000_b400+FULL:h3_bf_v5000~cs-fu",
+     "same_cell": true,
+     "new_all": 0.9945982444294396,
+     "old_all": 0.9945982444294396,
+     "new_nodes": 5178.167454422687,
+     "old_nodes": 5178.167454422687,
+     "new_p95": 5317.0,
+     "new_max": 5385.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9980106100795756,
+     "old_dev_all": 0.9980106100795756,
+     "new_dev_nodes": 5173.929045092838,
+     "old_dev_nodes": 5173.929045092838
+    },
+    "40000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b400+FULL:h3_bf_v5000~cs-fu",
+     "old": "rrf1000_b400+FULL:h3_bf_v5000~cs-fu",
+     "same_cell": true,
+     "new_all": 0.9945982444294396,
+     "old_all": 0.9945982444294396,
+     "new_nodes": 5178.167454422687,
+     "old_nodes": 5178.167454422687,
+     "new_p95": 5317.0,
+     "new_max": 5385.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9980106100795756,
+     "old_dev_all": 0.9980106100795756,
+     "new_dev_nodes": 5173.929045092838,
+     "old_dev_nodes": 5173.929045092838
+    },
+    "60000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b400+FULL:h3_bf_v5000~cs-fu",
+     "old": "rrf1000_b400+FULL:h3_bf_v5000~cs-fu",
+     "same_cell": true,
+     "new_all": 0.9945982444294396,
+     "old_all": 0.9945982444294396,
+     "new_nodes": 5178.167454422687,
+     "old_nodes": 5178.167454422687,
+     "new_p95": 5317.0,
+     "new_max": 5385.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9980106100795756,
+     "old_dev_all": 0.9980106100795756,
+     "new_dev_nodes": 5173.929045092838,
+     "old_dev_nodes": 5173.929045092838
+    },
+    "80000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b400+FULL:h3_bf_v5000~cs-fu",
+     "old": "rrf1000_b400+FULL:h3_bf_v5000~cs-fu",
+     "same_cell": true,
+     "new_all": 0.9945982444294396,
+     "old_all": 0.9945982444294396,
+     "new_nodes": 5178.167454422687,
+     "old_nodes": 5178.167454422687,
+     "new_p95": 5317.0,
+     "new_max": 5385.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9980106100795756,
+     "old_dev_all": 0.9980106100795756,
+     "new_dev_nodes": 5173.929045092838,
+     "old_dev_nodes": 5173.929045092838
+    }
+   },
+   "frontier_status": "LEVEL",
+   "dev_reached": true,
+   "eval_reached": true,
+   "dev_all": 0.9622015915119363,
+   "dev_nodes": 77.25464190981432,
+   "rung": 0,
+   "ladder_state": "REACHED",
+   "bounded_pick_reached_dev": true,
+   "universal_same_as_bounded": true,
+   "n_nodes": null
+  },
+  "2wiki": {
+   "status": "LEVEL",
+   "all_status": "LEVEL",
+   "new": "rrf1000_b400+FULL:h1_c100~s20+top800",
+   "old": "rrf1000_b400+FULL:h1_c100~s20+top800",
+   "same_cell": true,
+   "new_all": 0.9608778625954199,
+   "old_all": 0.9608778625954199,
+   "new_nodes": 916.9652512722646,
+   "old_nodes": 916.9652512722646,
+   "new_p95": 1192.0,
+   "new_max": 1200.0,
+   "new_reaches": true,
+   "old_reaches": true,
+   "all_diff": 0.0,
+   "all_diff_ci": [
+    0.0,
+    0.0
+   ],
+   "nodes_ratio": 1.0,
+   "nodes_ratio_ci": [
+    1.0,
+    1.0
+   ],
+   "ladder_cmp": {
+    "status": "LEVEL",
+    "all_status": "LEVEL",
+    "new": "rrf1000_b400+FULL:h1_c100~s20+top800",
+    "old": "rrf1000_b400+FULL:h1_c100~s20+top800",
+    "same_cell": true,
+    "new_all": 0.9608778625954199,
+    "old_all": 0.9608778625954199,
+    "new_nodes": 916.9652512722646,
+    "old_nodes": 916.9652512722646,
+    "new_p95": 1192.0,
+    "new_max": 1200.0,
+    "new_reaches": true,
+    "old_reaches": true,
+    "all_diff": 0.0,
+    "all_diff_ci": [
+     0.0,
+     0.0
+    ],
+    "nodes_ratio": 1.0,
+    "nodes_ratio_ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "r98": {
+    "status": "LEVEL",
+    "all_status": "LEVEL",
+    "new": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+    "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+    "same_cell": true,
+    "new_all": 0.9784510178117048,
+    "old_all": 0.9784510178117048,
+    "new_nodes": 6275.024888676845,
+    "old_nodes": 6275.024888676845,
+    "new_p95": 6478.0,
+    "new_max": 6550.0,
+    "new_reaches": false,
+    "old_reaches": false,
+    "all_diff": 0.0,
+    "all_diff_ci": [
+     0.0,
+     0.0
+    ],
+    "nodes_ratio": 1.0,
+    "nodes_ratio_ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "frontier": {
+    "3000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b400+FULL:h3_c25_v2000~s20-cs-vr-eq",
+     "old": "rrf1000_b400+FULL:h3_c25_v2000~s20-cs-vr-eq",
+     "same_cell": true,
+     "new_all": 0.9655693384223919,
+     "old_all": 0.9655693384223919,
+     "new_nodes": 2211.172312340967,
+     "old_nodes": 2211.172312340967,
+     "new_p95": 2306.0,
+     "new_max": 2361.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9625668449197861,
+     "old_dev_all": 0.9625668449197861,
+     "new_dev_nodes": 2215.0601604278077,
+     "old_dev_nodes": 2215.0601604278077
+    },
+    "4000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+FULL:h3_c25_v2000~s20-cs-vr-eq",
+     "old": "rrf1000_b1600+FULL:h3_c25_v2000~s20-cs-vr-eq",
+     "same_cell": true,
+     "new_all": 0.9674777353689568,
+     "old_all": 0.9674777353689568,
+     "new_nodes": 3055.273536895674,
+     "old_nodes": 3055.273536895674,
+     "new_p95": 3354.0,
+     "new_max": 3516.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.964572192513369,
+     "old_dev_all": 0.964572192513369,
+     "new_dev_nodes": 3066.169117647059,
+     "old_dev_nodes": 3066.169117647059
+    },
+    "5000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+FULL:h3_c25_v2000~s20-cs-vr-eq",
+     "old": "rrf1000_b1600+FULL:h3_c25_v2000~s20-cs-vr-eq",
+     "same_cell": true,
+     "new_all": 0.9674777353689568,
+     "old_all": 0.9674777353689568,
+     "new_nodes": 3055.273536895674,
+     "old_nodes": 3055.273536895674,
+     "new_p95": 3354.0,
+     "new_max": 3516.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.964572192513369,
+     "old_dev_all": 0.964572192513369,
+     "new_dev_nodes": 3066.169117647059,
+     "old_dev_nodes": 3066.169117647059
+    },
+    "6000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b400+FULL:h2_c100_v5000~s20-cs-rk",
+     "old": "rrf1000_b400+FULL:h2_c100_v5000~s20-cs-rk",
+     "same_cell": true,
+     "new_all": 0.9764631043256997,
+     "old_all": 0.9764631043256997,
+     "new_nodes": 5264.460957379135,
+     "old_nodes": 5264.460957379135,
+     "new_p95": 5343.0,
+     "new_max": 5370.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9766042780748663,
+     "old_dev_all": 0.9766042780748663,
+     "new_dev_nodes": 5262.835561497326,
+     "old_dev_nodes": 5262.835561497326
+    },
+    "7000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+     "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+     "same_cell": true,
+     "new_all": 0.9784510178117048,
+     "old_all": 0.9784510178117048,
+     "new_nodes": 6275.024888676845,
+     "old_nodes": 6275.024888676845,
+     "new_p95": 6478.0,
+     "new_max": 6550.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9786096256684492,
+     "old_dev_all": 0.9786096256684492,
+     "new_dev_nodes": 6277.681818181818,
+     "old_dev_nodes": 6277.681818181818
+    },
+    "10000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+     "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+     "same_cell": true,
+     "new_all": 0.9784510178117048,
+     "old_all": 0.9784510178117048,
+     "new_nodes": 6275.024888676845,
+     "old_nodes": 6275.024888676845,
+     "new_p95": 6478.0,
+     "new_max": 6550.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9786096256684492,
+     "old_dev_all": 0.9786096256684492,
+     "new_dev_nodes": 6277.681818181818,
+     "old_dev_nodes": 6277.681818181818
+    },
+    "15000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+     "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+     "same_cell": true,
+     "new_all": 0.9784510178117048,
+     "old_all": 0.9784510178117048,
+     "new_nodes": 6275.024888676845,
+     "old_nodes": 6275.024888676845,
+     "new_p95": 6478.0,
+     "new_max": 6550.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9786096256684492,
+     "old_dev_all": 0.9786096256684492,
+     "new_dev_nodes": 6277.681818181818,
+     "old_dev_nodes": 6277.681818181818
+    },
+    "20000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+     "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+     "same_cell": true,
+     "new_all": 0.9784510178117048,
+     "old_all": 0.9784510178117048,
+     "new_nodes": 6275.024888676845,
+     "old_nodes": 6275.024888676845,
+     "new_p95": 6478.0,
+     "new_max": 6550.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9786096256684492,
+     "old_dev_all": 0.9786096256684492,
+     "new_dev_nodes": 6277.681818181818,
+     "old_dev_nodes": 6277.681818181818
+    },
+    "30000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+     "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+     "same_cell": true,
+     "new_all": 0.9784510178117048,
+     "old_all": 0.9784510178117048,
+     "new_nodes": 6275.024888676845,
+     "old_nodes": 6275.024888676845,
+     "new_p95": 6478.0,
+     "new_max": 6550.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9786096256684492,
+     "old_dev_all": 0.9786096256684492,
+     "new_dev_nodes": 6277.681818181818,
+     "old_dev_nodes": 6277.681818181818
+    },
+    "40000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+     "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+     "same_cell": true,
+     "new_all": 0.9784510178117048,
+     "old_all": 0.9784510178117048,
+     "new_nodes": 6275.024888676845,
+     "old_nodes": 6275.024888676845,
+     "new_p95": 6478.0,
+     "new_max": 6550.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9786096256684492,
+     "old_dev_all": 0.9786096256684492,
+     "new_dev_nodes": 6277.681818181818,
+     "old_dev_nodes": 6277.681818181818
+    },
+    "60000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+     "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+     "same_cell": true,
+     "new_all": 0.9784510178117048,
+     "old_all": 0.9784510178117048,
+     "new_nodes": 6275.024888676845,
+     "old_nodes": 6275.024888676845,
+     "new_p95": 6478.0,
+     "new_max": 6550.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9786096256684492,
+     "old_dev_all": 0.9786096256684492,
+     "new_dev_nodes": 6277.681818181818,
+     "old_dev_nodes": 6277.681818181818
+    },
+    "80000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+     "old": "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+     "same_cell": true,
+     "new_all": 0.9784510178117048,
+     "old_all": 0.9784510178117048,
+     "new_nodes": 6275.024888676845,
+     "old_nodes": 6275.024888676845,
+     "new_p95": 6478.0,
+     "new_max": 6550.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9786096256684492,
+     "old_dev_all": 0.9786096256684492,
+     "new_dev_nodes": 6277.681818181818,
+     "old_dev_nodes": 6277.681818181818
+    }
+   },
+   "frontier_status": "LEVEL",
+   "dev_reached": true,
+   "eval_reached": true,
+   "dev_all": 0.9545454545454546,
+   "dev_nodes": 908.1918449197861,
+   "rung": 0,
+   "ladder_state": "REACHED",
+   "bounded_pick_reached_dev": true,
+   "universal_same_as_bounded": true,
+   "n_nodes": null
+  },
+  "webqsp": {
+   "status": "LEVEL",
+   "all_status": "ABOVE",
+   "new": "rrf1000_b400+FULL:h3_bf_v40000~cs-vr",
+   "old": "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+   "same_cell": false,
+   "new_all": 0.9474384564204924,
+   "old_all": 0.8789088489687292,
+   "new_nodes": 39529.54091816367,
+   "old_nodes": 2094.5868263473053,
+   "new_p95": 40259.0,
+   "new_max": 40342.0,
+   "new_reaches": false,
+   "old_reaches": false,
+   "all_diff": 0.06852960745176317,
+   "all_diff_ci": [
+    0.055888223552894245,
+    0.0811709913506321
+   ],
+   "nodes_ratio": 18.872237913907917,
+   "nodes_ratio_ci": [
+    18.79223471093862,
+    18.950654791307326
+   ],
+   "ladder_cmp": {
+    "status": "LEVEL",
+    "all_status": "ABOVE",
+    "new": "rrf1000_b400+FULL:h3_bf_v40000~cs-vr",
+    "old": "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+    "same_cell": false,
+    "new_all": 0.9474384564204924,
+    "old_all": 0.9174983366600133,
+    "new_nodes": 39529.54091816367,
+    "old_nodes": 6079.52628077179,
+    "new_p95": 40259.0,
+    "new_max": 40342.0,
+    "new_reaches": false,
+    "old_reaches": false,
+    "all_diff": 0.029940119760479056,
+    "all_diff_ci": [
+     0.021290751829673993,
+     0.03925482368596145
+    ],
+    "nodes_ratio": 6.502075834952297,
+    "nodes_ratio_ci": [
+     6.474161962928317,
+     6.5306516131952455
+    ]
+   },
+   "r98": {
+    "status": "LEVEL",
+    "all_status": "ABOVE",
+    "new": "rrf1000_b1600+FULL:h3_bf_v40000~cs-vr",
+    "old": "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+    "same_cell": false,
+    "new_all": 0.9481037924151696,
+    "old_all": 0.9174983366600133,
+    "new_nodes": 40164.05788423154,
+    "old_nodes": 6079.52628077179,
+    "new_p95": 41221.8,
+    "new_max": 41471.0,
+    "new_reaches": false,
+    "old_reaches": false,
+    "all_diff": 0.030605455755156274,
+    "all_diff_ci": [
+     0.021290751829673993,
+     0.03992015968063867
+    ],
+    "nodes_ratio": 6.606445309935028,
+    "nodes_ratio_ci": [
+     6.576932792574126,
+     6.633888480603975
+    ]
+   },
+   "frontier": {
+    "3000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b800+STRUCT:h3_bf_v2000~cs-fu",
+     "old": "rrf1000_b800+STRUCT:h3_bf_v2000~cs-fu",
+     "same_cell": true,
+     "new_all": 0.8802395209580839,
+     "old_all": 0.8802395209580839,
+     "new_nodes": 2520.2029274783768,
+     "old_nodes": 2520.2029274783768,
+     "new_p95": 2726.0,
+     "new_max": 2779.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.8792302587923025,
+     "old_dev_all": 0.8792302587923025,
+     "new_dev_nodes": 2515.3563370935635,
+     "old_dev_nodes": 2515.3563370935635
+    },
+    "4000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h2_bf_v2000~cs-fu",
+     "old": "rrf1000_b1600+STRUCT:h2_bf_v2000~cs-fu",
+     "same_cell": true,
+     "new_all": 0.8735861610113107,
+     "old_all": 0.8735861610113107,
+     "new_nodes": 3246.996007984032,
+     "old_nodes": 3246.996007984032,
+     "new_p95": 3534.8999999999996,
+     "new_max": 3584.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.8852023888520238,
+     "old_dev_all": 0.8852023888520238,
+     "new_dev_nodes": 3245.912408759124,
+     "old_dev_nodes": 3245.912408759124
+    },
+    "5000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b800+FULL:h2_bf_v5000~cs-fu",
+     "old": "rrf1000_b800+FULL:h2_bf_v5000~cs-fu",
+     "same_cell": true,
+     "new_all": 0.8975382568196939,
+     "old_all": 0.8975382568196939,
+     "new_nodes": 4976.632069194943,
+     "old_nodes": 4976.632069194943,
+     "new_p95": 5699.9,
+     "new_max": 5763.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9017916390179164,
+     "old_dev_all": 0.9017916390179164,
+     "new_dev_nodes": 4994.729927007299,
+     "old_dev_nodes": 4994.729927007299
+    },
+    "6000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b800+STRUCT:h3_bf_v5000~cs-fu",
+     "old": "rrf1000_b800+STRUCT:h3_bf_v5000~cs-fu",
+     "same_cell": true,
+     "new_all": 0.916833000665336,
+     "old_all": 0.916833000665336,
+     "new_nodes": 5488.54757152362,
+     "old_nodes": 5488.54757152362,
+     "new_p95": 5715.0,
+     "new_max": 5773.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9223623092236231,
+     "old_dev_all": 0.9223623092236231,
+     "new_dev_nodes": 5484.049767750497,
+     "old_dev_nodes": 5484.049767750497
+    },
+    "7000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+     "old": "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+     "same_cell": true,
+     "new_all": 0.9174983366600133,
+     "old_all": 0.9174983366600133,
+     "new_nodes": 6079.52628077179,
+     "old_nodes": 6079.52628077179,
+     "new_p95": 6455.0,
+     "new_max": 6556.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9256801592568016,
+     "old_dev_all": 0.9256801592568016,
+     "new_dev_nodes": 6070.474452554745,
+     "old_dev_nodes": 6070.474452554745
+    },
+    "10000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+     "old": "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+     "same_cell": true,
+     "new_all": 0.9174983366600133,
+     "old_all": 0.9174983366600133,
+     "new_nodes": 6079.52628077179,
+     "old_nodes": 6079.52628077179,
+     "new_p95": 6455.0,
+     "new_max": 6556.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 0.9256801592568016,
+     "old_dev_all": 0.9256801592568016,
+     "new_dev_nodes": 6070.474452554745,
+     "old_dev_nodes": 6070.474452554745
+    },
+    "15000": {
+     "status": "ABOVE",
+     "all_status": "ABOVE",
+     "new": "rrf1000_b1600+FULL:h3_bf_v10000~cs-fu",
+     "old": "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+     "same_cell": false,
+     "new_all": 0.9328010645375915,
+     "old_all": 0.9174983366600133,
+     "new_nodes": 10817.444444444445,
+     "old_nodes": 6079.52628077179,
+     "new_p95": 11269.8,
+     "new_max": 11514.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.015302727877578137,
+     "all_diff_ci": [
+      0.009298070525615352,
+      0.021956087824351322
+     ],
+     "nodes_ratio": 1.7793235763545678,
+     "nodes_ratio_ci": [
+      1.777301297670122,
+      1.7812138148858276
+     ],
+     "new_dev_all": 0.9416058394160584,
+     "old_dev_all": 0.9256801592568016,
+     "new_dev_nodes": 10810.685467816855,
+     "old_dev_nodes": 6070.474452554745
+    },
+    "20000": {
+     "status": "ABOVE",
+     "all_status": "ABOVE",
+     "new": "rrf1000_b1600+FULL:h3_bf_v10000~cs-fu",
+     "old": "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+     "same_cell": false,
+     "new_all": 0.9328010645375915,
+     "old_all": 0.9174983366600133,
+     "new_nodes": 10817.444444444445,
+     "old_nodes": 6079.52628077179,
+     "new_p95": 11269.8,
+     "new_max": 11514.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.015302727877578137,
+     "all_diff_ci": [
+      0.009314703925482393,
+      0.022621423819028652
+     ],
+     "nodes_ratio": 1.7793235763545678,
+     "nodes_ratio_ci": [
+      1.7773537664359491,
+      1.7813631611581435
+     ],
+     "new_dev_all": 0.9416058394160584,
+     "old_dev_all": 0.9256801592568016,
+     "new_dev_nodes": 10810.685467816855,
+     "old_dev_nodes": 6070.474452554745
+    },
+    "30000": {
+     "status": "ABOVE",
+     "all_status": "ABOVE",
+     "new": "rrf1000_b1600+FULL:h3_bf_v20000~cs-fu",
+     "old": "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+     "same_cell": false,
+     "new_all": 0.9421157684630739,
+     "old_all": 0.9174983366600133,
+     "new_nodes": 20737.54091816367,
+     "old_nodes": 6079.52628077179,
+     "new_p95": 21241.9,
+     "new_max": 21514.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.02461743180306053,
+     "all_diff_ci": [
+      0.017282102461743085,
+      0.031936127744511045
+     ],
+     "nodes_ratio": 3.4110455256607692,
+     "nodes_ratio_ci": [
+      3.4037232555209886,
+      3.4177760130733685
+     ],
+     "new_dev_all": 0.9495686794956868,
+     "old_dev_all": 0.9256801592568016,
+     "new_dev_nodes": 20744.33908427339,
+     "old_dev_nodes": 6070.474452554745
+    },
+    "40000": {
+     "status": "ABOVE",
+     "all_status": "ABOVE",
+     "new": "rrf1000_b400+FULL:h3_bf_v40000~cs-vr",
+     "old": "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+     "same_cell": false,
+     "new_all": 0.9474384564204924,
+     "old_all": 0.9174983366600133,
+     "new_nodes": 39529.54091816367,
+     "old_nodes": 6079.52628077179,
+     "new_p95": 40259.0,
+     "new_max": 40342.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.029940119760479056,
+     "all_diff_ci": [
+      0.021290751829673993,
+      0.03925482368596145
+     ],
+     "nodes_ratio": 6.502075834952297,
+     "nodes_ratio_ci": [
+      6.472512733859246,
+      6.530509314001597
+     ],
+     "new_dev_all": 0.9555408095554081,
+     "old_dev_all": 0.9256801592568016,
+     "new_dev_nodes": 39571.58792302588,
+     "old_dev_nodes": 6070.474452554745
+    },
+    "60000": {
+     "status": "ABOVE",
+     "all_status": "ABOVE",
+     "new": "rrf1000_b1600+FULL:h3_bf_v40000~cs-vr",
+     "old": "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+     "same_cell": false,
+     "new_all": 0.9481037924151696,
+     "old_all": 0.9174983366600133,
+     "new_nodes": 40164.05788423154,
+     "old_nodes": 6079.52628077179,
+     "new_p95": 41221.8,
+     "new_max": 41471.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.030605455755156274,
+     "all_diff_ci": [
+      0.021956087824351322,
+      0.03992015968063878
+     ],
+     "nodes_ratio": 6.606445309935028,
+     "nodes_ratio_ci": [
+      6.577537657609183,
+      6.633975461428617
+     ],
+     "new_dev_all": 0.9568679495686795,
+     "old_dev_all": 0.9256801592568016,
+     "new_dev_nodes": 40201.08161911082,
+     "old_dev_nodes": 6070.474452554745
+    },
+    "80000": {
+     "status": "ABOVE",
+     "all_status": "ABOVE",
+     "new": "rrf1000_b1600+FULL:h3_bf_v40000~cs-vr",
+     "old": "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+     "same_cell": false,
+     "new_all": 0.9481037924151696,
+     "old_all": 0.9174983366600133,
+     "new_nodes": 40164.05788423154,
+     "old_nodes": 6079.52628077179,
+     "new_p95": 41221.8,
+     "new_max": 41471.0,
+     "new_reaches": false,
+     "old_reaches": false,
+     "all_diff": 0.030605455755156274,
+     "all_diff_ci": [
+      0.02262142381902865,
+      0.03927145708582836
+     ],
+     "nodes_ratio": 6.606445309935028,
+     "nodes_ratio_ci": [
+      6.5764195995586,
+      6.63429565595834
+     ],
+     "new_dev_all": 0.9568679495686795,
+     "old_dev_all": 0.9256801592568016,
+     "new_dev_nodes": 40201.08161911082,
+     "old_dev_nodes": 6070.474452554745
+    }
+   },
+   "frontier_status": "ABOVE",
+   "dev_reached": true,
+   "eval_reached": false,
+   "dev_all": 0.9555408095554081,
+   "dev_nodes": 39571.58792302588,
+   "rung": 3,
+   "ladder_state": "REACHED",
+   "bounded_pick_reached_dev": false,
+   "universal_same_as_bounded": null,
+   "n_nodes": 2592894
+  },
+  "multihoprag": {
+   "status": "LEVEL",
+   "all_status": "LEVEL",
+   "new": "rrf1000_b25+FULL:h1_c100+top25",
+   "old": "rrf1000_b25+FULL:h1_c100+top25",
+   "same_cell": true,
+   "new_all": 0.9690265486725663,
+   "old_all": 0.9690265486725663,
+   "new_nodes": 50.0,
+   "old_nodes": 50.0,
+   "new_p95": 50.0,
+   "new_max": 50.0,
+   "new_reaches": true,
+   "old_reaches": true,
+   "all_diff": 0.0,
+   "all_diff_ci": [
+    0.0,
+    0.0
+   ],
+   "nodes_ratio": 1.0,
+   "nodes_ratio_ci": [
+    1.0,
+    1.0
+   ],
+   "ladder_cmp": {
+    "status": "LEVEL",
+    "all_status": "LEVEL",
+    "new": "rrf1000_b25+FULL:h1_c100+top25",
+    "old": "rrf1000_b25+FULL:h1_c100+top25",
+    "same_cell": true,
+    "new_all": 0.9690265486725663,
+    "old_all": 0.9690265486725663,
+    "new_nodes": 50.0,
+    "old_nodes": 50.0,
+    "new_p95": 50.0,
+    "new_max": 50.0,
+    "new_reaches": true,
+    "old_reaches": true,
+    "all_diff": 0.0,
+    "all_diff_ci": [
+     0.0,
+     0.0
+    ],
+    "nodes_ratio": 1.0,
+    "nodes_ratio_ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "r98": {
+    "status": "LEVEL",
+    "all_status": "LEVEL",
+    "new": "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50",
+    "old": "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50",
+    "same_cell": true,
+    "new_all": 0.9787610619469026,
+    "old_all": 0.9787610619469026,
+    "new_nodes": 58.00353982300885,
+    "old_nodes": 58.00353982300885,
+    "new_p95": 75.0,
+    "new_max": 75.0,
+    "new_reaches": false,
+    "old_reaches": false,
+    "all_diff": 0.0,
+    "all_diff_ci": [
+     0.0,
+     0.0
+    ],
+    "nodes_ratio": 1.0,
+    "nodes_ratio_ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "frontier": {
+    "3000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "old": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "same_cell": true,
+     "new_all": 0.9911504424778761,
+     "old_all": 0.9911504424778761,
+     "new_nodes": 100.0,
+     "old_nodes": 100.0,
+     "new_p95": 100.0,
+     "new_max": 100.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 100.0,
+     "old_dev_nodes": 100.0
+    },
+    "4000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "old": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "same_cell": true,
+     "new_all": 0.9911504424778761,
+     "old_all": 0.9911504424778761,
+     "new_nodes": 100.0,
+     "old_nodes": 100.0,
+     "new_p95": 100.0,
+     "new_max": 100.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 100.0,
+     "old_dev_nodes": 100.0
+    },
+    "5000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "old": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "same_cell": true,
+     "new_all": 0.9911504424778761,
+     "old_all": 0.9911504424778761,
+     "new_nodes": 100.0,
+     "old_nodes": 100.0,
+     "new_p95": 100.0,
+     "new_max": 100.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 100.0,
+     "old_dev_nodes": 100.0
+    },
+    "6000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "old": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "same_cell": true,
+     "new_all": 0.9911504424778761,
+     "old_all": 0.9911504424778761,
+     "new_nodes": 100.0,
+     "old_nodes": 100.0,
+     "new_p95": 100.0,
+     "new_max": 100.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 100.0,
+     "old_dev_nodes": 100.0
+    },
+    "7000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "old": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "same_cell": true,
+     "new_all": 0.9911504424778761,
+     "old_all": 0.9911504424778761,
+     "new_nodes": 100.0,
+     "old_nodes": 100.0,
+     "new_p95": 100.0,
+     "new_max": 100.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 100.0,
+     "old_dev_nodes": 100.0
+    },
+    "10000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "old": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "same_cell": true,
+     "new_all": 0.9911504424778761,
+     "old_all": 0.9911504424778761,
+     "new_nodes": 100.0,
+     "old_nodes": 100.0,
+     "new_p95": 100.0,
+     "new_max": 100.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 100.0,
+     "old_dev_nodes": 100.0
+    },
+    "15000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "old": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "same_cell": true,
+     "new_all": 0.9911504424778761,
+     "old_all": 0.9911504424778761,
+     "new_nodes": 100.0,
+     "old_nodes": 100.0,
+     "new_p95": 100.0,
+     "new_max": 100.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 100.0,
+     "old_dev_nodes": 100.0
+    },
+    "20000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "old": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "same_cell": true,
+     "new_all": 0.9911504424778761,
+     "old_all": 0.9911504424778761,
+     "new_nodes": 100.0,
+     "old_nodes": 100.0,
+     "new_p95": 100.0,
+     "new_max": 100.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 100.0,
+     "old_dev_nodes": 100.0
+    },
+    "30000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "old": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "same_cell": true,
+     "new_all": 0.9911504424778761,
+     "old_all": 0.9911504424778761,
+     "new_nodes": 100.0,
+     "old_nodes": 100.0,
+     "new_p95": 100.0,
+     "new_max": 100.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 100.0,
+     "old_dev_nodes": 100.0
+    },
+    "40000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "old": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "same_cell": true,
+     "new_all": 0.9911504424778761,
+     "old_all": 0.9911504424778761,
+     "new_nodes": 100.0,
+     "old_nodes": 100.0,
+     "new_p95": 100.0,
+     "new_max": 100.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 100.0,
+     "old_dev_nodes": 100.0
+    },
+    "60000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "old": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "same_cell": true,
+     "new_all": 0.9911504424778761,
+     "old_all": 0.9911504424778761,
+     "new_nodes": 100.0,
+     "old_nodes": 100.0,
+     "new_p95": 100.0,
+     "new_max": 100.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 100.0,
+     "old_dev_nodes": 100.0
+    },
+    "80000": {
+     "status": "LEVEL",
+     "all_status": "LEVEL",
+     "new": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "old": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+     "same_cell": true,
+     "new_all": 0.9911504424778761,
+     "old_all": 0.9911504424778761,
+     "new_nodes": 100.0,
+     "old_nodes": 100.0,
+     "new_p95": 100.0,
+     "new_max": 100.0,
+     "new_reaches": true,
+     "old_reaches": true,
+     "all_diff": 0.0,
+     "all_diff_ci": [
+      0.0,
+      0.0
+     ],
+     "nodes_ratio": 1.0,
+     "nodes_ratio_ci": [
+      1.0,
+      1.0
+     ],
+     "new_dev_all": 1.0,
+     "old_dev_all": 1.0,
+     "new_dev_nodes": 100.0,
+     "old_dev_nodes": 100.0
+    }
+   },
+   "frontier_status": "LEVEL",
+   "dev_reached": true,
+   "eval_reached": true,
+   "dev_all": 0.9776785714285714,
+   "dev_nodes": 50.0,
+   "rung": 0,
+   "ladder_state": "REACHED",
+   "bounded_pick_reached_dev": true,
+   "universal_same_as_bounded": true,
+   "n_nodes": null
+  }
+ },
+ "datasets_read": [
+  "2wiki",
+  "hotpotqa",
+  "metaqa",
+  "multihoprag",
+  "musique",
+  "squad",
+  "webqsp"
+ ],
+ "universality_check": {
+  "datasets_that_met_the_target_inside_the_bound": [
+   "2wiki",
+   "hotpotqa",
+   "multihoprag",
+   "squad"
+  ],
+  "unchanged_on_all_of_them": true
+ },
+ "call": "CARRY_PL6",
+ "counts": {
+  "old": {
+   "BELOW": 0,
+   "ABOVE": 2,
+   "LEVEL": 5
+  },
+  "frontier": {
+   "BELOW": 0,
+   "ABOVE": 2,
+   "LEVEL": 5
+  }
+ },
+ "code_path_equal_everywhere": true
+}
