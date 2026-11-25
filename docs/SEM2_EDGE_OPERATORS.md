@@ -994,6 +994,60 @@ Every read ran with 8 threads. Outputs: outputs/sem2/r2/{sel,read}/..., report.j
   points on two datasets at R@5, nothing measurable on four, and lose 0.22 on one; the beside reads at R@20 show an operator effect on three datasets (MuSiQue, HotpotQA, 2Wiki), which no call rests on;
   and a better choice of operator has no room (C). R2a gives no reason to learn α. No call here touches the journal's layout or pools.
 
+## 10. R2c declared: the traversal at the depth a pool takes its seeds from (25 November 2026, 15:11 IST, 09:41 UTC), after R2a's R@20 means were seen
+
+### 10.1 Why, and what was seen before this page
+
+- **Why.** The user, 25 November: first the deeper read of the traversal, then R3 on whichever form survives. The pools of the PL rounds take their seeds from the top of the fused first-stage list
+  (PL3's gain on 2Wiki came from widening the seeds to 20). If the traversal changes which golds sit in the top 20, a pool could start from them. This page asks that question of R2a's own records.
+- **Seen before this page, so this is declared after them:**
+  - 9.12's beside reads at R@20: T2 at R@20 ABOVE on MuSiQue (+0.74), HotpotQA (+0.47) and 2Wiki (+0.31), LEVEL on the other four, and the R@20 means (base, trav0, trav) of all seven e3v records.
+    outputs/sem2/r2/report.json also holds T1 at R@20 and T2 at R@20 on every row, as beside entries.
+  - **MuSiQue's ALL at 20** (the share of questions with every gold in the top 20): while checking that the stored arrays hold what this rule needs I read its four means (base 24.9, trav0 25.4,
+    trav 26.8, oracle 27.2 percent). No interval was computed, and **the other six datasets' ALL at 20 were not read**.
+  - λ was chosen on R@5 (9.4). **It is not re-chosen on R@20 here**; a different λ would need new selection reads and new reads on the host.
+  - So the call at 20 moves from "beside" to "called" after the R@20 means were seen. ALL at 20 is new (MuSiQue's four means glimpsed).
+- **A limit, said first.** A first-stage ALL at 20 is not a pool's coverage. PL3's diagnostic D1 (post-hoc, 300 dev questions) found 656 of the 658 gold nodes missing from the MuSiQue, MetaQA and WebQSP pools inside
+  the uncapped three-hop reach of their seeds: those pools lose golds to the caps and the node bound, not to the first stage. Part A cannot say whether a pool improves; it says whether the seeds do.
+
+### 10.2 Part A: the calls (a laptop read of stored records; no host job, no traversal, no fit)
+
+- **Rows:** the seven e3v reads of R2a decide (outputs/sem2/r2/read/e3v/*.npz); the four frozen reads are read beside (no verdict).
+- **Two measures at 20, per question, from the stored arrays:**
+  - **recall at 20:** min(hits, golds) / golds of the fused list RRF(v, list, SPLADE) at 20 (R2a's r_*_fused20);
+  - **ALL at 20:** 1 where that recall is 1 (every gold is in the top 20), 0 where not; a question with no gold is left out.
+- **Calls, on each measure:** T1 = trav - base and T2 = trav - trav0, each by the paired bootstrap of 9.6 (2,000 resamples, seed 0, 95% interval; ABOVE, LEVEL or BELOW), through the same function as R2a's report (zsem1.boot).
+  **ADDS at 20** on a dataset = T1 and T2 ABOVE on that measure.
+- **The e3v verdict at 20, per measure:** HOLDS if ADDS on all seven; PARTIAL if ADDS on at least one and T1 BELOW on none; FAILS otherwise; INCOMPLETE while a row is missing (9.6's rule).
+- **Beside, deciding nothing:** trav - SEM1 control, trav0 - base, and C = oracle - trav at 20 (ROOM at 20 if C is 1 point or more). A ROOM at 20 would not reopen R2b: R2b stays undeclared until a page declares it.
+- **Rows that cannot move:** on MetaQA and WebQSP the golds are knowledge-base nodes and R@20 is 1.4 and 9.7 percent, so ALL at 20 is near zero there; they are reported and may be LEVEL.
+
+### 10.3 What follows (fixed now, before any number)
+
+- **ADDS on ALL at 20 on at least one e3v dataset: Part B is NAMED.** Part B is a read at the pool level: the traversal's fused list as the seeds of a PL walk. It needs the lists, and R2a's npz keep only the
+  top 5; so it is a new host read of the seven datasets through a new wrapper that saves the fused top 50, sized from R2a's records at about 18,000 s of 8-thread host time (2Wiki 11,914, HotpotQA 3,746, WebQSP 1,369,
+  SQuAD 437, MetaQA 358, MuSiQue 139, MultiHop-RAG 12), and the walk is a PL round, which the PL engines (pinned) do not take as an option today. **It is not declared here, and no host row is queued for it before the user is told that price.**
+- **No ADDS on ALL at 20 anywhere: Part B is CLOSED.** The traversal does not move the seeds' coverage at 20, no host re-read is made, and nothing else changes.
+- **Either way R3's transfer reads (section 4) are declared next, on R2a's form.** R2c changes the depth of a read, not the form.
+- No call here touches the journal's layout or pools.
+
+### 10.4 Expectations, written before any call (a failed one is reported, not explained away)
+
+- **X15:** ADDS on recall at 20 on MuSiQue, HotpotQA and 2Wiki (partly seen: T2 at R@20 ABOVE there in 9.12; T1 at R@20 is in report.json), not on SQuAD (trav0 and the base are already at 95).
+- **X16:** ADDS on ALL at 20 on MuSiQue (its four means were glimpsed: trav 26.8 against trav0 25.4), and not on MetaQA, WebQSP or SQuAD.
+- **X17:** Part B is NAMED, through MuSiQue alone or with HotpotQA and 2Wiki.
+
+### 10.5 Gates (a failure stops the report)
+
+- **G-R2:** each record's script_sha256 is zsem2t.py's (`7d7cf31987df`) and each npz hashes to the record's npz_sha256.
+- **G-A:** the stored arrays r_base20, r_trav_fused20 and r_trav0_fused20 average to the record's recall values (base20, trav_fused20, trav0_fused20) to 1e-6.
+- **Self-test (planted toy):** ALL at 20 from recall 1 only (NaN stays NaN); a planted gain on 15 percent of 400 questions is ABOVE with ADDS, a flat arm is LEVEL without it; the verdicts HOLDS, PARTIAL, FAILS and INCOMPLETE come out as 9.6 says.
+
+### 10.6 Code and outputs
+
+- **outputs/mp_unified/zsem2tr.py** (committed with this page; imports zsem2t.py and zsem1.py, edits neither): `selftest`, `report`. Outputs: outputs/sem2/r2/r2c/report.json and report.md (committed; npz are R2a's).
+- The numbers are filed in 10.7 after the commit of this page.
+
 ### 8.16 Records completed after the closure (24 November 2026, 23:47 IST, 18:17 UTC): decides nothing
 
 8.15 closed the hub line with five rows still running. They have finished: R1k on WebQSP and 2Wiki, and R1q on
