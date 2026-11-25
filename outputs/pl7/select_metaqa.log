@@ -1,0 +1,3 @@
+[03:04:37] zpl2g: G-C metaqa: PASS (39 control cells x 1497 questions, 0 differ)
+[03:04:37] zpl2g: metaqa K=2500: R95_all rrf1000_b400+STRUCT:h3_c25_v2000  ALL 0.8978 at 2339.7  (SHORT);  without the PL7 cells 0.8978 at 2339.7
+[03:04:37] zpl2g: metaqa K=3500: R95_all equal_rrf_budget_50+STRUCT:h3_c25_v4000  ALL 0.9259 at 3477.2  (SHORT);  without the PL7 cells 0.9259 at 3477.2

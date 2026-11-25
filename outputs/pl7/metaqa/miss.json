@@ -1,0 +1,37 @@
+{
+ "stage": "PL7 D1 + D2 (post-hoc diagnostic, labels read, decides nothing)",
+ "declared_in": "docs/PL7_COVERAGE_RESTRICTION.md",
+ "dataset": "metaqa",
+ "cell": "rrf1000_b400+STRUCT:h3_c25_v2000",
+ "questions": 300,
+ "carve": "dev",
+ "first": "frozen",
+ "nodes_mean": 2337.45,
+ "bound": 2500.0,
+ "totals": {
+  "q_missing": 33,
+  "golds_missing": 375,
+  "R": 0,
+  "C": 373,
+  "U": 2,
+  "U_in_lists": 0,
+  "q_R": 0,
+  "q_C": 32,
+  "q_U": 2
+ },
+ "D2": {
+  "by_stage_hop": {
+   "cap2": 15,
+   "upstream": 82,
+   "budget3": 264,
+   "cap3": 12
+  },
+  "c_golds": 373,
+  "trace_matches_engine": true,
+  "trace_mismatch_questions": 0
+ },
+ "uncapped_setting": "3 hops, no per-seed, per-frontier or visited cap, FULL families, the cell's own seeds",
+ "seconds": 10.1,
+ "code_path_sha256": "62a27dbb08c49a81fb4605f211f908935135e01c4cb6dd080e3c54b50066930f",
+ "utc": "2026-11-25T22:09:26Z"
+}

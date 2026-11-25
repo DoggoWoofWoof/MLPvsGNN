@@ -1,0 +1,9 @@
+[03:04:56] zpl2g: G-C webqsp: PASS (156 control cells x 1507 questions, 0 differ)
+[03:04:57] zpl2g: webqsp K=2500: R95_all dense_top200+STRUCT:h3_bf_v2000~cs-fu  ALL 0.8759 at 2094.2  (SHORT);  without the PL7 cells 0.8759 at 2094.2
+[03:04:57] zpl2g: webqsp K=3500: R95_all rrf1000_b400+STRUCT:h3_bf_v2500~cs-fu  ALL 0.8892 at 2716.1  (SHORT);  without the PL7 cells 0.8852 at 3245.9
+[03:04:57] zpl2g: webqsp K=5000: R95_all rrf1000_b800+FULL:h2_bf_v5000~cs-fu  ALL 0.9018 at 4994.7  (SHORT);  without the PL7 cells 0.9018 at 4994.7
+[03:04:57] zpl2g: webqsp K=7000: R95_all rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu  ALL 0.9257 at 6070.5  (SHORT);  without the PL7 cells 0.9257 at 6070.5
+[03:04:57] zpl2g: webqsp K=10000: R95_all rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu  ALL 0.9257 at 6070.5  (SHORT);  without the PL7 cells 0.9257 at 6070.5
+[03:04:57] zpl2g: webqsp K=14000: R95_all rrf1000_b1600+FULL:h3_bf_v10000~cs-fu  ALL 0.9416 at 10810.7  (SHORT);  without the PL7 cells 0.9416 at 10810.7
+[03:04:57] zpl2g: webqsp K=20000: R95_all rrf1000_b1600+FULL:h3_bf_v10000~cs-fu  ALL 0.9416 at 10810.7  (SHORT);  without the PL7 cells 0.9416 at 10810.7
+[03:04:57] zpl2g: webqsp K=28000: R95_all rrf1000_b1600+FULL:h3_bf_v20000~cs-fu  ALL 0.9496 at 20744.3  (SHORT);  without the PL7 cells 0.9496 at 20744.3

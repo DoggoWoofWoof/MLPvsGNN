@@ -1,0 +1,7 @@
+[03:04:46] zpl2g: G-C musique: PASS (117 control cells x 1534 questions, 0 differ)
+[03:04:47] zpl2g: musique K=2500: R95_all rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr  ALL 0.8898 at 2464.3  (SHORT);  without the PL7 cells 0.8898 at 2464.3
+[03:04:47] zpl2g: musique K=3500: R95_all rrf1000_b1600+FULL:h2_c100_v2500~s10-cs-vr  ALL 0.9074 at 3489.4  (SHORT);  without the PL7 cells 0.9009 at 3020.4
+[03:04:47] zpl2g: musique K=5000: R95_all rrf1000_b1600+FULL:h2_c100_v2500~cs-vr  ALL 0.9081 at 3518.3  (SHORT);  without the PL7 cells 0.9009 at 3020.4
+[03:04:47] zpl2g: musique K=7000: R95_all rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr  ALL 0.9355 at 5783.4  (SHORT);  without the PL7 cells 0.9355 at 5783.4
+[03:04:47] zpl2g: musique K=10000: R95_all rrf1000_b1600+FULL:h3_bf_v10000~cs-fu+top7500  ALL 0.9420 at 9086.3  (SHORT);  without the PL7 cells 0.9420 at 9086.3
+[03:04:47] zpl2g: musique K=14000: R95_all rrf1000_b1600+FULL:h2_c100_v20000~s20-cs-rk+top15000  ALL 0.9492 at 13970.0  (SHORT);  without the PL7 cells 0.9492 at 13970.0

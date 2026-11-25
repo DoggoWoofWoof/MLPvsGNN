@@ -1,0 +1,4 @@
+   note: a byte-code cache exists under the package root, not created by this process: canonical.cpython-313.pyc (37614 B, mtime 2026-09-13T15:58:07)
+[03:39:26] zpl2g: D1 metaqa rrf1000_b400+STRUCT:h3_c25_v2000: 300 q, 33 miss a gold (375 golds): R 0, C 373, U 2 (in lists 0) at 2337 nodes; D2 {'cap2': 15, 'upstream': 82, 'budget3': 264, 'cap3': 12} (trace = engine: True)
+[03:46:24] zpl2g: D1 musique rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr: 300 q, 36 miss a gold (39 golds): R 0, C 39, U 0 (in lists 0) at 2462 nodes; D2 {'upstream': 12, 'cap2': 18, 'budget2': 9} (trace = engine: True)
+[04:04:39] zpl2g: D1 webqsp dense_top200+STRUCT:h3_bf_v2000~cs-fu: 300 q, 31 miss a gold (81 golds): R 0, C 81, U 0 (in lists 0) at 2094 nodes; D2 {'cap2': 35, 'cap1': 2, 'budget3': 16, 'upstream': 4, 'budget2': 19, 'cap3': 5} (trace = engine: True)

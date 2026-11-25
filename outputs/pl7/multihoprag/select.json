@@ -1,0 +1,426 @@
+{
+ "stage": "PL7 select",
+ "declared_in": "docs/PL7_COVERAGE_RESTRICTION.md",
+ "dataset": "multihoprag",
+ "carve": "dev",
+ "first": "frozen",
+ "questions": 224,
+ "ceilings": [
+  2500
+ ],
+ "rule": "R7(K): R95 over the cells within K dev nodes",
+ "pl6_select_sha256": "24a538b18308694ec36ddb7c11353ff492e596049b3ed0ecc6937fc84e87b341",
+ "code_path_sha256": "58cea08c7a12c496dbd0912ecf958cb9144e07fc53184714c4b16470e274881f",
+ "pinned": {
+  "pl2": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+  "pl2_script": "97ec4883b41445110b57181b44d2630b7424dfbfd884f7cc9512a65085d7e477",
+  "pl3": "e9d860950c700bdd5e988f16b4b0ef6023d3207b7f5c07b1e7ee36593c13c8c4",
+  "pl4": "aa7c9ac9ddd53327cbb906ed1b68e43c6e932d6bf740278684194abdd4eec006",
+  "pl5": "62a27dbb08c49a81fb4605f211f908935135e01c4cb6dd080e3c54b50066930f",
+  "pl5_script": "c3e8221e4fb4dcde134eead544ceb88f2d90579e88dd8e6d10281072696d427c",
+  "pl6": "cce8c3fb01e42e11eebf42ac94dacbd360c8abba39142b9278763365a7a105ee",
+  "pl6_script": "8a595176ed6167fa4c79440d576ad9b287b78eece9d19a32776f9a637f6b0b27"
+ },
+ "script_sha256": "54623c848af9ff359bc6ef09ed46481eef3b811302fb96753bd2c2048c8b0f47",
+ "utc": "2026-11-25T21:35:05Z",
+ "grid_heads": [],
+ "n_nodes": null,
+ "g_c": null,
+ "new_cells": 0,
+ "pl7_new_cells_dev_best_all": null,
+ "picks": {
+  "2500": {
+   "R95_all": {
+    "name": "rrf1000_b25+FULL:h1_c100+top25",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 50.0,
+    "all": 0.9776785714285714,
+    "any": 0.9910714285714286,
+    "coverage": 0.9878260869565217,
+    "p95": 50.0,
+    "max": 50,
+    "reached": true,
+    "floor": 0.95
+   },
+   "R95_old": {
+    "name": "rrf1000_b25+FULL:h1_c100+top25",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 50.0,
+    "all": 0.9776785714285714,
+    "any": 0.9910714285714286,
+    "coverage": 0.9878260869565217,
+    "p95": 50.0,
+    "max": 50,
+    "reached": true,
+    "floor": 0.95
+   },
+   "R98_all": {
+    "name": "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50",
+    "family": "pl3",
+    "tags": [
+     "pl3"
+    ],
+    "nodes": 58.611607142857146,
+    "all": 0.9955357142857143,
+    "any": 1.0,
+    "coverage": 0.9982608695652174,
+    "p95": 75.0,
+    "max": 75,
+    "reached": true,
+    "floor": 0.98
+   },
+   "R98_old": {
+    "name": "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50",
+    "family": "pl3",
+    "tags": [
+     "pl3"
+    ],
+    "nodes": 58.611607142857146,
+    "all": 0.9955357142857143,
+    "any": 1.0,
+    "coverage": 0.9982608695652174,
+    "p95": 75.0,
+    "max": 75,
+    "reached": true,
+    "floor": 0.98
+   }
+  }
+ },
+ "u_pick": {
+  "name": "rrf1000_b25+FULL:h1_c100+top25",
+  "family": "pl2",
+  "tags": [
+   "pl2"
+  ],
+  "nodes": 50.0,
+  "all": 0.9776785714285714,
+  "any": 0.9910714285714286,
+  "coverage": 0.9878260869565217,
+  "p95": 50.0,
+  "max": 50,
+  "reached": true,
+  "floor": 0.95
+ },
+ "u_pick98": {
+  "name": "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50",
+  "family": "pl3",
+  "tags": [
+   "pl3"
+  ],
+  "nodes": 58.611607142857146,
+  "all": 0.9955357142857143,
+  "any": 1.0,
+  "coverage": 0.9982608695652174,
+  "p95": 75.0,
+  "max": 75,
+  "reached": true,
+  "floor": 0.98
+ },
+ "incumbent": {
+  "name": "rrf1000_b25+FULL:h1_c100+top25",
+  "all": 0.9776785714285714,
+  "nodes": 50.0,
+  "reached": true,
+  "role": "PL5's bounded R95 of all its cells (what PL2-PL5 carried)"
+ },
+ "old": "equal_rrf_budget_50",
+ "frontier": {
+  "all": [
+   {
+    "name": "dense_top5",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 5.0,
+    "all": 0.38392857142857145,
+    "any": 0.9508928571428571,
+    "coverage": 0.6556521739130434,
+    "p95": 5.0,
+    "max": 5
+   },
+   {
+    "name": "dense_top10",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 10.0,
+    "all": 0.5446428571428571,
+    "any": 0.9821428571428571,
+    "coverage": 0.8034782608695652,
+    "p95": 10.0,
+    "max": 10
+   },
+   {
+    "name": "rrf1000_b15",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 15.0,
+    "all": 0.6964285714285714,
+    "any": 0.9910714285714286,
+    "coverage": 0.8591304347826086,
+    "p95": 15.0,
+    "max": 15
+   },
+   {
+    "name": "dense_top20",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 20.0,
+    "all": 0.8258928571428571,
+    "any": 0.9866071428571429,
+    "coverage": 0.9269565217391305,
+    "p95": 20.0,
+    "max": 20
+   },
+   {
+    "name": "dense_top25",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 25.0,
+    "all": 0.8973214285714286,
+    "any": 0.9910714285714286,
+    "coverage": 0.9565217391304348,
+    "p95": 25.0,
+    "max": 25
+   },
+   {
+    "name": "dense_top25+KNN:h1_c100+top100",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 27.723214285714285,
+    "all": 0.90625,
+    "any": 0.9955357142857143,
+    "coverage": 0.9617391304347827,
+    "p95": 33.0,
+    "max": 37
+   },
+   {
+    "name": "dense_top30",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 30.0,
+    "all": 0.9241071428571429,
+    "any": 0.9910714285714286,
+    "coverage": 0.9669565217391304,
+    "p95": 30.0,
+    "max": 30
+   },
+   {
+    "name": "rrf1000_b40",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 40.0,
+    "all": 0.9375,
+    "any": 0.9955357142857143,
+    "coverage": 0.9739130434782609,
+    "p95": 40.0,
+    "max": 40
+   },
+   {
+    "name": "rrf1000_b25+FULL:h1_c100+top25",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 50.0,
+    "all": 0.9776785714285714,
+    "any": 0.9910714285714286,
+    "coverage": 0.9878260869565217,
+    "p95": 50.0,
+    "max": 50
+   },
+   {
+    "name": "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50",
+    "family": "pl3",
+    "tags": [
+     "pl3"
+    ],
+    "nodes": 58.611607142857146,
+    "all": 0.9955357142857143,
+    "any": 1.0,
+    "coverage": 0.9982608695652174,
+    "p95": 75.0,
+    "max": 75
+   },
+   {
+    "name": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 100.0,
+    "all": 1.0,
+    "any": 1.0,
+    "coverage": 1.0,
+    "p95": 100.0,
+    "max": 100
+   }
+  ],
+  "old": [
+   {
+    "name": "dense_top5",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 5.0,
+    "all": 0.38392857142857145,
+    "any": 0.9508928571428571,
+    "coverage": 0.6556521739130434,
+    "p95": 5.0,
+    "max": 5
+   },
+   {
+    "name": "dense_top10",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 10.0,
+    "all": 0.5446428571428571,
+    "any": 0.9821428571428571,
+    "coverage": 0.8034782608695652,
+    "p95": 10.0,
+    "max": 10
+   },
+   {
+    "name": "rrf1000_b15",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 15.0,
+    "all": 0.6964285714285714,
+    "any": 0.9910714285714286,
+    "coverage": 0.8591304347826086,
+    "p95": 15.0,
+    "max": 15
+   },
+   {
+    "name": "dense_top20",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 20.0,
+    "all": 0.8258928571428571,
+    "any": 0.9866071428571429,
+    "coverage": 0.9269565217391305,
+    "p95": 20.0,
+    "max": 20
+   },
+   {
+    "name": "dense_top25",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 25.0,
+    "all": 0.8973214285714286,
+    "any": 0.9910714285714286,
+    "coverage": 0.9565217391304348,
+    "p95": 25.0,
+    "max": 25
+   },
+   {
+    "name": "dense_top25+KNN:h1_c100+top100",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 27.723214285714285,
+    "all": 0.90625,
+    "any": 0.9955357142857143,
+    "coverage": 0.9617391304347827,
+    "p95": 33.0,
+    "max": 37
+   },
+   {
+    "name": "dense_top30",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 30.0,
+    "all": 0.9241071428571429,
+    "any": 0.9910714285714286,
+    "coverage": 0.9669565217391304,
+    "p95": 30.0,
+    "max": 30
+   },
+   {
+    "name": "rrf1000_b40",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 40.0,
+    "all": 0.9375,
+    "any": 0.9955357142857143,
+    "coverage": 0.9739130434782609,
+    "p95": 40.0,
+    "max": 40
+   },
+   {
+    "name": "rrf1000_b25+FULL:h1_c100+top25",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 50.0,
+    "all": 0.9776785714285714,
+    "any": 0.9910714285714286,
+    "coverage": 0.9878260869565217,
+    "p95": 50.0,
+    "max": 50
+   },
+   {
+    "name": "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50",
+    "family": "pl3",
+    "tags": [
+     "pl3"
+    ],
+    "nodes": 58.611607142857146,
+    "all": 0.9955357142857143,
+    "any": 1.0,
+    "coverage": 0.9982608695652174,
+    "p95": 75.0,
+    "max": 75
+   },
+   {
+    "name": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+    "family": "pl2",
+    "tags": [
+     "pl2"
+    ],
+    "nodes": 100.0,
+    "all": 1.0,
+    "any": 1.0,
+    "coverage": 1.0,
+    "p95": 100.0,
+    "max": 100
+   }
+  ]
+ },
+ "table_pl7": []
+}

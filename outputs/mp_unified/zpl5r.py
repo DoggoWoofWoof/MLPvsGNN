@@ -214,12 +214,18 @@ def cmd_miss(a):
         import zpl6g as Z6
         Z6.prepare(bool(a.host))
         out_root, doc = ROOT / "outputs" / "pl6", Z6.DOC
+    pl7 = bool(getattr(a, "pl7", False))
+    if pl7:
+        # PL7 (docs/PL7_COVERAGE_RESTRICTION.md section 7): the same diagnostic at the cell R7(2,500) names in PL7's select.json (picks["2500"]["R95_all"])
+        import zpl7g as Z7
+        Z7.prepare7(bool(a.host))
+        out_root, doc = ROOT / "outputs" / "pl7", Z7.DOC
     op = P2.opened()
     M3A = op.m3a
     unc = {"hops": 3, "per_seed_cap": 10 ** 9, "per_frontier_cap": 10 ** 9, "visited_cap": 10 ** 12}
     for ds in a.ds:
         sel = Z5.rjson(out_root / ds / "select.json")
-        pk = sel["picks"]["R95_all"]
+        pk = sel["picks"]["2500"]["R95_all"] if pl7 else sel["picks"]["R95_all"]
         name = pk["name"]
         if pk["reached"] and not a.all:
             Z5.log(f"{ds}: R95 reaches 0.95 ({name}); D1 is for the SHORT datasets (use --all to run anyway)")
@@ -298,7 +304,7 @@ def cmd_miss(a):
                                 break
                     key = f"budget{budget_h}" if budget_h else (f"cap{cap_h}" if cap_h else "upstream")
                     stage[key] = stage.get(key, 0) + 1
-        out = {"stage": ("PL6" if out_root != PL5 else "PL5") + " D1 + D2 (post-hoc diagnostic, labels read, decides nothing)", "declared_in": doc, "dataset": ds, "cell": name, "questions": int(idx.size),
+        out = {"stage": ("PL7" if pl7 else ("PL6" if out_root != PL5 else "PL5")) + " D1 + D2 (post-hoc diagnostic, labels read, decides nothing)", "declared_in": doc, "dataset": ds, "cell": name, "questions": int(idx.size),
                "carve": "dev", "first": "frozen", "nodes_mean": float(np.mean(nodes)), "bound": Z5.BOUND, "totals": tot,
                "D2": {"by_stage_hop": stage, "c_golds": tot["C"], "trace_matches_engine": mismatch == 0, "trace_mismatch_questions": mismatch},
                "uncapped_setting": "3 hops, no per-seed, per-frontier or visited cap, FULL families, the cell's own seeds", "seconds": round(Z5.time.time() - t0, 1),
@@ -661,6 +667,7 @@ def main(argv=None):
     p.add_argument("--all", action="store_true")
     p.add_argument("--host", action="store_true")
     p.add_argument("--pl6", action="store_true", help="diagnose the cell rule U names in outputs/pl6/<d>/select.json (R95_all) and write outputs/pl6/<d>/miss.json")
+    p.add_argument("--pl7", action="store_true", help="diagnose the cell R7(2,500) names in outputs/pl7/<d>/select.json (picks['2500']['R95_all']) and write outputs/pl7/<d>/miss.json")
     p = sub.add_parser("confirm-par")
     p.add_argument("--ds", required=True)
     p.add_argument("--first", default="frozen", choices=("frozen", "e3v"))

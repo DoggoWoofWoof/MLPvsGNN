@@ -1,0 +1,8 @@
+[03:37:22] zpl2g: call metaqa at K=2500: LEVEL  NEW rrf1000_b400+STRUCT:h3_c25_v2000 eval ALL 0.8968 @ 2336; bounded pick ALL 0.8968 @ 2336; knee K None
+[03:37:22] zpl2g: call squad at K=2500: LEVEL  NEW rrf1000_b15 eval ALL 0.9554 @ 15; bounded pick ALL 0.9554 @ 15; knee K 2500
+[03:37:22] zpl2g: call musique at K=2500: LEVEL  NEW rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr eval ALL 0.8846 @ 2438; bounded pick ALL 0.8846 @ 2438; knee K None
+[03:37:22] zpl2g: call hotpotqa at K=2500: LEVEL  NEW rrf1000_b25+STRUCT:h1_c100~cs+top100 eval ALL 0.9634 @ 78; bounded pick ALL 0.9634 @ 78; knee K 2500
+[03:37:22] zpl2g: call 2wiki at K=2500: LEVEL  NEW rrf1000_b400+FULL:h1_c100~s20+top800 eval ALL 0.9609 @ 917; bounded pick ALL 0.9609 @ 917; knee K 2500
+[03:37:22] zpl2g: call webqsp at K=2500: LEVEL  NEW dense_top200+STRUCT:h3_bf_v2000~cs-fu eval ALL 0.8789 @ 2095; bounded pick ALL 0.8789 @ 2095; knee K None
+[03:37:22] zpl2g: call multihoprag at K=2500: LEVEL  NEW rrf1000_b25+FULL:h1_c100+top25 eval ALL 0.9690 @ 50; bounded pick ALL 0.9690 @ 50; knee K 2500
+[03:37:22] zpl2g: call: NOT_CARRIED (BELOW 0, ABOVE 0, read 7/7)
