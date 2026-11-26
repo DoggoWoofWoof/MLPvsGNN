@@ -103,6 +103,12 @@ The user, 27 Nov: **"by smaller i also mean smaller vectors and faster encoding 
 - **What is not changed.** The pass line, the rank-sum pick, the parameter and non-zero costs, the batch size and every list. No candidate number existed when this was written: the first row has not finished.
 - **Disclosed.** A median over ten blocks is still moved by contention that lasts most of a run; the block rates are all printed, and a candidate whose blocks sit visibly below the others' in time order is named in the result.
 
+### 8.5 Amendment A5 (27 Nov, 01:25 IST, after the first four encode rows and one failed row; the only candidate numbers read so far are MultiHop-RAG's)
+
+- **What happened.** C2 on SQuAD failed twice (01:00 and 01:22) on the checkpoint step: `os.replace` of the state file raised a Windows PermissionError (access denied), a short lock by another process on the target. It failed after block 6 and again at the first block of the resume; the card was suspended and resumed by the guard around the first failure. Nothing in the candidate's lists was affected: the checkpoint at 10,240 nodes is the last one written.
+- **Code only, no rule.** Every file replace in `zspl1.py` now retries on a PermissionError (40 tries, 3 s apart) before it raises, and the block records are de-duplicated by block end with the last record kept, so a block redone after a resume counts once in the median. Selftest 14 checks pass. The failed row is re-sent by the feeder; the other rows are unchanged.
+- **Disclosed.** The first read of the MultiHop-RAG cells (three candidates, all calls) was made before this amendment, on rows that had finished; no later row changes them. The reader's rule, the pass line and the pick are not touched.
+
 ## 9. Expectations, written before any number
 
 - **X1.** C2 (the highest printed score) is BETTER or LEVEL on all six cells; it is the largest of the three, so it is the pick only if C1 and C3 do not pass.

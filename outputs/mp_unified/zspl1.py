@@ -62,12 +62,24 @@ def sha256(p):
     return h.hexdigest()
 
 
+def replace_retry(src, dst, tries=40, wait=3.0):
+    """A5: os.replace, retried on a PermissionError (Windows: a scanner or a reader holds the target for a moment)."""
+    for i in range(tries):
+        try:
+            os.replace(src, dst)
+            return
+        except PermissionError:
+            if i == tries - 1:
+                raise
+            time.sleep(wait)
+
+
 def wjson(p, obj):
     p = Path(p)
     p.parent.mkdir(parents=True, exist_ok=True)
     t = p.with_name(p.name + ".tmp")
     t.write_text(json.dumps(obj, indent=1), encoding="utf-8")
-    os.replace(t, p)
+    replace_retry(t, p)
 
 
 def allowed_file(path):
@@ -231,7 +243,10 @@ def merge_top(top_s, top_i, sc, i0, k):
 
 def block_rates(lines):
     """A4: nodes per second of each block's encode call (the models' forward passes only). Returns (rates, median)."""
-    rates = [x["nodes"] / x["seconds"] for x in lines if x.get("seconds", 0) > 0]
+    last = {}
+    for x in lines:                      # A5: a block redone after a resume keeps its last record
+        last[x["end"]] = x
+    rates = [x["nodes"] / x["seconds"] for x in last.values() if x.get("seconds", 0) > 0]
     return rates, (float(np.median(rates)) if rates else None)
 
 
@@ -289,7 +304,7 @@ def cmd_encode(a):
         done = end
         tmp = st.with_name("state.tmp.npz")
         np.savez(tmp, top_s=top_s, top_i=top_i, done=done, n=n, k=k, nq=len(qt))
-        os.replace(tmp, st)
+        replace_retry(tmp, st)
         el = time.time() - t2
         log(f"  {done:,}/{n:,} nodes, {(done - n0) / max(el, 1e-9):.0f} nodes/s")
     el = time.time() - t2
@@ -525,8 +540,10 @@ def selftest():
     chk("boot null straddles zero", lo < 0 < hi and abs(m) < 1e-9)
     chk("calls", call_of(0.01) == "BETTER" and call_of(0.0) == "LEVEL" and call_of(-1.0) == "LEVEL" and call_of(-1.01) == "WORSE")
     # A4: the speed is the median of the blocks' own encode rates, so a suspended or time-sliced block does not move it
-    br, bm = block_rates([{"nodes": 100, "seconds": 1.0}, {"nodes": 100, "seconds": 100.0}, {"nodes": 100, "seconds": 2.0}, {"nodes": 5, "seconds": 0}])
+    br, bm = block_rates([{"end": 1, "nodes": 100, "seconds": 1.0}, {"end": 2, "nodes": 100, "seconds": 100.0}, {"end": 3, "nodes": 100, "seconds": 2.0}, {"end": 4, "nodes": 5, "seconds": 0}])
     chk("block_rates median ignores a stalled block and a zero-second row", len(br) == 3 and abs(bm - 50.0) < 1e-9)
+    br2, _ = block_rates([{"end": 1, "nodes": 100, "seconds": 1.0}, {"end": 1, "nodes": 100, "seconds": 4.0}])
+    chk("block_rates keeps the last record of a block redone after a resume", br2 == [25.0])
     # the A2 pick: lowest rank sum over parameters, non-zeros per node and speed; a tie goes to the fewer parameters
     pk, tb = pick_of(["c3", "c1", "c2"], {"c1": 30, "c2": 67, "c3": 23}, {"c1": 262.0, "c2": 252.0, "c3": 339.0}, {"c1": 900.0, "c2": 500.0, "c3": 1500.0})
     chk("pick_of rank sums (c1: 2+2+2, c2: 3+1+3, c3: 1+3+1)", pk == "c3" and tb["c1"]["rank_sum"] == 6 and tb["c2"]["rank_sum"] == 7 and tb["c3"]["rank_sum"] == 5)
