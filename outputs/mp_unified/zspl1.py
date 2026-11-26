@@ -229,6 +229,12 @@ def merge_top(top_s, top_i, sc, i0, k):
     return ns, np.where(np.isfinite(ns), ni, -1)
 
 
+def block_rates(lines):
+    """A4: nodes per second of each block's encode call (the models' forward passes only). Returns (rates, median)."""
+    rates = [x["nodes"] / x["seconds"] for x in lines if x.get("seconds", 0) > 0]
+    return rates, (float(np.median(rates)) if rates else None)
+
+
 def cmd_encode(a):
     import zworld
     t0 = time.time()
@@ -261,6 +267,9 @@ def cmd_encode(a):
             top_s, top_i, done = z["top_s"], z["top_i"], int(z["done"])
             log(f"resume at {done:,}")
     tok = get_tok(m)
+    bl = d / "blocks.jsonl"
+    if done == 0 and bl.is_file():
+        bl.unlink()
     cut = nnz = 0
     t2 = time.time()
     n0 = done
@@ -269,10 +278,14 @@ def cmd_encode(a):
         blk = texts[done:end]
         if tok is not None:
             cut += sum(len(x) > MAXLEN for x in tok(blk, add_special_tokens=True, truncation=False)["input_ids"])
+        tb = time.time()
         Db = enc_docs(m, blk, a.batch)
+        dt = time.time() - tb
         nnz += int(Db.nnz)
         S = (Qm @ Db.T).toarray()
         top_s, top_i = merge_top(top_s, top_i, S, done, k)
+        with open(bl, "a", encoding="utf-8") as f:
+            f.write(json.dumps({"end": end, "nodes": end - done, "seconds": round(dt, 3), "t": round(time.time(), 1)}) + "\n")
         done = end
         tmp = st.with_name("state.tmp.npz")
         np.savez(tmp, top_s=top_s, top_i=top_i, done=done, n=n, k=k, nq=len(qt))
@@ -284,9 +297,11 @@ def cmd_encode(a):
     np.savez(d / "top1000.npz", ids=ids, scores=np.where(np.isfinite(top_s), top_s, 0).astype(np.float32), rows=rows)
     fr = json.loads((OUT / f"fetch_{a.key}.json").read_text(encoding="utf-8")) if (OUT / f"fetch_{a.key}.json").is_file() else {}
     import torch, sentence_transformers, transformers
+    brs, brm = block_rates([json.loads(x) for x in bl.read_text(encoding="utf-8").splitlines() if x.strip()]) if bl.is_file() else ([], None)
     rec = {"stage": "SPL1 encode", "declared_in": DOC, "key": a.key, "repo": MODELS[a.key]["repo"], "revision": MODELS[a.key]["rev"],
            "dataset": a.ds, "smoke": a.smoke, "nodes": n, "questions": len(qt), "k": k, "device": device, "threads": (a.threads or None) if device == "cpu" else None, "max_len": MAXLEN, "batch": a.batch,
-           "nodes_per_s": round((n - n0) / max(el, 1e-9), 2), "encode_seconds": round(el, 1), "seconds": round(time.time() - t0, 1),
+           "nodes_per_s": round((n - n0) / max(el, 1e-9), 2), "block_rate_median": None if brm is None else round(brm, 2),
+           "block_rates": [round(x, 1) for x in brs], "encode_seconds": round(el, 1), "seconds": round(time.time() - t0, 1),
            "doc_nnz_mean": round(nnz / max(n - n0, 1), 1), "doc_bytes_per_node_at_8": round(8 * nnz / max(n - n0, 1), 1),
            "query_nnz_mean": round(float(np.diff(Qm.indptr).mean()), 1), "gpu": gpu, "cut_at_256": None if tok is None else cut, "cut_counted_on_nodes": n - n0,
            "positive_slots_filled_mean": round(float((ids >= 0).sum(1).mean()), 1),
@@ -432,7 +447,8 @@ def cmd_read(a):
                     dm, lo, hi = boot(r[cell] - base[cell])
                     mr["diff_vs_c0"][cell] = {"diff": round(dm, 3), "lo": round(lo, 3), "hi": round(hi, 3), "call": call_of(lo)}
             enc = json.loads((OUT / key / ds / "encode.json").read_text(encoding="utf-8")) if (OUT / key / ds / "encode.json").is_file() else {}
-            mr["nodes_per_s"] = enc.get("nodes_per_s")
+            mr["nodes_per_s"] = enc.get("block_rate_median") or enc.get("nodes_per_s")
+            mr["nodes_per_s_wall"] = enc.get("nodes_per_s")
             mr["doc_nnz_mean"] = enc.get("doc_nnz_mean")
             mr["query_nnz_mean"] = enc.get("query_nnz_mean")
             dres["models"][key] = mr
@@ -458,7 +474,8 @@ def cmd_read(a):
     for k in ORDER:
         sp_ = OUT / k / "squad_smoke_cpu" / "encode.json"
         if sp_.is_file():
-            res["cpu_nodes_per_s_smoke"][k] = json.loads(sp_.read_text(encoding="utf-8")).get("nodes_per_s")
+            e_ = json.loads(sp_.read_text(encoding="utf-8"))
+            res["cpu_nodes_per_s_smoke"][k] = e_.get("block_rate_median") or e_.get("nodes_per_s")
     if res["pick"]:
         res["named_beside"] = [k for k in passing if k != res["pick"] and verdict[k]["better_on_all_six"] and not verdict[res["pick"]]["better_on_all_six"]]
     res["cost_hours_at_squad_rate"] = {}
@@ -507,6 +524,9 @@ def selftest():
     m, lo, hi = boot(d)
     chk("boot null straddles zero", lo < 0 < hi and abs(m) < 1e-9)
     chk("calls", call_of(0.01) == "BETTER" and call_of(0.0) == "LEVEL" and call_of(-1.0) == "LEVEL" and call_of(-1.01) == "WORSE")
+    # A4: the speed is the median of the blocks' own encode rates, so a suspended or time-sliced block does not move it
+    br, bm = block_rates([{"nodes": 100, "seconds": 1.0}, {"nodes": 100, "seconds": 100.0}, {"nodes": 100, "seconds": 2.0}, {"nodes": 5, "seconds": 0}])
+    chk("block_rates median ignores a stalled block and a zero-second row", len(br) == 3 and abs(bm - 50.0) < 1e-9)
     # the A2 pick: lowest rank sum over parameters, non-zeros per node and speed; a tie goes to the fewer parameters
     pk, tb = pick_of(["c3", "c1", "c2"], {"c1": 30, "c2": 67, "c3": 23}, {"c1": 262.0, "c2": 252.0, "c3": 339.0}, {"c1": 900.0, "c2": 500.0, "c3": 1500.0})
     chk("pick_of rank sums (c1: 2+2+2, c2: 3+1+3, c3: 1+3+1)", pk == "c3" and tb["c1"]["rank_sum"] == 6 and tb["c2"]["rank_sum"] == 7 and tb["c3"]["rank_sum"] == 5)
