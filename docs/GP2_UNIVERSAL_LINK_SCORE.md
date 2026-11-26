@@ -128,3 +128,7 @@ The binding facts I know from GP1: the S links alone are 0.30 to 0.40 of the wor
 ## 9. What this page does not do
 
 No s1eval; no degree, hub or IDF attribute; no learning; no e3v window or question vector is encoded (B2 is costed only); no edit of `zgp1.py`, `zgp1p.py`, `zsem2*`, `zpl*g`, `zul2*`, `zul3a`, `zul4lp`, D83 code, `zenc*`, `chaincov`, `chaindiag`, `hopdiag`; no host row; no change to SEM2 R8's files or rows. Link and pool layouts stay base. Aggregated records go under `outputs/gp2/` and are committed; link-level columns are not.
+
+## 10. Amendments (dated; none changes a rule, a gate or an expectation)
+
+- **A1, 26 Nov, before any GP2 number was read.** The first run of `cols --part q` passed G-Q0 and G-Q1 on MultiHop-RAG (20,614 rows) and then stopped on MuSiQue: loading MultiHop-RAG makes `zmhr` replace `zenc.served_root`, so a process that has loaded MultiHop-RAG cannot read the package of another dataset. `zgp2.py cols` and `text` now re-invoke themselves once per dataset (one process, one dataset). The MultiHop-RAG column file written by the first run is rewritten by the second run from the same code path. No program was solved and no table was read.

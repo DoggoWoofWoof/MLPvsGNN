@@ -314,8 +314,24 @@ def read_cols(d, v, part, T):
     return X
 
 
+def run_each(a, cmd):
+    """One process per dataset: loading MultiHop-RAG swaps zenc.served_root (zmhr), so a process serves one dataset only. True when it re-invoked itself."""
+    dss = a.ds or list(GP.DATASETS)
+    if len(dss) <= 1:
+        return False
+    import subprocess
+    for d in dss:
+        cmdline = [sys.executable, "-I", str(Path(__file__).resolve()), cmd, "--part", a.part, "--ds", d] + (["--text"] if getattr(a, "text", False) else [])
+        rc = subprocess.run(cmdline).returncode
+        if rc:
+            stop(f"{cmd} {d} exited with {rc}")
+    return True
+
+
 def cmd_cols(a):
     gate_pins()
+    if run_each(a, "cols"):
+        return 0
     part, t0 = a.part, time.time()
     dss = a.ds or [x for x in GP.DATASETS]
     for d in dss:
@@ -418,6 +434,8 @@ def tw_independent(title, text, qtext):
 
 def cmd_text(a):
     gate_pins()
+    if run_each(a, "text"):
+        return 0
     part, t0 = a.part, time.time()
     for d in (a.ds or list(GP.DATASETS)):
         cells = [(dd, v) for dd, v in CELLS if dd == d]
