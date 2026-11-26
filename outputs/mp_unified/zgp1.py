@@ -6,7 +6,7 @@ no filed graph, pool, fit or record changes; the gold is the grading only. zul2h
 Outputs only under outputs/gp1/ (aggregated records are committed; the link-level work files are not).
 
     python outputs/mp_unified/zgp1.py selftest
-    python outputs/mp_unified/zgp1.py extract --ds D --part q|r [--host] [--threads 1] [--limit N]
+    python outputs/mp_unified/zgp1.py extract --ds D --part q|r [--host] [--threads 1] [--limit N] [--shard I/N]
 The program (screen, solve, grade, report) is zgp1p.py.
 """
 import sys
@@ -574,6 +574,11 @@ def cmd_extract(a):
     sel = part_indices(nq, a.part)
     if a.limit:
         sel = sel[:a.limit]
+    shard_i, shard_n = (int(x) for x in a.shard.split("/"))
+    if not (shard_n >= 1 and 0 <= shard_i < shard_n):
+        stop(f"--shard {a.shard}")
+    mine = [c0 for c0 in range(0, sel.size, CHUNK_Q) if (c0 // CHUNK_Q) % shard_n == shard_i]
+    shard_tag = "" if shard_n == 1 else f"_s{shard_i}of{shard_n}"
     log(f"{d}: {nq} dev questions with a gold ({sl['carve']}), part {a.part}: {sel.size}; gates G-P1..G-P3, G-H1 pass ({time.time() - t0:.0f} s)")
     if d == "multihoprag":
         import zul2m as M2
@@ -603,10 +608,11 @@ def cmd_extract(a):
             ks, rs, vocab = D.slab
             o = np.argsort(ks, kind="stable")
             slab = (ks[o], rs[o], list(vocab))
-        stats = {"questions": int(sel.size), "golds": 0, "found": 0, "dist": [0, 0, 0, 0, 0], "capped_golds": 0, "units": 0, "ctrl_sampled": 0,
+            rec["rel_vocab"] = [str(x) for x in vocab]
+        stats = {"questions": int(sum(min(CHUNK_Q, sel.size - c0) for c0 in mine)), "golds": 0, "found": 0, "dist": [0, 0, 0, 0, 0], "capped_golds": 0, "units": 0, "ctrl_sampled": 0,
                  "ctrl_exact": 0, "sources": 0, "g_g2_checked": 0, "g5_checked": 0, "g5_bad": 0, "mention_links": 0, "mention_exact_none": 0}
         chunks = []
-        for c0 in range(0, sel.size, CHUNK_Q):
+        for c0 in mine:
             qs = sel[c0:c0 + CHUNK_Q]
             cp = OUT_D / ("work_limit" if a.limit else "work") / f"{v}_{a.part}_{c0:06d}.npz"
             if cp.is_file():
@@ -692,7 +698,8 @@ def cmd_extract(a):
     rec["memory"] = C.peak_gb()
     rec.update(seconds=round(time.time() - t0, 1), utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), zgp1_sha256=script_sha256(),
                zul2h_sha256=H.script_sha256(), zul3a_sha256=T3.script_sha256())
-    fn = OUT_D / (f"extract_{a.part}_limit.json" if a.limit else f"extract_{a.part}.json")
+    rec["shard"] = [shard_i, shard_n]
+    fn = OUT_D / f"extract_{a.part}{shard_tag}{'_limit' if a.limit else ''}.json"
     L2.wjson(fn, rec)
     log(f"{d}: {rel(fn)} ({rec['seconds']} s)")
     return 0
@@ -826,6 +833,7 @@ def main(argv=None):
     x.add_argument("--host", action="store_true")
     x.add_argument("--threads", type=int, default=1)
     x.add_argument("--limit", type=int, default=0)
+    x.add_argument("--shard", default="0/1", help="I/N: this row takes the 50-question chunks whose number is I mod N (section 14)")
     a = ap.parse_args(argv)
     if a.cmd == "selftest":
         return selftest()
