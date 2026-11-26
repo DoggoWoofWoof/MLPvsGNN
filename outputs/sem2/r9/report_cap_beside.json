@@ -1,0 +1,598 @@
+{
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 17",
+ "code_sha256": {
+  "zsem2r9": "37ed9283f6b941bda5f95115a49b8e2e33371e801b7547d8975614cfd898cefa",
+  "zsem2r8b": "8ddf912f3529afeea46785dbe56012655770d2e1d0445ea8731e1ebaccf5961c",
+  "zsem2r8w": "5b411e9181f87e75309c988347c4e79cefd7fbc5858693be038975221fd49b68",
+  "zsem2r8": "d02b42917addd0e6b09725891089c75824e9d3058aad9e9460c31ffaec7c3534"
+ },
+ "datasets": {
+  "musique": {
+   "slice": 63,
+   "rungs": {
+    "100/50": {
+     "pooled_proven_share": 1.0,
+     "pooled_reads": true,
+     "unproven_instances": 0,
+     "per_scorer": {
+      "W0": {
+       "proven_share": 1.0,
+       "per_scorer_reads": true,
+       "flips_under_pooled": false
+      },
+      "W1": {
+       "proven_share": 1.0,
+       "per_scorer_reads": true,
+       "flips_under_pooled": false
+      }
+     }
+    },
+    "300/150": {
+     "pooled_proven_share": 1.0,
+     "pooled_reads": true,
+     "unproven_instances": 0,
+     "per_scorer": {
+      "W0": {
+       "proven_share": 1.0,
+       "per_scorer_reads": true,
+       "flips_under_pooled": false
+      },
+      "W1": {
+       "proven_share": 1.0,
+       "per_scorer_reads": true,
+       "flips_under_pooled": false
+      }
+     }
+    },
+    "1000/500": {
+     "pooled_proven_share": 0.9127,
+     "pooled_reads": false,
+     "unproven_instances": 11,
+     "per_scorer": {
+      "W0": {
+       "proven_share": 0.9683,
+       "per_scorer_reads": false,
+       "flips_under_pooled": false
+      },
+      "W1": {
+       "proven_share": 0.8571,
+       "per_scorer_reads": false,
+       "flips_under_pooled": false
+      }
+     }
+    }
+   },
+   "paired": {
+    "W0": {
+     "300/150": {
+      "n_proven_at_both": 63,
+      "of": 63,
+      "completion_minus_C1": {
+       "diff": 0.0,
+       "lo": -11.11,
+       "hi": 11.11,
+       "call": "LEVEL"
+      },
+      "completion_C1_on_subset_pct": 26.98,
+      "completion_rung_on_subset_pct": 26.98,
+      "recall_gain_points_all_questions": 28.57
+     },
+     "1000/500": {
+      "n_proven_at_both": 61,
+      "of": 63,
+      "completion_minus_C1": {
+       "diff": -1.64,
+       "lo": -13.11,
+       "hi": 9.84,
+       "call": "LEVEL"
+      },
+      "completion_C1_on_subset_pct": 26.23,
+      "completion_rung_on_subset_pct": 24.59,
+      "recall_gain_points_all_questions": 63.49
+     }
+    },
+    "W1": {
+     "300/150": {
+      "n_proven_at_both": 63,
+      "of": 63,
+      "completion_minus_C1": {
+       "diff": -7.94,
+       "lo": -17.46,
+       "hi": 0.0,
+       "call": "LEVEL"
+      },
+      "completion_C1_on_subset_pct": 33.33,
+      "completion_rung_on_subset_pct": 25.4,
+      "recall_gain_points_all_questions": 25.4
+     },
+     "1000/500": {
+      "n_proven_at_both": 54,
+      "of": 63,
+      "completion_minus_C1": {
+       "diff": -12.96,
+       "lo": -25.93,
+       "hi": 0.0,
+       "call": "LEVEL"
+      },
+      "completion_C1_on_subset_pct": 33.33,
+      "completion_rung_on_subset_pct": 20.37,
+      "recall_gain_points_all_questions": 57.14
+     }
+    }
+   },
+   "w0_minus_w1": {
+    "100/50": {
+     "n_proven_in_both": 63,
+     "completion_W0_minus_W1": {
+      "diff": -6.35,
+      "lo": -20.63,
+      "hi": 7.94,
+      "call": "LEVEL"
+     },
+     "recall_W0_minus_W1_points": -7.94
+    },
+    "300/150": {
+     "n_proven_in_both": 63,
+     "completion_W0_minus_W1": {
+      "diff": 1.59,
+      "lo": -12.7,
+      "hi": 15.87,
+      "call": "LEVEL"
+     },
+     "recall_W0_minus_W1_points": -4.76
+    },
+    "1000/500": {
+     "n_proven_in_both": 52,
+     "completion_W0_minus_W1": {
+      "diff": 7.69,
+      "lo": -9.62,
+      "hi": 25.0,
+      "call": "LEVEL"
+     },
+     "recall_W0_minus_W1_points": -1.59
+    }
+   }
+  },
+  "metaqa": {
+   "slice": 75,
+   "rungs": {
+    "100/50": {
+     "pooled_proven_share": 1.0,
+     "pooled_reads": true,
+     "unproven_instances": 0,
+     "per_scorer": {
+      "W0": {
+       "proven_share": 1.0,
+       "per_scorer_reads": true,
+       "flips_under_pooled": false
+      },
+      "W1": {
+       "proven_share": 1.0,
+       "per_scorer_reads": true,
+       "flips_under_pooled": false
+      }
+     }
+    },
+    "300/150": {
+     "pooled_proven_share": 1.0,
+     "pooled_reads": true,
+     "unproven_instances": 0,
+     "per_scorer": {
+      "W0": {
+       "proven_share": 1.0,
+       "per_scorer_reads": true,
+       "flips_under_pooled": false
+      },
+      "W1": {
+       "proven_share": 1.0,
+       "per_scorer_reads": true,
+       "flips_under_pooled": false
+      }
+     }
+    },
+    "1000/500": {
+     "pooled_proven_share": 0.9933,
+     "pooled_reads": false,
+     "unproven_instances": 1,
+     "per_scorer": {
+      "W0": {
+       "proven_share": 0.9867,
+       "per_scorer_reads": false,
+       "flips_under_pooled": false
+      },
+      "W1": {
+       "proven_share": 1.0,
+       "per_scorer_reads": true,
+       "flips_under_pooled": true
+      }
+     }
+    }
+   },
+   "paired": {
+    "W0": {
+     "300/150": {
+      "n_proven_at_both": 75,
+      "of": 75,
+      "completion_minus_C1": {
+       "diff": -17.33,
+       "lo": -26.67,
+       "hi": -8.0,
+       "call": "BELOW"
+      },
+      "completion_C1_on_subset_pct": 42.67,
+      "completion_rung_on_subset_pct": 25.33,
+      "recall_gain_points_all_questions": 38.67
+     },
+     "1000/500": {
+      "n_proven_at_both": 74,
+      "of": 75,
+      "completion_minus_C1": {
+       "diff": -17.57,
+       "lo": -27.03,
+       "hi": -8.11,
+       "call": "BELOW"
+      },
+      "completion_C1_on_subset_pct": 43.24,
+      "completion_rung_on_subset_pct": 25.68,
+      "recall_gain_points_all_questions": 42.67
+     }
+    },
+    "W1": {
+     "300/150": {
+      "n_proven_at_both": 75,
+      "of": 75,
+      "completion_minus_C1": {
+       "diff": -9.33,
+       "lo": -17.33,
+       "hi": -2.67,
+       "call": "BELOW"
+      },
+      "completion_C1_on_subset_pct": 21.33,
+      "completion_rung_on_subset_pct": 12.0,
+      "recall_gain_points_all_questions": 45.33
+     },
+     "1000/500": {
+      "n_proven_at_both": 75,
+      "of": 75,
+      "completion_minus_C1": {
+       "diff": -9.33,
+       "lo": -17.33,
+       "hi": -2.67,
+       "call": "BELOW"
+      },
+      "completion_C1_on_subset_pct": 21.33,
+      "completion_rung_on_subset_pct": 12.0,
+      "recall_gain_points_all_questions": 49.33
+     }
+    }
+   },
+   "w0_minus_w1": {
+    "100/50": {
+     "n_proven_in_both": 75,
+     "completion_W0_minus_W1": {
+      "diff": 21.33,
+      "lo": 8.0,
+      "hi": 36.0,
+      "call": "ABOVE"
+     },
+     "recall_W0_minus_W1_points": 8.0
+    },
+    "300/150": {
+     "n_proven_in_both": 75,
+     "completion_W0_minus_W1": {
+      "diff": 13.33,
+      "lo": 1.33,
+      "hi": 26.67,
+      "call": "ABOVE"
+     },
+     "recall_W0_minus_W1_points": 1.33
+    },
+    "1000/500": {
+     "n_proven_in_both": 74,
+     "completion_W0_minus_W1": {
+      "diff": 14.86,
+      "lo": 2.7,
+      "hi": 27.03,
+      "call": "ABOVE"
+     },
+     "recall_W0_minus_W1_points": 1.33
+    }
+   }
+  },
+  "webqsp": {
+   "slice": 75,
+   "rungs": {
+    "100/50": {
+     "pooled_proven_share": 1.0,
+     "pooled_reads": true,
+     "unproven_instances": 0,
+     "per_scorer": {
+      "W0": {
+       "proven_share": 1.0,
+       "per_scorer_reads": true,
+       "flips_under_pooled": false
+      },
+      "W1": {
+       "proven_share": 1.0,
+       "per_scorer_reads": true,
+       "flips_under_pooled": false
+      }
+     }
+    },
+    "300/150": {
+     "pooled_proven_share": 0.9867,
+     "pooled_reads": false,
+     "unproven_instances": 2,
+     "per_scorer": {
+      "W0": {
+       "proven_share": 1.0,
+       "per_scorer_reads": true,
+       "flips_under_pooled": true
+      },
+      "W1": {
+       "proven_share": 0.9733,
+       "per_scorer_reads": false,
+       "flips_under_pooled": false
+      }
+     }
+    },
+    "1000/500": {
+     "pooled_proven_share": 0.9,
+     "pooled_reads": false,
+     "unproven_instances": 15,
+     "per_scorer": {
+      "W0": {
+       "proven_share": 0.9467,
+       "per_scorer_reads": false,
+       "flips_under_pooled": false
+      },
+      "W1": {
+       "proven_share": 0.8533,
+       "per_scorer_reads": false,
+       "flips_under_pooled": false
+      }
+     }
+    }
+   },
+   "paired": {
+    "W0": {
+     "300/150": {
+      "n_proven_at_both": 75,
+      "of": 75,
+      "completion_minus_C1": {
+       "diff": -1.33,
+       "lo": -8.0,
+       "hi": 5.33,
+       "call": "LEVEL"
+      },
+      "completion_C1_on_subset_pct": 36.0,
+      "completion_rung_on_subset_pct": 34.67,
+      "recall_gain_points_all_questions": 12.0
+     },
+     "1000/500": {
+      "n_proven_at_both": 71,
+      "of": 75,
+      "completion_minus_C1": {
+       "diff": -9.86,
+       "lo": -18.31,
+       "hi": -1.41,
+       "call": "BELOW"
+      },
+      "completion_C1_on_subset_pct": 36.62,
+      "completion_rung_on_subset_pct": 26.76,
+      "recall_gain_points_all_questions": 20.0
+     }
+    },
+    "W1": {
+     "300/150": {
+      "n_proven_at_both": 73,
+      "of": 75,
+      "completion_minus_C1": {
+       "diff": -6.85,
+       "lo": -13.7,
+       "hi": 0.0,
+       "call": "LEVEL"
+      },
+      "completion_C1_on_subset_pct": 24.66,
+      "completion_rung_on_subset_pct": 17.81,
+      "recall_gain_points_all_questions": 9.33
+     },
+     "1000/500": {
+      "n_proven_at_both": 64,
+      "of": 75,
+      "completion_minus_C1": {
+       "diff": -9.38,
+       "lo": -18.75,
+       "hi": 0.0,
+       "call": "LEVEL"
+      },
+      "completion_C1_on_subset_pct": 23.44,
+      "completion_rung_on_subset_pct": 14.06,
+      "recall_gain_points_all_questions": 22.67
+     }
+    }
+   },
+   "w0_minus_w1": {
+    "100/50": {
+     "n_proven_in_both": 75,
+     "completion_W0_minus_W1": {
+      "diff": 12.0,
+      "lo": 0.0,
+      "hi": 24.0,
+      "call": "LEVEL"
+     },
+     "recall_W0_minus_W1_points": 5.33
+    },
+    "300/150": {
+     "n_proven_in_both": 73,
+     "completion_W0_minus_W1": {
+      "diff": 17.81,
+      "lo": 5.48,
+      "hi": 30.14,
+      "call": "ABOVE"
+     },
+     "recall_W0_minus_W1_points": 8.0
+    },
+    "1000/500": {
+     "n_proven_in_both": 60,
+     "completion_W0_minus_W1": {
+      "diff": 11.67,
+      "lo": 0.0,
+      "hi": 23.33,
+      "call": "LEVEL"
+     },
+     "recall_W0_minus_W1_points": 2.67
+    }
+   }
+  },
+  "hotpotqa": {
+   "slice": 31,
+   "rungs": {
+    "100/50": {
+     "pooled_proven_share": 1.0,
+     "pooled_reads": true,
+     "unproven_instances": 0,
+     "per_scorer": {
+      "W0": {
+       "proven_share": 1.0,
+       "per_scorer_reads": true,
+       "flips_under_pooled": false
+      },
+      "W1": {
+       "proven_share": 1.0,
+       "per_scorer_reads": true,
+       "flips_under_pooled": false
+      }
+     }
+    },
+    "300/150": {
+     "pooled_proven_share": 0.9839,
+     "pooled_reads": false,
+     "unproven_instances": 1,
+     "per_scorer": {
+      "W0": {
+       "proven_share": 1.0,
+       "per_scorer_reads": true,
+       "flips_under_pooled": true
+      },
+      "W1": {
+       "proven_share": 0.9677,
+       "per_scorer_reads": false,
+       "flips_under_pooled": false
+      }
+     }
+    },
+    "1000/500": {
+     "pooled_proven_share": 0.8548,
+     "pooled_reads": false,
+     "unproven_instances": 9,
+     "per_scorer": {
+      "W0": {
+       "proven_share": 0.8065,
+       "per_scorer_reads": false,
+       "flips_under_pooled": false
+      },
+      "W1": {
+       "proven_share": 0.9032,
+       "per_scorer_reads": false,
+       "flips_under_pooled": false
+      }
+     }
+    }
+   },
+   "paired": {
+    "W0": {
+     "300/150": {
+      "n_proven_at_both": 31,
+      "of": 31,
+      "completion_minus_C1": {
+       "diff": -3.23,
+       "lo": -22.58,
+       "hi": 16.13,
+       "call": "LEVEL"
+      },
+      "completion_C1_on_subset_pct": 45.16,
+      "completion_rung_on_subset_pct": 41.94,
+      "recall_gain_points_all_questions": 45.16
+     },
+     "1000/500": {
+      "n_proven_at_both": 25,
+      "of": 31,
+      "completion_minus_C1": {
+       "diff": -32.0,
+       "lo": -52.0,
+       "hi": -12.0,
+       "call": "BELOW"
+      },
+      "completion_C1_on_subset_pct": 44.0,
+      "completion_rung_on_subset_pct": 12.0,
+      "recall_gain_points_all_questions": 54.84
+     }
+    },
+    "W1": {
+     "300/150": {
+      "n_proven_at_both": 30,
+      "of": 31,
+      "completion_minus_C1": {
+       "diff": -10.0,
+       "lo": -30.0,
+       "hi": 10.0,
+       "call": "LEVEL"
+      },
+      "completion_C1_on_subset_pct": 43.33,
+      "completion_rung_on_subset_pct": 33.33,
+      "recall_gain_points_all_questions": 51.61
+     },
+     "1000/500": {
+      "n_proven_at_both": 28,
+      "of": 31,
+      "completion_minus_C1": {
+       "diff": -21.43,
+       "lo": -39.29,
+       "hi": -3.57,
+       "call": "BELOW"
+      },
+      "completion_C1_on_subset_pct": 39.29,
+      "completion_rung_on_subset_pct": 17.86,
+      "recall_gain_points_all_questions": 54.84
+     }
+    }
+   },
+   "w0_minus_w1": {
+    "100/50": {
+     "n_proven_in_both": 31,
+     "completion_W0_minus_W1": {
+      "diff": 3.23,
+      "lo": -16.13,
+      "hi": 22.58,
+      "call": "LEVEL"
+     },
+     "recall_W0_minus_W1_points": 3.23
+    },
+    "300/150": {
+     "n_proven_in_both": 30,
+     "completion_W0_minus_W1": {
+      "diff": 6.67,
+      "lo": -13.33,
+      "hi": 26.67,
+      "call": "LEVEL"
+     },
+     "recall_W0_minus_W1_points": -3.23
+    },
+    "1000/500": {
+     "n_proven_in_both": 24,
+     "completion_W0_minus_W1": {
+      "diff": -4.17,
+      "lo": -16.67,
+      "hi": 8.33,
+      "call": "LEVEL"
+     },
+     "recall_W0_minus_W1_points": 3.23
+    }
+   }
+  }
+ },
+ "missing": [
+  "2wiki"
+ ]
+}

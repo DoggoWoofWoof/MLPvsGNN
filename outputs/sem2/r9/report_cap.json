@@ -1,0 +1,506 @@
+{
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 17",
+ "code_sha256": {
+  "zsem2r9": "37ed9283f6b941bda5f95115a49b8e2e33371e801b7547d8975614cfd898cefa",
+  "zsem2r8b": "8ddf912f3529afeea46785dbe56012655770d2e1d0445ea8731e1ebaccf5961c",
+  "zsem2r8w": "5b411e9181f87e75309c988347c4e79cefd7fbc5858693be038975221fd49b68",
+  "zsem2r8": "d02b42917addd0e6b09725891089c75824e9d3058aad9e9460c31ffaec7c3534"
+ },
+ "missing": [
+  "2wiki"
+ ],
+ "datasets": {
+  "musique": {
+   "slice": 63,
+   "gates": {
+    "G-E": "PASS",
+    "G-R": "PASS",
+    "G-Q": "PASS",
+    "G-C": "PASS",
+    "G-X": "PASS",
+    "G-B": "PASS",
+    "G-P": "PASS"
+   },
+   "rungs": {
+    "W0 100/50": {
+     "candidate_recall_pct": 26.98,
+     "proven_share": 1.0,
+     "completion_read": true,
+     "completion_pct": 26.98,
+     "completion_pct_all_proven": 26.98,
+     "recovered_share_pct": 29.58,
+     "n_cand_median": 3032.0,
+     "branches_median": 100.0,
+     "used_median": 1500.0
+    },
+    "W0 300/150": {
+     "candidate_recall_pct": 55.56,
+     "proven_share": 1.0,
+     "completion_read": true,
+     "completion_pct": 26.98,
+     "completion_pct_all_proven": 26.98,
+     "recovered_share_pct": 30.99,
+     "n_cand_median": 8193.0,
+     "branches_median": 193.0,
+     "used_median": 1500.0
+    },
+    "W0 1000/500": {
+     "candidate_recall_pct": 90.48,
+     "proven_share": 0.9683,
+     "completion_read": false,
+     "completion_pct": null,
+     "completion_pct_all_proven": 24.59,
+     "recovered_share_pct": 28.99,
+     "n_cand_median": 21709.0,
+     "branches_median": 167.0,
+     "used_median": 1500.0
+    },
+    "W1 100/50": {
+     "candidate_recall_pct": 34.92,
+     "proven_share": 1.0,
+     "completion_read": true,
+     "completion_pct": 33.33,
+     "completion_pct_all_proven": 33.33,
+     "recovered_share_pct": 30.99,
+     "n_cand_median": 2863.0,
+     "branches_median": 100.0,
+     "used_median": 1500.0
+    },
+    "W1 300/150": {
+     "candidate_recall_pct": 60.32,
+     "proven_share": 1.0,
+     "completion_read": true,
+     "completion_pct": 25.4,
+     "completion_pct_all_proven": 25.4,
+     "recovered_share_pct": 23.94,
+     "n_cand_median": 7925.0,
+     "branches_median": 99.0,
+     "used_median": 1500.0
+    },
+    "W1 1000/500": {
+     "candidate_recall_pct": 92.06,
+     "proven_share": 0.8571,
+     "completion_read": false,
+     "completion_pct": null,
+     "completion_pct_all_proven": 20.37,
+     "recovered_share_pct": 20.0,
+     "n_cand_median": 23834.0,
+     "branches_median": 66.0,
+     "used_median": 1500.0
+    }
+   },
+   "hop1_need": {
+    "questions_with_a_hop1_missed_gold": 46,
+    "W0": {
+     "share_need_le_100": 26.09,
+     "share_need_le_300": 50.0,
+     "share_need_le_1000": 89.13,
+     "need_median": 310.5,
+     "need_p90": 1010.5,
+     "need_over_field_median": 0.3176,
+     "need_over_field_p90": 0.7552
+    },
+    "W1": {
+     "share_need_le_100": 36.96,
+     "share_need_le_300": 58.7,
+     "share_need_le_1000": 93.48,
+     "need_median": 174.0,
+     "need_p90": 890.0,
+     "need_over_field_median": 0.1867,
+     "need_over_field_p90": 0.6509
+    }
+   },
+   "G-X": {
+    "candidate recall equals R8's (W0, W1)": [
+     1.0,
+     1.0
+    ],
+    "completion equals R8's where both proven (W0, W1)": [
+     1.0,
+     1.0
+    ],
+    "mismatching slice positions (candidate recall)": [],
+    "verdict": "PASS"
+   }
+  },
+  "metaqa": {
+   "slice": 75,
+   "gates": {
+    "G-E": "PASS",
+    "G-R": "PASS",
+    "G-Q": "PASS",
+    "G-C": "PASS",
+    "G-X": "PASS",
+    "G-B": "PASS",
+    "G-P": "PASS"
+   },
+   "rungs": {
+    "W0 100/50": {
+     "candidate_recall_pct": 57.33,
+     "proven_share": 1.0,
+     "completion_read": true,
+     "completion_pct": 42.67,
+     "completion_pct_all_proven": 42.67,
+     "recovered_share_pct": 48.61,
+     "n_cand_median": 2105.0,
+     "branches_median": 95.0,
+     "used_median": 1500.0
+    },
+    "W0 300/150": {
+     "candidate_recall_pct": 96.0,
+     "proven_share": 1.0,
+     "completion_read": true,
+     "completion_pct": 25.33,
+     "completion_pct_all_proven": 25.33,
+     "recovered_share_pct": 29.87,
+     "n_cand_median": 5893.0,
+     "branches_median": 81.0,
+     "used_median": 1500.0
+    },
+    "W0 1000/500": {
+     "candidate_recall_pct": 100.0,
+     "proven_share": 0.9867,
+     "completion_read": false,
+     "completion_pct": null,
+     "completion_pct_all_proven": 25.68,
+     "recovered_share_pct": 29.37,
+     "n_cand_median": 10761.0,
+     "branches_median": 79.0,
+     "used_median": 1500.0
+    },
+    "W1 100/50": {
+     "candidate_recall_pct": 49.33,
+     "proven_share": 1.0,
+     "completion_read": true,
+     "completion_pct": 21.33,
+     "completion_pct_all_proven": 21.33,
+     "recovered_share_pct": 37.85,
+     "n_cand_median": 2268.0,
+     "branches_median": 77.0,
+     "used_median": 1500.0
+    },
+    "W1 300/150": {
+     "candidate_recall_pct": 94.67,
+     "proven_share": 1.0,
+     "completion_read": true,
+     "completion_pct": 12.0,
+     "completion_pct_all_proven": 12.0,
+     "recovered_share_pct": 14.47,
+     "n_cand_median": 6724.0,
+     "branches_median": 54.0,
+     "used_median": 1500.0
+    },
+    "W1 1000/500": {
+     "candidate_recall_pct": 98.67,
+     "proven_share": 1.0,
+     "completion_read": true,
+     "completion_pct": 12.0,
+     "completion_pct_all_proven": 12.0,
+     "recovered_share_pct": 13.91,
+     "n_cand_median": 11242.0,
+     "branches_median": 53.0,
+     "used_median": 1500.0
+    }
+   },
+   "hop1_need": {
+    "questions_with_a_hop1_missed_gold": 47,
+    "W0": {
+     "share_need_le_100": 61.7,
+     "share_need_le_300": 95.74,
+     "share_need_le_1000": 100.0,
+     "need_median": 60.0,
+     "need_p90": 212.59999999999997,
+     "need_over_field_median": 0.3211,
+     "need_over_field_p90": 0.8238
+    },
+    "W1": {
+     "share_need_le_100": 51.06,
+     "share_need_le_300": 97.87,
+     "share_need_le_1000": 100.0,
+     "need_median": 97.0,
+     "need_p90": 247.2,
+     "need_over_field_median": 0.5277,
+     "need_over_field_p90": 0.8751
+    }
+   },
+   "G-X": {
+    "candidate recall equals R8's (W0, W1)": [
+     1.0,
+     1.0
+    ],
+    "completion equals R8's where both proven (W0, W1)": [
+     1.0,
+     1.0
+    ],
+    "mismatching slice positions (candidate recall)": [],
+    "verdict": "PASS"
+   }
+  },
+  "webqsp": {
+   "slice": 75,
+   "gates": {
+    "G-E": "PASS",
+    "G-R": "PASS",
+    "G-Q": "PASS",
+    "G-C": "PASS",
+    "G-X": "PASS",
+    "G-B": "PASS",
+    "G-P": "PASS"
+   },
+   "rungs": {
+    "W0 100/50": {
+     "candidate_recall_pct": 42.67,
+     "proven_share": 1.0,
+     "completion_read": true,
+     "completion_pct": 36.0,
+     "completion_pct_all_proven": 36.0,
+     "recovered_share_pct": 34.9,
+     "n_cand_median": 2132.0,
+     "branches_median": 100.0,
+     "used_median": 1500.0
+    },
+    "W0 300/150": {
+     "candidate_recall_pct": 54.67,
+     "proven_share": 1.0,
+     "completion_read": true,
+     "completion_pct": 34.67,
+     "completion_pct_all_proven": 34.67,
+     "recovered_share_pct": 24.05,
+     "n_cand_median": 8996.0,
+     "branches_median": 65.0,
+     "used_median": 1500.0
+    },
+    "W0 1000/500": {
+     "candidate_recall_pct": 62.67,
+     "proven_share": 0.9467,
+     "completion_read": false,
+     "completion_pct": null,
+     "completion_pct_all_proven": 26.76,
+     "recovered_share_pct": 22.62,
+     "n_cand_median": 29383.0,
+     "branches_median": 41.0,
+     "used_median": 1500.0
+    },
+    "W1 100/50": {
+     "candidate_recall_pct": 37.33,
+     "proven_share": 1.0,
+     "completion_read": true,
+     "completion_pct": 24.0,
+     "completion_pct_all_proven": 24.0,
+     "recovered_share_pct": 20.82,
+     "n_cand_median": 2526.0,
+     "branches_median": 88.0,
+     "used_median": 1500.0
+    },
+    "W1 300/150": {
+     "candidate_recall_pct": 46.67,
+     "proven_share": 0.9733,
+     "completion_read": false,
+     "completion_pct": null,
+     "completion_pct_all_proven": 17.81,
+     "recovered_share_pct": 15.43,
+     "n_cand_median": 11935.0,
+     "branches_median": 51.0,
+     "used_median": 1500.0
+    },
+    "W1 1000/500": {
+     "candidate_recall_pct": 60.0,
+     "proven_share": 0.8533,
+     "completion_read": false,
+     "completion_pct": null,
+     "completion_pct_all_proven": 14.06,
+     "recovered_share_pct": 11.46,
+     "n_cand_median": 45094.0,
+     "branches_median": 43.5,
+     "used_median": 1500.0
+    }
+   },
+   "hop1_need": {
+    "questions_with_a_hop1_missed_gold": 70,
+    "W0": {
+     "share_need_le_100": 42.86,
+     "share_need_le_300": 52.86,
+     "share_need_le_1000": 60.0,
+     "need_median": 200.0,
+     "need_p90": 7337.200000000001,
+     "need_over_field_median": 0.0266,
+     "need_over_field_p90": 0.887
+    },
+    "W1": {
+     "share_need_le_100": 40.0,
+     "share_need_le_300": 50.0,
+     "share_need_le_1000": 64.29,
+     "need_median": 310.0,
+     "need_p90": 9088.4,
+     "need_over_field_median": 0.0221,
+     "need_over_field_p90": 0.7633
+    }
+   },
+   "G-X": {
+    "candidate recall equals R8's (W0, W1)": [
+     1.0,
+     1.0
+    ],
+    "completion equals R8's where both proven (W0, W1)": [
+     1.0,
+     1.0
+    ],
+    "mismatching slice positions (candidate recall)": [],
+    "verdict": "PASS"
+   }
+  },
+  "hotpotqa": {
+   "slice": 31,
+   "gates": {
+    "G-E": "PASS",
+    "G-R": "PASS",
+    "G-Q": "PASS",
+    "G-C": "PASS",
+    "G-X": "PASS",
+    "G-B": "PASS",
+    "G-P": "PASS"
+   },
+   "rungs": {
+    "W0 100/50": {
+     "candidate_recall_pct": 45.16,
+     "proven_share": 1.0,
+     "completion_read": true,
+     "completion_pct": 45.16,
+     "completion_pct_all_proven": 45.16,
+     "recovered_share_pct": 45.16,
+     "n_cand_median": 2432.0,
+     "branches_median": 100.0,
+     "used_median": 1500.0
+    },
+    "W0 300/150": {
+     "candidate_recall_pct": 90.32,
+     "proven_share": 1.0,
+     "completion_read": true,
+     "completion_pct": 41.94,
+     "completion_pct_all_proven": 41.94,
+     "recovered_share_pct": 41.94,
+     "n_cand_median": 9902.0,
+     "branches_median": 115.0,
+     "used_median": 1500.0
+    },
+    "W0 1000/500": {
+     "candidate_recall_pct": 100.0,
+     "proven_share": 0.8065,
+     "completion_read": false,
+     "completion_pct": null,
+     "completion_pct_all_proven": 12.0,
+     "recovered_share_pct": 12.0,
+     "n_cand_median": 46299.0,
+     "branches_median": 41.0,
+     "used_median": 1500.0
+    },
+    "W1 100/50": {
+     "candidate_recall_pct": 41.94,
+     "proven_share": 1.0,
+     "completion_read": true,
+     "completion_pct": 41.94,
+     "completion_pct_all_proven": 41.94,
+     "recovered_share_pct": 41.94,
+     "n_cand_median": 2322.0,
+     "branches_median": 100.0,
+     "used_median": 1500.0
+    },
+    "W1 300/150": {
+     "candidate_recall_pct": 93.55,
+     "proven_share": 0.9677,
+     "completion_read": false,
+     "completion_pct": null,
+     "completion_pct_all_proven": 33.33,
+     "recovered_share_pct": 33.33,
+     "n_cand_median": 10863.0,
+     "branches_median": 93.0,
+     "used_median": 1500.0
+    },
+    "W1 1000/500": {
+     "candidate_recall_pct": 96.77,
+     "proven_share": 0.9032,
+     "completion_read": false,
+     "completion_pct": null,
+     "completion_pct_all_proven": 17.86,
+     "recovered_share_pct": 17.86,
+     "n_cand_median": 54574.0,
+     "branches_median": 50.0,
+     "used_median": 1500.0
+    }
+   },
+   "hop1_need": {
+    "questions_with_a_hop1_missed_gold": 30,
+    "W0": {
+     "share_need_le_100": 46.67,
+     "share_need_le_300": 90.0,
+     "share_need_le_1000": 100.0,
+     "need_median": 101.5,
+     "need_p90": 275.7000000000001,
+     "need_over_field_median": 0.2079,
+     "need_over_field_p90": 0.5342
+    },
+    "W1": {
+     "share_need_le_100": 43.33,
+     "share_need_le_300": 96.67,
+     "share_need_le_1000": 100.0,
+     "need_median": 150.5,
+     "need_p90": 255.90000000000003,
+     "need_over_field_median": 0.2627,
+     "need_over_field_p90": 0.5718
+    }
+   },
+   "G-X": {
+    "candidate recall equals R8's (W0, W1)": [
+     1.0,
+     1.0
+    ],
+    "completion equals R8's where both proven (W0, W1)": [
+     1.0,
+     1.0
+    ],
+    "mismatching slice positions (candidate recall)": [],
+    "verdict": "PASS"
+   }
+  }
+ },
+ "readings": {
+  "W0": {
+   "recall_gain_C3_minus_C1_points": {
+    "musique": 63.5,
+    "metaqa": 42.67,
+    "webqsp": 20.0,
+    "hotpotqa": 54.84
+   },
+   "completion_gain_C3_minus_C1_points": {
+    "musique": null,
+    "metaqa": null,
+    "webqsp": null,
+    "hotpotqa": null
+   },
+   "CAP_BINDS": true,
+   "COMPLETION_FOLLOWS": false
+  },
+  "W1": {
+   "recall_gain_C3_minus_C1_points": {
+    "musique": 57.14,
+    "metaqa": 49.34,
+    "webqsp": 22.67,
+    "hotpotqa": 54.83
+   },
+   "completion_gain_C3_minus_C1_points": {
+    "musique": null,
+    "metaqa": -9.33,
+    "webqsp": null,
+    "hotpotqa": null
+   },
+   "CAP_BINDS": true,
+   "COMPLETION_FOLLOWS": false
+  }
+ },
+ "flat_ceiling_completion_pct": {
+  "musique": 33.33,
+  "metaqa": 42.67,
+  "webqsp": 36.0,
+  "hotpotqa": 45.16
+ }
+}

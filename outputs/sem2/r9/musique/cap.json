@@ -1,0 +1,165 @@
+{
+ "stage": "SEM2 R9 part A9 (cap ladder)",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 17",
+ "dataset": "musique",
+ "smoke": false,
+ "population": 503,
+ "slice": 63,
+ "stride": 8,
+ "rungs": [
+  [
+   100,
+   50
+  ],
+  [
+   300,
+   150
+  ],
+  [
+   1000,
+   500
+  ]
+ ],
+ "time_limits": [
+  60.0,
+  120.0,
+  120.0
+ ],
+ "scorers": [
+  "W0",
+  "W1"
+ ],
+ "budget": 1500,
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 2343920,
+     "record": 2343920
+    },
+    "CN_all": {
+     "pairs": 931069,
+     "record": 931069
+    },
+    "F0T": {
+     "pairs": 973013,
+     "record": 973013
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-Q": {
+   "base5": 0.494568,
+   "equals Part A's": true,
+   "verdict": "PASS"
+  },
+  "G-C": {
+   "nodes": 115,
+   "rows": 6633866,
+   "verdict": "PASS"
+  },
+  "G-X": {
+   "candidate recall equals R8's (W0, W1)": [
+    1.0,
+    1.0
+   ],
+   "completion equals R8's where both proven (W0, W1)": [
+    1.0,
+    1.0
+   ],
+   "mismatching slice positions (candidate recall)": [],
+   "verdict": "PASS"
+  },
+  "G-B": {
+   "hop-1 size equals Part A's": "63/63",
+   "missed count equals Part A's": "63/63",
+   "verdict": "PASS"
+  },
+  "G-P": {
+   "instances": 378,
+   "proven_optimal": 367,
+   "not_optimal": 11,
+   "solutions_violating_closure_or_budget": 0,
+   "per_rung": [
+    {
+     "rung": [
+      100,
+      50
+     ],
+     "time_limit": 60.0,
+     "optimal": 126,
+     "not_optimal": 0,
+     "share": 1.0
+    },
+    {
+     "rung": [
+      300,
+      150
+     ],
+     "time_limit": 120.0,
+     "optimal": 126,
+     "not_optimal": 0,
+     "share": 1.0
+    },
+    {
+     "rung": [
+      1000,
+      500
+     ],
+     "time_limit": 120.0,
+     "optimal": 115,
+     "not_optimal": 11,
+     "share": 0.912698
+    }
+   ],
+   "verdict": "PASS",
+   "note": "17.4: a rung's completion is read only where its proven share is at least the declared share; the per-rung shares are in per_rung"
+  }
+ },
+ "r8_script_sha256": "8ddf912f3529afeea46785dbe56012655770d2e1d0445ea8731e1ebaccf5961c",
+ "r8_npz_sha256": "6d2b49fdb59f3d8df03aa470d9e5eefa4c788feba076294aaf2f8930f65a1296",
+ "part_a_npz_sha256": "834e5d1db599b2a4a33f296854097328ccb6854aef737ffc8d7631d9240952be",
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+  "ner_npz_sha256": "f294708600750c48eae9e32d0895d517ac3a8b5d048c736a70e9a566af2fe9c6",
+  "knn_npz_sha256": "6020ac7e0b6773e64866b5e942dc0e02c3b704615ced8de4d557aa543221ef5b",
+  "w2_s_npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+  "f0t_npz_sha256": "a0cea3c450f4a8364d202d7f21fe949e288f2ed0ca325aadea199f7ed2a4eebc",
+  "names_npz_sha256": "279d4b6ff3a2d5e3fbbab9071bcc93328167da1c5d19e805c3a9c5ad7a8f9cda",
+  "vectors": {
+   "shards": 3,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "48ccb700e4baf00235fc67190011b70245f923cdbd11e2bf9d178ba51064c81e"
+  }
+ },
+ "refs": {
+  "r1_record_sha256": "3b767a5e487776d45d9039a8b2b314841c0b19a91da4202c2108256bfdb5ea77",
+  "r1_npz_sha256": "ddd4fd23c9cf724eb03de9c7320155d4fa0b9b286d071685ed30f0653bd94ca7"
+ },
+ "threads": 8,
+ "workers": 4,
+ "npz_sha256": "32c1468194dc53768d107d09d396f0685022fdec453f25bd34edc4ee6d470c67",
+ "seconds": 1998.7,
+ "utc": "2026-11-26T10:27:28Z",
+ "code_sha256": {
+  "zsem2r9": "37ed9283f6b941bda5f95115a49b8e2e33371e801b7547d8975614cfd898cefa",
+  "zsem2r8b": "8ddf912f3529afeea46785dbe56012655770d2e1d0445ea8731e1ebaccf5961c",
+  "zsem2r8w": "5b411e9181f87e75309c988347c4e79cefd7fbc5858693be038975221fd49b68",
+  "zsem2r8": "d02b42917addd0e6b09725891089c75824e9d3058aad9e9460c31ffaec7c3534"
+ }
+}

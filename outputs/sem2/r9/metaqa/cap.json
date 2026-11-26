@@ -1,0 +1,175 @@
+{
+ "stage": "SEM2 R9 part A9 (cap ladder)",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 17",
+ "dataset": "metaqa",
+ "smoke": false,
+ "population": 600,
+ "slice": 75,
+ "stride": 8,
+ "rungs": [
+  [
+   100,
+   50
+  ],
+  [
+   300,
+   150
+  ],
+  [
+   1000,
+   500
+  ]
+ ],
+ "time_limits": [
+  60.0,
+  120.0,
+  120.0
+ ],
+ "scorers": [
+  "W0",
+  "W1"
+ ],
+ "budget": 1500,
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 245144,
+     "record": 245144
+    },
+    "CN_all": {
+     "pairs": 12605,
+     "record": 12605
+    },
+    "F0T": {
+     "pairs": 12605,
+     "record": 12605
+    },
+    "S": {
+     "pairs": 124669,
+     "record": 124669
+    },
+    "S directed": {
+     "edges": 133571,
+     "pair_relation_rows": 133571,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-Q": {
+   "base5": 0.005288,
+   "equals Part A's": true,
+   "verdict": "PASS"
+  },
+  "G-C": {
+   "nodes": 106,
+   "rows": 649069,
+   "verdict": "PASS"
+  },
+  "G-X": {
+   "candidate recall equals R8's (W0, W1)": [
+    1.0,
+    1.0
+   ],
+   "completion equals R8's where both proven (W0, W1)": [
+    1.0,
+    1.0
+   ],
+   "mismatching slice positions (candidate recall)": [],
+   "verdict": "PASS"
+  },
+  "G-B": {
+   "hop-1 size equals Part A's": "75/75",
+   "missed count equals Part A's": "75/75",
+   "verdict": "PASS"
+  },
+  "G-P": {
+   "instances": 450,
+   "proven_optimal": 449,
+   "not_optimal": 1,
+   "solutions_violating_closure_or_budget": 0,
+   "per_rung": [
+    {
+     "rung": [
+      100,
+      50
+     ],
+     "time_limit": 60.0,
+     "optimal": 150,
+     "not_optimal": 0,
+     "share": 1.0
+    },
+    {
+     "rung": [
+      300,
+      150
+     ],
+     "time_limit": 120.0,
+     "optimal": 150,
+     "not_optimal": 0,
+     "share": 1.0
+    },
+    {
+     "rung": [
+      1000,
+      500
+     ],
+     "time_limit": 120.0,
+     "optimal": 149,
+     "not_optimal": 1,
+     "share": 0.993333
+    }
+   ],
+   "verdict": "PASS",
+   "note": "17.4: a rung's completion is read only where its proven share is at least the declared share; the per-rung shares are in per_rung"
+  }
+ },
+ "r8_script_sha256": "8ddf912f3529afeea46785dbe56012655770d2e1d0445ea8731e1ebaccf5961c",
+ "r8_npz_sha256": "9439c1061cebf8b29ad986f4515dc592af7b3f8e9287bab0216ce4e03c831f2b",
+ "part_a_npz_sha256": "77764e558c518228f4b8267efe60aed34d772d5d5c61707534a298c826f50ee3",
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+  "ner_npz_sha256": "93065a2311c2b445cc14ce6458457c9e14ec0d3c641a4bc573ef4b175a374cb8",
+  "knn_npz_sha256": "f7c59640e816951148fee791bc8790e026461ee52a5b6741c63859244b5a4a16",
+  "structural_npz_sha256": "1b2027c64b2e62b5cf122f09a246ed4cb485841bf0823fcee246e8bf45bf8570",
+  "w2_s_npz_sha256": "3f2b97d1474552dae2fea1f7f8be5e83f7960950b38c0ca41bd3a78025aa7dd5",
+  "f0t_npz_sha256": "499e8c70d3d7d1375a77a609819aacdd40c8753ac2bf6f3d1ea277c5ae62a7fe",
+  "names_npz_sha256": "0ccad8b4b6a55c2bec41bfd36e6fa83f48dc448964e170cf15a2c191f517d720",
+  "vectors": {
+   "shards": 2,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "a1a7727a9128278299ee04c2d6ae4e8912bc44c3251fbbba4f76993720a53fc6"
+  }
+ },
+ "refs": {
+  "r1_record_sha256": "b2fd0a33e1ef601c591d8cf6e62e2b13229c11ac14fb0f34e05aa429ad1f016f",
+  "r1_npz_sha256": "4fd92a218cbf2817185e78af24da5d89dbcf7df719ae1f9c6785b4f5e8b1bc59"
+ },
+ "threads": 8,
+ "workers": 4,
+ "npz_sha256": "3146ebb50af124e60f7d33061606fa7734c17605f00a0bedfa86f439a5279a24",
+ "seconds": 389.2,
+ "utc": "2026-11-26T10:00:39Z",
+ "code_sha256": {
+  "zsem2r9": "37ed9283f6b941bda5f95115a49b8e2e33371e801b7547d8975614cfd898cefa",
+  "zsem2r8b": "8ddf912f3529afeea46785dbe56012655770d2e1d0445ea8731e1ebaccf5961c",
+  "zsem2r8w": "5b411e9181f87e75309c988347c4e79cefd7fbc5858693be038975221fd49b68",
+  "zsem2r8": "d02b42917addd0e6b09725891089c75824e9d3058aad9e9460c31ffaec7c3534"
+ }
+}

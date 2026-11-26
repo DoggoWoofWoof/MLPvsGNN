@@ -1,0 +1,175 @@
+{
+ "stage": "SEM2 R9 part A9 (cap ladder)",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 17",
+ "dataset": "webqsp",
+ "smoke": false,
+ "population": 600,
+ "slice": 75,
+ "stride": 8,
+ "rungs": [
+  [
+   100,
+   50
+  ],
+  [
+   300,
+   150
+  ],
+  [
+   1000,
+   500
+  ]
+ ],
+ "time_limits": [
+  60.0,
+  120.0,
+  120.0
+ ],
+ "scorers": [
+  "W0",
+  "W1"
+ ],
+ "budget": 1500,
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 500445467,
+     "record": 500445467
+    },
+    "CN_all": {
+     "pairs": 995434,
+     "record": 995434
+    },
+    "F0T": {
+     "pairs": 997211,
+     "record": 997211
+    },
+    "S": {
+     "pairs": 5882501,
+     "record": 5882501
+    },
+    "S directed": {
+     "edges": 8215503,
+     "pair_relation_rows": 8213874,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-Q": {
+   "base5": 0.054645,
+   "equals Part A's": true,
+   "verdict": "PASS"
+  },
+  "G-C": {
+   "nodes": 115,
+   "rows": 1011100859,
+   "verdict": "PASS"
+  },
+  "G-X": {
+   "candidate recall equals R8's (W0, W1)": [
+    1.0,
+    1.0
+   ],
+   "completion equals R8's where both proven (W0, W1)": [
+    1.0,
+    1.0
+   ],
+   "mismatching slice positions (candidate recall)": [],
+   "verdict": "PASS"
+  },
+  "G-B": {
+   "hop-1 size equals Part A's": "75/75",
+   "missed count equals Part A's": "75/75",
+   "verdict": "PASS"
+  },
+  "G-P": {
+   "instances": 450,
+   "proven_optimal": 433,
+   "not_optimal": 17,
+   "solutions_violating_closure_or_budget": 0,
+   "per_rung": [
+    {
+     "rung": [
+      100,
+      50
+     ],
+     "time_limit": 60.0,
+     "optimal": 150,
+     "not_optimal": 0,
+     "share": 1.0
+    },
+    {
+     "rung": [
+      300,
+      150
+     ],
+     "time_limit": 120.0,
+     "optimal": 148,
+     "not_optimal": 2,
+     "share": 0.986667
+    },
+    {
+     "rung": [
+      1000,
+      500
+     ],
+     "time_limit": 120.0,
+     "optimal": 135,
+     "not_optimal": 15,
+     "share": 0.9
+    }
+   ],
+   "verdict": "PASS",
+   "note": "17.4: a rung's completion is read only where its proven share is at least the declared share; the per-rung shares are in per_rung"
+  }
+ },
+ "r8_script_sha256": "8ddf912f3529afeea46785dbe56012655770d2e1d0445ea8731e1ebaccf5961c",
+ "r8_npz_sha256": "d279b754d0ecdc1a580791859d7052fff2bafc12d570200428bd9325cce73065",
+ "part_a_npz_sha256": "165f7a488bcbefb4f2f98ba597d24aeb25e8a7f113f006cc594aa98246ee9bef",
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "b39c615122ad55f587eaea0c3fc5c7eff4190e6236fa258006e957dcfda948fe",
+  "ner_npz_sha256": "8ed08f05db3da877f02d212b2c8ac5b495d12bf15c91c329b33652fdc2e9fb10",
+  "knn_npz_sha256": "75a03f25dfa8c6339773059bffbd8322c2f9bf13e7b48cad0105c2ee189519cd",
+  "structural_npz_sha256": "b7c2c435fc0b9dbab3a238c7db31cd61da9a8bd435864c0eba6990ae12756b95",
+  "w2_s_npz_sha256": "a2e79a93c350f6e4de9455af07b11684b875444d2fb61ed6f2555b443ed093c4",
+  "f0t_npz_sha256": "624684bf80d6605b8a7e9d9f884ee027b35c84f3f51dbdd4d65c10ee29a51edd",
+  "names_npz_sha256": "b567061f6c9fc8653ee964518913a97e72ef42e0d940315528401e80f0140f38",
+  "vectors": {
+   "shards": 65,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "e171839e9a7376ae102ec00d7fefffc0edc2ef2775707d79c3f76aa779fe4f17"
+  }
+ },
+ "refs": {
+  "r1_record_sha256": "771b1393aa9a159367edf6f3eb16d8d5d35ae0a813ec238794ee3b1e3c990a6f",
+  "r1_npz_sha256": "6a7d1b0316fa4540e857c078fc4fa0d5a9c77814b4a17bf1ee7dc0319c425a62"
+ },
+ "threads": 8,
+ "workers": 4,
+ "npz_sha256": "a23238da1de520a4150d4beee5768c45ee6072e03d2b434dddaca45ba207a9fd",
+ "seconds": 9157.3,
+ "utc": "2026-11-26T13:00:15Z",
+ "code_sha256": {
+  "zsem2r9": "37ed9283f6b941bda5f95115a49b8e2e33371e801b7547d8975614cfd898cefa",
+  "zsem2r8b": "8ddf912f3529afeea46785dbe56012655770d2e1d0445ea8731e1ebaccf5961c",
+  "zsem2r8w": "5b411e9181f87e75309c988347c4e79cefd7fbc5858693be038975221fd49b68",
+  "zsem2r8": "d02b42917addd0e6b09725891089c75824e9d3058aad9e9460c31ffaec7c3534"
+ }
+}

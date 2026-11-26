@@ -2081,6 +2081,104 @@ The user's picture, in their words: "a question depending semantic b-tree": one 
 
 - A learned separator, a trained router, an adapter (16.7); a third hop; the K store; a tree over the walk's own field built per question or per node; another branching factor or leaf size; another beam ladder; a different weight in the program; the cross-question allocation; s1eval. The tree is global (one index per dataset) and walk-aware (counts from the stored walk); it is **not** a b-tree of the stored graph's own structure.
 
+### 17.11 Part A9 filed (26 November 2026, 18:32 IST, 13:02 UTC): the cap binds, the completion does not follow; 4 of 5 datasets (2Wiki's row is still running)
+
+**Order kept.** Part A9 is read and filed here before any Part B9 number is read (the tree records of MuSiQue and MetaQA are on disk and unread). **Rows finished:** `r9cap-musique`, `r9cap-metaqa`, `r9cap-hotpotqa`, `r9cap-webqsp` (1,999 s, 389 s, 3,224 s and 9,157 s in the process, the load included). **Not finished:** `r9cap-2wiki` (about 340 s per question; it will end after this filing; its cells are added in 17.13 and cannot change the two named readings, 17.11(c)). **Code:** `outputs/mp_unified/zsem2r9.py` (committed 5a05dd6d before the rows, sha 37ed9283f6b9…, records carry it) and the beside reads `outputs/mp_unified/zsem2r9a.py` (new, read-only on the records; it prints the pooled proven shares and the paired reads declared in 17.4 that the report of zsem2r9.py does not). Reports: `outputs/sem2/r9/report_cap.json|md` and `report_cap_beside.json|md`.
+
+**Gates, all 4: G-E, G-R (`--threads 8`), G-Q, G-C, G-B, G-X, G-P PASS.** G-X: at 100/50 the candidate recall equals R8's on every slice question (1.0 for W0 and W1, no mismatching position) and the completion equals R8's on every instance proven in both (1.0). G-P: every solution satisfied the closure and the budget; the proven shares are in table (a), the unproven programs are counted in table (c) and are not read as optimal.
+
+**(a) The ladder, per dataset and scorer** (candidate recall over the slice; completion over the slice where the rung is read, that is where at least 99.5 percent of the scorer's programs at that rung were proven optimal):
+
+| dataset | slice | scorer | candidate recall % at 100/50, 300/150, 1000/500 | completion % at the same rungs (— = not read) | proven share at the same rungs |
+|---|---:|---|---|---|---|
+| MuSiQue | 63 | W0 | 27.0 / 55.6 / 90.5 | 27.0 / 27.0 / — | 100.0 / 100.0 / 96.8 |
+| MuSiQue | 63 | W1 | 34.9 / 60.3 / 92.1 | 33.3 / 25.4 / — | 100.0 / 100.0 / 85.7 |
+| MetaQA | 75 | W0 | 57.3 / 96.0 / 100.0 | 42.7 / 25.3 / — | 100.0 / 100.0 / 98.7 |
+| MetaQA | 75 | W1 | 49.3 / 94.7 / 98.7 | 21.3 / 12.0 / 12.0 | 100.0 / 100.0 / 100.0 |
+| HotpotQA | 31 | W0 | 45.2 / 90.3 / 100.0 | 45.2 / 41.9 / — | 100.0 / 100.0 / 80.7 |
+| HotpotQA | 31 | W1 | 41.9 / 93.5 / 96.8 | 41.9 / — / — | 100.0 / 96.8 / 90.3 |
+| WebQSP | 75 | W0 | 42.7 / 54.7 / 62.7 | 36.0 / 34.7 / — | 100.0 / 100.0 / 94.7 |
+| WebQSP | 75 | W1 | 37.3 / 46.7 / 60.0 | 24.0 / — / — | 100.0 / 97.3 / 85.3 |
+
+**(b) Beside, decided nothing: the completion against the rung 100/50 on the questions both programs were proven on** (a selected subset, counted: the unproven programs are the large ones, so this is not the slice; the interval is zsem2.paired over those questions):
+
+| dataset | scorer | rung against 100/50 | questions proven at both | completion at 100/50 on them % | completion at the rung on them % | difference, points [interval] | call | recall gain, all questions, points |
+|---|---|---|---:|---:|---:|---|---|---:|
+| MuSiQue | W0 | 300/150 | 63 of 63 | 26.98 | 26.98 | 0.0 [-11.11, 11.11] | LEVEL | 28.57 |
+| MuSiQue | W0 | 1000/500 | 61 of 63 | 26.23 | 24.59 | -1.64 [-13.11, 9.84] | LEVEL | 63.49 |
+| MuSiQue | W1 | 300/150 | 63 of 63 | 33.33 | 25.4 | -7.94 [-17.46, 0.0] | LEVEL | 25.4 |
+| MuSiQue | W1 | 1000/500 | 54 of 63 | 33.33 | 20.37 | -12.96 [-25.93, 0.0] | LEVEL | 57.14 |
+| MetaQA | W0 | 300/150 | 75 of 75 | 42.67 | 25.33 | -17.33 [-26.67, -8.0] | BELOW | 38.67 |
+| MetaQA | W0 | 1000/500 | 74 of 75 | 43.24 | 25.68 | -17.57 [-27.03, -8.11] | BELOW | 42.67 |
+| MetaQA | W1 | 300/150 | 75 of 75 | 21.33 | 12.0 | -9.33 [-17.33, -2.67] | BELOW | 45.33 |
+| MetaQA | W1 | 1000/500 | 75 of 75 | 21.33 | 12.0 | -9.33 [-17.33, -2.67] | BELOW | 49.33 |
+| HotpotQA | W0 | 300/150 | 31 of 31 | 45.16 | 41.94 | -3.23 [-22.58, 16.13] | LEVEL | 45.16 |
+| HotpotQA | W0 | 1000/500 | 25 of 31 | 44.0 | 12.0 | -32.0 [-52.0, -12.0] | BELOW | 54.84 |
+| HotpotQA | W1 | 300/150 | 30 of 31 | 43.33 | 33.33 | -10.0 [-30.0, 10.0] | LEVEL | 51.61 |
+| HotpotQA | W1 | 1000/500 | 28 of 31 | 39.29 | 17.86 | -21.43 [-39.29, -3.57] | BELOW | 54.84 |
+| WebQSP | W0 | 300/150 | 75 of 75 | 36.0 | 34.67 | -1.33 [-8.0, 5.33] | LEVEL | 12.0 |
+| WebQSP | W0 | 1000/500 | 71 of 75 | 36.62 | 26.76 | -9.86 [-18.31, -1.41] | BELOW | 20.0 |
+| WebQSP | W1 | 300/150 | 73 of 75 | 24.66 | 17.81 | -6.85 [-13.7, 0.0] | LEVEL | 9.33 |
+| WebQSP | W1 | 1000/500 | 64 of 75 | 23.44 | 14.06 | -9.38 [-18.75, 0.0] | LEVEL | 22.67 |
+
+**(c) The named readings, decided now.** **CAP_BINDS: TRUE for W0 and for W1** (the candidate recall at 1000/500 over 100/50 is at least 10 points on every dataset read: W0 MuSiQue +63.5, MetaQA +42.7, HotpotQA +54.8, WebQSP +20.0; W1 MuSiQue +57.1, MetaQA +49.3, HotpotQA +54.8, WebQSP +22.7; three of five are needed and 4 are read). **COMPLETION_FOLLOWS: FALSE for W0 and for W1**, and this is decided without 2Wiki: the completion gain at 1000/500 over 100/50 is read only where the rung is read (MetaQA W1: -9.33; no other cell of the four datasets is read at that rung), no read gain reaches 5 points, three of five datasets are needed and one dataset is left, so it cannot reach three. **The flat ceiling, the best completion read over the rungs and scorers, is the 100/50 rung on every dataset read:** MuSiQue 33.3, MetaQA 42.7, HotpotQA 45.2, WebQSP 36.0 (R8's own cap).
+
+**(d) Proven shares, per rung** (the declared text says "a rung's instances", which pooled over both scorers is the stricter reading; zsem2r9.py reads per scorer and rung; the cells where the two differ are in the last column and **no named reading depends on them**):
+
+| dataset | rung | unproven programs | proven share pooled over both scorers | W0 | W1 | cells the pooled reading would not read although the per-scorer reading did |
+|---|---|---:|---:|---:|---:|---|
+| MuSiQue | 100/50 | 0 | 100.0 | 100.0 | 100.0 | — |
+| MuSiQue | 300/150 | 0 | 100.0 | 100.0 | 100.0 | — |
+| MuSiQue | 1000/500 | 11 | 91.3 | 96.8 | 85.7 | — |
+| MetaQA | 100/50 | 0 | 100.0 | 100.0 | 100.0 | — |
+| MetaQA | 300/150 | 0 | 100.0 | 100.0 | 100.0 | — |
+| MetaQA | 1000/500 | 1 | 99.3 | 98.7 | 100.0 | W1 |
+| HotpotQA | 100/50 | 0 | 100.0 | 100.0 | 100.0 | — |
+| HotpotQA | 300/150 | 1 | 98.4 | 100.0 | 96.8 | W0 |
+| HotpotQA | 1000/500 | 9 | 85.5 | 80.7 | 90.3 | — |
+| WebQSP | 100/50 | 0 | 100.0 | 100.0 | 100.0 | — |
+| WebQSP | 300/150 | 2 | 98.7 | 100.0 | 97.3 | W0 |
+| WebQSP | 1000/500 | 15 | 90.0 | 94.7 | 85.3 | — |
+
+**(e) The hop-1 need, the stand-in for an uncapped cap** (the largest rank of a question's missed hop-1 golds in the scorer's order over the hop-1 field minus the F-list, over the questions that have such a gold):
+
+| dataset | questions with a missed hop-1 gold | scorer | need at most 100 / 300 / 1,000 (share of those questions, %) | need median, 90th percentile | need over field size, median, 90th percentile |
+|---|---:|---|---|---|---|
+| MuSiQue | 46 | W0 | 26.1 / 50.0 / 89.1 | 310, 1010 | 0.318, 0.755 |
+| MuSiQue | 46 | W1 | 37.0 / 58.7 / 93.5 | 174, 890 | 0.187, 0.651 |
+| MetaQA | 47 | W0 | 61.7 / 95.7 / 100.0 | 60, 213 | 0.321, 0.824 |
+| MetaQA | 47 | W1 | 51.1 / 97.9 / 100.0 | 97, 247 | 0.528, 0.875 |
+| HotpotQA | 30 | W0 | 46.7 / 90.0 / 100.0 | 102, 276 | 0.208, 0.534 |
+| HotpotQA | 30 | W1 | 43.3 / 96.7 / 100.0 | 150, 256 | 0.263, 0.572 |
+| WebQSP | 70 | W0 | 42.9 / 52.9 / 60.0 | 200, 7337 | 0.027, 0.887 |
+| WebQSP | 70 | W1 | 40.0 / 50.0 / 64.3 | 310, 9088 | 0.022, 0.763 |
+
+**(f) W0 minus W1 at each rung, on the questions proven in both** (beside; XC3):
+
+| dataset | rung | questions proven in both | completion W0 minus W1, points [interval] | call | recall W0 minus W1, points |
+|---|---|---:|---|---|---:|
+| MuSiQue | 100/50 | 63 | -6.35 [-20.63, 7.94] | LEVEL | -7.94 |
+| MuSiQue | 300/150 | 63 | 1.59 [-12.7, 15.87] | LEVEL | -4.76 |
+| MuSiQue | 1000/500 | 52 | 7.69 [-9.62, 25.0] | LEVEL | -1.59 |
+| MetaQA | 100/50 | 75 | 21.33 [8.0, 36.0] | ABOVE | 8.0 |
+| MetaQA | 300/150 | 75 | 13.33 [1.33, 26.67] | ABOVE | 1.33 |
+| MetaQA | 1000/500 | 74 | 14.86 [2.7, 27.03] | ABOVE | 1.33 |
+| HotpotQA | 100/50 | 31 | 3.23 [-16.13, 22.58] | LEVEL | 3.23 |
+| HotpotQA | 300/150 | 30 | 6.67 [-13.33, 26.67] | LEVEL | -3.23 |
+| HotpotQA | 1000/500 | 24 | -4.17 [-16.67, 8.33] | LEVEL | 3.23 |
+| WebQSP | 100/50 | 75 | 12.0 [0.0, 24.0] | LEVEL | 5.33 |
+| WebQSP | 300/150 | 73 | 17.81 [5.48, 30.14] | ABOVE | 8.0 |
+| WebQSP | 1000/500 | 60 | 11.67 [0.0, 23.33] | LEVEL | 2.67 |
+
+**(g) The expectations of 17.7 that Part A9 can score (a failed one is reported as failed).**
+- **XC1 HELD.** W0's candidate recall rises with the cap on every dataset read (27.0, 55.6, 90.5 on MuSiQue; 57.3, 96.0, 100.0 on MetaQA; 45.2, 90.3, 100.0 on HotpotQA; 42.7, 54.7, 62.7 on WebQSP) and the gain of 1000/500 over 100/50 is at least 15 points on all 4 read (so on at least four of five whatever 2Wiki reads); WebQSP's recall at 1000/500 is 62.7, inside 50 to 75.
+- **XC2 CANNOT BE SCORED AS DECLARED, and the direction I expected is there beside.** XC2 asks the completion gain of 1000/500 over 100/50 to be less than half of the recall gain on at least three datasets, and that rung's completion is read in one cell of the 8 (MetaQA W1: -9.3 against a recall gain of +49.3, which holds). Beside, on the proven subset of (b), W0's completion at 1000/500 against 100/50 is -1.6 (MuSiQue), -17.6 (MetaQA), -32.0 (HotpotQA) and -9.9 (WebQSP) points against recall gains of +63.5, +42.7, +54.8 and +20.0: below half on all four, BELOW on three; W1 is -13.0, -9.3, -21.4 and -9.4. **At 300/150, where the rung is read for W0 on all four, the completion is at or below 100/50 on all four** (0.0, -17.3, -3.2, -1.3 points) while the recall gains +28.6, +38.7, +45.2, +12.0. The reason I wrote for it (the candidate sets are 7 to 36 times the budget at 1000/500 by their medians, and crowd the golds of lower cosine out) is **not tested** here: Part A9 measures the completion, not the displacement.
+- **XC3 FAILED IN PART.** MetaQA: W0 completes more than W1 at every rung (+21.3, +13.3, +14.9, ABOVE at all three). WebQSP: W0 more at every rung by the point estimate (+12.0 LEVEL, +17.8 ABOVE, +11.7 LEVEL). **HotpotQA: W0 more at 100/50 (+3.2) and 300/150 (+6.7) but W1 more at 1000/500 (-4.2, 24 questions, LEVEL): the expectation fails there by its point estimate.** MuSiQue shows no order (-6.4, +1.6, +7.7, all LEVEL). 2Wiki's half (W1 at least W0 at every rung) is pending.
+- **XC4 FAILED AT 300/150 and HELD AT 1000/500.** G-P holds at 100/50 on all 4 (100 percent). **At 300/150 two datasets fall below 99.5 percent pooled (HotpotQA 98.4, WebQSP 98.7)**, which I expected to hold; the unproven programs there are HotpotQA W1 (1 of 31) and WebQSP W1 (2 of 75). At 1000/500 **all 4 read are below** (MuSiQue 91.3, MetaQA 99.3, HotpotQA 85.5, WebQSP 90.0), where I expected at least one; the recall at that rung is read on every dataset, the completion on one cell.
+- XC5 to XC7 are Part B9's and are not scored here.
+
+**What this means.** The cap, not the budget and not the program, is where R8's flat cosine loses reach: widening it lifts the candidate recall by 20 to 64 points on the 4 datasets read. **But it does not lift the completion: at the same budget the completion at 300/150 and (on the proven questions) at 1000/500 is at or below the completion at 100/50 on every dataset read, so the flat ceiling stays R8's own 100/50 number.** The same program, given the same budget over more candidates, completes the golds of fewer questions, not more. The hop-1 need (e) says why a bigger cap alone would not have fixed it either: on WebQSP the 90th percentile of the need is the rank 7,337 for W0 (0.887 of the field at the ratio's own 90th percentile), and only 60 percent of the questions have their missed hop-1 golds inside the first 1,000. **What it leaves for Part B9:** whether a tree chooses the right branches where the flat cosine, given the same nodes, does not; the flat arm F of 17.5 is exactly that comparison at equal node counts. **Nothing changes in pools, links, PL or any model.** The 2Wiki row and the three tree rows that are still running are read after this commit.
+
 ### 8.16 Records completed after the closure (24 November 2026, 23:47 IST, 18:17 UTC): decides nothing
 
 8.15 closed the hub line with five rows still running. They have finished: R1k on WebQSP and 2Wiki, and R1q on
