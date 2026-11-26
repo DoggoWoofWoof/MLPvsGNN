@@ -60,4 +60,19 @@ Sizes only: per KB the number of S, W2_S, F0T and K pairs, their overlaps, the p
 
 ## 9. Results
 
-(Not yet read. Written after the self-test and the names step; the links rows follow the KB's vectors.)
+### 9.1 N1 applied, Prime and MAG (26 Nov, 23:41 IST): package observations, no link number
+
+`zstk2.py names` ran on Prime (laptop, 3.1 s, peak 339 MB) and MAG (host, 38.2 s, peak 4,549 MB); records `outputs/stark/<kb>/names.json`, sidecars `names.jsonl` (sha256 in the records). Gate L1 passed on both: the node count equals the package's, keys 0 to N-1, ids `<dataset>:<position>`, and 0 of 1,000 sampled names missing from their T1 text. Amazon has no package yet and was not run.
+
+| KB | nodes | named | key that gave the name | name groups | same-name sibling pairs if built | largest group |
+| --- | --- | --- | --- | --- | --- | --- |
+| Prime | 129,375 | 129,375 (100 percent; every one of the ten types) | `name` 129,375 | 129,262 | 228 | Vitamin E, 3 nodes |
+| MAG | 1,872,968 | 1,714,702 (91.5 percent) | `title` 700,244 (all papers), `DisplayName` 1,014,458, none 158,266 | 1,507,199 | 2,145,044 | Wei Wang, 192 authors |
+
+Named share of MAG by type: papers 100 percent, institutions 99.8 percent (8,685 of 8,701), authors 87.3 percent (963,762 of 1,104,554), fields of study 70.6 percent (42,011 of 59,469). The 158,266 nameless nodes are 140,792 authors, 17,458 fields and 16 institutions, the same counts the package's head-only observation lists for those types: they are the benchmark's `-1` placeholder records.
+
+**A correction to section 3.** Section 3 said, from the key look made before the page, that 92.5 percent of MAG's authors have a `DisplayName` (so 82,853 authors nameless) and that all fields of study and institutions do. That look counted a non-empty string; N1, as declared, also requires a letter (T1's own test), and the placeholders are the string `-1`. Under N1 the nameless are the 158,266 above. The rule on the page is unchanged; only the estimate in section 3 was wrong.
+
+**L4 at the names level.** The same-name sibling count is 228 on Prime and 2,145,044 on MAG, 4.3 percent of the 50,000,000 stop, so neither stops. This is the count the links row recomputes before it builds. The page expected MAG's authors to be the case the stop exists for; the largest group is indeed an author name (192 nodes, 36,672 ordered pairs by itself), and the total, which was not split by type, is far below the stop.
+
+**Not read yet:** any family's size, the e3v vectors (Prime's encode is running), K's cost. Prime's links row (`stk2p-links`, 8 cpus, 16 GB asked, behind `stk1p-vec`) is in the feed; MAG's and Amazon's first links rows are the pricing pass of section 6.
