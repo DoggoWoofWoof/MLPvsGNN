@@ -28,7 +28,7 @@ sys.dont_write_bytecode = True
 sys.path.insert(0, str(HERE))
 OUT = WS / "outputs" / "spl1"
 DOC = "docs/SPL1_SPARSE_LEG_SCREEN.md"
-TOPK, MAXLEN, BLOCK, BATCH, QBATCH = 1000, 256, 2048, 32, 64
+TOPK, MAXLEN, BLOCK, BATCH, QBATCH = 1000, 256, 2048, 16, 64   # A3: micro-batch 16 (the card has about 6 GB free beside the other account's job)
 NB = 1000                                             # bootstrap resamples, seed 0 (the screen's rule)
 LEVEL_PTS = -1.0                                      # LEVEL: the interval's low end is at least this many points
 SCREEN = ("squad", "musique", "multihoprag")
@@ -240,6 +240,9 @@ def cmd_encode(a):
         texts = texts[:a.smoke]
     n, k = len(texts), min(TOPK, len(texts))
     m, device = load_model(a.key, a.device)
+    if device == "cpu" and a.threads:
+        import torch
+        torch.set_num_threads(a.threads)
     d = OUT / a.key / (a.ds + (f"_smoke_{device}" if a.smoke else ""))
     d.mkdir(parents=True, exist_ok=True)
     gpu = None
@@ -266,7 +269,7 @@ def cmd_encode(a):
         blk = texts[done:end]
         if tok is not None:
             cut += sum(len(x) > MAXLEN for x in tok(blk, add_special_tokens=True, truncation=False)["input_ids"])
-        Db = enc_docs(m, blk)
+        Db = enc_docs(m, blk, a.batch)
         nnz += int(Db.nnz)
         S = (Qm @ Db.T).toarray()
         top_s, top_i = merge_top(top_s, top_i, S, done, k)
@@ -282,7 +285,7 @@ def cmd_encode(a):
     fr = json.loads((OUT / f"fetch_{a.key}.json").read_text(encoding="utf-8")) if (OUT / f"fetch_{a.key}.json").is_file() else {}
     import torch, sentence_transformers, transformers
     rec = {"stage": "SPL1 encode", "declared_in": DOC, "key": a.key, "repo": MODELS[a.key]["repo"], "revision": MODELS[a.key]["rev"],
-           "dataset": a.ds, "smoke": a.smoke, "nodes": n, "questions": len(qt), "k": k, "device": device, "max_len": MAXLEN, "batch": BATCH,
+           "dataset": a.ds, "smoke": a.smoke, "nodes": n, "questions": len(qt), "k": k, "device": device, "threads": (a.threads or None) if device == "cpu" else None, "max_len": MAXLEN, "batch": a.batch,
            "nodes_per_s": round((n - n0) / max(el, 1e-9), 2), "encode_seconds": round(el, 1), "seconds": round(time.time() - t0, 1),
            "doc_nnz_mean": round(nnz / max(n - n0, 1), 1), "doc_bytes_per_node_at_8": round(8 * nnz / max(n - n0, 1), 1),
            "query_nnz_mean": round(float(np.diff(Qm.indptr).mean()), 1), "gpu": gpu, "cut_at_256": None if tok is None else cut, "cut_counted_on_nodes": n - n0,
@@ -541,6 +544,8 @@ def main(argv=None):
     s.add_argument("--ds", required=True, choices=SCREEN)
     s.add_argument("--device", default=None)
     s.add_argument("--smoke", type=int, default=0)
+    s.add_argument("--batch", type=int, default=BATCH)
+    s.add_argument("--threads", type=int, default=0, help="CPU only: torch threads (0 = the library's default)")
     s.set_defaults(fn=cmd_encode)
     s = sub.add_parser("read")
     s.add_argument("--ds", nargs="*", choices=SCREEN)

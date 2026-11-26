@@ -90,6 +90,12 @@ The user, 27 Nov: **"by smaller i also mean smaller vectors and faster encoding 
 - **Disclosed.** `check` (plumbing, 16 SQuAD texts) printed mean non-zeros of about 262 (C1), 339 (C3) and 252 (C2) before this rule was written. They are not the screen's reads and are not used.
 - **The dense side (on record, not run here).** e3v is 1,152 wide. The storage stage (`docs/ENC_ENCODER_COMPARISON.md` section 21) found int8 document vectors free and 768-wide PCA with int8 near free. The small dense arm alone (`granitesm`, 48M, 384 wide; its four sets encoded in 67 s against gtemodern's 319 s on the host GPU) reads 76.12 and 43.89 R@5 on SQuAD and MuSiQue against the fused e3v's 83.68 and 48.15, which is why it was SHORT. A dense encoder or vector size beyond that is a separate page.
 
+### 8.3 Amendment A3 (27 Nov, 00:21 IST, after the nine GPU rows were queued, before any of them started)
+
+- **Micro-batch 16, not 32.** The card has about 6 GB free beside the other account's job, and the sparse head's logits are batch x 256 x vocabulary floats (50,265 for C1, 30,522 for C2 and C3). Sixteen texts per forward pass keeps the head's logits to about 0.8 GB for C1, so a pass does not fail when the other account's memory grows. The recipe's other parts are unchanged (fp32, 256-token cut, positive scores only, blocks of 2,048). `check` already showed that a text alone and in a batch differ by at most 1.4e-5, so the batch size moves no list; the value is written in each encode record (`batch`).
+- **Options only.** `encode` gains `--batch` (default 16) and `--threads` (CPU rows only: torch threads, recorded). Nothing else in the module changes. The CPU readings of section 8.2 are queued as three chained rows (`--smoke 512 --device cpu --threads 4`, the first 512 SQuAD nodes, one candidate after the other) and are read beside the GPU readings, not ranked.
+- **Order.** The GPU rows run MultiHop-RAG first (609 nodes, a minute each), then SQuAD, then MuSiQue, one row after the other; a row that fails is re-sent once by the feeder.
+
 ## 9. Expectations, written before any number
 
 - **X1.** C2 (the highest printed score) is BETTER or LEVEL on all six cells; it is the largest of the three, so it is the pick only if C1 and C3 do not pass.
