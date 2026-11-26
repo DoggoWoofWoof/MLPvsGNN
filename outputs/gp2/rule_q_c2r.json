@@ -1,0 +1,1722 @@
+{
+ "part": "q",
+ "declared_in": "docs/GP2_UNIVERSAL_LINK_SCORE.md",
+ "zgp2_sha256": "f5779308cb031f1930b813f715aee13c33faad63b586e60a5a860956ec0e4ffb",
+ "zgp2a3_sha256": "fa6ec7261caab026d74225e15b9beafdf777ec90aee1818f55a11691282da85e",
+ "rho": 0.95,
+ "grid_abs": [
+  10,
+  30,
+  100,
+  300,
+  1000,
+  3000,
+  10000,
+  30000,
+  100000,
+  300000,
+  "inf"
+ ],
+ "grid_rel": [
+  0.0003,
+  0.001,
+  0.003,
+  0.01,
+  0.03,
+  0.1,
+  0.2,
+  0.3,
+  0.5,
+  0.7,
+  0.9,
+  1.0
+ ],
+ "scores": {
+  "K1": [
+   "ur",
+   "dot"
+  ],
+  "K2": [
+   "-rank",
+   "dot"
+  ],
+  "K3": [
+   "ur",
+   "-rank",
+   "votes",
+   "dot"
+  ],
+  "K4": [
+   "dot"
+  ],
+  "K5": [
+   "tw",
+   "ur",
+   "-rank",
+   "dot"
+  ],
+  "K6": [
+   "cd",
+   "ur",
+   "-rank",
+   "dot"
+  ]
+ },
+ "nodes": {
+  "multihoprag/RK": {
+   "questions": 35,
+   "candidate_links_per_q": 589.0,
+   "kept_links_per_q": 589.0,
+   "price_at_2500_links_per_q": 1.0,
+   "S_links_per_q": 0.0
+  },
+  "musique/RK": {
+   "questions": 323,
+   "candidate_links_per_q": 36552.6,
+   "kept_links_per_q": 36552.6,
+   "price_at_2500_links_per_q": 0.06839,
+   "S_links_per_q": 0.0
+  },
+  "squad/RK": {
+   "questions": 27,
+   "candidate_links_per_q": 5241.0,
+   "kept_links_per_q": 5241.0,
+   "price_at_2500_links_per_q": 0.47701,
+   "S_links_per_q": 0.0
+  },
+  "metaqa/SRK": {
+   "questions": 373,
+   "candidate_links_per_q": 9699.9,
+   "kept_links_per_q": 9699.9,
+   "price_at_2500_links_per_q": 0.25773,
+   "S_links_per_q": 3773.6
+  },
+  "webqsp/SRK": {
+   "questions": 343,
+   "candidate_links_per_q": 1718544.7,
+   "kept_links_per_q": 1718544.7,
+   "price_at_2500_links_per_q": 0.00145,
+   "S_links_per_q": 28360.3
+  },
+  "hotpotqa/RK": {
+   "questions": 187,
+   "candidate_links_per_q": 83913.4,
+   "kept_links_per_q": 83913.4,
+   "price_at_2500_links_per_q": 0.02979,
+   "S_links_per_q": 0.0
+  },
+  "hotpotqa/SRK": {
+   "questions": 187,
+   "candidate_links_per_q": 44918.8,
+   "kept_links_per_q": 44918.8,
+   "price_at_2500_links_per_q": 0.05566,
+   "S_links_per_q": 3975.6
+  },
+  "2wiki/RK": {
+   "questions": 274,
+   "candidate_links_per_q": 154959.1,
+   "kept_links_per_q": 154959.1,
+   "price_at_2500_links_per_q": 0.01613,
+   "S_links_per_q": 0.0
+  },
+  "2wiki/SRK": {
+   "questions": 274,
+   "candidate_links_per_q": 116686.7,
+   "kept_links_per_q": 116686.7,
+   "price_at_2500_links_per_q": 0.02142,
+   "S_links_per_q": 3814.6
+  }
+ },
+ "gates": {
+  "multihoprag/RK": "G-C7 PASS",
+  "musique/RK": "G-C7 PASS",
+  "squad/RK": "G-C7 PASS",
+  "metaqa/SRK": "G-C7 PASS",
+  "webqsp/SRK": "G-C7 PASS",
+  "hotpotqa/RK": "G-C7 PASS",
+  "hotpotqa/SRK": "G-C7 PASS",
+  "2wiki/RK": "G-C7 PASS",
+  "2wiki/SRK": "G-C7 PASS"
+ },
+ "by_score": {
+  "K1": {
+   "program_rel": {
+    "W": [
+     1.0,
+     0.9,
+     0.0003
+    ],
+    "tau": 0.992209178,
+    "per_cell": {
+     "multihoprag/RK": {
+      "reach": 1.0,
+      "price": 0.9922
+     },
+     "musique/RK": {
+      "reach": 0.9846,
+      "price": 0.8662
+     },
+     "squad/RK": {
+      "reach": 0.9877,
+      "price": 0.8804
+     },
+     "metaqa/SRK": {
+      "reach": 0.9577,
+      "price": 0.7921
+     },
+     "webqsp/SRK": {
+      "reach": 0.997,
+      "price": 0.894
+     },
+     "hotpotqa/RK": {
+      "reach": 0.9911,
+      "price": 0.8491
+     },
+     "hotpotqa/SRK": {
+      "reach": 0.9953,
+      "price": 0.8331
+     },
+     "2wiki/RK": {
+      "reach": 0.9963,
+      "price": 0.8264
+     },
+     "2wiki/SRK": {
+      "reach": 0.9978,
+      "price": 0.8079
+     }
+    }
+   },
+   "required_uniform_share_by_cell": {
+    "multihoprag/RK": 0.3,
+    "musique/RK": 1.0,
+    "squad/RK": 0.9,
+    "metaqa/SRK": 1.0,
+    "webqsp/SRK": 0.7,
+    "hotpotqa/RK": 1.0,
+    "hotpotqa/SRK": 0.7,
+    "2wiki/RK": 0.9,
+    "2wiki/SRK": 0.7
+   },
+   "own_abs": {
+    "multihoprag/RK": {
+     "W": [
+      300,
+      10,
+      10
+     ],
+     "reach": 0.9746,
+     "price": 0.478849,
+     "kept_links_per_q": 282.0
+    },
+    "musique/RK": {
+     "W": [
+      30000,
+      30000,
+      10
+     ],
+     "reach": 0.9592,
+     "price": 0.261109,
+     "kept_links_per_q": 9544.2
+    },
+    "squad/RK": {
+     "W": [
+      10000,
+      10000,
+      10
+     ],
+     "reach": 0.9739,
+     "price": 0.518151,
+     "kept_links_per_q": 2715.6
+    },
+    "metaqa/SRK": {
+     "W": [
+      30000,
+      30000,
+      10
+     ],
+     "reach": 0.9771,
+     "price": 0.83643,
+     "kept_links_per_q": 8113.3
+    },
+    "webqsp/SRK": {
+     "W": [
+      300000,
+      300000,
+      10
+     ],
+     "reach": 0.9579,
+     "price": 0.055635,
+     "kept_links_per_q": 95611.2
+    },
+    "hotpotqa/RK": {
+     "W": [
+      1000,
+      100,
+      10
+     ],
+     "reach": 0.9525,
+     "price": 0.001584,
+     "kept_links_per_q": 132.9
+    },
+    "hotpotqa/SRK": {
+     "W": [
+      300,
+      10,
+      10
+     ],
+     "reach": 0.965,
+     "price": 0.089996,
+     "kept_links_per_q": 4042.5
+    },
+    "2wiki/RK": {
+     "W": [
+      1000,
+      10,
+      10
+     ],
+     "reach": 0.9529,
+     "price": 0.000765,
+     "kept_links_per_q": 118.5
+    },
+    "2wiki/SRK": {
+     "W": [
+      300,
+      10,
+      10
+     ],
+     "reach": 0.9728,
+     "price": 0.033451,
+     "kept_links_per_q": 3903.3
+    }
+   },
+   "own_rel": {
+    "multihoprag/RK": {
+     "W": [
+      0.3,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.9596,
+     "price": 0.276651,
+     "kept_links_per_q": 162.9
+    },
+    "musique/RK": {
+     "W": [
+      1.0,
+      0.5,
+      0.0003
+     ],
+     "reach": 0.954,
+     "price": 0.486808,
+     "kept_links_per_q": 17794.1
+    },
+    "squad/RK": {
+     "W": [
+      0.9,
+      0.5,
+      0.03
+     ],
+     "reach": 0.9526,
+     "price": 0.521511,
+     "kept_links_per_q": 2733.2
+    },
+    "metaqa/SRK": {
+     "W": [
+      1.0,
+      0.9,
+      0.0003
+     ],
+     "reach": 0.9577,
+     "price": 0.792122,
+     "kept_links_per_q": 7683.5
+    },
+    "webqsp/SRK": {
+     "W": [
+      1.0,
+      0.1,
+      0.0003
+     ],
+     "reach": 0.9515,
+     "price": 0.118152,
+     "kept_links_per_q": 203049.5
+    },
+    "hotpotqa/RK": {
+     "W": [
+      1.0,
+      0.003,
+      0.0003
+     ],
+     "reach": 0.9573,
+     "price": 0.004181,
+     "kept_links_per_q": 350.8
+    },
+    "hotpotqa/SRK": {
+     "W": [
+      0.9,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.9533,
+     "price": 0.090247,
+     "kept_links_per_q": 4053.8
+    },
+    "2wiki/RK": {
+     "W": [
+      1.0,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.9585,
+     "price": 0.00106,
+     "kept_links_per_q": 164.3
+    },
+    "2wiki/SRK": {
+     "W": [
+      0.9,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.9618,
+     "price": 0.033674,
+     "kept_links_per_q": 3929.3
+    }
+   }
+  },
+  "K2": {
+   "program_rel": {
+    "W": [
+     1.0,
+     0.7,
+     0.1
+    ],
+    "tau": 0.976627535,
+    "per_cell": {
+     "multihoprag/RK": {
+      "reach": 0.999,
+      "price": 0.9766
+     },
+     "musique/RK": {
+      "reach": 0.9682,
+      "price": 0.6804
+     },
+     "squad/RK": {
+      "reach": 0.974,
+      "price": 0.7082
+     },
+     "metaqa/SRK": {
+      "reach": 0.9525,
+      "price": 0.7198
+     },
+     "webqsp/SRK": {
+      "reach": 0.978,
+      "price": 0.701
+     },
+     "hotpotqa/RK": {
+      "reach": 0.9827,
+      "price": 0.6664
+     },
+     "hotpotqa/SRK": {
+      "reach": 0.9909,
+      "price": 0.6764
+     },
+     "2wiki/RK": {
+      "reach": 0.9856,
+      "price": 0.6511
+     },
+     "2wiki/SRK": {
+      "reach": 0.9902,
+      "price": 0.6464
+     }
+    }
+   },
+   "required_uniform_share_by_cell": {
+    "multihoprag/RK": 0.7,
+    "musique/RK": 0.9,
+    "squad/RK": 1.0,
+    "metaqa/SRK": 0.9,
+    "webqsp/SRK": 0.9,
+    "hotpotqa/RK": 0.9,
+    "hotpotqa/SRK": 0.7,
+    "2wiki/RK": 0.9,
+    "2wiki/SRK": 0.7
+   },
+   "own_abs": {
+    "multihoprag/RK": {
+     "W": [
+      300,
+      10,
+      10
+     ],
+     "reach": 0.9563,
+     "price": 0.478849,
+     "kept_links_per_q": 282.0
+    },
+    "musique/RK": {
+     "W": [
+      30000,
+      30000,
+      100
+     ],
+     "reach": 0.9501,
+     "price": 0.261394,
+     "kept_links_per_q": 9554.6
+    },
+    "squad/RK": {
+     "W": [
+      10000,
+      10000,
+      10
+     ],
+     "reach": 0.9612,
+     "price": 0.518151,
+     "kept_links_per_q": 2715.6
+    },
+    "metaqa/SRK": {
+     "W": [
+      10000,
+      10000,
+      3000
+     ],
+     "reach": 0.956,
+     "price": 0.803758,
+     "kept_links_per_q": 7796.4
+    },
+    "webqsp/SRK": {
+     "W": [
+      300000,
+      300000,
+      10
+     ],
+     "reach": 0.9517,
+     "price": 0.055635,
+     "kept_links_per_q": 95611.2
+    },
+    "hotpotqa/RK": {
+     "W": [
+      30000,
+      30000,
+      10
+     ],
+     "reach": 0.9536,
+     "price": 0.079084,
+     "kept_links_per_q": 6636.2
+    },
+    "hotpotqa/SRK": {
+     "W": [
+      300,
+      10,
+      10
+     ],
+     "reach": 0.9546,
+     "price": 0.089996,
+     "kept_links_per_q": 4042.5
+    },
+    "2wiki/RK": {
+     "W": [
+      3000,
+      3000,
+      300
+     ],
+     "reach": 0.9503,
+     "price": 0.00476,
+     "kept_links_per_q": 737.6
+    },
+    "2wiki/SRK": {
+     "W": [
+      300,
+      10,
+      10
+     ],
+     "reach": 0.9565,
+     "price": 0.033451,
+     "kept_links_per_q": 3903.3
+    }
+   },
+   "own_rel": {
+    "multihoprag/RK": {
+     "W": [
+      0.7,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.9809,
+     "price": 0.645488,
+     "kept_links_per_q": 380.2
+    },
+    "musique/RK": {
+     "W": [
+      1.0,
+      0.7,
+      0.0003
+     ],
+     "reach": 0.9647,
+     "price": 0.676491,
+     "kept_links_per_q": 24727.5
+    },
+    "squad/RK": {
+     "W": [
+      1.0,
+      0.5,
+      0.0003
+     ],
+     "reach": 0.9535,
+     "price": 0.529694,
+     "kept_links_per_q": 2776.1
+    },
+    "metaqa/SRK": {
+     "W": [
+      1.0,
+      0.7,
+      0.1
+     ],
+     "reach": 0.9525,
+     "price": 0.719831,
+     "kept_links_per_q": 6982.3
+    },
+    "webqsp/SRK": {
+     "W": [
+      1.0,
+      0.3,
+      0.0003
+     ],
+     "reach": 0.9579,
+     "price": 0.312121,
+     "kept_links_per_q": 536393.9
+    },
+    "hotpotqa/RK": {
+     "W": [
+      1.0,
+      0.2,
+      0.0003
+     ],
+     "reach": 0.9504,
+     "price": 0.189737,
+     "kept_links_per_q": 15921.5
+    },
+    "hotpotqa/SRK": {
+     "W": [
+      1.0,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.9605,
+     "price": 0.09041,
+     "kept_links_per_q": 4061.1
+    },
+    "2wiki/RK": {
+     "W": [
+      1.0,
+      0.03,
+      0.0003
+     ],
+     "reach": 0.9516,
+     "price": 0.028307,
+     "kept_links_per_q": 4386.4
+    },
+    "2wiki/SRK": {
+     "W": [
+      1.0,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.962,
+     "price": 0.033751,
+     "kept_links_per_q": 3938.3
+    }
+   }
+  },
+  "K3": {
+   "program_rel": {
+    "W": [
+     0.9,
+     0.9,
+     0.5
+    ],
+    "tau": 0.9,
+    "per_cell": {
+     "multihoprag/RK": {
+      "reach": 0.999,
+      "price": 0.9
+     },
+     "musique/RK": {
+      "reach": 0.9614,
+      "price": 0.8844
+     },
+     "squad/RK": {
+      "reach": 0.9757,
+      "price": 0.8872
+     },
+     "metaqa/SRK": {
+      "reach": 0.9524,
+      "price": 0.8735
+     },
+     "webqsp/SRK": {
+      "reach": 0.9779,
+      "price": 0.8981
+     },
+     "hotpotqa/RK": {
+      "reach": 0.9669,
+      "price": 0.8773
+     },
+     "hotpotqa/SRK": {
+      "reach": 0.9886,
+      "price": 0.8751
+     },
+     "2wiki/RK": {
+      "reach": 0.9783,
+      "price": 0.8673
+     },
+     "2wiki/SRK": {
+      "reach": 0.9867,
+      "price": 0.8609
+     }
+    }
+   },
+   "required_uniform_share_by_cell": {
+    "multihoprag/RK": 0.3,
+    "musique/RK": 0.9,
+    "squad/RK": 0.9,
+    "metaqa/SRK": 0.9,
+    "webqsp/SRK": 0.9,
+    "hotpotqa/RK": 0.9,
+    "hotpotqa/SRK": 0.7,
+    "2wiki/RK": 0.9,
+    "2wiki/SRK": 0.7
+   },
+   "own_abs": {
+    "multihoprag/RK": {
+     "W": [
+      300,
+      10,
+      10
+     ],
+     "reach": 0.9789,
+     "price": 0.478849,
+     "kept_links_per_q": 282.0
+    },
+    "musique/RK": {
+     "W": [
+      10000,
+      10000,
+      30
+     ],
+     "reach": 0.9512,
+     "price": 0.120582,
+     "kept_links_per_q": 4407.6
+    },
+    "squad/RK": {
+     "W": [
+      10000,
+      10000,
+      10
+     ],
+     "reach": 0.9783,
+     "price": 0.518151,
+     "kept_links_per_q": 2715.6
+    },
+    "metaqa/SRK": {
+     "W": [
+      10000,
+      10000,
+      300
+     ],
+     "reach": 0.9515,
+     "price": 0.765525,
+     "kept_links_per_q": 7425.5
+    },
+    "webqsp/SRK": {
+     "W": [
+      300000,
+      300000,
+      10
+     ],
+     "reach": 0.9598,
+     "price": 0.055635,
+     "kept_links_per_q": 95611.2
+    },
+    "hotpotqa/RK": {
+     "W": [
+      1000,
+      100,
+      10
+     ],
+     "reach": 0.9528,
+     "price": 0.001584,
+     "kept_links_per_q": 132.9
+    },
+    "hotpotqa/SRK": {
+     "W": [
+      300,
+      10,
+      10
+     ],
+     "reach": 0.9694,
+     "price": 0.089996,
+     "kept_links_per_q": 4042.5
+    },
+    "2wiki/RK": {
+     "W": [
+      1000,
+      10,
+      10
+     ],
+     "reach": 0.9557,
+     "price": 0.000765,
+     "kept_links_per_q": 118.5
+    },
+    "2wiki/SRK": {
+     "W": [
+      300,
+      10,
+      10
+     ],
+     "reach": 0.9736,
+     "price": 0.033451,
+     "kept_links_per_q": 3903.3
+    }
+   },
+   "own_rel": {
+    "multihoprag/RK": {
+     "W": [
+      0.3,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.9662,
+     "price": 0.276651,
+     "kept_links_per_q": 162.9
+    },
+    "musique/RK": {
+     "W": [
+      1.0,
+      0.3,
+      0.01
+     ],
+     "reach": 0.9519,
+     "price": 0.297503,
+     "kept_links_per_q": 10874.5
+    },
+    "squad/RK": {
+     "W": [
+      1.0,
+      0.3,
+      0.03
+     ],
+     "reach": 0.9535,
+     "price": 0.355293,
+     "kept_links_per_q": 1862.1
+    },
+    "metaqa/SRK": {
+     "W": [
+      1.0,
+      0.7,
+      0.03
+     ],
+     "reach": 0.9508,
+     "price": 0.708377,
+     "kept_links_per_q": 6871.2
+    },
+    "webqsp/SRK": {
+     "W": [
+      1.0,
+      0.1,
+      0.0003
+     ],
+     "reach": 0.9503,
+     "price": 0.118152,
+     "kept_links_per_q": 203049.5
+    },
+    "hotpotqa/RK": {
+     "W": [
+      1.0,
+      0.001,
+      0.0003
+     ],
+     "reach": 0.9509,
+     "price": 0.002297,
+     "kept_links_per_q": 192.7
+    },
+    "hotpotqa/SRK": {
+     "W": [
+      0.9,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.9658,
+     "price": 0.090247,
+     "kept_links_per_q": 4053.8
+    },
+    "2wiki/RK": {
+     "W": [
+      1.0,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.9594,
+     "price": 0.00106,
+     "kept_links_per_q": 164.3
+    },
+    "2wiki/SRK": {
+     "W": [
+      0.9,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.9671,
+     "price": 0.033674,
+     "kept_links_per_q": 3929.3
+    }
+   }
+  },
+  "K4": {
+   "program_rel": {
+    "W": [
+     1.0,
+     0.9,
+     0.0003
+    ],
+    "tau": 0.992209178,
+    "per_cell": {
+     "multihoprag/RK": {
+      "reach": 1.0,
+      "price": 0.9922
+     },
+     "musique/RK": {
+      "reach": 0.9824,
+      "price": 0.8662
+     },
+     "squad/RK": {
+      "reach": 0.9818,
+      "price": 0.8804
+     },
+     "metaqa/SRK": {
+      "reach": 0.9526,
+      "price": 0.7921
+     },
+     "webqsp/SRK": {
+      "reach": 0.9958,
+      "price": 0.894
+     },
+     "hotpotqa/RK": {
+      "reach": 0.9847,
+      "price": 0.8491
+     },
+     "hotpotqa/SRK": {
+      "reach": 0.9911,
+      "price": 0.8331
+     },
+     "2wiki/RK": {
+      "reach": 0.9925,
+      "price": 0.8264
+     },
+     "2wiki/SRK": {
+      "reach": 0.9949,
+      "price": 0.8079
+     }
+    }
+   },
+   "required_uniform_share_by_cell": {
+    "multihoprag/RK": 0.7,
+    "musique/RK": 1.0,
+    "squad/RK": 0.9,
+    "metaqa/SRK": 1.0,
+    "webqsp/SRK": 0.7,
+    "hotpotqa/RK": 1.0,
+    "hotpotqa/SRK": 0.9,
+    "2wiki/RK": 0.9,
+    "2wiki/SRK": 0.9
+   },
+   "own_abs": {
+    "multihoprag/RK": {
+     "W": [
+      300,
+      10,
+      10
+     ],
+     "reach": 0.9679,
+     "price": 0.478849,
+     "kept_links_per_q": 282.0
+    },
+    "musique/RK": {
+     "W": [
+      100000,
+      100000,
+      10
+     ],
+     "reach": 0.9675,
+     "price": 0.647412,
+     "kept_links_per_q": 23664.6
+    },
+    "squad/RK": {
+     "W": [
+      10000,
+      10000,
+      10
+     ],
+     "reach": 0.9567,
+     "price": 0.518151,
+     "kept_links_per_q": 2715.6
+    },
+    "metaqa/SRK": {
+     "W": [
+      30000,
+      30000,
+      10
+     ],
+     "reach": 0.977,
+     "price": 0.83643,
+     "kept_links_per_q": 8113.3
+    },
+    "webqsp/SRK": {
+     "W": [
+      "inf",
+      "inf",
+      10
+     ],
+     "reach": 0.9993,
+     "price": 0.991008,
+     "kept_links_per_q": 1703091.5
+    },
+    "hotpotqa/RK": {
+     "W": [
+      100000,
+      100000,
+      10
+     ],
+     "reach": 0.9661,
+     "price": 0.233213,
+     "kept_links_per_q": 19569.7
+    },
+    "hotpotqa/SRK": {
+     "W": [
+      300,
+      10,
+      10
+     ],
+     "reach": 0.9502,
+     "price": 0.089996,
+     "kept_links_per_q": 4042.5
+    },
+    "2wiki/RK": {
+     "W": [
+      10000,
+      10000,
+      10
+     ],
+     "reach": 0.9509,
+     "price": 0.013935,
+     "kept_links_per_q": 2159.4
+    },
+    "2wiki/SRK": {
+     "W": [
+      300,
+      10,
+      10
+     ],
+     "reach": 0.9558,
+     "price": 0.033451,
+     "kept_links_per_q": 3903.3
+    }
+   },
+   "own_rel": {
+    "multihoprag/RK": {
+     "W": [
+      0.7,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.9811,
+     "price": 0.645488,
+     "kept_links_per_q": 380.2
+    },
+    "musique/RK": {
+     "W": [
+      1.0,
+      0.7,
+      0.0003
+     ],
+     "reach": 0.9575,
+     "price": 0.676491,
+     "kept_links_per_q": 24727.5
+    },
+    "squad/RK": {
+     "W": [
+      1.0,
+      0.5,
+      0.0003
+     ],
+     "reach": 0.9552,
+     "price": 0.529694,
+     "kept_links_per_q": 2776.1
+    },
+    "metaqa/SRK": {
+     "W": [
+      1.0,
+      0.9,
+      0.0003
+     ],
+     "reach": 0.9526,
+     "price": 0.792122,
+     "kept_links_per_q": 7683.5
+    },
+    "webqsp/SRK": {
+     "W": [
+      1.0,
+      0.2,
+      0.0003
+     ],
+     "reach": 0.9528,
+     "price": 0.215136,
+     "kept_links_per_q": 369720.8
+    },
+    "hotpotqa/RK": {
+     "W": [
+      1.0,
+      0.3,
+      0.1
+     ],
+     "reach": 0.9512,
+     "price": 0.289587,
+     "kept_links_per_q": 24300.2
+    },
+    "hotpotqa/SRK": {
+     "W": [
+      1.0,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.9572,
+     "price": 0.09041,
+     "kept_links_per_q": 4061.1
+    },
+    "2wiki/RK": {
+     "W": [
+      1.0,
+      0.1,
+      0.0003
+     ],
+     "reach": 0.9552,
+     "price": 0.092525,
+     "kept_links_per_q": 14337.6
+    },
+    "2wiki/SRK": {
+     "W": [
+      1.0,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.9599,
+     "price": 0.033751,
+     "kept_links_per_q": 3938.3
+    }
+   }
+  },
+  "K5": {
+   "program_rel": {
+    "W": [
+     0.9,
+     0.9,
+     0.5
+    ],
+    "tau": 0.9,
+    "per_cell": {
+     "multihoprag/RK": {
+      "reach": 0.9987,
+      "price": 0.9
+     },
+     "musique/RK": {
+      "reach": 0.9666,
+      "price": 0.8844
+     },
+     "squad/RK": {
+      "reach": 0.9875,
+      "price": 0.8872
+     },
+     "metaqa/SRK": {
+      "reach": 0.9524,
+      "price": 0.8735
+     },
+     "webqsp/SRK": {
+      "reach": 0.9793,
+      "price": 0.8981
+     },
+     "hotpotqa/RK": {
+      "reach": 0.9958,
+      "price": 0.8773
+     },
+     "hotpotqa/SRK": {
+      "reach": 0.999,
+      "price": 0.8751
+     },
+     "2wiki/RK": {
+      "reach": 0.9977,
+      "price": 0.8673
+     },
+     "2wiki/SRK": {
+      "reach": 0.9986,
+      "price": 0.8609
+     }
+    }
+   },
+   "required_uniform_share_by_cell": {
+    "multihoprag/RK": 0.5,
+    "musique/RK": 0.9,
+    "squad/RK": 0.7,
+    "metaqa/SRK": 0.9,
+    "webqsp/SRK": 0.7,
+    "hotpotqa/RK": 0.7,
+    "hotpotqa/SRK": 0.5,
+    "2wiki/RK": 0.7,
+    "2wiki/SRK": 0.5
+   },
+   "own_abs": {
+    "multihoprag/RK": {
+     "W": [
+      1000,
+      10,
+      10
+     ],
+     "reach": 0.9934,
+     "price": 0.922577,
+     "kept_links_per_q": 543.4
+    },
+    "musique/RK": {
+     "W": [
+      10000,
+      10000,
+      1000
+     ],
+     "reach": 0.9506,
+     "price": 0.123017,
+     "kept_links_per_q": 4496.6
+    },
+    "squad/RK": {
+     "W": [
+      3000,
+      3000,
+      100
+     ],
+     "reach": 0.9511,
+     "price": 0.230201,
+     "kept_links_per_q": 1206.5
+    },
+    "metaqa/SRK": {
+     "W": [
+      10000,
+      10000,
+      300
+     ],
+     "reach": 0.9511,
+     "price": 0.765525,
+     "kept_links_per_q": 7425.5
+    },
+    "webqsp/SRK": {
+     "W": [
+      300000,
+      300000,
+      10
+     ],
+     "reach": 0.96,
+     "price": 0.055635,
+     "kept_links_per_q": 95611.2
+    },
+    "hotpotqa/RK": {
+     "W": [
+      3000,
+      3000,
+      10
+     ],
+     "reach": 0.9548,
+     "price": 0.009646,
+     "kept_links_per_q": 809.4
+    },
+    "hotpotqa/SRK": {
+     "W": [
+      300,
+      10,
+      10
+     ],
+     "reach": 0.9599,
+     "price": 0.089996,
+     "kept_links_per_q": 4042.5
+    },
+    "2wiki/RK": {
+     "W": [
+      1000,
+      1000,
+      10
+     ],
+     "reach": 0.9559,
+     "price": 0.002071,
+     "kept_links_per_q": 320.9
+    },
+    "2wiki/SRK": {
+     "W": [
+      100,
+      10,
+      10
+     ],
+     "reach": 0.9522,
+     "price": 0.033247,
+     "kept_links_per_q": 3879.5
+    }
+   },
+   "own_rel": {
+    "multihoprag/RK": {
+     "W": [
+      0.5,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.978,
+     "price": 0.461069,
+     "kept_links_per_q": 271.6
+    },
+    "musique/RK": {
+     "W": [
+      1.0,
+      0.5,
+      0.0003
+     ],
+     "reach": 0.9563,
+     "price": 0.486808,
+     "kept_links_per_q": 17794.1
+    },
+    "squad/RK": {
+     "W": [
+      0.9,
+      0.5,
+      0.0003
+     ],
+     "reach": 0.9538,
+     "price": 0.520563,
+     "kept_links_per_q": 2728.3
+    },
+    "metaqa/SRK": {
+     "W": [
+      1.0,
+      0.7,
+      0.03
+     ],
+     "reach": 0.9501,
+     "price": 0.708377,
+     "kept_links_per_q": 6871.2
+    },
+    "webqsp/SRK": {
+     "W": [
+      1.0,
+      0.1,
+      0.0003
+     ],
+     "reach": 0.9503,
+     "price": 0.118152,
+     "kept_links_per_q": 203049.5
+    },
+    "hotpotqa/RK": {
+     "W": [
+      0.9,
+      0.03,
+      0.0003
+     ],
+     "reach": 0.9616,
+     "price": 0.029478,
+     "kept_links_per_q": 2473.6
+    },
+    "hotpotqa/SRK": {
+     "W": [
+      0.7,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.9573,
+     "price": 0.089921,
+     "kept_links_per_q": 4039.1
+    },
+    "2wiki/RK": {
+     "W": [
+      0.9,
+      0.003,
+      0.0003
+     ],
+     "reach": 0.9524,
+     "price": 0.003461,
+     "kept_links_per_q": 536.3
+    },
+    "2wiki/SRK": {
+     "W": [
+      0.5,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.951,
+     "price": 0.033366,
+     "kept_links_per_q": 3893.4
+    }
+   }
+  },
+  "K6": {
+   "program_rel": {
+    "W": [
+     0.9,
+     0.9,
+     0.5
+    ],
+    "tau": 0.9,
+    "per_cell": {
+     "multihoprag/RK": {
+      "reach": 0.9987,
+      "price": 0.9
+     },
+     "musique/RK": {
+      "reach": 0.967,
+      "price": 0.8844
+     },
+     "squad/RK": {
+      "reach": 0.9875,
+      "price": 0.8872
+     },
+     "metaqa/SRK": {
+      "reach": 0.9524,
+      "price": 0.8735
+     },
+     "webqsp/SRK": {
+      "reach": 0.9793,
+      "price": 0.8981
+     },
+     "hotpotqa/RK": {
+      "reach": 0.9928,
+      "price": 0.8773
+     },
+     "hotpotqa/SRK": {
+      "reach": 0.999,
+      "price": 0.8751
+     },
+     "2wiki/RK": {
+      "reach": 0.9977,
+      "price": 0.8673
+     },
+     "2wiki/SRK": {
+      "reach": 0.9986,
+      "price": 0.8609
+     }
+    }
+   },
+   "required_uniform_share_by_cell": {
+    "multihoprag/RK": 0.5,
+    "musique/RK": 0.9,
+    "squad/RK": 0.7,
+    "metaqa/SRK": 0.9,
+    "webqsp/SRK": 0.7,
+    "hotpotqa/RK": 0.7,
+    "hotpotqa/SRK": 0.5,
+    "2wiki/RK": 0.7,
+    "2wiki/SRK": 0.5
+   },
+   "own_abs": {
+    "multihoprag/RK": {
+     "W": [
+      1000,
+      10,
+      10
+     ],
+     "reach": 0.9934,
+     "price": 0.922577,
+     "kept_links_per_q": 543.4
+    },
+    "musique/RK": {
+     "W": [
+      10000,
+      10000,
+      1000
+     ],
+     "reach": 0.9501,
+     "price": 0.123017,
+     "kept_links_per_q": 4496.6
+    },
+    "squad/RK": {
+     "W": [
+      3000,
+      3000,
+      100
+     ],
+     "reach": 0.9511,
+     "price": 0.230201,
+     "kept_links_per_q": 1206.5
+    },
+    "metaqa/SRK": {
+     "W": [
+      10000,
+      10000,
+      300
+     ],
+     "reach": 0.9511,
+     "price": 0.765525,
+     "kept_links_per_q": 7425.5
+    },
+    "webqsp/SRK": {
+     "W": [
+      300000,
+      300000,
+      10
+     ],
+     "reach": 0.96,
+     "price": 0.055635,
+     "kept_links_per_q": 95611.2
+    },
+    "hotpotqa/RK": {
+     "W": [
+      3000,
+      3000,
+      10
+     ],
+     "reach": 0.9536,
+     "price": 0.009646,
+     "kept_links_per_q": 809.4
+    },
+    "hotpotqa/SRK": {
+     "W": [
+      300,
+      10,
+      10
+     ],
+     "reach": 0.9599,
+     "price": 0.089996,
+     "kept_links_per_q": 4042.5
+    },
+    "2wiki/RK": {
+     "W": [
+      1000,
+      1000,
+      10
+     ],
+     "reach": 0.9553,
+     "price": 0.002071,
+     "kept_links_per_q": 320.9
+    },
+    "2wiki/SRK": {
+     "W": [
+      100,
+      10,
+      10
+     ],
+     "reach": 0.9526,
+     "price": 0.033247,
+     "kept_links_per_q": 3879.5
+    }
+   },
+   "own_rel": {
+    "multihoprag/RK": {
+     "W": [
+      0.5,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.978,
+     "price": 0.461069,
+     "kept_links_per_q": 271.6
+    },
+    "musique/RK": {
+     "W": [
+      1.0,
+      0.5,
+      0.0003
+     ],
+     "reach": 0.9563,
+     "price": 0.486808,
+     "kept_links_per_q": 17794.1
+    },
+    "squad/RK": {
+     "W": [
+      0.9,
+      0.5,
+      0.0003
+     ],
+     "reach": 0.9538,
+     "price": 0.520563,
+     "kept_links_per_q": 2728.3
+    },
+    "metaqa/SRK": {
+     "W": [
+      1.0,
+      0.7,
+      0.03
+     ],
+     "reach": 0.9501,
+     "price": 0.708377,
+     "kept_links_per_q": 6871.2
+    },
+    "webqsp/SRK": {
+     "W": [
+      1.0,
+      0.1,
+      0.0003
+     ],
+     "reach": 0.9503,
+     "price": 0.118152,
+     "kept_links_per_q": 203049.5
+    },
+    "hotpotqa/RK": {
+     "W": [
+      0.9,
+      0.03,
+      0.0003
+     ],
+     "reach": 0.9575,
+     "price": 0.029478,
+     "kept_links_per_q": 2473.6
+    },
+    "hotpotqa/SRK": {
+     "W": [
+      0.7,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.9563,
+     "price": 0.089921,
+     "kept_links_per_q": 4039.1
+    },
+    "2wiki/RK": {
+     "W": [
+      0.9,
+      0.003,
+      0.0003
+     ],
+     "reach": 0.9519,
+     "price": 0.003461,
+     "kept_links_per_q": 536.3
+    },
+    "2wiki/SRK": {
+     "W": [
+      0.7,
+      0.0003,
+      0.0003
+     ],
+     "reach": 0.9641,
+     "price": 0.03352,
+     "kept_links_per_q": 3911.3
+    }
+   }
+  }
+ },
+ "best_score": "K3",
+ "rule": {
+  "kind": "c2r",
+  "score": "K3",
+  "keys": [
+   "ur",
+   "-rank",
+   "votes",
+   "dot"
+  ],
+  "W": [
+   0.9,
+   0.9,
+   0.5
+  ],
+  "tau": 0.9,
+  "per_cell_on_Q": {
+   "multihoprag/RK": {
+    "reach": 0.999,
+    "price": 0.9
+   },
+   "musique/RK": {
+    "reach": 0.9614,
+    "price": 0.8844
+   },
+   "squad/RK": {
+    "reach": 0.9757,
+    "price": 0.8872
+   },
+   "metaqa/SRK": {
+    "reach": 0.9524,
+    "price": 0.8735
+   },
+   "webqsp/SRK": {
+    "reach": 0.9779,
+    "price": 0.8981
+   },
+   "hotpotqa/RK": {
+    "reach": 0.9669,
+    "price": 0.8773
+   },
+   "hotpotqa/SRK": {
+    "reach": 0.9886,
+    "price": 0.8751
+   },
+   "2wiki/RK": {
+    "reach": 0.9783,
+    "price": 0.8673
+   },
+   "2wiki/SRK": {
+    "reach": 0.9867,
+    "price": 0.8609
+   }
+  },
+  "node_bound": {
+   "multihoprag/RK": {
+    "price": 0.9,
+    "kept_links_per_q": 530.1,
+    "candidate_links_per_q": 589.0,
+    "price_at_2500_links_per_q": 1.0,
+    "S_links_per_q": 0.0
+   },
+   "musique/RK": {
+    "price": 0.8844,
+    "kept_links_per_q": 32327.1,
+    "candidate_links_per_q": 36552.6,
+    "price_at_2500_links_per_q": 0.06839,
+    "S_links_per_q": 0.0
+   },
+   "squad/RK": {
+    "price": 0.8872,
+    "kept_links_per_q": 4649.8,
+    "candidate_links_per_q": 5241.0,
+    "price_at_2500_links_per_q": 0.47701,
+    "S_links_per_q": 0.0
+   },
+   "metaqa/SRK": {
+    "price": 0.8735,
+    "kept_links_per_q": 8472.9,
+    "candidate_links_per_q": 9699.9,
+    "price_at_2500_links_per_q": 0.25773,
+    "S_links_per_q": 3773.6
+   },
+   "webqsp/SRK": {
+    "price": 0.8981,
+    "kept_links_per_q": 1543425.0,
+    "candidate_links_per_q": 1718544.7,
+    "price_at_2500_links_per_q": 0.00145,
+    "S_links_per_q": 28360.3
+   },
+   "hotpotqa/RK": {
+    "price": 0.8773,
+    "kept_links_per_q": 73617.2,
+    "candidate_links_per_q": 83913.4,
+    "price_at_2500_links_per_q": 0.02979,
+    "S_links_per_q": 0.0
+   },
+   "hotpotqa/SRK": {
+    "price": 0.8751,
+    "kept_links_per_q": 39308.4,
+    "candidate_links_per_q": 44918.8,
+    "price_at_2500_links_per_q": 0.05566,
+    "S_links_per_q": 3975.6
+   },
+   "2wiki/RK": {
+    "price": 0.8673,
+    "kept_links_per_q": 134396.0,
+    "candidate_links_per_q": 154959.1,
+    "price_at_2500_links_per_q": 0.01613,
+    "S_links_per_q": 0.0
+   },
+   "2wiki/SRK": {
+    "price": 0.8609,
+    "kept_links_per_q": 100455.6,
+    "candidate_links_per_q": 116686.7,
+    "price_at_2500_links_per_q": 0.02142,
+    "S_links_per_q": 3814.6
+   }
+  }
+ },
+ "seconds": 36.1
+}
