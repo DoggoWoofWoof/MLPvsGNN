@@ -124,11 +124,11 @@ def cmd_splade(a):
     top_i = np.full((nq, K), -1, np.int64)
     done, toks, lim = 0, 0, 0
     if state.exists():
-        z = np.load(state)
-        if int(z["n_nodes"]) != len(texts) or int(z["nq"]) != nq:
-            Z.stop("splade state belongs to another package")
-        top_s, top_i, done = z["top_s"], z["top_i"].astype(np.int64), int(z["done"])
-        toks, lim = int(z["tokens"]), int(z["at_limit"])
+        with np.load(state) as z:                       # A5: closed before the next checkpoint replaces the file (Windows refuses otherwise)
+            if int(z["n_nodes"]) != len(texts) or int(z["nq"]) != nq:
+                Z.stop("splade state belongs to another package")
+            top_s, top_i, done = np.array(z["top_s"]), z["top_i"].astype(np.int64), int(z["done"])
+            toks, lim = int(z["tokens"]), int(z["at_limit"])
         Z.log(f"splade resumes at node {done:,}")
     t1, nb = time.time(), 0
     while done < len(texts):
