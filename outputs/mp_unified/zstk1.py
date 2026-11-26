@@ -486,36 +486,6 @@ def call(lo, hi, ref):
     return "ABOVE" if lo > ref else ("BELOW" if hi < ref else "LEVEL")
 
 
-def bm25_top(texts, qtexts, k=TOPK, k1=1.5, b=0.75, chunk=64):
-    """Okapi BM25 over the node texts (lowercase [a-z0-9] tokens, Lucene-style idf); ties to the lower id; positive scores only."""
-    import scipy.sparse as sp
-    from sklearn.feature_extraction.text import CountVectorizer
-    cv = CountVectorizer(lowercase=True, token_pattern=r"[a-z0-9]+", dtype=np.float32)
-    X = cv.fit_transform(texts).tocsr()
-    n = X.shape[0]
-    dl = np.asarray(X.sum(1)).ravel()
-    avg = float(dl.mean()) or 1.0
-    df = np.bincount(X.indices, minlength=X.shape[1]).astype(np.float64)
-    idf = np.log(1.0 + (n - df + 0.5) / (df + 0.5)).astype(np.float32)
-    rows = np.repeat(np.arange(n), np.diff(X.indptr))
-    tf = X.data
-    X.data = (idf[X.indices] * tf * (k1 + 1.0) / (tf + k1 * (1.0 - b + b * dl[rows] / avg))).astype(np.float32)
-    XT = X.T.tocsr()
-    Qc = cv.transform(qtexts).tocsr()
-    top = np.full((len(qtexts), k), -1, np.int64)
-    for q0 in range(0, len(qtexts), chunk):
-        S = (Qc[q0:q0 + chunk] @ XT).toarray()
-        for r in range(S.shape[0]):
-            s = S[r]
-            kk = min(k, int((s > 0).sum()))
-            if kk == 0:
-                continue
-            cand = np.argpartition(-s, kk - 1)[:kk]
-            o = np.lexsort((cand, -s[cand]))
-            top[q0 + r, :kk] = cand[o]
-    return top
-
-
 def cmd_first(a):
     ds = KB[a.kb]
     E.served_root = lambda: PKG
@@ -541,10 +511,7 @@ def cmd_first(a):
     Q = Qall[np.asarray(test_rows)]
     top_d, _, _ = E.search(Q, E.vec_shards(root, "e3v", ds, "docs"), TOPK)
     log(f"dense search: {Q.shape[0]} questions ({time.time() - t0:.0f} s)")
-    texts = [json.loads(x)["text"] for x in open(root / ds / "nodes.jsonl", encoding="utf-8")]
-    top_b = bm25_top(texts, qtexts)
-    log(f"BM25: {len(texts):,} nodes ({time.time() - t0:.0f} s)")
-    legs = {"dense_e3v": top_d, "bm25": top_b}
+    legs = {"dense_e3v": top_d}                                   # A4: no BM25 leg (docs/STK1_STARK_PACKAGE.md section 5.4)
     if a.splade_top:
         z = np.load(a.splade_top)["ids"][np.asarray(test_rows)]
         legs["splade"] = z.astype(np.int64)
@@ -573,10 +540,6 @@ def cmd_first(a):
                 s = rec["legs"][leg][k]
                 cl[k] = {"ours": s["mean"], "published": ref, "diff": round(s["mean"] - ref, 2), "call": call(s["lo"], s["hi"], ref)}
             rec.setdefault("calls", {}).setdefault(name, {})[leg] = cl
-    pb, sb = PUBLISHED[a.kb]["BM25"], rec["legs"]["bm25"]
-    gb = max(abs(sb["hit1"]["mean"] - pb[0]), abs(sb["r20"]["mean"] - pb[2]))
-    rec["G_B"] = {"hit1_diff": round(sb["hit1"]["mean"] - pb[0], 2), "r20_diff": round(sb["r20"]["mean"] - pb[2], 2),
-                  "max_abs": round(gb, 2), "call": "REPRODUCES" if gb <= 3 else ("CLOSE" if gb <= 8 else "DIFFERENT")}
     d = ROOT / a.kb
     d.mkdir(parents=True, exist_ok=True)
     tag = "first" if not a.limit_q else f"first-smoke{a.limit_q}"
@@ -641,10 +604,6 @@ def selftest():
     chk("hit5/r20", m["hit5"].tolist() == [1.0, 0.0] and abs(m["r20"][0] - 1.0) < 1e-9 and m["r20"][1] == 0.0)
     chk("mrr", abs(m["mrr"][0] - 0.5) < 1e-9 and m["mrr"][1] == 0.0)
     chk("all@5", m["ALL@5"].tolist() == [1.0, 0.0] and m["ALL@2"].tolist() == [0.0, 0.0])
-    # BM25: the document sharing the query's rare terms ranks first, ties to the lower id
-    docs = ["red apple pie", "green apple", "blue sky over the sea", "apple pie recipe with red apples"]
-    tb = bm25_top(docs, ["red apple pie", "sky sea"], k=4)
-    chk("bm25 order", tb[0, 0] == 0 and tb[1, 0] == 2 and (tb[1, 1] == -1))
     # id_name accepts both directions
     chk("id_name", id_name({"a": 0, "b": 1}) == {0: "a", 1: "b"} and id_name({0: "a", 1: "b"}) == {0: "a", 1: "b"})
     log(f"selftest PASS ({ok} checks)")
