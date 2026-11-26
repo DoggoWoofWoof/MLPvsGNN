@@ -109,6 +109,12 @@ The user, 27 Nov: **"by smaller i also mean smaller vectors and faster encoding 
 - **Code only, no rule.** Every file replace in `zspl1.py` now retries on a PermissionError (40 tries, 3 s apart) before it raises, and the block records are de-duplicated by block end with the last record kept, so a block redone after a resume counts once in the median. Selftest 14 checks pass. The failed row is re-sent by the feeder; the other rows are unchanged.
 - **Disclosed.** The first read of the MultiHop-RAG cells (three candidates, all calls) was made before this amendment, on rows that had finished; no later row changes them. The reader's rule, the pass line and the pick are not touched.
 
+### 8.6 Amendment A6 (27 Nov, 02:28 IST, a correction to A5, before any SQuAD or MuSiQue candidate number was read)
+
+- **A5's reading was wrong for two of the three failures.** The re-sent C2 SQuAD row failed at 02:2x exactly as the first retry had (01:22): on `os.replace` of the checkpoint, after "resume at 10,240", with the 40 retries of A5 spent. The cause is in `zspl1.py`: the resume path opened the checkpoint with `np.load` and kept the file object open for the whole run, and Windows refuses to replace an open file (reproduced in a scratch folder: PermissionError 5 with the file open, success after `close()`). So the resumed runs could never save a checkpoint; the first failure (01:00, a fresh run, after block 6) is not explained by this and is still taken as a short lock by another process.
+- **Code only.** The resume path reads the checkpoint inside a `with` block and copies the arrays; the selftest gains a check that a checkpoint read for a resume does not block its own replacement (15 checks pass). Rule, pass line, pick, batch size, A4's median speed and every list are as before.
+- **The chain.** The feeder dropped the dependent rows after the second failure (C3 on SQuAD and the three MuSiQue rows were never run). They are re-queued under new names (`spl1h-*`), the C2 SQuAD row resuming from its checkpoint at 10,240 nodes (its blocks are written once per block end, A5). No SQuAD or MuSiQue candidate number has been read: C1's SQuAD row finished but was not read.
+
 ## 9. Expectations, written before any number
 
 - **X1.** C2 (the highest printed score) is BETTER or LEVEL on all six cells; it is the largest of the three, so it is the pick only if C1 and C3 do not pass.

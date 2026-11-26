@@ -277,10 +277,10 @@ def cmd_encode(a):
     st = d / "state.npz"
     top_s, top_i, done = np.full((len(qt), k), -np.inf, np.float32), np.full((len(qt), k), -1, np.int64), 0
     if st.is_file():
-        z = np.load(st, allow_pickle=False)
-        if int(z["n"]) == n and int(z["k"]) == k and int(z["nq"]) == len(qt):
-            top_s, top_i, done = z["top_s"], z["top_i"], int(z["done"])
-            log(f"resume at {done:,}")
+        with np.load(st, allow_pickle=False) as z:     # A6: closed before the next checkpoint replaces the file (Windows refuses otherwise)
+            if int(z["n"]) == n and int(z["k"]) == k and int(z["nq"]) == len(qt):
+                top_s, top_i, done = np.array(z["top_s"]), np.array(z["top_i"]), int(z["done"])
+                log(f"resume at {done:,}")
     tok = get_tok(m)
     bl = d / "blocks.jsonl"
     if done == 0 and bl.is_file():
@@ -544,6 +544,19 @@ def selftest():
     chk("block_rates median ignores a stalled block and a zero-second row", len(br) == 3 and abs(bm - 50.0) < 1e-9)
     br2, _ = block_rates([{"end": 1, "nodes": 100, "seconds": 1.0}, {"end": 1, "nodes": 100, "seconds": 4.0}])
     chk("block_rates keeps the last record of a block redone after a resume", br2 == [25.0])
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:    # A6: the checkpoint file can be replaced after it was read for a resume
+        stp, tmp_ = Path(td) / "state.npz", Path(td) / "state.tmp.npz"
+        np.savez(stp, top_s=np.zeros((2, 3), np.float32), done=1)
+        with np.load(stp, allow_pickle=False) as z_:
+            keep = np.array(z_["top_s"])
+        np.savez(tmp_, top_s=keep + 1, done=2)
+        try:
+            replace_retry(tmp_, stp, tries=2, wait=0.1)
+            okr = int(np.load(stp)["done"]) == 2
+        except PermissionError:
+            okr = False
+    chk("a checkpoint read for a resume does not block its own replacement", okr)
     # the A2 pick: lowest rank sum over parameters, non-zeros per node and speed; a tie goes to the fewer parameters
     pk, tb = pick_of(["c3", "c1", "c2"], {"c1": 30, "c2": 67, "c3": 23}, {"c1": 262.0, "c2": 252.0, "c3": 339.0}, {"c1": 900.0, "c2": 500.0, "c3": 1500.0})
     chk("pick_of rank sums (c1: 2+2+2, c2: 3+1+3, c3: 1+3+1)", pk == "c3" and tb["c1"]["rank_sum"] == 6 and tb["c2"]["rank_sum"] == 7 and tb["c3"]["rank_sum"] == 5)
