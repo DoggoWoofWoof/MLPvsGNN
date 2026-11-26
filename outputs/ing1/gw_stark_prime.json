@@ -1,0 +1,47 @@
+{
+ "stage": "ING1 G-W",
+ "declared_in": "docs/ING1_INGESTION_AND_STAGE_REGISTRY.md",
+ "dataset": "stark_prime",
+ "verdict": "PASS",
+ "gates": {
+  "W1 nodes.jsonl is the record's": {
+   "verdict": "PASS",
+   "detail": "129,375 lines, sha256 9d14d8fa4c25"
+  },
+  "W2 the pinned layout grade names this node file": {
+   "verdict": "N/A",
+   "detail": "no legacy grade for this dataset"
+  },
+  "W3 queries read in row order, every gold resolves": {
+   "verdict": "PASS",
+   "detail": "11,204 questions, 0 without a node gold, 0 listing a node twice (collapsed)"
+  },
+  "W4 node texts equal zenc.doc_chunks": {
+   "verdict": "PASS",
+   "detail": "129,375 texts, f54a4dd49906"
+  },
+  "W5 questions equal zenc.query_texts": {
+   "verdict": "PASS",
+   "detail": "11,204 rows"
+  },
+  "W6 golds against a legacy reader": {
+   "verdict": "N/A",
+   "detail": "no legacy reader exists for this dataset (it is new)"
+  },
+  "W7 e3v docs shards": {
+   "verdict": "N/A",
+   "detail": "4 of 4 shards are not on this machine"
+  },
+  "W7 e3v queries shards": {
+   "verdict": "N/A",
+   "detail": "1 of 1 shards are not on this machine"
+  }
+ },
+ "legacy_compared": true,
+ "seconds": 2.2,
+ "record_sha256": "42327f55684ddcb35084cbc22538514b0b7a9c339d43f31a9478c90df2ecc8e9",
+ "code_sha256": {
+  "outputs/mp_unified/zworld.py": "5a78c595f5f56ca22eab86f56904a105bcce13c4a7540a465de66e73fba49a1d"
+ },
+ "utc": "2026-11-26T17:56:18Z"
+}

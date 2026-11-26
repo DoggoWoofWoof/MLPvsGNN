@@ -1,0 +1,55 @@
+{
+ "stage": "ING1 G-W",
+ "declared_in": "docs/ING1_INGESTION_AND_STAGE_REGISTRY.md",
+ "dataset": "webqsp",
+ "verdict": "PASS",
+ "gates": {
+  "W1 nodes.jsonl is the record's": {
+   "verdict": "PASS",
+   "detail": "2,592,894 lines, sha256 b39c615122ad"
+  },
+  "W2 the pinned layout grade names this node file": {
+   "verdict": "PASS",
+   "detail": "ul2c: equal"
+  },
+  "W3 queries read in row order, every gold resolves": {
+   "verdict": "PASS",
+   "detail": "4,737 questions, 143 without a node gold, 69 listing a node twice (collapsed)"
+  },
+  "W4 node texts equal zenc.doc_chunks": {
+   "verdict": "PASS",
+   "detail": "2,592,894 texts, 233539373aff"
+  },
+  "W5 questions equal zenc.query_texts": {
+   "verdict": "PASS",
+   "detail": "4,737 rows"
+  },
+  "W6 golds equal zul1.carve_questions (both carves)": {
+   "verdict": "PASS",
+   "detail": "1,503 questions, 0 differ []"
+  },
+  "W7 e3v docs shards equal zenc.vec_shards": {
+   "verdict": "PASS",
+   "detail": "65 shards"
+  },
+  "W7 e3v queries shards equal zenc.vec_shards": {
+   "verdict": "PASS",
+   "detail": "1 shards"
+  },
+  "W7 frozen docs shards equal zenc.vec_shards": {
+   "verdict": "PASS",
+   "detail": "65 shards"
+  },
+  "W7 frozen queries shards equal zenc.vec_shards": {
+   "verdict": "PASS",
+   "detail": "1 shards"
+  }
+ },
+ "legacy_compared": true,
+ "seconds": 42.5,
+ "record_sha256": "83c4814b3c6b7ccd30dfa8299db59413cb520bbfd76b4a30d50ea926d5a43670",
+ "code_sha256": {
+  "outputs/mp_unified/zworld.py": "5a78c595f5f56ca22eab86f56904a105bcce13c4a7540a465de66e73fba49a1d"
+ },
+ "utc": "2026-11-26T17:52:33Z"
+}
