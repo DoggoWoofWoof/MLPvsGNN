@@ -76,12 +76,15 @@ def load_cell_chunks(d, v, part):
     files = sorted(wd.glob(f"{v}_{part}_*.npz"))
     if not files:
         return None, None
-    parts, nq, shas = [], None, set()
+    parts, nq, shas, rmeta = [], None, set(), set()
     for f in files:
         with np.load(f) as z:
             shas.add(str(z["zsha"]))
-            parts.append({k: z[k] for k in z.files if k not in ("zsha", "cstats")})
+            rmeta.add((str(z["rscore"]), tuple(map(tuple, z["rtriples"].tolist())), str(z["zrsha"])) if "rscore" in z.files else None)     # A4: a restricted chunk (zgp3r.py)
+            parts.append({k: z[k] for k in z.files if k not in ("zsha", "zrsha", "rscore", "rtriples", "cstats")})
             nq = int(z["nq"])
+    if len(rmeta) != 1:
+        stop(f"{d}/{v}/{part}: the chunks mix full and restricted walks or sets of triples: {sorted(map(str, rmeta))}")
     want = want_questions(d, nq, part)
     got = np.sort(np.concatenate([p["qidx"] for p in parts]))
     if not np.array_equal(got, want):
@@ -94,6 +97,8 @@ def load_cell_chunks(d, v, part):
         if k != "nq":
             cat[k] = np.concatenate([p[k] for p in parts])
     cat["gq"] = np.concatenate(gq)
+    rm = next(iter(rmeta))
+    cat["restricted"] = None if rm is None else {"score": rm[0], "triples": [tuple(t) for t in rm[1]], "zgp3r_sha256": rm[2]}
     return cat, shas
 
 
@@ -120,32 +125,122 @@ def check_extract(d, part):
     return {"files": [f.name for f in fs], "gates": r["gates"]}
 
 
+def triple_eval(c, k, ts):
+    """ALL share and mean pool size at the given triples (tuples of ladder indices), score index k of the chunk arrays, and the per-question detail. Entries of triples that a restricted walk
+    did not read are -1 in the chunk and stop the run."""
+    Q = c["nfree"].size
+    t1 = np.array([t[0] for t in ts])
+    t2 = np.array([t[1] for t in ts])
+    t3 = np.array([t[2] for t in ts])
+    size = c["nfree"][:, None].astype(np.int64) + c["sz1"][:, k][:, t1] + c["sz2"][:, k][:, t1, t2] + c["sz3"][:, k][:, t1, t2, t3]
+    if bool((size < 0).any()):
+        stop("a size of an invalid triple (or of a triple the restricted walk did not read) was read")
+    glev, gfree = c["glev"], c["gfree"]
+    cov = np.zeros((glev.size, len(ts)), bool)
+    cov |= (gfree | (glev == 0))[:, None]
+    m1 = glev == 1
+    cov[m1] |= c["gb1"][m1, k][:, None] <= t1[None, :]
+    m2 = glev == 2
+    cov[m2] |= c["gb2"][m2, k][:, t1] <= t2[None, :]
+    m3 = glev == 3
+    cov[m3] |= c["gb3"][m3, k][:, t1, t2] <= t3[None, :]
+    unc = np.zeros((Q, len(ts)), np.int64)
+    np.add.at(unc, c["gq"], (~cov).astype(np.int64))
+    allq = unc == 0
+    return {"all": allq.mean(axis=0), "nodes": size.mean(axis=0), "allq": allq, "size": size, "cov": cov}
+
+
+SLOT_KINDS = (("GP", 0), ("CH", 1))
+
+
+def slot_reads(c, cov, S, v):
+    """A4 (beside, decides nothing): the slots of the dev slice (both ends gold nodes, outputs/gp3/<d>/slots.npz) against the stored gold coverage `cov` (golds x triples). Per kind: the slots
+    of the chunks' questions, those linked in version v (pool-free), those whose two ends are both in Pool(q) at each triple, and those linked AND in the pool (the slot recall)."""
+    qidx, Q = c["qidx"], c["qidx"].size
+    order = np.argsort(qidx, kind="stable")
+    qs = qidx[order]
+    pos = np.minimum(np.searchsorted(qs, S["q"]), Q - 1)
+    ok = qs[pos] == S["q"]
+    row = order[pos]
+    goff = np.searchsorted(c["gq"], np.arange(Q))
+    glen = np.bincount(c["gq"], minlength=Q)
+    ia, ib = S["ia"].astype(np.int64)[ok], S["ib"].astype(np.int64)[ok]
+    r = row[ok]
+    if bool((ia >= glen[r]).any() or (ib >= glen[r]).any() or (ia == ib).any()):
+        stop("slot reads: a slot's gold index is beyond the golds the chunks hold, or its two ends are one gold (slots.npz and the chunks disagree)")
+    kept = cov[goff[r] + ia] & cov[goff[r] + ib]
+    lk = S[f"linked_{v}"][ok]
+    kind = S["kind"][ok]
+    sq = S["q"][ok]
+    out = {}
+    for nm, kd in SLOT_KINDS:
+        m = kind == kd
+        n = int(m.sum())
+        if n == 0:
+            continue
+        out[nm] = {"slots": n, "questions": int(np.unique(sq[m]).size), "linked": int(lk[m].sum()), "kept": kept[m].sum(axis=0).astype(np.int64).tolist(),
+                   "kept_linked": (kept[m] & lk[m][:, None]).sum(axis=0).astype(np.int64).tolist()}
+    return out
+
+
+def slot_triples(rec, name):
+    """The triples read for slots in one cell: floor, the final rule's, the cell's own optimum of the final score, the final score's P2 triples, the ladder top."""
+    K = rec["final"]["score"]
+    sc = rec["scores"][K]
+    tr = {"floor": (0, 0, 0), "final": tuple(rec["final"]["triple"])}
+    if sc["own"][name]:
+        tr["own"] = tuple(sc["own"][name]["triple"])
+    for x in P2_N:
+        if sc["P2"][str(x)]:
+            tr[f"P2_{x}"] = tuple(sc["P2"][str(x)]["triple"])
+    tr["top"] = TRIPLES[-1]
+    return tr
+
+
+def slot_reads_all(rec, chunks):
+    """Per cell with a slots file: the slot reads at the triples above, for the final score."""
+    out = {}
+    if not rec["final"]:
+        return out
+    k = SCORES.index(rec["final"]["score"])
+    for name, c in chunks.items():
+        d, v = name.split("/")
+        f = OUT / d / "slots.npz"
+        if not f.is_file():
+            log(f"{name}: no slots.npz, no slot read")
+            continue
+        S = dict(np.load(f))
+        tr = slot_triples(rec, name)
+        ts = list(tr.values())
+        ev = triple_eval(c, k, ts)
+        rd = slot_reads(c, ev["cov"], S, v)
+        for kind, x in rd.items():
+            x["triples"] = {nm: {"triple": list(t), "N": [LADDER[i] for i in t], "j": j} for j, (nm, t) in enumerate(tr.items())}
+        out[name] = {"reads": rd, "slots_npz_sha256": hashlib.sha256((OUT / d / "slots.npz").read_bytes()).hexdigest()}
+    return out
+
+
+def md_slots(rec):
+    sr = rec.get("slot_reads") or {}
+    if not sr:
+        return ""
+    L = ["", f"**Slot reads (A4, beside; decides nothing), final score {rec['final']['score']}.** Slots = pairs of golds (GP) and MuSiQue chain pairs (CH); both ends are gold nodes. Link recall = slots linked in the cell's any-link graph, whatever the pool "
+         "(pool-free); pool pairs = slots with both ends in Pool(q); slot recall = slots linked AND with both ends in Pool(q) (the share of slots a model with this pool can use as a direct link). Intervals (Wilson over slots) treat slots as independent.", ""]
+    rows = []
+    for name, x in sr.items():
+        for kind, y in x["reads"].items():
+            for nm, tinfo in y["triples"].items():
+                j, n = tinfo["j"], y["slots"]
+                lo, hi = wilson(y["kept_linked"][j], n)
+                rows.append([name, kind, f"{n:,}", nm, " / ".join(fmt(g) for g in tinfo["N"]), f"{100 * y['linked'] / n:.1f}", f"{100 * y['kept'][j] / n:.1f}", f"{100 * y['kept_linked'][j] / n:.1f} [{100 * lo:.1f}, {100 * hi:.1f}]",
+                             f"{100 * y['kept_linked'][j] / y['linked']:.1f}" if y["linked"] else "-"])
+    L += [table(["cell", "kind", "slots", "triple", "N_1 / N_2 / N_3", "link recall %", "pool pairs %", "slot recall % [Wilson 95%]", "linked slots kept in the pool %"], rows), ""]
+    return "\n".join(L)
+
+
 def cell_curves(c):
     """Per score index: ALL share and mean pool size of every triple, and the per-question detail."""
-    Q = c["nfree"].size
-    NS = c["sz1"].shape[1]
-    t1 = np.array([t[0] for t in TRIPLES])
-    t2 = np.array([t[1] for t in TRIPLES])
-    t3 = np.array([t[2] for t in TRIPLES])
-    out = {}
-    for k in range(NS):
-        size = c["nfree"][:, None].astype(np.int64) + c["sz1"][:, k][:, t1] + c["sz2"][:, k][:, t1, t2] + c["sz3"][:, k][:, t1, t2, t3]
-        if bool((size < 0).any()):
-            stop("a size of an invalid triple was read")
-        glev, gfree = c["glev"], c["gfree"]
-        cov = np.zeros((glev.size, len(TRIPLES)), bool)
-        cov |= (gfree | (glev == 0))[:, None]
-        m1 = glev == 1
-        cov[m1] |= c["gb1"][m1, k][:, None] <= t1[None, :]
-        m2 = glev == 2
-        cov[m2] |= c["gb2"][m2, k][:, t1] <= t2[None, :]
-        m3 = glev == 3
-        cov[m3] |= c["gb3"][m3, k][:, t1, t2] <= t3[None, :]
-        unc = np.zeros((Q, len(TRIPLES)), np.int64)
-        np.add.at(unc, c["gq"], (~cov).astype(np.int64))
-        allq = unc == 0
-        out[k] = {"all": allq.mean(axis=0), "nodes": size.mean(axis=0), "allq": allq, "size": size}
-    return out
+    return {k: triple_eval(c, k, TRIPLES) for k in range(c["sz1"].shape[1])}
 
 
 def program(cur, cells, score_idx, p1_cells=None):
@@ -295,7 +390,7 @@ def md_quarter(rec):
                 r.append("infeasible" if p is None else f"{p['min_all']:.4f} ({min(p['all'], key=lambda c: p['all'][c])}; N {' / '.join(fmt(x) for x in p['N'])})")
             rows.append(r)
         L += [table(["score"] + [f"P2 ceiling {n:,}" for n in P2_N], rows), ""]
-    return "\n".join(L)
+    return "\n".join(L) + md_slots(rec)
 
 
 # ── solve (the quarter) ──────────────────────────────────────────────────────
@@ -303,7 +398,7 @@ def md_quarter(rec):
 
 def cmd_solve(a):
     t0 = time.time()
-    cells, cur, shas, gold_levels, cap_share, gates = [], {}, set(), {}, {}, {}
+    cells, cur, shas, gold_levels, cap_share, gates, chunks = [], {}, set(), {}, {}, {}, {}
     for d, v in CELLS:
         c, sh = load_cell_chunks(d, v, "q")
         if c is None:
@@ -311,6 +406,7 @@ def cmd_solve(a):
         name = cell_name(d, v)
         cells.append(name)
         shas |= sh
+        chunks[name] = c
         cur[name] = cell_curves(c)
         gl, gf = c["glev"], c["gfree"]
         gold_levels[name] = [int((gf | (gl == 0)).sum())] + [int((~gf & (gl == j)).sum()) for j in (1, 2, 3)] + [int((~gf & (gl >= 4)).sum())]
@@ -346,6 +442,7 @@ def cmd_solve(a):
         ju["null"] = null_verdict(ju["scores"], ju["final"]["score"]) if ju["final"] else {"call": "NO_FINAL", "random": []}
         rec["uncapped"] = ju
         log(f"uncapped reading over {len(cu)} of {len(cells)} cells ({', '.join(cu)}): final {ju['final']}")
+    rec["slot_reads"] = slot_reads_all(rec, chunks)                                       # A4: beside, decides nothing (reads the stored gold coverage and slots.npz)
     L2.wjson(OUT / "rule_q.json", rec)
     (OUT / "report_q.md").write_text(md_quarter(rec) + "\n", encoding="utf-8", newline="\n")
     log(f"filed {rel(OUT / 'rule_q.json')} and report_q.md ({time.time() - t0:.0f} s); final {rec['final']}; null {rec['null']['call']}")
@@ -466,7 +563,45 @@ def selftest():
             assert np.array_equal(cur[k]["size"], want_size), k
         pr = program({"toy": cur}, ["toy"], 0)
         assert pr["floor"]["toy"]["nodes"] == float(cur[0]["nodes"][0])
-        # P1 / P2 equal the plain search on random matrices
+        # slot reads (A4) equal a loop on the stored coverage; a question whose golds are all in the pool keeps every slot; slots of questions outside the chunks are ignored
+        c2 = dict(c)
+        c2["qidx"] = (c["qidx"] * 3 + 1).astype(np.int32)
+        Qn, glen = c["qidx"].size, np.bincount(c["gq"], minlength=c["qidx"].size)
+        goff = np.searchsorted(c["gq"], np.arange(Qn))
+        sq, sa, sb, sk_ = [], [], [], []
+        for r_ in range(Qn):
+            for a_ in range(int(glen[r_])):
+                for b_ in range(a_ + 1, int(glen[r_])):
+                    sq.append(int(c2["qidx"][r_]))
+                    sa.append(a_)
+                    sb.append(b_)
+                    sk_.append(int(rng.integers(0, 2)))
+        sq += [2, 5, 10 ** 6]
+        sa += [0, 0, 0]
+        sb += [1, 1, 1]
+        sk_ += [0, 0, 1]
+        S = {"q": np.asarray(sq, np.int64), "ia": np.asarray(sa, np.int16), "ib": np.asarray(sb, np.int16), "kind": np.asarray(sk_, np.int8), "linked_RK": rng.random(len(sq)) < 0.5}
+        nslot = 0
+        for k in range(len(SCORES)):
+            ev = triple_eval(c2, k, TRIPLES)
+            rd = slot_reads(c2, ev["cov"], S, "RK")
+            for nm, kd in SLOT_KINDS:
+                mine = [i for i in range(len(sq)) if sk_[i] == kd and sq[i] in set(c2["qidx"].tolist())]
+                if not mine:
+                    assert nm not in rd
+                    continue
+                want_kept = np.zeros(len(TRIPLES), np.int64)
+                want_kl = np.zeros(len(TRIPLES), np.int64)
+                for i in mine:
+                    r_ = int(np.flatnonzero(c2["qidx"] == sq[i])[0])
+                    kp = ev["cov"][goff[r_] + sa[i]] & ev["cov"][goff[r_] + sb[i]]
+                    want_kept += kp
+                    want_kl += kp & bool(S["linked_RK"][i])
+                    assert not (ev["allq"][r_] & ~kp).any()
+                assert rd[nm]["slots"] == len(mine) and rd[nm]["kept"] == want_kept.tolist() and rd[nm]["kept_linked"] == want_kl.tolist(), (k, nm)
+                assert rd[nm]["linked"] == int(sum(bool(S["linked_RK"][i]) for i in mine))
+                nslot += len(mine)
+        assert nslot > 200, nslot        # P1 / P2 equal the plain search on random matrices
         for _ in range(300):
             nc = int(rng.integers(1, 6))
             nt = len(TRIPLES)
@@ -515,7 +650,7 @@ def selftest():
         assert choose_final(sc)["score"] == "K1"
     finally:
         TRIPLES = saved
-    log(f"selftest PASS (zgp3s): the chunk grading equals the naive pools of {checked} walks on {trials} toy graphs; P1 and P2 equal a plain search on 300 random matrices; the final-rule tie order holds")
+    log(f"selftest PASS (zgp3s): the chunk grading equals the naive pools of {checked} walks on {trials} toy graphs; P1 and P2 equal a plain search on 300 random matrices; the final-rule tie order holds; the slot reads equal a loop on {nslot} (slot, score) reads of the toy chunks")
     return 0
 
 
