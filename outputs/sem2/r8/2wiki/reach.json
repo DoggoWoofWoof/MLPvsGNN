@@ -1,0 +1,104 @@
+{
+ "stage": "SEM2 R8 part A",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 16",
+ "dataset": "2wiki",
+ "carve": {
+  "carve": "s1sel",
+  "npz_sha256": "be025627b9ae6beac340023262849bcffb2364d793c28a171e88ff093f2f3824",
+  "questions": 1496,
+  "with_gold": 1496
+ },
+ "questions": 1496,
+ "F": 1000,
+ "seeds": 25,
+ "ladder": [
+  25,
+  100,
+  500,
+  1500
+ ],
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 71483746,
+     "record": 71483746
+    },
+    "CN_all": {
+     "pairs": 38242751,
+     "record": 38242751
+    },
+    "F0T": {
+     "pairs": 39863302,
+     "record": 39863302
+    },
+    "S": {
+     "pairs": 28208857,
+     "record": 28208857
+    },
+    "S directed": {
+     "edges": 28963600,
+     "pair_relation_rows": 28208857,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "labels": [
+    "R.mention",
+    "R.name_comention",
+    "R.title_comention",
+    "S.hyperlink"
+   ]
+  },
+  "G-Q": {
+   "base5": 0.615642,
+   "r2a_selection_base5": 0.615642,
+   "verdict": "PASS"
+  },
+  "G-A": {
+   "seeds": 998,
+   "missed_golds": 25,
+   "forward_rows": 41545,
+   "backward_rows": 3397,
+   "verdict": "PASS"
+  },
+  "G-P": {
+   "instances": 782,
+   "proven_optimal": 782,
+   "share": 1.0,
+   "cost_inside_bounds": true,
+   "lp_at_most_ip": true,
+   "solutions_satisfy_closure_and_budget": true,
+   "lp_equals_ip_share": 1.0,
+   "verdict": "PASS"
+  }
+ },
+ "engine": {
+  "forward_rows": 1559086,
+  "backward_rows": 84588,
+  "seeds": 34287,
+  "missed_golds": 886
+ },
+ "labels": [
+  "R.mention",
+  "R.name_comention",
+  "R.title_comention",
+  "S.hyperlink"
+ ],
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "73fb822f3e4dd255c2555af717f4664c78a01fec4b5dce892fdec25d5de2426a",
+  "ner_npz_sha256": "fd462a9c08740d57af79855efe37c1d77f30dc593ca6ad6242681c99b51a008a",
+  "knn_npz_sha256": "a7151f6bbebdb13d7e817abcc199fd5feae17585a955f781b0690d7ee1897f99",
+  "structural_npz_sha256": "1e380eaaa62b21eaf24f6dec8302d81482bf35695bfa6cdda2421fa90cfe9c85",
+  "w2_s_npz_sha256": "ac8a4427e3c7586cbe5d1d30f7b6a2c1dc8b56b8521699d4dbebceb008b701da",
+  "f0t_npz_sha256": "d6c49214c935c6166fcaa9c3494827cf85aaeafdb1f84f9eb3679b84de52ad5e",
+  "names_npz_sha256": "56269a557dae67578c3c05c6b7c4350f82c28fe51edd44a024104a729d43c020"
+ },
+ "threads": 8,
+ "smoke": false,
+ "npz_sha256": "56b123dfbb5de7597e61fda08d16a0167031d58771defb66b06a533feb898c2d",
+ "seconds": 423.6,
+ "utc": "2026-11-25T23:23:13Z",
+ "script_sha256": "d02b42917addd0e6b09725891089c75824e9d3058aad9e9460c31ffaec7c3534"
+}

@@ -1,0 +1,463 @@
+{
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 16",
+ "script_sha256": "d02b42917addd0e6b09725891089c75824e9d3058aad9e9460c31ffaec7c3534",
+ "missing": [],
+ "datasets": {
+  "multihoprag": {
+   "questions": 224,
+   "cov0": 100.0,
+   "missed_questions": 0,
+   "missed_golds": 0,
+   "missed_gold_share": {
+    "c1": 0.0,
+    "c2": 0.0,
+    "beyond": 0.0
+   },
+   "H": {
+    "25": {
+     "completable": 0,
+     "H_points": 0.0,
+     "lo": 0.0,
+     "hi": 0.0
+    },
+    "100": {
+     "completable": 0,
+     "H_points": 0.0,
+     "lo": 0.0,
+     "hi": 0.0
+    },
+    "500": {
+     "completable": 0,
+     "H_points": 0.0,
+     "lo": 0.0,
+     "hi": 0.0
+    },
+    "1500": {
+     "completable": 0,
+     "H_points": 0.0,
+     "lo": 0.0,
+     "hi": 0.0
+    }
+   },
+   "room": false,
+   "cost_star": {
+    "median": null,
+    "mean": null,
+    "p90": null
+   },
+   "field": {
+    "A_median": null,
+    "A_new_median": null,
+    "unordered_cost_median": null,
+    "share_unordered_over_1500": null
+   },
+   "status": {
+    "none": 224,
+    "closed": 0,
+    "optimal": 0,
+    "not_optimal": 0,
+    "infeasible": 0
+   },
+   "gates": {
+    "G-E": "PASS",
+    "G-Q": "PASS",
+    "G-A": "PASS",
+    "G-P": "PASS"
+   },
+   "seconds": 0.9
+  },
+  "squad": {
+   "questions": 1498,
+   "cov0": 99.6,
+   "missed_questions": 6,
+   "missed_golds": 6,
+   "missed_gold_share": {
+    "c1": 33.33,
+    "c2": 50.0,
+    "beyond": 16.67
+   },
+   "H": {
+    "25": {
+     "completable": 5,
+     "H_points": 0.33,
+     "lo": 0.07,
+     "hi": 0.67
+    },
+    "100": {
+     "completable": 5,
+     "H_points": 0.33,
+     "lo": 0.07,
+     "hi": 0.67
+    },
+    "500": {
+     "completable": 5,
+     "H_points": 0.33,
+     "lo": 0.07,
+     "hi": 0.67
+    },
+    "1500": {
+     "completable": 5,
+     "H_points": 0.33,
+     "lo": 0.07,
+     "hi": 0.67
+    }
+   },
+   "room": false,
+   "cost_star": {
+    "median": 2.0,
+    "mean": 1.6,
+    "p90": 2.0
+   },
+   "field": {
+    "A_median": 1695.0,
+    "A_new_median": 1416.5,
+    "unordered_cost_median": 275857.0,
+    "share_unordered_over_1500": 100.0
+   },
+   "status": {
+    "none": 1492,
+    "closed": 2,
+    "optimal": 3,
+    "not_optimal": 0,
+    "infeasible": 1
+   },
+   "gates": {
+    "G-E": "PASS",
+    "G-Q": "PASS",
+    "G-A": "PASS",
+    "G-P": "PASS"
+   },
+   "seconds": 17.6
+  },
+  "musique": {
+   "questions": 1534,
+   "cov0": 65.38,
+   "missed_questions": 531,
+   "missed_golds": 610,
+   "missed_gold_share": {
+    "c1": 64.1,
+    "c2": 31.15,
+    "beyond": 4.75
+   },
+   "H": {
+    "25": {
+     "completable": 503,
+     "H_points": 32.79,
+     "lo": 30.64,
+     "hi": 35.2
+    },
+    "100": {
+     "completable": 503,
+     "H_points": 32.79,
+     "lo": 30.64,
+     "hi": 35.2
+    },
+    "500": {
+     "completable": 503,
+     "H_points": 32.79,
+     "lo": 30.64,
+     "hi": 35.2
+    },
+    "1500": {
+     "completable": 503,
+     "H_points": 32.79,
+     "lo": 30.64,
+     "hi": 35.2
+    }
+   },
+   "room": true,
+   "cost_star": {
+    "median": 1.0,
+    "mean": 1.28,
+    "p90": 2.0
+   },
+   "field": {
+    "A_median": 1005.0,
+    "A_new_median": 921.0,
+    "unordered_cost_median": 527825.0,
+    "share_unordered_over_1500": 100.0
+   },
+   "status": {
+    "none": 1003,
+    "closed": 428,
+    "optimal": 75,
+    "not_optimal": 0,
+    "infeasible": 28
+   },
+   "gates": {
+    "G-E": "PASS",
+    "G-Q": "PASS",
+    "G-A": "PASS",
+    "G-P": "PASS"
+   },
+   "seconds": 26.2
+  },
+  "metaqa": {
+   "questions": 1497,
+   "cov0": 18.7,
+   "missed_questions": 1217,
+   "missed_golds": 9747,
+   "missed_gold_share": {
+    "c1": 14.62,
+    "c2": 53.85,
+    "beyond": 31.53
+   },
+   "H": {
+    "25": {
+     "completable": 954,
+     "H_points": 63.73,
+     "lo": 61.32,
+     "hi": 66.13
+    },
+    "100": {
+     "completable": 993,
+     "H_points": 66.33,
+     "lo": 63.93,
+     "hi": 68.74
+    },
+    "500": {
+     "completable": 994,
+     "H_points": 66.4,
+     "lo": 63.99,
+     "hi": 68.81
+    },
+    "1500": {
+     "completable": 994,
+     "H_points": 66.4,
+     "lo": 63.99,
+     "hi": 68.81
+    }
+   },
+   "room": true,
+   "cost_star": {
+    "median": 2.0,
+    "mean": 5.63,
+    "p90": 13.0
+   },
+   "field": {
+    "A_median": 229.0,
+    "A_new_median": 215.0,
+    "unordered_cost_median": 46924.0,
+    "share_unordered_over_1500": 100.0
+   },
+   "status": {
+    "none": 280,
+    "closed": 514,
+    "optimal": 480,
+    "not_optimal": 0,
+    "infeasible": 223
+   },
+   "gates": {
+    "G-E": "PASS",
+    "G-Q": "PASS",
+    "G-A": "PASS",
+    "G-P": "PASS"
+   },
+   "seconds": 19.8
+  },
+  "webqsp": {
+   "questions": 1507,
+   "cov0": 25.15,
+   "missed_questions": 1128,
+   "missed_golds": 7093,
+   "missed_gold_share": {
+    "c1": 83.49,
+    "c2": 15.64,
+    "beyond": 0.87
+   },
+   "H": {
+    "25": {
+     "completable": 1056,
+     "H_points": 70.07,
+     "lo": 67.88,
+     "hi": 72.4
+    },
+    "100": {
+     "completable": 1107,
+     "H_points": 73.46,
+     "lo": 71.27,
+     "hi": 75.65
+    },
+    "500": {
+     "completable": 1108,
+     "H_points": 73.52,
+     "lo": 71.33,
+     "hi": 75.71
+    },
+    "1500": {
+     "completable": 1108,
+     "H_points": 73.52,
+     "lo": 71.33,
+     "hi": 75.71
+    }
+   },
+   "room": true,
+   "cost_star": {
+    "median": 2.0,
+    "mean": 5.21,
+    "p90": 11.0
+   },
+   "field": {
+    "A_median": 14862.0,
+    "A_new_median": 14651.5,
+    "unordered_cost_median": 166404092.5,
+    "share_unordered_over_1500": 100.0
+   },
+   "status": {
+    "none": 379,
+    "closed": 1029,
+    "optimal": 79,
+    "not_optimal": 0,
+    "infeasible": 20
+   },
+   "gates": {
+    "G-E": "PASS",
+    "G-Q": "PASS",
+    "G-A": "PASS",
+    "G-P": "PASS"
+   },
+   "seconds": 716.6
+  },
+  "hotpotqa": {
+   "questions": 1508,
+   "cov0": 83.82,
+   "missed_questions": 244,
+   "missed_golds": 247,
+   "missed_gold_share": {
+    "c1": 95.14,
+    "c2": 4.05,
+    "beyond": 0.81
+   },
+   "H": {
+    "25": {
+     "completable": 242,
+     "H_points": 16.05,
+     "lo": 14.19,
+     "hi": 17.9
+    },
+    "100": {
+     "completable": 242,
+     "H_points": 16.05,
+     "lo": 14.19,
+     "hi": 17.9
+    },
+    "500": {
+     "completable": 242,
+     "H_points": 16.05,
+     "lo": 14.19,
+     "hi": 17.9
+    },
+    "1500": {
+     "completable": 242,
+     "H_points": 16.05,
+     "lo": 14.19,
+     "hi": 17.9
+    }
+   },
+   "room": true,
+   "cost_star": {
+    "median": 1.0,
+    "mean": 1.04,
+    "p90": 1.0
+   },
+   "field": {
+    "A_median": 514.0,
+    "A_new_median": 471.0,
+    "unordered_cost_median": 3423191.5,
+    "share_unordered_over_1500": 100.0
+   },
+   "status": {
+    "none": 1264,
+    "closed": 235,
+    "optimal": 7,
+    "not_optimal": 0,
+    "infeasible": 2
+   },
+   "gates": {
+    "G-E": "PASS",
+    "G-Q": "PASS",
+    "G-A": "PASS",
+    "G-P": "PASS"
+   },
+   "seconds": 252.9
+  },
+  "2wiki": {
+   "questions": 1496,
+   "cov0": 47.66,
+   "missed_questions": 783,
+   "missed_golds": 998,
+   "missed_gold_share": {
+    "c1": 98.3,
+    "c2": 1.6,
+    "beyond": 0.1
+   },
+   "H": {
+    "25": {
+     "completable": 782,
+     "H_points": 52.27,
+     "lo": 49.67,
+     "hi": 54.68
+    },
+    "100": {
+     "completable": 782,
+     "H_points": 52.27,
+     "lo": 49.67,
+     "hi": 54.68
+    },
+    "500": {
+     "completable": 782,
+     "H_points": 52.27,
+     "lo": 49.67,
+     "hi": 54.68
+    },
+    "1500": {
+     "completable": 782,
+     "H_points": 52.27,
+     "lo": 49.67,
+     "hi": 54.68
+    }
+   },
+   "room": true,
+   "cost_star": {
+    "median": 1.0,
+    "mean": 1.29,
+    "p90": 2.0
+   },
+   "field": {
+    "A_median": 942.0,
+    "A_new_median": 912.0,
+    "unordered_cost_median": 8863648.0,
+    "share_unordered_over_1500": 100.0
+   },
+   "status": {
+    "none": 713,
+    "closed": 769,
+    "optimal": 13,
+    "not_optimal": 0,
+    "infeasible": 1
+   },
+   "gates": {
+    "G-E": "PASS",
+    "G-Q": "PASS",
+    "G-A": "PASS",
+    "G-P": "PASS"
+   },
+   "seconds": 423.6
+  }
+ },
+ "room": [
+  "musique",
+  "metaqa",
+  "webqsp",
+  "hotpotqa",
+  "2wiki"
+ ],
+ "part_b_runs_on": [
+  "musique",
+  "metaqa",
+  "webqsp",
+  "hotpotqa",
+  "2wiki"
+ ],
+ "verdict_if_complete": "PART_B_ON_ROOM"
+}

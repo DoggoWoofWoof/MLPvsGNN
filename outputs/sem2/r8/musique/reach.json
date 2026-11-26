@@ -1,0 +1,92 @@
+{
+ "stage": "SEM2 R8 part A",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md section 16",
+ "dataset": "musique",
+ "carve": {
+  "carve": "s1sel",
+  "npz_sha256": "0c3d07208f7cbfe263038ce65600020068e91b083e7a1a84a8b22a5f1e1187e6",
+  "questions": 1534,
+  "with_gold": 1534
+ },
+ "questions": 1534,
+ "F": 1000,
+ "seeds": 25,
+ "ladder": [
+  25,
+  100,
+  500,
+  1500
+ ],
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 2343920,
+     "record": 2343920
+    },
+    "CN_all": {
+     "pairs": 931069,
+     "record": 931069
+    },
+    "F0T": {
+     "pairs": 973013,
+     "record": 973013
+    }
+   },
+   "verdict": "PASS",
+   "labels": [
+    "R.mention",
+    "R.name_comention",
+    "R.title_comention"
+   ]
+  },
+  "G-Q": {
+   "base5": 0.494568,
+   "r2a_selection_base5": 0.494568,
+   "verdict": "PASS"
+  },
+  "G-A": {
+   "seeds": 980,
+   "missed_golds": 16,
+   "forward_rows": 82712,
+   "backward_rows": 2586,
+   "verdict": "PASS"
+  },
+  "G-P": {
+   "instances": 503,
+   "proven_optimal": 503,
+   "share": 1.0,
+   "cost_inside_bounds": true,
+   "lp_at_most_ip": true,
+   "solutions_satisfy_closure_and_budget": true,
+   "lp_equals_ip_share": 1.0,
+   "verdict": "PASS"
+  }
+ },
+ "engine": {
+  "forward_rows": 1612402,
+  "backward_rows": 28766,
+  "seeds": 19081,
+  "missed_golds": 213
+ },
+ "labels": [
+  "R.mention",
+  "R.name_comention",
+  "R.title_comention"
+ ],
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+  "ner_npz_sha256": "f294708600750c48eae9e32d0895d517ac3a8b5d048c736a70e9a566af2fe9c6",
+  "knn_npz_sha256": "6020ac7e0b6773e64866b5e942dc0e02c3b704615ced8de4d557aa543221ef5b",
+  "w2_s_npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+  "f0t_npz_sha256": "a0cea3c450f4a8364d202d7f21fe949e288f2ed0ca325aadea199f7ed2a4eebc",
+  "names_npz_sha256": "279d4b6ff3a2d5e3fbbab9071bcc93328167da1c5d19e805c3a9c5ad7a8f9cda"
+ },
+ "threads": 8,
+ "smoke": false,
+ "npz_sha256": "834e5d1db599b2a4a33f296854097328ccb6854aef737ffc8d7631d9240952be",
+ "seconds": 26.2,
+ "utc": "2026-11-25T22:58:12Z",
+ "script_sha256": "d02b42917addd0e6b09725891089c75824e9d3058aad9e9460c31ffaec7c3534"
+}
