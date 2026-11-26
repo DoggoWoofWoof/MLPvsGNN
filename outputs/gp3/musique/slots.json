@@ -1,0 +1,27 @@
+{
+ "dataset": "musique",
+ "declared_in": "docs/GP3_NODE_COUNT_RULE.md",
+ "amendment": "A4",
+ "slots": 6313,
+ "notes": {
+  "GP": "3783 slots on 1534 questions",
+  "CH": "2530 slots on 1534 questions"
+ },
+ "versions": {
+  "RK": {
+   "GP": {
+    "slots": 3783,
+    "linked": 1128
+   },
+   "CH": {
+    "slots": 2530,
+    "linked": 1088
+   }
+  }
+ },
+ "nq": 1534,
+ "seconds": 14.1,
+ "utc": "2026-11-26T13:40:00Z",
+ "zgp3p_sha256": "43919b31d506fb5a2a3aebe890d627a6e0c46aaaa1d70cb9e0c256785a9cb887",
+ "zgp3_sha256": "12895fff62e3835a2f44d0385909406c15c1910519e126dafafbde31ee77aad4"
+}

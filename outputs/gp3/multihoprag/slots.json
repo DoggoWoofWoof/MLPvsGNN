@@ -1,0 +1,26 @@
+{
+ "dataset": "multihoprag",
+ "declared_in": "docs/GP3_NODE_COUNT_RULE.md",
+ "amendment": "A4",
+ "slots": 504,
+ "notes": {
+  "GP": "504 slots on 224 questions"
+ },
+ "versions": {
+  "RK": {
+   "GP": {
+    "slots": 504,
+    "linked": 425
+   },
+   "CH": {
+    "slots": 0,
+    "linked": 0
+   }
+  }
+ },
+ "nq": 224,
+ "seconds": 8.5,
+ "utc": "2026-11-26T13:35:16Z",
+ "zgp3p_sha256": "09118d24517b2135489ec3731be5b3580c902efe89133201e8115f6d6fd2d8ea",
+ "zgp3_sha256": "12895fff62e3835a2f44d0385909406c15c1910519e126dafafbde31ee77aad4"
+}
