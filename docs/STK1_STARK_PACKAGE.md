@@ -77,11 +77,18 @@ Root `outputs/stark/package/`, one folder per KB (`stark_prime`, `stark_mag`, `s
 
 **Gates (each stops the build):**
 
-- **P1** (consistency): `node_info` has keys 0..N-1; `node_types` has N rows and every type id has a name; `edge_index` is 2 x E, `edge_types` has E rows, every endpoint is in 0..N-1, every relation id has a name; the three split index files are disjoint and their union is exactly the csv's rows; `test-0.1` is inside `test`; every question has at least one answer, answers are distinct and in range.
+- **P1** (consistency): `node_info` has keys 0..N-1; `node_types` has N rows and every type id has a name; `edge_index` is 2 x E, `edge_types` has E rows, every endpoint is in 0..N-1, every relation id has a name; the three split index files are disjoint and their union is exactly the csv's rows; `test-0.1` is inside `test`; every question has at least one answer and its answers are in range (a node named twice in one question's list counts once: amendment A1, section 5.1).
 - **P2** (the text rule): `zstk1.py selftest` passes on the rule's toy cases and on `Safe`'s allow and block cases (it must pass on the host as on the laptop before the build); the share of nodes whose text is the head alone, and the share at the cap, are recorded.
 - **P3** (recorded, no gate): the types of the answer nodes.
 - **P4** (the readers): zenc's `query_texts` returns every question row and `doc_chunks` returns the node texts in order, equal to the builder's.
 - **P5** (the S store, recorded, no gate): edge count, distinct pairs, self loops, share of edges whose reverse is also present, edges per relation.
+
+### 5.1 Amendment A1 (26 Nov, 22:26 IST, after P1 stopped Prime's build and before any package, vector or retrieval number)
+
+- **What happened.** P1, as first written, stopped on "36 questions with an answer out of range or repeated". The diagnosis (`answer_ids` read, nothing else): none is out of range; 36 of Prime's 11,204 questions (train 23, dev 7, test 6) name the same node more than once in their answer list (for example a list of six ids with three distinct). No package file was written.
+- **Why the rule changes.** A question's gold set is the set of **distinct** answer nodes, on the seven as here (R@k and ALL@k divide by distinct golds). A repeat inside a list is the benchmark's data entry, not a second answer. Treating it as damage would drop 36 questions from Prime and, on the other two, an unknown number, for a reason unrelated to retrieval; and counting the repeat twice would change R@20's divisor.
+- **What changes.** `read_qa` collapses an answer list to its distinct ids in first-seen order. `n_golds` is the distinct count. The out-of-range check stays a stop. `package.json` and `DATASET.json` record, per split, the questions with a repeat and the answer ids dropped (`answer_repeats_a1`), so the effect is visible for all three KBs. Nothing else in the rule, the gates or the legs changes; no question is dropped.
+- **Beside, not a rule.** The benchmark's own evaluator may divide by the listed length. The published rows are therefore read with the caveat that, on at most 36 of 11,204 Prime questions, the two divisors differ.
 
 ## 6. The encode (B)
 

@@ -188,7 +188,7 @@ def read_qa(dl):
         head = next(rd)
         if head != ["id", "query", "answer_ids"]:
             stop(f"stark_qa.csv columns {head}")
-        rows = {}
+        rows, reps = {}, {}
         for r in rd:
             qid = int(r[0])
             if qid in rows:
@@ -196,12 +196,15 @@ def read_qa(dl):
             ans = json.loads(r[2])
             if not isinstance(ans, list) or not ans or not all(isinstance(x, int) for x in ans):
                 stop(f"id {qid}: answer_ids {r[2][:60]!r}")
-            rows[qid] = (r[1], ans)
+            dist = list(dict.fromkeys(ans))                     # amendment A1: the gold set is the distinct nodes, first-seen order
+            if len(dist) != len(ans):
+                reps[qid] = (len(ans), len(dist))
+            rows[qid] = (r[1], dist)
     idx = {}
     for sp, fn in INDEX.items():
         idx[sp] = [int(x) for x in (Path(dl) / fn).read_text(encoding="utf-8").split()]
     t01 = [int(x) for x in (Path(dl) / "test-0.1.index").read_text(encoding="utf-8").split()]
-    return rows, idx, t01
+    return rows, idx, t01, reps
 
 
 def cmd_package(a):
@@ -229,7 +232,9 @@ def cmd_package(a):
         stop(f"P1: edge_index {ei.shape}, edge_types {et.shape}")
     if int(ei.min()) < 0 or int(ei.max()) >= n or not set(np.unique(et).tolist()) <= set(rdict):
         stop("P1: an edge endpoint out of range or a relation id with no name")
-    rows, idx, t01 = read_qa(dl)
+    rows, idx, t01, reps = read_qa(dl)
+    rep_by = {sp: {"questions": sum(1 for q in idx[sp] if q in reps),
+                   "answer_ids_dropped": sum(reps[q][0] - reps[q][1] for q in idx[sp] if q in reps)} for sp in SPLITS}
     allids = [q for sp in SPLITS for q in idx[sp]]
     if len(set(allids)) != len(allids) or set(allids) != set(rows):
         stop(f"P1: splits {[len(idx[s]) for s in SPLITS]} do not partition stark_qa.csv ({len(rows)} rows)")
@@ -291,6 +296,7 @@ def cmd_package(a):
                            "by_split": {sp: files[f"queries/{sp}"] for sp in SPLITS}, "query_ids": files["query_ids"],
                            "test_0_1": [f"{ds}_q{q:05d}" for q in t01]},
                "split_rule": "the benchmark's own index files: train.index, val.index (named dev here), test.index, each in file order",
+               "answer_repeats_a1": rep_by,
                "text_rule": f"T1 (section 4), cap {CAP} characters", "s_edges": s_stats,
                "raw": {k: E.sha256(dl / k) for k in ("stark_qa.csv", "train.index", "val.index", "test.index", "test-0.1.index")}
                | {k: E.sha256(proc / k) for k in ("node_info.pkl", "edge_index.pt", "edge_types.pt", "node_types.pt")},
@@ -311,6 +317,7 @@ def cmd_package(a):
     la = np.asarray(lens)
     rec = {"stage": "STK1 package", "declared_in": DOC, "dataset": ds, "nodes": n, "queries": len(qorder),
            "by_split": ds_json["queries_by_split"], "node_types": ds_json["node_types"], "gold_node_types": gtypes,
+           "answer_repeats_a1": rep_by,
            "P1": "pass", "P4": p4, "P5": s_stats, "text_chars": {"mean": round(float(la.mean()), 1), "median": int(np.median(la)),
                                                                   "p90": int(np.percentile(la, 90)), "max": int(la.max()),
                                                                   "at_cap": int((la >= CAP).sum()),
