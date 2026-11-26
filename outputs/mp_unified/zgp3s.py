@@ -29,7 +29,7 @@ ALL_MIN = 0.95                                            # the coverage target 
 P2_N = (2500, 3500, 5000)                                 # the node ceilings of P2 (the user's 2.5k and two looser)
 R_MIN_ALL = 0.92                                          # the rest of dev: every cell's ALL at the quarter's final triple at least this (point value)
 CAP_SHARE = 0.02                                          # a cell with more than this share of questions over GATHER_CAP is CAPPED
-SIMPLE = ("K4", "K2", "K1", "K3")                         # the simplicity order of the scores for ties
+SIMPLE = ("K4", "K2", "K1", "K3", "PP")                         # the simplicity order of the scores for ties
 TIE = 1.05                                                # within this factor of the best P1 the simpler score wins
 NULL_MARGIN = 0.9                                         # a score beats the random-order null if its P1 worst-cell nodes are at most this factor of the smaller random P1
 UL5_ORACLE = {"2wiki": 541, "musique": 1831, "metaqa": 2745, "webqsp": 9301}      # UL5 section 11.2, per-question least nodes with the golds read, a different universe: context only
@@ -453,7 +453,7 @@ def selftest():
         res = program({"c0": {0: {"all": A[0], "nodes": N[0]}}, "c1": {0: {"all": A[1], "nodes": N[1]}}}, ["c0", "c1"], 0)
         assert res["P1"]["triple"] == list(TRIPLES[0]) and brute(A, N)[0] == 0
         # the final-rule tie order: the simpler score wins within TIE
-        sc = {K: {"P1": {"worst_nodes": w, "triple": [0, 0, 0], "N": [0, 0, 0], "nodes": {}, "all": {}}, "P2": {}} for K, w in (("K1", 100.0), ("K2", 103.0), ("K3", 99.0), ("K4", 130.0))}
+        sc = {K: {"P1": {"worst_nodes": w, "triple": [0, 0, 0], "N": [0, 0, 0], "nodes": {}, "all": {}}, "P2": {}} for K, w in (("K1", 100.0), ("K2", 103.0), ("K3", 99.0), ("K4", 130.0), ("PP", 140.0))}
         assert choose_final(sc)["score"] == "K2"
         sc["K4"]["P1"]["worst_nodes"] = 103.0
         assert choose_final(sc)["score"] == "K4"

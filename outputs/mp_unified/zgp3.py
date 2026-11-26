@@ -1,6 +1,6 @@
 """GP3 (docs/GP3_NODE_COUNT_RULE.md): the node-count rule. The walk of the base layout's any-link graph (GP1's graph, levels and shortest-path links) in three hops, in which
 every hop keeps (a) every S-tail of a kept parent (S whole) and (b) the first N_h other candidates in the order of one of GP2's scores (K1..K4, or a random order as the
-null), N_1 >= N_2 >= N_3 from one ladder; the pool is the first-stage base, the seeds and the kept nodes, counted as DISTINCT NODES. The walker pass stores, per question, per
+null; A1: PP = the PageRank mass of the walk's own layers), N_1 >= N_2 >= N_3 from one ladder; the pool is the first-stage base, the seeds and the kept nodes, counted as DISTINCT NODES. The walker pass stores, per question, per
 score and per ladder step, the sizes and the places of the golds, so every triple of the ladder is graded exactly offline.
 
     python outputs/mp_unified/zgp3.py selftest                                   # the walker equals a brute-force walk on toy graphs (no real data)
@@ -36,7 +36,9 @@ DECLARED = "docs/GP3_NODE_COUNT_RULE.md"
 OUT = ROOT / "outputs" / "gp3"
 EMPTY = np.zeros(0, np.int64)
 LADDER = (0, 10, 30, 100, 300, 1000, 3000, 10000, 30000)  # N_h: other candidates kept at hop h (S-tails come on top of it); 9 steps, 165 triples N_1 >= N_2 >= N_3
-SCORES = ("K1", "K2", "K3", "K4", "R0", "R1")             # GP2's scores (text-free ones) and two random orders (the null)
+SCORES = ("K1", "K2", "K3", "K4", "PP", "R0", "R1")       # GP2's scores (text-free ones), A1's PageRank mass PP, and two random orders (the null)
+PPR_BITS = 56                                              # A1: the seed mass sums to 2^56 (integers: sums are exact and independent of the order of addition)
+PPR_W = 30                                                 # seed weights: 2^30 // (60 + rank) per first-stage list
 BASE_B = {"multihoprag": 25, "squad": 15, "hotpotqa": 25, "2wiki": 400, "musique": 400, "metaqa": 25, "webqsp": 400}   # the first-stage base of UL5's family per dataset: rrf1000_b<B>
 RRF_CONST = 60
 RKCAP = (1 << 19) - 1                                      # source rank clip in the composite key
@@ -106,11 +108,12 @@ def src_rank(a, dot):
 
 
 class Table:
-    """The links (a -> c) of one hop sorted by the tail c: dot key, source rank, S flag; groups = distinct tails."""
+    """The links (a -> c) of one hop sorted by the tail c: dot key, source rank, S flag, the source's degree (stored neighbour entries, A1); groups = distinct tails."""
 
-    def __init__(self, a, c, dotq, rank, isS):
+    def __init__(self, a, c, dotq, rank, isS, dg=None):
         o = np.argsort(c, kind="stable")
         self.a, self.c, self.dotq, self.rank, self.S = a[o], c[o], dotq[o], rank[o], isS[o]
+        self.dg = (dg if dg is not None else np.ones(a.size, np.int64))[o]
         self._groups()
 
     def _groups(self):
@@ -119,7 +122,7 @@ class Table:
 
     def subset(self, rows):
         t = object.__new__(Table)
-        t.a, t.c, t.dotq, t.rank, t.S = self.a[rows], self.c[rows], self.dotq[rows], self.rank[rows], self.S[rows]
+        t.a, t.c, t.dotq, t.rank, t.S, t.dg = self.a[rows], self.c[rows], self.dotq[rows], self.rank[rows], self.S[rows], self.dg[rows]
         t._groups()
         return t
 
@@ -127,12 +130,25 @@ class Table:
 class Ctx:
     """What the walk needs: the graph and its levels, the pair dot, the S test, the first-stage bins; per question set_question()."""
 
-    def __init__(self, G, W, lev, n, dotf, isS, ladder=LADDER, scores=SCORES, ubin=None):
+    def __init__(self, G, W, lev, n, dotf, isS, ladder=LADDER, scores=SCORES, ubin=None, seedw=None):
         self.G, self.W, self.lev, self.n, self.dotf, self.isS = G, W, lev, n, dotf, isS
         self.ladder, self.scores = tuple(ladder), tuple(scores)
         self.posbuf = np.full(n, BIGR, np.int32)
-        self._ubin = ubin
+        self.mbuf = np.zeros(n, np.int64)
+        self._ubin, self._seedw = ubin, seedw
         self.ld = self.ls = self.base = None
+
+    def seed_mass(self, seeds):
+        """A1: the restart mass of each seed (integers summing to about 2^PPR_BITS): proportional to the seed's first-stage weight 2^PPR_W // (60 + rank) in the dense list plus the same in
+        the SPLADE list (0 where the seed is not in a list). `seedw` replaces the weights in the self-test."""
+        seeds = np.asarray(seeds, np.int64)
+        if self._seedw is not None:
+            w = np.asarray(self._seedw(seeds), np.int64)
+        else:
+            dr, sr = Z.rank_in(self.ld, seeds).astype(np.int64), Z.rank_in(self.ls, seeds).astype(np.int64)
+            w = np.where(dr > 0, (1 << PPR_W) // (RRF_CONST + np.maximum(dr, 1)), 0) + np.where(sr > 0, (1 << PPR_W) // (RRF_CONST + np.maximum(sr, 1)), 0)
+        tot = int(w.sum())
+        return ((w << 30) // max(tot, 1)) << (PPR_BITS - 30)
 
     def set_question(self, ld, ls, base):
         self.ld, self.ls, self.base = ld, ls, np.asarray(base, np.int64)
@@ -158,7 +174,18 @@ def hop_table(ctx, parents, level):
     k = np.unique(s[m] * n + x[m])
     a, c = k // n, k % n
     dot = ctx.dotf(a * n + c) if a.size else np.zeros(0, np.float32)
-    return Table(a, c, sortable_f32(dot), src_rank(a, dot), ctx.isS(a, c) if a.size else np.zeros(0, bool)), bool(thin)
+    dg = sum((ip[a + 1] - ip[a]).astype(np.int64) for ip, _ix in ctx.G.hv) if a.size else np.zeros(0, np.int64)   # A1: the source's stored neighbour entries
+    return Table(a, c, sortable_f32(dot), src_rank(a, dot), ctx.isS(a, c) if a.size else np.zeros(0, bool), dg), bool(thin)
+
+
+def link_weights(ctx, tab, nodes, mass):
+    """A1: per link of `tab` the mass its source passes along it: mass(a) // (2 * degree(a)) (damping 0.5, the transition 1/degree of PageRank); 0 for a source that is not in `nodes`."""
+    if tab.c.size == 0:
+        return np.zeros(0, np.int64)
+    ctx.mbuf[nodes] = mass
+    w = ctx.mbuf[tab.a] // (2 * np.maximum(tab.dg, 1))
+    ctx.mbuf[nodes] = 0
+    return w
 
 
 def posmap(ctx, tab_a, nodes, pos):
@@ -169,11 +196,12 @@ def posmap(ctx, tab_a, nodes, pos):
     return p
 
 
-def layer(ctx, tab, m, score, nmax, qseed, probes, free):
+def layer(ctx, tab, m, score, nmax, qseed, probes, free, lw=None):
     """One hop's kept set from the links of `tab` whose mask m is true. Returns the S-tail nodes, the first nmax other nodes in order, the count of new (not in the free set) nodes
-    among the S-tails and cumulatively along the order, and the place of each probe node (-1 not a candidate, 0 an S-tail, k the k-th other node)."""
+    among the S-tails and cumulatively along the order, and the place of each probe node (-1 not a candidate, 0 an S-tail, k the k-th other node). For the PageRank score PP (A1)
+    `lw` holds the mass each link carries and a node's key is the sum over its masked links; the keys of the kept nodes come back as their mass for the next hop."""
     ngold = probes.size
-    out = {"s_nodes": EMPTY, "tops": EMPTY, "s_nb": 0, "cum_nb": np.zeros(1, np.int64), "gpos": np.full(ngold, -1, np.int64), "ncand": 0}
+    out = {"s_nodes": EMPTY, "tops": EMPTY, "s_nb": 0, "cum_nb": np.zeros(1, np.int64), "gpos": np.full(ngold, -1, np.int64), "ncand": 0, "s_mass": EMPTY, "tops_mass": EMPTY}
     if tab.c.size == 0 or not m.any():
         return out
     cnt = np.add.reduceat(m.astype(np.int32), tab.gs)
@@ -182,23 +210,28 @@ def layer(ctx, tab, m, score, nmax, qseed, probes, free):
     mrk = np.minimum.reduceat(np.where(m, tab.rank, BIGR), tab.gs)[ok]
     mdt = np.maximum.reduceat(np.where(m, tab.dotq, -1), tab.gs)[ok]
     anyS = np.maximum.reduceat((m & tab.S).astype(np.int8), tab.gs)[ok] > 0
-    key = node_keys(score, ctx.ubin(cu), mrk, cnt[ok], mdt, cu, qseed)
+    if score == "PP":
+        key = np.add.reduceat(np.where(m, lw, 0).astype(np.int64), tab.gs)[ok]
+    else:
+        key = node_keys(score, ctx.ubin(cu), mrk, cnt[ok], mdt, cu, qseed)
     nonS = ~anyS
     kk, cc = key[nonS], cu[nonS]
     out["ncand"] = int(cu.size)
     if nmax > 0 and kk.size:
         if kk.size <= nmax:
             sel = np.lexsort((cc, -kk))
-            tops = cc[sel]
+            tops, tm = cc[sel], kk[sel]
         else:
             thr = np.partition(kk, kk.size - nmax)[kk.size - nmax]
             cand = kk >= thr
             sel = np.lexsort((cc[cand], -kk[cand]))[:nmax]
-            tops = cc[cand][sel]
+            tops, tm = cc[cand][sel], kk[cand][sel]
     else:
-        tops = EMPTY
+        tops, tm = EMPTY, EMPTY
     s_nodes = cu[anyS]
     out["s_nodes"], out["tops"] = s_nodes, tops
+    if score == "PP":
+        out["s_mass"], out["tops_mass"] = key[anyS], tm
     nf_s = np.searchsorted(free, s_nodes)
     nf_s = ~((nf_s < free.size) & (free[np.minimum(nf_s, max(free.size - 1, 0))] == s_nodes)) if free.size else np.ones(s_nodes.size, bool)
     out["s_nb"] = int(nf_s.sum())
@@ -258,36 +291,43 @@ def run_question(ctx, seeds, golds, qseed):
         diag["links"][0], diag["capped"][0] = int(tab1.c.size), cap
         m1 = np.ones(tab1.c.size, bool)
         kept1 = []
+        pp = "PP" in scores
+        lw1 = link_weights(ctx, tab1, np.unique(seeds), ctx.seed_mass(np.unique(seeds))) if pp else None
         for k, K in enumerate(scores):
-            r = layer(ctx, tab1, m1, K, ladder[-1], qseed, golds, free)
+            r = layer(ctx, tab1, m1, K, ladder[-1], qseed, golds, free, lw=lw1 if K == "PP" else None)
             if k == 0:
                 diag["ncand"][0] = r["ncand"]
             for i1 in range(NL):
                 sz1[k, i1] = size_at(r, ladder[i1])
             gb1[k] = bins_of(r["gpos"], ladder)
-            kept1.append((np.concatenate([r["s_nodes"], r["tops"]]), np.concatenate([np.zeros(r["s_nodes"].size, np.int32), np.arange(1, r["tops"].size + 1, dtype=np.int32)])))
+            kept1.append((np.concatenate([r["s_nodes"], r["tops"]]), np.concatenate([np.zeros(r["s_nodes"].size, np.int32), np.arange(1, r["tops"].size + 1, dtype=np.int32)]),
+                          np.concatenate([r["s_mass"], r["tops_mass"]])))
         # hop 2
-        tab2, cap = hop_table(ctx, np.concatenate([x for x, _p in kept1]), 2)
+        tab2, cap = hop_table(ctx, np.concatenate([x[0] for x in kept1]), 2)
         diag["links"][1], diag["capped"][1] = int(tab2.c.size), cap
         kept2 = {}
         for k, K in enumerate(scores):
-            p2 = posmap(ctx, tab2.a, *kept1[k])
+            p2 = posmap(ctx, tab2.a, kept1[k][0], kept1[k][1])
+            lw2 = link_weights(ctx, tab2, kept1[k][0], kept1[k][2]) if K == "PP" else None
             for i1 in range(NL):
-                r = layer(ctx, tab2, p2 <= ladder[i1], K, ladder[i1], qseed, golds, free)
+                r = layer(ctx, tab2, p2 <= ladder[i1], K, ladder[i1], qseed, golds, free, lw=lw2)
                 diag["ncand"][1] = max(diag["ncand"][1], r["ncand"])
                 for i2 in range(i1 + 1):
                     sz2[k, i1, i2] = size_at(r, ladder[i2])
                 gb2[k, i1] = bins_of(r["gpos"], ladder)
-                kept2[(k, i1)] = (np.concatenate([r["s_nodes"], r["tops"]]), np.concatenate([np.zeros(r["s_nodes"].size, np.int32), np.arange(1, r["tops"].size + 1, dtype=np.int32)]))
+                kept2[(k, i1)] = (np.concatenate([r["s_nodes"], r["tops"]]), np.concatenate([np.zeros(r["s_nodes"].size, np.int32), np.arange(1, r["tops"].size + 1, dtype=np.int32)]),
+                                  np.concatenate([r["s_mass"], r["tops_mass"]]))
         # hop 3
-        tab3, cap = hop_table(ctx, np.concatenate([x for x, _p in kept2.values()]), 3)
+        tab3, cap = hop_table(ctx, np.concatenate([v_[0] for v_ in kept2.values()]), 3)
         diag["links"][2], diag["capped"][2] = int(tab3.c.size), cap
-        for (k, i1), (nodes, pos) in kept2.items():
+        for (k, i1), (nodes, pos, mass) in kept2.items():
             p3 = posmap(ctx, tab3.a, nodes, pos)
-            sub = tab3.subset(p3 <= ladder[i1])
-            ps = p3[p3 <= ladder[i1]]
+            keep3 = p3 <= ladder[i1]
+            sub = tab3.subset(keep3)
+            ps = p3[keep3]
+            lw3 = link_weights(ctx, tab3, nodes, mass)[keep3] if scores[k] == "PP" else None
             for i2 in range(i1 + 1):
-                r = layer(ctx, sub, ps <= ladder[i2], scores[k], ladder[i2], qseed, golds, free)
+                r = layer(ctx, sub, ps <= ladder[i2], scores[k], ladder[i2], qseed, golds, free, lw=lw3)
                 diag["ncand"][2] = max(diag["ncand"][2], r["ncand"])
                 for i3 in range(i2 + 1):
                     sz3[k, i1, i2, i3] = size_at(r, ladder[i3])
@@ -300,9 +340,11 @@ def run_question(ctx, seeds, golds, qseed):
 # ── self-test: the walker equals a brute-force walk ──────────────────────────
 
 
-def naive_walk(adj, lev, seeds, dot, isS, ubin, score, Ns, qseed, n):
-    """The walk by definition, with Python sets and loops: returns the kept set of each hop."""
+def naive_walk(adj, lev, seeds, dot, isS, ubin, score, Ns, qseed, n, m0=None):
+    """The walk by definition, with Python sets and loops: returns the kept set of each hop. For PP, m0 = {seed: mass}; a candidate's key is the sum over its links from kept parents
+    of mass(parent) // (2 * degree(parent)); the kept nodes (S-tails too) carry that key on as their mass."""
     prev = set(int(s) for s in seeds)
+    mass = dict(m0) if m0 is not None else {}
     kept = []
     for h in (1, 2, 3):
         fr = {a: [c for c in adj[a] if lev[c] == h] for a in prev}
@@ -313,6 +355,10 @@ def naive_walk(adj, lev, seeds, dot, isS, ubin, score, Ns, qseed, n):
                 cand.setdefault(c, []).append((a, rk, dot(a, c), isS(a, c)))
         s_tails = {c for c, ls in cand.items() if any(x[3] for x in ls)}
         recs = []
+        pkey = {}
+        if score == "PP":
+            for c, ls in cand.items():
+                pkey[c] = sum(mass[x[0]] // (2 * len(adj[x[0]])) for x in ls)
         for c, ls in cand.items():
             if c in s_tails:
                 continue
@@ -326,6 +372,8 @@ def naive_walk(adj, lev, seeds, dot, isS, ubin, score, Ns, qseed, n):
                 kt = (u, -rk, min(vt, VTCAP), dt)
             elif score == "K4":
                 kt = (dt,)
+            elif score == "PP":
+                kt = (pkey[c],)
             else:
                 kt = (int(node_keys(score, np.array([u]), np.array([rk]), np.array([vt]), np.array([0]), np.array([c]), qseed)[0]),)
             recs.append((tuple(-x for x in kt), c))
@@ -333,6 +381,8 @@ def naive_walk(adj, lev, seeds, dot, isS, ubin, score, Ns, qseed, n):
         k_h = s_tails | {c for _kt, c in recs[:Ns[h - 1]]}
         kept.append(k_h)
         prev = k_h
+        if score == "PP":
+            mass = {c: pkey[c] for c in k_h}
     return kept
 
 
@@ -384,7 +434,10 @@ def toy_runs():
         s_mod = int(rng.choice([1000003, 5, 2]))
         isS = lambda a_, c_, s_mod=s_mod: ((np.minimum(a_, c_) * 31 + np.maximum(a_, c_) * 17) % s_mod == 0)  # noqa: E731
         ubin = lambda c_: ((np.asarray(c_) * 5 + 3) % 7).astype(np.int8)  # noqa: E731
-        ctx = Ctx(G, W, lev, n, dotf, isS, ladder=ladder, ubin=ubin)
+        ctx = Ctx(G, W, lev, n, dotf, isS, ladder=ladder, ubin=ubin, seedw=lambda s_: (np.asarray(s_) * 13 + 5) % 9 + 1)
+        su = np.unique(seeds)
+        m0 = dict(zip(su.tolist(), ctx.seed_mass(su).tolist()))
+        assert sum(m0.values()) <= 1 << PPR_BITS and sum(m0.values()) > (1 << PPR_BITS) - len(su) * (1 << (PPR_BITS - 30)) - 1
         base = np.unique(rng.integers(0, n, int(rng.integers(1, 6))))
         ctx.set_question(None, None, base)
         qseed = int(rng.integers(0, 1000))
@@ -417,7 +470,7 @@ def toy_runs():
             for i1 in range(NL):
                 for i2 in range(i1 + 1):
                     for i3 in range(i2 + 1):
-                        kept = naive_walk(adj, lev_n, seeds, dot1, isS1, ubin, K, (ladder[i1], ladder[i2], ladder[i3]), qseed, n)
+                        kept = naive_walk(adj, lev_n, seeds, dot1, isS1, ubin, K, (ladder[i1], ladder[i2], ladder[i3]), qseed, n, m0)
                         pool = free | kept[0] | kept[1] | kept[2]
                         size = res["nfree"] + res["sz1"][k, i1] + res["sz2"][k, i1, i2] + res["sz3"][k, i1, i2, i3]
                         assert size == len(pool), (trial, K, i1, i2, i3, size, len(pool))
@@ -448,7 +501,7 @@ def toy_runs():
 
 def selftest():
     trials, checked, covered_checks, _packed, _naive, _tt = toy_runs()
-    log(f"selftest PASS: composite keys equal the tuple orders, src_rank, {trials} toy graphs x 6 scores x 20 triples = {checked} pools and {covered_checks} gold checks equal the brute-force walk; the sizes do not depend on the probes")
+    log(f"selftest PASS: composite keys equal the tuple orders, src_rank, {trials} toy graphs x {len(SCORES)} scores x 20 triples = {checked} pools and {covered_checks} gold checks equal the brute-force walk; the sizes do not depend on the probes")
     return 0
 
 
