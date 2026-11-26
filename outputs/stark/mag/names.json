@@ -1,0 +1,90 @@
+{
+ "stage": "STK2 names",
+ "declared_in": "docs/STK2_STARK_LINKS.md section 3",
+ "kb": "mag",
+ "dataset": "stark_mag",
+ "nodes": 1872968,
+ "named": 1714702,
+ "by_key": {
+  "DisplayName": 1014458,
+  "none": 158266,
+  "title": 700244
+ },
+ "by_type": {
+  "author": {
+   "nodes": 1104554,
+   "named": 963762,
+   "share": 0.872535
+  },
+  "field_of_study": {
+   "nodes": 59469,
+   "named": 42011,
+   "share": 0.706435
+  },
+  "institution": {
+   "nodes": 8701,
+   "named": 8685,
+   "share": 0.998161
+  },
+  "paper": {
+   "nodes": 700244,
+   "named": 700244,
+   "share": 1.0
+  }
+ },
+ "name_groups": 1507199,
+ "sibling_pairs_if_built": 2145044,
+ "sibling_stop": 50000000,
+ "largest_groups": [
+  {
+   "name": "Wei Wang",
+   "nodes": 192
+  },
+  {
+   "name": "Wei Zhang",
+   "nodes": 171
+  },
+  {
+   "name": "Lei Wang",
+   "nodes": 161
+  },
+  {
+   "name": "Yang Liu",
+   "nodes": 150
+  },
+  {
+   "name": "Wei Li",
+   "nodes": 137
+  },
+  {
+   "name": "Yang Li",
+   "nodes": 124
+  },
+  {
+   "name": "Jing Wang",
+   "nodes": 123
+  },
+  {
+   "name": "Yu Zhang",
+   "nodes": 121
+  },
+  {
+   "name": "Wei Liu",
+   "nodes": 119
+  },
+  {
+   "name": "Jing Li",
+   "nodes": 114
+  }
+ ],
+ "sample_check": {
+  "nodes": 1000,
+  "name_not_in_text": 0
+ },
+ "names_sha256": "3828a3fddf6759d47c65b7ef023f83f3dfbc714da1a93e3c5ec919a29382139b",
+ "dataset_json_sha256": "f53227d5c9b5d069d58fdca685f3863e889a264dac32701e1cc637a982140ea5",
+ "peak_mb": 4548.6,
+ "seconds": 38.2,
+ "utc": "2026-11-26T18:09:58Z",
+ "outputs/mp_unified/zstk2.py": "af1330f71e9c9868736c1fc4d2cca14231f911e5c08caf5b19f8e6e6150ab09a"
+}

@@ -1,0 +1,118 @@
+{
+ "stage": "STK2 names",
+ "declared_in": "docs/STK2_STARK_LINKS.md section 3",
+ "kb": "prime",
+ "dataset": "stark_prime",
+ "nodes": 129375,
+ "named": 129375,
+ "by_key": {
+  "name": 129375
+ },
+ "by_type": {
+  "anatomy": {
+   "nodes": 14035,
+   "named": 14035,
+   "share": 1.0
+  },
+  "biological_process": {
+   "nodes": 28642,
+   "named": 28642,
+   "share": 1.0
+  },
+  "cellular_component": {
+   "nodes": 4176,
+   "named": 4176,
+   "share": 1.0
+  },
+  "disease": {
+   "nodes": 17080,
+   "named": 17080,
+   "share": 1.0
+  },
+  "drug": {
+   "nodes": 7957,
+   "named": 7957,
+   "share": 1.0
+  },
+  "effect/phenotype": {
+   "nodes": 15311,
+   "named": 15311,
+   "share": 1.0
+  },
+  "exposure": {
+   "nodes": 818,
+   "named": 818,
+   "share": 1.0
+  },
+  "gene/protein": {
+   "nodes": 27671,
+   "named": 27671,
+   "share": 1.0
+  },
+  "molecular_function": {
+   "nodes": 11169,
+   "named": 11169,
+   "share": 1.0
+  },
+  "pathway": {
+   "nodes": 2516,
+   "named": 2516,
+   "share": 1.0
+  }
+ },
+ "name_groups": 129262,
+ "sibling_pairs_if_built": 228,
+ "sibling_stop": 50000000,
+ "largest_groups": [
+  {
+   "name": "Vitamin E",
+   "nodes": 3
+  },
+  {
+   "name": "4-hydroxyphenylacetic aciduria",
+   "nodes": 2
+  },
+  {
+   "name": "Acetaminophen",
+   "nodes": 2
+  },
+  {
+   "name": "Ammonia",
+   "nodes": 2
+  },
+  {
+   "name": "Amoxicillin",
+   "nodes": 2
+  },
+  {
+   "name": "Androstenedione",
+   "nodes": 2
+  },
+  {
+   "name": "Attachment and Entry",
+   "nodes": 2
+  },
+  {
+   "name": "Axenfeld anomaly",
+   "nodes": 2
+  },
+  {
+   "name": "Barrett esophagus",
+   "nodes": 2
+  },
+  {
+   "name": "Budd-Chiari syndrome",
+   "nodes": 2
+  }
+ ],
+ "sample_check": {
+  "nodes": 1000,
+  "name_not_in_text": 0
+ },
+ "names_sha256": "32f658dbcd2336e19f2605949d280c060b815200aa0ff36c0135ad7639e4ebe1",
+ "dataset_json_sha256": "42327f55684ddcb35084cbc22538514b0b7a9c339d43f31a9478c90df2ecc8e9",
+ "peak_mb": 339.4,
+ "seconds": 3.1,
+ "utc": "2026-11-26T18:08:53Z",
+ "outputs/mp_unified/zstk2.py": "af1330f71e9c9868736c1fc4d2cca14231f911e5c08caf5b19f8e6e6150ab09a"
+}
