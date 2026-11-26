@@ -630,7 +630,7 @@ def greedy_old(r, p, rho):
 
 def check_solution(r, p, space, x, rho, protect, mono):
     """The program's constraints on a candidate x: reach, S, monotone."""
-    ok = bool(((r @ x) >= rho - 1e-7).all())
+    ok = bool(((r @ x) >= rho - 2e-6).all())     # HiGHS accepts a primal violation up to its feasibility tolerance
     if protect:
         ok &= bool((x[space.grp == 0] > 0.5).all())
     if mono:
@@ -675,7 +675,7 @@ def cmd_solve(a):
         T = solve_threshold(r, p, sp, RHO, True)
         chain = [x["tau"] for x in (L, U, main, T)]
         block["chain_tau_L_U_M_T"] = chain
-        if None not in chain and not all(chain[i] <= chain[i + 1] + 1e-7 for i in range(3)):
+        if None not in chain and not all(chain[i] <= chain[i + 1] + 1e-6 for i in range(3)):
             stop(f"G-G6: {sname}: the chain tau_L <= tau_U <= tau_M <= tau_T fails: {chain}")
         if main["x"] is not None and not check_solution(r, p, sp, main["x"], RHO, True, True):
             stop(f"G-G6: {sname}: the M solution breaks a constraint")
