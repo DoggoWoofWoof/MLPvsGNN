@@ -1,0 +1,20 @@
+{
+ "declared_in": "docs/CR1_CHAIN_RECREATION.md",
+ "datasets": [
+  "2wiki",
+  "hotpotqa",
+  "metaqa",
+  "multihoprag",
+  "musique",
+  "webqsp"
+ ],
+ "calls": {
+  "B rq_minus_fq @ 30": "NOT_UNIVERSAL (ABOVE on 0, BELOW on 6 of 6); multihoprag BELOW, musique BELOW, metaqa BELOW, webqsp BELOW, hotpotqa BELOW, 2wiki BELOW",
+  "B fq_minus_pd @ 30": "NOT_UNIVERSAL (ABOVE on 4, BELOW on 1 of 6); multihoprag ABOVE, musique ABOVE, metaqa BELOW, webqsp LEVEL, hotpotqa ABOVE, 2wiki ABOVE",
+  "C sum vs best / worst single @ 30": "NOT_SAFE (not BELOW the better single on 3, ABOVE the worse on 6 of 6); multihoprag LEVEL/ABOVE, musique BELOW/ABOVE, metaqa BELOW/ABOVE, webqsp LEVEL/ABOVE, hotpotqa BELOW/ABOVE, 2wiki ABOVE/ABOVE",
+  "C zs vs best / worst single @ 30": "NOT_SAFE (not BELOW the better single on 4, ABOVE the worse on 6 of 6); multihoprag LEVEL/ABOVE, musique LEVEL/ABOVE, metaqa BELOW/ABOVE, webqsp LEVEL/ABOVE, hotpotqa BELOW/ABOVE, 2wiki ABOVE/ABOVE",
+  "C rrf vs best / worst single @ 30": "NOT_SAFE (not BELOW the better single on 4, ABOVE the worse on 6 of 6); multihoprag LEVEL/ABOVE, musique LEVEL/ABOVE, metaqa BELOW/ABOVE, webqsp LEVEL/ABOVE, hotpotqa BELOW/ABOVE, 2wiki ABOVE/ABOVE",
+  "A CHAIN_WITHIN_TWO (CC2 minus control)": "multihoprag/RK/s1eval/GP ABOVE (+1.51 points); musique/RK/s1eval/CH ABOVE (+45.44 points); musique/RK/s1eval/GP ABOVE (+33.63 points); metaqa/SRK/s1eval/GP ABOVE (+37.81 points); webqsp/SRK/s1eval/GP ABOVE (+39.18 points); hotpotqa/RK/s1eval/GP ABOVE (+72.25 points); hotpotqa/SRK/s1eval/GP ABOVE (+76.19 points); 2wiki/RK/s1eval/GP ABOVE (+45.68 points); 2wiki/SRK/s1eval/GP ABOVE (+45.59 points)"
+ },
+ "zcr1_sha256": "96f0b28f99b3d750bbc2cd8f28f485e5e39aa2a4114e0a57594b8aa7eb14d331"
+}

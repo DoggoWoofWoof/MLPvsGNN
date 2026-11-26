@@ -130,6 +130,93 @@ Ranks, shares at 10/30/100, chance and the bootstrap over questions are as in Pa
 - A trained or relation-specific path scorer; the answer-string form of the MHB B4 bridge (it needs the answer).
 - SQuAD (no slot).
 
-## 10. Results
+## 10. Results (read 26 Nov 2026, 20:30; six datasets with a slot, SQuAD n/a)
 
-None yet.
+Every number is in `outputs/cr1/<d>/ledger.json` and `outputs/cr1/report.md`. The decide cell is `s1eval` (MuSiQue CH; RK on HotpotQA and 2Wiki, SRK beside); intervals are 95 percent over questions.
+
+### 10.1 Provenance and gates
+
+- **Rows.** MultiHop-RAG on the laptop (5.7 s); `cr1a3-musique` (27.9 s) and `cr1a3-metaqa` (66.7 s) on the host; `cr1-webqsp` (job 261126-200057-cr1-webqsp-8105, 117.9 s, peak working set 11.73 GB); `cr1-2wiki` (319.9 s, 7.04 GB); `cr1a4-hotpotqa` (job 261126-201912-cr1a4-hotpotqa-95fe, 203.4 s, 5.25 GB). The ledgers record the code hash: 8da021fa (the A3 code) on five, **96f0b28f (A4) on HotpotQA**. The five A3-code ledgers passed G-C6 in its exact form, so A4 changes none of their numbers.
+- **G-C1:** every cell's D count equals UL2P's (MultiHop-RAG 2,350 of 2,747; MuSiQue CH 1,984 of 3,987 and GP 2,013 of 5,962; MetaQA 4,912 of 37,446; WebQSP 833 of 4,369; HotpotQA RK 4,836 and SRK 5,925 of 7,405; 2Wiki RK 11,522 and SRK 12,061 of 26,331). **G-C2** passes on all. **G-C5:** MultiHop-RAG 0.9874, MuSiQue 0.9873, HotpotQA 0.9995, 2Wiki 0.9937 (gold basis); MetaQA 0.9838 and WebQSP 0.9998 (stored dense top-5 basis, A1; their golds' share 0.6194 and 0.9541). **G-C6:** exact on five; **HotpotQA accepted one rank difference within float noise among 1,000 slots** (A4's count, in the ledger). **G-C8 PASS** on the three re-runs (MultiHop-RAG, MuSiQue, MetaQA).
+- **Disclosure (HotpotQA).** The first run stopped at G-C6 (A4). The feeder's own retry (job 261126-201152-cr1-hotpotqa-4276, 20:12) ran the host's 19:51 copy of `zcr1.py`, which had no A4 change (the feeder does not re-send a changed input on a retry), and stopped on the same slot. The A4 file was then pushed (host and local hash equal, 96f0b28f) and the row re-queued as `cr1a4-hotpotqa`. Every HotpotQA number below is from that run's complete ledger. The two failed runs left partial ledgers that fetches delivered into the shared folder, and `report` printed their lines between 20:10 and 20:22; none of those lines is quoted here.
+
+### 10.2 Part A: how far the gold slots are from linked (percent; decide cell)
+
+| dataset | cell | slots | D | T | N | CC1 | CC2 | control D+T | median \|M\| of T | CC2 minus control |
+|---|---|---|---|---|---|---|---|---|---|---|
+| MultiHop-RAG | RK GP | 2,747 | 85.55 | 14.20 | 0.26 | 74.96 | 99.47 | 98.64 | 18 | +1.51 [0.71, 2.41] |
+| MuSiQue | RK CH | 3,987 | 49.76 | 34.44 | 15.80 | 42.37 | 76.00 | 33.02 | 3 | +45.44 [42.78, 48.04] |
+| MuSiQue | RK GP | 5,962 | 33.76 | 37.07 | 29.17 | 36.66 | 62.64 | 34.62 | 3 | +33.63 [31.15, 36.17] |
+| MetaQA | SRK GP | 37,446 | 13.12 | 64.79 | 22.09 | 7.43 | 77.91 | 55.58 | 4 | +37.81 [36.11, 39.57] |
+| WebQSP | SRK GP | 4,369 | 19.07 | 80.16 | 0.78 | 16.78 | 98.94 | 69.71 | 15 | +39.18 [35.11, 43.09] |
+| HotpotQA | RK GP | 7,405 | 65.31 | 16.73 | 17.96 | 65.31 | 82.04 | 9.79 | 2 | +72.25 [71.26, 73.31] |
+| HotpotQA | SRK GP | 7,405 | 80.01 | 6.63 | 13.36 | 80.01 | 86.64 | 10.45 | 2 | +76.19 [75.22, 77.16] |
+| 2Wiki | RK GP | 26,331 | 43.76 | 20.59 | 35.65 | 50.93 | 65.81 | 24.11 | 1 | +45.68 [44.72, 46.63] |
+| 2Wiki | SRK GP | 26,331 | 45.80 | 20.15 | 34.05 | 52.76 | 66.21 | 25.40 | 1 | +45.59 [44.65, 46.56] |
+
+MuSiQue CH by hop count (questions; CC1 / CC2): 2 hops (1,252) 70.29 / 90.81; 3 hops (760) 14.47 / 63.29; 4 hops (405) 8.39 / 54.07. The share of T slots with `|M|` of 10 or more: MultiHop-RAG 0.782, WebQSP 0.635, MetaQA 0.428, MuSiQue CH 0.122, 2Wiki 0.017, HotpotQA 0.013. Via-gold shares of T: MultiHop-RAG 0.264, MetaQA 0.112, WebQSP 0.094, MuSiQue CH 0.011, 2Wiki 0.001, HotpotQA 0.
+
+**Call A (CHAIN_WITHIN_TWO): ABOVE on every cell.** What the effect means differs by dataset: on **MuSiQue, HotpotQA and 2Wiki a T slot has few intermediates** (median 3, 2 and 1), and the control's D + T share is 10 to 33 percent against 64 to 87 for the cell's own slots, so a two-link path is a selective signal there. On **MultiHop-RAG the control's D + T is 98.64** (the cell's own 99.75): a shared neighbour exists for nearly any pair, the call is ABOVE by 1.5 points and says nothing. On **MetaQA and WebQSP the control's D + T is 56 and 70 percent** (the cell's own 78 and 99; hubs): ABOVE by 38 and 39 points, but with median `|M|` of 4 and 15 the path is not selective. Reached at two links, MuSiQue's chain slots are 84.2 percent (D 49.76 plus T 34.44); 15.8 percent have no path of two links in B0 at all.
+
+### 10.3 Part B: the order of a source's neighbours (D slots, share with the target at rank 30 or better; chance beside)
+
+| dataset | cell | D slots | median degree | pd | fq | rq | chance | fq minus pd | rq minus fq |
+|---|---|---|---|---|---|---|---|---|---|
+| MultiHop-RAG | RK GP | 2,350 | 75 | 94.89 | 98.81 | 51.45 | 42.43 | **+3.92 ABOVE** [2.87, 5.01] | -47.36 BELOW |
+| MuSiQue | RK CH | 1,984 | 42 | 79.99 | 88.31 | 75.61 | 65.88 | **+8.32 ABOVE** [6.61, 9.99] | -12.70 BELOW |
+| MetaQA | SRK GP | 4,912 | 4,970 | 34.63 | 8.69 | 2.95 | 5.89 | **-25.94 BELOW** [-27.39, -24.45] | -5.74 BELOW |
+| WebQSP | SRK GP | 833 | 6,747 | 37.58 | 40.58 | 19.21 | 16.50 | **+3.00 LEVEL** [-3.26, +9.02] | -21.37 BELOW |
+| HotpotQA | RK GP | 4,836 | 31 | 91.67 | 98.53 | 93.51 | 79.60 | **+6.87 ABOVE** [6.12, 7.61] | -5.03 BELOW |
+| 2Wiki | RK GP | 11,522 | 41 | 93.23 | 94.05 | 70.86 | 70.76 | **+0.82 ABOVE** [0.35, 1.26] | -23.18 BELOW |
+
+SRK beside: HotpotQA fq minus pd +8.19 ABOVE, rq minus fq -4.46 BELOW; 2Wiki +0.85 ABOVE, -24.03 BELOW. The carve `s1sel` agrees in sign on every dataset that has one (WebQSP has no `s1sel` cell; 2Wiki RK +0.14 and SRK +0.41 are LEVEL).
+
+- **The cut matters.** At rank 30 several cells are near their ceiling (HotpotQA 98.5, MultiHop-RAG 98.8, against median degrees of 31 and 75), which understates the order. At rank 10 the paired difference fq minus pd is **+23.35 on HotpotQA, +11.24 on MuSiQue CH, +7.53 on MultiHop-RAG**, -0.73 LEVEL on 2Wiki, **-17.26 on MetaQA** and **-7.92 BELOW on WebQSP**; at rank 100 WebQSP is **+11.04 ABOVE** (and MetaQA -48.11). WebQSP's question order is behind the pair dot in the first ten, level at thirty, ahead at a hundred.
+- The median rank as a share of the source's neighbours (pd / fq): MultiHop-RAG 0.113 / 0.095, MuSiQue CH 0.286 / 0.185, HotpotQA 0.289 / 0.118, 2Wiki 0.220 / 0.217, WebQSP 0.026 / 0.027, MetaQA **0.023 / 0.381**.
+
+**Call B, residual: `rq` minus `fq` is NOT_UNIVERSAL: BELOW on 6 of 6** (-4.5 to -47.4 points). **Call B, question order: `fq` minus `pd` is NOT_UNIVERSAL** (the rule needs ABOVE on at least 5 and BELOW on none): ABOVE on 4 (MultiHop-RAG, MuSiQue, HotpotQA, 2Wiki), LEVEL on WebQSP, BELOW on MetaQA.
+
+### 10.4 Part C: fused orders and the label-free statistics (rank 30; decide cell)
+
+| dataset | pd | fq | zs | sum | rrf | z25 | z75 | best single | zs minus best | z75 minus best | r(pd, fq) | sd fq / sd pd |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| MultiHop-RAG | 94.89 | 98.81 | 98.47 | 98.30 | 98.43 | 97.19 | 98.85 | fq | -0.34 LEVEL | +0.04 LEVEL | 0.895 | 0.758 |
+| MuSiQue CH | 79.99 | 88.31 | 87.45 | 86.69 | 87.65 | 85.13 | 88.31 | fq | -0.86 LEVEL | 0.00 LEVEL | 0.656 | 0.770 |
+| MetaQA | 34.63 | 8.69 | 26.51 | 26.36 | 23.66 | 33.86 | 19.16 | pd | **-8.12 BELOW** | **-15.47 BELOW** | 0.377 | 1.017 |
+| WebQSP | 37.58 | 40.58 | 42.14 | 40.22 | 42.38 | 38.78 | 43.34 | fq | +1.56 LEVEL | +2.76 ABOVE | 0.637 | 0.734 |
+| HotpotQA | 91.67 | 98.53 | 96.94 | 96.69 | 97.25 | 94.79 | 98.16 | fq | -1.59 BELOW | -0.37 BELOW | 0.835 | 0.912 |
+| 2Wiki | 93.23 | 94.05 | 94.64 | 94.58 | 94.80 | 94.11 | 94.71 | fq | +0.60 ABOVE | +0.66 ABOVE | 0.899 | 0.860 |
+
+**Call C (SAFE_FUSION): NOT_SAFE for `sum`, `zs` and `rrf`.** None is BELOW the better single order on 5 of 6 datasets (`sum` on 3, `zs` and `rrf` on 4); each is ABOVE the worse single order on 6 of 6. The z75 column is **descriptive, post hoc** (z75 is a declared order but not one of call C's three): at rank 30 it is within 0.4 points of the best single order on MultiHop-RAG, MuSiQue CH and HotpotQA, above it on 2Wiki and WebQSP, and 15.5 points below it on MetaQA.
+
+### 10.5 The expectations, one by one
+
+| | what was written | result |
+|---|---|---|
+| X1 | D equals UL2P's recall on every cell | **Held** (G-C1, exact) |
+| X2 | D + T at least 0.9 on MultiHop-RAG, HotpotQA, 2Wiki RK | **Not held:** 99.75, 82.04, 64.35; true on one of three. T is small and selective on the other two (median `\|M\|` 2 and 1) |
+| X3 | MuSiQue CH D + T below 0.9 | **Held:** 84.20 |
+| X4 | median `\|M\|` of T at least 10 except on MetaQA | **Not held:** 18 and 15 on MultiHop-RAG and WebQSP; 3, 2, 1 on MuSiQue, HotpotQA, 2Wiki |
+| X5 | control D + T at least 0.5 of the cell's on MetaQA, WebQSP | **Held:** 0.71 (55.58 of 77.91) and 0.70 (69.71 of 99.23) |
+| X6 | `fq` above `pd` at rank 30 on every cell | **Not held:** ABOVE on four datasets, LEVEL on WebQSP, BELOW on MetaQA by 25.9 |
+| X7 | `rq` above `fq` on at least 4 of 6 | **Not held, the opposite:** BELOW on 6 of 6; the residual is the worst of the three orders on five datasets (on HotpotQA it is above the pair dot, 93.51 against 91.67) |
+| X8 | `rq` below `fq` on HotpotQA and 2Wiki | **Held**, but not specific: it is below on MuSiQue's chain cells (-12.70) and MultiHop-RAG (-47.36) too, so the residual hurts chains as much as comparisons |
+| XC1 | on MetaQA and WebQSP every fusion is BELOW `pd` and ABOVE `fq`, more than 5 below the best | **Held on MetaQA** (fusions 8.1 to 11.0 below `pd`, `zs` 17.8 above `fq`); **not held on WebQSP**, where `fq` is the better single order and the fusions are level with it and 2.6 to 4.8 above `pd` |
+| XC2 | on MultiHop-RAG and MuSiQue CH `zs` and `sum` within 3 points of `fq` and above `pd` | **Held** (-0.34 and -0.51; -0.86 and -1.61) |
+| XC3 | no fusion is SAFE | **Held** (call C NOT_SAFE for all three) |
+| XC4 | r(pd, fq) lower on MetaQA than on MultiHop-RAG and MuSiQue, and sd(fq) / sd(pd) lower | **Not held as written:** first half true (0.377 against 0.895 and 0.656); second half false (1.017 against 0.758 and 0.770: on MetaQA the question cosine spreads the neighbours as much as the pair dot, to no use) |
+| XC5 | best weight is `fq` or z75 on the passage datasets and `pd` or z25 on the KBs | **Not held:** true on five of six (MultiHop-RAG z75, MuSiQue CH `fq` and z75, HotpotQA `fq`, 2Wiki z75, MetaQA `pd`); **WebQSP's best weight is z75 (43.34)**, the passage side, not the KB side |
+
+### 10.6 What the stage says and does not say
+
+- **Chains can be recreated from the links on the passage datasets, with a small intermediate set**: MuSiQue 84.2 percent of the oracle's chain slots within two links at a median of 3 intermediates (by hop 90.8, 63.3 and 54.1 percent of questions with every slot within two links), HotpotQA 82.0 (RK) and 86.6 (SRK), 2Wiki 65.8 and 66.2. This is the whole graph, not a pool: whether a walk's pool keeps these paths is GP3 amendment A4 (the GP1 session's), not read here. The 15.8 percent of MuSiQue's slots with no two-link path, and 2Wiki's 34 to 36 percent, are links no rule has made.
+- **Order by the question**: on the four passage datasets the question cosine puts the next hop ahead of the pair's own dot (+3.9 to +8.3 at rank 30, +7.5 to +23.4 at rank 10 except 2Wiki), on WebQSP it is behind in the first ten and ahead at a hundred, and **on MetaQA it fails (-25.9 at rank 30, median rank share 0.38 against 0.02)**. The reading is that MetaQA's gold slots are answer to answer (names), a slot the question's words do not describe; the topic-to-answer path of a KB question, which is where the relation words matter, is **not a slot here** (section 3).
+- **The residual order hurts everywhere** (X7): removing the source's direction from the question loses 4.5 to 47 points against the question cosine. No path-aware form of this kind is carried.
+- **No weight is chosen.** Five of the six datasets prefer a question-heavy weight (`fq` or z75), MetaQA alone prefers `pd`. The label-free statistic r(pd, fq) is lowest on MetaQA (0.377) but does not order the other five (MuSiQue 0.656 has a +8.3 gain from `fq`, 2Wiki 0.899 has +0.8, WebQSP 0.637 has +3.0). A rule that picks the weight from it would rest on one dataset's reversal, not on a pattern holding on 5 of 6, so **CR2 (a label-free weight) is not declared on this evidence**. A fixed question-heavy order (z75) is within 0.4 of the best on three datasets at rank 30 and costs 15.5 on MetaQA; to become a rule it needs its own page, declared before any number, and a test on data it has not seen.
+- **Not said:** nothing here is a pool grade, a trained scorer or a topic-to-answer KB walk; the pair dot is the pair's own row dot (GP1's), not a PPR or a graph score; rank 30 is the declared cut and understates the order where lists are short.
+
+### 10.7 Named for the next pages (not declared here)
+
+1. **KB topic-to-answer ordering with the relation labels** (MetaQA first): the S layer's edges carry relation labels (`S.<rel>`); the question's relation words may order a topic entity's neighbours where an answer's name cannot (the user, 26 Nov: "scoring would work so improve it, metaqa needs proper work").
+2. **A redundancy census of the links** (duplicate and near-duplicate nodes, links that add no new document), before any rule that prunes or prioritises.
+3. **A held-out semi-structured KB** (STaRK-Prime) for every rule frozen by then, so that MetaQA's reversal is read as an outlier or as a class from more than two KBs (the user, 26 Nov: CWQ shares WebQSP's KB and is not added; "only stark" will).
