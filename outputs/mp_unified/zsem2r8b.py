@@ -101,7 +101,8 @@ class Pool:
 
 
 class Adj:
-    """Forward adjacency over the labels with an operator: R both ways, S as stored. Rows sorted by (source, target, operator)."""
+    """Forward adjacency over the labels with an operator: R both ways, S as stored. Rows sorted by target; equal targets keep the order
+    of the labels (R labels in order, both ways, then S)."""
 
     def __init__(self, n, indptr, dst, op):
         self.n, self.indptr, self.dst, self.op = n, indptr, dst, op
@@ -111,33 +112,81 @@ class Adj:
         return self.dst[lo:hi], self.op[lo:hi]
 
 
-def build_adj(G, op_of):
+CHUNK, BLOCK = 1 << 24, 1 << 25
+
+
+def _edge_chunks(G, op_of, chunk):
+    """The forward rows in one fixed order, a chunk at a time: R label by label, each pair both ways, then S as stored."""
     n = G.n
-    src, dst, opl = [], [], []
     for L in range(G.nR):
         if op_of[L] < 0:
             continue
         keys = G.r_keys[L]
-        for i in range(0, keys.size, 1 << 24):
-            a, b = Z.ends(keys[i:i + (1 << 24)], n)
+        for i in range(0, keys.size, chunk):
+            a, b = Z.ends(keys[i:i + chunk], n)
             a, b = a.astype(np.int32), b.astype(np.int32)
             o = np.full(a.size, op_of[L], np.int16)
-            src += [a, b]
-            dst += [b, a]
-            opl += [o, o]
+            yield a, b, o
+            yield b, a, o
     if G.s_key.size:
         ok = op_of[G.nR + G.s_rel] >= 0
-        src.append(G.s_src[ok].astype(np.int32))
-        dst.append(G.s_dst[ok].astype(np.int32))
-        opl.append(op_of[G.nR + G.s_rel[ok]].astype(np.int16))
+        sa, sb = G.s_src[ok].astype(np.int32), G.s_dst[ok].astype(np.int32)
+        so = op_of[G.nR + G.s_rel[ok]].astype(np.int16)
+        for i in range(0, sa.size, chunk):
+            yield sa[i:i + chunk], sb[i:i + chunk], so[i:i + chunk]
+
+
+def build_adj(G, op_of, chunk=CHUNK, block=BLOCK):
+    """The table, built in two passes over the edges (count, then place) and one sort of each row by target, a block of rows at a time:
+    the peak is the table itself (6 bytes a row) and a few chunk-sized arrays, where one global sort of 1e9 rows took 10 times as much.
+    The result equals the one-sort construction row for row (self-test: build_adj_ref)."""
+    n = G.n
+    deg = np.zeros(n, np.int64)
+    for a, _b, _o in _edge_chunks(G, op_of, chunk):
+        deg += np.bincount(a, minlength=n)
+    indptr = np.zeros(n + 1, np.int64)
+    np.cumsum(deg, out=indptr[1:])
+    dst = np.empty(int(indptr[-1]), np.int32)
+    opl = np.empty(dst.size, np.int16)
+    cursor = indptr[:-1].copy()
+    for a, b, o in _edge_chunks(G, op_of, chunk):
+        if a.size == 0:
+            continue
+        order = np.argsort(a, kind="stable")
+        s = a[order]
+        first = np.flatnonzero(np.concatenate(([True], s[1:] != s[:-1])))
+        cnt = np.diff(np.concatenate((first, [s.size])))
+        pos = cursor[s] + (np.arange(s.size) - np.repeat(first, cnt))
+        dst[pos] = b[order]
+        opl[pos] = o[order]
+        cursor[s[first]] += cnt
+    assert np.array_equal(cursor, indptr[1:]), "adjacency: placed rows differ from counted rows"
+    i0 = 0
+    while i0 < n:
+        i1 = min(n, max(int(np.searchsorted(indptr, indptr[i0] + block, side="left")), i0 + 1))
+        lo, hi = int(indptr[i0]), int(indptr[i1])
+        if hi - lo > 1:
+            rid = np.repeat(np.arange(i1 - i0, dtype=np.int64), deg[i0:i1])
+            order = np.argsort(rid * n + dst[lo:hi], kind="stable")
+            dst[lo:hi] = dst[lo:hi][order]
+            opl[lo:hi] = opl[lo:hi][order]
+        i0 = i1
+    return Adj(n, indptr, dst, opl)
+
+
+def build_adj_ref(G, op_of):
+    """The first construction, one global sort of every row (kept for the self-test only: it needs 4 times the memory)."""
+    n = G.n
+    src, dst, opl = [], [], []
+    for a, b, o in _edge_chunks(G, op_of, 1 << 24):
+        src.append(a)
+        dst.append(b)
+        opl.append(o)
     if not src:
         return Adj(n, np.zeros(n + 1, np.int64), np.zeros(0, np.int32), np.zeros(0, np.int16))
-    src = np.concatenate(src)
-    dst = np.concatenate(dst)
-    opl = np.concatenate(opl)
+    src, dst, opl = np.concatenate(src), np.concatenate(dst), np.concatenate(opl)
     order = np.argsort(src.astype(np.int64) * n + dst, kind="stable")
     src, dst, opl = src[order], dst[order], opl[order]
-    del order
     indptr = np.zeros(n + 1, np.int64)
     np.cumsum(np.bincount(src, minlength=n), out=indptr[1:])
     return Adj(n, indptr, dst, opl)
@@ -746,6 +795,11 @@ def selftest(_a):
         inv_m = T.mapped_inv(torch, m1, X)
         model = Model(torch, m1, X, inv_m, dirs)
         adj = build_adj(G, op_of)
+        ref = build_adj_ref(G, op_of)                                # the two-pass table equals the one-sort table, whatever the chunk and block sizes
+        for ch, bl in ((1 << 24, 1 << 25), (5, 11), (1, 1), (3, 1000)):
+            t = build_adj(G, op_of, ch, bl)
+            assert np.array_equal(t.indptr, ref.indptr) and np.array_equal(t.dst, ref.dst) and np.array_equal(t.op, ref.op), ("adjacency build", ch, bl)
+        assert np.array_equal(adj.dst, ref.dst) and np.array_equal(adj.op, ref.op) and ref.dst.size > 0
         # the table equals the stored edges (as nodes) and the scan
         for x in range(0, G.n, 7):
             d, _o = adj.out(x)
@@ -822,7 +876,7 @@ def selftest(_a):
     assert 0.49 < u.mean() < 0.51 and u.min() >= 0 and u.max() < 1 and np.array_equal(u, hash_unit(np.arange(100000), 3)) and not np.array_equal(u, hash_unit(np.arange(100000), 4))
     cn, cv = best_k(np.asarray([5, 3, 9, 1, 7]), np.asarray([1.0, 2.0, 2.0, 0.5, 2.0], np.float32), 2)
     assert list(cn) == [3, 7] and list(cv) == [2.0, 2.0], (cn, cv)
-    log(f"self-test PASS: candidate sets, values, closure and weights of the eight scorers equal plain loops over explicit unit vectors on 48 toy questions; HiGHS equals exhaustive "
+    log(f"self-test PASS: the two-pass adjacency equals the one-sort table row for row at four chunk and block sizes; candidate sets, values, closure and weights of the eight scorers equal plain loops over explicit unit vectors on 48 toy questions; HiGHS equals exhaustive "
         f"search on {n_inst} small programs and every solution satisfies the closure and the budget; the derangement, the hash order and the tie rule hold")
     return 0
 
