@@ -4,7 +4,7 @@ grading only. zul2p, zul2c, zul2, zul1, zap4 and zenc are imported, never edited
 
     python outputs/mp_unified/zcr1.py selftest
     python outputs/mp_unified/zcr1.py ledger --ds D [--host] [--threads 1] [--limit N]    # D's ledger (squad: its n/a record)
-    python outputs/mp_unified/zcr1.py report                                              # the tables, the calls A and B, the expectations X1-X8
+    python outputs/mp_unified/zcr1.py report                                              # the tables, the calls A, B and C (amendment A3), the expectations X1-X8
 """
 import sys
 from pathlib import Path
@@ -35,6 +35,9 @@ DS7 = P.DS7
 KS = (10, 30, 100)                         # rank cuts read (30 is GP1's)
 CALL_K = 30
 ORDERS = ("pd", "fq", "rq")                # the pair's own dot, the flat question cosine, the residual question cosine
+FUSED = ("sum", "zs", "rrf", "z25", "z75")  # amendment A3: pd + fq; equal-weight z-scores; reciprocal rank fusion; z-scores weighted 0.25 / 0.75 on fq
+ORDERS_C = ORDERS + FUSED
+RRF_K = 60
 BLOCK = 1 << 14                            # neighbour rows scored per block
 MIN_T = P.MIN_T
 log = MB.log
@@ -238,8 +241,36 @@ def ranks_of(scores, ns, t):
     return [int(1 + (sc > sc[i]).sum()) for sc in scores]
 
 
+def zscore(x):
+    x = np.asarray(x, np.float64)
+    s = x.std()
+    return (x - x.mean()) / s if s > 0 else np.zeros(x.size)
+
+
+def rank_all(x):
+    """1 + the number of strictly larger scores, per element (ties share the rank)."""
+    x = np.asarray(x)
+    return 1 + (x.size - np.searchsorted(np.sort(x), x, side="right"))
+
+
+def fused_scores(pd, fq):
+    """The scores of FUSED (amendment A3), in that order, over one source's neighbours."""
+    p, f = np.asarray(pd, np.float64), np.asarray(fq, np.float64)
+    zp, zf = zscore(p), zscore(f)
+    rrf = 1.0 / (RRF_K + rank_all(p)) + 1.0 / (RRF_K + rank_all(f))
+    return [p + f, 0.5 * zp + 0.5 * zf, rrf, 0.75 * zp + 0.25 * zf, 0.25 * zp + 0.75 * zf]
+
+
+def source_stats(pd, fq):
+    """(Pearson r of pd and fq, sd pd, sd fq) over one source's neighbours: label-free (amendment A3)."""
+    p, f = np.asarray(pd, np.float64), np.asarray(fq, np.float64)
+    sp, sf = float(p.std()), float(f.std())
+    r = float(np.mean((p - p.mean()) * (f - f.mean())) / (sp * sf)) if p.size > 1 and sp > 0 and sf > 0 else float("nan")
+    return r, sp, sf
+
+
 def part_b_question(rows, q, a, b, nb):
-    """One question's D slots: per slot (source, target, |N(s)|, the three ranks). The scores of a source are computed once."""
+    """One question's D slots: per slot (source, target, |N(s)|, the ranks by ORDERS_C, the source's label-free statistics). The scores of a source are computed once."""
     ends = np.unique(np.concatenate([a, b]))
     fe = rows.take(ends) @ q
     fa, fb = fe[np.searchsorted(ends, a)], fe[np.searchsorted(ends, b)]
@@ -249,31 +280,34 @@ def part_b_question(rows, q, a, b, nb):
         si = int(s[i])
         ns = nb.of(si)
         if si not in cache:
-            cache[si] = neighbour_scores(rows, q, si, ns)
-        out.append((si, int(t[i]), int(ns.size), *ranks_of(cache[si], ns, int(t[i]))))
+            sc = neighbour_scores(rows, q, si, ns)
+            cache[si] = (list(sc) + fused_scores(sc[0], sc[1]), source_stats(sc[0], sc[1]))
+        out.append((si, int(t[i]), int(ns.size), ranks_of(cache[si][0], ns, int(t[i])), cache[si][1]))
     return out
 
 
 def part_b(nq, qi, a, b, cls, nb, rows, qrow, qrows):
-    """Part B of one cell: the target's rank among the source's neighbours, over the D slots, by the three orders."""
+    """Part B (and, amendment A3, Part C) of one cell: the target's rank among the source's neighbours, over the D slots, by the three orders and the fused ones."""
     dsl = np.flatnonzero(cls == 0)
     if dsl.size == 0:
         return {"d_slots": 0}, None
     qd, ad, bd = qi[dsl], a[dsl], b[dsl]
-    res = np.zeros((dsl.size, 5), np.int64)                     # |N(s)|, rank pd, rank fq, rank rq, source
+    res = np.zeros((dsl.size, len(ORDERS_C) + 2), np.int64)     # |N(s)|, the ranks by ORDERS_C, source
+    stats = np.zeros((dsl.size, 3))                             # per slot's source: r(pd, fq), sd pd, sd fq
     start = np.flatnonzero(np.r_[True, qd[1:] != qd[:-1]])
     end = np.append(start[1:], qd.size)
     for lo, hi in zip(start, end):
         q = qrows.take([qrow[int(qd[lo])]])[0]
-        for k, (s, _t, dg, r1, r2, r3) in enumerate(part_b_question(rows, q, ad[lo:hi], bd[lo:hi], nb)):
-            res[lo + k] = (dg, r1, r2, r3, s)
+        for k, (s, _t, dg, rk, st) in enumerate(part_b_question(rows, q, ad[lo:hi], bd[lo:hi], nb)):
+            res[lo + k] = (dg, *rk, s)
+            stats[lo + k] = st
     qs = np.flatnonzero(np.bincount(qd, minlength=nq))
     nsl = np.bincount(qd, minlength=nq)[qs].astype(float)
     deg = res[:, 0].astype(float)
-    rec = {"d_slots": int(dsl.size), "questions": int(qs.size), "sources": int(np.unique(np.stack([qd, res[:, 4]]), axis=1).shape[1]),
+    rec = {"d_slots": int(dsl.size), "questions": int(qs.size), "sources": int(np.unique(np.stack([qd, res[:, -1]]), axis=1).shape[1]),
            "degree_median": float(np.median(deg)), "degree_p90": float(np.percentile(deg, 90)), "orders": {}}
     hits = {}
-    for oi, o in enumerate(ORDERS):
+    for oi, o in enumerate(ORDERS_C):
         r = res[:, 1 + oi]
         ro = {"median_rank_share": round(float(np.median(r / deg)), 5)}
         for K in KS:
@@ -284,10 +318,23 @@ def part_b(nq, qi, a, b, cls, nb, rows, qrow, qrows):
             ro[f"top{K}"] = {"hits": int(h.sum()), "share": boot_share(hq, nsl), "chance": round(100 * float(ch.sum() / nsl.sum()), 3)}
         rec["orders"][o] = ro
     rec["paired"] = {}
+    rec["best_single"] = {}
     for K in KS:
-        rec["paired"][f"top{K}"] = {"rq_minus_fq": boot_diff(hits[("rq", K)], hits[("fq", K)], nsl),
-                                    "fq_minus_pd": boot_diff(hits[("fq", K)], hits[("pd", K)], nsl),
-                                    "rq_minus_pd": boot_diff(hits[("rq", K)], hits[("pd", K)], nsl)}
+        pk = {"rq_minus_fq": boot_diff(hits[("rq", K)], hits[("fq", K)], nsl),
+              "fq_minus_pd": boot_diff(hits[("fq", K)], hits[("pd", K)], nsl),
+              "rq_minus_pd": boot_diff(hits[("rq", K)], hits[("pd", K)], nsl)}
+        better, worse = ("fq", "pd") if hits[("fq", K)].sum() >= hits[("pd", K)].sum() else ("pd", "fq")
+        rec["best_single"][f"top{K}"] = better
+        for Fo in FUSED:                                                                   # amendment A3
+            pk[f"{Fo}_minus_pd"] = boot_diff(hits[(Fo, K)], hits[("pd", K)], nsl)
+            pk[f"{Fo}_minus_fq"] = boot_diff(hits[(Fo, K)], hits[("fq", K)], nsl)
+            pk[f"{Fo}_minus_best"] = boot_diff(hits[(Fo, K)], hits[(better, K)], nsl)
+            pk[f"{Fo}_minus_worst"] = boot_diff(hits[(Fo, K)], hits[(worse, K)], nsl)
+        rec["paired"][f"top{K}"] = pk
+    ok = np.isfinite(stats[:, 0])
+    rec["stats"] = {"r_pd_fq_mean": round(float(stats[ok, 0].mean()), 4) if ok.any() else None, "r_pd_fq_median": round(float(np.median(stats[ok, 0])), 4) if ok.any() else None,
+                    "sd_pd_median": round(float(np.median(stats[:, 1])), 5), "sd_fq_median": round(float(np.median(stats[:, 2])), 5),
+                    "sd_ratio_fq_over_pd_median": round(float(np.median(stats[:, 2] / np.maximum(stats[:, 1], 1e-12))), 4)}
     return rec, res
 
 
@@ -525,6 +572,20 @@ def cmd_report(_a):
                 L.append(f"| {d} | {v} | {ck} | {B['d_slots']} | {B['degree_median']:.0f} | {pc(o['pd']['top30']['share'])} ({o['pd']['top30']['chance']}) | {pc(o['fq']['top30']['share'])} | "
                          f"{pc(o['rq']['top30']['share'])} | {fm(pr['top30']['rq_minus_fq'])} | {fm(pr['top30']['fq_minus_pd'])} | {fm(pr['top10']['rq_minus_fq'])} | {fm(pr['top100']['rq_minus_fq'])} | "
                          f"{o['pd']['median_rank_share']} / {o['fq']['median_rank_share']} / {o['rq']['median_rank_share']} |")
+    L += ["", "## Part C (amendment A3): fused orders at rank <= 30 (percent of D slots; paired differences to the better and the worse single order) and the label-free statistics", "",
+          "| dataset | ver | carve/kind | pd | fq | sum | zs | rrf | z25 | z75 | best single | zs-best | sum-best | rrf-best | zs-worst | r(pd,fq) mean | sd pd | sd fq | sd ratio |", "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    for d, r in recs.items():
+        for v, cells in r.get("versions", {}).items():
+            for ck, c in cells.items():
+                B = c["B"]
+                if not B.get("d_slots") or "zs" not in B.get("orders", {}):
+                    L.append(f"| {d} | {v} | {ck} | part C not run | | | | | | | | | | | | | | | |")
+                    continue
+                o, pr, st = B["orders"], B["paired"][f"top{CALL_K}"], B["stats"]
+                sh = lambda k: f"{o[k]['top30']['share']['pt']:.2f}"                    # noqa: E731
+                fm = lambda k: "-" if pr.get(k) is None else f"{pr[k]['pt']:+.2f} {pr[k]['call']}"      # noqa: E731
+                L.append(f"| {d} | {v} | {ck} | {sh('pd')} | {sh('fq')} | {sh('sum')} | {sh('zs')} | {sh('rrf')} | {sh('z25')} | {sh('z75')} | {B['best_single'][f'top{CALL_K}']} | "
+                         f"{fm('zs_minus_best')} | {fm('sum_minus_best')} | {fm('rrf_minus_best')} | {fm('zs_minus_worst')} | {st['r_pd_fq_mean']} | {st['sd_pd_median']} | {st['sd_fq_median']} | {st['sd_ratio_fq_over_pd_median']} |")
     calls = calls_of(recs)
     L += ["", "## Calls", ""] + [f"- {k}: {v}" for k, v in calls.items()]
     (OUT).mkdir(parents=True, exist_ok=True)
@@ -567,6 +628,17 @@ def calls_of(recs):
         ab = sum(1 for x in res.values() if x == "ABOVE")
         be = sum(1 for x in res.values() if x == "BELOW")
         calls[f"B {name} @ {CALL_K}"] = (f"{'UNIVERSAL' if ab >= 5 and be == 0 else 'NOT_UNIVERSAL'} (ABOVE on {ab}, BELOW on {be} of {len(res)}); " + ", ".join(f"{d} {x}" for d, x in res.items()))
+    for Fo in ("sum", "zs", "rrf"):                                                        # amendment A3, call C
+        rb, rw = {}, {}
+        for d, (v, ck, c) in pick.items():
+            B = c["B"]
+            pr = B.get("paired", {}).get(f"top{CALL_K}", {}) if B.get("d_slots", 0) >= MIN_T else {}
+            if f"{Fo}_minus_best" in pr and pr[f"{Fo}_minus_best"] is not None:
+                rb[d], rw[d] = pr[f"{Fo}_minus_best"]["call"], pr[f"{Fo}_minus_worst"]["call"]
+        nbb = sum(1 for x in rb.values() if x != "BELOW")
+        aw = sum(1 for x in rw.values() if x == "ABOVE")
+        verdict = "PENDING" if len(rb) < 6 else ("SAFE_FUSION" if nbb >= 5 and aw >= 5 else "NOT_SAFE")
+        calls[f"C {Fo} vs best / worst single @ {CALL_K}"] = f"{verdict} (not BELOW the better single on {nbb}, ABOVE the worse on {aw} of {len(rb)}); " + ", ".join(f"{d} {rb[d]}/{rw[d]}" for d in rb)
     ca = {}
     for d, lst in cells.items():
         for v, ck, c in lst:
@@ -713,7 +785,36 @@ def selftest():
             if not np.array_equal(np.asarray(npz_member(pth, "ids")), toprows):
                 stop(f"G-C3: npz_member of {name} differs")
     checks += 6
-    print(f"selftest PASS ({checks} checks: classes, shared neighbours, via gold, the three ranks with ties, the control, the alignment gate on both bases, npz members)")
+    # amendment A3: rank_all, the fusions and the statistics against per-element loops, with ties
+    for trial in range(60):
+        k = int(rng.integers(1, 70))
+        pdv = np.round(rng.standard_normal(k), 1).astype(np.float32)
+        fqv = np.round(rng.standard_normal(k), 1).astype(np.float32)
+        if trial % 7 == 0:
+            fqv[:] = fqv[0]                                                                # a zero spread
+        ra_ = [1 + sum(1 for z in pdv if z > x) for x in pdv]
+        rb_ = [1 + sum(1 for z in fqv if z > x) for x in fqv]
+        if rank_all(pdv).tolist() != ra_ or rank_all(fqv).tolist() != rb_:
+            stop(f"G-C3: rank_all differs from the loop (trial {trial})")
+        got = fused_scores(pdv, fqv)
+        p64, f64 = pdv.astype(np.float64), fqv.astype(np.float64)
+        zp = [(x - p64.mean()) / p64.std() if p64.std() > 0 else 0.0 for x in p64]
+        zf = [(x - f64.mean()) / f64.std() if f64.std() > 0 else 0.0 for x in f64]
+        want = [[float(x) + float(y) for x, y in zip(p64, f64)], [0.5 * a1 + 0.5 * b1 for a1, b1 in zip(zp, zf)],
+                [1.0 / (RRF_K + a1) + 1.0 / (RRF_K + b1) for a1, b1 in zip(ra_, rb_)], [0.75 * a1 + 0.25 * b1 for a1, b1 in zip(zp, zf)],
+                [0.25 * a1 + 0.75 * b1 for a1, b1 in zip(zp, zf)]]
+        for gi, wi in zip(got, want):
+            if not np.allclose(gi, wi, atol=1e-12):
+                stop(f"G-C3: a fused score differs from the loop (trial {trial})")
+        r_, sp_, sf_ = source_stats(pdv, fqv)
+        if abs(sp_ - float(p64.std())) > 1e-12 or abs(sf_ - float(f64.std())) > 1e-12:
+            stop("G-C3: source_stats spreads differ")
+        if k > 1 and sp_ > 0 and sf_ > 0 and abs(r_ - float(np.corrcoef(p64, f64)[0, 1])) > 1e-9:
+            stop("G-C3: source_stats correlation differs from np.corrcoef")
+        if not (k > 1 and sp_ > 0 and sf_ > 0) and not np.isnan(r_):
+            stop("G-C3: source_stats gives a correlation where a spread is zero")
+        checks += 1
+    print(f"selftest PASS ({checks} checks: classes, shared neighbours, via gold, the three ranks with ties, the control, the alignment gate on both bases, npz members, the fused orders and statistics)")
     return 0
 
 

@@ -68,6 +68,30 @@ A gate failure stops the row and is reported; nothing is relaxed after a number 
 
 Section 3 declares CC1 and CC2 by hop on MuSiQue CH and the ledger stores them (`by_hop`), but the first `report` printed no table of them. `zcr1.py report` now prints that table (CC1 and CC2 per hop count, with the intervals the ledger holds). No ledger, no row, no definition, no call changes; the table is a print of stored values.
 
+### 5.3 Amendment A3 (26 Nov, before any Part C number): a fused order, and why an order is preferred where
+
+**Why.** The first reads disagree on which order is best: the question cosine `fq` is above the pair's own dot `pd` on MultiHop-RAG (+3.92 points at rank 30) and MuSiQue CH (+8.32) and far below it on MetaQA (-25.94, the golds there are answer entities). The user's idea of 26 Nov: "check and see how and why we prefer something depending on how the dataset we have and the other scores accordingly and take a weighted score or something". Part C reads that on the same slots, sources, targets and neighbour lists, with nothing fitted.
+
+**Part C, the orders.** For every D slot's source `s`, with `pd` and `fq` the two scores of Part B over `N(s)`:
+- `sum`: `pd + fq` (raw cosines; the score that spreads the neighbours more weighs more).
+- `zs`: the sum of the two scores' z-scores over `N(s)` (equal weights; a zero spread gives zero).
+- `rrf`: reciprocal rank fusion, `1/(60 + rank_pd) + 1/(60 + rank_fq)`, ranks as in Part B (ties share the rank), the usual constant 60.
+- `z25` and `z75`: the z-score sum with the weight 0.25 and 0.75 on `fq` (the rest on `pd`). These two exist to show **which weight a dataset prefers**; they are descriptive, no rule picks between them here.
+Ranks, shares at 10/30/100, chance and the bootstrap over questions are as in Part B. The paired differences added per cut: `F - pd`, `F - fq`, `F - best` and `F - worst`, where best and worst are the better and the worse of `pd` and `fq` in that cell by total hits at that cut (this uses the gold hits: descriptive, labelled as such).
+
+**Part C, the label-free statistics (no gold is read).** Per cell, over the D slots' sources: the mean and median of the Pearson correlation between `pd` and `fq` across the source's neighbours, the median standard deviation of `pd`, the median standard deviation of `fq`, and the median of their ratio. They say how much the two scores agree and how much each separates the neighbours, so an order's preference can be tied to a number that exists without labels.
+
+**Part C, the call.** **C: SAFE_FUSION**, for each of the three fixed fusions `sum`, `zs`, `rrf` (not `z25`, `z75`): at rank 30 on the decide cells of the six datasets (the picks of call B), the fusion is **SAFE** if its paired difference to the better single order is not BELOW on at least 5 of the 6 datasets **and** its difference to the worse single order is ABOVE on at least 5 of 6; otherwise **NOT_SAFE** (PENDING while fewer than 6 datasets are read). A SAFE fusion would be a universal order with no dataset-dependent weight; a NOT_SAFE call closes only these three fixed forms: it does not say a weight chosen from the label-free statistics cannot work (that rule, CR2, is declared on its own page after this read, if the statistics show a pattern that holds on at least 5 of the 6 datasets).
+
+**Expectations XC1-XC5 (written before any Part C number).**
+- **XC1:** on MetaQA (and WebQSP when read) every fusion is BELOW `pd` and ABOVE `fq` at rank 30: `fq` there is close to noise against `pd`, so the fused order lands between the two, below the best by more than 5 points. About 0.75.
+- **XC2:** on MultiHop-RAG and MuSiQue CH `zs` and `sum` are within 3 points of `fq`'s share at rank 30 and above `pd`'s. About even odds.
+- **XC3:** **no fusion is SAFE** (the fused order is BELOW the better single order on at least 2 of the 6 datasets). About 0.6.
+- **XC4:** the correlation between `pd` and `fq` is lower on MetaQA than on MultiHop-RAG and MuSiQue, and the standard deviation of `fq` relative to `pd`'s is lower on MetaQA than on those two. About 0.65.
+- **XC5:** among the five weights (`pd` alone, `z25`, `zs`, `z75`, `fq` alone) the best at rank 30 is `fq` or `z75` on the passage datasets (MultiHop-RAG, MuSiQue, HotpotQA, 2Wiki) and `pd` or `z25` on the KBs (MetaQA, WebQSP), so the preferred weight splits by node type. About 0.55.
+
+**Gates and rows.** G-C3 gains toy checks of `rank_all`, the fusions and the statistics against a per-element loop (ties included). **G-C8:** the three first-run ledgers (MultiHop-RAG, MuSiQue, MetaQA; copies kept as `ledger_pre_a3.json` beside each) are re-run with this code and their Part A cells and the `pd`, `fq`, `rq` shares, medians and paired differences of Part B must equal the first run's exactly (the new orders add keys; nothing old changes); a difference stops the reading. MuSiQue and MetaQA re-run as rows `cr1a3-musique` and `cr1a3-metaqa`, MultiHop-RAG on the laptop; the queued HotpotQA, 2Wiki and WebQSP rows run this code from their first send (a ledger without Part C is re-run under `cr1a3-<d>`).
+
 ## 6. Expectations (written before any number)
 
 - **X1:** the D share equals UL2P's any-link recall on every cell (this is G-C1; any difference stops the row).
