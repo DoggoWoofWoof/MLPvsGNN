@@ -115,7 +115,7 @@ The user, 27 Nov: **"by smaller i also mean smaller vectors and faster encoding 
 - **Code only.** The resume path reads the checkpoint inside a `with` block and copies the arrays; the selftest gains a check that a checkpoint read for a resume does not block its own replacement (15 checks pass). Rule, pass line, pick, batch size, A4's median speed and every list are as before.
 - **The chain.** The feeder dropped the dependent rows after the second failure (C3 on SQuAD and the three MuSiQue rows were never run). They are re-queued under new names (`spl1h-*`), the C2 SQuAD row resuming from its checkpoint at 10,240 nodes (its blocks are written once per block end, A5). No SQuAD or MuSiQue candidate number has been read: C1's SQuAD row finished but was not read.
 
-### 8.7 Amendment A7 (27 Nov, 03:08 IST, after the SQuAD cells of all three candidates were read and before any number of C0 was measured on the host)
+### 8.7 Amendment A7 (27 Nov, 02:58 IST, after the SQuAD cells of all three candidates were read and before any number of C0 was measured on the host)
 
 The user, 27 Nov, on the first report: **"and C0? the original?"**, then **"speed i meant"** and **"yes do it"** (the download of the original's 438 MB weights file onto the host).
 

@@ -118,14 +118,14 @@ The user, 26 Nov: **"why do we need bm25 etc our best are splade and dense do no
 - **What it saves.** BM25 builds a word-count matrix over every node's text and scores it against every test question, per KB; its cost on MAG and Amazon was never measured, so no hours are claimed.
 - **What it leaves.** Until the SPLADE decision for MAG and Amazon (a 440 MB download of the public model on the host, waiting for the user's OK, and a multi-day CPU row for each), their first stage is the single dense_e3v leg, and every table says that splade and rrf are absent for them and why.
 
-### 5.5 Amendment A5 (27 Nov, 03:02 IST, after Prime's SPLADE leg stopped on its first checkpoint after a resume, before any SPLADE number)
+### 5.5 Amendment A5 (27 Nov, 02:58 IST, after Prime's SPLADE leg stopped on its first checkpoint after a resume, before any SPLADE number)
 
 - **What happened.** The leg was stopped by the harness for low memory (its last save, 20,480 of 129,375 nodes, is from 01:57) and restarted at 02:36 from that checkpoint. It ended at 02:52 with `PermissionError: [WinError 5]` on `os.replace` of the checkpoint, at block 22,528.
 - **Cause.** The resume path of `zstk1s.py` opened the checkpoint with `np.load` and kept the file object open for the whole run; Windows refuses to replace an open file. A first run never resumes and has no open file, which is why the saves before the restart worked. It is the same fault SPL1's A6 found in `zspl1.py`.
 - **Code only.** The resume path reads the checkpoint inside a `with` block and copies `top_s`; nothing else in the module changes (selftest passes). The contract, the lists and every pass line of section 5.3 are as before. No SPLADE number has been read.
 - **The saved state.** The failed replace left the newer checkpoint complete in `splade_state.tmp.npz` (22,528 nodes; sha256 starts 4ebcfaf3900dd4c2; the same `n_nodes` 129,375 and `nq` 2,801 as the older file, the same array shapes, every first-rank score at least the older file's). It was renamed over `splade_state.npz` once, by hand, so the restart resumes at 22,528 and not at 20,480.
 
-### 5.6 Amendment A6 (27 Nov, 03:30 IST, after the original's weights passed SPL1's gate G-C0 on the host, before any SPLADE number of a STaRK KB)
+### 5.6 Amendment A6 (27 Nov, 03:19 IST, after the original's weights passed SPL1's gate G-C0 on the host, before any SPLADE number of a STaRK KB)
 
 The user, 26 Nov: **"deal with all the datasets the same way no matter what"** and **"all 10"**; 27 Nov: **"we can run whatever is required not an issue"** (the host card), and, on the original's weights for SPL1's cost reading, **"yes do it"**.
 
