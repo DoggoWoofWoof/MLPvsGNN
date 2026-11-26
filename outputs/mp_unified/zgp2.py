@@ -41,13 +41,22 @@ CELLS = GP.CELLS
 RHO, RHOS, CAPS_P, SIZES = GP.RHO, GP.RHOS, GP.CAPS_P, GP.SIZES
 WIN = 80                                                   # characters either side of the mention (B1)
 RANK_NAMES = (">1000", "301-1000", "101-300", "31-100", "11-30", "4-10", "1-3")
-ATTRS = {"dr": 7, "sr": 7, "ur": 7, "pr": 7, "vo": 3, "tw": 4}
-NAMES = {"dr": RANK_NAMES, "sr": RANK_NAMES, "ur": RANK_NAMES, "pr": RANK_NAMES, "vo": ("1", "2", "3+"), "tw": ("no mention", "0", "1", "2+")}
+ATTRS = {"dr": 7, "sr": 7, "ur": 7, "pr": 7, "vo": 3, "tw": 4, "qov": 3, "dir": 3}
+NAMES = {"dr": RANK_NAMES, "sr": RANK_NAMES, "ur": RANK_NAMES, "pr": RANK_NAMES, "vo": ("1", "2", "3+"), "tw": ("no mention", "0", "1", "2+"),
+         "qov": ("0", "1", "2+"), "dir": ("none", "one-way", "mutual")}
 POOL_A = ("dr", "sr", "ur", "pr", "vo")
 POOL_B = POOL_A + ("tw",)
+POOL_C = POOL_B + ("qov", "dir")                           # amendment A2
 PHASE1 = [()] + [(a,) for a in POOL_A] + list(itertools.combinations(POOL_A, 2))
 PHASE2 = [("tw",)] + [("tw", a) for a in POOL_A]
+PHASE3 = [()] + [(a,) for a in POOL_C] + list(itertools.combinations(POOL_C, 2))                       # dim lab: 1 + 8 + 28 = 37 spaces
+PHASE4 = [("qov",), ("dir",), ("qov", "dir")] + [(n, x) for n in ("qov", "dir") for x in ("dr", "pr", "tw")]   # dim grp: 9 spaces
+PHASE_DIM = {1: "grp", 2: "grp", 3: "lab", 4: "grp"}
 GRPN = ("S", "R", "K")
+LABN = ("S", "W", "CN", "TI", "K")
+PASSAGE = ("multihoprag/RK", "musique/RK", "squad/RK", "hotpotqa/RK", "hotpotqa/SRK", "2wiki/RK", "2wiki/SRK")
+KBCELLS = ("metaqa/SRK", "webqsp/SRK")
+MAX_T_GROUPS = 8
 G_Q1_ROWS, G_W1_ROWS = 2000, 1000
 EMPTY = np.zeros(0, np.int64)
 log = GP.log
@@ -106,7 +115,24 @@ def bin_columns(T, X):
          "vo": np.clip(T["votes"].astype(np.int64) - 1, 0, 2).astype(np.int8)}
     if "tw" in X:
         B["tw"] = X["tw"].astype(np.int8)
+    if "qov" in T:
+        B["qov"] = np.clip(T["qov"].astype(np.int64), 0, 2).astype(np.int8)
+    if "dir" in T:
+        B["dir"] = np.where(T["dir"] == 0, 0, np.where(T["dir"] == 3, 2, 1)).astype(np.int8)
     return B
+
+
+def lab_of(prof, v):
+    """The rule label of each link (0 S, 1 W = R.mention, 2 CN = R.name_comention, 3 TI = R.title_comention, 4 K): the first in that order among the
+    profile bits (SRK: S, W, CN, TI, K are bits 0..4; RK: W, CN, TI, K are bits 0..3); a link with none of S, W, CN, TI is K."""
+    p = np.asarray(prof, np.int64)
+    off = 1 if v == "SRK" else 0
+    lab = np.full(p.size, 4, np.int8)
+    for code, bit in ((3, 2), (2, 1), (1, 0)):
+        lab = np.where(((p >> (bit + off)) & 1) == 1, np.int8(code), lab)
+    if v == "SRK":
+        lab = np.where((p & 1) == 1, np.int8(0), lab)
+    return lab.astype(np.int8)
 
 
 # ── the key space ────────────────────────────────────────────────────────────
@@ -116,10 +142,11 @@ class Space2:
     """Keys (u, o): u = (group, step) (nine unordered groups; three when the steps are tied) and o = the chosen ordered attributes' bins (0 worst).
     Provides what zgp1p's solvers read: K, grp (0 = S), mono_pairs(). nbs overrides the declared bin counts (self-test only)."""
 
-    def __init__(self, attrs, by_step=True, nbs=None):
-        self.attrs, self.by_step = list(attrs), by_step
+    def __init__(self, attrs, by_step=True, nbs=None, dim="grp"):
+        self.attrs, self.by_step, self.dim = list(attrs), by_step, dim
         self.nbs = list(nbs) if nbs is not None else [ATTRS[a] for a in attrs]
-        self.ng = 9 if by_step else 3
+        self.ngrp = 5 if dim == "lab" else 3
+        self.ng = self.ngrp * 3 if by_step else self.ngrp
         self.nk = int(np.prod(self.nbs)) if self.attrs else 1
         self.K = self.ng * self.nk
         ks = np.arange(self.K)
@@ -156,9 +183,10 @@ class Space2:
         return np.sum(self.bins, axis=0).astype(np.int64) if self.attrs else np.zeros(self.K, np.int64)
 
     def ulabel(self, u):
+        names = LABN if self.dim == "lab" else GRPN
         if self.by_step:
-            return f"{GRPN[u // 3]}@{u % 3 + 1}"
-        return GRPN[u]
+            return f"{names[u // 3]}@{u % 3 + 1}"
+        return names[u]
 
     def label(self, k):
         a = "|".join(f"{at}={NAMES[at][int(self.bins[i][k])]}" if at in NAMES else f"{at}={int(self.bins[i][k])}" for i, at in enumerate(self.attrs))
@@ -176,6 +204,8 @@ def solve_ranksum(r, p, sp, rho, protect=True):
     smax = int(score.max()) if K else 0
     th = np.arange(smax + 2)
     gids = [u for u in range(sp.ng) if not (protect and (u // 3 if sp.by_step else u) == 0)]
+    if len(gids) > MAX_T_GROUPS:
+        return {"status": "SKIPPED_NOT_ENUMERABLE", "tau": None, "x": None, "thresholds": None, "kept": None}
     base = (sp.grp == 0) if protect else np.zeros(K, bool)
     br, bp, bn = r[:, base].sum(1), p[:, base].sum(1), int(base.sum())
     tabs = []
@@ -501,7 +531,7 @@ def cmd_text(a):
 
 # ── tables ───────────────────────────────────────────────────────────────────
 
-COLS_BASE = ("q", "a", "c", "step", "kind", "w", "grp", "rank", "votes", "exact")
+COLS_BASE = ("q", "a", "c", "step", "kind", "w", "grp", "rank", "votes", "exact", "prof", "qov", "dir")
 
 
 def cell_tables(part, need_tw, gold=False, only=None):
@@ -521,7 +551,11 @@ def cell_tables(part, need_tw, gold=False, only=None):
         if need_tw and "tw" not in X:
             stop(f"{key}: tw is not computed ({colfile(d, v, part).name}): run `cols --part {part} --text`")
         B = bin_columns(T, X)
-        t = {"grp": T["grp"], "step": T["step"], "kind": T["kind"], "w": T["w"].astype(np.float64), "q": T["q"], "a": T["a"], "B": B, "stats": T["stats"],
+        lab = lab_of(T["prof"], v)
+        gmap = np.where(lab == 0, 0, np.where(lab <= 3, 1, 2))
+        if not np.array_equal(gmap, T["grp"].astype(gmap.dtype)):
+            stop(f"G-L1: {key}: the rule label does not map onto the stored group on {int((gmap != T['grp']).sum())} rows")
+        t = {"grp": T["grp"], "lab": lab, "step": T["step"], "kind": T["kind"], "w": T["w"].astype(np.float64), "q": T["q"], "a": T["a"], "B": B, "stats": T["stats"],
              "extract_sha": T["extract_sha"]}
         if gold:
             t["T"] = T
@@ -555,13 +589,13 @@ def gate_c4(tabs):
 
 
 def columns_of(sp, tabs):
-    cc = {k: (sp.key_of(t["grp"], t["step"], t["B"]), t["w"], t["kind"]) for k, t in tabs.items() if "not_read" not in t}
+    cc = {k: (sp.key_of(t["lab"] if sp.dim == "lab" else t["grp"], t["step"], t["B"]), t["w"], t["kind"]) for k, t in tabs.items() if "not_read" not in t}
     return GP.columns(sp, cc)
 
 
-def solve_space(tabs, attrs, by_step=True, full=False):
+def solve_space(tabs, attrs, by_step=True, full=False, dim="grp"):
     t0 = time.time()
-    sp = Space2(attrs, by_step)
+    sp = Space2(attrs, by_step, dim=dim)
     names, r, p, mm, ee = columns_of(sp, tabs)
     L = GP.solve_lp(r, p, sp, RHO, True, mono=False)
     U = GP.solve_milp(r, p, sp, RHO, True, False)
@@ -569,12 +603,13 @@ def solve_space(tabs, attrs, by_step=True, full=False):
     T = solve_ranksum(r, p, sp, RHO, True)
     chain = [L["tau"], U["tau"], M["tau"], T["tau"]]
     exact = U["status"] == "OPTIMAL" and M["status"] == "OPTIMAL"
-    if exact and None not in chain and not all(chain[i] <= chain[i + 1] + 1e-6 for i in range(3)):
+    avail = [c for c in chain if c is not None]
+    if exact and not all(avail[i] <= avail[i + 1] + 1e-6 for i in range(len(avail) - 1)):
         stop(f"G-C1: {sname(attrs)}: the chain tau_L <= tau_U <= tau_M <= tau_T fails: {chain}")
     if M["x"] is not None:
         if not GP.check_solution(r, p, sp, M["x"], RHO, True, True) or not is_upper_set(sp, M["x"]):
             stop(f"G-C1: {sname(attrs)}: the M solution breaks a constraint")
-    blk = {"attrs": list(attrs), "by_step": by_step, "keys": sp.K, "cells": names, "chain_L_U_M_T": chain, "chain_checked": exact,
+    blk = {"attrs": list(attrs), "by_step": by_step, "dim": dim, "keys": sp.K, "cells": names, "chain_L_U_M_T": chain, "chain_checked": exact,
            "L": {"status": L["status"], "tau": L["tau"], "duals_reach_by_cell": dict(zip(names, L["duals"])) if L.get("duals") else None},
            "U": {"status": U["status"], "tau": U["tau"]},
            "M": {"status": M["status"], "tau": M["tau"], "gap": M["gap"], "bound": M["bound"], "kept": int(M["x"].sum()) if M["x"] is not None else None},
@@ -599,20 +634,22 @@ def provenance(part, tabs):
 def cmd_solve(a):
     gate_pins()
     t0 = time.time()
-    need_tw = a.phase == 2
+    need_tw = a.phase in (2, 3, 4)
     tabs = cell_tables("q", need_tw)
     nr = [k for k, t in tabs.items() if "not_read" in t]
     if nr:
         stop(f"the program needs all nine cells on the quarter; not read: {nr}")
     c4 = gate_c4(tabs)
     rec = provenance("q", tabs)
-    rec.update({"phase": a.phase, "G-C4": c4, "rho": RHO, "spaces": {}})
-    fam = PHASE1 if a.phase == 1 else PHASE2
+    dim = PHASE_DIM[a.phase]
+    rec.update({"phase": a.phase, "dim": dim, "G-C4": c4, "rho": RHO, "spaces": {}})
+    fam = {1: PHASE1, 2: PHASE2, 3: PHASE3, 4: PHASE4}[a.phase]
+    f4 = lambda x: "  n/a " if x is None else f"{x:.4f}"  # noqa: E731
     for attrs in fam:
-        blk = solve_space(tabs, attrs)
+        blk = solve_space(tabs, attrs, dim=dim)
         rec["spaces"][sname(attrs)] = blk
-        log(f"phase {a.phase} {sname(attrs)}: tau L {blk['chain_L_U_M_T'][0]:.4f} U {blk['chain_L_U_M_T'][1]:.4f} M {blk['chain_L_U_M_T'][2]:.4f} "
-            f"({blk['M']['status']}, {blk['M']['kept']} keys) T {blk['chain_L_U_M_T'][3]:.4f} ({time.time() - t0:.0f} s)")
+        c = blk["chain_L_U_M_T"]
+        log(f"phase {a.phase} {dim} {sname(attrs)}: tau L {f4(c[0])} U {f4(c[1])} M {f4(c[2])} ({blk['M']['status']}, {blk['M']['kept']} keys) T {f4(c[3])} ({time.time() - t0:.0f} s)")
         GP.wjson(OUT / f"rule_q_phase{a.phase}.json", rec)
     rec["seconds"] = round(time.time() - t0, 1)
     GP.wjson(OUT / f"rule_q_phase{a.phase}.json", rec)
@@ -716,6 +753,111 @@ def cmd_final(a):
     return 0
 
 
+# ── amendment A2: labels, two stored attributes, the class split ──────────────
+
+
+def beside_runs(tabs, attrs, dim, sp, names, r, p, M):
+    """Section 7's beside runs on a final space (S free, rho, size caps, own optima, frontier, tied steps)."""
+    be = {"rho": {}, "size": {}, "frontier": {}, "gp1_reference_tau": 0.99997}
+    sf = GP.solve_milp(r, p, sp, RHO, False, True)
+    be["S_free"] = {"status": sf["status"], "tau": sf["tau"], "cost_of_A1": (M["tau"] - sf["tau"]) if sf["tau"] is not None else None}
+    for rho in RHOS:
+        sr_ = GP.solve_milp(r, p, sp, rho, True, True)
+        be["rho"][str(rho)] = {"status": sr_["status"], "tau": sr_["tau"]}
+    for rho in (0.94, 0.96):
+        be["rho"][f"L_{rho}"] = {"tau": GP.solve_lp(r, p, sp, rho, True, mono=False)["tau"]}
+    for B in SIZES:
+        sz = GP.solve_milp(r, p, sp, RHO, True, True, size_cap=B)
+        be["size"][str(B)] = {"status": sz["status"], "tau": sz["tau"]}
+    own = {}
+    for j, c in enumerate(names):
+        oj = GP.solve_milp(r[j:j + 1], p[j:j + 1], sp, RHO, True, True)
+        own[c] = {"status": oj["status"], "tau": oj["tau"]}
+    be["own"] = own
+    ts = [v["tau"] for v in own.values() if v["tau"] is not None]
+    be["cost_of_universality"] = (M["tau"] - max(ts)) if ts else None
+    for cap in CAPS_P:
+        be["frontier"][str(cap)] = GP.solve_frontier(r, p, sp, cap, True, True)
+    tied = solve_space(tabs, attrs, by_step=False, dim=dim)
+    be["tied_steps"] = {"tau_M": tied["M"]["tau"], "status": tied["M"]["status"], "kept": tied["M"]["kept"], "gain_of_per_hop": (tied["M"]["tau"] - M["tau"]) if tied["M"]["tau"] is not None else None}
+    return be
+
+
+def class_split(tabs, spaces):
+    """The same program on the seven passage cells and on the two KB cells (data for the user, not a rule): spaces = [(label, attrs, dim)]."""
+    out = {}
+    for label, attrs, dim in spaces:
+        out[label] = {}
+        for cls, cells in (("passage", PASSAGE), ("kb", KBCELLS)):
+            sub = {k: tabs[k] for k in cells}
+            blk = solve_space(sub, attrs, dim=dim)
+            out[label][cls] = {"cells": blk["cells"], "tau_M": blk["M"]["tau"], "status": blk["M"]["status"], "kept": blk["M"]["kept"], "tau_L": blk["L"]["tau"], "tau_U": blk["U"]["tau"],
+                               "per_cell_on_Q": blk["M"].get("per_cell_on_Q")}
+    return out
+
+
+def cmd_a2(a):
+    gate_pins()
+    t0 = time.time()
+    ph = {}
+    for i in (1, 2, 3, 4):
+        f = OUT / f"rule_q_phase{i}.json"
+        if not f.is_file():
+            stop(f"{f.name} is missing: run `solve --phase {i}`")
+        ph[i] = json.loads(f.read_text(encoding="utf-8"))
+    ru = json.loads((OUT / "rule_q.json").read_text(encoding="utf-8"))
+    tabs = cell_tables("q", True)
+    c4 = gate_c4(tabs)
+    flat = []
+    for i in (1, 2):
+        for n, b in ph[i]["spaces"].items():
+            flat.append((f"grp:{n}", "grp", n, b["attrs"], b["M"]["tau"], b["M"]["kept"]))
+    for n, b in ru["family_tau_M"].items():
+        if len(b["attrs"]) == 3:
+            flat.append((f"grp:{n}", "grp", n, b["attrs"], b["tau_M"], b["kept"]))
+    for i in (3, 4):
+        for n, b in ph[i]["spaces"].items():
+            flat.append((f"{PHASE_DIM[i]}:{n}", PHASE_DIM[i], n, b["attrs"], b["M"]["tau"], b["M"]["kept"]))
+    best = None
+    for idx, (lab_, dim, n, at, tau, kept) in enumerate(flat):
+        if tau is None:
+            continue
+        k = (round(tau, 9), kept, len(at), idx)
+        if best is None or k < best[0]:
+            best = (k, lab_, dim, n, tuple(at), tau)
+    _k, lab_, dim, n, at, tau = best
+    same = (dim == "grp" and n == ru["final_space"])
+    best3 = min((f for f in flat if f[1] == "lab" and f[4] is not None), key=lambda f: (round(f[4], 9), f[5], len(f[3])), default=None)
+    best4 = min((f for f in flat if f[0].startswith("grp:") and f[3] and any(x in ("qov", "dir") for x in f[3]) and f[4] is not None), key=lambda f: (round(f[4], 9), f[5], len(f[3])), default=None)
+    rec = provenance("q", tabs)
+    rec.update({"phase": "a2", "G-C4": c4, "rho": RHO, "global_best": {"label": lab_, "dim": dim, "space": n, "attrs": list(at), "tau_M": tau}, "same_as_section_11": same,
+                "best_lab_space": None if best3 is None else {"label": best3[0], "tau_M": best3[4], "kept": best3[5]},
+                "best_phase4_space": None if best4 is None else {"label": best4[0], "tau_M": best4[4], "kept": best4[5]},
+                "section_11_final": {"space": ru["final_space"], "tau_M": ru["rule"]["M"]["tau"]},
+                "phase_sha256": {str(i): hashlib.sha256((OUT / f"rule_q_phase{i}.json").read_bytes()).hexdigest() for i in (1, 2, 3, 4)},
+                "all_spaces_tau_M": {f[0]: {"tau_M": f[4], "kept": f[5]} for f in flat}, "rule": None})
+    log(f"global best {lab_}: tau_M {tau:.4f} (section 11's final {ru['final_space']} {ru['rule']['M']['tau']:.4f}; same: {same})")
+    if not same:
+        blk, (sp, names, r, p, mm, ee, M, L) = solve_space(tabs, at, True, full=True, dim=dim)
+        x = M["x"]
+        rec["rule"] = {"space": sname(at), "attrs": list(at), "dim": dim, "by_step": True, "keep": x.astype(int).tolist(), "seen": blk["seen"], "M": blk["M"], "T": blk["T"], "L": blk["L"], "U": blk["U"],
+                       "kept_keys": [{"key": int(k), "label": sp.label(k), "reach_weight_pooled": round(float(r[:, k].sum()), 4), "price_weight_pooled": round(float(p[:, k].sum()), 4)}
+                                     for k in np.flatnonzero(x > 0.5)]}
+        rec["beside"] = beside_runs(tabs, at, dim, sp, names, r, p, M)
+    cs_list = [("section11_final", tuple(ru["rule"]["attrs"]), "grp")]
+    if best3 is not None:
+        cs_list.append((best3[0], tuple(best3[3]), "lab"))
+    if best4 is not None:
+        cs_list.append((best4[0], tuple(best4[3]), "grp"))
+    if not same and (lab_, tuple(at), dim) not in [(x[0], x[1], x[2]) for x in cs_list]:
+        cs_list.append((lab_, tuple(at), dim))
+    rec["class_split"] = class_split(tabs, cs_list)
+    rec["seconds"] = round(time.time() - t0, 1)
+    GP.wjson(OUT / "rule_q_a2.json", rec)
+    log(f"a2 record {GP.rel(OUT / 'rule_q_a2.json')} ({time.time() - t0:.0f} s)")
+    return 0
+
+
 # ── diagnostics ──────────────────────────────────────────────────────────────
 
 
@@ -759,9 +901,16 @@ def cmd_grade(a):
     gate_pins()
     t0 = time.time()
     rule = json.loads((OUT / "rule_q.json").read_text(encoding="utf-8"))
-    have_tw = bool(rule.get("tw_computed"))
+    have_tw = True
     res = {"part": "r", "declared_in": DECLARED, "rule_sha256": hashlib.sha256((OUT / "rule_q.json").read_bytes()).hexdigest(), "zgp2_sha256": script_sha256(), "rules": {}}
-    cells_out = {w: {} for w in ("rule", "rule_phase1_best", "rule_S0")}
+    rules = {"rule": rule["rule"], "rule_phase1_best": rule["rule_phase1_best"], "rule_S0": rule["rule_S0"]}
+    a2p = OUT / "rule_q_a2.json"
+    if a2p.is_file():
+        a2 = json.loads(a2p.read_text(encoding="utf-8"))
+        res["a2_sha256"] = hashlib.sha256(a2p.read_bytes()).hexdigest()
+        if a2.get("rule") is not None:
+            rules["rule_a2"] = a2["rule"]
+    cells_out = {w: {} for w in rules}
     for d, v in CELLS:
         key = f"{d}/{v}"
         tabs = cell_tables("r", have_tw, gold=True, only=[key])
@@ -777,10 +926,10 @@ def cmd_grade(a):
                 cells_out[w][key] = {"status": "NO_REACHABLE_GOLD"}
             continue
         for w in cells_out:
-            rr = rule[w]
-            sp = Space2(rr["attrs"], rr.get("by_step", True))
+            rr = rules[w]
+            sp = Space2(rr["attrs"], rr.get("by_step", True), dim=rr.get("dim", "grp"))
             x = np.array(rr["keep"], float)
-            kk = sp.key_of(t["grp"], t["step"], t["B"])
+            kk = sp.key_of(t["lab"] if sp.dim == "lab" else t["grp"], t["step"], t["B"])
             keep = x[kk] > 0.5
             den = float(t["w"][nd].sum())
             cand = float(nd.sum() + t["w"][~nd].sum())
@@ -797,7 +946,7 @@ def cmd_grade(a):
         del tabs, t, T
     for w, cs in cells_out.items():
         read = [c for c in cs.values() if c["status"] == "read"]
-        res["rules"][w] = {"space": rule[w]["space"], "attrs": rule[w]["attrs"], "cells": cs, "cells_read": len(read), "screen_in": int(sum(c["SCREEN_IN"] for c in read)),
+        res["rules"][w] = {"space": rules[w]["space"], "attrs": rules[w]["attrs"], "dim": rules[w].get("dim", "grp"), "cells": cs, "cells_read": len(read), "screen_in": int(sum(c["SCREEN_IN"] for c in read)),
                            "call": "UNIVERSAL_RULE" if (read and len(read) == len(CELLS) and all(c["SCREEN_IN"] for c in read)) else "NOT_UNIVERSAL"}
     GP.wjson(OUT / "grade_r.json", res)
     log(f"grade: {res['rules']['rule']['call']} ({res['rules']['rule']['screen_in']}/{res['rules']['rule']['cells_read']} cells SCREEN_IN)")
@@ -814,15 +963,30 @@ def cmd_report(a):
         p = OUT / n
         return json.loads(p.read_text(encoding="utf-8")) if p.is_file() else None
     ru, gr, dq = load("rule_q.json"), load("grade_r.json"), load("diag_q.json")
-    for ph in (1, 2):
+    fx = lambda x: "n/a" if x is None else f"{x:.4f}"  # noqa: E731
+    for ph in (1, 2, 3, 4):
         pr = load(f"rule_q_phase{ph}.json")
         if pr:
-            L.append(f"### Phase {ph} (quarter): tau by space")
+            L.append(f"### Phase {ph} (quarter, dimension {pr.get('dim', 'grp')}): tau by space")
             L.append("| space | keys | tau L | tau U | tau M | M status | kept | tau T |")
             L.append("|---|---|---|---|---|---|---|---|")
             for n, b in pr["spaces"].items():
                 c = b["chain_L_U_M_T"]
-                L.append(f"| {n} | {b['keys']} | {c[0]:.4f} | {c[1]:.4f} | {c[2]:.4f} | {b['M']['status']} | {b['M']['kept']} | {c[3]:.4f} |")
+                L.append(f"| {n} | {b['keys']} | {fx(c[0])} | {fx(c[1])} | {fx(c[2])} | {b['M']['status']} | {b['M']['kept']} | {fx(c[3])} |")
+    a2 = load("rule_q_a2.json")
+    if a2:
+        gb = a2["global_best"]
+        L.append(f"\n### Amendment A2: global best {gb['label']} tau_M {gb['tau_M']:.4f}; section 11's final {a2['section_11_final']['space']} {a2['section_11_final']['tau_M']:.4f}; same: {a2['same_as_section_11']}")
+        L.append(f"- best lab space {a2['best_lab_space']}; best phase 4 space {a2['best_phase4_space']}")
+        if a2.get("rule"):
+            L.append(f"- A2 rule {a2['rule']['space']} ({a2['rule']['dim']}): tau M {a2['rule']['M']['tau']:.4f}, kept {a2['rule']['M']['kept']} keys")
+            L.append("- per cell on the quarter: " + "; ".join(f"{c}: reach {v['reach']} price {v['price']}" for c, v in a2["rule"]["M"]["per_cell_on_Q"].items()))
+            L.append(f"- beside: {json.dumps(a2['beside'])}")
+        L.append("- class split (tau_M on the quarter): " + "; ".join(f"{k}: " + ", ".join(f"{c} {fx(v['tau_M'])} ({v['status']}, {v['kept']} keys)" for c, v in d.items()) for k, d in a2["class_split"].items()))
+        for k, d in a2["class_split"].items():
+            for c, v in d.items():
+                if v.get("per_cell_on_Q"):
+                    L.append(f"  - {k} / {c}: " + "; ".join(f"{cc}: reach {x['reach']} price {x['price']}" for cc, x in v["per_cell_on_Q"].items()))
     if ru:
         L.append(f"\n### Final: space {ru['final_space']} (phase 1 best {ru['phase1_best']}, forward-triple base {ru['forward_triple_base']})")
         for n, b in ru["family_tau_M"].items():
@@ -962,6 +1126,31 @@ def selftest():
             assert bm is not None and M["tau"] <= T["tau"] + 1e-6
         if bm is not None and U["tau"] is not None and Lp["tau"] is not None:
             assert Lp["tau"] <= U["tau"] + 1e-6 <= M["tau"] + 2e-6
+    # amendment A2: labels, the label dimension, the extra attributes
+    assert lab_of(np.array([0b00001, 0b00010, 0b00110, 0b01100, 0b10000, 0b10011, 0b01000, 0], np.uint8), "SRK").tolist() == [0, 1, 1, 2, 4, 0, 3, 4]
+    assert lab_of(np.array([1, 2, 6, 4, 8, 5, 0], np.uint8), "RK").tolist() == [1, 2, 2, 3, 4, 1, 4]
+    spl = Space2(["dr"], True, dim="lab")
+    assert spl.K == 105 and spl.ng == 15 and (spl.grp == 0).sum() == 21
+    kk = spl.key_of(np.array([0, 4]), np.array([2, 3]), {"dr": np.array([5, 1], np.int8)})
+    assert [spl.label(int(x)) for x in kk] == ["S@2|dr=4-10", "K@3|dr=301-1000"], [spl.label(int(x)) for x in kk]
+    rr_ = rng.random((2, spl.K))
+    assert solve_ranksum(rr_ / rr_.sum(1, keepdims=True), rr_ / rr_.sum(1, keepdims=True), spl, 0.9, True)["status"] == "SKIPPED_NOT_ENUMERABLE"
+    for trial in range(12):
+        sp = Space2(["a"], False, nbs=[2], dim="lab")
+        r = rng.random((3, sp.K)) ** 2
+        p = rng.random((3, sp.K)) ** 2
+        r, p = r / r.sum(1, keepdims=True), p / p.sum(1, keepdims=True)
+        rho = float(rng.choice([0.5, 0.7, 0.9]))
+        bm, bt = brute_m(r, p, sp, rho, True), brute_t(r, p, sp, rho, True)
+        M = GP.solve_milp(r, p, sp, rho, True, True)
+        T = solve_ranksum(r, p, sp, rho, True)
+        assert (bm is None) == (M["tau"] is None) and (bt is None) == (T["tau"] is None), (trial, bm, M["tau"], bt, T["tau"])
+        if bm is not None:
+            assert abs(M["tau"] - bm) < 1e-6
+        if bt is not None:
+            assert abs(T["tau"] - bt) < 1e-9
+    Bx = bin_columns({"rank": np.array([5, 40]), "votes": np.array([1, 4]), "qov": np.array([0, 5]), "dir": np.array([0, 3])}, {"dr": np.array([0, 2]), "sr": np.array([7, 0]), "tw": np.array([0, 3])})
+    assert Bx["qov"].tolist() == [0, 2] and Bx["dir"].tolist() == [0, 2] and Bx["tw"].tolist() == [0, 3]
     # windows: both implementations agree on strings
     for title, text, q in [("Paris", "He lived in Paris, the capital of France, and wrote about wine there.", "which wine did he write about in france"),
                            ("Ann Lee", "x " * 100 + "Ann Lee won the prize for physics in 1999. " + "y " * 100, "who won the physics prize"),
@@ -987,13 +1176,14 @@ def main(argv=None):
     dg = sub.add_parser("diag")
     dg.add_argument("--part", required=True, choices=["q", "r"])
     s = sub.add_parser("solve")
-    s.add_argument("--phase", type=int, required=True, choices=[1, 2])
+    s.add_argument("--phase", type=int, required=True, choices=[1, 2, 3, 4])
     sub.add_parser("final")
+    sub.add_parser("a2")
     sub.add_parser("grade")
     sub.add_parser("report")
     a = ap.parse_args(argv)
     return {"selftest": lambda: selftest(), "cols": lambda: cmd_cols(a), "text": lambda: cmd_text(a), "diag": lambda: cmd_diag(a), "solve": lambda: cmd_solve(a),
-            "final": lambda: cmd_final(a), "grade": lambda: cmd_grade(a), "report": lambda: cmd_report(a)}[a.cmd]()
+            "final": lambda: cmd_final(a), "a2": lambda: cmd_a2(a), "grade": lambda: cmd_grade(a), "report": lambda: cmd_report(a)}[a.cmd]()
 
 
 if __name__ == "__main__":
