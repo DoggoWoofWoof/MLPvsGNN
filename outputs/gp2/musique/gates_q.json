@@ -1,0 +1,26 @@
+{
+ "dataset": "musique",
+ "part": "q",
+ "declared_in": "docs/GP2_UNIVERSAL_LINK_SCORE.md",
+ "cells": {
+  "RK": {
+   "rows": 965300,
+   "G-Q0": "PASS",
+   "G-Q1": "PASS (2000 rows)",
+   "in_dense_list": 0.0803,
+   "in_splade_list": 0.0709,
+   "file": "outputs/gp2/musique/cols_q_RK.npz",
+   "G-W1": "PASS (1000 rows)",
+   "tw_bins": [
+    797511,
+    108173,
+    42742,
+    16874
+   ],
+   "mention_rows": 167789,
+   "mention_pairs": 114689
+  }
+ },
+ "zgp2_sha256": "3ff9b5c16e0b81ba9ec92df4e8b667f26549b0708793d53ac2e4a60698b04a8d",
+ "utc": "2026-11-26T04:45:29Z"
+}

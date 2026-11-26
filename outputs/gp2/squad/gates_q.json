@@ -1,0 +1,26 @@
+{
+ "dataset": "squad",
+ "part": "q",
+ "declared_in": "docs/GP2_UNIVERSAL_LINK_SCORE.md",
+ "cells": {
+  "RK": {
+   "rows": 68930,
+   "G-Q0": "PASS",
+   "G-Q1": "PASS (2000 rows)",
+   "in_dense_list": 0.1678,
+   "in_splade_list": 0.1485,
+   "file": "outputs/gp2/squad/cols_q_RK.npz",
+   "G-W1": "PASS (1000 rows)",
+   "tw_bins": [
+    60726,
+    6712,
+    1108,
+    384
+   ],
+   "mention_rows": 8204,
+   "mention_pairs": 7580
+  }
+ },
+ "zgp2_sha256": "3ff9b5c16e0b81ba9ec92df4e8b667f26549b0708793d53ac2e4a60698b04a8d",
+ "utc": "2026-11-26T04:45:37Z"
+}

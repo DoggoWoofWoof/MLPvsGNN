@@ -1,0 +1,43 @@
+{
+ "dataset": "hotpotqa",
+ "part": "q",
+ "declared_in": "docs/GP2_UNIVERSAL_LINK_SCORE.md",
+ "cells": {
+  "RK": {
+   "rows": 68374,
+   "G-Q0": "PASS",
+   "G-Q1": "PASS (2000 rows)",
+   "in_dense_list": 0.1005,
+   "in_splade_list": 0.0956,
+   "file": "outputs/gp2/hotpotqa/cols_q_RK.npz",
+   "G-W1": "PASS (1000 rows)",
+   "tw_bins": [
+    56747,
+    4135,
+    2999,
+    4493
+   ],
+   "mention_rows": 11627,
+   "mention_pairs": 11498
+  },
+  "SRK": {
+   "rows": 45972,
+   "G-Q0": "PASS",
+   "G-Q1": "PASS (2000 rows)",
+   "in_dense_list": 0.1152,
+   "in_splade_list": 0.1097,
+   "file": "outputs/gp2/hotpotqa/cols_q_SRK.npz",
+   "G-W1": "PASS (1000 rows)",
+   "tw_bins": [
+    36485,
+    3195,
+    2606,
+    3686
+   ],
+   "mention_rows": 9487,
+   "mention_pairs": 9447
+  }
+ },
+ "zgp2_sha256": "3ff9b5c16e0b81ba9ec92df4e8b667f26549b0708793d53ac2e4a60698b04a8d",
+ "utc": "2026-11-26T04:46:00Z"
+}
