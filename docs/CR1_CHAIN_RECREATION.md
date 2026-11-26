@@ -64,6 +64,10 @@ A gate failure stops the row and is reported; nothing is relaxed after a number 
 - **The change.** On MetaQA and WebQSP only, G-C5's reference nodes are the **five first-ranked results of the stored first-stage dense list** (`retrieval_cache/dense_top1000.npz`, `ids` by question row), with the same 200 questions, the same 1,000 fixed random nodes, the same 0.9 threshold and the same unit-norm checks; the golds' share is recorded beside it. Every other dataset keeps the gold-based check. A mis-aligned question row would still give about 0.5 and stop the row.
 - **What does not change.** The slots, classes, ranks, scores, expectations X1-X8 and calls A and B, and the other gates. A gate stops a row or passes it; it adds nothing to a number. `zcr1.py selftest` passes (1,305 checks), now including the gate on both bases (aligned passage golds pass; unaligned golds stop without a list; a dense list of other questions stops) and the memory-mapped read of a stored and of a compressed `.npz`. MuSiQue's and MultiHop-RAG's ledgers were written by the first form of the gate; the re-run rows record the new form in `gates.G-C5`.
 
+### 5.2 Amendment A2 (26 Nov, report code only)
+
+Section 3 declares CC1 and CC2 by hop on MuSiQue CH and the ledger stores them (`by_hop`), but the first `report` printed no table of them. `zcr1.py report` now prints that table (CC1 and CC2 per hop count, with the intervals the ledger holds). No ledger, no row, no definition, no call changes; the table is a print of stored values.
+
 ## 6. Expectations (written before any number)
 
 - **X1:** the D share equals UL2P's any-link recall on every cell (this is G-C1; any difference stops the row).

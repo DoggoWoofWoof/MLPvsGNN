@@ -504,6 +504,12 @@ def cmd_report(_a):
                 dt = (ct["D"]["pt"] + ct["T"]["pt"]) if ct.get("D") and ct.get("T") else None
                 L.append(f"| {d} | {v} | {ck} | {A['slots']} | {pc(A['D']['share'])} | {pc(A['T']['share'])} | {pc(A['N']['share'])} | {pc(A['CC1']['share'])} | {pc(A['CC2']['share'])} | "
                          f"{'-' if dt is None else f'{dt:.2f}'} | {A['M']['median']} | {A['M']['share_ge_10']} | {A['M']['via_gold_share_of_T']} | {pc(A.get('CC2_minus_control'))} |")
+    hops = [(d, v, ck, c["A"]["by_hop"]) for d, r in recs.items() for v, cells in r.get("versions", {}).items() for ck, c in cells.items() if c["A"].get("by_hop")]
+    if hops:                                                                          # amendment A2: the ledger's by-hop reads, printed
+        L += ["", "## Part A by hop (MuSiQue CH; percent of the hop count's questions)", "", "| dataset | ver | carve/kind | hops | questions | CC1 | CC2 |", "|---|---|---|---|---|---|---|"]
+        for d, v, ck, bh in hops:
+            for h in sorted(bh, key=int):
+                L.append(f"| {d} | {v} | {ck} | {h} | {bh[h]['questions']} | {pc(bh[h]['CC1'])} | {pc(bh[h]['CC2'])} |")
     L += ["", "## Part B: the target's rank among the source's neighbours (D slots; percent with rank <= K; chance in parentheses)", "",
           "| dataset | ver | carve/kind | D slots | median degree | pd@30 | fq@30 | rq@30 | rq-fq@30 | fq-pd@30 | rq-fq@10 | rq-fq@100 | median rank share pd / fq / rq |", "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for d, r in recs.items():
