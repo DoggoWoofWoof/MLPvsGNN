@@ -42,6 +42,7 @@ Z.NAMES.update({"tw40": Z.NAMES["tw"], "tw160": Z.NAMES["tw"], "tw320": Z.NAMES[
 OLD_POOL = ("dr", "sr", "ur", "tw", "qov", "dir")
 PHASE5 = [t for x in NEW for t in ((x,), (x, "pr"), (x, "vo"), (x, "pr", "vo"))] + [("pr", "vo", x) for x in OLD_POOL]
 GRID = (10, 30, 100, 300, 1000, 3000, 10000, 30000, 100000, 300000, float("inf"))
+GRIDR = (0.0003, 0.001, 0.003, 0.01, 0.03, 0.1, 0.2, 0.3, 0.5, 0.7, 0.9, 1.0)         # amendment A4: shares of a question's candidates at a hop (364 non-increasing triples)
 SCORES = {"K1": ("ur", "dot"), "K2": ("-rank", "dot"), "K3": ("ur", "-rank", "votes", "dot"), "K4": ("dot",), "K5": ("tw", "ur", "-rank", "dot"), "K6": ("cd", "ur", "-rank", "dot")}
 NODE_TARGET = 2500
 COLS_A3 = Z.COLS_BASE + ("dot",)
@@ -411,7 +412,7 @@ def cap_structure(t, keys):
     n = idx.size
     st_info = {"idx": idx, "nd": nd, "cnt": cnt, "w": t["w"], "grp": t["grp"], "step": t["step"], "q": t["q"]}
     if n == 0:
-        st_info.update({"gid": np.zeros(0, np.int64), "T": np.zeros(0), "needw": np.zeros(0), "ahead": np.zeros(0), "gstep": np.zeros(0, np.int64)})
+        st_info.update({"gid": np.zeros(0, np.int64), "T": np.zeros(0), "needw": np.zeros(0), "ahead": np.zeros(0), "gstep": np.zeros(0, np.int64), "Tb": np.zeros(0)})
         return st_info
     newq = np.ones(n, bool)
     newq[1:] = (q[1:] != q[:-1]) | (st[1:] != st[:-1])
@@ -426,16 +427,25 @@ def cap_structure(t, keys):
     needw = np.bincount(gid, weights=np.where(nd[idx], t["w"][idx], 0.0), minlength=G)
     cumT = np.cumsum(T) - T
     base = np.maximum.accumulate(np.where(newq[first], cumT, -1.0))
-    st_info.update({"gid": gid, "T": T, "needw": needw, "ahead": cumT - base, "gstep": st[first]})
+    bid = np.cumsum(newq[first]) - 1                           # the (step, question) block of each group
+    Tb = np.bincount(bid, weights=T)[bid]                      # the block's estimated number of non-S candidates (needed 1 each, controls their weight)
+    st_info.update({"gid": gid, "T": T, "needw": needw, "ahead": cumT - base, "gstep": st[first], "Tb": Tb})
     return st_info
 
 
-def frac(S_, W):
-    """Fraction of each tie group kept under a cap of W candidates per (step, question): the expectation over a random order inside the tie."""
-    if not np.isfinite(W):
-        return np.ones(S_["T"].size)
-    T = np.maximum(S_["T"], 1e-300)
-    return np.clip((W - S_["ahead"]) / T, 0.0, 1.0)
+def kept_frac(S_, m, W, rel=False):
+    """Fraction of each tie group (the groups selected by the mask m) kept under a cap of W candidates per (step, question) (rel: a share W of the block's candidates): the expectation over a random
+    order inside the tie."""
+    T, ah = S_["T"][m], S_["ahead"][m]
+    if rel:
+        if W >= 1.0:
+            return np.ones(T.size)
+        weff = W * S_["Tb"][m]
+    else:
+        if not np.isfinite(W):
+            return np.ones(T.size)
+        weff = W
+    return np.clip((weff - ah) / np.maximum(T, 1e-300), 0.0, 1.0)
 
 
 def cell_norms(t):
@@ -444,8 +454,8 @@ def cell_norms(t):
     return float(t["w"][nd].sum()), float(cnt.sum())
 
 
-def cap_curves(t, S_, grid=GRID):
-    """reach[h][g], price[h][g] of the cell for a cap grid value g at hop h+1 (S protected: kept whole at every hop)."""
+def cap_curves(t, S_, grid=GRID, rel=False):
+    """reach[h][g], price[h][g] of the cell for a cap grid value g at hop h+1 (S protected: kept whole at every hop); rel: the grid values are shares of the block's candidates."""
     den, cand = cell_norms(t)
     nd, cnt = S_["nd"], S_["cnt"]
     reach, price = np.zeros((3, len(grid))), np.zeros((3, len(grid)))
@@ -453,30 +463,33 @@ def cap_curves(t, S_, grid=GRID):
         s = (S_["grp"] == 0) & (S_["step"] == h)
         r0, p0 = float(S_["w"][s & nd].sum()) / den, float(cnt[s].sum()) / cand
         m = S_["gstep"] == h
-        T, nw, ah = S_["T"][m], S_["needw"][m], S_["ahead"][m]
+        T, nw = S_["T"][m], S_["needw"][m]
         for gi, W in enumerate(grid):
-            f = np.ones(T.size) if not np.isfinite(W) else np.clip((W - ah) / np.maximum(T, 1e-300), 0.0, 1.0)
+            f = kept_frac(S_, m, W, rel)
             reach[h - 1, gi] = r0 + float((f * nw).sum()) / den
             price[h - 1, gi] = p0 + float((f * T).sum()) / cand
     return reach, price
 
 
-def cap_keep(t, S_, Wt):
+def cap_keep(t, S_, Wt, rel=False):
     """Per-row kept fraction (1 for S, the group's fraction for the rest) under per-hop caps Wt = (W1, W2, W3)."""
     f = np.ones(t["kind"].size)
     if S_["idx"].size:
         fg = np.empty(S_["T"].size)
         for h in (1, 2, 3):
             m = S_["gstep"] == h
-            W = Wt[h - 1]
-            fg[m] = 1.0 if not np.isfinite(W) else np.clip((W - S_["ahead"][m]) / np.maximum(S_["T"][m], 1e-300), 0.0, 1.0)
+            fg[m] = kept_frac(S_, m, Wt[h - 1], rel)
         f[S_["idx"]] = fg[S_["gid"]]
     return f
 
 
-def c2_program(curves, rho=Z.RHO):
-    """Over the 286 non-increasing triples (W1 >= W2 >= W3): the smallest worst-cell price with every cell's reach >= rho. curves[cell] = (reach, price); returns the best or None."""
-    G, cells = len(GRID), list(curves)
+def wname(x):
+    return "inf" if not np.isfinite(x) else x
+
+
+def c2_program(curves, rho=Z.RHO, grid=GRID):
+    """Over the non-increasing triples (W1 >= W2 >= W3) of the grid (286 for the 11 values of GRID): the smallest worst-cell price with every cell's reach >= rho. curves[cell] = (reach, price)."""
+    G, cells = len(grid), list(curves)
     best = None
     for g1 in range(G):
         for g2 in range(g1 + 1):
@@ -491,17 +504,36 @@ def c2_program(curves, rho=Z.RHO):
     if best is None:
         return None
     _k, gt, per = best
-    return {"W": [GRID[g] if np.isfinite(GRID[g]) else "inf" for g in gt], "tau": best[0][0], "per_cell": {c: {"reach": round(r, 4), "price": round(p, 4)} for c, (r, p) in per.items()}}
+    return {"W": [wname(grid[g]) for g in gt], "tau": best[0][0], "per_cell": {c: {"reach": round(r, 4), "price": round(p, 4)} for c, (r, p) in per.items()}}
 
 
-def required_caps(curves, rho=Z.RHO):
+def own_optimum(curve, rho=Z.RHO, grid=GRID):
+    """One cell alone: the non-increasing triple of the grid with the smallest price subject to reach >= rho (ties: the smaller sum of grid indexes); None when none reaches rho."""
+    r, p = curve
+    G, best = len(grid), None
+    for g1 in range(G):
+        for g2 in range(g1 + 1):
+            for g3 in range(g2 + 1):
+                rs = sum(r[h, g] for h, g in enumerate((g1, g2, g3)))
+                if rs < rho - 1e-9:
+                    continue
+                ps = sum(p[h, g] for h, g in enumerate((g1, g2, g3)))
+                key = (round(ps, 9), g1 + g2 + g3, g1, g2, g3)
+                if best is None or key < best[0]:
+                    best = (key, (g1, g2, g3), rs, ps)
+    if best is None:
+        return None
+    return {"W": [wname(grid[g]) for g in best[1]], "reach": round(best[2], 4), "price": round(best[3], 6)}
+
+
+def required_caps(curves, rho=Z.RHO, grid=GRID):
     """Per cell alone: the smallest uniform cap (the same value at all three hops) whose reach is >= rho; None when even no cap does not."""
     out = {}
     for c, (r, p) in curves.items():
         out[c] = None
-        for g in range(len(GRID)):
+        for g in range(len(grid)):
             if float(r[:, g].sum()) >= rho - 1e-9:
-                out[c] = GRID[g] if np.isfinite(GRID[g]) else "inf"
+                out[c] = wname(grid[g])
                 break
     return out
 
@@ -568,6 +600,67 @@ def cmd_cap(a):
     return 0
 
 
+def cmd_capr(a):
+    """Amendment A4: C2r (relative caps), and the per-cell own optima of both cap forms (data, not a rule)."""
+    Z.gate_pins()
+    t0 = time.time()
+    rec = {"part": "q", "declared_in": DECLARED, "zgp2_sha256": Z.script_sha256(), "zgp2a3_sha256": script_sha256(), "rho": Z.RHO, "grid_abs": [wname(g) for g in GRID], "grid_rel": list(GRIDR),
+           "scores": {k: list(v) for k, v in SCORES.items()}, "nodes": {}, "gates": {}, "by_score": {}}
+    cur_abs, cur_rel = {k: {} for k in SCORES}, {k: {} for k in SCORES}
+    for d, v in Z.CELLS:
+        key = f"{d}/{v}"
+        t = tables("q", only=[key])[key]
+        if "not_read" in t:
+            stop(f"{key}: not read on the quarter")
+        for k in SCORES:
+            S_ = cap_structure(t, score_keys(t, k))
+            r, p = cap_curves(t, S_)
+            rr_, pr_ = cap_curves(t, S_, GRIDR, rel=True)
+            # G-C7: a share of 1 keeps everything, a share of 0 keeps exactly S, and a share equal to a cap's value over the block's candidates is that cap
+            if abs(rr_[:, -1].sum() - 1.0) > 1e-6 or abs(pr_[:, -1].sum() - 1.0) > 1e-6:
+                stop(f"G-C7: {key}/{k}: a share of 1 does not keep everything")
+            f0 = cap_keep(t, S_, (0.0, 0.0, 0.0), rel=True)
+            if not np.array_equal(f0 > 0.5, t["grp"] == 0) or abs(f0[t["grp"] != 0].sum()) > 1e-9:
+                stop(f"G-C7: {key}/{k}: a share of 0 does not keep exactly S")
+            if S_["T"].size:
+                m = S_["gstep"] == 1
+                W = float(S_["Tb"][m][0]) if m.any() else 1.0
+                same = S_["Tb"][m] == W if m.any() else np.zeros(0, bool)
+                if same.any():
+                    f_rel = kept_frac(S_, m, 0.5, rel=True)[same]
+                    f_abs = kept_frac(S_, m, 0.5 * W)[same]
+                    if np.abs(f_rel - f_abs).max() > 1e-12:
+                        stop(f"G-C7: {key}/{k}: a share is not the equal absolute cap on blocks of the same size")
+            cur_abs[k][key], cur_rel[k][key] = (r, p), (rr_, pr_)
+        rec["nodes"][key] = node_bound(t, 1.0)
+        rec["gates"][key] = "G-C7 PASS"
+        log(f"capr {key} ({time.time() - t0:.0f} s)")
+        del t
+    for k in SCORES:
+        prog = c2_program(cur_rel[k], grid=GRIDR)
+        own_a = {c: own_optimum(cur_abs[k][c]) for c in cur_abs[k]}
+        own_r = {c: own_optimum(cur_rel[k][c], grid=GRIDR) for c in cur_rel[k]}
+        for c, o in own_a.items():
+            if o:
+                o["kept_links_per_q"] = round(o["price"] * rec["nodes"][c]["candidate_links_per_q"], 1)
+        for c, o in own_r.items():
+            if o:
+                o["kept_links_per_q"] = round(o["price"] * rec["nodes"][c]["candidate_links_per_q"], 1)
+        rec["by_score"][k] = {"program_rel": prog, "required_uniform_share_by_cell": required_caps(cur_rel[k], grid=GRIDR), "own_abs": own_a, "own_rel": own_r}
+        log(f"C2r {k}: " + ("INFEASIBLE" if prog is None else f"phi {prog['W']} tau {prog['tau']:.4f}"))
+    ok = {k: v["program_rel"] for k, v in rec["by_score"].items() if v["program_rel"] is not None}
+    best = min(ok, key=lambda k: (ok[k]["tau"], sum(GRIDR.index(w) for w in ok[k]["W"]), k)) if ok else None
+    rec["best_score"] = best
+    if best is not None:
+        prog = rec["by_score"][best]["program_rel"]
+        nb = {key: {"price": pc["price"], "kept_links_per_q": round(pc["price"] * rec["nodes"][key]["candidate_links_per_q"], 1), "candidate_links_per_q": rec["nodes"][key]["candidate_links_per_q"],
+                    "price_at_2500_links_per_q": rec["nodes"][key]["price_at_2500_links_per_q"], "S_links_per_q": rec["nodes"][key]["S_links_per_q"]} for key, pc in prog["per_cell"].items()}
+        rec["rule"] = {"kind": "c2r", "score": best, "keys": list(SCORES[best]), "W": prog["W"], "tau": prog["tau"], "per_cell_on_Q": prog["per_cell"], "node_bound": nb}
+    rec["seconds"] = round(time.time() - t0, 1)
+    GP.wjson(OUT / "rule_q_c2r.json", rec)
+    return 0
+
+
 # ── the final rule, the rule set, the node bound on the quarter ──────────────
 
 
@@ -576,10 +669,10 @@ def grid_w(x):
 
 
 def keep_of(rr, t, S_cache=None):
-    """The per-row kept fraction of a rule record (a key-space rule: 0/1; C2: the expectation)."""
-    if rr.get("kind") == "c2":
+    """The per-row kept fraction of a rule record (a key-space rule: 0/1; C2 and C2r: the expectation)."""
+    if rr.get("kind") in ("c2", "c2r"):
         S_ = cap_structure(t, score_keys(t, rr["score"]))
-        return cap_keep(t, S_, tuple(grid_w(w) for w in rr["W"])), True
+        return cap_keep(t, S_, tuple(grid_w(w) for w in rr["W"]), rel=rr["kind"] == "c2r"), True
     sp = Z.Space2(rr["attrs"], rr.get("by_step", True), dim=rr.get("dim", "grp"))
     x = np.array(rr["keep"], float)
     kk = sp.key_of(t["lab"] if sp.dim == "lab" else t["grp"], t["step"], t["B"])
@@ -611,6 +704,28 @@ def best_space(spaces):
 def load(n):
     p = OUT / n
     return json.loads(p.read_text(encoding="utf-8")) if p.is_file() else None
+
+
+def on_q(tabs, rules, tau_of):
+    """Every rule on every cell of the quarter (reach, price, the node bound), and G-C6: each rule, evaluated link by link here, gives the program's own number (worst-cell price = tau, every
+    reach >= rho; tolerance 1e-4 for a key space, 1e-6 for the cap forms)."""
+    on_Q, worst, lowest = {}, {}, {}
+    for key, t in tabs.items():
+        on_Q[key] = {}
+        for rn, rr in rules.items():
+            reach, price, _f = eval_rule(t, rr)
+            on_Q[key][rn] = {"reach": round(reach, 4), "price": round(price, 4), **node_bound(t, price)}
+            worst[rn] = max(worst.get(rn, 0.0), price)
+            lowest[rn] = min(lowest.get(rn, 1.0), reach)
+    g6 = {}
+    for rn, tt in tau_of.items():
+        if tt is None or rn not in rules:
+            continue
+        tol = 1e-6 if rules[rn].get("kind") in ("c2", "c2r") else 1e-4
+        g6[rn] = {"tau": tt, "worst_price_here": round(worst[rn], 6), "lowest_reach_here": round(lowest[rn], 6)}
+        if abs(worst[rn] - tt) > tol or lowest[rn] < Z.RHO - tol:
+            stop(f"G-C6: {rn}: worst-cell price {worst[rn]:.6f} against the program's {tt:.6f}, lowest reach {lowest[rn]:.6f}")
+    return on_Q, g6
 
 
 def cmd_a3(a):
@@ -651,29 +766,11 @@ def cmd_a3(a):
                 "phase5_sha256": hashlib.sha256((OUT / "rule_q_phase5.json").read_bytes()).hexdigest(), "c2_sha256": hashlib.sha256((OUT / "rule_q_c2.json").read_bytes()).hexdigest(),
                 "rules": rules, "on_Q": {}})
     log(f"final: {label} tau {tau:.4f} (rule {final_key}); phase 5 best {p5n} {p5['spaces'][p5n]['M']['tau']:.4f}; C2 best {c2.get('best_score')}")
-    worst, lowest = {}, {}
-    for key, t in tabs.items():
-        rec["on_Q"][key] = {}
-        for rn, rr in rules.items():
-            reach, price, _f = eval_rule(t, rr)
-            nb = node_bound(t, price)
-            rec["on_Q"][key][rn] = {"reach": round(reach, 4), "price": round(price, 4), **nb}
-            worst[rn] = max(worst.get(rn, 0.0), price)
-            lowest[rn] = min(lowest.get(rn, 1.0), reach)
-    # G-C6: every rule, evaluated link by link here, gives the program's own number on the quarter (worst-cell price = tau, every reach >= rho)
     tau_of = {"rule_s11_final": ru["rule"]["M"]["tau"], "rule_A": p1["spaces"][p1n]["M"]["tau"], "rule_B1": p2["spaces"][p2n]["M"]["tau"], "rule_C": p1["spaces"]["S0"]["M"]["tau"],
               "rule_P5": m5["tau"], "rule_C2": c2["rule"]["tau"] if c2.get("rule") else None}
     if a2.get("rule"):
         tau_of["rule_A2"] = a2["rule"]["M"]["tau"]
-    g6 = {}
-    for rn, tt in tau_of.items():
-        if tt is None:
-            continue
-        tol = 1e-6 if rn == "rule_C2" else 1e-4
-        g6[rn] = {"tau": tt, "worst_price_here": round(worst[rn], 6), "lowest_reach_here": round(lowest[rn], 6)}
-        if abs(worst[rn] - tt) > tol or lowest[rn] < Z.RHO - tol:
-            stop(f"G-C6: {rn}: worst-cell price {worst[rn]:.6f} against the program's {tt:.6f}, lowest reach {lowest[rn]:.6f}")
-    rec["G-C6"] = g6
+    rec["on_Q"], rec["G-C6"] = on_q(tabs, rules, tau_of)
     # beside runs and the class split for the final when it is a key space of phase 5 (the others have theirs)
     if kind == "keys" and final_key == "rule_P5":
         blk, (sp, names, r, p, mm, ee, M, L) = Z.solve_space(tabs, tuple(rules["rule_P5"]["attrs"]), True, full=True, dim="lab")
@@ -685,17 +782,45 @@ def cmd_a3(a):
     return 0
 
 
+def cmd_a4(a):
+    """Amendment A4: the rule set of A3 plus C2r; the final is re-selected by the same order (C2r wins only with a strictly smaller worst-cell price)."""
+    Z.gate_pins()
+    t0 = time.time()
+    a3, cr = load("rule_q_a3.json"), load("rule_q_c2r.json")
+    if not (a3 and cr):
+        stop("rule_q_a3.json and rule_q_c2r.json are both needed")
+    rules = dict(a3["rules"])
+    tau_of = {rn: g["tau"] for rn, g in a3["G-C6"].items()}
+    final = dict(a3["final"])
+    if cr.get("rule"):
+        rules["rule_C2r"] = {**cr["rule"], "family": "C2r (per-question relative caps)"}
+        tau_of["rule_C2r"] = cr["rule"]["tau"]
+        if round(cr["rule"]["tau"], 9) < round(final["tau"], 9):
+            final = {"kind": "c2r", "label": f"C2r {cr['rule']['score']}", "tau": cr["rule"]["tau"], "rule_key": "rule_C2r"}
+    tabs = tables("q")
+    c4 = Z.gate_c4(tabs)
+    rec = prov("q", tabs)
+    rec.update({"phase": "a4", "G-C4": c4, "rho": Z.RHO, "final": final, "a3_final": a3["final"], "a3_sha256": hashlib.sha256((OUT / "rule_q_a3.json").read_bytes()).hexdigest(),
+                "c2r_sha256": hashlib.sha256((OUT / "rule_q_c2r.json").read_bytes()).hexdigest(), "rules": rules})
+    rec["on_Q"], rec["G-C6"] = on_q(tabs, rules, tau_of)
+    rec["seconds"] = round(time.time() - t0, 1)
+    GP.wjson(OUT / "rule_q_a4.json", rec)
+    log(f"a4: final {final['label']} tau {final['tau']:.4f} (rule {final['rule_key']}); {len(rules)} rules ({time.time() - t0:.0f} s)")
+    return 0
+
+
 # ── the rest of dev, once ────────────────────────────────────────────────────
 
 
 def cmd_grade(a):
     Z.gate_pins()
     t0 = time.time()
-    a3 = load("rule_q_a3.json")
+    a3n = "rule_q_a4.json" if (OUT / "rule_q_a4.json").is_file() else "rule_q_a3.json"
+    a3 = load(a3n)
     if not a3:
         stop("rule_q_a3.json is missing: the rule set is declared by it")
     rules = a3["rules"]
-    res = {"part": "r", "declared_in": DECLARED, "zgp2_sha256": Z.script_sha256(), "zgp2a3_sha256": script_sha256(), "a3_sha256": hashlib.sha256((OUT / "rule_q_a3.json").read_bytes()).hexdigest(),
+    res = {"part": "r", "declared_in": DECLARED, "zgp2_sha256": Z.script_sha256(), "zgp2a3_sha256": script_sha256(), "rule_record": a3n, "rule_record_sha256": hashlib.sha256((OUT / a3n).read_bytes()).hexdigest(),
            "final_rule": a3["final"]["rule_key"], "rules": {}}
     cells_out = {w: {} for w in rules}
     for d, v in Z.CELLS:
@@ -713,7 +838,7 @@ def cmd_grade(a):
             continue
         for w, rr in rules.items():
             reach, price, f = eval_rule(t, rr)
-            if rr.get("kind") == "c2":
+            if rr.get("kind") in ("c2", "c2r"):
                 keep = np.random.default_rng(20261126).random(f.size) < f
             else:
                 keep = f > 0.5
@@ -721,7 +846,7 @@ def cmd_grade(a):
             seen = np.asarray(rr["seen"]) if rr.get("seen") is not None else None
             g = {"status": "read", "reach": round(reach, 4), "price": round(price, 4), "path_retention": round(k_ / t_, 4) if t_ else float("nan"), "golds_with_units": t_,
                  "path_by_distance": {str(dd): [int(a_), int(b_)] for dd, (a_, b_) in per.items()}, "needed_weight": round(float(t["w"][nd].sum()), 4), **node_bound(t, price)}
-            if seen is not None and rr.get("kind") != "c2":
+            if seen is not None and rr.get("kind") not in ("c2", "c2r"):
                 sp = Z.Space2(rr["attrs"], rr.get("by_step", True), dim=rr.get("dim", "grp"))
                 kk = sp.key_of(t["lab"] if sp.dim == "lab" else t["grp"], t["step"], t["B"])
                 g["needed_weight_in_keys_unseen_on_Q"] = round(float(t["w"][nd & (seen[kk] == 0)].sum()) / float(t["w"][nd].sum()), 4)
@@ -761,9 +886,19 @@ def cmd_report(a):
             L.append(f"- {k} {c2['scores'][k]}: " + ("INFEASIBLE" if pg is None else f"W {pg['W']}, worst-cell price {pg['tau']:.4f}; per cell {pg['per_cell']}") + f"; uniform cap each cell alone needs: {v['required_uniform_cap_by_cell']}")
         if c2.get("rule"):
             L.append(f"- node bound at the chosen caps: {json.dumps(c2['rule']['node_bound'])}")
-    a3 = load("rule_q_a3.json")
+    cr = load("rule_q_c2r.json")
+    if cr:
+        L.append("\n### C2r (quarter): per score, the best universal shares (phi1 >= phi2 >= phi3), the uniform share each cell alone needs, and the own optima (a triple per cell alone)")
+        for k, v in cr["by_score"].items():
+            pg = v["program_rel"]
+            L.append(f"- {k} {cr['scores'][k]}: " + ("INFEASIBLE" if pg is None else f"phi {pg['W']}, worst-cell price {pg['tau']:.4f}; per cell {pg['per_cell']}") + f"; uniform share each cell alone needs: {v['required_uniform_share_by_cell']}")
+            L.append(f"  - own optimum, absolute caps: {json.dumps(v['own_abs'])}")
+            L.append(f"  - own optimum, relative caps: {json.dumps(v['own_rel'])}")
+        if cr.get("rule"):
+            L.append(f"- node bound at the chosen shares: {json.dumps(cr['rule']['node_bound'])}")
+    a3 = load("rule_q_a4.json") or load("rule_q_a3.json")
     if a3:
-        L.append(f"\n### A3 final: {a3['final']['label']} tau {a3['final']['tau']:.4f} (rule {a3['final']['rule_key']}); section 13's best {a3['section_13_best']['label']} {a3['section_13_best']['tau_M']:.4f}")
+        L.append(f"\n### Final on the quarter: {a3['final']['label']} tau {a3['final']['tau']:.4f} (rule {a3['final']['rule_key']}; record phase {a3['phase']}); section 13's best was lab:pr+vo 0.9683")
         for key, rs in a3["on_Q"].items():
             L.append(f"\n**{key}** (quarter, per rule: reach / price / kept links per question / candidates per question / price at 2,500 / S links per question)")
             for rn, g in rs.items():
@@ -875,6 +1010,36 @@ def selftest():
     assert gi == [10, 10, 9] and abs(pr["tau"] - 0.97) < 1e-9, (gi, pr["tau"])
     assert c2_program({"c": (line * 0.5, line)}, 0.95) is None                                       # infeasible when no triple reaches rho
     assert required_caps({"c": (line, line)}, 0.95)["c"] == "inf"
+    o = own_optimum((line, line), 0.95)
+    assert o["W"] == ["inf", "inf", 300000] and abs(o["price"] - 0.97) < 1e-6, o
+    assert own_optimum((line * 0.5, line), 0.95) is None
+    # C2r: a share phi of a block's candidates is the cap phi x (the block's count); one block against exhaustive enumeration at every integer cap, two blocks as the sum of their one-block results
+    for trial in range(30):
+        n = int(rng.integers(2, 5))
+        keys = rng.integers(0, 3, (n, 2))
+        cnt = rng.integers(1, 3, n)
+        while cnt.sum() > 6:
+            cnt[int(np.argmax(cnt))] -= 1
+        cnt = np.maximum(cnt, 1)
+        nd = rng.random(n) < 0.5
+        nd_cnt = np.where(nd, 1, cnt)
+        w = np.where(nd, rng.random(n) + 0.1, 1.0)
+        tot = int(nd_cnt.sum())
+        t = {"kind": nd.astype(int), "w": np.where(nd, w, cnt.astype(float)), "grp": np.ones(n, int), "step": np.full(n, 1), "q": np.zeros(n, int)}
+        S_ = cap_structure(t, [keys[:, 0].astype(float), keys[:, 1].astype(float)])
+        assert np.allclose(S_["Tb"], tot)
+        allg = np.ones(S_["T"].size, bool)
+        for k in range(0, tot + 1):
+            f = kept_frac(S_, allg, k / tot, rel=True)
+            got_cnt, got_need = float((f * S_["T"]).sum()), float((f * S_["needw"]).sum())
+            want_cnt, want_need = brute_cap([(tuple(keys[i]), int(nd_cnt[i]), float(w[i]) if nd[i] else None) for i in range(n)], k)
+            assert abs(got_cnt - want_cnt) < 1e-9 and abs(got_need - want_need) < 1e-9, (trial, k, tot, got_cnt, want_cnt)
+        t2 = {x: np.concatenate([t[x], t[x] + (1 if x == "q" else 0) * 0]) for x in t}
+        t2["q"] = np.concatenate([np.zeros(n, int), np.ones(n, int)])
+        S2 = cap_structure(t2, [np.concatenate([keys[:, 0], keys[:, 0]]).astype(float), np.concatenate([keys[:, 1], keys[:, 1]]).astype(float)])
+        f1 = kept_frac(S2, np.ones(S2["T"].size, bool), 0.5, rel=True)
+        fa = kept_frac(S_, allg, 0.5, rel=True)
+        assert abs(float((f1 * S2["T"]).sum()) - 2 * float((fa * S_["T"]).sum())) < 1e-9
     print("zgp2a3 selftest: PASS")
     return 0
 
@@ -887,10 +1052,10 @@ def main(argv=None):
         c = sub.add_parser(n)
         c.add_argument("--part", required=True, choices=["q", "r"])
         c.add_argument("--ds", nargs="*")
-    for n in ("solve5", "cap", "a3", "grade", "report"):
+    for n in ("solve5", "cap", "capr", "a3", "a4", "grade", "report"):
         sub.add_parser(n)
     a = ap.parse_args(argv)
-    return {"selftest": lambda: selftest(), "text2": lambda: cmd_text2(a), "score": lambda: cmd_score(a), "solve5": lambda: cmd_solve5(a), "cap": lambda: cmd_cap(a), "a3": lambda: cmd_a3(a),
+    return {"selftest": lambda: selftest(), "text2": lambda: cmd_text2(a), "score": lambda: cmd_score(a), "solve5": lambda: cmd_solve5(a), "cap": lambda: cmd_cap(a), "capr": lambda: cmd_capr(a), "a3": lambda: cmd_a3(a), "a4": lambda: cmd_a4(a),
             "grade": lambda: cmd_grade(a), "report": lambda: cmd_report(a)}[a.cmd]()
 
 

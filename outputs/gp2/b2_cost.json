@@ -1,0 +1,283 @@
+{
+ "declared_in": "docs/GP2_UNIVERSAL_LINK_SCORE.md",
+ "zgp2_sha256": "f5779308cb031f1930b813f715aee13c33faad63b586e60a5a860956ec0e4ffb",
+ "tokens_per_window": 64,
+ "bytes_per_window_fp16": 2304,
+ "bytes_per_window_int8": 1152,
+ "gpu_seconds_per_million_documents_bracket": [
+  479,
+  3173
+ ],
+ "cells": {
+  "multihoprag/RK/q": {
+   "status": "read",
+   "questions": 35,
+   "candidate_links_est": 20614,
+   "mention_links_est": 3719,
+   "mention_share": 0.1804,
+   "mention_links_per_question": 106.3,
+   "mention_rows_read": 3719,
+   "distinct_mention_pairs_read": 2355,
+   "tokens_upper": 238016,
+   "gb_fp16_upper": 0.01,
+   "gb_int8_upper": 0.0,
+   "gpu_hours_bracket": [
+    0.0,
+    0.0
+   ]
+  },
+  "musique/RK/q": {
+   "status": "read",
+   "questions": 323,
+   "candidate_links_est": 11806497,
+   "mention_links_est": 674635,
+   "mention_share": 0.0571,
+   "mention_links_per_question": 2088.7,
+   "mention_rows_read": 167789,
+   "distinct_mention_pairs_read": 114689,
+   "tokens_upper": 43176662,
+   "gb_fp16_upper": 1.55,
+   "gb_int8_upper": 0.78,
+   "gpu_hours_bracket": [
+    0.09,
+    0.59
+   ]
+  },
+  "squad/RK/q": {
+   "status": "read",
+   "questions": 27,
+   "candidate_links_est": 141507,
+   "mention_links_est": 11324,
+   "mention_share": 0.08,
+   "mention_links_per_question": 419.4,
+   "mention_rows_read": 8204,
+   "distinct_mention_pairs_read": 7580,
+   "tokens_upper": 724722,
+   "gb_fp16_upper": 0.03,
+   "gb_int8_upper": 0.01,
+   "gpu_hours_bracket": [
+    0.0,
+    0.01
+   ]
+  },
+  "metaqa/SRK/q": {
+   "status": "read",
+   "questions": 373,
+   "candidate_links_est": 3618080,
+   "mention_links_est": 30784,
+   "mention_share": 0.0085,
+   "mention_links_per_question": 82.5,
+   "mention_rows_read": 18625,
+   "distinct_mention_pairs_read": 9092,
+   "tokens_upper": 1970153,
+   "gb_fp16_upper": 0.07,
+   "gb_int8_upper": 0.04,
+   "gpu_hours_bracket": [
+    0.0,
+    0.03
+   ]
+  },
+  "webqsp/SRK/q": {
+   "status": "read",
+   "questions": 343,
+   "candidate_links_est": 589460818,
+   "mention_links_est": 1100947,
+   "mention_share": 0.0019,
+   "mention_links_per_question": 3209.8,
+   "mention_rows_read": 12156,
+   "distinct_mention_pairs_read": 10088,
+   "tokens_upper": 70460614,
+   "gb_fp16_upper": 2.54,
+   "gb_int8_upper": 1.27,
+   "gpu_hours_bracket": [
+    0.15,
+    0.97
+   ]
+  },
+  "hotpotqa/RK/q": {
+   "status": "read",
+   "questions": 187,
+   "candidate_links_est": 15691806,
+   "mention_links_est": 141171,
+   "mention_share": 0.009,
+   "mention_links_per_question": 754.9,
+   "mention_rows_read": 11627,
+   "distinct_mention_pairs_read": 11498,
+   "tokens_upper": 9034967,
+   "gb_fp16_upper": 0.33,
+   "gb_int8_upper": 0.16,
+   "gpu_hours_bracket": [
+    0.02,
+    0.12
+   ]
+  },
+  "hotpotqa/SRK/q": {
+   "status": "read",
+   "questions": 187,
+   "candidate_links_est": 8399812,
+   "mention_links_est": 59751,
+   "mention_share": 0.0071,
+   "mention_links_per_question": 319.5,
+   "mention_rows_read": 9487,
+   "distinct_mention_pairs_read": 9447,
+   "tokens_upper": 3824071,
+   "gb_fp16_upper": 0.14,
+   "gb_int8_upper": 0.07,
+   "gpu_hours_bracket": [
+    0.01,
+    0.05
+   ]
+  },
+  "2wiki/RK/q": {
+   "status": "read",
+   "questions": 274,
+   "candidate_links_est": 42458783,
+   "mention_links_est": 269108,
+   "mention_share": 0.0063,
+   "mention_links_per_question": 982.1,
+   "mention_rows_read": 21805,
+   "distinct_mention_pairs_read": 21421,
+   "tokens_upper": 17222919,
+   "gb_fp16_upper": 0.62,
+   "gb_int8_upper": 0.31,
+   "gpu_hours_bracket": [
+    0.04,
+    0.24
+   ]
+  },
+  "2wiki/SRK/q": {
+   "status": "read",
+   "questions": 274,
+   "candidate_links_est": 31972155,
+   "mention_links_est": 212968,
+   "mention_share": 0.0067,
+   "mention_links_per_question": 777.3,
+   "mention_rows_read": 20985,
+   "distinct_mention_pairs_read": 20736,
+   "tokens_upper": 13629931,
+   "gb_fp16_upper": 0.49,
+   "gb_int8_upper": 0.25,
+   "gpu_hours_bracket": [
+    0.03,
+    0.19
+   ]
+  },
+  "multihoprag/RK/r": {
+   "status": "read",
+   "questions": 94,
+   "candidate_links_est": 52239,
+   "mention_links_est": 8710,
+   "mention_share": 0.1667,
+   "mention_links_per_question": 92.7,
+   "mention_rows_read": 8676,
+   "distinct_mention_pairs_read": 3662,
+   "tokens_upper": 557452,
+   "gb_fp16_upper": 0.02,
+   "gb_int8_upper": 0.01,
+   "gpu_hours_bracket": [
+    0.0,
+    0.01
+   ]
+  },
+  "musique/RK/r": {
+   "status": "read",
+   "questions": 930,
+   "candidate_links_est": 30317325,
+   "mention_links_est": 1673642,
+   "mention_share": 0.0552,
+   "mention_links_per_question": 1799.6,
+   "mention_rows_read": 429121,
+   "distinct_mention_pairs_read": 212551,
+   "tokens_upper": 107113078,
+   "gb_fp16_upper": 3.86,
+   "gb_int8_upper": 1.93,
+   "gpu_hours_bracket": [
+    0.22,
+    1.48
+   ]
+  },
+  "squad/RK/r": {
+   "status": "read",
+   "questions": 77,
+   "candidate_links_est": 154003,
+   "mention_links_est": 30324,
+   "mention_share": 0.1969,
+   "mention_links_per_question": 393.8,
+   "mention_rows_read": 25498,
+   "distinct_mention_pairs_read": 24426,
+   "tokens_upper": 1940718,
+   "gb_fp16_upper": 0.07,
+   "gb_int8_upper": 0.03,
+   "gpu_hours_bracket": [
+    0.0,
+    0.03
+   ]
+  },
+  "metaqa/SRK/r": {
+   "status": "read",
+   "questions": 1113,
+   "candidate_links_est": 10476664,
+   "mention_links_est": 87937,
+   "mention_share": 0.0084,
+   "mention_links_per_question": 79.0,
+   "mention_rows_read": 52668,
+   "distinct_mention_pairs_read": 16566,
+   "tokens_upper": 5627979,
+   "gb_fp16_upper": 0.2,
+   "gb_int8_upper": 0.1,
+   "gpu_hours_bracket": [
+    0.01,
+    0.08
+   ]
+  },
+  "hotpotqa/RK/r": {
+   "status": "read",
+   "questions": 559,
+   "candidate_links_est": 32536007,
+   "mention_links_est": 330972,
+   "mention_share": 0.0102,
+   "mention_links_per_question": 592.1,
+   "mention_rows_read": 30120,
+   "distinct_mention_pairs_read": 29703,
+   "tokens_upper": 21182198,
+   "gb_fp16_upper": 0.76,
+   "gb_int8_upper": 0.38,
+   "gpu_hours_bracket": [
+    0.04,
+    0.29
+   ]
+  },
+  "hotpotqa/SRK/r": {
+   "status": "read",
+   "questions": 560,
+   "candidate_links_est": 13874086,
+   "mention_links_est": 137757,
+   "mention_share": 0.0099,
+   "mention_links_per_question": 246.0,
+   "mention_rows_read": 24863,
+   "distinct_mention_pairs_read": 24820,
+   "tokens_upper": 8816455,
+   "gb_fp16_upper": 0.32,
+   "gb_int8_upper": 0.16,
+   "gpu_hours_bracket": [
+    0.02,
+    0.12
+   ]
+  }
+ },
+ "mention_links_est_total": {
+  "q": 2504407,
+  "r": 2269342
+ },
+ "gpu_hours_bracket_total": {
+  "q": [
+   0.33,
+   2.21
+  ],
+  "r": [
+   0.3,
+   2.0
+  ]
+ },
+ "seconds": 1.1
+}
