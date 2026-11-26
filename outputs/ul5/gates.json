@@ -1,0 +1,183 @@
+{
+ "stage": "UL5 gates",
+ "declared_in": "docs/UL5_DEPTH_SIGNAL.md",
+ "datasets": {
+  "multihoprag": {
+   "questions": 224,
+   "same_questions_and_golds": true,
+   "shared_cells": [
+    "rrf1000_b25",
+    "rrf1000_b25+FULL:h1_c100+top100",
+    "rrf1000_b25+FULL:h1_c100+top200",
+    "rrf1000_b25+FULL:h1_c100+top400",
+    "rrf1000_b25+FULL:h1_c100+top800",
+    "rrf1000_b25+FULL:h1_c100+top1600",
+    "rrf1000_b25+FULL:h1_c100"
+   ],
+   "shared_equal": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "nested": true,
+   "one_code_sha": true,
+   "cells_sha": [
+    "a045effbec75ce274360f60397cfed7931d7c02289d995b8ccd3174bff7ec37b"
+   ],
+   "pass": true
+  },
+  "squad": {
+   "questions": 1498,
+   "same_questions_and_golds": true,
+   "shared_cells": [
+    "rrf1000_b15"
+   ],
+   "shared_equal": [
+    true
+   ],
+   "nested": true,
+   "one_code_sha": true,
+   "cells_sha": [
+    "f733fcc94267477d2ba4aab5b372f4c44952f3960c0db33be4e901d598d05a97"
+   ],
+   "pass": true
+  },
+  "hotpotqa": {
+   "questions": 1508,
+   "same_questions_and_golds": true,
+   "shared_cells": [
+    "rrf1000_b25",
+    "rrf1000_b25+STRUCT:h1_c100~cs+top100",
+    "rrf1000_b25+STRUCT:h1_c100~cs+top200",
+    "rrf1000_b25+STRUCT:h1_c100~cs+top400",
+    "rrf1000_b25+STRUCT:h1_c100~cs+top800",
+    "rrf1000_b25+STRUCT:h1_c100~cs+top1600",
+    "rrf1000_b25+STRUCT:h1_c100~cs"
+   ],
+   "shared_equal": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "nested": true,
+   "one_code_sha": true,
+   "cells_sha": [
+    "104faa818936fc0eeae302dbde918ba558147170484f116e46134e98e92cb69d"
+   ],
+   "pass": true
+  },
+  "2wiki": {
+   "questions": 1496,
+   "same_questions_and_golds": true,
+   "shared_cells": [
+    "rrf1000_b400",
+    "rrf1000_b400+FULL:h1_c100~s20+top100",
+    "rrf1000_b400+FULL:h1_c100~s20+top200",
+    "rrf1000_b400+FULL:h1_c100~s20+top400",
+    "rrf1000_b400+FULL:h1_c100~s20+top800",
+    "rrf1000_b400+FULL:h1_c100~s20+top1600",
+    "rrf1000_b400+FULL:h1_c100~s20"
+   ],
+   "shared_equal": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "nested": true,
+   "one_code_sha": true,
+   "cells_sha": [
+    "e80733a3f13baccc61f8d22543826f774c02e9e00a39500b7f91826a01df6dfc"
+   ],
+   "pass": true
+  },
+  "musique": {
+   "questions": 1534,
+   "same_questions_and_golds": true,
+   "shared_cells": [
+    "rrf1000_b400",
+    "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top5000",
+    "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top10000",
+    "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000",
+    "rrf1000_b400+FULL:h3_bf_v20000~cs-fu"
+   ],
+   "shared_equal": [
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "nested": true,
+   "one_code_sha": true,
+   "cells_sha": [
+    "230e6d301c0e35d6ba9c6cc4e9e849c69edb8b9a2ebcd07623b045f77b6ebd3c"
+   ],
+   "pass": true
+  },
+  "metaqa": {
+   "questions": 1497,
+   "same_questions_and_golds": true,
+   "shared_cells": [
+    "rrf1000_b25",
+    "rrf1000_b25+STRUCT:h3_c100_v5000+top100",
+    "rrf1000_b25+STRUCT:h3_c100_v5000+top200",
+    "rrf1000_b25+STRUCT:h3_c100_v5000+top400",
+    "rrf1000_b25+STRUCT:h3_c100_v5000+top800",
+    "rrf1000_b25+STRUCT:h3_c100_v5000+top1600",
+    "rrf1000_b25+STRUCT:h3_c100_v5000"
+   ],
+   "shared_equal": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "nested": true,
+   "one_code_sha": true,
+   "cells_sha": [
+    "ee1834076ff3b311360f28414c9ea63b1b9ce1aa3744ade1b9f389ca7544d8fd"
+   ],
+   "pass": true
+  },
+  "webqsp": {
+   "questions": 1507,
+   "same_questions_and_golds": true,
+   "shared_cells": [
+    "rrf1000_b400",
+    "rrf1000_b400+FULL:h3_bf_v40000~cs-vr+top10000",
+    "rrf1000_b400+FULL:h3_bf_v40000~cs-vr+top20000",
+    "rrf1000_b400+FULL:h3_bf_v40000~cs-vr+top30000",
+    "rrf1000_b400+FULL:h3_bf_v40000~cs-vr"
+   ],
+   "shared_equal": [
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "nested": true,
+   "one_code_sha": true,
+   "cells_sha": [
+    "d6793a31b6c8a806a7fb6c5c8458c080e3db9bb8f57d59de7e28836066e73ee4"
+   ],
+   "pass": true
+  }
+ },
+ "verdict": "PASS"
+}

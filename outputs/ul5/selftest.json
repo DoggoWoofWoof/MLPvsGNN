@@ -1,0 +1,14 @@
+{
+ "P1_equals_brute_force": true,
+ "wrong_objective_caught": true,
+ "monotone_cannot_lower": true,
+ "levels_monotone": true,
+ "P2_equals_brute_force": true,
+ "uniform_equals_P1_k1": true,
+ "deciles_invariant_to_shuffle": true,
+ "search_beats_uniform_on_a_planted_signal": true,
+ "choose_is_parsimonious": true,
+ "verdict": "PASS",
+ "script_sha256": "edbcd0c94c939217fe48ce4b6b788a401a68cbf4906a6146cc706b453c272081",
+ "utc": "2026-11-25T22:48:46Z"
+}

@@ -1,0 +1,18 @@
+{
+ "questions": 24,
+ "cells": 17,
+ "G5-4_nested": true,
+ "G5-3_labels_unread": true,
+ "stats_finite": true,
+ "agree_range": [
+  0.0,
+  5.0
+ ],
+ "verdict": "PASS",
+ "dataset": "musique",
+ "host": true,
+ "seconds": 43.7,
+ "script_sha256": "2602494387e838b292a48ff4650825b2a741af7f9638313e6266a4e18808e3bd",
+ "code_sha256": "4a0c37d80f0f74b0467ee26e31bc25c145c3da37a2a64212a77653b2d33bc953",
+ "utc": "2026-11-26T02:34:03Z"
+}

@@ -96,3 +96,109 @@ The dev call and, if graded, the eval call go into a results section of this pag
 - The policy class is one statistic, monotone, at most four bins. An exact answer on it is a bound on that class, not on depth rules in general. The null controls the selection over the class on this dev population (not eval's).
 - Dev ALL is measured on the same questions the policy is chosen on; the 0.95 constraint is therefore met on dev by construction, and the eval call allows the declared shrink of 0.02.
 - The oracle and phi read the golds. They are bounds, labelled so wherever they are printed.
+
+## 11. Dev results (26 November 2026, 08:10 IST; 02:40 UTC)
+
+Read by `zul5cp.py solve` from `outputs/ul5/<d>/ext_dev*.npz` (the host's ten rows; MultiHop-RAG ran on the laptop because its package files are laptop-only on the host, and its two failed host rows are superseded by that run), after the gates and the solver's self-test passed. **Call: NO_SIGNAL.** Nothing is carried; eval is not extracted and not graded (declared, section 7).
+
+### 11.1 Gates
+
+- **G5-1 (data identity with the filed dev grids):** MultiHop-RAG PASS (7 of 7 shared cells equal, 224 questions); SQuAD PASS (1 of 1 shared cells equal, 1,498 questions); HotpotQA PASS (7 of 7 shared cells equal, 1,508 questions); 2Wiki PASS (7 of 7 shared cells equal, 1,496 questions); MuSiQue PASS (5 of 5 shared cells equal, 1,534 questions); MetaQA PASS (7 of 7 shared cells equal, 1,497 questions); WebQSP PASS (5 of 5 shared cells equal, 1,507 questions).
+- **G5-3 and G5-4 (statistics read no label; the ladder is nested)** on the host, first 24 questions of MuSiQue and MetaQA: MuSiQue PASS, MetaQA PASS (17 cells each; one code sha 4a0c37d8). The other five datasets were not self-tested separately: the statistics are one code path (`question_stats`) for all seven, and G5-1's nesting and one-code-sha checks cover every dataset.
+- **G5-5 (solver self-test):** PASS (9 checks: P1 and P2 equal brute force, a wrong objective is caught, levels stay monotone, k = 1 equals the enumeration, deciles are invariant to a shuffle, a planted signal is found, the choice is parsimonious).
+
+### 11.2 The dev call
+
+Dev questions: MultiHop-RAG 224, SQuAD 1,498, HotpotQA 1,508, 2Wiki 1,496, MuSiQue 1,534, MetaQA 1,497, WebQSP 1,507. A level is M walk nodes kept beyond the base; the nodes below are mean nodes per question.
+
+**Uniform (k = 1): the one level every dataset takes to reach ALL 0.95 is the uncut pool; the worst dataset (WebQSP) has 39,572 mean nodes there at ALL 0.956.** The next level down (M = 30,000) gives WebQSP ALL 0.823, so the uniform has no cheaper step.
+
+**Chosen policy:** statistic `cos1`, sign +, k = 2, one breakpoint at 0.5690 (questions whose first dense score is at most that get M = 15,000, the rest the uncut pool). Worst-dataset mean nodes t* = 39,190 (LP relaxation 38,939). **Saving over the uniform: 1.0 percent** (the best policy of any statistic is this one). 1,060 programs solved to proven optimality, 0 pruned by their LP relaxation.
+
+| dataset | uniform ALL | uniform nodes | policy ALL | policy nodes | oracle nodes (golds read) | closure phi | share of questions in bin 1 / bin 2 |
+|---|---|---|---|---|---|---|---|
+| MultiHop-RAG | 0.996 | 255 | 0.996 | 255 | 35 | 0.000 | 0.25 / 0.75 |
+| SQuAD | 0.952 | 15 | 0.952 | 15 | 15 | - | 0.31 / 0.69 |
+| HotpotQA | 0.968 | 85 | 0.968 | 85 | 41 | 0.000 | 0.02 / 0.98 |
+| 2Wiki | 0.955 | 911 | 0.955 | 911 | 541 | 0.000 | 0.15 / 0.85 |
+| MuSiQue | 0.963 | 20,038 | 0.956 | 18,096 | 1,831 | 0.107 | 0.42 / 0.58 |
+| MetaQA | 0.961 | 4,984 | 0.961 | 4,984 | 2,745 | 0.000 | 0.24 / 0.76 |
+| WebQSP | 0.956 | 39,572 | 0.952 | 39,190 | 9,301 | 0.013 | 0.02 / 0.98 |
+
+**Cost of universality.** The same bins with a private level per dataset: MultiHop-RAG 125 (levels 100, 100), SQuAD 15 (levels 0, uncut), HotpotQA 76 (levels 0, 100), 2Wiki 908 (levels 800, 800), MuSiQue 15,400 (levels 15,000, 15,000), MetaQA 4,984 (levels 5,000, uncut), WebQSP 39,190 (levels 15,000, uncut). On the worst dataset the private program costs 39,190 against the universal 39,190: the cost is zero there, because the worst dataset is WebQSP in both. (Read after the fact, not an expectation: on MuSiQue the private level costs 15,400 against 18,096, 14.9 percent less.)
+
+### 11.3 The best policy of each statistic (worst-dataset mean nodes at ALL 0.95; saving over the uniform in parentheses)
+
+| statistic | sign | k | breakpoints | levels (M) | t |
+|---|---|---|---|---|---|
+| agree | + | 2 | 1 | uncut, uncut | 39,572 (0.0 percent) |
+| agree | + | 3 | 1, 2 | uncut, uncut, uncut | 39,572 (0.0 percent) |
+| agree | + | 4 | 1, 2, 3 | uncut, uncut, uncut, uncut | 39,572 (0.0 percent) |
+| agree | - | 2 | -4 | uncut, uncut | 39,572 (0.0 percent) |
+| agree | - | 3 | -4, -3 | uncut, uncut, uncut | 39,572 (0.0 percent) |
+| agree | - | 4 | -4, -3, -2 | uncut, uncut, uncut, uncut | 39,572 (0.0 percent) |
+| cos1 | + | 2 | 0.569 | 15,000, uncut | 39,190 (1.0 percent) |
+| cos1 | + | 3 | 0.5355, 0.569 | 15,000, 15,000, uncut | 39,190 (1.0 percent) |
+| cos1 | + | 4 | 0.5355, 0.569, 0.5945 | 15,000, 15,000, uncut, uncut | 39,190 (1.0 percent) |
+| cos1 | - | 2 | -0.7346 | uncut, uncut | 39,572 (0.0 percent) |
+| cos1 | - | 3 | -0.7346, -0.7002 | uncut, uncut, uncut | 39,572 (0.0 percent) |
+| cos1 | - | 4 | -0.7346, -0.7002, -0.6754 | uncut, uncut, uncut, uncut | 39,572 (0.0 percent) |
+| gap15 | + | 2 | 0.02877 | uncut, uncut | 39,572 (0.0 percent) |
+| gap15 | + | 3 | 0.02877, 0.04278 | uncut, uncut, uncut | 39,572 (0.0 percent) |
+| gap15 | + | 4 | 0.02877, 0.04278, 0.05577 | uncut, uncut, uncut, uncut | 39,572 (0.0 percent) |
+| gap15 | - | 2 | -0.1846 | 10,000, uncut | 39,244 (0.8 percent) |
+| gap15 | - | 3 | -0.1846, -0.15 | 10,000, uncut, uncut | 39,244 (0.8 percent) |
+| gap15 | - | 4 | -0.1846, -0.15, -0.1274 | 10,000, uncut, uncut, uncut | 39,244 (0.8 percent) |
+| growth | + | 2 | 50.03 | 5,000, uncut | 39,533 (0.1 percent) |
+| growth | + | 3 | 1, 50.03 | 0, 5,000, uncut | 39,533 (0.1 percent) |
+| growth | + | 4 | 1, 1.962, 50.03 | 0, 400, 5,000, uncut | 39,533 (0.1 percent) |
+| growth | - | 2 | -200.5 | 5,000, uncut | 39,572 (0.0 percent) |
+| growth | - | 3 | -200.5, -100.3 | 5,000, uncut, uncut | 39,572 (0.0 percent) |
+| growth | - | 4 | -200.5, -100.3, -50.19 | 5,000, uncut, uncut, uncut | 39,572 (0.0 percent) |
+| log10_pool | + | 2 | 4.302 | 15,000, uncut | 39,568 (0.0 percent) |
+| log10_pool | + | 3 | 1.176, 4.302 | 0, 15,000, uncut | 39,568 (0.0 percent) |
+| log10_pool | + | 4 | 1.176, 1.799, 4.302 | 0, 100, 15,000, uncut | 39,568 (0.0 percent) |
+| log10_pool | - | 2 | -4.603 | uncut, uncut | 39,572 (0.0 percent) |
+| log10_pool | - | 3 | -4.603, -4.302 | uncut, uncut, uncut | 39,572 (0.0 percent) |
+| log10_pool | - | 4 | -4.603, -4.302, -3.7 | uncut, uncut, uncut, uncut | 39,572 (0.0 percent) |
+
+Per statistic, the best over signs and k: `cos1` 39,190, `gap15` 39,244, `growth` 39,533, `log10_pool` 39,568, `agree` 39,572. The five are within 1.0 percent of one another.
+
+### 11.4 P2 beside: the most the worst dataset's ALL can reach at a mean-node cap (no null was run for P2: these numbers claim no signal)
+
+| cap (every dataset's mean nodes) | uniform: level and worst ALL | best policy | its worst ALL |
+|---|---|---|---|
+| 2,500 | M = 2,000, 0.388 | `gap15`, sign +, k 3 | 0.494 |
+| 3,500 | M = 2,500, 0.467 | `gap15`, sign +, k 3 | 0.581 |
+| 5,000 | M = 3,500, 0.601 | `agree`, sign +, k 3 | 0.629 |
+
+At 2,500 the uniform's worst dataset (MetaQA) reaches 0.388 and the best policy's worst 0.494; neither is near 0.95.
+
+### 11.5 The null (20 within-dataset shuffles of the statistic, the whole search repeated)
+
+Best t of each shuffle: 38,535, 38,649, 38,670, 38,773, 38,925, 38,957, 39,028, 39,042, 39,071, 39,078, 39,094, 39,102, 39,173, 39,178, 39,179, 39,180, 39,184, 39,186, 39,186, 39,187. Their savings over the uniform: 1.0 to 2.6 percent (mean 1.4). **The real best (saving 1.0 percent, t = 39,190) does not beat the shuffles:** it is worse than every one of the 20. A shuffled statistic finds a 1 to 2.6 percent saving on this population by chance, which is the size of everything the five real statistics find.
+
+### 11.6 Expectations against the outcome (a failed one is reported, not explained away)
+
+- **E1 (oracle on the finer ladder): MuSiQue clause FAILED, WebQSP and MetaQA clauses held.** MuSiQue's oracle is 1,831, below 2,500 (UL4: 3,382); WebQSP's 9,301 is 3.7 times 2,500 (above the 3 times); MetaQA's 2,745 is 2.1 percent under UL4's 2,804 (inside the 15 percent). The small four: MultiHop-RAG 35, SQuAD 15, HotpotQA 41, 2Wiki 541. As the declaration says for a failed MuSiQue clause: the 2,500 bound on MuSiQue is a depth-allocation problem (an oracle that picks the depth per question meets it), not a walk problem.
+- **E2 (the signal is weak): held.** Closure phi on MuSiQue 0.107, WebQSP 0.013; t* = 39,190, far above 2,500.
+- **E3 (the best statistic is a walk-size count): FAILED.** The chosen statistic is `cos1` (a first-stage score); the best count reaches 39,533 and the best score 39,190, 0.9 percent apart, which the null's range covers.
+- **E4 (private levels at least 10 percent cheaper on the worst dataset): FAILED.** 0.0 percent (the worst dataset is WebQSP in both programs).
+- **E5 (eval shrink): not read** (a NO_SIGNAL dev call grades nothing on eval).
+- **E6 (the best real saving beats all 20 shuffles): FAILED.**
+- **The declared surprise: the real best saving inside the null's range.** It happened: the real best (39,190) is not below any shuffle's best (38,535 to 39,187). There is no label to blame: the statistics read none.
+
+### 11.7 What this says, and what it does not
+
+1. **None of the five label-free statistics tells a question how deep its walk must go, on this dev population and in this policy class.** The best saving over the uniform is 1.0 percent, the shuffled statistics find 1.0 to 2.6 percent, and the closure of the gap to the oracle is 0.107 on MuSiQue and 0.013 on WebQSP.
+2. **The worst dataset fixes the answer.** P1 is a minimax, and WebQSP's family reaches ALL 0.95 only on the uncut pool (39,572 nodes, ALL 0.956; at M = 30,000 its ALL is 0.823), so the uniform's t, every policy's t and every shuffle's t sit within 3 percent of 39,572. Even the oracle, which reads the golds, needs 9,301 on WebQSP (3.7 times 2,500): **no per-question depth rule, with or without labels, brings WebQSP's family to 2,500; its lever is the links and paths the walk follows, not the depth.**
+3. **MuSiQue is a different case.** The oracle needs 1,831 there, under 2,500, against 20,038 for the uniform: a depth signal that existed would pay on MuSiQue; these five do not (phi 0.107). MetaQA's oracle (2,745) sits just above 2,500.
+4. **What it does not say.** It is five statistics, one statistic per policy, at most four monotone bins, one dev population (the null controls the selection on that population, not eval's). It does not say no label-free signal exists: the named, not declared, ones (question token count, title matches in the question text, the sparse score, two-statistic combinations) were not tried. The first two statistics are walk-size counts and read no hub attribute; they are not a hub correction.
+
+### 11.8 What follows, and disclosed
+
+- **No eval extraction and no grade** (`zul5cp.py grade` refuses a NO_SIGNAL call). The oracle bound stands as the statement of what a depth rule could buy: WebQSP 9,301, MetaQA 2,745, MuSiQue 1,831 mean nodes, the other four at most 541.
+- **PL8 is not declared** (the user has not said the link set is final). The bound the user set (ALL 0.95 at close to 2,500 nodes) is, for WebQSP, a links-and-paths problem (GP1's gold-link patterns are the lever); for MuSiQue the oracle meets it, so it is a depth-signal problem (none found here); for MetaQA the oracle sits about 10 percent above it.
+- **Disclosed:** MultiHop-RAG's dev extraction ran on the laptop (3.5 s) because the host has no copy of its package; its two host rows failed with a file-not-found and stay in the feed record as failed. One sentence of section 4 was corrected before any number (83f7f71e: the dev carve is the whole carve, not one part). An 8-question smoke run on MultiHop-RAG preceded the declaration (smoke numbers decide nothing). The host rows' timings: MuSiQue and WebQSP about 27 to 31 minutes per part, the other four under 3 minutes.
+- **Files:** `outputs/ul5/dev_solve.json`, `gates.json`, `selftest.json`, `selftest_musique_host.json`, `selftest_metaqa_host.json`, the `ext_dev*.json` heads (npz uncommitted); results table sha in `dev_solve.json`.
+

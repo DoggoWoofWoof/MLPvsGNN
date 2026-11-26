@@ -1,0 +1,34 @@
+{
+ "stage": "UL5 extraction",
+ "declared_in": "docs/UL5_DEPTH_SIGNAL.md",
+ "dataset": "squad",
+ "carve": "dev",
+ "first": "frozen",
+ "questions": 1498,
+ "rows": [
+  0,
+  1498
+ ],
+ "part": null,
+ "cells": 1,
+ "cells_sha256": "f733fcc94267477d2ba4aab5b372f4c44952f3960c0db33be4e901d598d05a97",
+ "n_nodes": 20233,
+ "population_digest": "60e0b78420adb1cd1b9f239bb80831ba7916bb09c5c21009b4350fb01942cf06",
+ "code_sha256": "4a0c37d80f0f74b0467ee26e31bc25c145c3da37a2a64212a77653b2d33bc953",
+ "pl6_code_path_sha256": "cce8c3fb01e42e11eebf42ac94dacbd360c8abba39142b9278763365a7a105ee",
+ "pinned": {
+  "pl2": "18c31653a4d2a4155ed8880253d239e8c5c0cdb306ae598e05030fe753e5f1ad",
+  "pl2_script": "97ec4883b41445110b57181b44d2630b7424dfbfd884f7cc9512a65085d7e477",
+  "pl3": "e9d860950c700bdd5e988f16b4b0ef6023d3207b7f5c07b1e7ee36593c13c8c4",
+  "pl4": "aa7c9ac9ddd53327cbb906ed1b68e43c6e932d6bf740278684194abdd4eec006",
+  "pl5": "62a27dbb08c49a81fb4605f211f908935135e01c4cb6dd080e3c54b50066930f",
+  "pl5_script": "c3e8221e4fb4dcde134eead544ceb88f2d90579e88dd8e6d10281072696d427c"
+ },
+ "script_sha256": "2602494387e838b292a48ff4650825b2a741af7f9638313e6266a4e18808e3bd",
+ "npz": "outputs/ul5/squad/ext_dev.npz",
+ "npz_sha256": "35985b8d97d3a3e1d8fb5b09514bf38b1a24bc3e60d23188c8de1e5c30b4cd93",
+ "seconds": 5.6,
+ "peak_gb": 0.3,
+ "host": true,
+ "utc": "2026-11-25T22:47:20Z"
+}
