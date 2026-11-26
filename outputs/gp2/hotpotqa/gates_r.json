@@ -1,0 +1,113 @@
+{
+ "dataset": "hotpotqa",
+ "part": "r",
+ "declared_in": "docs/GP2_UNIVERSAL_LINK_SCORE.md",
+ "cells": {
+  "RK": {
+   "rows": 144790,
+   "G-Q0": "PASS",
+   "G-Q1": "PASS (2000 rows)",
+   "in_dense_list": 0.0896,
+   "in_splade_list": 0.0816,
+   "file": "outputs/gp2/hotpotqa/cols_r_RK.npz",
+   "G-W1": "PASS (1000 rows)",
+   "tw_bins": [
+    114670,
+    13232,
+    6565,
+    10323
+   ],
+   "mention_rows": 30120,
+   "mention_pairs": 29703,
+   "G-W2": "PASS (1000 rows)",
+   "cd_bins": [
+    114670,
+    6839,
+    993,
+    1767,
+    3199,
+    4015,
+    13307
+   ],
+   "tw160_bins": [
+    114670,
+    9713,
+    5424,
+    14983
+   ],
+   "G-Q2": "PASS (2000 rows)",
+   "qn_bins": [
+    131820,
+    3438,
+    2739,
+    4195,
+    1890,
+    660,
+    48
+   ],
+   "qs_bins": [
+    132971,
+    2930,
+    2385,
+    3294,
+    1922,
+    1038,
+    250
+   ]
+  },
+  "SRK": {
+   "rows": 86817,
+   "G-Q0": "PASS",
+   "G-Q1": "PASS (2000 rows)",
+   "in_dense_list": 0.1387,
+   "in_splade_list": 0.1256,
+   "file": "outputs/gp2/hotpotqa/cols_r_SRK.npz",
+   "G-W1": "PASS (1000 rows)",
+   "tw_bins": [
+    61954,
+    9971,
+    5302,
+    9590
+   ],
+   "mention_rows": 24863,
+   "mention_pairs": 24820,
+   "G-W2": "PASS (1000 rows)",
+   "cd_bins": [
+    61954,
+    4897,
+    690,
+    1389,
+    2653,
+    3296,
+    11938
+   ],
+   "tw160_bins": [
+    61954,
+    7075,
+    4047,
+    13741
+   ],
+   "G-Q2": "PASS (2000 rows)",
+   "qn_bins": [
+    74776,
+    3000,
+    2462,
+    3954,
+    1856,
+    703,
+    66
+   ],
+   "qs_bins": [
+    75912,
+    2390,
+    2030,
+    3216,
+    1919,
+    1100,
+    250
+   ]
+  }
+ },
+ "zgp2_sha256": "f5779308cb031f1930b813f715aee13c33faad63b586e60a5a860956ec0e4ffb",
+ "utc": "2026-11-26T05:10:17Z"
+}

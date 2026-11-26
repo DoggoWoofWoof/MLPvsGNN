@@ -1,0 +1,61 @@
+{
+ "dataset": "metaqa",
+ "part": "r",
+ "declared_in": "docs/GP2_UNIVERSAL_LINK_SCORE.md",
+ "cells": {
+  "SRK": {
+   "rows": 2710368,
+   "G-Q0": "PASS",
+   "G-Q1": "PASS (2000 rows)",
+   "in_dense_list": 0.0464,
+   "in_splade_list": 0.0463,
+   "file": "outputs/gp2/metaqa/cols_r_SRK.npz",
+   "G-W1": "PASS (1000 rows)",
+   "tw_bins": [
+    2657700,
+    49702,
+    2635,
+    331
+   ],
+   "mention_rows": 52668,
+   "mention_pairs": 16566,
+   "G-W2": "PASS (1000 rows)",
+   "cd_bins": [
+    2657700,
+    49702,
+    0,
+    0,
+    0,
+    0,
+    2966
+   ],
+   "tw160_bins": [
+    2657700,
+    49702,
+    2635,
+    331
+   ],
+   "G-Q2": "PASS (2000 rows)",
+   "qn_bins": [
+    2584518,
+    64542,
+    33034,
+    22990,
+    4430,
+    782,
+    72
+   ],
+   "qs_bins": [
+    2584901,
+    87457,
+    15009,
+    13173,
+    8173,
+    1506,
+    149
+   ]
+  }
+ },
+ "zgp2_sha256": "f5779308cb031f1930b813f715aee13c33faad63b586e60a5a860956ec0e4ffb",
+ "utc": "2026-11-26T05:10:07Z"
+}

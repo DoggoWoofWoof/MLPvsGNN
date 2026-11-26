@@ -1,0 +1,2121 @@
+{
+ "part": "r",
+ "declared_in": "docs/GP2_UNIVERSAL_LINK_SCORE.md",
+ "zgp2_sha256": "f5779308cb031f1930b813f715aee13c33faad63b586e60a5a860956ec0e4ffb",
+ "zgp2a3_sha256": "fa6ec7261caab026d74225e15b9beafdf777ec90aee1818f55a11691282da85e",
+ "rule_record": "rule_q_a4.json",
+ "rule_record_sha256": "91704b8cddea8e88ee320a07bbce59911757483c60c4e0fb68d6dfc432b880bb",
+ "final_rule": "rule_C2r",
+ "rules": {
+  "rule_s11_final": {
+   "family": null,
+   "space": "tw+dr+pr",
+   "cells": {
+    "multihoprag/RK": {
+     "status": "read",
+     "reach": 0.9991,
+     "price": 0.9943,
+     "path_retention": 1.0,
+     "golds_with_units": 121,
+     "path_by_distance": {
+      "1": [
+       117,
+       117
+      ],
+      "2": [
+       4,
+       4
+      ]
+     },
+     "needed_weight": 121.0,
+     "questions": 94,
+     "candidate_links_per_q": 555.7,
+     "kept_links_per_q": 552.6,
+     "price_at_2500_links_per_q": 1.0,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "musique/RK": {
+     "status": "read",
+     "reach": 0.9486,
+     "price": 0.9313,
+     "path_retention": 0.9571,
+     "golds_with_units": 1469,
+     "path_by_distance": {
+      "2": [
+       512,
+       528
+      ],
+      "1": [
+       741,
+       772
+      ],
+      "3": [
+       153,
+       169
+      ]
+     },
+     "needed_weight": 1469.0,
+     "questions": 930,
+     "candidate_links_per_q": 32599.3,
+     "kept_links_per_q": 30358.4,
+     "price_at_2500_links_per_q": 0.07669,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0009,
+     "SCREEN_IN": false
+    },
+    "squad/RK": {
+     "status": "read",
+     "reach": 0.9326,
+     "price": 0.927,
+     "path_retention": 0.9481,
+     "golds_with_units": 77,
+     "path_by_distance": {
+      "1": [
+       34,
+       36
+      ],
+      "3": [
+       15,
+       15
+      ],
+      "2": [
+       24,
+       26
+      ]
+     },
+     "needed_weight": 77.0,
+     "questions": 77,
+     "candidate_links_per_q": 2000.0,
+     "kept_links_per_q": 1854.0,
+     "price_at_2500_links_per_q": 1.0,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0026,
+     "SCREEN_IN": false
+    },
+    "metaqa/SRK": {
+     "status": "read",
+     "reach": 0.9614,
+     "price": 0.8681,
+     "path_retention": 0.9815,
+     "golds_with_units": 8105,
+     "path_by_distance": {
+      "1": [
+       1174,
+       1216
+      ],
+      "3": [
+       2547,
+       2549
+      ],
+      "2": [
+       4234,
+       4340
+      ]
+     },
+     "needed_weight": 8105.0,
+     "questions": 1113,
+     "candidate_links_per_q": 9413.0,
+     "kept_links_per_q": 8171.7,
+     "price_at_2500_links_per_q": 0.26559,
+     "S_links_per_q": 3642.1,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "webqsp/SRK": {
+     "status": "read",
+     "reach": 0.9904,
+     "price": 0.9965,
+     "path_retention": 0.9947,
+     "golds_with_units": 6632,
+     "path_by_distance": {
+      "1": [
+       3955,
+       3982
+      ],
+      "2": [
+       2610,
+       2612
+      ],
+      "3": [
+       32,
+       38
+      ]
+     },
+     "needed_weight": 6632.0,
+     "questions": 1016,
+     "candidate_links_per_q": 2242206.9,
+     "kept_links_per_q": 2234391.1,
+     "price_at_2500_links_per_q": 0.00111,
+     "S_links_per_q": 36939.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0005,
+     "SCREEN_IN": false
+    },
+    "hotpotqa/RK": {
+     "status": "read",
+     "reach": 0.9672,
+     "price": 0.9573,
+     "path_retention": 0.9798,
+     "golds_with_units": 594,
+     "path_by_distance": {
+      "1": [
+       470,
+       480
+      ],
+      "2": [
+       96,
+       98
+      ],
+      "3": [
+       16,
+       16
+      ]
+     },
+     "needed_weight": 594.0,
+     "questions": 559,
+     "candidate_links_per_q": 58203.9,
+     "kept_links_per_q": 55719.2,
+     "price_at_2500_links_per_q": 0.04295,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0018,
+     "SCREEN_IN": false
+    },
+    "hotpotqa/SRK": {
+     "status": "read",
+     "reach": 0.9821,
+     "price": 0.9685,
+     "path_retention": 0.9933,
+     "golds_with_units": 595,
+     "path_by_distance": {
+      "1": [
+       541,
+       544
+      ],
+      "2": [
+       43,
+       44
+      ],
+      "3": [
+       7,
+       7
+      ]
+     },
+     "needed_weight": 595.0,
+     "questions": 560,
+     "candidate_links_per_q": 24775.2,
+     "kept_links_per_q": 23995.0,
+     "price_at_2500_links_per_q": 0.10091,
+     "S_links_per_q": 2945.5,
+     "needed_weight_in_keys_unseen_on_Q": 0.0018,
+     "SCREEN_IN": false
+    },
+    "2wiki/RK": {
+     "status": "read",
+     "reach": 0.9867,
+     "price": 0.9336,
+     "path_retention": 0.9929,
+     "golds_with_units": 1120,
+     "path_by_distance": {
+      "2": [
+       148,
+       150
+      ],
+      "1": [
+       931,
+       934
+      ],
+      "3": [
+       33,
+       36
+      ]
+     },
+     "needed_weight": 1120.0,
+     "questions": 854,
+     "candidate_links_per_q": 181014.9,
+     "kept_links_per_q": 169001.9,
+     "price_at_2500_links_per_q": 0.01381,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0001,
+     "SCREEN_IN": false
+    },
+    "2wiki/SRK": {
+     "status": "read",
+     "reach": 0.9887,
+     "price": 0.921,
+     "path_retention": 0.9946,
+     "golds_with_units": 1120,
+     "path_by_distance": {
+      "2": [
+       110,
+       112
+      ],
+      "1": [
+       970,
+       973
+      ],
+      "3": [
+       34,
+       35
+      ]
+     },
+     "needed_weight": 1120.0,
+     "questions": 854,
+     "candidate_links_per_q": 153619.6,
+     "kept_links_per_q": 141479.4,
+     "price_at_2500_links_per_q": 0.01627,
+     "S_links_per_q": 6344.4,
+     "needed_weight_in_keys_unseen_on_Q": 0.0001,
+     "SCREEN_IN": false
+    }
+   },
+   "cells_read": 9,
+   "screen_in": 0,
+   "call": "NOT_UNIVERSAL"
+  },
+  "rule_A": {
+   "family": "A (phase 1 best)",
+   "space": "dr+pr",
+   "cells": {
+    "multihoprag/RK": {
+     "status": "read",
+     "reach": 0.9965,
+     "price": 0.9943,
+     "path_retention": 1.0,
+     "golds_with_units": 121,
+     "path_by_distance": {
+      "1": [
+       117,
+       117
+      ],
+      "2": [
+       4,
+       4
+      ]
+     },
+     "needed_weight": 121.0,
+     "questions": 94,
+     "candidate_links_per_q": 555.7,
+     "kept_links_per_q": 552.6,
+     "price_at_2500_links_per_q": 1.0,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "musique/RK": {
+     "status": "read",
+     "reach": 0.9563,
+     "price": 0.9315,
+     "path_retention": 0.9632,
+     "golds_with_units": 1469,
+     "path_by_distance": {
+      "2": [
+       508,
+       528
+      ],
+      "1": [
+       751,
+       772
+      ],
+      "3": [
+       156,
+       169
+      ]
+     },
+     "needed_weight": 1469.0,
+     "questions": 930,
+     "candidate_links_per_q": 32599.3,
+     "kept_links_per_q": 30366.7,
+     "price_at_2500_links_per_q": 0.07669,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0002,
+     "SCREEN_IN": false
+    },
+    "squad/RK": {
+     "status": "read",
+     "reach": 0.9401,
+     "price": 0.9317,
+     "path_retention": 0.9481,
+     "golds_with_units": 77,
+     "path_by_distance": {
+      "1": [
+       34,
+       36
+      ],
+      "3": [
+       15,
+       15
+      ],
+      "2": [
+       24,
+       26
+      ]
+     },
+     "needed_weight": 77.0,
+     "questions": 77,
+     "candidate_links_per_q": 2000.0,
+     "kept_links_per_q": 1863.5,
+     "price_at_2500_links_per_q": 1.0,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "metaqa/SRK": {
+     "status": "read",
+     "reach": 0.9622,
+     "price": 0.8717,
+     "path_retention": 0.9815,
+     "golds_with_units": 8105,
+     "path_by_distance": {
+      "1": [
+       1173,
+       1216
+      ],
+      "3": [
+       2547,
+       2549
+      ],
+      "2": [
+       4235,
+       4340
+      ]
+     },
+     "needed_weight": 8105.0,
+     "questions": 1113,
+     "candidate_links_per_q": 9413.0,
+     "kept_links_per_q": 8205.6,
+     "price_at_2500_links_per_q": 0.26559,
+     "S_links_per_q": 3642.1,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "webqsp/SRK": {
+     "status": "read",
+     "reach": 0.9853,
+     "price": 0.9965,
+     "path_retention": 0.9919,
+     "golds_with_units": 6632,
+     "path_by_distance": {
+      "1": [
+       3936,
+       3982
+      ],
+      "2": [
+       2610,
+       2612
+      ],
+      "3": [
+       32,
+       38
+      ]
+     },
+     "needed_weight": 6632.0,
+     "questions": 1016,
+     "candidate_links_per_q": 2242206.9,
+     "kept_links_per_q": 2234390.2,
+     "price_at_2500_links_per_q": 0.00111,
+     "S_links_per_q": 36939.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0002,
+     "SCREEN_IN": false
+    },
+    "hotpotqa/RK": {
+     "status": "read",
+     "reach": 0.9611,
+     "price": 0.9573,
+     "path_retention": 0.9731,
+     "golds_with_units": 594,
+     "path_by_distance": {
+      "1": [
+       466,
+       480
+      ],
+      "2": [
+       96,
+       98
+      ],
+      "3": [
+       16,
+       16
+      ]
+     },
+     "needed_weight": 594.0,
+     "questions": 559,
+     "candidate_links_per_q": 58203.9,
+     "kept_links_per_q": 55718.9,
+     "price_at_2500_links_per_q": 0.04295,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0003,
+     "SCREEN_IN": false
+    },
+    "hotpotqa/SRK": {
+     "status": "read",
+     "reach": 0.9839,
+     "price": 0.9685,
+     "path_retention": 0.995,
+     "golds_with_units": 595,
+     "path_by_distance": {
+      "1": [
+       542,
+       544
+      ],
+      "2": [
+       43,
+       44
+      ],
+      "3": [
+       7,
+       7
+      ]
+     },
+     "needed_weight": 595.0,
+     "questions": 560,
+     "candidate_links_per_q": 24775.2,
+     "kept_links_per_q": 23994.8,
+     "price_at_2500_links_per_q": 0.10091,
+     "S_links_per_q": 2945.5,
+     "needed_weight_in_keys_unseen_on_Q": 0.0003,
+     "SCREEN_IN": false
+    },
+    "2wiki/RK": {
+     "status": "read",
+     "reach": 0.9864,
+     "price": 0.9336,
+     "path_retention": 0.9938,
+     "golds_with_units": 1120,
+     "path_by_distance": {
+      "2": [
+       149,
+       150
+      ],
+      "1": [
+       931,
+       934
+      ],
+      "3": [
+       33,
+       36
+      ]
+     },
+     "needed_weight": 1120.0,
+     "questions": 854,
+     "candidate_links_per_q": 181014.9,
+     "kept_links_per_q": 169001.6,
+     "price_at_2500_links_per_q": 0.01381,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0001,
+     "SCREEN_IN": false
+    },
+    "2wiki/SRK": {
+     "status": "read",
+     "reach": 0.9883,
+     "price": 0.921,
+     "path_retention": 0.9955,
+     "golds_with_units": 1120,
+     "path_by_distance": {
+      "2": [
+       111,
+       112
+      ],
+      "1": [
+       970,
+       973
+      ],
+      "3": [
+       34,
+       35
+      ]
+     },
+     "needed_weight": 1120.0,
+     "questions": 854,
+     "candidate_links_per_q": 153619.6,
+     "kept_links_per_q": 141479.1,
+     "price_at_2500_links_per_q": 0.01627,
+     "S_links_per_q": 6344.4,
+     "needed_weight_in_keys_unseen_on_Q": 0.0001,
+     "SCREEN_IN": false
+    }
+   },
+   "cells_read": 9,
+   "screen_in": 0,
+   "call": "NOT_UNIVERSAL"
+  },
+  "rule_B1": {
+   "family": "B1 (phase 2 best)",
+   "space": "tw+dr",
+   "cells": {
+    "multihoprag/RK": {
+     "status": "read",
+     "reach": 0.9967,
+     "price": 0.9944,
+     "path_retention": 1.0,
+     "golds_with_units": 121,
+     "path_by_distance": {
+      "1": [
+       117,
+       117
+      ],
+      "2": [
+       4,
+       4
+      ]
+     },
+     "needed_weight": 121.0,
+     "questions": 94,
+     "candidate_links_per_q": 555.7,
+     "kept_links_per_q": 552.6,
+     "price_at_2500_links_per_q": 1.0,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "musique/RK": {
+     "status": "read",
+     "reach": 0.9583,
+     "price": 0.9304,
+     "path_retention": 0.9496,
+     "golds_with_units": 1469,
+     "path_by_distance": {
+      "2": [
+       510,
+       528
+      ],
+      "1": [
+       751,
+       772
+      ],
+      "3": [
+       134,
+       169
+      ]
+     },
+     "needed_weight": 1469.0,
+     "questions": 930,
+     "candidate_links_per_q": 32599.3,
+     "kept_links_per_q": 30330.4,
+     "price_at_2500_links_per_q": 0.07669,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0004,
+     "SCREEN_IN": false
+    },
+    "squad/RK": {
+     "status": "read",
+     "reach": 0.9359,
+     "price": 0.8975,
+     "path_retention": 0.9221,
+     "golds_with_units": 77,
+     "path_by_distance": {
+      "1": [
+       34,
+       36
+      ],
+      "3": [
+       13,
+       15
+      ],
+      "2": [
+       24,
+       26
+      ]
+     },
+     "needed_weight": 77.0,
+     "questions": 77,
+     "candidate_links_per_q": 2000.0,
+     "kept_links_per_q": 1795.1,
+     "price_at_2500_links_per_q": 1.0,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0026,
+     "SCREEN_IN": false
+    },
+    "metaqa/SRK": {
+     "status": "read",
+     "reach": 0.9517,
+     "price": 0.8379,
+     "path_retention": 0.981,
+     "golds_with_units": 8105,
+     "path_by_distance": {
+      "1": [
+       1173,
+       1216
+      ],
+      "3": [
+       2543,
+       2549
+      ],
+      "2": [
+       4235,
+       4340
+      ]
+     },
+     "needed_weight": 8105.0,
+     "questions": 1113,
+     "candidate_links_per_q": 9413.0,
+     "kept_links_per_q": 7887.0,
+     "price_at_2500_links_per_q": 0.26559,
+     "S_links_per_q": 3642.1,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "webqsp/SRK": {
+     "status": "read",
+     "reach": 0.9854,
+     "price": 0.9965,
+     "path_retention": 0.9916,
+     "golds_with_units": 6632,
+     "path_by_distance": {
+      "1": [
+       3936,
+       3982
+      ],
+      "2": [
+       2610,
+       2612
+      ],
+      "3": [
+       30,
+       38
+      ]
+     },
+     "needed_weight": 6632.0,
+     "questions": 1016,
+     "candidate_links_per_q": 2242206.9,
+     "kept_links_per_q": 2234308.8,
+     "price_at_2500_links_per_q": 0.00111,
+     "S_links_per_q": 36939.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "hotpotqa/RK": {
+     "status": "read",
+     "reach": 0.9596,
+     "price": 0.9572,
+     "path_retention": 0.963,
+     "golds_with_units": 594,
+     "path_by_distance": {
+      "1": [
+       466,
+       480
+      ],
+      "2": [
+       96,
+       98
+      ],
+      "3": [
+       10,
+       16
+      ]
+     },
+     "needed_weight": 594.0,
+     "questions": 559,
+     "candidate_links_per_q": 58203.9,
+     "kept_links_per_q": 55713.4,
+     "price_at_2500_links_per_q": 0.04295,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0013,
+     "SCREEN_IN": false
+    },
+    "hotpotqa/SRK": {
+     "status": "read",
+     "reach": 0.9839,
+     "price": 0.9684,
+     "path_retention": 0.995,
+     "golds_with_units": 595,
+     "path_by_distance": {
+      "1": [
+       542,
+       544
+      ],
+      "2": [
+       43,
+       44
+      ],
+      "3": [
+       7,
+       7
+      ]
+     },
+     "needed_weight": 595.0,
+     "questions": 560,
+     "candidate_links_per_q": 24775.2,
+     "kept_links_per_q": 23993.1,
+     "price_at_2500_links_per_q": 0.10091,
+     "S_links_per_q": 2945.5,
+     "needed_weight_in_keys_unseen_on_Q": 0.0008,
+     "SCREEN_IN": false
+    },
+    "2wiki/RK": {
+     "status": "read",
+     "reach": 0.9858,
+     "price": 0.9336,
+     "path_retention": 0.9821,
+     "golds_with_units": 1120,
+     "path_by_distance": {
+      "2": [
+       149,
+       150
+      ],
+      "1": [
+       931,
+       934
+      ],
+      "3": [
+       20,
+       36
+      ]
+     },
+     "needed_weight": 1120.0,
+     "questions": 854,
+     "candidate_links_per_q": 181014.9,
+     "kept_links_per_q": 168995.5,
+     "price_at_2500_links_per_q": 0.01381,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "2wiki/SRK": {
+     "status": "read",
+     "reach": 0.9878,
+     "price": 0.9209,
+     "path_retention": 0.9955,
+     "golds_with_units": 1120,
+     "path_by_distance": {
+      "2": [
+       111,
+       112
+      ],
+      "1": [
+       970,
+       973
+      ],
+      "3": [
+       34,
+       35
+      ]
+     },
+     "needed_weight": 1120.0,
+     "questions": 854,
+     "candidate_links_per_q": 153619.6,
+     "kept_links_per_q": 141472.7,
+     "price_at_2500_links_per_q": 0.01627,
+     "S_links_per_q": 6344.4,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    }
+   },
+   "cells_read": 9,
+   "screen_in": 0,
+   "call": "NOT_UNIVERSAL"
+  },
+  "rule_C": {
+   "family": "C (groups x hop)",
+   "space": "S0",
+   "cells": {
+    "multihoprag/RK": {
+     "status": "read",
+     "reach": 0.9992,
+     "price": 0.9991,
+     "path_retention": 1.0,
+     "golds_with_units": 121,
+     "path_by_distance": {
+      "1": [
+       117,
+       117
+      ],
+      "2": [
+       4,
+       4
+      ]
+     },
+     "needed_weight": 121.0,
+     "questions": 94,
+     "candidate_links_per_q": 555.7,
+     "kept_links_per_q": 555.3,
+     "price_at_2500_links_per_q": 1.0,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "musique/RK": {
+     "status": "read",
+     "reach": 0.9755,
+     "price": 0.9287,
+     "path_retention": 0.8734,
+     "golds_with_units": 1469,
+     "path_by_distance": {
+      "2": [
+       511,
+       528
+      ],
+      "1": [
+       772,
+       772
+      ],
+      "3": [
+       0,
+       169
+      ]
+     },
+     "needed_weight": 1469.0,
+     "questions": 930,
+     "candidate_links_per_q": 32599.3,
+     "kept_links_per_q": 30274.4,
+     "price_at_2500_links_per_q": 0.07669,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "squad/RK": {
+     "status": "read",
+     "reach": 0.9477,
+     "price": 0.8841,
+     "path_retention": 0.7922,
+     "golds_with_units": 77,
+     "path_by_distance": {
+      "1": [
+       36,
+       36
+      ],
+      "3": [
+       0,
+       15
+      ],
+      "2": [
+       25,
+       26
+      ]
+     },
+     "needed_weight": 77.0,
+     "questions": 77,
+     "candidate_links_per_q": 2000.0,
+     "kept_links_per_q": 1768.2,
+     "price_at_2500_links_per_q": 1.0,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "metaqa/SRK": {
+     "status": "read",
+     "reach": 0.9699,
+     "price": 0.8315,
+     "path_retention": 0.9928,
+     "golds_with_units": 8105,
+     "path_by_distance": {
+      "1": [
+       1216,
+       1216
+      ],
+      "3": [
+       2543,
+       2549
+      ],
+      "2": [
+       4288,
+       4340
+      ]
+     },
+     "needed_weight": 8105.0,
+     "questions": 1113,
+     "candidate_links_per_q": 9413.0,
+     "kept_links_per_q": 7827.2,
+     "price_at_2500_links_per_q": 0.26559,
+     "S_links_per_q": 3642.1,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "webqsp/SRK": {
+     "status": "read",
+     "reach": 0.999,
+     "price": 0.9965,
+     "path_retention": 0.9985,
+     "golds_with_units": 6632,
+     "path_by_distance": {
+      "1": [
+       3982,
+       3982
+      ],
+      "2": [
+       2610,
+       2612
+      ],
+      "3": [
+       30,
+       38
+      ]
+     },
+     "needed_weight": 6632.0,
+     "questions": 1016,
+     "candidate_links_per_q": 2242206.9,
+     "kept_links_per_q": 2234320.3,
+     "price_at_2500_links_per_q": 0.00111,
+     "S_links_per_q": 36939.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "hotpotqa/RK": {
+     "status": "read",
+     "reach": 0.9911,
+     "price": 0.9573,
+     "path_retention": 0.9714,
+     "golds_with_units": 594,
+     "path_by_distance": {
+      "1": [
+       480,
+       480
+      ],
+      "2": [
+       97,
+       98
+      ],
+      "3": [
+       0,
+       16
+      ]
+     },
+     "needed_weight": 594.0,
+     "questions": 559,
+     "candidate_links_per_q": 58203.9,
+     "kept_links_per_q": 55718.2,
+     "price_at_2500_links_per_q": 0.04295,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "hotpotqa/SRK": {
+     "status": "read",
+     "reach": 0.997,
+     "price": 0.9686,
+     "path_retention": 0.9916,
+     "golds_with_units": 595,
+     "path_by_distance": {
+      "1": [
+       544,
+       544
+      ],
+      "2": [
+       43,
+       44
+      ],
+      "3": [
+       3,
+       7
+      ]
+     },
+     "needed_weight": 595.0,
+     "questions": 560,
+     "candidate_links_per_q": 24775.2,
+     "kept_links_per_q": 23998.0,
+     "price_at_2500_links_per_q": 0.10091,
+     "S_links_per_q": 2945.5,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "2wiki/RK": {
+     "status": "read",
+     "reach": 0.9935,
+     "price": 0.9336,
+     "path_retention": 0.967,
+     "golds_with_units": 1120,
+     "path_by_distance": {
+      "2": [
+       149,
+       150
+      ],
+      "1": [
+       934,
+       934
+      ],
+      "3": [
+       0,
+       36
+      ]
+     },
+     "needed_weight": 1120.0,
+     "questions": 854,
+     "candidate_links_per_q": 181014.9,
+     "kept_links_per_q": 168994.0,
+     "price_at_2500_links_per_q": 0.01381,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "2wiki/SRK": {
+     "status": "read",
+     "reach": 0.9954,
+     "price": 0.9209,
+     "path_retention": 0.9973,
+     "golds_with_units": 1120,
+     "path_by_distance": {
+      "2": [
+       111,
+       112
+      ],
+      "1": [
+       973,
+       973
+      ],
+      "3": [
+       33,
+       35
+      ]
+     },
+     "needed_weight": 1120.0,
+     "questions": 854,
+     "candidate_links_per_q": 153619.6,
+     "kept_links_per_q": 141472.4,
+     "price_at_2500_links_per_q": 0.01627,
+     "S_links_per_q": 6344.4,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    }
+   },
+   "cells_read": 9,
+   "screen_in": 0,
+   "call": "NOT_UNIVERSAL"
+  },
+  "rule_A2": {
+   "family": "A2 (labels)",
+   "space": "pr+vo",
+   "cells": {
+    "multihoprag/RK": {
+     "status": "read",
+     "reach": 0.9713,
+     "price": 0.8412,
+     "path_retention": 0.9835,
+     "golds_with_units": 121,
+     "path_by_distance": {
+      "1": [
+       115,
+       117
+      ],
+      "2": [
+       4,
+       4
+      ]
+     },
+     "needed_weight": 121.0,
+     "questions": 94,
+     "candidate_links_per_q": 555.7,
+     "kept_links_per_q": 467.5,
+     "price_at_2500_links_per_q": 1.0,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "musique/RK": {
+     "status": "read",
+     "reach": 0.9505,
+     "price": 0.9104,
+     "path_retention": 0.9319,
+     "golds_with_units": 1469,
+     "path_by_distance": {
+      "2": [
+       497,
+       528
+      ],
+      "1": [
+       753,
+       772
+      ],
+      "3": [
+       119,
+       169
+      ]
+     },
+     "needed_weight": 1469.0,
+     "questions": 930,
+     "candidate_links_per_q": 32599.3,
+     "kept_links_per_q": 29677.6,
+     "price_at_2500_links_per_q": 0.07669,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "squad/RK": {
+     "status": "read",
+     "reach": 0.8725,
+     "price": 0.814,
+     "path_retention": 0.8701,
+     "golds_with_units": 77,
+     "path_by_distance": {
+      "1": [
+       36,
+       36
+      ],
+      "3": [
+       8,
+       15
+      ],
+      "2": [
+       23,
+       26
+      ]
+     },
+     "needed_weight": 77.0,
+     "questions": 77,
+     "candidate_links_per_q": 2000.0,
+     "kept_links_per_q": 1628.0,
+     "price_at_2500_links_per_q": 1.0,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "metaqa/SRK": {
+     "status": "read",
+     "reach": 0.9582,
+     "price": 0.6979,
+     "path_retention": 0.9741,
+     "golds_with_units": 8105,
+     "path_by_distance": {
+      "1": [
+       1216,
+       1216
+      ],
+      "3": [
+       2545,
+       2549
+      ],
+      "2": [
+       4134,
+       4340
+      ]
+     },
+     "needed_weight": 8105.0,
+     "questions": 1113,
+     "candidate_links_per_q": 9413.0,
+     "kept_links_per_q": 6569.2,
+     "price_at_2500_links_per_q": 0.26559,
+     "S_links_per_q": 3642.1,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "webqsp/SRK": {
+     "status": "read",
+     "reach": 0.9372,
+     "price": 0.975,
+     "path_retention": 0.9632,
+     "golds_with_units": 6632,
+     "path_by_distance": {
+      "1": [
+       3779,
+       3982
+      ],
+      "2": [
+       2578,
+       2612
+      ],
+      "3": [
+       31,
+       38
+      ]
+     },
+     "needed_weight": 6632.0,
+     "questions": 1016,
+     "candidate_links_per_q": 2242206.9,
+     "kept_links_per_q": 2186082.3,
+     "price_at_2500_links_per_q": 0.00111,
+     "S_links_per_q": 36939.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "hotpotqa/RK": {
+     "status": "read",
+     "reach": 0.9635,
+     "price": 0.1486,
+     "path_retention": 0.9428,
+     "golds_with_units": 594,
+     "path_by_distance": {
+      "1": [
+       474,
+       480
+      ],
+      "2": [
+       80,
+       98
+      ],
+      "3": [
+       6,
+       16
+      ]
+     },
+     "needed_weight": 594.0,
+     "questions": 559,
+     "candidate_links_per_q": 58203.9,
+     "kept_links_per_q": 8647.8,
+     "price_at_2500_links_per_q": 0.04295,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": true
+    },
+    "hotpotqa/SRK": {
+     "status": "read",
+     "reach": 0.9894,
+     "price": 0.2572,
+     "path_retention": 0.9849,
+     "golds_with_units": 595,
+     "path_by_distance": {
+      "1": [
+       544,
+       544
+      ],
+      "2": [
+       38,
+       44
+      ],
+      "3": [
+       4,
+       7
+      ]
+     },
+     "needed_weight": 595.0,
+     "questions": 560,
+     "candidate_links_per_q": 24775.2,
+     "kept_links_per_q": 6372.8,
+     "price_at_2500_links_per_q": 0.10091,
+     "S_links_per_q": 2945.5,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": true
+    },
+    "2wiki/RK": {
+     "status": "read",
+     "reach": 0.9714,
+     "price": 0.3556,
+     "path_retention": 0.9321,
+     "golds_with_units": 1120,
+     "path_by_distance": {
+      "2": [
+       103,
+       150
+      ],
+      "1": [
+       931,
+       934
+      ],
+      "3": [
+       10,
+       36
+      ]
+     },
+     "needed_weight": 1120.0,
+     "questions": 854,
+     "candidate_links_per_q": 181014.9,
+     "kept_links_per_q": 64376.4,
+     "price_at_2500_links_per_q": 0.01381,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": true
+    },
+    "2wiki/SRK": {
+     "status": "read",
+     "reach": 0.98,
+     "price": 0.3835,
+     "path_retention": 0.9625,
+     "golds_with_units": 1120,
+     "path_by_distance": {
+      "2": [
+       75,
+       112
+      ],
+      "1": [
+       972,
+       973
+      ],
+      "3": [
+       31,
+       35
+      ]
+     },
+     "needed_weight": 1120.0,
+     "questions": 854,
+     "candidate_links_per_q": 153619.6,
+     "kept_links_per_q": 58910.2,
+     "price_at_2500_links_per_q": 0.01627,
+     "S_links_per_q": 6344.4,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": true
+    }
+   },
+   "cells_read": 9,
+   "screen_in": 4,
+   "call": "NOT_UNIVERSAL"
+  },
+  "rule_P5": {
+   "family": "phase 5 best",
+   "space": "pr+vo+ur",
+   "cells": {
+    "multihoprag/RK": {
+     "status": "read",
+     "reach": 0.9995,
+     "price": 0.9358,
+     "path_retention": 1.0,
+     "golds_with_units": 121,
+     "path_by_distance": {
+      "1": [
+       117,
+       117
+      ],
+      "2": [
+       4,
+       4
+      ]
+     },
+     "needed_weight": 121.0,
+     "questions": 94,
+     "candidate_links_per_q": 555.7,
+     "kept_links_per_q": 520.1,
+     "price_at_2500_links_per_q": 1.0,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0,
+     "SCREEN_IN": false
+    },
+    "musique/RK": {
+     "status": "read",
+     "reach": 0.953,
+     "price": 0.9089,
+     "path_retention": 0.9455,
+     "golds_with_units": 1469,
+     "path_by_distance": {
+      "2": [
+       508,
+       528
+      ],
+      "1": [
+       742,
+       772
+      ],
+      "3": [
+       139,
+       169
+      ]
+     },
+     "needed_weight": 1469.0,
+     "questions": 930,
+     "candidate_links_per_q": 32599.3,
+     "kept_links_per_q": 29628.6,
+     "price_at_2500_links_per_q": 0.07669,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0049,
+     "SCREEN_IN": false
+    },
+    "squad/RK": {
+     "status": "read",
+     "reach": 0.9201,
+     "price": 0.8226,
+     "path_retention": 0.9481,
+     "golds_with_units": 77,
+     "path_by_distance": {
+      "1": [
+       36,
+       36
+      ],
+      "3": [
+       14,
+       15
+      ],
+      "2": [
+       23,
+       26
+      ]
+     },
+     "needed_weight": 77.0,
+     "questions": 77,
+     "candidate_links_per_q": 2000.0,
+     "kept_links_per_q": 1645.1,
+     "price_at_2500_links_per_q": 1.0,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0076,
+     "SCREEN_IN": false
+    },
+    "metaqa/SRK": {
+     "status": "read",
+     "reach": 0.9552,
+     "price": 0.6858,
+     "path_retention": 0.9685,
+     "golds_with_units": 8105,
+     "path_by_distance": {
+      "1": [
+       1216,
+       1216
+      ],
+      "3": [
+       2543,
+       2549
+      ],
+      "2": [
+       4091,
+       4340
+      ]
+     },
+     "needed_weight": 8105.0,
+     "questions": 1113,
+     "candidate_links_per_q": 9413.0,
+     "kept_links_per_q": 6455.4,
+     "price_at_2500_links_per_q": 0.26559,
+     "S_links_per_q": 3642.1,
+     "needed_weight_in_keys_unseen_on_Q": 0.0001,
+     "SCREEN_IN": false
+    },
+    "webqsp/SRK": {
+     "status": "read",
+     "reach": 0.9371,
+     "price": 0.9745,
+     "path_retention": 0.9632,
+     "golds_with_units": 6632,
+     "path_by_distance": {
+      "1": [
+       3779,
+       3982
+      ],
+      "2": [
+       2578,
+       2612
+      ],
+      "3": [
+       31,
+       38
+      ]
+     },
+     "needed_weight": 6632.0,
+     "questions": 1016,
+     "candidate_links_per_q": 2242206.9,
+     "kept_links_per_q": 2184920.8,
+     "price_at_2500_links_per_q": 0.00111,
+     "S_links_per_q": 36939.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0013,
+     "SCREEN_IN": false
+    },
+    "hotpotqa/RK": {
+     "status": "read",
+     "reach": 0.9677,
+     "price": 0.1474,
+     "path_retention": 0.9478,
+     "golds_with_units": 594,
+     "path_by_distance": {
+      "1": [
+       477,
+       480
+      ],
+      "2": [
+       79,
+       98
+      ],
+      "3": [
+       7,
+       16
+      ]
+     },
+     "needed_weight": 594.0,
+     "questions": 559,
+     "candidate_links_per_q": 58203.9,
+     "kept_links_per_q": 8581.2,
+     "price_at_2500_links_per_q": 0.04295,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0001,
+     "SCREEN_IN": true
+    },
+    "hotpotqa/SRK": {
+     "status": "read",
+     "reach": 0.9911,
+     "price": 0.2561,
+     "path_retention": 0.9882,
+     "golds_with_units": 595,
+     "path_by_distance": {
+      "1": [
+       544,
+       544
+      ],
+      "2": [
+       39,
+       44
+      ],
+      "3": [
+       5,
+       7
+      ]
+     },
+     "needed_weight": 595.0,
+     "questions": 560,
+     "candidate_links_per_q": 24775.2,
+     "kept_links_per_q": 6345.8,
+     "price_at_2500_links_per_q": 0.10091,
+     "S_links_per_q": 2945.5,
+     "needed_weight_in_keys_unseen_on_Q": 0.0001,
+     "SCREEN_IN": true
+    },
+    "2wiki/RK": {
+     "status": "read",
+     "reach": 0.9713,
+     "price": 0.355,
+     "path_retention": 0.9429,
+     "golds_with_units": 1120,
+     "path_by_distance": {
+      "2": [
+       105,
+       150
+      ],
+      "1": [
+       931,
+       934
+      ],
+      "3": [
+       20,
+       36
+      ]
+     },
+     "needed_weight": 1120.0,
+     "questions": 854,
+     "candidate_links_per_q": 181014.9,
+     "kept_links_per_q": 64265.1,
+     "price_at_2500_links_per_q": 0.01381,
+     "S_links_per_q": 0.0,
+     "needed_weight_in_keys_unseen_on_Q": 0.0005,
+     "SCREEN_IN": true
+    },
+    "2wiki/SRK": {
+     "status": "read",
+     "reach": 0.9802,
+     "price": 0.3829,
+     "path_retention": 0.9679,
+     "golds_with_units": 1120,
+     "path_by_distance": {
+      "2": [
+       77,
+       112
+      ],
+      "1": [
+       973,
+       973
+      ],
+      "3": [
+       34,
+       35
+      ]
+     },
+     "needed_weight": 1120.0,
+     "questions": 854,
+     "candidate_links_per_q": 153619.6,
+     "kept_links_per_q": 58819.7,
+     "price_at_2500_links_per_q": 0.01627,
+     "S_links_per_q": 6344.4,
+     "needed_weight_in_keys_unseen_on_Q": 0.0001,
+     "SCREEN_IN": true
+    }
+   },
+   "cells_read": 9,
+   "screen_in": 4,
+   "call": "NOT_UNIVERSAL"
+  },
+  "rule_C2": {
+   "family": "C2 (per-question caps)",
+   "space": "K1",
+   "cells": {
+    "multihoprag/RK": {
+     "status": "read",
+     "reach": 1.0,
+     "price": 1.0,
+     "path_retention": 1.0,
+     "golds_with_units": 121,
+     "path_by_distance": {
+      "1": [
+       117,
+       117
+      ],
+      "2": [
+       4,
+       4
+      ]
+     },
+     "needed_weight": 121.0,
+     "questions": 94,
+     "candidate_links_per_q": 555.7,
+     "kept_links_per_q": 555.7,
+     "price_at_2500_links_per_q": 1.0,
+     "S_links_per_q": 0.0,
+     "SCREEN_IN": false
+    },
+    "musique/RK": {
+     "status": "read",
+     "reach": 0.9932,
+     "price": 0.9201,
+     "path_retention": 0.9598,
+     "golds_with_units": 1469,
+     "path_by_distance": {
+      "2": [
+       528,
+       528
+      ],
+      "1": [
+       772,
+       772
+      ],
+      "3": [
+       110,
+       169
+      ]
+     },
+     "needed_weight": 1469.0,
+     "questions": 930,
+     "candidate_links_per_q": 32599.3,
+     "kept_links_per_q": 29995.5,
+     "price_at_2500_links_per_q": 0.07669,
+     "S_links_per_q": 0.0,
+     "SCREEN_IN": false
+    },
+    "squad/RK": {
+     "status": "read",
+     "reach": 0.9827,
+     "price": 0.8878,
+     "path_retention": 0.961,
+     "golds_with_units": 77,
+     "path_by_distance": {
+      "1": [
+       36,
+       36
+      ],
+      "3": [
+       12,
+       15
+      ],
+      "2": [
+       26,
+       26
+      ]
+     },
+     "needed_weight": 77.0,
+     "questions": 77,
+     "candidate_links_per_q": 2000.0,
+     "kept_links_per_q": 1775.7,
+     "price_at_2500_links_per_q": 1.0,
+     "S_links_per_q": 0.0,
+     "SCREEN_IN": false
+    },
+    "metaqa/SRK": {
+     "status": "read",
+     "reach": 0.9781,
+     "price": 0.8433,
+     "path_retention": 0.9993,
+     "golds_with_units": 8105,
+     "path_by_distance": {
+      "1": [
+       1216,
+       1216
+      ],
+      "3": [
+       2543,
+       2549
+      ],
+      "2": [
+       4340,
+       4340
+      ]
+     },
+     "needed_weight": 8105.0,
+     "questions": 1113,
+     "candidate_links_per_q": 9413.0,
+     "kept_links_per_q": 7938.4,
+     "price_at_2500_links_per_q": 0.26559,
+     "S_links_per_q": 3642.1,
+     "SCREEN_IN": false
+    },
+    "webqsp/SRK": {
+     "status": "read",
+     "reach": 0.9438,
+     "price": 0.0511,
+     "path_retention": 0.97,
+     "golds_with_units": 6632,
+     "path_by_distance": {
+      "1": [
+       3982,
+       3982
+      ],
+      "2": [
+       2426,
+       2612
+      ],
+      "3": [
+       25,
+       38
+      ]
+     },
+     "needed_weight": 6632.0,
+     "questions": 1016,
+     "candidate_links_per_q": 2242206.9,
+     "kept_links_per_q": 114505.2,
+     "price_at_2500_links_per_q": 0.00111,
+     "S_links_per_q": 36939.0,
+     "SCREEN_IN": true
+    },
+    "hotpotqa/RK": {
+     "status": "read",
+     "reach": 0.9932,
+     "price": 0.5483,
+     "path_retention": 0.9933,
+     "golds_with_units": 594,
+     "path_by_distance": {
+      "1": [
+       480,
+       480
+      ],
+      "2": [
+       97,
+       98
+      ],
+      "3": [
+       13,
+       16
+      ]
+     },
+     "needed_weight": 594.0,
+     "questions": 559,
+     "candidate_links_per_q": 58203.9,
+     "kept_links_per_q": 31911.5,
+     "price_at_2500_links_per_q": 0.04295,
+     "S_links_per_q": 0.0,
+     "SCREEN_IN": false
+    },
+    "hotpotqa/SRK": {
+     "status": "read",
+     "reach": 0.9984,
+     "price": 0.6052,
+     "path_retention": 0.9983,
+     "golds_with_units": 595,
+     "path_by_distance": {
+      "1": [
+       544,
+       544
+      ],
+      "2": [
+       43,
+       44
+      ],
+      "3": [
+       7,
+       7
+      ]
+     },
+     "needed_weight": 595.0,
+     "questions": 560,
+     "candidate_links_per_q": 24775.2,
+     "kept_links_per_q": 14993.8,
+     "price_at_2500_links_per_q": 0.10091,
+     "S_links_per_q": 2945.5,
+     "SCREEN_IN": false
+    },
+    "2wiki/RK": {
+     "status": "read",
+     "reach": 0.9769,
+     "price": 0.2566,
+     "path_retention": 0.9759,
+     "golds_with_units": 1120,
+     "path_by_distance": {
+      "2": [
+       137,
+       150
+      ],
+      "1": [
+       934,
+       934
+      ],
+      "3": [
+       22,
+       36
+      ]
+     },
+     "needed_weight": 1120.0,
+     "questions": 854,
+     "candidate_links_per_q": 181014.9,
+     "kept_links_per_q": 46441.4,
+     "price_at_2500_links_per_q": 0.01381,
+     "S_links_per_q": 0.0,
+     "SCREEN_IN": true
+    },
+    "2wiki/SRK": {
+     "status": "read",
+     "reach": 0.9838,
+     "price": 0.2694,
+     "path_retention": 0.992,
+     "golds_with_units": 1120,
+     "path_by_distance": {
+      "2": [
+       103,
+       112
+      ],
+      "1": [
+       973,
+       973
+      ],
+      "3": [
+       35,
+       35
+      ]
+     },
+     "needed_weight": 1120.0,
+     "questions": 854,
+     "candidate_links_per_q": 153619.6,
+     "kept_links_per_q": 41379.9,
+     "price_at_2500_links_per_q": 0.01627,
+     "S_links_per_q": 6344.4,
+     "SCREEN_IN": true
+    }
+   },
+   "cells_read": 9,
+   "screen_in": 3,
+   "call": "NOT_UNIVERSAL"
+  },
+  "rule_C2r": {
+   "family": "C2r (per-question relative caps)",
+   "space": "K3",
+   "cells": {
+    "multihoprag/RK": {
+     "status": "read",
+     "reach": 0.9993,
+     "price": 0.9,
+     "path_retention": 1.0,
+     "golds_with_units": 121,
+     "path_by_distance": {
+      "1": [
+       117,
+       117
+      ],
+      "2": [
+       4,
+       4
+      ]
+     },
+     "needed_weight": 121.0,
+     "questions": 94,
+     "candidate_links_per_q": 555.7,
+     "kept_links_per_q": 500.2,
+     "price_at_2500_links_per_q": 1.0,
+     "S_links_per_q": 0.0,
+     "SCREEN_IN": false
+    },
+    "musique/RK": {
+     "status": "read",
+     "reach": 0.9659,
+     "price": 0.8718,
+     "path_retention": 0.9905,
+     "golds_with_units": 1469,
+     "path_by_distance": {
+      "2": [
+       522,
+       528
+      ],
+      "1": [
+       767,
+       772
+      ],
+      "3": [
+       166,
+       169
+      ]
+     },
+     "needed_weight": 1469.0,
+     "questions": 930,
+     "candidate_links_per_q": 32599.3,
+     "kept_links_per_q": 28418.6,
+     "price_at_2500_links_per_q": 0.07669,
+     "S_links_per_q": 0.0,
+     "SCREEN_IN": false
+    },
+    "squad/RK": {
+     "status": "read",
+     "reach": 0.9645,
+     "price": 0.8547,
+     "path_retention": 0.961,
+     "golds_with_units": 77,
+     "path_by_distance": {
+      "1": [
+       36,
+       36
+      ],
+      "3": [
+       15,
+       15
+      ],
+      "2": [
+       23,
+       26
+      ]
+     },
+     "needed_weight": 77.0,
+     "questions": 77,
+     "candidate_links_per_q": 2000.0,
+     "kept_links_per_q": 1709.5,
+     "price_at_2500_links_per_q": 1.0,
+     "S_links_per_q": 0.0,
+     "SCREEN_IN": false
+    },
+    "metaqa/SRK": {
+     "status": "read",
+     "reach": 0.9537,
+     "price": 0.876,
+     "path_retention": 0.9888,
+     "golds_with_units": 8105,
+     "path_by_distance": {
+      "1": [
+       1214,
+       1216
+      ],
+      "3": [
+       2549,
+       2549
+      ],
+      "2": [
+       4251,
+       4340
+      ]
+     },
+     "needed_weight": 8105.0,
+     "questions": 1113,
+     "candidate_links_per_q": 9413.0,
+     "kept_links_per_q": 8245.4,
+     "price_at_2500_links_per_q": 0.26559,
+     "S_links_per_q": 3642.1,
+     "SCREEN_IN": false
+    },
+    "webqsp/SRK": {
+     "status": "read",
+     "reach": 0.9732,
+     "price": 0.9004,
+     "path_retention": 0.9929,
+     "golds_with_units": 6632,
+     "path_by_distance": {
+      "1": [
+       3959,
+       3982
+      ],
+      "2": [
+       2593,
+       2612
+      ],
+      "3": [
+       33,
+       38
+      ]
+     },
+     "needed_weight": 6632.0,
+     "questions": 1016,
+     "candidate_links_per_q": 2242206.9,
+     "kept_links_per_q": 2018876.5,
+     "price_at_2500_links_per_q": 0.00111,
+     "S_links_per_q": 36939.0,
+     "SCREEN_IN": false
+    },
+    "hotpotqa/RK": {
+     "status": "read",
+     "reach": 0.9825,
+     "price": 0.8829,
+     "path_retention": 0.9933,
+     "golds_with_units": 594,
+     "path_by_distance": {
+      "1": [
+       480,
+       480
+      ],
+      "2": [
+       96,
+       98
+      ],
+      "3": [
+       14,
+       16
+      ]
+     },
+     "needed_weight": 594.0,
+     "questions": 559,
+     "candidate_links_per_q": 58203.9,
+     "kept_links_per_q": 51390.5,
+     "price_at_2500_links_per_q": 0.04295,
+     "S_links_per_q": 0.0,
+     "SCREEN_IN": false
+    },
+    "hotpotqa/SRK": {
+     "status": "read",
+     "reach": 0.9952,
+     "price": 0.8994,
+     "path_retention": 0.9966,
+     "golds_with_units": 595,
+     "path_by_distance": {
+      "1": [
+       544,
+       544
+      ],
+      "2": [
+       43,
+       44
+      ],
+      "3": [
+       6,
+       7
+      ]
+     },
+     "needed_weight": 595.0,
+     "questions": 560,
+     "candidate_links_per_q": 24775.2,
+     "kept_links_per_q": 22282.3,
+     "price_at_2500_links_per_q": 0.10091,
+     "S_links_per_q": 2945.5,
+     "SCREEN_IN": false
+    },
+    "2wiki/RK": {
+     "status": "read",
+     "reach": 0.9797,
+     "price": 0.8734,
+     "path_retention": 0.9955,
+     "golds_with_units": 1120,
+     "path_by_distance": {
+      "2": [
+       147,
+       150
+      ],
+      "1": [
+       934,
+       934
+      ],
+      "3": [
+       34,
+       36
+      ]
+     },
+     "needed_weight": 1120.0,
+     "questions": 854,
+     "candidate_links_per_q": 181014.9,
+     "kept_links_per_q": 158106.5,
+     "price_at_2500_links_per_q": 0.01381,
+     "S_links_per_q": 0.0,
+     "SCREEN_IN": false
+    },
+    "2wiki/SRK": {
+     "status": "read",
+     "reach": 0.9865,
+     "price": 0.8725,
+     "path_retention": 0.9991,
+     "golds_with_units": 1120,
+     "path_by_distance": {
+      "2": [
+       111,
+       112
+      ],
+      "1": [
+       973,
+       973
+      ],
+      "3": [
+       35,
+       35
+      ]
+     },
+     "needed_weight": 1120.0,
+     "questions": 854,
+     "candidate_links_per_q": 153619.6,
+     "kept_links_per_q": 134034.6,
+     "price_at_2500_links_per_q": 0.01627,
+     "S_links_per_q": 6344.4,
+     "SCREEN_IN": false
+    }
+   },
+   "cells_read": 9,
+   "screen_in": 0,
+   "call": "NOT_UNIVERSAL"
+  }
+ }
+}

@@ -1,0 +1,61 @@
+{
+ "dataset": "multihoprag",
+ "part": "r",
+ "declared_in": "docs/GP2_UNIVERSAL_LINK_SCORE.md",
+ "cells": {
+  "RK": {
+   "rows": 52122,
+   "G-Q0": "PASS",
+   "G-Q1": "PASS (2000 rows)",
+   "in_dense_list": 1.0,
+   "in_splade_list": 1.0,
+   "file": "outputs/gp2/multihoprag/cols_r_RK.npz",
+   "G-W1": "PASS (0 rows)",
+   "tw_bins": [
+    43446,
+    2918,
+    2707,
+    3051
+   ],
+   "mention_rows": 8676,
+   "mention_pairs": 3662,
+   "G-W2": "PASS (0 rows)",
+   "cd_bins": [
+    43446,
+    11,
+    901,
+    852,
+    1082,
+    951,
+    4879
+   ],
+   "tw160_bins": [
+    43446,
+    1779,
+    2342,
+    4555
+   ],
+   "G-Q2": "PASS (2000 rows)",
+   "qn_bins": [
+    0,
+    380,
+    1879,
+    14754,
+    19617,
+    11937,
+    3555
+   ],
+   "qs_bins": [
+    0,
+    19510,
+    12418,
+    12836,
+    4845,
+    2218,
+    295
+   ]
+  }
+ },
+ "zgp2_sha256": "f5779308cb031f1930b813f715aee13c33faad63b586e60a5a860956ec0e4ffb",
+ "utc": "2026-11-26T05:09:37Z"
+}

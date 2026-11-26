@@ -1,0 +1,451 @@
+{
+ "part": "r",
+ "declared_in": "docs/GP1_GOLD_LINK_PATTERNS.md",
+ "rule_sha256": "c527c228d07cd1e56f792a917c458c96d35a5c1c6dd439314dcc253032a8ec51",
+ "cells": {},
+ "zgp1p_sha256": "062986dcc0b6f5f5020c3094523228976f86839563dcf8e9d3fe851e80730839",
+ "rule": {
+  "attrs": [
+   "votes"
+  ],
+  "cells": {
+   "multihoprag/RK": {
+    "reach": 0.9998,
+    "price": 0.999,
+    "path_retention": 1.0,
+    "golds_with_units": 121,
+    "path_by_distance": {
+     "1": [
+      117,
+      117
+     ],
+     "2": [
+      4,
+      4
+     ]
+    },
+    "needed_weight": 121.0,
+    "needed_weight_in_keys_unseen_on_Q": 0.0,
+    "status": "read",
+    "SCREEN_IN": false
+   },
+   "musique/RK": {
+    "reach": 0.9686,
+    "price": 0.9995,
+    "path_retention": 0.9646,
+    "golds_with_units": 1469,
+    "path_by_distance": {
+     "2": [
+      514,
+      528
+     ],
+     "1": [
+      744,
+      772
+     ],
+     "3": [
+      159,
+      169
+     ]
+    },
+    "needed_weight": 1469.0,
+    "needed_weight_in_keys_unseen_on_Q": 0.0,
+    "status": "read",
+    "SCREEN_IN": false
+   },
+   "squad/RK": {
+    "reach": 0.9529,
+    "price": 0.9982,
+    "path_retention": 0.9481,
+    "golds_with_units": 77,
+    "path_by_distance": {
+     "1": [
+      34,
+      36
+     ],
+     "3": [
+      15,
+      15
+     ],
+     "2": [
+      24,
+      26
+     ]
+    },
+    "needed_weight": 77.0,
+    "needed_weight_in_keys_unseen_on_Q": 0.0,
+    "status": "read",
+    "SCREEN_IN": false
+   },
+   "metaqa/SRK": {
+    "reach": 0.9777,
+    "price": 0.9926,
+    "path_retention": 0.982,
+    "golds_with_units": 8105,
+    "path_by_distance": {
+     "1": [
+      1172,
+      1216
+     ],
+     "3": [
+      2545,
+      2549
+     ],
+     "2": [
+      4242,
+      4340
+     ]
+    },
+    "needed_weight": 8105.0,
+    "needed_weight_in_keys_unseen_on_Q": 0.0,
+    "status": "read",
+    "SCREEN_IN": false
+   },
+   "webqsp/SRK": {
+    "reach": 0.9925,
+    "price": 1.0,
+    "path_retention": 0.9928,
+    "golds_with_units": 6632,
+    "path_by_distance": {
+     "1": [
+      3939,
+      3982
+     ],
+     "2": [
+      2610,
+      2612
+     ],
+     "3": [
+      35,
+      38
+     ]
+    },
+    "needed_weight": 6632.0,
+    "needed_weight_in_keys_unseen_on_Q": 0.0,
+    "status": "read",
+    "SCREEN_IN": false
+   },
+   "hotpotqa/RK": {
+    "reach": 0.9806,
+    "price": 0.9999,
+    "path_retention": 0.9798,
+    "golds_with_units": 594,
+    "path_by_distance": {
+     "1": [
+      470,
+      480
+     ],
+     "2": [
+      96,
+      98
+     ],
+     "3": [
+      16,
+      16
+     ]
+    },
+    "needed_weight": 594.0,
+    "needed_weight_in_keys_unseen_on_Q": 0.0,
+    "status": "read",
+    "SCREEN_IN": false
+   },
+   "hotpotqa/SRK": {
+    "reach": 0.9939,
+    "price": 0.9998,
+    "path_retention": 0.995,
+    "golds_with_units": 595,
+    "path_by_distance": {
+     "1": [
+      541,
+      544
+     ],
+     "2": [
+      44,
+      44
+     ],
+     "3": [
+      7,
+      7
+     ]
+    },
+    "needed_weight": 595.0,
+    "needed_weight_in_keys_unseen_on_Q": 0.0,
+    "status": "read",
+    "SCREEN_IN": false
+   },
+   "2wiki/RK": {
+    "reach": 0.9941,
+    "price": 1.0,
+    "path_retention": 0.9946,
+    "golds_with_units": 1120,
+    "path_by_distance": {
+     "2": [
+      148,
+      150
+     ],
+     "1": [
+      930,
+      934
+     ],
+     "3": [
+      36,
+      36
+     ]
+    },
+    "needed_weight": 1120.0,
+    "needed_weight_in_keys_unseen_on_Q": 0.0,
+    "status": "read",
+    "SCREEN_IN": false
+   },
+   "2wiki/SRK": {
+    "reach": 0.9941,
+    "price": 1.0,
+    "path_retention": 0.9946,
+    "golds_with_units": 1120,
+    "path_by_distance": {
+     "2": [
+      110,
+      112
+     ],
+     "1": [
+      969,
+      973
+     ],
+     "3": [
+      35,
+      35
+     ]
+    },
+    "needed_weight": 1120.0,
+    "needed_weight_in_keys_unseen_on_Q": 0.0,
+    "status": "read",
+    "SCREEN_IN": false
+   }
+  },
+  "cells_read": 9,
+  "screen_in": 0,
+  "call": "NOT_UNIVERSAL"
+ },
+ "rule_K0": {
+  "attrs": [
+   "dot"
+  ],
+  "cells": {
+   "multihoprag/RK": {
+    "reach": 1.0,
+    "price": 1.0,
+    "path_retention": 1.0,
+    "golds_with_units": 121,
+    "path_by_distance": {
+     "1": [
+      117,
+      117
+     ],
+     "2": [
+      4,
+      4
+     ]
+    },
+    "needed_weight": 121.0,
+    "needed_weight_in_keys_unseen_on_Q": 0.0,
+    "status": "read",
+    "SCREEN_IN": false
+   },
+   "musique/RK": {
+    "reach": 1.0,
+    "price": 1.0,
+    "path_retention": 1.0,
+    "golds_with_units": 1469,
+    "path_by_distance": {
+     "2": [
+      528,
+      528
+     ],
+     "1": [
+      772,
+      772
+     ],
+     "3": [
+      169,
+      169
+     ]
+    },
+    "needed_weight": 1469.0,
+    "needed_weight_in_keys_unseen_on_Q": 0.0,
+    "status": "read",
+    "SCREEN_IN": false
+   },
+   "squad/RK": {
+    "reach": 1.0,
+    "price": 1.0,
+    "path_retention": 1.0,
+    "golds_with_units": 77,
+    "path_by_distance": {
+     "1": [
+      36,
+      36
+     ],
+     "3": [
+      15,
+      15
+     ],
+     "2": [
+      26,
+      26
+     ]
+    },
+    "needed_weight": 77.0,
+    "needed_weight_in_keys_unseen_on_Q": 0.0,
+    "status": "read",
+    "SCREEN_IN": false
+   },
+   "metaqa/SRK": {
+    "reach": 1.0,
+    "price": 1.0,
+    "path_retention": 1.0,
+    "golds_with_units": 8105,
+    "path_by_distance": {
+     "1": [
+      1216,
+      1216
+     ],
+     "3": [
+      2549,
+      2549
+     ],
+     "2": [
+      4340,
+      4340
+     ]
+    },
+    "needed_weight": 8105.0,
+    "needed_weight_in_keys_unseen_on_Q": 0.0,
+    "status": "read",
+    "SCREEN_IN": false
+   },
+   "webqsp/SRK": {
+    "reach": 1.0,
+    "price": 1.0,
+    "path_retention": 0.9995,
+    "golds_with_units": 6632,
+    "path_by_distance": {
+     "1": [
+      3982,
+      3982
+     ],
+     "2": [
+      2612,
+      2612
+     ],
+     "3": [
+      35,
+      38
+     ]
+    },
+    "needed_weight": 6632.0,
+    "needed_weight_in_keys_unseen_on_Q": 0.0,
+    "status": "read",
+    "SCREEN_IN": false
+   },
+   "hotpotqa/RK": {
+    "reach": 1.0,
+    "price": 1.0,
+    "path_retention": 1.0,
+    "golds_with_units": 594,
+    "path_by_distance": {
+     "1": [
+      480,
+      480
+     ],
+     "2": [
+      98,
+      98
+     ],
+     "3": [
+      16,
+      16
+     ]
+    },
+    "needed_weight": 594.0,
+    "needed_weight_in_keys_unseen_on_Q": 0.0,
+    "status": "read",
+    "SCREEN_IN": false
+   },
+   "hotpotqa/SRK": {
+    "reach": 1.0,
+    "price": 1.0,
+    "path_retention": 1.0,
+    "golds_with_units": 595,
+    "path_by_distance": {
+     "1": [
+      544,
+      544
+     ],
+     "2": [
+      44,
+      44
+     ],
+     "3": [
+      7,
+      7
+     ]
+    },
+    "needed_weight": 595.0,
+    "needed_weight_in_keys_unseen_on_Q": 0.0,
+    "status": "read",
+    "SCREEN_IN": false
+   },
+   "2wiki/RK": {
+    "reach": 1.0,
+    "price": 1.0,
+    "path_retention": 1.0,
+    "golds_with_units": 1120,
+    "path_by_distance": {
+     "2": [
+      150,
+      150
+     ],
+     "1": [
+      934,
+      934
+     ],
+     "3": [
+      36,
+      36
+     ]
+    },
+    "needed_weight": 1120.0,
+    "needed_weight_in_keys_unseen_on_Q": 0.0,
+    "status": "read",
+    "SCREEN_IN": false
+   },
+   "2wiki/SRK": {
+    "reach": 1.0,
+    "price": 1.0,
+    "path_retention": 1.0,
+    "golds_with_units": 1120,
+    "path_by_distance": {
+     "2": [
+      112,
+      112
+     ],
+     "1": [
+      973,
+      973
+     ],
+     "3": [
+      35,
+      35
+     ]
+    },
+    "needed_weight": 1120.0,
+    "needed_weight_in_keys_unseen_on_Q": 0.0,
+    "status": "read",
+    "SCREEN_IN": false
+   }
+  },
+  "cells_read": 9,
+  "screen_in": 0,
+  "call": "NOT_UNIVERSAL"
+ }
+}

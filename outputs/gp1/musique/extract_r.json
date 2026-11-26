@@ -1,0 +1,130 @@
+{
+ "dataset": "musique",
+ "declared_in": "docs/GP1_GOLD_LINK_PATTERNS.md",
+ "part": "r",
+ "status": "read",
+ "carve": "s1sel",
+ "nodes": 117534,
+ "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+ "sources": {
+  "grade_json_sha256": "2b14e74691577deffa984870f0b6e9b37f8533af736778f2f01b717faf5e0d70",
+  "ranks_npz_sha256": "5c7589dd66c356ebcb8a00f925e03f378d92e76c41aaf427ba9d3993fa2d7ca3"
+ },
+ "gates": {
+  "UL2P": {
+   "G-P1": {
+    "RK": {
+     "S": 0,
+     "R": 3209654,
+     "K": 178930,
+     "B0": 3388584
+    }
+   },
+   "G-P2": {
+    "H5": 429747,
+    "HM": 265292,
+    "HK1": 281823,
+    "NTc": 493720,
+    "NT1": 417521,
+    "HK2": 529407,
+    "H10": 826642
+   },
+   "G-P3": {
+    "s1sel/GP": {
+     "slots": 3783,
+     "questions": 1534
+    },
+    "s1sel/CH": {
+     "slots": 2530,
+     "questions": 1534
+    },
+    "s1eval/GP": {
+     "slots": 5962,
+     "questions": 2417
+    },
+    "s1eval/CH": {
+     "slots": 3987,
+     "questions": 2417
+    }
+   }
+  },
+  "G-G1": {
+   "questions": 1534,
+   "seeds_ok": true
+  }
+ },
+ "versions": {
+  "RK": {
+   "stats": {
+    "questions": 1150,
+    "golds": 3047,
+    "found": 1567,
+    "dist": [
+     1567,
+     772,
+     528,
+     169,
+     11
+    ],
+    "capped_golds": 1,
+    "units": 65798,
+    "ctrl_sampled": 2513557,
+    "ctrl_exact": 30251527,
+    "sources": 20057,
+    "g_g2_checked": 1150,
+    "g5_checked": 23000,
+    "g5_bad": 0,
+    "mention_links": 2377724,
+    "mention_exact_none": 1972209,
+    "reachable_missed": 1469,
+    "unreached": 11
+   },
+   "chunks": [
+    "outputs/gp1/musique/work/RK_r_000000.npz",
+    "outputs/gp1/musique/work/RK_r_000050.npz",
+    "outputs/gp1/musique/work/RK_r_000100.npz",
+    "outputs/gp1/musique/work/RK_r_000150.npz",
+    "outputs/gp1/musique/work/RK_r_000200.npz",
+    "outputs/gp1/musique/work/RK_r_000250.npz",
+    "outputs/gp1/musique/work/RK_r_000300.npz",
+    "outputs/gp1/musique/work/RK_r_000350.npz",
+    "outputs/gp1/musique/work/RK_r_000400.npz",
+    "outputs/gp1/musique/work/RK_r_000450.npz",
+    "outputs/gp1/musique/work/RK_r_000500.npz",
+    "outputs/gp1/musique/work/RK_r_000550.npz",
+    "outputs/gp1/musique/work/RK_r_000600.npz",
+    "outputs/gp1/musique/work/RK_r_000650.npz",
+    "outputs/gp1/musique/work/RK_r_000700.npz",
+    "outputs/gp1/musique/work/RK_r_000750.npz",
+    "outputs/gp1/musique/work/RK_r_000800.npz",
+    "outputs/gp1/musique/work/RK_r_000850.npz",
+    "outputs/gp1/musique/work/RK_r_000900.npz",
+    "outputs/gp1/musique/work/RK_r_000950.npz",
+    "outputs/gp1/musique/work/RK_r_001000.npz",
+    "outputs/gp1/musique/work/RK_r_001050.npz",
+    "outputs/gp1/musique/work/RK_r_001100.npz"
+   ]
+  }
+ },
+ "constants": {
+  "CAP_SRC": 200,
+  "CAP_Q": 20000,
+  "CAP_GOLD": 5000,
+  "QUARTER_M": 4,
+  "ENUM_LIMIT": 30000000,
+  "seeds": "dense5 U splade5, frozen package lists"
+ },
+ "memory": {
+  "peak_working_set_gb": 0.88,
+  "peak_commit_gb": 0.48
+ },
+ "seconds": 450.2,
+ "utc": "2026-11-26T04:17:10Z",
+ "zgp1_sha256": "0a9c6bc0026f71849fc4cacee333f9665390ce2bb3616ad9e338d7abe9df2c14",
+ "zul2h_sha256": "a0fea9a22bcfda1ec2d2e0d31a1140225e0e89ef6af570b01b5ab077613a0b8a",
+ "zul3a_sha256": "96643e761e5708b601584e9b7dc1b9efd75041eaa22dcdd14647469aa94ac579",
+ "shard": [
+  0,
+  1
+ ]
+}

@@ -1,0 +1,61 @@
+{
+ "dataset": "webqsp",
+ "part": "r",
+ "declared_in": "docs/GP2_UNIVERSAL_LINK_SCORE.md",
+ "cells": {
+  "SRK": {
+   "rows": 3811869,
+   "G-Q0": "PASS",
+   "G-Q1": "PASS (2000 rows)",
+   "in_dense_list": 0.083,
+   "in_splade_list": 0.0247,
+   "file": "outputs/gp2/webqsp/cols_r_SRK.npz",
+   "G-W1": "PASS (1000 rows)",
+   "tw_bins": [
+    3771099,
+    27144,
+    7216,
+    6410
+   ],
+   "mention_rows": 40770,
+   "mention_pairs": 27300,
+   "G-W2": "PASS (1000 rows)",
+   "cd_bins": [
+    3771099,
+    26196,
+    10,
+    329,
+    540,
+    1496,
+    12199
+   ],
+   "tw160_bins": [
+    3771099,
+    26546,
+    6815,
+    7409
+   ],
+   "G-Q2": "PASS (2000 rows)",
+   "qn_bins": [
+    3495527,
+    70252,
+    73652,
+    109531,
+    40663,
+    12505,
+    9739
+   ],
+   "qs_bins": [
+    3717723,
+    22235,
+    28710,
+    21050,
+    15523,
+    4929,
+    1699
+   ]
+  }
+ },
+ "zgp2_sha256": "f5779308cb031f1930b813f715aee13c33faad63b586e60a5a860956ec0e4ffb",
+ "utc": "2026-11-26T10:15:05Z"
+}

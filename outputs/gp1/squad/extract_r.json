@@ -1,0 +1,113 @@
+{
+ "dataset": "squad",
+ "declared_in": "docs/GP1_GOLD_LINK_PATTERNS.md",
+ "part": "r",
+ "status": "read",
+ "carve": "s1sel",
+ "nodes": 20233,
+ "nodes_sha256": "34ac47757e0080f0e2eb6c679009a6090ca97be39d576307ba7281db730c1a8b",
+ "sources": {
+  "grade_json_sha256": "bdc8bc428e7c615d7d95dc3db42a6c2f1fdb982f8d735960125110003bec1351",
+  "ranks_npz_sha256": "79cd3de5ffd7deacc502ef17315de47b0eeb30e01af245a9f1074efe1a2998ca"
+ },
+ "gates": {
+  "UL2P": {
+   "G-P1": {
+    "RK": {
+     "S": 0,
+     "R": 989371,
+     "K": 6498,
+     "B0": 995869
+    }
+   },
+   "G-P2": {
+    "H5": 60681,
+    "HM": 34187,
+    "HK1": 38713,
+    "NTc": 72853,
+    "NT1": 55061,
+    "HK2": 72729,
+    "H10": 116928
+   },
+   "G-P3": {}
+  },
+  "G-G1": {
+   "questions": 1498,
+   "seeds_ok": true
+  }
+ },
+ "versions": {
+  "RK": {
+   "stats": {
+    "questions": 1123,
+    "golds": 1123,
+    "found": 1046,
+    "dist": [
+     1046,
+     36,
+     26,
+     15,
+     0
+    ],
+    "capped_golds": 0,
+    "units": 2519,
+    "ctrl_sampled": 108880,
+    "ctrl_exact": 151484,
+    "sources": 1132,
+    "g_g2_checked": 1123,
+    "g5_checked": 14496,
+    "g5_bad": 0,
+    "mention_links": 96041,
+    "mention_exact_none": 70642,
+    "reachable_missed": 77,
+    "unreached": 0
+   },
+   "chunks": [
+    "outputs/gp1/squad/work/RK_r_000000.npz",
+    "outputs/gp1/squad/work/RK_r_000050.npz",
+    "outputs/gp1/squad/work/RK_r_000100.npz",
+    "outputs/gp1/squad/work/RK_r_000150.npz",
+    "outputs/gp1/squad/work/RK_r_000200.npz",
+    "outputs/gp1/squad/work/RK_r_000250.npz",
+    "outputs/gp1/squad/work/RK_r_000300.npz",
+    "outputs/gp1/squad/work/RK_r_000350.npz",
+    "outputs/gp1/squad/work/RK_r_000400.npz",
+    "outputs/gp1/squad/work/RK_r_000450.npz",
+    "outputs/gp1/squad/work/RK_r_000500.npz",
+    "outputs/gp1/squad/work/RK_r_000550.npz",
+    "outputs/gp1/squad/work/RK_r_000600.npz",
+    "outputs/gp1/squad/work/RK_r_000650.npz",
+    "outputs/gp1/squad/work/RK_r_000700.npz",
+    "outputs/gp1/squad/work/RK_r_000750.npz",
+    "outputs/gp1/squad/work/RK_r_000800.npz",
+    "outputs/gp1/squad/work/RK_r_000850.npz",
+    "outputs/gp1/squad/work/RK_r_000900.npz",
+    "outputs/gp1/squad/work/RK_r_000950.npz",
+    "outputs/gp1/squad/work/RK_r_001000.npz",
+    "outputs/gp1/squad/work/RK_r_001050.npz",
+    "outputs/gp1/squad/work/RK_r_001100.npz"
+   ]
+  }
+ },
+ "constants": {
+  "CAP_SRC": 200,
+  "CAP_Q": 20000,
+  "CAP_GOLD": 5000,
+  "QUARTER_M": 4,
+  "ENUM_LIMIT": 30000000,
+  "seeds": "dense5 U splade5, frozen package lists"
+ },
+ "memory": {
+  "peak_working_set_gb": 0.61,
+  "peak_commit_gb": 0.61
+ },
+ "seconds": 13.8,
+ "utc": "2026-11-26T04:09:53Z",
+ "zgp1_sha256": "0a9c6bc0026f71849fc4cacee333f9665390ce2bb3616ad9e338d7abe9df2c14",
+ "zul2h_sha256": "a0fea9a22bcfda1ec2d2e0d31a1140225e0e89ef6af570b01b5ab077613a0b8a",
+ "zul3a_sha256": "96643e761e5708b601584e9b7dc1b9efd75041eaa22dcdd14647469aa94ac579",
+ "shard": [
+  0,
+  1
+ ]
+}

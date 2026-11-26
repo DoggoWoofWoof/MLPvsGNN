@@ -1,0 +1,182 @@
+{
+ "dataset": "2wiki",
+ "declared_in": "docs/GP1_GOLD_LINK_PATTERNS.md",
+ "part": "r",
+ "status": "read",
+ "carve": "s1sel",
+ "nodes": 5989847,
+ "nodes_sha256": "73fb822f3e4dd255c2555af717f4664c78a01fec4b5dce892fdec25d5de2426a",
+ "sources": {
+  "grade_json_sha256": "4e34addb62019ce4ed776e30c6e1fd5ef2eaaf6c71a1b592f38da57814d0219c",
+  "ranks_npz_sha256": "ce1fa7bb0791108254adc966398298c7ef80e198e39d5d29417b832a9fd3edc5"
+ },
+ "gates": {
+  "UL2P": {
+   "G-P1": {
+    "RK": {
+     "S": 0,
+     "R": 105284400,
+     "K": 10270910,
+     "B0": 115555310
+    },
+    "SRK": {
+     "S": 28208857,
+     "R": 88392041,
+     "K": 9941101,
+     "B0": 126541999
+    }
+   },
+   "G-P2": {
+    "H5": 21676906,
+    "HM": 11998902,
+    "HK1": 17541000,
+    "NTc": 14031514,
+    "NT1": 24449948,
+    "HK2": 33412899,
+    "H10": 41661546
+   },
+   "G-P3": {
+    "s1sel/GP": {
+     "slots": 3131,
+     "questions": 1496
+    },
+    "s1eval/GP": {
+     "slots": 26331,
+     "questions": 12576
+    }
+   }
+  },
+  "G-G1": {
+   "questions": 1496,
+   "seeds_ok": true
+  }
+ },
+ "versions": {
+  "RK": {
+   "stats": {
+    "questions": 1122,
+    "golds": 2730,
+    "found": 1610,
+    "dist": [
+     1610,
+     934,
+     150,
+     36,
+     0
+    ],
+    "capped_golds": 0,
+    "units": 6575,
+    "ctrl_sampled": 344661,
+    "ctrl_exact": 154580139,
+    "sources": 4086,
+    "g_g2_checked": 1122,
+    "g5_checked": 22672,
+    "g5_bad": 0,
+    "mention_links": 268093,
+    "mention_exact_none": 203801,
+    "reachable_missed": 1120,
+    "unreached": 0
+   },
+   "chunks": [
+    "outputs/gp1/2wiki/work/RK_r_000000.npz",
+    "outputs/gp1/2wiki/work/RK_r_000050.npz",
+    "outputs/gp1/2wiki/work/RK_r_000100.npz",
+    "outputs/gp1/2wiki/work/RK_r_000150.npz",
+    "outputs/gp1/2wiki/work/RK_r_000200.npz",
+    "outputs/gp1/2wiki/work/RK_r_000250.npz",
+    "outputs/gp1/2wiki/work/RK_r_000300.npz",
+    "outputs/gp1/2wiki/work/RK_r_000350.npz",
+    "outputs/gp1/2wiki/work/RK_r_000400.npz",
+    "outputs/gp1/2wiki/work/RK_r_000450.npz",
+    "outputs/gp1/2wiki/work/RK_r_000500.npz",
+    "outputs/gp1/2wiki/work/RK_r_000550.npz",
+    "outputs/gp1/2wiki/work/RK_r_000600.npz",
+    "outputs/gp1/2wiki/work/RK_r_000650.npz",
+    "outputs/gp1/2wiki/work/RK_r_000700.npz",
+    "outputs/gp1/2wiki/work/RK_r_000750.npz",
+    "outputs/gp1/2wiki/work/RK_r_000800.npz",
+    "outputs/gp1/2wiki/work/RK_r_000850.npz",
+    "outputs/gp1/2wiki/work/RK_r_000900.npz",
+    "outputs/gp1/2wiki/work/RK_r_000950.npz",
+    "outputs/gp1/2wiki/work/RK_r_001000.npz",
+    "outputs/gp1/2wiki/work/RK_r_001050.npz",
+    "outputs/gp1/2wiki/work/RK_r_001100.npz"
+   ]
+  },
+  "SRK": {
+   "stats": {
+    "questions": 1122,
+    "golds": 2730,
+    "found": 1610,
+    "dist": [
+     1610,
+     973,
+     112,
+     35,
+     0
+    ],
+    "capped_golds": 0,
+    "units": 7194,
+    "ctrl_sampled": 330398,
+    "ctrl_exact": 131183938,
+    "sources": 4210,
+    "g_g2_checked": 1122,
+    "g5_checked": 22640,
+    "g5_bad": 0,
+    "mention_links": 228879,
+    "mention_exact_none": 165717,
+    "reachable_missed": 1120,
+    "unreached": 0
+   },
+   "chunks": [
+    "outputs/gp1/2wiki/work/SRK_r_000000.npz",
+    "outputs/gp1/2wiki/work/SRK_r_000050.npz",
+    "outputs/gp1/2wiki/work/SRK_r_000100.npz",
+    "outputs/gp1/2wiki/work/SRK_r_000150.npz",
+    "outputs/gp1/2wiki/work/SRK_r_000200.npz",
+    "outputs/gp1/2wiki/work/SRK_r_000250.npz",
+    "outputs/gp1/2wiki/work/SRK_r_000300.npz",
+    "outputs/gp1/2wiki/work/SRK_r_000350.npz",
+    "outputs/gp1/2wiki/work/SRK_r_000400.npz",
+    "outputs/gp1/2wiki/work/SRK_r_000450.npz",
+    "outputs/gp1/2wiki/work/SRK_r_000500.npz",
+    "outputs/gp1/2wiki/work/SRK_r_000550.npz",
+    "outputs/gp1/2wiki/work/SRK_r_000600.npz",
+    "outputs/gp1/2wiki/work/SRK_r_000650.npz",
+    "outputs/gp1/2wiki/work/SRK_r_000700.npz",
+    "outputs/gp1/2wiki/work/SRK_r_000750.npz",
+    "outputs/gp1/2wiki/work/SRK_r_000800.npz",
+    "outputs/gp1/2wiki/work/SRK_r_000850.npz",
+    "outputs/gp1/2wiki/work/SRK_r_000900.npz",
+    "outputs/gp1/2wiki/work/SRK_r_000950.npz",
+    "outputs/gp1/2wiki/work/SRK_r_001000.npz",
+    "outputs/gp1/2wiki/work/SRK_r_001050.npz",
+    "outputs/gp1/2wiki/work/SRK_r_001100.npz"
+   ]
+  }
+ },
+ "constants": {
+  "CAP_SRC": 200,
+  "CAP_Q": 20000,
+  "CAP_GOLD": 5000,
+  "QUARTER_M": 4,
+  "ENUM_LIMIT": 30000000,
+  "seeds": "dense5 U splade5, frozen package lists"
+ },
+ "rel_vocab": [
+  "hyperlink"
+ ],
+ "memory": {
+  "peak_working_set_gb": 26.98,
+  "peak_commit_gb": 9.55
+ },
+ "seconds": 5105.5,
+ "utc": "2026-11-26T09:23:09Z",
+ "zgp1_sha256": "0a9c6bc0026f71849fc4cacee333f9665390ce2bb3616ad9e338d7abe9df2c14",
+ "zul2h_sha256": "a0fea9a22bcfda1ec2d2e0d31a1140225e0e89ef6af570b01b5ab077613a0b8a",
+ "zul3a_sha256": "96643e761e5708b601584e9b7dc1b9efd75041eaa22dcdd14647469aa94ac579",
+ "shard": [
+  0,
+  1
+ ]
+}

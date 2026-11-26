@@ -1,0 +1,104 @@
+{
+ "dataset": "multihoprag",
+ "declared_in": "docs/GP1_GOLD_LINK_PATTERNS.md",
+ "part": "r",
+ "status": "read",
+ "carve": "dev split",
+ "nodes": 609,
+ "nodes_sha256": "4cf1f51f9af49c4c1312d933985e1608808a2517bcd941919eb225170bdb79cf",
+ "sources": {
+  "grade_json_sha256": "f1e9ef955cd200dac108322a6e25c1a5c8fe11417f9bf26edd008591984671a0",
+  "ranks_npz_sha256": "b0f98e6f178b4fd86638b13865fa3d750f1a4a7f5350236d3ea706223cf73dd9",
+  "links_json_sha256": "97a1f768bae0e0256136220f1a6aa037ec71632918053e89b262a523b2455744"
+ },
+ "gates": {
+  "UL2P": {
+   "G-P1": {
+    "RK": {
+     "S": 0,
+     "R": 25080,
+     "K": 263,
+     "B0": 25343
+    }
+   },
+   "G-P2": {
+    "H5": 2387,
+    "HM": 1332,
+    "HK1": 2712,
+    "NTc": 13668,
+    "NT1": 4604,
+    "HK2": 4886,
+    "H10": 4588
+   },
+   "G-P3": {
+    "s1eval/GP": {
+     "slots": 2747,
+     "questions": 1130
+    },
+    "s1sel/GP": {
+     "slots": 504,
+     "questions": 224
+    }
+   }
+  },
+  "G-G1": {
+   "questions": 224,
+   "seeds_ok": true
+  }
+ },
+ "versions": {
+  "RK": {
+   "stats": {
+    "questions": 168,
+    "golds": 434,
+    "found": 313,
+    "dist": [
+     313,
+     117,
+     4,
+     0,
+     0
+    ],
+    "capped_golds": 0,
+    "units": 1086,
+    "ctrl_sampled": 51036,
+    "ctrl_exact": 51153,
+    "sources": 697,
+    "g_g2_checked": 168,
+    "g5_checked": 0,
+    "g5_bad": 0,
+    "mention_links": 3,
+    "mention_exact_none": 3,
+    "reachable_missed": 121,
+    "unreached": 0
+   },
+   "chunks": [
+    "outputs/gp1/multihoprag/work/RK_r_000000.npz",
+    "outputs/gp1/multihoprag/work/RK_r_000050.npz",
+    "outputs/gp1/multihoprag/work/RK_r_000100.npz",
+    "outputs/gp1/multihoprag/work/RK_r_000150.npz"
+   ]
+  }
+ },
+ "constants": {
+  "CAP_SRC": 200,
+  "CAP_Q": 20000,
+  "CAP_GOLD": 5000,
+  "QUARTER_M": 4,
+  "ENUM_LIMIT": 30000000,
+  "seeds": "dense5 U splade5, frozen package lists"
+ },
+ "memory": {
+  "peak_working_set_gb": 0.09,
+  "peak_commit_gb": 0.08
+ },
+ "seconds": 23.0,
+ "utc": "2026-11-26T04:08:46Z",
+ "zgp1_sha256": "0a9c6bc0026f71849fc4cacee333f9665390ce2bb3616ad9e338d7abe9df2c14",
+ "zul2h_sha256": "a0fea9a22bcfda1ec2d2e0d31a1140225e0e89ef6af570b01b5ab077613a0b8a",
+ "zul3a_sha256": "96643e761e5708b601584e9b7dc1b9efd75041eaa22dcdd14647469aa94ac579",
+ "shard": [
+  0,
+  1
+ ]
+}

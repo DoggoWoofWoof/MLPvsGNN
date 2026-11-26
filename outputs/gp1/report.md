@@ -142,3 +142,25 @@ K3 = ['votes'], K4 = ['votes'], ranking ['votes']
 - own optima: {'multihoprag/RK': {'status': 'OPTIMAL', 'tau': 0.832298437954788}, 'musique/RK': {'status': 'OPTIMAL', 'tau': 0.9995193419734762}, 'squad/RK': {'status': 'OPTIMAL', 'tau': 0.9980141490004724}, 'metaqa/SRK': {'status': 'OPTIMAL', 'tau': 0.9773845813185748}, 'webqsp/SRK': {'status': 'OPTIMAL', 'tau': 0.9996667547758645}, 'hotpotqa/RK': {'status': 'OPTIMAL', 'tau': 0.9998629925076116}, 'hotpotqa/SRK': {'status': 'OPTIMAL', 'tau': 0.5262213946410556}, '2wiki/RK': {'status': 'OPTIMAL', 'tau': 0.9999298509490893}, '2wiki/SRK': {'status': 'OPTIMAL', 'tau': 0.9999160664945151}}
 - frontier: {'0.3': {'status': 'INFEASIBLE', 'reach': None}, '0.4': {'status': 'OPTIMAL', 'reach': 0.0}, '0.5': {'status': 'OPTIMAL', 'reach': 0.012030738358905287}, '0.6': {'status': 'OPTIMAL', 'reach': 0.012030738358905287}, '0.7': {'status': 'OPTIMAL', 'reach': 0.012030738358905287}, '0.8': {'status': 'OPTIMAL', 'reach': 0.012030738358905287}}
 - improvement over K0 (tau points): 3.015342604062443e-05
+
+### Grade (rest of dev)
+- rule: NOT_UNIVERSAL (0/9 cells SCREEN_IN)
+  - multihoprag/RK: reach 0.9998, price 0.999, path retention 1.0 (121 golds) -> False
+  - musique/RK: reach 0.9686, price 0.9995, path retention 0.9646 (1469 golds) -> False
+  - squad/RK: reach 0.9529, price 0.9982, path retention 0.9481 (77 golds) -> False
+  - metaqa/SRK: reach 0.9777, price 0.9926, path retention 0.982 (8105 golds) -> False
+  - webqsp/SRK: reach 0.9925, price 1.0, path retention 0.9928 (6632 golds) -> False
+  - hotpotqa/RK: reach 0.9806, price 0.9999, path retention 0.9798 (594 golds) -> False
+  - hotpotqa/SRK: reach 0.9939, price 0.9998, path retention 0.995 (595 golds) -> False
+  - 2wiki/RK: reach 0.9941, price 1.0, path retention 0.9946 (1120 golds) -> False
+  - 2wiki/SRK: reach 0.9941, price 1.0, path retention 0.9946 (1120 golds) -> False
+- rule_K0: NOT_UNIVERSAL (0/9 cells SCREEN_IN)
+  - multihoprag/RK: reach 1.0, price 1.0, path retention 1.0 (121 golds) -> False
+  - musique/RK: reach 1.0, price 1.0, path retention 1.0 (1469 golds) -> False
+  - squad/RK: reach 1.0, price 1.0, path retention 1.0 (77 golds) -> False
+  - metaqa/SRK: reach 1.0, price 1.0, path retention 1.0 (8105 golds) -> False
+  - webqsp/SRK: reach 1.0, price 1.0, path retention 0.9995 (6632 golds) -> False
+  - hotpotqa/RK: reach 1.0, price 1.0, path retention 1.0 (594 golds) -> False
+  - hotpotqa/SRK: reach 1.0, price 1.0, path retention 1.0 (595 golds) -> False
+  - 2wiki/RK: reach 1.0, price 1.0, path retention 1.0 (1120 golds) -> False
+  - 2wiki/SRK: reach 1.0, price 1.0, path retention 1.0 (1120 golds) -> False

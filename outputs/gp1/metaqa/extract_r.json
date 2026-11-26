@@ -1,0 +1,133 @@
+{
+ "dataset": "metaqa",
+ "declared_in": "docs/GP1_GOLD_LINK_PATTERNS.md",
+ "part": "r",
+ "status": "read",
+ "carve": "s1sel",
+ "nodes": 43234,
+ "nodes_sha256": "a2441a83961a3426be2650a05513fd5b85862c4e98ea13755ede1bced951f3eb",
+ "sources": {
+  "grade_json_sha256": "477cbf141e20909efeb91f67c944aabbd3d6433d59042340ad2c09541d0bf905",
+  "ranks_npz_sha256": "51d7a31be52decb56b88131c80b774757a3bd4eaa4f89b826605dfaf0953bab2"
+ },
+ "gates": {
+  "UL2P": {
+   "G-P1": {
+    "SRK": {
+     "S": 124669,
+     "R": 133077,
+     "K": 92072,
+     "B0": 349818
+    }
+   },
+   "G-P2": {
+    "H5": 82016,
+    "HM": 40626,
+    "HK1": 35663,
+    "NTc": 83377,
+    "NT1": 54102,
+    "HK2": 67184,
+    "H10": 162921
+   },
+   "G-P3": {
+    "s1sel/GP": {
+     "slots": 6074,
+     "questions": 1497
+    },
+    "s1eval/GP": {
+     "slots": 37446,
+     "questions": 9785
+    }
+   }
+  },
+  "G-G1": {
+   "questions": 1497,
+   "seeds_ok": true
+  }
+ },
+ "versions": {
+  "SRK": {
+   "stats": {
+    "questions": 1122,
+    "golds": 8139,
+    "found": 32,
+    "dist": [
+     32,
+     1216,
+     4340,
+     2549,
+     2
+    ],
+    "capped_golds": 0,
+    "units": 209506,
+    "ctrl_sampled": 2500862,
+    "ctrl_exact": 10267158,
+    "sources": 55335,
+    "g_g2_checked": 1122,
+    "g5_checked": 164,
+    "g5_bad": 0,
+    "mention_links": 2519103,
+    "mention_exact_none": 2515557,
+    "reachable_missed": 8105,
+    "unreached": 2
+   },
+   "chunks": [
+    "outputs/gp1/metaqa/work/SRK_r_000000.npz",
+    "outputs/gp1/metaqa/work/SRK_r_000050.npz",
+    "outputs/gp1/metaqa/work/SRK_r_000100.npz",
+    "outputs/gp1/metaqa/work/SRK_r_000150.npz",
+    "outputs/gp1/metaqa/work/SRK_r_000200.npz",
+    "outputs/gp1/metaqa/work/SRK_r_000250.npz",
+    "outputs/gp1/metaqa/work/SRK_r_000300.npz",
+    "outputs/gp1/metaqa/work/SRK_r_000350.npz",
+    "outputs/gp1/metaqa/work/SRK_r_000400.npz",
+    "outputs/gp1/metaqa/work/SRK_r_000450.npz",
+    "outputs/gp1/metaqa/work/SRK_r_000500.npz",
+    "outputs/gp1/metaqa/work/SRK_r_000550.npz",
+    "outputs/gp1/metaqa/work/SRK_r_000600.npz",
+    "outputs/gp1/metaqa/work/SRK_r_000650.npz",
+    "outputs/gp1/metaqa/work/SRK_r_000700.npz",
+    "outputs/gp1/metaqa/work/SRK_r_000750.npz",
+    "outputs/gp1/metaqa/work/SRK_r_000800.npz",
+    "outputs/gp1/metaqa/work/SRK_r_000850.npz",
+    "outputs/gp1/metaqa/work/SRK_r_000900.npz",
+    "outputs/gp1/metaqa/work/SRK_r_000950.npz",
+    "outputs/gp1/metaqa/work/SRK_r_001000.npz",
+    "outputs/gp1/metaqa/work/SRK_r_001050.npz",
+    "outputs/gp1/metaqa/work/SRK_r_001100.npz"
+   ]
+  }
+ },
+ "constants": {
+  "CAP_SRC": 200,
+  "CAP_Q": 20000,
+  "CAP_GOLD": 5000,
+  "QUARTER_M": 4,
+  "ENUM_LIMIT": 30000000,
+  "seeds": "dense5 U splade5, frozen package lists"
+ },
+ "rel_vocab": [
+  "directed_by",
+  "has_genre",
+  "has_imdb_rating",
+  "has_imdb_votes",
+  "has_tags",
+  "in_language",
+  "release_year",
+  "starred_actors",
+  "written_by"
+ ],
+ "memory": {
+  "peak_working_set_gb": 1.64,
+  "peak_commit_gb": 1.63
+ },
+ "seconds": 188.9,
+ "utc": "2026-11-26T04:12:49Z",
+ "zgp1_sha256": "0a9c6bc0026f71849fc4cacee333f9665390ce2bb3616ad9e338d7abe9df2c14",
+ "zul2h_sha256": "a0fea9a22bcfda1ec2d2e0d31a1140225e0e89ef6af570b01b5ab077613a0b8a",
+ "zul3a_sha256": "96643e761e5708b601584e9b7dc1b9efd75041eaa22dcdd14647469aa94ac579",
+ "shard": [
+  0,
+  1
+ ]
+}

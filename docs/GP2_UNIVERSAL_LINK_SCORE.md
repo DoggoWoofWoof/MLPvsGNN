@@ -333,3 +333,45 @@ At or below 2,500 links per question, the smaller of the two forms: **MultiHop-R
 **Expectations, scored.** X19: below 0.9679: **true** (0.9000); at most 0.90: **true, on the boundary** (0.9000, the grid value); at most 0.70 and at most 0.50: false. X20 (φ_1 ≥ 0.5): **true** (0.9). X21: WebQSP keeps more than 10,000 links per question: **true**; more than 100,000: **true** (1,543,345). X22: the best score is question-aware: **true** (K3, tied with K5 and K6); K4's price at least 0.90: **true** (0.9922). X23: at most four of nine cells at or below 2,500 links per question: **true** (four); WebQSP: **false**, as predicted (95,611 at best). X18 waits for the rest of dev.
 
 **Reading.** Relative caps do not carry. Every scale-free reading tried on the quarter (rank windows, the text-window ladder, the co-mention distance, the score windows, labels, per-question caps in links and in shares) leaves the worst cell at a price of 0.90 or more; the LP bound says 0.686 is the floor for every key space of phase 5, and C2r keeps 86 to 90 percent of every cell's links when one share must serve MetaQA, MuSiQue, SQuAD and WebQSP. What the cells can do **alone** is the useful result: four cells need at most 2,500 links per question, two sit at S plus under 100 links, MuSiQue and MetaQA need 4,000 to 7,000, and WebQSP 95,000 at best, so the 2,500 target is out of reach as a link count on five cells (MuSiQue, MetaQA, WebQSP, HotpotQA SRK, 2Wiki SRK); on four of those five (all but MuSiQue) S alone exceeds it, so whether it can be met there **depends on how S is counted** (links, or distinct nodes). The link set stays base; PL8 stays undeclared. The rest of dev is read once for the rule set of `rule_q_a4.json` when the rows finish.
+
+## 18. Rest of dev, read once, filed 26 Nov: NOT_UNIVERSAL for the final C2r K3 and for every rule of the set
+
+**What ran.** `zgp2a3.py grade --part r` once, then `report`, for the eight rules of `rule_q_a4.json` (sha256 `91704b8cddea8e88ee320a07bbce59911757483c60c4e0fb68d6dfc432b880bb`, the rule set fixed on the quarter before this read; `zgp2.py` sha256 `f5779308cb031f1930b813f715aee13c33faad63b586e60a5a860956ec0e4ffb`, `zgp2a3.py` `fa6ec7261caab026d74225e15b9beafdf777ec90aee1818f55a11691282da85e`). The R columns of 2Wiki and WebQSP were rebuilt in the order `zgp2.py cols --text`, `zgp2a3.py text2`, `zgp2a3.py score` (the first command rewrites the files and drops the A3 arrays); all nine cells' gates G-Q0, G-Q1, G-W1, G-W2 passed (`gates_r.json` of every dataset). Caps are evaluated with the same one fixed random thinning (seed 20261126) for the path retention. Nothing was changed after the numbers were read; this was the only read of the rest of dev for GP2. Records: `outputs/gp2/grade_r_a3.json`, `outputs/gp2/report_a3.md` (section "Grade (rest of dev)"), `outputs/gp2/<dataset>/gates_r.json`; the per-row column files `cols_r_*.npz` are work files and stay out of the repository.
+
+**The call.** SCREEN_IN per cell is reach ≥ 0.92, price ≤ 0.50, path retention ≥ 0.90 (section 7). **The final, C2r K3 at (φ_1, φ_2, φ_3) = (0.9, 0.9, 0.5): NOT_UNIVERSAL, 0 of 9 cells SCREEN_IN.** Reach and path retention pass in all nine cells (lowest reach 0.9537 MetaQA, lowest path retention 0.9610 SQuAD); the **price line fails in all nine** (0.8547 to 0.9004), because a share common to all cells keeps 86 to 90 percent of every cell's links.
+
+| cell | questions | reach | price | path retention | kept links / q | candidates / q | S links / q | SCREEN_IN |
+|---|---|---|---|---|---|---|---|---|
+| MultiHop-RAG RK | 94 | 0.9993 | 0.9000 | 1.0000 | 500.2 | 555.7 | 0.0 | no |
+| MuSiQue RK | 930 | 0.9659 | 0.8718 | 0.9905 | 28,418.6 | 32,599.3 | 0.0 | no |
+| SQuAD RK | 77 | 0.9645 | 0.8547 | 0.9610 | 1,709.5 | 2,000.0 | 0.0 | no |
+| MetaQA SRK | 1,113 | 0.9537 | 0.8760 | 0.9888 | 8,245.4 | 9,413.0 | 3,642.1 | no |
+| WebQSP SRK | 1,016 | 0.9732 | 0.9004 | 0.9929 | 2,018,876.5 | 2,242,206.9 | 36,939.0 | no |
+| HotpotQA RK | 559 | 0.9825 | 0.8829 | 0.9933 | 51,390.5 | 58,203.9 | 0.0 | no |
+| HotpotQA SRK | 560 | 0.9952 | 0.8994 | 0.9966 | 22,282.3 | 24,775.2 | 2,945.5 | no |
+| 2Wiki RK | 854 | 0.9797 | 0.8734 | 0.9955 | 158,106.5 | 181,014.9 | 0.0 | no |
+| 2Wiki SRK | 854 | 0.9865 | 0.8725 | 0.9991 | 134,034.6 | 153,619.6 | 6,344.4 | no |
+
+(Questions are the distinct questions that have rows in the cell's table; the candidate counts differ from the quarter's, e.g. WebQSP 2.24 million links per question here against 1.72 million, because the two halves of dev hold different questions.) The rule **carries from the quarter to the rest of dev in every reading except the call**: price within 0.033 of the quarter's in all nine cells (largest: SQuAD, 0.887 to 0.8547), reach no more than 0.012 below the quarter's (largest drop: SQuAD, 0.976 to 0.9645), no cell below 0.95 in reach.
+
+**The whole rule set, side by side** (the grade set of section 16 item 4; `n` is the number of SCREEN_IN cells; the lowest reach and the lowest and highest price are over the nine cells):
+
+| rule | n | SCREEN_IN cells | lowest reach | lowest path retention | price range |
+|---|---|---|---|---|---|
+| s11 final (tw+dr+pr) | 0 | none | 0.9326 | 0.9481 | 0.8681 to 0.9965 |
+| A, phase 1 (dr+pr) | 0 | none | 0.9401 | 0.9481 | 0.8717 to 0.9965 |
+| B1, phase 2 (tw+dr) | 0 | none | 0.9359 | 0.9221 | 0.8379 to 0.9965 |
+| C, groups × hop (S0) | 0 | none | 0.9477 | 0.7922 (SQuAD) | 0.8315 to 0.9991 |
+| A2, labels pr+vo | 4 | HotpotQA RK and SRK, 2Wiki RK and SRK | 0.8725 (SQuAD) | 0.8701 (SQuAD) | 0.1486 to 0.9750 |
+| P5, phase 5 best pr+vo+ur | 4 | HotpotQA RK and SRK, 2Wiki RK and SRK | 0.9201 | 0.9429 | 0.1474 to 0.9745 |
+| C2, per-question caps K1 | 3 | WebQSP, 2Wiki RK and SRK | 0.9438 (WebQSP) | 0.9598 | 0.0511 to 1.0000 |
+| **C2r K3, the final** | **0** | **none** | **0.9537** | **0.9610** | **0.8547 to 0.9004** |
+
+No rule of the set puts **MultiHop-RAG, MuSiQue, SQuAD or MetaQA** in; WebQSP is in only under C2 (K1, universal triple (300,000, 300,000, 10)) at reach 0.9438 and price 0.0511, which is **114,505 kept links per question, 46 times 2,500** (the quarter's own optimum of that cell, 95,611, was 38 times). A2 and P5 cut HotpotQA (to 6,346 to 8,648 kept links per question) and 2Wiki (to 58,820 to 64,376), and keep 69 to 98 percent of the links of MetaQA, SQuAD, MuSiQue and WebQSP (prices 0.686 to 0.975).
+
+**Expectations, scored.** **X7**: NOT_UNIVERSAL on the rest of dev: **true** (95 percent). Reach at least 0.92 in at least seven of nine cells: **true** (nine of nine for the final). Price within 0.05 of the quarter's in at least seven of nine: **true** (nine of nine). **X8** (the prices of MuSiQue, SQuAD, HotpotQA and 2Wiki at least 0.20 below the KB cells'): **false**, as it already looked on the quarter: for the final the four passage datasets sit at 0.855 to 0.899 against MetaQA 0.876 and WebQSP 0.900; for the two cutting rules the cut is in HotpotQA and 2Wiki only, and SQuAD (0.814, 0.823) and MuSiQue (0.909, 0.910) are **above** MetaQA (0.698, 0.686). **X12**: NOT_UNIVERSAL on the rest of dev: **true** (97 percent). **X18**: NOT_UNIVERSAL for the final on the rest of dev: **true** (98 percent).
+
+**Reading, and what it leaves.**
+1. GP2 ends as the quarter said it would: **no universal link rule in any reading of windows, scores, labels, per-hop or per-question caps, absolute or relative.** The final keeps 86 to 90 percent of every cell's links, passes reach and path everywhere, and fails the price line everywhere. The link set stays **base**; PL8 stays **undeclared**.
+2. The rules that do cut cut only where a cell alone needs little or has a huge candidate set: the SCREEN_IN cells (HotpotQA and 2Wiki under A2 and P5; WebQSP and 2Wiki under C2) are cells whose own optimum is 119 to 193 links per question in total (HotpotQA RK, 2Wiki RK) or S plus under 100 links (the two SRK cells), or whose candidate list is so long that an absolute cap bites (WebQSP, 2Wiki). **MultiHop-RAG, MuSiQue, SQuAD and MetaQA are never cut by any universal setting of the set**, though MultiHop-RAG's own optimum is 163 links per question and SQuAD's 1,862 (section 17): one setting that serves MetaQA, MuSiQue and WebQSP is too loose for them.
+3. The link-count measure does not close the question the user's target poses: by links per question the best universal rule is C2 K1, at **114,505 on WebQSP on the rest of dev** (95,611 on the quarter), against a target of 2,500, and S alone exceeds 2,500 on four cells. What a cell needs is a count of **distinct nodes** the walk puts in the pool, with S counted: that is a different program (a per-hop distinct-node budget with an order inside it), declared on `docs/GP3_NODE_COUNT_RULE.md` (commit 7c85205b) before any number of it. GP2 asks nothing more of the rest of dev.
