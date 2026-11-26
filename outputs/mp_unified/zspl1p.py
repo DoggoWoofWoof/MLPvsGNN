@@ -1,9 +1,12 @@
 """SPL1 amendment A8 (docs/SPL1_SPARSE_LEG_SCREEN.md section 8.8): the pool coverage of the filed pool cells with C3's SPLADE list in place of the record's,
-and the decision rule D1. Imports the pinned pool modules (zpl2g, zpl5g, zpl6g) and edits none of them; in its own process it replaces only the function
-that reads retrieval_cache/splade_top1000.npz. Everything else is the filed engine: the frozen dense list, graph, vectors, eval carve, cell definitions.
+and the decision rule D1. Imports the pinned pool modules (zpl2g, zpl5g, zpl6g) and edits none of them; it sets only the SPLADE list array of the loaded
+source (src.splade; A9 replaced the first version's patch of the file reader by this, the same effect). Everything else is the filed engine: the frozen
+dense list, graph, vectors, eval carve, cell definitions.
 
   selftest                       toy checks (padding, the row mapping, the paired bootstrap and calls, the decision rule)
-  pool --ds D                    G-P1 on the old cell, then C3's arm on every cell; C0's arm is the filed eval confirmation grids -> outputs/spl1/pool/D.json
+  pool --ds D [--part I --of K]  G-P1 on the old cell, then C3's arm on every cell (A9: with --part only part I of K of the questions, written to a part file)
+  merge --ds D --of K            assembles the K parts and reads them as `pool` does -> outputs/spl1/pool/D.json
+                                 (C0's arm is the filed eval confirmation grids)
   call                           D1 over the three datasets and the card speed ratio -> outputs/spl1/pool/call.json and a markdown table on stdout
 
 Usage (laptop): python -E -P -B outputs/mp_unified/zspl1p.py pool --ds squad
@@ -72,18 +75,6 @@ def fill_pad(ids, n):
     return out
 
 
-_ORIG = P2._read_ids
-_ACTIVE = {}
-
-
-def _patched(path):
-    if Path(path).name == LEG_FILE and "leg" in _ACTIVE:
-        return _ACTIVE["leg"]
-    return _ORIG(path)
-
-
-P2._read_ids = _patched
-
 
 # ── reads ────────────────────────────────────────────────────────────────────────────────────────────────────
 
@@ -144,48 +135,12 @@ def filed_arrays(ds, names):
     return got, gc, qids
 
 
-def run_arm(ds, leg, names):
-    """The filed engine on the eval carve with `leg` as the SPLADE list; returns present, size (questions x cells in plan order), plan names, source."""
-    _ACTIVE["leg"] = leg
-    try:
-        op = P2.opened()
-        src = P2.load_source(ds, "eval", "frozen")
-        plan = Z5.Plan5(names)
-        P, S = Z5.evaluate5(op, src, plan, 0, src.nq)
-    finally:
-        _ACTIVE.pop("leg", None)
-    return P, S, plan.names, src
+def part_range(nq, i, k):
+    """Part i of k of the questions: [lo, hi), the parts tile 0..nq."""
+    return (nq * i) // k, (nq * (i + 1)) // k
 
 
-def cmd_pool(a):
-    ds = a.ds
-    t0 = time.time()
-    c3p = SPL / "c3" / ds / "top1000.npz"
-    if not c3p.is_file():
-        P2.stop(f"{ds}: C3's list is not here ({c3p}); fetch outputs/spl1/c3/{ds}/* first")
-    with np.load(c3p) as z:
-        rows, ids3 = z["rows"].astype(np.int64), z["ids"].astype(np.int32)
-    names, roles, shas = cells_of(ds)
-    filed, gc, qids = filed_arrays(ds, names)
-    # G-P1: C0's own list through the replaced reader and the row mapping reproduces the filed old cell on every question
-    import zworld
-    w = zworld.load(ds)
-    rec = _ORIG(Path(w.root) / "retrieval_cache" / LEG_FILE)
-    P0, S0, pn0, src0 = run_arm(ds, Leg(rows, np.asarray(rec[rows], dtype=np.int32)), [roles["old"]])
-    if list(src0.qids) != list(qids):
-        P2.stop(f"{ds}: the carve's questions are not the filed grids'")
-    fp, fs = filed[roles["old"]]
-    g_p1 = {"cell": roles["old"], "questions": int(src0.nq), "present_equal": bool(np.array_equal(P0[:, 0].astype(np.int64), fp)),
-            "size_equal": bool(np.array_equal(S0[:, 0].astype(np.int64), fs))}
-    g_p1["pass"] = g_p1["present_equal"] and g_p1["size_equal"]
-    P2.log(f"{ds}: G-P1 {'PASS' if g_p1['pass'] else 'FAIL'} on {roles['old']} ({src0.nq} questions)")
-    if not g_p1["pass"]:
-        P2.wjson(OUT / f"{ds}.json", {"stage": "SPL1 A8 pool read", "declared_in": DOC, "dataset": ds, "g_p1": g_p1, "verdict": "G-P1 FAILED: nothing read"})
-        return 1
-    ids3 = fill_pad(ids3, int(w.n)) if (ids3 < 0).any() else ids3
-    P3, S3, pn3, src3 = run_arm(ds, Leg(rows, ids3), names)
-    if list(src3.qids) != list(qids):
-        P2.stop(f"{ds}: C3's carve differs from the filed grids'")
+def finish(ds, P3, S3, pn3, names, roles, shas, filed, gc, qids, g_p1, t0, parts=None):
     rng = np.random.default_rng([BOOT_SEED, 1])
     cells = {}
     for j, n in enumerate(pn3):
@@ -196,13 +151,89 @@ def cmd_pool(a):
         cells[n] = {"c0_all": float(a0.mean()), "c3_all": float(a3.mean()), "diff_pt": d, "lo_pt": lo, "hi_pt": hi,
                     "c0_nodes": n0, "c3_nodes": n3, "nodes_ratio": n3 / n0 if n0 else 1.0, "call": call_of(lo, n3 / n0 if n0 else 1.0)}
     np.savez(OUT / f"{ds}_c3_grid.npz", names=np.asarray(pn3), present=P3, size=S3, gold_counts=gc, qids=np.asarray(qids))
-    res = {"stage": "SPL1 A8 pool read", "declared_in": DOC, "dataset": ds, "questions": int(src3.nq), "roles": roles, "g_p1": g_p1,
-           "code_sha256": P2.sha256_file(Path(__file__)), "select_shas": shas, "boot": {"n": BOOT_N, "seed": BOOT_SEED},
+    res = {"stage": "SPL1 A8 pool read", "declared_in": DOC, "dataset": ds, "questions": int(P3.shape[0]), "roles": roles, "g_p1": g_p1,
+           "code_sha256": P2.sha256_file(Path(__file__)), "select_shas": shas, "boot": {"n": BOOT_N, "seed": BOOT_SEED}, "parts": parts,
            "cells": cells, "seconds": round(time.time() - t0, 1), "utc": P2.utc()}
     P2.wjson(OUT / f"{ds}.json", res)
     for role, n in roles.items():
         c = cells[n]
         P2.log(f"{ds} {role}: C0 {c['c0_all']:.4f} C3 {c['c3_all']:.4f} diff {c['diff_pt']:+.2f} [{c['lo_pt']:+.2f}, {c['hi_pt']:+.2f}] {c['call']} nodes {c['c0_nodes']:.1f} -> {c['c3_nodes']:.1f}")
+
+
+def cmd_pool(a):
+    """A9: with --part I --of K only the questions of part I are run (the parts are independent; `merge` assembles them)."""
+    ds = a.ds
+    t0 = time.time()
+    c3p = SPL / "c3" / ds / "top1000.npz"
+    if not c3p.is_file():
+        P2.stop(f"{ds}: C3's list is not here ({c3p}); fetch outputs/spl1/c3/{ds}/* first")
+    with np.load(c3p) as z:
+        rows, ids3 = z["rows"].astype(np.int64), z["ids"].astype(np.int32)
+    names, roles, shas = cells_of(ds)
+    filed, gc, qids = filed_arrays(ds, names)
+    import zworld
+    w = zworld.load(ds)
+    if (ids3 < 0).any():
+        ids3 = fill_pad(ids3, int(w.n))
+    leg3 = Leg(rows, ids3)
+    rec = P2._read_ids(Path(w.root) / "retrieval_cache" / LEG_FILE)
+    leg0 = Leg(rows, np.asarray(rec[rows], dtype=np.int32))
+    op = P2.opened()
+    src = P2.load_source(ds, "eval", "frozen")
+    if list(src.qids) != list(qids):
+        P2.stop(f"{ds}: the carve's questions are not the filed grids'")
+    lo, hi = (0, src.nq) if a.part is None else part_range(src.nq, a.part, a.of)
+    # G-P1: C0's own list put in the source through the row mapping reproduces the filed old cell on every question of the range
+    src.splade = leg0[src.idx].astype(np.int32)
+    P0, S0 = Z5.evaluate5(op, src, Z5.Plan5([roles["old"]]), lo, hi)
+    fp, fs = filed[roles["old"]]
+    g_p1 = {"cell": roles["old"], "questions": int(hi - lo), "range": [int(lo), int(hi)],
+            "present_equal": bool(np.array_equal(P0[:, 0].astype(np.int64), fp[lo:hi])), "size_equal": bool(np.array_equal(S0[:, 0].astype(np.int64), fs[lo:hi]))}
+    g_p1["pass"] = g_p1["present_equal"] and g_p1["size_equal"]
+    P2.log(f"{ds}: G-P1 {'PASS' if g_p1['pass'] else 'FAIL'} on {roles['old']} (questions {lo}..{hi})")
+    if not g_p1["pass"]:
+        P2.wjson(OUT / f"{ds}.json", {"stage": "SPL1 A8 pool read", "declared_in": DOC, "dataset": ds, "g_p1": g_p1, "verdict": "G-P1 FAILED: nothing read"})
+        return 1
+    src.splade = leg3[src.idx].astype(np.int32)
+    plan = Z5.Plan5(names)
+    P3, S3 = Z5.evaluate5(op, src, plan, lo, hi)
+    if a.part is not None:
+        np.savez(OUT / f"{ds}_c3_part{a.part}of{a.of}.npz", names=np.asarray(plan.names), present=P3, size=S3, lo=lo, hi=hi, nq=src.nq)
+        P2.wjson(OUT / f"{ds}_part{a.part}of{a.of}.json", {"dataset": ds, "part": a.part, "of": a.of, "range": [int(lo), int(hi)], "g_p1": g_p1, "seconds": round(time.time() - t0, 1)})
+        P2.log(f"{ds}: part {a.part} of {a.of} done ({lo}..{hi}, {time.time() - t0:.0f} s)")
+        return 0
+    finish(ds, P3, S3, plan.names, names, roles, shas, filed, gc, qids, g_p1, t0)
+    return 0
+
+
+def cmd_merge(a):
+    ds = a.ds
+    t0 = time.time()
+    names, roles, shas = cells_of(ds)
+    filed, gc, qids = filed_arrays(ds, names)
+    files = sorted(OUT.glob(f"{ds}_c3_part*of{a.of}.npz"), key=lambda p: int(p.stem.split("_part")[1].split("of")[0]))
+    if len(files) != a.of:
+        P2.stop(f"{ds}: {len(files)} parts found, {a.of} expected")
+    Ps, Ss, pos, pn, gates = [], [], 0, None, []
+    for f in files:
+        with np.load(f) as z:
+            lo, hi, nq = int(z["lo"]), int(z["hi"]), int(z["nq"])
+            if lo != pos or nq != len(qids):
+                P2.stop(f"{ds}: the parts do not tile the questions (gap at {pos})")
+            pos = hi
+            names_f = [str(x) for x in z["names"]]
+            if pn is None:
+                pn = names_f
+            elif pn != names_f:
+                P2.stop(f"{ds}: the parts name different cells")
+            Ps.append(z["present"])
+            Ss.append(z["size"])
+        gates.append(json.loads(f.with_suffix(".json").read_text(encoding="utf-8"))["g_p1"])
+    if pos != len(qids) or not all(g["pass"] for g in gates):
+        P2.stop(f"{ds}: the parts do not cover all questions or a G-P1 failed")
+    g_p1 = {"cell": roles["old"], "questions": int(pos), "present_equal": all(g["present_equal"] for g in gates), "size_equal": all(g["size_equal"] for g in gates), "pass": True,
+            "parts": a.of}
+    finish(ds, np.concatenate(Ps), np.concatenate(Ss), pn, names, roles, shas, filed, gc, qids, g_p1, t0, parts=a.of)
     return 0
 
 
@@ -302,7 +333,13 @@ def main():
     sub.add_parser("selftest").set_defaults(fn=cmd_selftest)
     p = sub.add_parser("pool")
     p.add_argument("--ds", required=True, choices=DATASETS)
+    p.add_argument("--part", type=int, default=None)
+    p.add_argument("--of", type=int, default=None)
     p.set_defaults(fn=cmd_pool)
+    m = sub.add_parser("merge")
+    m.add_argument("--ds", required=True, choices=DATASETS)
+    m.add_argument("--of", type=int, required=True)
+    m.set_defaults(fn=cmd_merge)
     sub.add_parser("call").set_defaults(fn=cmd_call)
     a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
