@@ -148,6 +148,29 @@ For every score K and triple t, the quarter gives, per cell, ALL(K, t) and the m
    - **X12 (the S-only walk, the floor).** The floor reaches ALL ≥ 0.95 on at most one of the four SRK cells: 85 percent (S alone does not hold every gold; MetaQA's golds are mostly at the end of typed paths, but its S-only floor may be the highest). The floor's nodes exceed 2,500 on WebQSP: 70 percent; on MetaQA: 50 percent.
 6. **Operations.** The host copy of `zgp3.py` is replaced with this amendment's before any `gp3t-*` row starts; the feed's inputs list is unchanged. The time rows measure the seven-score pass; `time` alone may still change the cost knobs, by a further amendment.
 
+**A2, 26 Nov, before any GP3 coverage number (no extraction row has run; what was read is `time`'s seconds, link counts, capped flags and memory peaks, which carry no gold; HotpotQA's `time` row is still running and 2Wiki's has not started, so those two cells are decided by A3, under the rule in item 3).** Section 10 and G3-6 allow a cost amendment decided from `time` alone; this is one. It changes no ladder, key, program, call, gate pass condition or expectation.
+
+1. **Code (`zgp3.py`, selftest PASS 16:35).** `time` and `extract` take `--cap N` (default **0 = the declared 12,000,000**; the value used is written to the extract's constants, so a part with two caps is visible), and every question's raw neighbour entries per hop (before any thinning) are recorded (`raw`: printed by `time`, a `raw` array in the chunks). Both are cost records; the walk's arithmetic is untouched. `zgp3s.py` is not part of the one-sha rule and is extended in item 4.
+2. **What `time` read** (the first questions of the quarter, one CPU, `--threads 1`; peaks are the process's peak working set, with the commit charge beside):
+
+   | cell | questions | mean s | max s | links hop 2 / hop 3 (max) | hops over 12M | working set / commit GB |
+   |---|---|---|---|---|---|---|
+   | SQuAD RK | 20 | 3.5 | 5.4 | 116k / 279k | none | 0.7 / 0.7 |
+   | MuSiQue RK | 20 | 21.3 | 28.6 | 419k / 1.47M | none | 1.0 / 0.7 |
+   | MetaQA SRK | 20 | 4.8 | 6.4 | 57k / 163k | none | 1.7 / 1.7 |
+   | WebQSP SRK, cap 12M | 12 | 93 | 144 | 8.6M / 4.2M (thinned) | hop 2: 6 of 12; hop 3: **12 of 12** | 15.6 / 11.8 |
+   | WebQSP SRK, cap 48M (cap probe, 2 questions, then cancelled) | 2 | 284 | 358 | 25.5M / 3.8M (thinned) | hop 2: 1 of 2 (raw 245.6M and 15.5M); hop 3: 2 of 2 (raw **230.6M and 447.9M**) | 16.4 / 13.2 |
+   | HotpotQA RK (running, 6 questions so far, cap 12M) | 6 | 181 (first question 399) | 399 | 2.7M / 7.8M (thinned) | hop 3: 3 of 6 (raw 12.4M, 16.5M, 12.4M; the others 9.5M to 11.0M) | 16.6 / 5.6 |
+
+3. **Decisions.**
+   - **SQuAD, MuSiQue, MetaQA:** the cap never trips in the sample; cap = 12,000,000 (the declared value).
+   - **WebQSP SRK:** hop 3 trips on every question and its raw size (230M to 448M entries) is 19 to 37 times the cap; at 48M a question costs 1.6 to 3.2 times as many seconds and hop 3 is still thinned to between a fifth and a tenth of its entries. **A higher cap buys no exactness and costs more: the cap stays 12,000,000 and WebQSP SRK is CAPPED by construction.**
+   - **The rule for a cell whose hops trip on part of the sample (HotpotQA, 2Wiki; decided in A3 from their `time` rows, before their extraction rows):** the cap for the cell is the smallest of 12M, 24M, 48M under which at most 2 percent of the sampled questions have a hop over it, and 12M if none does (then the cell is CAPPED, as WebQSP). One cap per cell, written to its extract.
+   - **How a CAPPED cell is read (G3-6: "an amendment decides it").** The rule that is graded is **the walk with its work cap**: a hop whose neighbourhood exceeds the cap expands a hash-ordered subset of its parents. ALL and the nodes of a capped cell are **exact for that capped rule** and **not** the uncapped walk's, which is not measured (its raw entries on WebQSP are more than thirty times the cap, and the seconds follow). C2, C3 and P1/P2 are filed over all nine cells as declared, the capped cells are marked CAPPED in every table, and the same programs are filed beside **over the cells that are not CAPPED** (item 4). C4 stays as written: a CAPPED cell makes the call `HELD_BUT_CAPPED` at best.
+4. **`zgp3s.py` (before the quarter is solved):** `solve` also files P1, P2, the own optima and the final rule's per-cell table **over the cells whose capped share is at most 2 percent** (a cell subset, which the program already takes), and the report marks the two readings. The final rule is chosen on the all-cells reading, as declared; the second reading is descriptive.
+5. **Rows (sized from the measured peaks above: the peak working set plus a tenth, never GP1's 20 GB by default).** SQuAD 1 row, 2 GB; MuSiQue 3 shards, 3 GB each (about 35 minutes each); MetaQA 2 shards, 3 GB each; **WebQSP 4 shards, 17 GB each** (about 85 questions and 2.4 hours each at 93 s). The feeder sends them as memory frees; they sit **ahead of the other session's rows only because they are 1-CPU rows and GP3 is link tightening (the user's priority above models)**: this ordering was set by moving the six `gp3t-*` time rows ahead of `r9tree-*` in the feed at about 16:15 (my own lines only; the `r9tree-*` and `r9cap-*` rows were not touched), and the extraction rows are inserted at the same place. MultiHop-RAG runs on the laptop after the code is final. Zero GPU.
+6. **Expectation added before any number (X13).** WebQSP's capped reading reaches ALL ≥ 0.95 at some triple: 25 percent (hop-2 and hop-3 golds are lost to the thinning on the questions whose neighbourhoods are largest, which are the hubs' questions); WebQSP's ladder-top ALL under the cap is below UL5's uncut 0.956 by more than 0.03: 70 percent.
+
 ## 13. Results
 
 None yet.

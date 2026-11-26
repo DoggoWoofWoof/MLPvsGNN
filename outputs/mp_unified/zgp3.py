@@ -165,6 +165,7 @@ def hop_table(ctx, parents, level):
     """The distinct links (a, c) from the parents to the nodes of BFS level `level`, with their dot, source rank and S flag. Over GATHER_CAP raw entries the parents are thinned in hash order."""
     n = ctx.n
     parents = np.unique(np.asarray(parents, np.int64))
+    ctx.raw_last = sum(int((ip[parents + 1] - ip[parents]).sum()) for ip, _ix in ctx.G.hv) if parents.size else 0   # A2: the raw entries before any thinning (a cost record, no effect on the walk)
     if parents.size == 0:
         return Table(EMPTY, EMPTY, EMPTY, EMPTY, np.zeros(0, bool)), False
     s, x, thin = ctx.G.gather(parents, limit=GATHER_CAP)
@@ -285,10 +286,10 @@ def run_question(ctx, seeds, golds, qseed):
         gb1 = np.full((NS, ng), NL, np.int8)
         gb2 = np.full((NS, NL, ng), NL, np.int8)
         gb3 = np.full((NS, NL, NL, ng), NL, np.int8)
-        diag = {"seeds": int(seeds.size), "free": int(free.size), "L1": int(L1.size), "L2": int(L2_.size), "links": [0, 0, 0], "capped": [False, False, False], "ncand": [0, 0, 0]}
+        diag = {"seeds": int(seeds.size), "free": int(free.size), "L1": int(L1.size), "L2": int(L2_.size), "links": [0, 0, 0], "capped": [False, False, False], "ncand": [0, 0, 0], "raw": [0, 0, 0]}
         # hop 1
         tab1, cap = hop_table(ctx, seeds, 1)
-        diag["links"][0], diag["capped"][0] = int(tab1.c.size), cap
+        diag["links"][0], diag["capped"][0], diag["raw"][0] = int(tab1.c.size), cap, ctx.raw_last
         m1 = np.ones(tab1.c.size, bool)
         kept1 = []
         pp = "PP" in scores
@@ -304,7 +305,7 @@ def run_question(ctx, seeds, golds, qseed):
                           np.concatenate([r["s_mass"], r["tops_mass"]])))
         # hop 2
         tab2, cap = hop_table(ctx, np.concatenate([x[0] for x in kept1]), 2)
-        diag["links"][1], diag["capped"][1] = int(tab2.c.size), cap
+        diag["links"][1], diag["capped"][1], diag["raw"][1] = int(tab2.c.size), cap, ctx.raw_last
         kept2 = {}
         for k, K in enumerate(scores):
             p2 = posmap(ctx, tab2.a, kept1[k][0], kept1[k][1])
@@ -319,7 +320,7 @@ def run_question(ctx, seeds, golds, qseed):
                                   np.concatenate([r["s_mass"], r["tops_mass"]]))
         # hop 3
         tab3, cap = hop_table(ctx, np.concatenate([v_[0] for v_ in kept2.values()]), 3)
-        diag["links"][2], diag["capped"][2] = int(tab3.c.size), cap
+        diag["links"][2], diag["capped"][2], diag["raw"][2] = int(tab3.c.size), cap, ctx.raw_last
         for (k, i1), (nodes, pos, mass) in kept2.items():
             p3 = posmap(ctx, tab3.a, nodes, pos)
             keep3 = p3 <= ladder[i1]
@@ -566,7 +567,7 @@ def cmd_time(a):
             r = run_question(ctx, sl["seeds"][qi], EMPTY, qi)
             dg = r["diag"]
             rec.append((round(time.time() - t1, 2), dg))
-            log(f"{a.ds}/{v} q{qi}: {rec[-1][0]} s, links {dg['links']}, candidates {dg['ncand']}, L1 {dg['L1']}, L2 {dg['L2']}, capped {dg['capped']} ({G1.C.peak_gb()} GB)")
+            log(f"{a.ds}/{v} q{qi}: {rec[-1][0]} s, links {dg['links']}, candidates {dg['ncand']}, L1 {dg['L1']}, L2 {dg['L2']}, capped {dg['capped']}, raw entries {dg['raw']} ({G1.C.peak_gb()} GB)")
     secs = [x for x, _d in rec]
     log(f"{a.ds}: {len(rec)} question-walks, mean {np.mean(secs):.2f} s, max {max(secs):.2f} s, total {time.time() - t0:.0f} s (no label read)")
     return 0
@@ -582,7 +583,7 @@ def pack_chunk(res, qs):
            "gq": gq, "glev": np.concatenate([r["glev"] for r in res]), "gfree": np.concatenate([r["gfree"] for r in res]),
            "gb1": cat("gb1").astype(np.int8), "gb2": cat("gb2").astype(np.int8), "gb3": cat("gb3").astype(np.int8),
            "links": np.asarray([r["diag"]["links"] for r in res], np.int64), "ncand": np.asarray([r["diag"]["ncand"] for r in res], np.int64),
-           "capped": np.asarray([r["diag"]["capped"] for r in res], bool), "lv12": np.asarray([[r["diag"]["L1"], r["diag"]["L2"]] for r in res], np.int64)}
+           "capped": np.asarray([r["diag"]["capped"] for r in res], bool), "raw": np.asarray([r["diag"]["raw"] for r in res], np.int64), "lv12": np.asarray([[r["diag"]["L1"], r["diag"]["L2"]] for r in res], np.int64)}
     return out
 
 
@@ -668,6 +669,7 @@ def main(argv=None):
     t.add_argument("--n", type=int, default=20)
     t.add_argument("--host", action="store_true")
     t.add_argument("--threads", type=int, default=1)
+    t.add_argument("--cap", type=int, default=0, help="A2: the gather cap in raw entries (0 = the declared 12,000,000); a cost knob, filed in the extract's constants")
     x = sub.add_parser("extract")
     x.add_argument("--ds", required=True)
     x.add_argument("--part", required=True)
@@ -675,9 +677,13 @@ def main(argv=None):
     x.add_argument("--threads", type=int, default=1)
     x.add_argument("--limit", type=int, default=0)
     x.add_argument("--shard", default="0/1")
+    x.add_argument("--cap", type=int, default=0, help="A2: the gather cap in raw entries (0 = the declared 12,000,000); a cost knob, filed in the extract's constants")
     a = ap.parse_args(argv)
     if a.cmd == "selftest":
         return selftest()
+    global GATHER_CAP
+    if a.cap:
+        GATHER_CAP = a.cap
     return {"time": cmd_time, "extract": cmd_extract}[a.cmd](a)
 
 
