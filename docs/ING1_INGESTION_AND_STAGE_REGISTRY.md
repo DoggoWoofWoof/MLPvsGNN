@@ -44,6 +44,22 @@ Nothing below edits a frozen module. Everything new is a new file, written once,
 
 **3.7 The world loader** (ING1-B, `outputs/mp_unified/zworld.py`, a new declared module). One read-only `load(dataset)` for all ten: node ids and texts, query rows with split and golds, S edges, paths of the vectors, shas. Conformance gate **G-W**: on the original six and MultiHop-RAG the loader's counts and content hashes equal the legacy loaders' (`zenc` readers, `zul2p.load_host`, `zul2p.load_mhr`). Frozen stages keep their own loaders and nothing is refiled. New stages (STK2 links, STK3 pools, every later one) are written against `zworld` only after G-W passes.
 
+### 3.8 Amendment A1 (26 Nov, 23:18 IST, after `zworld.py` was written and self-tested, before any G-W number is read)
+
+Section 3.7 said G-W compares counts and content hashes with the legacy loaders. This fixes what that means. **Disclosure:** the SQuAD run (the smallest dataset, a smoke of the code) was executed before this amendment was committed; its record is read with the others, not before.
+
+- **The loader** (`outputs/mp_unified/zworld.py`, new declared module, read-only; edit only through an amendment here): `load(name)` resolves the package through the registry and the registry tool's own resolver (one rule for where a package is). A `World` gives `iter_nodes` (line i is node i, text = the record's `text` field, the same field for all ten), `node_ids`, `positions`, `iter_queries` (row j = `query_ids.json[j]`, the split files in the record's order, the query id of every line checked, gold ids **collapsed to distinct in first-seen order** as STK1 A1 fixed for the STaRK KBs and as the seven grade, the positions of those ids, and the listed length), `edge_file` (S is `graph/structural.npz` or, for the STaRK packages, `graph/s_edges.npz`: both hold `src`, `dst`, `rel`), `rel_vocab`, and `vector_dir` and `vector_shards` per arm (the frozen arm in the package, every other arm under `outputs/enc/<arm>/<dataset>/`). A gold id that is not a node stops the read. No dataset name is in the code.
+- **G-W** (`zworld.py gate [--ds NAME ...]`, run from the workspace root, writes `outputs/ing1/gw_<dataset>.json`). Seven checks, each PASS, FAIL or N/A with the reason:
+  - **W1** the node file's sha256 and line count equal the record's;
+  - **W2** where a legacy layout grade exists (`outputs/ul2c/<ds>`, `outputs/ul2m/<ds>`), its node count and node sha256 equal the loader's;
+  - **W3** every question of the record is read in row order with every gold resolved to a node (a count of questions with no node gold and of lists that name a node twice is recorded, not a failure);
+  - **W4** the sha256 over the loader's node texts (each followed by a newline) equals the one over `zenc.doc_chunks`' texts, and the counts equal the record's;
+  - **W5** every question text equals `zenc.query_texts`' for the same row;
+  - **W6** the distinct gold positions of every question equal the legacy reader's: `zul1.carve_questions` for the six (both carves, every carve question found by id) and `zul2m.golds_splits` for MultiHop-RAG (all questions); N/A for the STaRK KBs, which have no legacy reader;
+  - **W7** for each registered arm and kind, the loader's shard list equals `zenc.vec_shards`' where the shards are on the machine; N/A where they are not.
+- **What passing means and does not.** PASS means the loader reads the same nodes, texts, questions, gold positions and vector files as the frozen readers, for that dataset, on that machine. It does not touch the edge files (W6 does not read the six's families; they are read in STK2, where a graph rule needs them) and it does not claim the frozen modules are right.
+- **Expectation E3 stands as written** (passes on the six and MultiHop-RAG, or the differing counts are reported and not forced), with the STaRK KBs added: W1 to W5 apply to them as well and are read the same way.
+
 ## 4. Phases
 
 - **A** (this page's first step): `configs/datasets.json`, `configs/rule_sets.json`, `scripts/ingest/ingest.py` with `check`, `status`, `plan`. Read-only, laptop-runnable, host-runnable through `rx exec`.
