@@ -590,9 +590,153 @@
      "recall_W0_minus_W1_points": 3.23
     }
    }
+  },
+  "2wiki": {
+   "slice": 75,
+   "rungs": {
+    "100/50": {
+     "pooled_proven_share": 1.0,
+     "pooled_reads": true,
+     "unproven_instances": 0,
+     "per_scorer": {
+      "W0": {
+       "proven_share": 1.0,
+       "per_scorer_reads": true,
+       "flips_under_pooled": false
+      },
+      "W1": {
+       "proven_share": 1.0,
+       "per_scorer_reads": true,
+       "flips_under_pooled": false
+      }
+     }
+    },
+    "300/150": {
+     "pooled_proven_share": 0.98,
+     "pooled_reads": false,
+     "unproven_instances": 3,
+     "per_scorer": {
+      "W0": {
+       "proven_share": 0.9867,
+       "per_scorer_reads": false,
+       "flips_under_pooled": false
+      },
+      "W1": {
+       "proven_share": 0.9733,
+       "per_scorer_reads": false,
+       "flips_under_pooled": false
+      }
+     }
+    },
+    "1000/500": {
+     "pooled_proven_share": 0.6333,
+     "pooled_reads": false,
+     "unproven_instances": 55,
+     "per_scorer": {
+      "W0": {
+       "proven_share": 0.72,
+       "per_scorer_reads": false,
+       "flips_under_pooled": false
+      },
+      "W1": {
+       "proven_share": 0.5467,
+       "per_scorer_reads": false,
+       "flips_under_pooled": false
+      }
+     }
+    }
+   },
+   "paired": {
+    "W0": {
+     "300/150": {
+      "n_proven_at_both": 74,
+      "of": 75,
+      "completion_minus_C1": {
+       "diff": 16.22,
+       "lo": 6.76,
+       "hi": 25.68,
+       "call": "ABOVE"
+      },
+      "completion_C1_on_subset_pct": 10.81,
+      "completion_rung_on_subset_pct": 27.03,
+      "recall_gain_points_all_questions": 33.33
+     },
+     "1000/500": {
+      "n_proven_at_both": 54,
+      "of": 75,
+      "completion_minus_C1": {
+       "diff": -7.41,
+       "lo": -14.81,
+       "hi": -1.85,
+       "call": "BELOW"
+      },
+      "completion_C1_on_subset_pct": 11.11,
+      "completion_rung_on_subset_pct": 3.7,
+      "recall_gain_points_all_questions": 86.67
+     }
+    },
+    "W1": {
+     "300/150": {
+      "n_proven_at_both": 73,
+      "of": 75,
+      "completion_minus_C1": {
+       "diff": 13.7,
+       "lo": 4.11,
+       "hi": 23.29,
+       "call": "ABOVE"
+      },
+      "completion_C1_on_subset_pct": 30.14,
+      "completion_rung_on_subset_pct": 43.84,
+      "recall_gain_points_all_questions": 41.33
+     },
+     "1000/500": {
+      "n_proven_at_both": 41,
+      "of": 75,
+      "completion_minus_C1": {
+       "diff": -14.63,
+       "lo": -26.83,
+       "hi": -2.44,
+       "call": "BELOW"
+      },
+      "completion_C1_on_subset_pct": 21.95,
+      "completion_rung_on_subset_pct": 7.32,
+      "recall_gain_points_all_questions": 69.33
+     }
+    }
+   },
+   "w0_minus_w1": {
+    "100/50": {
+     "n_proven_in_both": 75,
+     "completion_W0_minus_W1": {
+      "diff": -17.33,
+      "lo": -26.67,
+      "hi": -6.67,
+      "call": "BELOW"
+     },
+     "recall_W0_minus_W1_points": -17.33
+    },
+    "300/150": {
+     "n_proven_in_both": 72,
+     "completion_W0_minus_W1": {
+      "diff": -16.67,
+      "lo": -29.17,
+      "hi": -5.56,
+      "call": "BELOW"
+     },
+     "recall_W0_minus_W1_points": -25.33
+    },
+    "1000/500": {
+     "n_proven_in_both": 30,
+     "completion_W0_minus_W1": {
+      "diff": -3.33,
+      "lo": -16.67,
+      "hi": 6.67,
+      "call": "LEVEL"
+     },
+     "recall_W0_minus_W1_points": 0.0
+    }
+   }
   }
  },
- "missing": [
-  "2wiki"
- ]
+ "missing": []
 }

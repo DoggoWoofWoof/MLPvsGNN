@@ -18,6 +18,9 @@ Read-only on the cap records; nothing solved; the paired reads are on a selected
 | hotpotqa | 100/50 | 0 | 1.0000 | True | 1.0000 | 1.0000 | - |
 | hotpotqa | 300/150 | 1 | 0.9839 | False | 1.0000 | 0.9677 | W0 |
 | hotpotqa | 1000/500 | 9 | 0.8548 | False | 0.8065 | 0.9032 | - |
+| 2wiki | 100/50 | 0 | 1.0000 | True | 1.0000 | 1.0000 | - |
+| 2wiki | 300/150 | 3 | 0.9800 | False | 0.9867 | 0.9733 | - |
+| 2wiki | 1000/500 | 55 | 0.6333 | False | 0.7200 | 0.5467 | - |
 
 ## Completion against the rung 100/50, on the questions proven at both (n of the slice)
 
@@ -39,6 +42,10 @@ Read-only on the cap records; nothing solved; the paired reads are on a selected
 | hotpotqa | W0 | 1000/500 | 25 of 31 | 44.0 | 12.0 | -32.0 | [-52.0, -12.0] | BELOW | 54.84 |
 | hotpotqa | W1 | 300/150 | 30 of 31 | 43.33 | 33.33 | -10.0 | [-30.0, 10.0] | LEVEL | 51.61 |
 | hotpotqa | W1 | 1000/500 | 28 of 31 | 39.29 | 17.86 | -21.43 | [-39.29, -3.57] | BELOW | 54.84 |
+| 2wiki | W0 | 300/150 | 74 of 75 | 10.81 | 27.03 | 16.22 | [6.76, 25.68] | ABOVE | 33.33 |
+| 2wiki | W0 | 1000/500 | 54 of 75 | 11.11 | 3.7 | -7.41 | [-14.81, -1.85] | BELOW | 86.67 |
+| 2wiki | W1 | 300/150 | 73 of 75 | 30.14 | 43.84 | 13.7 | [4.11, 23.29] | ABOVE | 41.33 |
+| 2wiki | W1 | 1000/500 | 41 of 75 | 21.95 | 7.32 | -14.63 | [-26.83, -2.44] | BELOW | 69.33 |
 
 ## W0 minus W1 at each rung, on the questions proven in both
 
@@ -56,5 +63,8 @@ Read-only on the cap records; nothing solved; the paired reads are on a selected
 | hotpotqa | 100/50 | 31 | 3.23 | [-16.13, 22.58] | LEVEL | 3.23 |
 | hotpotqa | 300/150 | 30 | 6.67 | [-13.33, 26.67] | LEVEL | -3.23 |
 | hotpotqa | 1000/500 | 24 | -4.17 | [-16.67, 8.33] | LEVEL | 3.23 |
+| 2wiki | 100/50 | 75 | -17.33 | [-26.67, -6.67] | BELOW | -17.33 |
+| 2wiki | 300/150 | 72 | -16.67 | [-29.17, -5.56] | BELOW | -25.33 |
+| 2wiki | 1000/500 | 30 | -3.33 | [-16.67, 6.67] | LEVEL | 0.0 |
 
-Missing: 2wiki.
+Missing: none.

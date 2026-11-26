@@ -2179,6 +2179,62 @@ The user's picture, in their words: "a question depending semantic b-tree": one 
 
 **What this means.** The cap, not the budget and not the program, is where R8's flat cosine loses reach: widening it lifts the candidate recall by 20 to 64 points on the 4 datasets read. **But it does not lift the completion: at the same budget the completion at 300/150 and (on the proven questions) at 1000/500 is at or below the completion at 100/50 on every dataset read, so the flat ceiling stays R8's own 100/50 number.** The same program, given the same budget over more candidates, completes the golds of fewer questions, not more. The hop-1 need (e) says why a bigger cap alone would not have fixed it either: on WebQSP the 90th percentile of the need is the rank 7,337 for W0 (0.887 of the field at the ratio's own 90th percentile), and only 60 percent of the questions have their missed hop-1 golds inside the first 1,000. **What it leaves for Part B9:** whether a tree chooses the right branches where the flat cosine, given the same nodes, does not; the flat arm F of 17.5 is exactly that comparison at equal node counts. **Nothing changes in pools, links, PL or any model.** The 2Wiki row and the three tree rows that are still running are read after this commit.
 
+### 17.13 The 2Wiki cap row filed (27 November 2026, 02:51 IST, 21:21 UTC): Part A9 on all five datasets; the two named readings do not change, **and 17.11's "what this means" is corrected for 2Wiki at 300/150**
+
+**Row.** `r9cap-2wiki` finished (rc 0, 11 h 15 min on the host, 40,508 s in the process, 4 workers, peak 21.56 GB against the ask of 23.5), the record is `outputs/sem2/r9/2wiki/cap.json` (+ `.npz`, not committed), code unchanged (zsem2r9.py sha as in 17.11; the record carries it). **Gates, all PASS: G-E, G-R, G-Q, G-C, G-X, G-B, G-P.** G-X: at 100/50 the candidate recall equals R8's on every slice question for W0 and for W1 (1.0, 1.0). The reports `report_cap.json|md` and `report_cap_beside.json|md` are rerun on all five datasets (`report cap`, then `zsem2r9a.py`); nothing else in the code was touched. The slice is 75 of R8's 600 population (every eighth question).
+
+**(a) The ladder on 2Wiki:**
+
+| scorer | candidate recall % at 100/50, 300/150, 1000/500 | completion % at the same rungs (— = not read) | proven share % at the same rungs | unproven programs at the same rungs |
+|---|---|---|---|---|
+| W0 | 12.0 / 45.3 / 98.7 | 12.0 / — / — | 100.0 / 98.7 / 72.0 | 0 / 1 / 21 |
+| W1 | 29.3 / 70.7 / 98.7 | 29.3 / — / — | 100.0 / 97.3 / 54.7 | 0 / 2 / 34 |
+
+**(b) Beside, decided nothing: the completion against the rung 100/50 on the questions both programs were proven on** (the unproven programs are the large ones, so this is a selected subset, counted):
+
+| scorer | rung against 100/50 | questions proven at both | completion at 100/50 on them % | completion at the rung on them % | difference, points [interval] | call | recall gain, all questions, points |
+|---|---|---:|---:|---:|---|---|---:|
+| W0 | 300/150 | 74 of 75 | 10.81 | 27.03 | 16.22 [6.76, 25.68] | ABOVE | 33.33 |
+| W0 | 1000/500 | 54 of 75 | 11.11 | 3.7 | -7.41 [-14.81, -1.85] | BELOW | 86.67 |
+| W1 | 300/150 | 73 of 75 | 30.14 | 43.84 | 13.7 [4.11, 23.29] | ABOVE | 41.33 |
+| W1 | 1000/500 | 41 of 75 | 21.95 | 7.32 | -14.63 [-26.83, -2.44] | BELOW | 69.33 |
+
+**(c) Proven shares per rung** (the pooled reading is the declared one; zsem2r9.py reads per scorer and rung; **no named reading depends on a flip**):
+
+| rung | unproven programs | proven share pooled over both scorers | W0 | W1 | cells the pooled reading would not read although the per-scorer reading did |
+|---|---:|---:|---:|---:|---|
+| 100/50 | 0 | 100.0 | 100.0 | 100.0 | — |
+| 300/150 | 3 | 98.0 | 98.7 | 97.3 | — |
+| 1000/500 | 55 | 63.3 | 72.0 | 54.7 | — |
+
+**(d) The hop-1 need of the missed golds** (the stand-in for an uncapped cap):
+
+| dataset | questions with a missed hop-1 gold | scorer | need at most 100 / 300 / 1,000 (share of those questions, %) | need median, 90th percentile | need over field size, median, 90th percentile |
+|---|---:|---|---|---|---|
+| 2Wiki | 73 | W0 | 12.3 / 46.6 / 100.0 | 350, 581 | 0.362, 0.612 |
+| 2Wiki | 73 | W1 | 30.1 / 72.6 / 100.0 | 162, 556 | 0.190, 0.499 |
+
+**(e) W0 minus W1 at each rung, on the questions proven in both** (beside; XC3):
+
+| rung | questions proven in both | completion W0 minus W1, points [interval] | call | recall W0 minus W1, points |
+|---|---:|---|---|---:|
+| 100/50 | 75 | -17.33 [-26.67, -6.67] | BELOW | -17.33 |
+| 300/150 | 72 | -16.67 [-29.17, -5.56] | BELOW | -25.33 |
+| 1000/500 | 30 | -3.33 [-16.67, 6.67] | LEVEL | 0.0 |
+
+**(f) The named readings, with 2Wiki read (decided here, both unchanged).** **CAP_BINDS: TRUE for W0 and for W1** (the candidate recall at 1000/500 over 100/50 is +86.7 for W0 and +69.3 for W1 on 2Wiki, the largest of the five; five of five datasets now clear the 10 points, three are needed). **COMPLETION_FOLLOWS: FALSE for W0 and for W1**, as decided in 17.11(c): at 1000/500 the 2Wiki programs are proven in only 72.0 percent (W0) and 54.7 percent (W1), so the rung's completion is not read on 2Wiki, and the only cell of the ten that is read at that rung is still MetaQA W1 (-9.3). The 2Wiki row could not have changed the reading in either direction, as 17.11 said. **The flat ceiling, the best completion read over the rungs and scorers**, on 2Wiki is R8's own 100/50 cell (W1 29.3; W0 12.0), as on the other four (MuSiQue 33.3, MetaQA 42.7, HotpotQA 45.2, WebQSP 36.0) **where the reading is the declared one (read cells only); see the correction below for what the proven subset shows at 300/150.**
+
+**(g) Correction to 17.11 ("what this means"), for 2Wiki at 300/150.** 17.11 wrote that the completion at 300/150 is at or below 100/50 on every dataset read, and that the flat ceiling stays R8's own 100/50 number. **That sentence is true on the four datasets it was written for and it is not true on 2Wiki.** At 300/150 the 2Wiki programs are proven on 74 of 75 questions (W0) and 73 of 75 (W1), so the rung is **not read** by the declared rule (pooled share 98.0 percent, per scorer 98.7 and 97.3, the threshold is 99.5); but on the questions proven at both rungs the completion **rises**: W0 10.81 to 27.03 (+16.2 points, ABOVE), W1 30.14 to 43.84 (+13.7 points, ABOVE), against recall gains of 33.3 and 41.3. So **2Wiki is the one dataset where widening the cap to 300/150 lifts the completion, by about a half (W0) and a third (W1) of what it lifts the recall**, and its 1000/500 proven subset falls again (-7.4 W0, -14.6 W1, both BELOW; 54 and 41 of 75 questions, the small programs). R8 had found 2Wiki the dataset where the cap is the loss (completion 92 to 99 percent of the candidate recall at 100/50) and where the stored label helped most; the ladder agrees on the first, and it says the lift is available only in the window where the programs are still provable. **The corrected statement:** on MuSiQue, MetaQA, HotpotQA and WebQSP the completion at 300/150 is at or below 100/50; on 2Wiki, on the proven subset (a selected one), it is above, and that cell is not read by the declared rule. **Not a named reading and not a verdict**; it does not change CAP_BINDS, COMPLETION_FOLLOWS or the flat ceiling as defined, it changes the sentence that said "every dataset read". An amendment that re-solves the unproven 300/150 programs (three on 2Wiki, one on HotpotQA, two on WebQSP) at a longer limit would make the rung read on those datasets; I name it and **do not declare it**: Part B9 is the question R9 was declared for.
+
+**(h) The expectations of 17.7 that Part A9 can score, now on five datasets (a failed one is reported as failed).**
+- **XC1 HELD on five of five.** W0's recall rises with the cap on every dataset (2Wiki 12.0, 45.3, 98.7) and the gain at 1000/500 is at least 15 points on all five; WebQSP's is 62.7, inside 50 to 75.
+- **XC2 STILL CANNOT BE SCORED AS DECLARED** (1000/500's completion is read in one cell of ten); the direction I expected is there beside on all five datasets at 1000/500 (W0 -1.6, -17.6, -32.0, -9.9 and 2Wiki -7.4, against recall gains of +63.5, +42.7, +54.8, +20.0 and +86.7), and at 300/150 on 2Wiki the point estimate of the completion gain is 16.2 (W0) against half of the recall gain 16.7: just under half, but a gain, and not at or below zero.
+- **XC3 FAILED IN PART (as in 17.11), 2Wiki's half HELD:** W1 completes at least as much as W0 at every rung by the point estimate (-17.33, -16.67, -3.33 points for W0 minus W1 at 100/50, 300/150, 1000/500; BELOW at the first two, LEVEL at the third). HotpotQA's half still fails at 1000/500.
+- **XC4 FAILED AT 300/150 on three datasets of five and HELD AT 1000/500.** G-P holds at 100/50 on all five. At 300/150 the pooled proven share is below 99.5 on HotpotQA (98.4), WebQSP (98.7) and 2Wiki (98.0), which I expected to hold. At 1000/500 **all five are below** (MuSiQue 91.3, MetaQA 99.3, HotpotQA 85.5, WebQSP 90.0, 2Wiki 63.3), where I expected at least one.
+- XC5 to XC7 are Part B9's and are not scored here.
+
+**What this means.** Part A9 is complete on the five datasets. The cap binds on all five (candidate recall +20 to +87 points at 1000/500 over 100/50); the completion does not follow it at the declared rungs (it is not read at 1000/500 on nine cells of ten, and where it is read at 300/150 it is at or below 100/50 on four datasets and unread on the fifth); the exception worth carrying into Part B9's reading is **2Wiki at 300/150, where the proven subset shows a completion gain of 16 points for W0 and 14 for W1.** The time the programs need grows faster than the cap: the 2Wiki programs at 1000/500 have 89,000 to 111,000 candidates by their medians against a budget of 1,500, and 55 of 150 are not proven at 120 s, so a read at that rung needs a longer limit or a smaller program, not a different scorer. **Nothing changes in pools, links, PL or any model.**
+
 ### 8.16 Records completed after the closure (24 November 2026, 23:47 IST, 18:17 UTC): decides nothing
 
 8.15 closed the hub line with five rows still running. They have finished: R1k on WebQSP and 2Wiki, and R1q on

@@ -28,6 +28,12 @@ Declared in docs/SEM2_EDGE_OPERATORS.md section 17. Dev slice (every eighth ques
 | hotpotqa | 31 | W1 | 100/50 | 41.9 | 41.9 | 1.0000 | 41.94 | 2322 |
 | hotpotqa | 31 | W1 | 300/150 | 93.5 | not read | 0.9677 | 33.33 | 10863 |
 | hotpotqa | 31 | W1 | 1000/500 | 96.8 | not read | 0.9032 | 17.86 | 54574 |
+| 2wiki | 75 | W0 | 100/50 | 12.0 | 12.0 | 1.0000 | 16.0 | 3924 |
+| 2wiki | 75 | W0 | 300/150 | 45.3 | not read | 0.9867 | 35.35 | 13701 |
+| 2wiki | 75 | W0 | 1000/500 | 98.7 | not read | 0.7200 | 4.23 | 89269 |
+| 2wiki | 75 | W1 | 100/50 | 29.3 | 29.3 | 1.0000 | 34.0 | 3460 |
+| 2wiki | 75 | W1 | 300/150 | 70.7 | not read | 0.9733 | 48.98 | 12932 |
+| 2wiki | 75 | W1 | 1000/500 | 98.7 | not read | 0.5467 | 8.93 | 110880 |
 
 Hop-1 need of the missed golds (the largest rank, in the scorer's order over the hop-1 field, of a question's missed hop-1 golds):
 
@@ -41,11 +47,13 @@ Hop-1 need of the missed golds (the largest rank, in the scorer's order over the
 | webqsp | 70 | W1 | 40.0 | 50.0 | 64.29 | 310.0 | 9088.4 | 0.0221 | 0.7633 |
 | hotpotqa | 30 | W0 | 46.67 | 90.0 | 100.0 | 101.5 | 275.7000000000001 | 0.2079 | 0.5342 |
 | hotpotqa | 30 | W1 | 43.33 | 96.67 | 100.0 | 150.5 | 255.90000000000003 | 0.2627 | 0.5718 |
+| 2wiki | 73 | W0 | 12.33 | 46.58 | 100.0 | 350.0 | 581.2 | 0.3621 | 0.6123 |
+| 2wiki | 73 | W1 | 30.14 | 72.6 | 100.0 | 162.0 | 556.0 | 0.1904 | 0.4993 |
 
 Readings (decide nothing):
 
-- W0: CAP_BINDS True, COMPLETION_FOLLOWS False; recall gain C3 - C1 {'musique': 63.5, 'metaqa': 42.67, 'webqsp': 20.0, 'hotpotqa': 54.84}; completion gain {'musique': None, 'metaqa': None, 'webqsp': None, 'hotpotqa': None}
-- W1: CAP_BINDS True, COMPLETION_FOLLOWS False; recall gain C3 - C1 {'musique': 57.14, 'metaqa': 49.34, 'webqsp': 22.67, 'hotpotqa': 54.83}; completion gain {'musique': None, 'metaqa': -9.33, 'webqsp': None, 'hotpotqa': None}
+- W0: CAP_BINDS True, COMPLETION_FOLLOWS False; recall gain C3 - C1 {'musique': 63.5, 'metaqa': 42.67, 'webqsp': 20.0, 'hotpotqa': 54.84, '2wiki': 86.67}; completion gain {'musique': None, 'metaqa': None, 'webqsp': None, 'hotpotqa': None, '2wiki': None}
+- W1: CAP_BINDS True, COMPLETION_FOLLOWS False; recall gain C3 - C1 {'musique': 57.14, 'metaqa': 49.34, 'webqsp': 22.67, 'hotpotqa': 54.83, '2wiki': 69.34}; completion gain {'musique': None, 'metaqa': -9.33, 'webqsp': None, 'hotpotqa': None, '2wiki': None}
 
-Flat ceiling (best completion read over the rungs and scorers): {'musique': 33.33, 'metaqa': 42.67, 'webqsp': 36.0, 'hotpotqa': 45.16}
-Missing: 2wiki.
+Flat ceiling (best completion read over the rungs and scorers): {'musique': 33.33, 'metaqa': 42.67, 'webqsp': 36.0, 'hotpotqa': 45.16, '2wiki': 29.33}
+Missing: none.

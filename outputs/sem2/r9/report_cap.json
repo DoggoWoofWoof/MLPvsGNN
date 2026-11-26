@@ -6,9 +6,7 @@
   "zsem2r8w": "5b411e9181f87e75309c988347c4e79cefd7fbc5858693be038975221fd49b68",
   "zsem2r8": "d02b42917addd0e6b09725891089c75824e9d3058aad9e9460c31ffaec7c3534"
  },
- "missing": [
-  "2wiki"
- ],
+ "missing": [],
  "datasets": {
   "musique": {
    "slice": 63,
@@ -461,6 +459,119 @@
     "mismatching slice positions (candidate recall)": [],
     "verdict": "PASS"
    }
+  },
+  "2wiki": {
+   "slice": 75,
+   "gates": {
+    "G-E": "PASS",
+    "G-R": "PASS",
+    "G-Q": "PASS",
+    "G-C": "PASS",
+    "G-X": "PASS",
+    "G-B": "PASS",
+    "G-P": "PASS"
+   },
+   "rungs": {
+    "W0 100/50": {
+     "candidate_recall_pct": 12.0,
+     "proven_share": 1.0,
+     "completion_read": true,
+     "completion_pct": 12.0,
+     "completion_pct_all_proven": 12.0,
+     "recovered_share_pct": 16.0,
+     "n_cand_median": 3924.0,
+     "branches_median": 100.0,
+     "used_median": 1500.0
+    },
+    "W0 300/150": {
+     "candidate_recall_pct": 45.33,
+     "proven_share": 0.9867,
+     "completion_read": false,
+     "completion_pct": null,
+     "completion_pct_all_proven": 27.03,
+     "recovered_share_pct": 35.35,
+     "n_cand_median": 13701.0,
+     "branches_median": 156.0,
+     "used_median": 1500.0
+    },
+    "W0 1000/500": {
+     "candidate_recall_pct": 98.67,
+     "proven_share": 0.72,
+     "completion_read": false,
+     "completion_pct": null,
+     "completion_pct_all_proven": 3.7,
+     "recovered_share_pct": 4.23,
+     "n_cand_median": 89269.0,
+     "branches_median": 33.0,
+     "used_median": 1500.0
+    },
+    "W1 100/50": {
+     "candidate_recall_pct": 29.33,
+     "proven_share": 1.0,
+     "completion_read": true,
+     "completion_pct": 29.33,
+     "completion_pct_all_proven": 29.33,
+     "recovered_share_pct": 34.0,
+     "n_cand_median": 3460.0,
+     "branches_median": 100.0,
+     "used_median": 1500.0
+    },
+    "W1 300/150": {
+     "candidate_recall_pct": 70.67,
+     "proven_share": 0.9733,
+     "completion_read": false,
+     "completion_pct": null,
+     "completion_pct_all_proven": 43.84,
+     "recovered_share_pct": 48.98,
+     "n_cand_median": 12932.0,
+     "branches_median": 159.0,
+     "used_median": 1500.0
+    },
+    "W1 1000/500": {
+     "candidate_recall_pct": 98.67,
+     "proven_share": 0.5467,
+     "completion_read": false,
+     "completion_pct": null,
+     "completion_pct_all_proven": 7.32,
+     "recovered_share_pct": 8.93,
+     "n_cand_median": 110880.0,
+     "branches_median": 54.0,
+     "used_median": 1500.0
+    }
+   },
+   "hop1_need": {
+    "questions_with_a_hop1_missed_gold": 73,
+    "W0": {
+     "share_need_le_100": 12.33,
+     "share_need_le_300": 46.58,
+     "share_need_le_1000": 100.0,
+     "need_median": 350.0,
+     "need_p90": 581.2,
+     "need_over_field_median": 0.3621,
+     "need_over_field_p90": 0.6123
+    },
+    "W1": {
+     "share_need_le_100": 30.14,
+     "share_need_le_300": 72.6,
+     "share_need_le_1000": 100.0,
+     "need_median": 162.0,
+     "need_p90": 556.0,
+     "need_over_field_median": 0.1904,
+     "need_over_field_p90": 0.4993
+    }
+   },
+   "G-X": {
+    "candidate recall equals R8's (W0, W1)": [
+     1.0,
+     1.0
+    ],
+    "completion equals R8's where both proven (W0, W1)": [
+     1.0,
+     1.0
+    ],
+    "mismatching slice positions (candidate recall)": [],
+    "verdict": "PASS"
+   }
   }
  },
  "readings": {
@@ -469,13 +580,15 @@
     "musique": 63.5,
     "metaqa": 42.67,
     "webqsp": 20.0,
-    "hotpotqa": 54.84
+    "hotpotqa": 54.84,
+    "2wiki": 86.67
    },
    "completion_gain_C3_minus_C1_points": {
     "musique": null,
     "metaqa": null,
     "webqsp": null,
-    "hotpotqa": null
+    "hotpotqa": null,
+    "2wiki": null
    },
    "CAP_BINDS": true,
    "COMPLETION_FOLLOWS": false
@@ -485,13 +598,15 @@
     "musique": 57.14,
     "metaqa": 49.34,
     "webqsp": 22.67,
-    "hotpotqa": 54.83
+    "hotpotqa": 54.83,
+    "2wiki": 69.34
    },
    "completion_gain_C3_minus_C1_points": {
     "musique": null,
     "metaqa": -9.33,
     "webqsp": null,
-    "hotpotqa": null
+    "hotpotqa": null,
+    "2wiki": null
    },
    "CAP_BINDS": true,
    "COMPLETION_FOLLOWS": false
@@ -501,6 +616,7 @@
   "musique": 33.33,
   "metaqa": 42.67,
   "webqsp": 36.0,
-  "hotpotqa": 45.16
+  "hotpotqa": 45.16,
+  "2wiki": 29.33
  }
 }
