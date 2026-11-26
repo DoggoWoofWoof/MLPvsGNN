@@ -57,6 +57,19 @@ def wilson(k, n, z=1.96):
 # ── loading ──────────────────────────────────────────────────────────────────
 
 
+# A3 (cost, decided from `time` alone): the quarter of a heavy cell is the chunks whose index (position // CHUNK_Q in the part's question list) mod n is in the subset; the rest of dev is never subsampled.
+QUARTER_SHARDS = {"hotpotqa": (19, (1, 4, 7, 10, 13, 16))}
+
+
+def want_questions(d, nq, part):
+    want = G3.part_indices(nq, part)
+    if part == "q" and d in QUARTER_SHARDS:
+        n, sub = QUARTER_SHARDS[d]
+        keep = np.asarray([(i // G3.CHUNK_Q) % n in sub for i in range(want.size)], bool)
+        want = want[keep]
+    return want
+
+
 def load_cell_chunks(d, v, part):
     """All chunks of one cell and part, concatenated; the zgp3 sha of the chunks is returned beside."""
     wd = OUT / d / "work"
@@ -69,7 +82,7 @@ def load_cell_chunks(d, v, part):
             shas.add(str(z["zsha"]))
             parts.append({k: z[k] for k in z.files if k not in ("zsha", "cstats")})
             nq = int(z["nq"])
-    want = G3.part_indices(nq, part)
+    want = want_questions(d, nq, part)
     got = np.sort(np.concatenate([p["qidx"] for p in parts]))
     if not np.array_equal(got, want):
         stop(f"{d}/{v}/{part}: the chunks hold {got.size} questions, the part has {want.size}: rows are missing")
@@ -97,8 +110,13 @@ def check_extract(d, part):
             stop(f"{rel(f)}: gates not passed")
         seen.add(r["shard"][0])
         n_sh = r["shard"][1]
-    if seen != set(range(n_sh)):
-        stop(f"{d}/{part}: shards {sorted(seen)} of {n_sh}")
+    need = set(range(n_sh))
+    if part == "q" and d in QUARTER_SHARDS:
+        if n_sh != QUARTER_SHARDS[d][0]:
+            stop(f"{d}/{part}: the rows are shard x of {n_sh}, the declared quarter is of {QUARTER_SHARDS[d][0]}")
+        need = set(QUARTER_SHARDS[d][1])
+    if seen != need:
+        stop(f"{d}/{part}: shards {sorted(seen)} of {n_sh}, declared {sorted(need)}")
     return {"files": [f.name for f in fs], "gates": r["gates"]}
 
 
@@ -255,6 +273,28 @@ def md_quarter(rec):
     L += ["**Golds by distance and the gather cap, per cell:**", ""]
     rows = [[c] + [f"{x:,}" for x in rec["gold_levels"][c]] + [f"{rec['cap_share'][c]:.3f}"] for c in cells]
     L += [table(["cell", "free or level 0", "level 1", "level 2", "level 3", "beyond (never reached)", "share of questions with a capped hop"], rows), ""]
+    ju = rec.get("uncapped")
+    if ju:
+        cu, su = ju["cells"], ju["scores"]
+        L += [f"**Reading over the cells that are not CAPPED (A2, descriptive): {', '.join(cu)}.**", ""]
+        rows = []
+        for K in SCORES:
+            p = su[K]["P1"]
+            if p is None:
+                rows.append([K, "infeasible on the ladder", "-", "-"])
+            else:
+                rows.append([K, fmt(p["worst_nodes"]), " / ".join(fmt(x) for x in p["N"]), max(p["nodes"], key=lambda c: p["nodes"][c])])
+        L += [table(["score", "worst-cell mean nodes (P1)", "N_1 / N_2 / N_3", "worst cell"], rows), ""]
+        fu = ju["final"]
+        L += [f"Final rule on these cells: {fu['score'] if fu else 'none'}" + (f" at N = {fu['N']} ({fu['basis']}, worst-cell mean nodes {fmt(fu['worst_nodes'])}); null {ju['null']['call']}." if fu else "."), ""]
+        rows = []
+        for K in SCORES:
+            r = [K]
+            for n in P2_N:
+                p = su[K]["P2"][str(n)]
+                r.append("infeasible" if p is None else f"{p['min_all']:.4f} ({min(p['all'], key=lambda c: p['all'][c])}; N {' / '.join(fmt(x) for x in p['N'])})")
+            rows.append(r)
+        L += [table(["score"] + [f"P2 ceiling {n:,}" for n in P2_N], rows), ""]
     return "\n".join(L)
 
 
@@ -293,6 +333,19 @@ def cmd_solve(a):
     rec["final"] = choose_final(rec["scores"])
     rec["null"] = null_verdict(rec["scores"], rec["final"]["score"]) if rec["final"] else {"call": "NO_FINAL", "random": []}
     rec["curves"] = {c: {K: {"all": [round(float(x), 5) for x in cur[c][k]["all"]], "nodes": [round(float(x), 1) for x in cur[c][k]["nodes"]]} for k, K in enumerate(SCORES)} for c in cells}
+    # A2 item 4: the same programs over the cells that are not CAPPED (descriptive; the final rule above is the declared choice on all cells)
+    cu = [c for c in cells if cap_share[c] <= CAP_SHARE]
+    rec["uncapped"] = None
+    if cu and len(cu) < len(cells):
+        ju = {"cells": cu, "p1_cells": {}, "scores": {}}
+        for k, K in enumerate(SCORES):
+            reach = [c for c in cu if cur[c][k]["all"][-1] >= ALL_MIN]
+            ju["p1_cells"][K] = reach
+            ju["scores"][K] = program(cur, cu, k, reach)
+        ju["final"] = choose_final(ju["scores"])
+        ju["null"] = null_verdict(ju["scores"], ju["final"]["score"]) if ju["final"] else {"call": "NO_FINAL", "random": []}
+        rec["uncapped"] = ju
+        log(f"uncapped reading over {len(cu)} of {len(cells)} cells ({', '.join(cu)}): final {ju['final']}")
     L2.wjson(OUT / "rule_q.json", rec)
     (OUT / "report_q.md").write_text(md_quarter(rec) + "\n", encoding="utf-8", newline="\n")
     log(f"filed {rel(OUT / 'rule_q.json')} and report_q.md ({time.time() - t0:.0f} s); final {rec['final']}; null {rec['null']['call']}")
