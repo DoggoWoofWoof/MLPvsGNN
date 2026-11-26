@@ -228,7 +228,8 @@ def cmd_merge(a):
                 P2.stop(f"{ds}: the parts name different cells")
             Ps.append(z["present"])
             Ss.append(z["size"])
-        gates.append(json.loads(f.with_suffix(".json").read_text(encoding="utf-8"))["g_p1"])
+        part = int(f.stem.split("_part")[1].split("of")[0])
+        gates.append(json.loads((OUT / f"{ds}_part{part}of{a.of}.json").read_text(encoding="utf-8"))["g_p1"])
     if pos != len(qids) or not all(g["pass"] for g in gates):
         P2.stop(f"{ds}: the parts do not cover all questions or a G-P1 failed")
     g_p1 = {"cell": roles["old"], "questions": int(pos), "present_equal": all(g["present_equal"] for g in gates), "size_equal": all(g["size_equal"] for g in gates), "pass": True,

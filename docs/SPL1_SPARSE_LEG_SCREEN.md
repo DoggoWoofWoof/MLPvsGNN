@@ -153,6 +153,10 @@ The user, 27 Nov: **"its not about the size but more of the speed to recall loss
 - **The first version patched the file reader; the module now sets `src.splade` of the loaded source** (a list array of the same shape and dtype). The effect is the same; the change is made so that the module patches nothing in the pinned modules. The MultiHop-RAG read taken with the first version is re-run through the new code and must give the same numbers, and both files are kept (the first: all cells `LEVEL` or better at +0.27 point, the old cell `WORSE` at -0.97 point; read before this amendment).
 - **Disclosed.** The single-process SQuAD run started with the first version was 600 questions in when it was set aside; its numbers are not read.
 
+### 8.10 Amendment A10 (27 Nov, 05:08 IST, after the four SQuAD parts were written and before the merge produced any number)
+
+- **A path correction in `merge`.** The merge step looked for each part's gate file under the name of the part's arrays (`squad_c3_part0of4.json`); the gate files are written as `squad_part0of4.json`. The merge stopped with a file-not-found before reading any cell, so no SQuAD pool number was read. `cmd_merge` now reads the gate file of the same part under its real name. Nothing else changes: the cells, the paired bootstrap, the calls and D1 are those of section 8.8, and the four parts' own G-P1 results are read from the files they were written to.
+
 ## 9. Expectations, written before any number
 
 - **X1.** C2 (the highest printed score) is BETTER or LEVEL on all six cells; it is the largest of the three, so it is the pick only if C1 and C3 do not pass.
