@@ -23,6 +23,7 @@ import json  # noqa: E402
 import os  # noqa: E402
 import time  # noqa: E402
 import types  # noqa: E402
+import zipfile  # noqa: E402
 
 import numpy as np  # noqa: E402
 import zenc as E  # noqa: E402
@@ -314,31 +315,62 @@ def query_rows(served, d):
     return C.Rows([np.load(p, mmap_mode="r") for p in E.vec_shards(served, "e3v", d, "queries")])
 
 
-def gate_rows_aligned(rows, qrows, qrow, golds, n, seed=0):
-    """G-C5: over the first 200 questions the question cosine of each gold is above that of 1,000 fixed random nodes in at least 0.9 of the comparisons;
-    the question rows and a sample of node rows have norm 1 within 1e-3."""
+KB_ANSWER_GOLDS = ("metaqa", "webqsp")                                            # amendment A1: the golds are answer entities, not passages
+
+
+def npz_member(path, name):
+    """A read-only array of a .npz member: memory-mapped when the member is stored uncompressed, else loaded whole (the first-stage dense lists are stored)."""
+    with zipfile.ZipFile(path) as zf:
+        info = zf.getinfo(name + ".npy")
+    if info.compress_type != zipfile.ZIP_STORED:
+        with np.load(path) as z:
+            return np.asarray(z[name])
+    with open(path, "rb") as f:
+        f.seek(info.header_offset)
+        h = f.read(30)
+        k, m = int.from_bytes(h[26:28], "little"), int.from_bytes(h[28:30], "little")
+        f.seek(info.header_offset + 30 + k + m)
+        ver = np.lib.format.read_magic(f)
+        shape, fortran, dtype = (np.lib.format.read_array_header_1_0(f) if ver == (1, 0) else np.lib.format.read_array_header_2_0(f))
+        off = f.tell()
+    return np.memmap(path, dtype=dtype, mode="r", offset=off, shape=shape, order="F" if fortran else "C")
+
+
+def gate_rows_aligned(rows, qrows, qrow, golds, n, seed=0, top=None):
+    """G-C5: over the first 200 questions the question cosine of the reference nodes is above that of 1,000 fixed random nodes in at least 0.9 of the comparisons;
+    the question rows and a sample of node rows have norm 1 within 1e-3. Reference nodes: the golds; amendment A1, where the golds are answer entities
+    (`top` given: the stored first-stage dense list's ids by question row), the five first-ranked dense results (the golds' share is recorded beside)."""
     rng = np.random.default_rng(seed)
     rnd = np.sort(rng.choice(n, size=min(1000, n), replace=False))
     rr = rows.take(rnd)
     nrm = np.linalg.norm(rr[:200], axis=1)
     if np.abs(nrm - 1).max() > 1e-3:
         stop(f"G-C5: node rows are not unit norm (max deviation {np.abs(nrm - 1).max():.4f})")
-    win = tot = 0
+    win = tot = tw = tt = 0
     for j in range(min(200, len(golds))):
         q = qrows.take([qrow[j]])[0]
         if abs(float(np.linalg.norm(q)) - 1) > 1e-3:
             stop(f"G-C5: question row {j} is not unit norm ({np.linalg.norm(q):.4f})")
-        g = np.asarray(golds[j], np.int64)
-        if g.size == 0:
-            continue
-        fg = rows.take(g) @ q
         fr = rr @ q
-        win += int((fg[:, None] > fr[None, :]).sum())
-        tot += int(fg.size * fr.size)
+        g = np.asarray(golds[j], np.int64)
+        if g.size:
+            fg = rows.take(g) @ q
+            win += int((fg[:, None] > fr[None, :]).sum())
+            tot += int(fg.size * fr.size)
+        if top is not None:
+            t5 = np.asarray(top[int(qrow[j])][:5], np.int64)
+            f5 = rows.take(t5) @ q
+            tw += int((f5[:, None] > fr[None, :]).sum())
+            tt += int(f5.size * fr.size)
     share = win / max(tot, 1)
-    if share < 0.9:
-        stop(f"G-C5: the golds' question cosine is above random nodes' in {share:.3f} of the comparisons, below 0.9 (the question rows are not aligned)")
-    return round(share, 4)
+    if top is None:
+        if share < 0.9:
+            stop(f"G-C5: the golds' question cosine is above random nodes' in {share:.3f} of the comparisons, below 0.9 (the question rows are not aligned)")
+        return round(share, 4)
+    s5 = tw / max(tt, 1)
+    if s5 < 0.9:
+        stop(f"G-C5: the dense top five's question cosine is above random nodes' in {s5:.3f} of the comparisons, below 0.9 (the question rows are not aligned)")
+    return {"basis": "dense_top5", "share": round(s5, 4), "golds_share": round(share, 4)}
 
 
 def gate_ranks_loop(rows, qrows, qrow, qi, a, b, cls, nb, k=1000, max_deg=2000):
@@ -406,10 +438,11 @@ def cmd_ledger(a):
     rec = {"dataset": d, "declared_in": DECLARED, "status": "read", "nodes": D.n, "nodes_sha256": D.nsha, "sources": D.src, "limit": a.limit or None,
            "zcr1_sha256": script_sha256(), "zul2p_sha256": P.script_sha256(), "versions": {}, "gates": {"G-C1": {}, "G-C2": {}, "G-C5": {}, "G-C6": {}}}
     carve = {}
+    top = npz_member(served / d / "retrieval_cache" / "dense_top1000.npz", "ids") if d in KB_ANSWER_GOLDS else None
     for cv in sorted({c for c, _k in D.cells}):
         golds, qrow = carve_inputs(D, d, cv, a.host, served)
         carve[cv] = (golds, qrow)
-        rec["gates"]["G-C5"][cv] = gate_rows_aligned(rows, qrows, qrow, golds, D.n)
+        rec["gates"]["G-C5"][cv] = gate_rows_aligned(rows, qrows, qrow, golds, D.n, top=top)
     log(f"{d}: gates G-P pass, question rows aligned {rec['gates']['G-C5']} ({time.time() - t0:.0f} s)")
     for v in D.vers:
         keys = b0_keys_at(D.F, v == "SRK", am, D.n)
@@ -639,7 +672,42 @@ def selftest():
     if cls.tolist() != [1, 0, 2] or m.tolist() != [1, 0, 0] or via.tolist() != [True, False, False]:
         stop(f"G-C3: the chain case gives {cls.tolist()} {m.tolist()} {via.tolist()}")
     checks += 1
-    print(f"selftest PASS ({checks} checks: classes, shared neighbours, via gold, the three ranks with ties, the control)")
+    # G-C5 (amendment A1): answer-entity golds are far from the question, the dense top five is near; the memory-mapped member equals the array
+    nn, dim = 1200, 16
+    X = rng.standard_normal((nn, dim))
+    X /= np.linalg.norm(X, axis=1, keepdims=True)
+    Q = X[:300] + 0.05 * rng.standard_normal((300, dim))
+    Q = (Q / np.linalg.norm(Q, axis=1, keepdims=True)).astype(np.float32)
+    toprows = np.argsort(-(Q @ X.astype(np.float32).T), axis=1)[:, :20].astype(np.int32)
+    far = [np.argsort(Q[j] @ X.astype(np.float32).T)[:2] for j in range(300)]         # the two farthest nodes stand for unaligned answer entities
+    qrow = np.arange(300)
+    if gate_rows_aligned(ToyRows(X), ToyRows(Q), qrow, [np.asarray([j]) for j in range(300)], nn) < 0.9:
+        stop("G-C3: the gate rejects aligned passage golds")
+    try:
+        gate_rows_aligned(ToyRows(X), ToyRows(Q), qrow, far, nn)
+        stop("G-C3: the gate accepts unaligned golds without a dense list")
+    except SystemExit as e:
+        if "golds' question cosine" not in str(e):
+            raise
+    res = gate_rows_aligned(ToyRows(X), ToyRows(Q), qrow, far, nn, top=toprows)
+    if not (isinstance(res, dict) and res["basis"] == "dense_top5" and res["share"] >= 0.9 and res["golds_share"] < 0.5):
+        stop(f"G-C3: the dense-list gate gives {res}")
+    shuf = toprows[::-1].copy()                                                       # rows of another question: misaligned, must stop
+    try:
+        gate_rows_aligned(ToyRows(X), ToyRows(Q), qrow, far, nn, top=shuf)
+        stop("G-C3: the dense-list gate accepts a misaligned list")
+    except SystemExit as e:
+        if "dense top five" not in str(e):
+            raise
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        for name, fn in (("stored.npz", np.savez), ("packed.npz", np.savez_compressed)):
+            pth = Path(td) / name
+            fn(pth, ids=toprows, scores=toprows.astype(np.float32))
+            if not np.array_equal(np.asarray(npz_member(pth, "ids")), toprows):
+                stop(f"G-C3: npz_member of {name} differs")
+    checks += 6
+    print(f"selftest PASS ({checks} checks: classes, shared neighbours, via gold, the three ranks with ties, the control, the alignment gate on both bases, npz members)")
     return 0
 
 

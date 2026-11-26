@@ -57,6 +57,13 @@ CR1 declares **no rule**. If Part B calls the residual order better on enough da
 
 A gate failure stops the row and is reported; nothing is relaxed after a number is read.
 
+### 5.1 Amendment A1 (26 Nov ~19:30, committed before MetaQA's re-run; no MetaQA or WebQSP number of this stage has been read)
+
+- **What happened.** The MetaQA row (`cr1-metaqa`, first run) stopped at G-C5: the golds' question cosine was above the random nodes' in 0.619 of the comparisons, below 0.9. The row stops before Part A, so no D, T, N count and no rank of MetaQA has been read. MuSiQue's row (golds 0.9 or above on its carves) and the MultiHop-RAG read passed the gate as declared.
+- **Diagnosis (a read-only probe on the host, not a number of this stage).** The question rows are aligned: MetaQA has 407,513 e3v question rows for 407,513 question ids, unit norm, and the five first-ranked results of the stored first-stage dense list are above 1,000 random nodes in 0.9838 of the comparisons (WebQSP: 4,737 rows for 4,737 ids, 0.9998; its golds 0.9541). The declared check assumed that a gold is a text that answers the question. On MetaQA and WebQSP a gold is an **answer entity** (a name), whose cosine to the question is not above a random node's in the share a passage's is, so the gold-based share measures the wrong thing there, not the alignment.
+- **The change.** On MetaQA and WebQSP only, G-C5's reference nodes are the **five first-ranked results of the stored first-stage dense list** (`retrieval_cache/dense_top1000.npz`, `ids` by question row), with the same 200 questions, the same 1,000 fixed random nodes, the same 0.9 threshold and the same unit-norm checks; the golds' share is recorded beside it. Every other dataset keeps the gold-based check. A mis-aligned question row would still give about 0.5 and stop the row.
+- **What does not change.** The slots, classes, ranks, scores, expectations X1-X8 and calls A and B, and the other gates. A gate stops a row or passes it; it adds nothing to a number. `zcr1.py selftest` passes (1,305 checks), now including the gate on both bases (aligned passage golds pass; unaligned golds stop without a list; a dense list of other questions stops) and the memory-mapped read of a stored and of a compressed `.npz`. MuSiQue's and MultiHop-RAG's ledgers were written by the first form of the gate; the re-run rows record the new form in `gates.G-C5`.
+
 ## 6. Expectations (written before any number)
 
 - **X1:** the D share equals UL2P's any-link recall on every cell (this is G-C1; any difference stops the row).
