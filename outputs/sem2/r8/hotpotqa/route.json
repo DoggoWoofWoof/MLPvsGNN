@@ -1,0 +1,124 @@
+{
+ "stage": "SEM2 R8 part B",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md sections 16.6, 16.8 and 16.13",
+ "dataset": "hotpotqa",
+ "smoke": false,
+ "population": 242,
+ "completable": 242,
+ "lambda": 0.25,
+ "lambda_record_sha256": "16a60e323c74102c88e126954528df379c78a503656ba041e1e47f77bc9eda92",
+ "scorers": [
+  "W0",
+  "W1",
+  "W2",
+  "W3",
+  "W4",
+  "W5",
+  "W6",
+  "W7"
+ ],
+ "ladder": [
+  25,
+  100,
+  500,
+  1500
+ ],
+ "caps": [
+  100,
+  50
+ ],
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 32159229,
+     "record": 32159229
+    },
+    "CN_all": {
+     "pairs": 23218108,
+     "record": 23218108
+    },
+    "F0T": {
+     "pairs": 24450229,
+     "record": 24450229
+    },
+    "S": {
+     "pairs": 15095287,
+     "record": 15095287
+    },
+    "S directed": {
+     "edges": 15367541,
+     "pair_relation_rows": 15095287,
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-Q": {
+   "base5": 0.683687,
+   "equals Part A's": true,
+   "verdict": "PASS"
+  },
+  "G-C": {
+   "nodes": 115,
+   "rows": 128586457,
+   "verdict": "PASS"
+  },
+  "G-B": {
+   "hop-1 size equals Part A's": "242/242",
+   "missed count equals Part A's": "242/242",
+   "verdict": "PASS"
+  },
+  "G-P": {
+   "instances": 7744,
+   "proven_optimal": 7744,
+   "share": 1.0,
+   "not_optimal": 0,
+   "identical_programs_reused": 0,
+   "solutions_violating_closure_or_budget": 0,
+   "verdict": "PASS"
+  }
+ },
+ "part_a_sha256": "d02b42917addd0e6b09725891089c75824e9d3058aad9e9460c31ffaec7c3534",
+ "part_a_npz_sha256": "511aac293332b7002ccf3bcada31baff0194e90f2d4d5f1c23f6163da531f4c2",
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "c777ab4b7a64eaaa5af852265daf6ba9f9debb4658a67f0c96595662e43f182a",
+  "ner_npz_sha256": "744da64a5f356b89241b2539085c9a0bf673750abd0b1822891c26f069a37137",
+  "knn_npz_sha256": "a82ee3d96ff6943678444f12279fe666ff5e03465b818bc229844597488222ae",
+  "structural_npz_sha256": "bc27173133e69cc821a14733a2f3dfe9d56442aeb867cf2cdcdcc4fff9c17608",
+  "w2_s_npz_sha256": "c46e17ee41b6a36540d46b5f0775dc707c128d352288aa27e4d1e1a54ff0234c",
+  "f0t_npz_sha256": "7b3bb50b1cc8ee03e4a76e1e7dd8c078000dbc68c3f4f7e32fbb6e0310cd53e7",
+  "names_npz_sha256": "8ae1d1cb11afcda4217ca8a33a6e8df743310489f8decb9a75baf07832da3f04",
+  "vectors": {
+   "shards": 131,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "956a389cf0dc79e0c745d6d59124e25b3a6591f8d33e14e147754261bb23c3cb"
+  }
+ },
+ "refs": {
+  "r1_record_sha256": "d91a43f178cbc43dbaed1c16229e994358e0f4c50a56b71db01b8b986282a477",
+  "r1_npz_sha256": "2589d71fba21ef4ea1c62619397b22804fd81b389166241fcb391ee0488f152d"
+ },
+ "threads": 8,
+ "workers": 6,
+ "worker_sha256": "5b411e9181f87e75309c988347c4e79cefd7fbc5858693be038975221fd49b68",
+ "npz_sha256": "57d0d5162665edce75035d38afd7a32ab1c6ce7ee225e9f895a22b8d8a309353",
+ "seconds": 1755.4,
+ "utc": "2026-11-26T07:56:43Z",
+ "script_sha256": "8ddf912f3529afeea46785dbe56012655770d2e1d0445ea8731e1ebaccf5961c"
+}

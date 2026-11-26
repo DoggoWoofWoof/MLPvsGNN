@@ -1882,6 +1882,134 @@ Written after Part A is filed and after the code of Part B is self-tested, **bef
   - **XB5.** The candidate recall of W0 (every missed gold inside the capped set) is lowest on WebQSP and below 50 percent there, and below 90 percent on the others; completion at 1,500 is bounded by it.
   - **XB6.** G-P holds (99.5 percent proven optimal at 60 s). If it does not, the instances are dropped as declared and counted, and the call is read on the rest.
 
+### 16.14 Part B filed: NOT_CARRIED (26 November 2026, 14:31 IST, 09:01 UTC)
+
+- **Records.** `outputs/sem2/r8/<dataset>/route.json` and `.npz` for the five ROOM datasets, `report_b.json`, `report_b.md`; the json and md are committed, the npz are not (16.10). Code `outputs/mp_unified/zsem2r8b.py` (sha256 8ddf912f3529..., committed c6816eca, its adjacency build rewritten in a044293a before any Part B number) and `outputs/mp_unified/zsem2r8w.py` (sha256 5b411e9181f8..., c6816eca); **all five records carry those two shas and none is a smoke run**; `report` refuses a record whose sha differs. The report was written on the laptop from the five records; **no instance was dropped on any dataset**.
+- **Gates, all five: G-E, G-R (`--threads 8`), G-Q, G-C, G-B, G-P PASS.** G-P: every instance proven optimal at the 60-second limit, every solution inside the closure and the budget (counts below). An instance is one scorer's program at one budget of the ladder for one question; where two scorers have the identical program (W3 and W4 are W2 when lambda is 0.00, 16.13(d)) it was solved once and reused.
+
+| dataset | population of the completable | instances solved | identical programs reused | proven optimal | row time | peak memory (ask) |
+|---|---|---:|---:|---|---:|---|
+| MuSiQue | 503 of 503 | 12,072 | 4,024 | 12,072 (100.0 percent) | 22 min | 4.20 GB (ask 12) |
+| MetaQA | 600 of 994 | 14,400 | 4,800 | 14,400 (100.0 percent) | 10 min | 3.05 GB (ask 10) |
+| WebQSP | 600 of 1,108 | 14,400 | 4,800 | 14,400 (100.0 percent) | 122 min | 18.34 GB (ask 28) |
+| HotpotQA | 242 of 242 | 7,744 | 0 | 7,744 (100.0 percent) | 29 min | 17.33 GB (ask 26) |
+| 2Wiki | 600 of 782 | 19,200 | 0 | 19,200 (100.0 percent) | 68 min | 20.57 GB (ask 27) |
+
+- **Rows, and the events around them, none of which touches a rule.** (1) The memory asks were 12, 10, 28, 26 and 27 GB (MuSiQue, MetaQA, WebQSP, HotpotQA, 2Wiki); **the measured peaks were lower on every row** (table), and no ask was raised (the host's memory is shared with the link rows, which come first). (2) The five rows sit in the feed **before the stuck head `gp1xr-2wiki`** (hostfeed practice: a head that cannot start holds everything behind it); `r8b-2wiki` was itself the head holding the later rows at 13:03 IST and was sent at 13:08. (3) The first WebQSP smoke (20 questions, read for timing and gates only: all six gates PASS, 480 of 480 programs proven optimal, about 14 s a question) **peaked at 37.7 GB against its 20 GB ask**, because the adjacency table has 1,011,100,859 rows and the first build sorted them in one piece; the build was rewritten as two passes (count, place) with a block-wise sort and committed as a044293a **before any Part B number**, with the self-test comparing it to the one-sort construction at four chunk and block sizes. The re-smoke row starved behind the link rows for 55 minutes and was withdrawn, unsent: the rewrite is checked at scale by G-C and by the full WebQSP row's own placed-row assertion, and the full WebQSP row ran at a peak of 18.34 GB. (4) The smoke records sit under `outputs/sem2/r8/smoke/` and are read by nothing. **16.13(g) said the rows sit before the r6 rows; they were queued there and later moved to just before the stuck head (2).**
+- **The completion rates** (percent of the population completable at M' = 1,500; the population is a seeded draw of at most 600; lambda is R2a's trav lambda for that dataset). W7 is W6 with another question; W4 is W3 with another question.
+
+| dataset | population | lambda | W0 qcos | W1 lcos | W2 plaus | W3 routed | W4 other q | W5 random | W6 | W7 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| MuSiQue | 503 | 0.00 | 30.0 | 31.6 | 21.3 | 21.3 | 21.3 | 9.7 | 30.6 | 21.7 |
+| MetaQA | 600 | 0.00 | 44.7 | 26.8 | 37.3 | 37.3 | 37.3 | 21.5 | 43.2 | 29.8 |
+| WebQSP | 600 | 0.00 | 32.2 | 22.5 | 26.3 | 26.3 | 26.3 | 1.5 | 36.7 | 32.3 |
+| HotpotQA | 242 | 0.25 | 60.7 | 50.0 | 46.7 | 50.8 | 43.8 | 16.1 | 57.9 | 39.3 |
+| 2Wiki | 600 | 0.25 | 14.2 | 35.7 | 29.7 | 28.7 | 30.0 | 6.5 | 26.7 | 27.0 |
+
+- **The declared calls (16.8), with the size of each.** Main = W3 - W0 at M' = 1,500, in points of completion, with the paired bootstrap interval (2,000 resamples, seed 0); control = W3 - W4; beside, at unit lambda (16.13(e)), W6 - W0 and W6 - W7.
+
+| dataset | main W3 - W0 [95%] | call | control W3 - W4 [95%] | call | beside W6 - W0 [95%] | call | beside W6 - W7 [95%] | call |
+|---|---|---|---|---|---|---|---|---|
+| MuSiQue | -8.75 [-13.52, -3.98] | BELOW | +0.00 [+0.00, +0.00] | LEVEL | +0.60 [-3.38, +4.17] | LEVEL | +8.95 [+5.37, +12.52] | ABOVE |
+| MetaQA | -7.33 [-11.67, -3.17] | BELOW | +0.00 [+0.00, +0.00] | LEVEL | -1.50 [-5.17, +2.00] | LEVEL | +13.33 [+10.33, +16.33] | ABOVE |
+| WebQSP | -5.83 [-10.00, -1.83] | BELOW | +0.00 [+0.00, +0.00] | LEVEL | +4.50 [+0.83, +8.17] | ABOVE | +4.33 [+1.33, +7.17] | ABOVE |
+| HotpotQA | -9.92 [-17.36, -2.48] | BELOW | +7.02 [+3.31, +10.74] | ABOVE | -2.89 [-9.09, +3.31] | LEVEL | +18.60 [+12.40, +24.79] | ABOVE |
+| 2Wiki | +14.50 [+10.67, +18.33] | ABOVE | -1.33 [-3.17, +0.17] | LEVEL | +12.50 [+9.17, +15.83] | ABOVE | -0.33 [-3.33, +2.83] | LEVEL |
+
+- **Verdict: NOT_CARRIED.** The rule of 16.8 needs the main call ABOVE on at least two thirds of the five (four) and BELOW on none. It is **ABOVE on one (2Wiki, +14.50 points, interval +10.67 to +18.33) and BELOW on four** (MuSiQue -8.75, MetaQA -7.33, WebQSP -5.83, HotpotQA -9.92). The control holds on one dataset only (HotpotQA, +7.02); on the one dataset where the router beats the question's cosine, 2Wiki, **the control is LEVEL (-1.33, interval -3.17 to +0.17): that gain is the stored label's, not the question's.** On three datasets the control is 0.00 by construction (16.13(d)). **The beside verdict at unit lambda is NOT_CARRIED too:** W6 - W0 is ABOVE on two of five (WebQSP +4.50, 2Wiki +12.50), LEVEL on three, BELOW on none, and W6 - W7 is ABOVE on four. Nothing in 16.11's ROUTING_CARRIES branch follows: **no full-carve (s1eval) read is declared, no pool, link or PL change follows, nothing is trained.**
+- **The same contrasts at every budget** (points of completion; A = ABOVE, L = LEVEL, B = BELOW; beside readings except the 1,500 column of the first row of each dataset, which is the declared main call):
+
+| dataset | contrast | M' = 25 | 100 | 500 | 1,500 |
+|---|---|---:|---:|---:|---:|
+| MuSiQue | W3 - W0 | -1.79 B | -3.38 B | -9.15 B | -8.75 B |
+| MuSiQue | W6 - W0 | +0.00 L | +0.00 L | -1.59 L | +0.60 L |
+| MuSiQue | W6 - W7 | +1.79 A | +3.78 A | +9.94 A | +8.95 A |
+| MuSiQue | W0 - W5 | +2.39 A | +4.97 A | +16.70 A | +20.28 A |
+| MuSiQue | W2 - W0 | -1.79 B | -3.38 B | -9.15 B | -8.75 B |
+| MetaQA | W3 - W0 | -0.33 L | +2.17 A | +5.50 A | -7.33 B |
+| MetaQA | W6 - W0 | +3.33 A | +7.83 A | +11.17 A | -1.50 L |
+| MetaQA | W6 - W7 | +2.67 A | +6.83 A | +12.00 A | +13.33 A |
+| MetaQA | W0 - W5 | +0.67 L | +1.83 A | +6.83 A | +23.17 A |
+| MetaQA | W2 - W0 | -0.33 L | +2.17 A | +5.50 A | -7.33 B |
+| WebQSP | W3 - W0 | -1.17 L | -0.67 L | -1.33 L | -5.83 B |
+| WebQSP | W6 - W0 | +1.50 L | +6.00 A | +10.33 A | +4.50 A |
+| WebQSP | W6 - W7 | +1.00 L | +3.33 A | +6.00 A | +4.33 A |
+| WebQSP | W0 - W5 | +3.67 A | +7.67 A | +19.50 A | +30.67 A |
+| WebQSP | W2 - W0 | -1.17 L | -0.67 L | -1.33 L | -5.83 B |
+| HotpotQA | W3 - W0 | +2.48 L | +0.41 L | -11.16 B | -9.92 B |
+| HotpotQA | W6 - W0 | +3.72 L | +1.65 L | -4.13 L | -2.89 L |
+| HotpotQA | W6 - W7 | +4.55 A | +7.02 A | +18.60 A | +18.60 A |
+| HotpotQA | W0 - W5 | +4.13 A | +13.22 A | +47.52 A | +44.63 A |
+| HotpotQA | W2 - W0 | +1.65 L | -0.83 L | -18.18 B | -14.05 B |
+| 2Wiki | W3 - W0 | +1.33 A | +4.17 A | +13.00 A | +14.50 A |
+| 2Wiki | W6 - W0 | +1.33 A | +4.17 A | +10.33 A | +12.50 A |
+| 2Wiki | W6 - W7 | +0.67 L | +2.00 L | +2.33 L | -0.33 L |
+| 2Wiki | W0 - W5 | +0.33 L | +3.00 A | +10.00 A | +7.67 A |
+| 2Wiki | W2 - W0 | +1.17 A | +3.83 A | +11.00 A | +15.50 A |
+
+  Two things in it are not at the main budget and so decide nothing: on MetaQA, W3 - W0 is ABOVE at 100 and 500 added nodes (+2.17, +5.50) and BELOW only at 1,500 (-7.33), and W6 - W0 is ABOVE at 25, 100 and 500 (+3.33, +7.83, +11.17) and LEVEL at 1,500 (-1.50); on WebQSP and 2Wiki W6 - W0 is ABOVE at 500 (+10.33 each). At a small budget the operator beside the question helps; at 1,500 the question's cosine alone has caught up on MetaQA.
+- **Candidate recall, recovered share, branches and cost** (percent; branches opened and cost used are W3's, the declared router; candidate recall is the share of the population whose every missed gold lies inside the capped candidate set of that scorer, 16.6; recovered share is the share of all missed golds inside the solution):
+
+| dataset | cand. recall W0 | W1 | W3 | W6 | W5 | recovered W0 | W3 | W6 | branches median / p90 | cost used median |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|
+| MuSiQue | 32.6 | 34.2 | 23.7 | 32.2 | 14.7 | 31.2 | 23.5 | 32.2 | 100 / 100 | 1,500.0 |
+| MetaQA | 62.7 | 53.3 | 47.7 | 56.7 | 44.5 | 47.9 | 45.5 | 48.9 | 100 / 100 | 1,500.0 |
+| WebQSP | 36.2 | 35.8 | 27.7 | 38.7 | 3.8 | 36.3 | 27.8 | 44.4 | 100 / 100 | 1,273.5 |
+| HotpotQA | 61.6 | 52.1 | 52.1 | 59.1 | 22.7 | 60.9 | 51.0 | 58.0 | 100 / 100 | 1,500.0 |
+| 2Wiki | 14.3 | 35.8 | 28.8 | 26.8 | 10.0 | 16.1 | 31.6 | 28.7 | 100 / 100 | 1,500.0 |
+
+- **What the room-closed rate is in points of coverage** (implied gain = completion rate x H(1,500) of 16.12, **not a pool gain**: 16.7 says R8's pool is the F-list plus the program's nodes, not PL's cells, and no number of R8 replaces PL's):
+
+| dataset | H(1,500) | W0 | W1 | W3 | W6 | best arm by completion |
+|---|---:|---:|---:|---:|---:|---|
+| MuSiQue | 32.79 | 9.84 | 10.36 | 6.97 | 10.04 | W1 31.6 percent (10.36 points) |
+| MetaQA | 66.40 | 29.66 | 17.82 | 24.79 | 28.66 | W0 44.7 percent (29.66 points) |
+| WebQSP | 73.52 | 23.65 | 16.54 | 19.36 | 26.96 | W6 36.7 percent (26.96 points) |
+| HotpotQA | 16.05 | 9.75 | 8.03 | 8.16 | 9.28 | W0 60.7 percent (9.75 points) |
+| 2Wiki | 52.27 | 7.41 | 18.64 | 14.99 | 13.94 | W1 35.7 percent (18.64 points) |
+
+- **By the number of missed golds** (completion at 1,500, percent): the question needs more than one gold to be found and the rate falls.
+
+| dataset | missed golds | questions | W0 | W3 | W6 | W5 |
+|---|---|---:|---:|---:|---:|---:|
+| MuSiQue | 1 | 437 | 31.8 | 23.3 | 32.3 | 11.0 |
+| MuSiQue | 2 | 64 | 18.8 | 7.8 | 20.3 | 1.6 |
+| MuSiQue | 3+ | 2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| MetaQA | 1 | 252 | 67.5 | 53.6 | 63.1 | 40.5 |
+| MetaQA | 2 | 100 | 48.0 | 33.0 | 42.0 | 16.0 |
+| MetaQA | 3+ | 248 | 20.2 | 22.6 | 23.4 | 4.4 |
+| WebQSP | 1 | 313 | 46.6 | 37.7 | 53.4 | 2.9 |
+| WebQSP | 2 | 93 | 29.0 | 24.7 | 31.2 | 0.0 |
+| WebQSP | 3+ | 194 | 10.3 | 8.8 | 12.4 | 0.0 |
+| HotpotQA | 1 | 241 | 61.0 | 51.0 | 58.1 | 16.2 |
+| HotpotQA | 2 | 1 | 0.0 | 0.0 | 0.0 | 0.0 |
+| 2Wiki | 1 | 429 | 19.1 | 38.0 | 36.1 | 8.6 |
+| 2Wiki | 2 | 171 | 1.8 | 5.3 | 2.9 | 1.2 |
+
+- **Expectations, scored against the numbers** (16.9 and 16.13(h); a failed one is reported, not explained away).
+  - **XB1 FAILED in three of its four parts.** (i) *Random under 5 percent:* **FAILED**, W5 completes 9.7 (MuSiQue), 21.5 (MetaQA), 1.5 (WebQSP), 16.1 (HotpotQA) and 6.5 percent (2Wiki): only WebQSP is under 5. The capped candidate set (100 branches) is small beside a field of a few hundred (MetaQA's median is 229), so a random pick of 100 completes one question in five there. (ii) *W0 completes 20 to 60 percent:* **FAILED on two of five** (30.0, 44.7, 32.2 inside; HotpotQA 60.7, 0.7 over; 2Wiki 14.2, under). (iii) *W3 - W0 LEVEL or at most +5:* **FAILED**, BELOW on four (-5.83 to -9.92) and +14.50 on 2Wiki. (iv) *NOT_CARRIED or ROUTING_NO_QUESTION:* **held** (NOT_CARRIED). *The control holds:* **FAILED**, it holds on HotpotQA alone (16.13(d) had already shown it cannot on three).
+  - **XB2 FAILED.** I expected a median under 20 branches and a long tail. The median is **100 on every dataset, p90 100**: the capped candidate set. The scored program is a knapsack of non-negative weights, so it spends the budget (cost used median 1,500 on every dataset but WebQSP, 1,273.5) and opens branches until the cap or the budget stops it; the number reads how the program fills, not what the question needs. What the question needs is Part A's cost*: a median of 1 to 2 added nodes. **The declared measure could not have shown a thin path; I read it as if it could.**
+  - **XB3 held.** W3 - W4 is exactly +0.00 on MuSiQue, MetaQA and WebQSP; **W2 - W0 is BELOW on all three** (-8.75, -7.33, -5.83: at least 5 points on at least two was expected); the declared main call is BELOW on those three and the declared verdict is NOT_CARRIED.
+  - **XB4 FAILED in two of three parts.** At unit lambda, W6 - W0 ABOVE on at least three of five: **FAILED**, two (WebQSP +4.50, 2Wiki +12.50, which is over the 10-point ceiling written); WebQSP was expected LEVEL or BELOW and is ABOVE. W6 - W7 ABOVE on all five: **FAILED on 2Wiki** (-0.33, LEVEL), ABOVE on four (+4.33 to +18.60). The beside verdict **NOT_CARRIED held**.
+  - **XB5 FAILED in one part.** *Lowest on WebQSP:* **FAILED**, W0's candidate recall is lowest on **2Wiki (14.3)**, then MuSiQue 32.6, WebQSP 36.2, HotpotQA 61.6, MetaQA 62.7. *Below 50 percent on WebQSP:* held (36.2). *Below 90 on the others:* held (all under 63). *Completion bounded by it:* held on every dataset (W0 completes 30.0 of 32.6, 44.7 of 62.7, 32.2 of 36.2, 60.7 of 61.6 and 14.2 of 14.3).
+  - **XB6 held.** Every instance proven optimal on all five (100.0 percent against 99.5 declared); none dropped.
+- **What the numbers say and what they do not.**
+  - **(1) The question's own cosine beats the stored label's plausibility on four of five; the label alone is not a route.** W2 (the operator of the stored label applied to the parent, no question) is BELOW W0 by 8.75, 7.33, 5.83 and 14.05 points on MuSiQue, MetaQA, WebQSP and HotpotQA and ABOVE it by 15.50 only on 2Wiki, where W0 is weakest (14.2 percent, against 35.7 for the plain along-link cosine W1): there the parent's geometry carries what the question's does not.
+  - **(2) The question is read, and it is a strong signal against chance.** W0 - W5 is ABOVE on all five (+20.28, +23.17, +30.67, +44.63, +7.67 points); at unit lambda W6 - W7 is ABOVE on four (+8.95, +13.33, +4.33, +18.60). At the declared lambda, W3 - W4 is ABOVE on HotpotQA (+7.02) and LEVEL on 2Wiki (-1.33).
+  - **(3) The operator beside the question adds little at the main budget.** W6 - W0 is LEVEL on MuSiQue, MetaQA and HotpotQA, ABOVE on WebQSP (+4.50) and 2Wiki (+12.50) (above).
+  - **(4) The room closed is at most 61 percent, and the cap bounds it.** The best completion on any dataset is 60.7 (HotpotQA, W0), 44.7 (MetaQA, W0), 36.7 (WebQSP, W6), 35.7 (2Wiki, W1) and 31.6 (MuSiQue, W1): none above two thirds of a population where a perfect router completes all (H, 16.12). In points of coverage that is 9.75, 29.66, 26.96, 18.64 and 10.36 of the 16.05, 66.40, 73.52, 52.27 and 32.79 on offer; **not a pool gain** (16.7). **On MuSiQue, HotpotQA and 2Wiki completion is 92 to 99 percent of the candidate recall: the loss is the cap (the gold, or its parent, is not among the scorer's best 100 hop-1 nodes and the best 50 out-neighbours of each), not the budget.** On MetaQA the budget costs 29 percent of the recall (44.7 of 62.7), on WebQSP 11 percent (32.2 of 36.2).
+  - **(5) A gold's parent is the cost.** Completion falls with the number of missed golds (MetaQA W0: 67.5, 48.0, 20.2 percent for one, two and three or more).
+  - **(6) A caveat on the caps.** The caps (100 and 50, 16.6) are declared and not varied; a larger cap would raise the candidate recall at a larger program. R8 does not say where the recall tops out.
+
+### 16.15 Beside: the question-conditioned semantic b-tree (the user's picture, 26 November 2026; decides nothing, no new number)
+
+The user's picture, in their words: "a question depending semantic b-tree": one stored structure over the nodes, the question choosing the branch at each step, as a descent through a tree of separators, so that the walk touches a thin path and not the field. This section says what R8's two parts show about it, and what they cannot.
+
+- **What Part A would show if the picture held, and what it does show.** If a thin, question-chosen path exists, the oracle's walk should be tiny, far below the unordered walk and the budget, and its cost should not grow with the field. **It is:** cost* is 1 to 2 added nodes (median), 1.01 to 1.17 per missed gold; the budget does not bind (H(25) = H(1,500) on MuSiQue, HotpotQA and 2Wiki); the field is 229 to 14,862 hop-1 nodes and the unordered cost 10^4 to 10^8. **That is the necessary condition, and it holds.** Had it failed (large cost*, H rising with the budget, golds mostly beyond two hops), the picture would have been dead on arrival. It says a thin path exists; it does not say the question can find it.
+- **What Part B shows about choosing the branch.** The nearest thing R8 has to one level of separators is the flat cosine of the question to the hop-1 field. It chooses far better than chance (W0 - W5, +7.67 to +44.63 points) and better than another question (W6 - W7 ABOVE on four), so the question is read; and the stored label's operator is **not** the separator on four of five (W2 below W0). But it finds the thin path on **at most 61 percent of the questions** with 100 branches and 1,500 added nodes (14 to 61 percent across the five), and its candidate set holds every missed gold on only 14 to 63 percent. So the picture is half supported: **the question does choose, and a thin path exists, but one flat question-to-node cosine does not choose well enough** on four of five, and the limit is the candidate set, not the budget.
+- **What Part B cannot say.** It never builds a tree: its scorers rank the nodes of the field by one flat score, whose leaves are nodes. A tree would add **coarse separators** (the centroids of groups of nodes, which average the noise of single node vectors) and descend: choose the group, then the branch inside it. Whether a coarse-to-fine descent holds the gold where the flat cosine does not is **not measured**; R8 fits nothing and builds no index (16.7).
+- **A candidate round, named and not declared (a new declaration on the user's word only): a descent router.** Build a label-free hierarchical index over the node vectors (a balanced tree by recursive k-means; the branching factor and the leaf size set by the budget, not fitted: a leaf is at most as large as a branch the budget can pay), once per dataset, and let the question descend by comparing its vector with the separators (the centroids) with a beam of width w; the pool adds the leaves the descent reaches that the stored links connect to the seeds. **Read:** the share of questions whose every missed gold lies in the reached leaves (a tree recall, set beside W0's candidate recall at the same number of added nodes), the completion by the same population and program, and Part A's cost* as the ceiling. **Controls, declared with it:** a tree of the same shape with random assignment, another question's descent, and the flat W0 at the same node count. **A learned separator or adapter** is a further step (16.7's trained router) and needs its own word. CPU only; it reuses `zsem2r8b.py`'s adjacency table and worker module, and nothing is fitted on the questions. **Priority is unchanged: pools and links first; no pool, link or PL change follows from R8.**
+
 ### 8.16 Records completed after the closure (24 November 2026, 23:47 IST, 18:17 UTC): decides nothing
 
 8.15 closed the hub line with five rows still running. They have finished: R1k on WebQSP and 2Wiki, and R1q on

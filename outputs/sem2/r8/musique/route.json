@@ -1,0 +1,114 @@
+{
+ "stage": "SEM2 R8 part B",
+ "declared_in": "docs/SEM2_EDGE_OPERATORS.md sections 16.6, 16.8 and 16.13",
+ "dataset": "musique",
+ "smoke": false,
+ "population": 503,
+ "completable": 503,
+ "lambda": 0.0,
+ "lambda_record_sha256": "c4428da38573d04137d6b3f9a917e96f7db18dd408c77570a45647270fe4668e",
+ "scorers": [
+  "W0",
+  "W1",
+  "W2",
+  "W3",
+  "W4",
+  "W5",
+  "W6",
+  "W7"
+ ],
+ "ladder": [
+  25,
+  100,
+  500,
+  1500
+ ],
+ "caps": [
+  100,
+  50
+ ],
+ "gates": {
+  "G-E": {
+   "families": {
+    "W2_S": {
+     "pairs": 2343920,
+     "record": 2343920
+    },
+    "CN_all": {
+     "pairs": 931069,
+     "record": 931069
+    },
+    "F0T": {
+     "pairs": 973013,
+     "record": 973013
+    }
+   },
+   "verdict": "PASS"
+  },
+  "G-R": {
+   "samples": {
+    "s": true,
+    "d": true,
+    "lab": true,
+    "grp": true,
+    "read groups": true,
+    "operators": true
+   },
+   "rank_agreement": 1.0,
+   "mrr_diff": 0.0,
+   "verdict": "PASS"
+  },
+  "G-Q": {
+   "base5": 0.494568,
+   "equals Part A's": true,
+   "verdict": "PASS"
+  },
+  "G-C": {
+   "nodes": 115,
+   "rows": 6633866,
+   "verdict": "PASS"
+  },
+  "G-B": {
+   "hop-1 size equals Part A's": "503/503",
+   "missed count equals Part A's": "503/503",
+   "verdict": "PASS"
+  },
+  "G-P": {
+   "instances": 12072,
+   "proven_optimal": 12072,
+   "share": 1.0,
+   "not_optimal": 0,
+   "identical_programs_reused": 4024,
+   "solutions_violating_closure_or_budget": 0,
+   "verdict": "PASS"
+  }
+ },
+ "part_a_sha256": "d02b42917addd0e6b09725891089c75824e9d3058aad9e9460c31ffaec7c3534",
+ "part_a_npz_sha256": "834e5d1db599b2a4a33f296854097328ccb6854aef737ffc8d7631d9240952be",
+ "inputs": {
+  "freeze_RECORD_SHA256": "58958f33a3af74c21fa625ffd79da16c573cb5d2ba7e9745da0056b568591ab0",
+  "nodes_sha256": "b8fc63ce6071609312de01045b0ea0f381fe9d643b977281d7132693faebfbdf",
+  "ner_npz_sha256": "f294708600750c48eae9e32d0895d517ac3a8b5d048c736a70e9a566af2fe9c6",
+  "knn_npz_sha256": "6020ac7e0b6773e64866b5e942dc0e02c3b704615ced8de4d557aa543221ef5b",
+  "w2_s_npz_sha256": "385e797724086248317cc096e145233d0dc5b994045041977b6f85f74496317b",
+  "f0t_npz_sha256": "a0cea3c450f4a8364d202d7f21fe949e288f2ed0ca325aadea199f7ed2a4eebc",
+  "names_npz_sha256": "279d4b6ff3a2d5e3fbbab9071bcc93328167da1c5d19e805c3a9c5ad7a8f9cda",
+  "vectors": {
+   "shards": 3,
+   "dim": 1152,
+   "dtype": "float16",
+   "manifest_sha256": "48ccb700e4baf00235fc67190011b70245f923cdbd11e2bf9d178ba51064c81e"
+  }
+ },
+ "refs": {
+  "r1_record_sha256": "3b767a5e487776d45d9039a8b2b314841c0b19a91da4202c2108256bfdb5ea77",
+  "r1_npz_sha256": "ddd4fd23c9cf724eb03de9c7320155d4fa0b9b286d071685ed30f0653bd94ca7"
+ },
+ "threads": 8,
+ "workers": 6,
+ "worker_sha256": "5b411e9181f87e75309c988347c4e79cefd7fbc5858693be038975221fd49b68",
+ "npz_sha256": "6d2b49fdb59f3d8df03aa470d9e5eefa4c788feba076294aaf2f8930f65a1296",
+ "seconds": 1296.2,
+ "utc": "2026-11-26T05:40:33Z",
+ "script_sha256": "8ddf912f3529afeea46785dbe56012655770d2e1d0445ea8731e1ebaccf5961c"
+}
