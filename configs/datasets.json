@@ -1,0 +1,159 @@
+{
+  "_about": "ING1 registry (docs/ING1_INGESTION_AND_STAGE_REGISTRY.md section 3.1): the one place a dataset name is listed. Paths are relative to the workspace root unless they start with ~ or $; the first candidate whose record file exists is the package.",
+  "roots": {
+    "canonical": [
+      "$ENC_SERVED",
+      "../mirror/CRAG/data/final_canonical",
+      "~/Desktop/CRAG/data/final_canonical"
+    ],
+    "mhr1": [
+      "outputs/mhr1/package"
+    ],
+    "stk1": [
+      "outputs/stark/package"
+    ]
+  },
+  "datasets": [
+    {
+      "name": "squad",
+      "kind": "passage",
+      "root": "canonical",
+      "dir": "squad",
+      "record": "CANONICAL_DATASET",
+      "s_source": "none",
+      "adapter": "CRAG canonical builder (docs/CANONICAL_LINK_AND_POOL_LAYOUT.md, docs/DATASET_GRAPH_PROVENANCE.md)",
+      "arms": [
+        "e3v",
+        "frozen"
+      ]
+    },
+    {
+      "name": "musique",
+      "kind": "passage",
+      "root": "canonical",
+      "dir": "musique",
+      "record": "CANONICAL_DATASET",
+      "s_source": "none",
+      "adapter": "CRAG canonical builder (docs/CANONICAL_LINK_AND_POOL_LAYOUT.md, docs/DATASET_GRAPH_PROVENANCE.md)",
+      "arms": [
+        "e3v",
+        "frozen"
+      ]
+    },
+    {
+      "name": "hotpotqa",
+      "kind": "passage",
+      "root": "canonical",
+      "dir": "hotpotqa",
+      "record": "CANONICAL_DATASET",
+      "s_source": "hyperlinks",
+      "adapter": "CRAG canonical builder (docs/CANONICAL_LINK_AND_POOL_LAYOUT.md, docs/DATASET_GRAPH_PROVENANCE.md)",
+      "arms": [
+        "e3v",
+        "frozen"
+      ]
+    },
+    {
+      "name": "2wiki",
+      "kind": "passage",
+      "root": "canonical",
+      "dir": "2wiki",
+      "record": "CANONICAL_DATASET",
+      "s_source": "hyperlinks",
+      "adapter": "CRAG canonical builder (docs/CANONICAL_LINK_AND_POOL_LAYOUT.md, docs/DATASET_GRAPH_PROVENANCE.md)",
+      "arms": [
+        "e3v",
+        "frozen"
+      ]
+    },
+    {
+      "name": "metaqa",
+      "kind": "kb",
+      "root": "canonical",
+      "dir": "metaqa",
+      "record": "CANONICAL_DATASET",
+      "s_source": "triples",
+      "adapter": "CRAG canonical builder (docs/CANONICAL_LINK_AND_POOL_LAYOUT.md, docs/DATASET_GRAPH_PROVENANCE.md)",
+      "arms": [
+        "e3v",
+        "frozen"
+      ]
+    },
+    {
+      "name": "webqsp",
+      "kind": "kb",
+      "root": "canonical",
+      "dir": "webqsp",
+      "record": "CANONICAL_DATASET",
+      "s_source": "triples",
+      "adapter": "CRAG canonical builder (docs/CANONICAL_LINK_AND_POOL_LAYOUT.md, docs/DATASET_GRAPH_PROVENANCE.md)",
+      "arms": [
+        "e3v",
+        "frozen"
+      ]
+    },
+    {
+      "name": "multihoprag",
+      "kind": "passage",
+      "root": "mhr1",
+      "dir": "multihoprag",
+      "record": "MHR1_PACKAGE",
+      "s_source": "none",
+      "adapter": "outputs/mp_unified/zmhr.py (docs/MHR1_MULTIHOPRAG_PACKAGE.md)",
+      "arms": [
+        "e3v",
+        "frozen"
+      ]
+    },
+    {
+      "name": "stark_prime",
+      "kind": "kb",
+      "root": "stk1",
+      "dir": "stark_prime",
+      "record": "STK1_PACKAGE",
+      "s_source": "triples",
+      "adapter": "outputs/mp_unified/zstk1.py (docs/STK1_STARK_PACKAGE.md)",
+      "arms": [
+        "e3v"
+      ],
+      "commands": {
+        "encode": "python outputs/host_ops/retry_cmd.py --tries 2 --wait 90 -- python -I outputs/mp_unified/zstk1.py encode --kb prime --threads 8 ; then python outputs/host_ops/retry_cmd.py --tries 2 --wait 90 -- python -I outputs/mp_unified/zstk1.py vectors --kb prime",
+        "first": "python outputs/host_ops/retry_cmd.py --tries 2 --wait 90 -- python -I outputs/mp_unified/zstk1.py first --kb prime --threads 8"
+      }
+    },
+    {
+      "name": "stark_mag",
+      "kind": "kb",
+      "root": "stk1",
+      "dir": "stark_mag",
+      "record": "STK1_PACKAGE",
+      "s_source": "triples",
+      "adapter": "outputs/mp_unified/zstk1.py (docs/STK1_STARK_PACKAGE.md)",
+      "arms": [
+        "e3v"
+      ],
+      "commands": {
+        "ingest": "python outputs/host_ops/retry_cmd.py --tries 2 --wait 90 -- python -I outputs/mp_unified/zstk1.py package --kb mag --proc outputs/stark/mag_processed/processed --dl outputs/stark/mag_dl --threads 2",
+        "encode": "python outputs/host_ops/retry_cmd.py --tries 2 --wait 90 -- python -I outputs/mp_unified/zstk1.py encode --kb mag --threads 8 ; then python outputs/host_ops/retry_cmd.py --tries 2 --wait 90 -- python -I outputs/mp_unified/zstk1.py vectors --kb mag",
+        "first": "python outputs/host_ops/retry_cmd.py --tries 2 --wait 90 -- python -I outputs/mp_unified/zstk1.py first --kb mag --threads 8"
+      }
+    },
+    {
+      "name": "stark_amazon",
+      "kind": "kb",
+      "root": "stk1",
+      "dir": "stark_amazon",
+      "record": "STK1_PACKAGE",
+      "s_source": "triples",
+      "adapter": "outputs/mp_unified/zstk1.py (docs/STK1_STARK_PACKAGE.md)",
+      "arms": [
+        "e3v"
+      ],
+      "commands": {
+        "ingest": "python outputs/host_ops/retry_cmd.py --tries 2 --wait 90 -- python -I outputs/mp_unified/zstk1.py package --kb amazon --proc outputs/stark/amazon_processed/processed/cache/brand-category-color --dl outputs/stark/amazon_dl --threads 2",
+        "encode": "python outputs/host_ops/retry_cmd.py --tries 2 --wait 90 -- python -I outputs/mp_unified/zstk1.py encode --kb amazon --threads 8 ; then python outputs/host_ops/retry_cmd.py --tries 2 --wait 90 -- python -I outputs/mp_unified/zstk1.py vectors --kb amazon",
+        "first": "python outputs/host_ops/retry_cmd.py --tries 2 --wait 90 -- python -I outputs/mp_unified/zstk1.py first --kb amazon --threads 8"
+      }
+    }
+  ]
+}

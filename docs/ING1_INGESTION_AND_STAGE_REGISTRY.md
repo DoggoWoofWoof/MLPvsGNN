@@ -64,4 +64,26 @@ It does not rewrite, rename or refile any frozen module or number; does not deci
 
 ## 7. Result
 
-(empty until the tooling has run)
+### 7.1 Phase A (26 Nov, 23:13 IST): `configs/datasets.json`, `configs/rule_sets.json`, `scripts/ingest/ingest.py`
+
+Run on the laptop and on the host (`rx exec`), `python -I`, read-only; no row, no job, nothing refiled. The host's side is the registry pushed with `rx push --inputs` (three small files).
+
+**E1 (`check`, gates C1 to C10 on the files a package has): met, after one fix to the tool.** `check --deep` read nine packages on the host (the six, MultiHop-RAG, STaRK Prime and MAG) and eight on the laptop (no MAG there); Amazon's package is not built yet. No package fails a gate. The first version of the gold gate (C7: "golds present and distinct") **failed on four datasets**, and the failure was the tool's, not the data's: MuSiQue's, HotpotQA's and 2Wiki's `test` splits have no answers at all (the benchmarks withhold them: 2,459, 7,405 and 12,576 questions), WebQSP has 143 questions whose answer is a literal and not a node (`gold_coverage: NONE_IN_CORPUS`, 88 train and 55 test), and 69 WebQSP questions (44 train, 25 test) list the same node twice (the case STK1's A1 handles for Prime). C7 now asks the one thing that can fail (every gold id is a node id; all resolve on all nine) and C7i records the three properties per split without calling them damage. Where a gate does not apply it prints N/A with the reason (the six keep their edges in `graph/<family>.npz`, which phase A does not read; the e3v vectors live under `outputs/enc/e3v/<ds>/`, not in the package).
+
+Two facts the check surfaced, neither a rule: HotpotQA's evaluation split is named `validation`, not `dev`; and the six's records carry no `s_edges.npz`, so a loader written against one edge file would be wrong for them (phase B reads `GRAPH_MANIFEST.json`).
+
+**E2 (`status`): partly met.** The table below is the host's; the laptop's differs in the e3v column (the laptop has MultiHop-RAG's e3v alone) and in MAG's package (on the host only). It agrees with what is known: the six and MultiHop-RAG show the layout grade (UL2 section 12.6) and the pool grade (PL7's `select.json`) as DONE, the e3v encode DONE on the host, STaRK's package PRESENT (MAG on the host only), Amazon MISSING, and the three OPEN stages as OPEN. **Not met:** (i) a stage that is running shows MISSING (Prime's encode is a feeder row; `status` reads records, not the queue); (ii) `first` is UNREGISTERED for the seven because their first stage has no record of its own: it lives inside the pool rows, while STaRK has `first.json`; (iii) `links_layout` is UNREGISTERED for STaRK because STK2 is not declared. UNREGISTERED means "no record path is registered", never "missing".
+
+| | ingest | encode | first | links layout | links tightening | pools | grade | models |
+|---|---|---|---|---|---|---|---|---|
+| the six | PRESENT | DONE (host) | UNREGISTERED | DONE | OPEN | OPEN | DONE | OPEN |
+| MultiHop-RAG | PRESENT | DONE | UNREGISTERED | DONE | OPEN | OPEN | DONE | OPEN |
+| STaRK Prime | PRESENT | MISSING (row running) | MISSING | UNREGISTERED | OPEN | OPEN | MISSING | OPEN |
+| STaRK MAG | PRESENT (host) | MISSING | MISSING | UNREGISTERED | OPEN | OPEN | MISSING | OPEN |
+| STaRK Amazon | MISSING | MISSING | MISSING | UNREGISTERED | OPEN | OPEN | MISSING | OPEN |
+
+**E3 (G-W): not run.** Phase B is not written.
+
+**E4 (`plan`): not met as written, and the reason is the finding.** For STaRK `plan` prints the rows of the stages that are not DONE or PRESENT, but it does not read the feeder, so it lists Prime's encode although it is queued. For a made-up eleventh dataset it prints what to add to the registry and nothing more, because **no generic encode or first-stage driver exists to name**: `zenc` is written for the six, `zmhr` for MultiHop-RAG, `zstk1` for the three KBs, and each hardcodes its dataset list. Only the STaRK rows have a command in the registry. A new passage or knowledge-base dataset therefore still needs a driver written; what phase A buys is that its package is checked by the same gates, its place in every stage is one row, and a rule change lists the cells it stales.
+
+What this means for the next phases: phase B's loader (`zworld.py`) is the part that can make the new stages dataset-blind; the encode and first-stage drivers are the part that cannot be unified without touching frozen modules, so a generic driver would be a new module that reuses `zstk1`'s package-level encode (already parameterised by `--kb`) once the STaRK rows have shown it correct. That is a decision for after STK1's numbers, not before.

@@ -1,0 +1,117 @@
+{
+  "_about": "ING1 rule sets (docs/ING1_INGESTION_AND_STAGE_REGISTRY.md section 3.2). One entry per rule-set id; a rule change is a NEW id committed with its page before any number. status FINAL: a new dataset is processed under it. status OPEN: no rule is claimed, and ingest.py status only lists the records found. artifacts: path templates ({ds} = dataset name, {kb} = name without the stark_ prefix) of the record a stage writes; a dataset with no template for a stage is UNREGISTERED (not 'missing'). Written from the filed pages on 26 Nov 2026; no commit ids are copied from memory.",
+  "current": "RS1",
+  "RS1": {
+    "declared": "2026-11-26",
+    "stages": {
+      "ingest": {
+        "status": "FINAL",
+        "rule": "the package contract (DATASET.json record, nodes, queries, graph, embeddings manifests, a freeze file); node text as filed for the original datasets, T1 for the STaRK knowledge bases",
+        "pages": [
+          "docs/CANONICAL_LINK_AND_POOL_LAYOUT.md",
+          "docs/MHR1_MULTIHOPRAG_PACKAGE.md",
+          "docs/STK1_STARK_PACKAGE.md"
+        ]
+      },
+      "encode": {
+        "status": "FINAL",
+        "rule": "e3v (D101): gte-modernbert-base and granite-embedding-small-english-r2 fused at 0.5 each, 1,152 wide, float16 unit rows; one arm",
+        "pages": [
+          "docs/ENC_ENCODER_COMPARISON.md"
+        ],
+        "artifacts": [
+          {
+            "template": "outputs/enc/e3v/{ds}/docs/manifest.json",
+            "rows_equal": "n_nodes"
+          }
+        ]
+      },
+      "first": {
+        "status": "FINAL",
+        "rule": "e3v dense and SPLADE fused by reciprocal rank (C=60), depth 2,500; BM25 and the dense leg are reads",
+        "pages": [
+          "docs/MHR1_MULTIHOPRAG_PACKAGE.md",
+          "docs/STK1_STARK_PACKAGE.md"
+        ],
+        "artifacts": [
+          {
+            "template": "outputs/stark/{kb}/first.json",
+            "only": [
+              "stark_prime",
+              "stark_mag",
+              "stark_amazon"
+            ]
+          }
+        ]
+      },
+      "links_layout": {
+        "status": "FINAL",
+        "rule": "families S, R, K; edges deduplicated S > R > K; S never removed; every edge labelled by its rule",
+        "pages": [
+          "docs/CANONICAL_LINK_AND_POOL_LAYOUT.md",
+          "docs/UL2_LAYOUT_ON_E3V.md"
+        ],
+        "artifacts": [
+          {
+            "template": "outputs/ul2c/{ds}/grade.json",
+            "only": [
+              "squad",
+              "musique",
+              "hotpotqa",
+              "2wiki",
+              "metaqa",
+              "webqsp"
+            ]
+          },
+          {
+            "template": "outputs/ul2m/{ds}/grade.json",
+            "only": [
+              "multihoprag"
+            ]
+          }
+        ]
+      },
+      "links_tightening": {
+        "status": "OPEN",
+        "rule": "none adopted; the base link set stands until the user says the link set is final",
+        "pages": [
+          "docs/UL3_LINK_TIGHTENING.md",
+          "docs/UL4_UNIVERSAL_LP.md"
+        ]
+      },
+      "pools": {
+        "status": "OPEN",
+        "rule": "no pool rule carried; the records below are the readings filed so far",
+        "pages": [
+          "docs/PL6_COVERAGE_ROUND5.md",
+          "docs/PL7_COVERAGE_RESTRICTION.md"
+        ],
+        "artifacts": [
+          {
+            "template": "outputs/pl6/{ds}/select.json"
+          },
+          {
+            "template": "outputs/pl7/{ds}/select.json"
+          }
+        ]
+      },
+      "grade": {
+        "status": "FINAL",
+        "rule": "all golds inside the pool, read at distinct nodes",
+        "pages": [
+          "docs/PL7_COVERAGE_RESTRICTION.md"
+        ],
+        "artifacts": [
+          {
+            "template": "outputs/pl7/{ds}/select.json"
+          }
+        ]
+      },
+      "models": {
+        "status": "OPEN",
+        "rule": "one MLP and one GNN per family; how they use the pools is not settled",
+        "pages": []
+      }
+    }
+  }
+}
