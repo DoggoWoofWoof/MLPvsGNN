@@ -7,6 +7,7 @@ The target the user set (25-26 Nov): **at least 0.95 of the questions with every
 ## 1. The short version
 
 - **Four of seven datasets meet the target inside 2,500 nodes** (MultiHop-RAG, SQuAD, HotpotQA, 2Wiki: 0.9554 to 0.9690 at 15 to 917 nodes). **Three do not** (MuSiQue 0.8846, MetaQA 0.8968, WebQSP 0.8789 at about 2,100 to 2,440 nodes). The same rule that stops at 2,500 reaches 0.95 on MetaQA at 1.99 times 2,500 nodes and on MuSiQue at 6.16 times; **on WebQSP no size read reaches it** (0.9474 at 39,530 nodes, 15.81 times).
+- **The gold links are there; the price is the problem** (uncapped, UL2H and UL2S, section 4). Within three links of the seeds every dataset read holds at least 99.72 percent of its golds, and no gold is isolated on any arm. MuSiQue's golds: 50.36 percent are seeds, **77.84 percent one link out (528 nodes)**, 95.64 percent two links out (**24,076 nodes**, 9.6 times 2,500), 99.72 percent three out (32,101). About a fifth of MuSiQue's golds is not one link from a seed, and 22.41 percent of the golds the first stage misses have links but none to a seed or to another gold. 2Wiki is not read yet.
 - **No universal link-removal rule exists** in any form we declared: label and dot cells (UL3), a shared keep-fraction program (UL4), gold-path attributes (GP1), rank windows, text windows, scores, labels and per-question caps (GP2, quarter and rest of dev). The link set stays the base layout (UL2, a70ec8cc: nothing carried). The pool re-run on a final link set (PL8) has **not** been declared, because the user has not said the link set is final.
 - **No depth signal exists** (UL5): no label-free statistic of five tells a question how deep its walk must go; the best saving over a uniform depth is 1.0 percent, and all 20 shuffles beat it.
 - **The semantic-space work (SEM2) learns and transfers in places, but has not improved a pool or a retrieval number.** Operators learn links (R1), a branching chain beats cosine on stored links (R5), a generic operator crosses passage to KB one way (R6), but the routed scorer is below a flat question cosine on four of five datasets (R8), and the region form (R4) is not carried. On the rows that decide, the cap on branches, not the node budget, is the loss.
@@ -54,7 +55,7 @@ At a glance:
 
 - **Idea.** A walk needs edges. The three families are cheap and need no LLM and no spaCy; the label says which rule made each edge.
 - **Assumption.** The links a question needs are among these three families; the label says something about whether a link is useful.
-- **Ran and found.** UL2 compared layouts on e3v and carried none (the base layout stays). The ledgers (UL2P, UL2S, UL2H) measure precision and how many golds each hop reaches. At the 2,500 pick the misses are cap or budget cuts, not missing links (section 2.3). Scale differs a lot: S is 72.3 percent of MetaQA's candidate links, 52.1 percent of HotpotQA SRK's and 38.5 percent of WebQSP's (UL3); R.mention holds 75.8 percent of MuSiQue's any-link candidates and 99.9 percent of WebQSP's.
+- **Ran and found.** UL2 compared layouts on e3v and carried none (the base layout stays). The ledgers (UL2P, UL2S, UL2H) measure precision and how many golds each hop reaches. At the 2,500 pick the misses are cap or budget cuts, not missing links (section 2.3). Uncapped, every dataset read holds at least 99.72 percent of its golds within three links of the seeds (section 4); the loss is the price of reaching them, not a missing link. Scale differs a lot: S is 72.3 percent of MetaQA's candidate links, 52.1 percent of HotpotQA SRK's and 38.5 percent of WebQSP's (UL3); R.mention holds 75.8 percent of MuSiQue's any-link candidates and 99.9 percent of WebQSP's.
 - **Attack points.** (1) One-hop precision misleads: MetaQA's S has 0.005 percent one-hop precision and is the only unit that reaches ALL 1.0 at three hops. (2) The rule links are the bulk of the candidates on the two datasets that fail worst, and they are low precision. (3) The labels are fixed by the rules, so a useful link of a useless label cannot be told apart by label alone.
 - **Would change the call.** A link family that raises coverage at the same node count on the three short datasets; UL2H's remaining rows (which label would link the golds the first stage and walk miss).
 
@@ -63,7 +64,7 @@ At a glance:
 - **Idea.** The walk sees too many candidates (WebQSP: 1.72 to 2.24 million candidate links per question). Remove the ones a question does not need, with one rule for all seven datasets, from a label, a dot score, a rank or text window, or a per-question cap.
 - **Assumption.** Links on gold paths differ from other links in something measurable without the answer, and the difference holds on every dataset. Two constraints are fixed by the user: universal (carried everywhere or nowhere) and S never removed (A.1). Hub, degree and IDF attributes are excluded by the user's 24 Nov ruling (hub line closed).
 - **Ran and found.** UL3 (label and dot cells): the one-hop screen passes 1, 2 and 3 of 9 cells for its three forms. UL4 (one program over all cells): no rule; a one-hop filter removes at most about one candidate in seven; universality costs 12.0 points of price on K2 (the expectation was under 10). GP1 (gold-path attributes): no attribute separates the links gold paths need; but 35 to 90 percent of them sit in the top 30 of their source's links by the dot of the two endpoints, against 0.1 to 36.9 percent of controls, a higher share in every one of the nine cells (a source-relative rank, GP1 15.8; the 35 is WebQSP's, the 90 and the 36.9 are MultiHop-RAG's). GP2 (windows, scores, labels, caps; fixed on a quarter, read once on the rest of dev): the final rule keeps 0.954 to 0.999 of reach in all nine cells and fails the price line in all nine (it keeps 86 to 90 percent of links).
-- **Attack points.** (1) The price line (keep at most half the links) and the reach line are mine, set before the numbers; a different line changes the call. (2) Price is counted in links, and links proved the wrong unit for WebQSP (GP3 counts nodes). (3) The families read are one-hop, windows, scores and caps; a learned path-level scorer is named, not run. (4) The A.1 protection of S costs +65 points of price on MetaQA alone.
+- **Attack points.** (1) The price line (keep at most half the links) and the reach line are the author's choices, set before the numbers; a different line changes the call. (2) Price is counted in links, and links proved the wrong unit for WebQSP (GP3 counts nodes). (3) The families read are one-hop, windows, scores and caps; a learned path-level scorer is named, not run. (4) The A.1 protection of S costs +65 points of price on MetaQA alone.
 - **Would change the call.** GP3 showing a score order that meets the bound in distinct nodes where link counts failed; the user dropping A.1 or the universality ruling (each is a choice, not a finding).
 
 ### 2.3 Walks (caps, budgets, depth)
@@ -155,6 +156,38 @@ Pool at the 2,500 pick, eval, frozen lists (PL7 section 14.2) and the cost of re
 | MetaQA | S (KB triples), R, K | 0.8968 [0.8906, 0.9027] | 2,335.9 | **no** | 4,973 (0.9582; 1.99 x) | 4,984 / 2,745 |
 | WebQSP | S (KB triples), R, K | 0.8789 [0.8614, 0.8944] | 2,094.6 | **no** | none read (0.9474 at 39,530) | 39,572 / 9,301 |
 
+**Gold coverage by links, uncapped** (UL2H, the hop-coverage ledger). Seeds = dense top 5 plus SPLADE top 5 (about 8 per question). Recall = golds within h links of a seed over all golds, pooled over questions. Nodes = the mean uncapped pool size per question (every link followed, no cap, no ranking), so these are graph-level upper bounds: a cap or a ranking can still lose a gold the graph holds. Unit = the any-link set; version RK for the text corpora, SRK for MetaQA and WebQSP. **2Wiki is not read yet (its host row is running).**
+
+| dataset | golds | seeds only | 1 link: recall (nodes) | 2 links | 3 links |
+|---|---:|---:|---|---|---|
+| MultiHop-RAG | 2,985 | 71.49 | 99.46 (276) | 100.00 (609) | 100.00 (609) |
+| SQuAD | 11,873 | 91.81 | 96.40 (413) | 98.80 (6,512) | 99.87 (17,963) |
+| HotpotQA (RK) | 14,810 | 72.80 | 93.54 (280) | 98.89 (1,158,309) | 99.86 (1,164,603 +) |
+| MuSiQue | 6,404 | 50.36 | **77.84 [76.67, 78.94] (528)** | 95.64 (24,076) | 99.72 (32,101 +) |
+| MetaQA | 72,697 | 0.23 | 13.64 (124) | 64.67 (11,775) | 100.00 (40,663) |
+| WebQSP | 10,583 | 2.13 | 72.77 [65.01, 80.76] (11,788) | 98.81 (902,382) | 100.00 (902,382 +) |
+
+(+ = a lower bound: a few questions' balls were unread at three links and are filled by the two-link size.)
+
+**Why a gold is not one link away** (UL2S: the golds the first stage's rrf top five misses, shares of them by class; the classes are exclusive and add to 100; its seeds are the rrf top five, fewer than the table above, so its shares are not that table's complement):
+
+| dataset / version | missed golds | linked to a seed | linked to another gold only (the answer-giving link exists, neither end anchored) | linked, but to no seed and no gold | isolated |
+|---|---:|---:|---:|---:|---:|
+| MultiHop-RAG | 1,244 | 99.60 | 0.00 | 0.40 | 0.00 |
+| SQuAD (one gold per question) | 1,395 | 61.79 | n/a | 38.21 | 0.00 |
+| HotpotQA RK / SRK | 4,714 | 77.90 / 87.80 | 7.57 / 8.85 | 14.53 / 3.35 | 0.00 |
+| 2Wiki RK / SRK | 11,901 | 88.26 / 91.04 | 5.00 / 5.15 | 6.74 / 3.82 | 0.00 |
+| MuSiQue | 3,525 | 59.29 | 18.30 | **22.41** | 0.00 |
+| MetaQA | 72,581 | 15.41 | 35.34 | **49.25** | 0.00 |
+| WebQSP | 10,424 | 58.43 | 28.71 | 12.86 | 0.00 |
+
+Reading (the two ledgers' pages file only MultiHop-RAG and SQuAD so far; the rest is read from their report files, written 25 Nov, and is an unfiled reading):
+
+- **The links are there.** Within three links every dataset read holds 99.72 percent or more of its golds, and no gold is isolated on any arm. "We do not have the gold links" is not what limits the pools.
+- **The price is.** MuSiQue: one link 77.84 percent at 528 nodes, two links 95.64 percent at 24,076 nodes (9.6 times 2,500), three 99.72 percent at 32,101. MetaQA: 13.64, then 64.67 percent at 11,775 nodes, then 100 percent at 40,663 (94 percent of its 43,234-node graph). WebQSP: 72.77 percent at one link already costs 11,788 nodes (4.7 times 2,500; 1,490 new nodes per seed), 98.81 percent at two costs 902,382. The capped pools (PL7) hold 2,500 of these, which is why the misses are cap and order cuts.
+- **What the rules do not reach directly.** Between 0.40 and 49.25 percent of the golds the first stage misses have links, but none to a seed or to another gold (MuSiQue 22.41, SQuAD 38.21, MetaQA 49.25, WebQSP 12.86, HotpotQA 14.53 and 2Wiki 6.74 without S; MultiHop-RAG 0.40). Such a gold is reached only through a non-gold row, two or more links out. S helps where it exists (HotpotQA 14.53 to 3.35, 2Wiki 6.74 to 3.82). Which words connect such a gold to the rest of its chain is not measured: the ledger gives the class, not the words, names no new link family, and the 13 Oct word-window read (D4) found no signal on MuSiQue.
+- **MuSiQue, by question hops.** The share of missed golds a rule reaches from a seed falls with the question's hops: 71.5 percent on 2-hop, 45.6 on 3-hop, 33.9 on 4-hop questions (UL2S E5). The 78 is most likely MuSiQue's one-link recall (77.84, UL2H, seeds = dense five plus SPLADE five). A second figure lands near it: 77.59 percent of the golds the rrf top five misses are linked to a seed or to another gold (59.29 + 18.30, UL2S; a different seed set and denominator, so a coincidence of size, not the same number). Both leave about a fifth outside one link.
+
 The final GP2 rule (per-question share cap, 0.9 / 0.9 / 0.5) on the rest of dev, reach / price (price = share of candidate links kept; the line is 0.50), GP2 section 18:
 
 | dataset | reach | price | | dataset | reach | price |
@@ -172,6 +205,7 @@ It keeps 86 to 90 percent of every cell's links, so it fails the price line in a
 
 - **What it is.** An article-node corpus of 609 nodes; no S, so only R and K links and no SRK cell. 224 dev questions. Its retrieval cache is laptop-only on this setup, so every row that needs it ran on the laptop, not the host.
 - **Where it stands.** The pool holds ALL 0.9690 at 50 nodes: inside the bound by a wide margin.
+- **Gold links we have (UL2H, UL2S).** Seeds hold 71.49 percent of the golds; one link, 99.46 percent (276 nodes); two links, 100.00 (609 nodes, where the ball stops growing). Of the 1,244 golds the first stage's rrf top five misses, 99.60 percent are linked to a seed and 5 (0.40 percent) only to non-seeds. Nothing here limits the golds a pool can hold.
 - **What we found.**
   - First stage: e3v is BELOW frozen on d5 (-2.62, MHR1 ac2b538); the windows (E6) win it back and more (d5 64.29 to 69.23, +4.94; +2.32 over frozen, 28f9170).
   - Links: each UL2 form alone over the base layout is ABOVE on eval (H5 +6.26, HK2 +7.03, H10 +7.83); the e3v rule links are 1.88 BELOW frozen's, so the links were not carried before H. UL3: the C and PC variants pass the screen here (price 45.4 and 47.8 at reach 97.1 and 97.3).
@@ -184,6 +218,7 @@ It keeps 86 to 90 percent of every cell's links, so it fails the price line in a
 
 - **What it is.** One passage corpus, R and K links only. 1,498 dev questions.
 - **Where it stands.** ALL 0.9554 at 15 nodes (the pick is the first-stage list alone). The lowest margin of the four that pass: the Wilson lower end is 0.9515.
+- **Gold links we have (UL2H, UL2S).** Seeds hold 91.81 percent of the golds; one link 96.40 (413 nodes); two 98.80 (6,512); three 99.87 (17,963). Of the 1,395 golds the first stage's rrf top five misses, 61.79 percent are linked to a seed and 38.21 percent (533) have links only to non-seed rows; with one gold per question there is no other gold to link to. Why not more: those golds are two or more links from every seed.
 - **What we found.**
   - First stage: e3v is 4.00 points BELOW frozen on R@5 (order, not reach). The windows lift d5 from 83.69 to 89.01 (E6).
   - Links: UL2H shows no gold is isolated: every unreached gold is far, so the lever is ranking and the cap, not a missing link (K.knn at 2 hops reaches 95.19 percent at 77.9 nodes). GP2's final rule keeps 85.5 percent of links.
@@ -195,17 +230,19 @@ It keeps 86 to 90 percent of every cell's links, so it fails the price line in a
 
 - **What it is.** The largest source set (about 5.2 million source rows). Two versions, with and without S (the user's ruling 21 Nov). 1,508 dev questions.
 - **Where it stands.** ALL 0.9634 at 77.9 nodes.
+- **Gold links we have (UL2H, UL2S).** Seeds hold 72.80 percent of the golds; one link 93.54 (280 nodes); two 98.89 (1,158,309 nodes, the uncapped two-link ball); three 99.86 (lower bound; RK). Of the 4,714 first-stage-missed golds: RK 77.90 percent linked to a seed, 7.57 to another gold only, 14.53 to neither; with the hyperlinks (SRK) 87.80, 8.85 and 3.35. Why not more: the hyperlinks add what the text rules do not express; what remains has no hyperlink or rule link to a seed or another gold.
 - **What we found.**
   - First stage: e3v is level (-0.43).
   - Links: UL3 does not shrink the RK version (best price 62.2 percent); the SRK version cannot pass under "S never removed" because S holds 52.1 percent of the candidates and 99.9 percent of the covered slots. GP1: 78 to 83 percent of the links gold paths need sit in the top 30 of their source's links, against 0.1 to 0.2 percent of controls; 60 to 68 percent have an exact title match. GP2's cutting rules do cut it (to 6,346 to 8,648 links per question) because a cell's own optimum is only 119 to 193 links per question (HotpotQA RK and 2Wiki RK together), but they are not universal.
   - SEM2: R8 ROOM (cov0 83.82 to 99.87 with at most 1,500 added nodes; 95.1 percent of misses are one hop out); the flat question cosine completes 60.7 percent, the best of any dataset; R4's region is 1.80 BELOW the point; R5 +1.34.
 - **Issues.** (1) A cost problem: the kNN groups had to be rebuilt from the record's pointer index (text groups differ in 16 of 5.2 million rows), and the gate row for e3v's K took 85,760 s on the degraded host (about 2 hours when healthy). (2) The cap of 100 branches, not the budget, is the loss on the routing read (92 to 99 percent of candidate recall).
-- **Open.** UL2H's HotpotQA read is waiting on the last host row.
+- **Open.** UL2H's own page does not yet file HotpotQA's read (the report is on disk).
 
 ### 5.4 2Wiki (S = hyperlinks; shown with and without S)
 
 - **What it is.** Two versions, with and without S. 1,496 dev questions.
 - **Where it stands.** ALL 0.9609 at 917 nodes (PL2 needed 2,140; PL3 cut it to 917).
+- **Gold links we have (UL2S; UL2H not read yet).** Of the 11,901 golds the first stage's rrf top five misses: RK 88.26 percent linked to a seed, 5.00 to another gold only, 6.74 to neither; with the hyperlinks (SRK) 91.04, 5.15 and 3.82. The hop ledger (how far out, at what price) is the host row still running.
 - **What we found.**
   - First stage: e3v is +10.85 ABOVE frozen on R@5, the biggest gain of the seven.
   - Links: the one dataset where UL3's screen passes on every cell (cuts 52 to 64 percent of candidates for 2 to 6 points of reach); GP1: 82 to 83 percent of needed links in the top 30 of their source's links against 0.1 percent of controls; 78 to 82 percent exact title. GP2's A2 and P5 rules put it in (the same 119 to 193 links per question own optimum), and no rule of that set puts MultiHop-RAG, MuSiQue, SQuAD or MetaQA in.
@@ -217,6 +254,7 @@ It keeps 86 to 90 percent of every cell's links, so it fails the price line in a
 
 - **What it is.** 117,534 nodes; R and K links only; 2, 3 and 4 hop questions. 1,534 dev, 2,417 eval questions.
 - **Where it stands.** **Short of the target at 2,500: ALL 0.8846.** The curve has no cliff: 0.8999 at 3,449 nodes, 0.9222 at 5,742, 0.9350 at 9,076, 0.9429 at 13,615, then **0.9640 at 15,400 (6.16 times 2,500)**. The uncut pool needs 20,038 nodes; **an oracle that picks the depth per question needs 1,831**.
+- **Gold links we have (UL2H, UL2S).** Seeds hold 50.36 percent of the golds; **one link 77.84 [76.67, 78.94] (528 nodes, the 78)**; two 95.64 (24,076); three 99.72 (32,101, lower bound). Of the 3,525 first-stage-missed golds: 59.29 percent linked to a seed (R, K), 18.30 linked only to another gold (the answer-giving link exists, no anchor), 22.41 linked to neither, none isolated. By question hops the rules' seed reach is 71.5, 45.6 and 33.9 percent on 2-, 3- and 4-hop questions. Why not more: a fifth of the golds sit two or more links from every seed, and the uncapped two-link pool is 24,076 nodes against 2,500, so a pool has to choose among 65.8 new nodes per seed at one link, and far more at two.
 - **What we found.**
   - Misses at 2,500: 36 of 300 questions, 39 golds, every one cut by a cap (hop-2 cap 18, hop-2 budget 9, upstream 12), none ranked out and none unreachable.
   - First stage: e3v is +1.97 ABOVE frozen at R@5, but the pools lose 0.42 golds and the models give it back.
@@ -231,18 +269,20 @@ It keeps 86 to 90 percent of every cell's links, so it fails the price line in a
 
 - **What it is.** A KB graph of 43,234 nodes; 1 to 3 hop typed questions. 1,497 dev, 9,785 eval.
 - **Where it stands.** **Short at 2,500: ALL 0.8968.** 0.9240 at 3,475 nodes; **0.9582 at 4,973 (1.99 times 2,500)**. Uncut pool 4,984 nodes; oracle depth 2,745.
+- **Gold links we have (UL2H, UL2S).** Seeds hold 0.23 percent of the golds (170 of 72,697); one link 13.64 (124 nodes); two 64.67 (11,775); three 100.00 (40,663 nodes, 94 percent of the graph). Of the 72,581 first-stage-missed golds: 15.41 percent linked to a seed, 35.34 to another gold only, 49.25 to neither. Why not more: the golds are answer sets two and three typed hops out, and the seeds hardly touch them.
 - **What we found.**
   - The first stage finds almost nothing (frozen dense R@5 0.87; GP1: 14 of 3,228 golds); 87 percent of the missed golds are two or three hops out.
   - Misses at 2,500: 33 of 300 questions, 375 golds (11.4 per question), 373 cut by a cap or the hop-3 budget (264 by the hop-3 budget).
   - Links: S is 36 percent of the pairs, but **72.3 percent of the candidates**, and has the lowest one-hop precision (0.005 percent) while being the only unit that reaches ALL 1.0 at three hops. UL2's first KB rule text made F0T 56 times the filed one (706,154 against 12,605 pairs), which broke the size bound until 12.6 rebuilt it from names. UL3 cannot pass under "S never removed"; the cost of that protection is +65 points of price here (UL4: own optimum 17 with S free, 83 with S protected). GP1: MetaQA is the odd one out (its dot, direction and exact-title AUCs lie below 0.5; half of the needed weight is on S).
   - SEM2: R8 ROOM (cov0 18.70 to 85.10 with 1,500 added nodes; the budget costs 29 percent of recall here); R3(c): NO on its 7 relations (all MRR below 2.2, a statement about power, not a finding that it cannot transfer); R4 region 1.02 BELOW; R5 +1.94.
 - **Issues.** (1) The golds are typed multi-hop paths the first stage never sees. (2) S is both the lever and the cost, so no rule that protects S can be cheap. (3) The pool needs the three-hop budget.
-- **Open.** UL2H's MetaQA read, GP3 (S-only walk reference).
+- **Open.** GP3 (S-only walk reference); UL2H's own page does not yet file MetaQA's read (the report is on disk).
 
 ### 5.7 WebQSP (S = KB triples; the explosion)
 
 - **What it is.** A KB graph of 2,592,894 nodes; typed one- and two-hop questions. 1,507 dev, 1,503 eval.
 - **Where it stands.** **Short at every size we read.** ALL 0.8789 at 2,095 nodes; 0.8975 at 4,977; 0.9175 at 6,080; 0.9328 at 10,817; 0.9421 at 20,738; the PL6 pick **0.9474 at 39,530 (15.81 times 2,500) does not reach 0.95**. The uncut pool is 39,572 nodes (ALL 0.956); **the oracle depth is 9,301, 3.7 times 2,500**: no depth rule, with or without labels, reaches 2,500.
+- **Gold links we have (UL2H, UL2S).** Seeds hold 2.13 percent of the golds; one link 72.77 [65.01, 80.76] (11,788 nodes, 4.7 times 2,500); two 98.81 (902,382); three 100.00. Of the 10,424 first-stage-missed golds: 58.43 percent linked to a seed, 28.71 to another gold only, 12.86 to neither. Why not more: a single link already adds 1,490 new nodes per seed, so the pool has to choose among them, and the first stage's seeds are weak.
 - **What we found.**
   - Misses at 2,500: 31 of 300 questions, 81 golds, all cut by caps or the hop-2 and hop-3 budgets.
   - First stage: e3v is 4.22 BELOW on R@5 and 14.12 BELOW on R@1000 (dense R@1000 only 36.7 percent): the lever is the links, not the first stage.
@@ -258,7 +298,7 @@ It keeps 86 to 90 percent of every cell's links, so it fails the price line in a
 |---|---|---|
 | GP3 (docs/GP3_NODE_COUNT_RULE.md) | declared 7c85205b; amendment A1 52301336 adds a PageRank order; six time rows on the host (SQuAD, MuSiQue, MetaQA, WebQSP done; HotpotQA running, about 150 s per question at 17:30; 2Wiki queued behind it); a separate gp3c-webqsp row was cancelled at 15 minutes (the GP1 session's row, reason not read); section 13 still "None yet" | the least worst-dataset mean distinct nodes at ALL 0.95, exact, with a shuffle null; whether a PageRank or GP2 score order meets 2,500 anywhere it currently does not |
 | R9 (SEM2 section 17) | cap rows done on MuSiQue, MetaQA, HotpotQA; WebQSP running (question 50 of 75 at 17:23) and 2Wiki running (question 10 of 75 at 17:04, about 556 s per question, so it ends near 03:00 IST); tree rows done on MuSiQue and MetaQA, the others queued; nothing of R9 is filed | whether lifting the 100-branch cap, and then a descent through a question-conditioned tree, finds the thin path the oracle uses |
-| UL2H (hop-coverage ledger) | 2Wiki row running (s1eval question 4,259 of 12,576 at 17:28); five host rows unread | which label or form would link the golds the first stage and walk miss, per dataset |
+| UL2H (hop-coverage ledger) | 2Wiki row running (s1eval question 4,259 of 12,576 at 17:28); the other five host rows are on disk (reports of 25 Nov 23:05 to 23:10) and read on this page only, not filed on the ledger's own page | which label or form would link the golds the first stage and walk miss, per dataset |
 | PL8 (the one pool re-run) | **not declared** | declared only when the user says the link set is final |
 | int8 world, deletes | not started; the delete list needs the user's per-action OK | after the pools are final |
 | Models and the unified refit | not started | after links, pools and the int8 world |
@@ -275,8 +315,8 @@ It keeps 86 to 90 percent of every cell's links, so it fails the price line in a
 
 ## 8. What this page does not say
 
-It does not say the 2,500-node target is out of reach for MuSiQue or MetaQA (an oracle depth meets it on MuSiQue at 1,831), nor that WebQSP cannot be reached by a different walk (GP3's order, the S-only walk, and learned question-versus-relation scores are the named routes). It does not say the semantic space is closed (R9 is running). The numbers are development numbers on the current links; the pools are provisional until PL8.
+It does not say the 2,500-node target is out of reach for MuSiQue or MetaQA (an oracle depth meets it on MuSiQue at 1,831), nor that WebQSP cannot be reached by a different walk (GP3's order, the S-only walk, and learned question-versus-relation scores are the named routes). It does not say the semantic space is closed (R9 is running). The numbers are development numbers on the current links; the pools are provisional until PL8. The gold-coverage tables in section 4 are uncapped graph readings (a cap or a ranking can still lose a gold the graph holds), read from the UL2H and UL2S report files of 25 Nov for five of the seven datasets (the two ledgers' own pages file only MultiHop-RAG and SQuAD), and 2Wiki's hop ladder is not read yet. They say where a gold sits, not which word or fact links it; that is not measured.
 
 ## 9. Sources
 
-PL7 section 14 (the pool table and the ladders); UL5 sections 11.2 and 11.6 (uncut and oracle depth); UL4 section 10; UL3 section 14; GP1 sections 15.1, 15.7, 15.8; GP2 sections 17 and 18; GP3 section 12; SEM2 sections 7 to 15 (R1 to R7: the operators, the unseen relation, regions, branching, passage and KB, withheld links), 16.12 and 16.14 (R8) and 17 (R9, declared); GP3 sections 12 and 13; ENC E6 (windows); UL2H ledger; ENC section 20.11 and E3W 19.8 (first stage); the project's progress record for the shas of PL2 to PL4, UL2 and the SEM2 rounds.
+PL7 section 14 (the pool table and the ladders); UL5 sections 11.2 and 11.6 (uncut and oracle depth); UL4 section 10; UL3 section 14; GP1 sections 15.1, 15.7, 15.8; GP2 sections 17 and 18; GP3 section 12; SEM2 sections 7 to 15 (R1 to R7: the operators, the unseen relation, regions, branching, passage and KB, withheld links), 16.12 and 16.14 (R8) and 17 (R9, declared); GP3 sections 12 and 13; ENC E6 (windows); UL2H ledger and report (outputs/ul2p/hops) and UL2S ledger and report (outputs/ul2p/seed), read 26 Nov; ENC section 20.11 and E3W 19.8 (first stage); the project's progress record for the shas of PL2 to PL4, UL2 and the SEM2 rounds.
