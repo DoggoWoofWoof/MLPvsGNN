@@ -58,7 +58,7 @@ def wilson(k, n, z=1.96):
 
 
 # A3 (cost, decided from `time` alone): the quarter of a heavy cell is the chunks whose index (position // CHUNK_Q in the part's question list) mod n is in the subset; the rest of dev is never subsampled.
-QUARTER_SHARDS = {"hotpotqa": (19, (1, 4, 7, 10, 13, 16))}
+QUARTER_SHARDS = {"hotpotqa": (19, (1, 4, 7, 10, 13, 16)), "2wiki": (19, (1, 4, 7, 10, 13, 16))}    # A6 adds 2wiki (its time row: heavy, 464 s per question over both cells)
 
 
 def want_questions(d, nq, part):
