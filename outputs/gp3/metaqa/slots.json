@@ -1,0 +1,26 @@
+{
+ "dataset": "metaqa",
+ "declared_in": "docs/GP3_NODE_COUNT_RULE.md",
+ "amendment": "A4",
+ "slots": 6074,
+ "notes": {
+  "GP": "6074 slots on 652 questions"
+ },
+ "versions": {
+  "SRK": {
+   "GP": {
+    "slots": 6074,
+    "linked": 851
+   },
+   "CH": {
+    "slots": 0,
+    "linked": 0
+   }
+  }
+ },
+ "nq": 1497,
+ "seconds": 10.7,
+ "utc": "2026-11-26T13:41:17Z",
+ "zgp3p_sha256": "43919b31d506fb5a2a3aebe890d627a6e0c46aaaa1d70cb9e0c256785a9cb887",
+ "zgp3_sha256": "12895fff62e3835a2f44d0385909406c15c1910519e126dafafbde31ee77aad4"
+}
