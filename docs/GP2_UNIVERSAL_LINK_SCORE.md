@@ -167,3 +167,27 @@ Gates: G-Q0 and G-Q1 (the question's lists, 2,000 random rows per cell against a
 - **X12**: NOT_UNIVERSAL on the rest of dev: 97 percent.
 
 **What each outcome means.** If X9 holds without reaching 0.50, the labels help but not enough; I give the frontier and the user decides. If the passage-only τ_M is at or below 0.50 and the KB-only is not, the data point is that the two classes need different rules and the universal ruling is what keeps them one; I name that to the user as a choice and build nothing. If nothing moves, the link set stays base, PL8 stays undeclared, and the stuck cells are KB cells whose needed hop-2 links nothing stored marks.
+
+## 13. Quarter result, amendment A2, filed 26 Nov (rest of dev still unread)
+
+Gate G-L1 (labels map onto the stored groups on every row) passes on all nine cells. Records: `outputs/gp2/rule_q_phase3.json`, `rule_q_phase4.json`, `rule_q_a2.json`. Every space solved exactly (M: OPTIMAL, relative gap at most 1e-6 as HiGHS reports it, for the final 6.2e-7; chain τ_L ≤ τ_U ≤ τ_M; T not run on the 15-group spaces, as declared).
+
+**Phase 3 (label dimension, 37 spaces), τ_M.** Labels and hops alone (no ordered attribute): 0.9907 (groups only was 0.9996). Singletons: pr 0.9869; dr, sr, ur, vo, tw, qov, dir all 0.9907 (they add nothing to the labels alone). Pairs: **pr+vo 0.9683** (138 kept keys, the global best), ur+vo 0.9804, dr+vo and sr+vo 0.9826, dr+pr, sr+pr, ur+pr, pr+tw, pr+qov, pr+dir 0.9869, every other pair 0.9907. **Phase 4 (groups, the new attributes):** qov 0.9959, dir 0.9957, qov+dir 0.9956, qov+dr and dir+dr 0.9953, qov+pr 0.9954, dir+pr 0.9955, qov+tw 0.9955, dir+tw 0.9957: no gain over section 11.
+
+**Global best (the final rule of GP2): labels × hops × pr × vo, τ_M 0.9683** (section 11's final was 0.9953; GP1's 0.99997). Kept keys by label: S 63, W 35, CN 21, K 19. On the quarter, reach / price per cell: MultiHop-RAG 0.990 / 0.842; MuSiQue 0.957 / 0.941; SQuAD 0.952 / 0.928; MetaQA 0.950 / 0.691; WebQSP 0.977 / 0.968; HotpotQA RK 0.950 / 0.148 and SRK 0.975 / 0.217; 2Wiki RK 0.961 / 0.311 and SRK 0.978 / 0.340.
+
+**Beside the call, on the final.** Own optima: MultiHop-RAG 0.573, MuSiQue 0.324, SQuAD 0.342, MetaQA 0.688, **WebQSP 0.968**, HotpotQA RK 0.145 and SRK 0.089, 2Wiki RK 0.003 and SRK 0.033; cost of universality (τ_M minus the largest own optimum) 0.0006: **WebQSP alone sets the price**. S free: 0.9537 (protecting S costs 0.0146 here). ρ 0.90: 0.875; ρ 0.99: 0.993; LP relaxation at ρ 0.94 and 0.96: 0.712 and 0.791. Size caps: infeasible (the protected S keys alone exceed the caps). Frontier: cap 0.30 infeasible, 0.40: 0.734, **0.50: 0.824**, 0.60: 0.830, 0.70: 0.864, 0.80: 0.871 (section 11's final: 0.75 at 0.50). Tied steps: 0.9872, so per-hop caps buy 0.019. Duals: MetaQA 3.78, MuSiQue 0.36, SQuAD 0.08, the rest 0.
+
+**The class split (data for the user, not a rule of this page): the same program on the seven passage cells and on the two KB cells, τ_M on the quarter.**
+
+| space | passage cells (7) | KB cells (2) |
+|---|---|---|
+| section 11's final (groups, tw+dr+pr) | 0.9545 | 0.9869 |
+| labels, pr+vo | 0.9359 | 0.9683 |
+| groups, dir+dr | 0.9528 | 0.9907 |
+
+**Section 11's last sentence is withdrawn.** It said a class rule "would sit far below 0.50 for the passage cells"; that was a statement about the own optima, which I read as if it were the passage-only program. The passage-only program is 0.94 to 0.95, not far below 0.50, so a class rule is not the way out either. Why one x over the seven passage cells costs this much when each alone is at most 0.57 is not measured here: the passage-only program's per-cell prices show MultiHop-RAG 0.911, MuSiQue 0.936 and SQuAD 0.916 held together while HotpotQA and 2Wiki sit at 0.15 to 0.34, so those three conflict on shared keys (that they conflict is the data; which keys, and whether a different key space would separate them, is not). Under the labels rule, HotpotQA and 2Wiki are already at prices 0.15 to 0.34, MetaQA 0.69, MultiHop-RAG 0.84, SQuAD 0.93, MuSiQue 0.94, WebQSP 0.97: the binding passage cell is MuSiQue (price 0.936 even without the KB cells), the binding cell overall is WebQSP.
+
+**Expectations, scored.** X9: the labels lower τ_M by at least 0.02 below section 11's (0.9953 to 0.9683, 0.027): **true** (30 percent); τ_M at most 0.90: **false**. X10 (`qov` or `dir` in phase 3's best space): **false** (40 percent): both add nothing to the labels, and in the group dimension nothing either. X11 (passage-only at most 0.50; KB-only at most 0.90): **both failed** (0.936 to 0.955; 0.968 to 0.991). X12 and X7, X8 wait for the rest of dev.
+
+**Reading.** The labelled keys are the first thing in two pages that moves the price (0.9953 to 0.9683) and the only reason is the rule labels: `lab` alone is 0.9907, and R.mention / R.name_comention / R.title_comention / K carry different needed-to-control ratios per hop. The family is now complete as declared (A, B1, C, A2; B2 costed only, not run). No rule in it reaches the 0.50 price line on all nine cells, and the program names the cell that stops it, WebQSP at own optimum 0.968, then MetaQA at 0.688.
