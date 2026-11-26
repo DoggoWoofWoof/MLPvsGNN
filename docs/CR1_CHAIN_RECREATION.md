@@ -1,0 +1,92 @@
+# CR1 — recreating the oracle's chains: how far the gold slots are from linked, and which order finds the next hop, on all seven datasets
+
+Declared 26 Nov 2026, before any CR1 number exists. Code: `outputs/mp_unified/zcr1.py` (committed with this page, before the first row is queued). It imports `zul2p.py`, `zul2c.py`, `zul1.py`, `zap4.py` and `zenc.py`, read only; nothing earlier changes. Outputs only under `outputs/cr1/`. No pool is built, no model reads anything, nothing trains, no LLM, no spaCy, no GPU. Gold positions and MuSiQue's decompositions are the **grading only**. `s1eval` decides, `s1sel` is beside, as in UL2P.
+
+## 1. Why this page exists
+
+The user's words (26 Nov):
+
+- **"we measured sending the oracle or direct gold links to the model getting 78 recall ... find that and check what are we missing and how can we restrict, can we do a per hop limit some scoring based on the questions or some PPR based technique"**
+- **"yeah need to measure that and also need to find a way to recreate the chains and use that logic on other datasets"** (the reply to: pool survival of the links between golds is unmeasured)
+- **"check the same logic across all the other datasets"**
+
+What exists, and what it leaves open:
+
+1. The 78 is SWP Part D (`docs/SWP_S_TO_R_SWAP.md` 5c and 5e, 8 Nov): MuSiQue's 1,090 oracle chain pairs added to the rule graph lift the two models of record in-domain R@5 from 69.0 to 79.6 and from 67.4 to 78.2; decoy and swapped partners lower it. The chain pairs are made from MuSiQue's own decomposition (a sub-question that names `#k` joins its supporting paragraph to that of hop k). That is a ceiling that uses labels.
+2. UL2P (`docs/UL2P_LABEL_PRECISION_E3V.md`) reads, on the current layout, how many gold slots the whole any-link graph B0 holds directly: MuSiQue chain slots 49.76 percent, gold pairs 33.76; MetaQA 13.12; WebQSP 19.07; 2Wiki 43.76 (SRK 45.80); HotpotQA 65.31 (SRK 80.01); MultiHop-RAG 85.55; SQuAD has no pair. It says nothing about a slot with no direct link: how far apart its two ends are.
+3. MHB (`docs/MHB_MULTIHOP_BRIDGES.md`, 18 Nov, old layout with spaCy) censused how MuSiQue's, 2Wiki's and HotpotQA's chains are made. Its unlinked MuSiQue slots are mostly a bridge both passages name as a hub (63 percent), or write but not as a rule name (22 percent). The hub line is closed; no degree, IDF or hub-key attribute is used here.
+4. GP3 amendment A4 (a530804a, the GP1 session's) reads slot recall **inside a walk's pool** and the precision of the pool's own links on a fixed 40-question sample. It decides nothing and its numbers are not filed. CR1 is the whole-graph counterpart: it reads how far the slots are from linked, and how the next hop is best ordered. The two are read side by side once both exist.
+5. GP1 and GP2 order a source's links by the pair's own dot (the two stored rows) and by the first-stage rank of the source. **None of them orders a source's links by the question.** R8 part B read a flat question cosine as the scorer of branches at a cap and found the routed scorer below it on four of five; its measure was completion at a cap, not the rank of a direct gold link among its source's links, and a path-aware order (the question minus what the source already says) was not read.
+
+## 2. What the stage is
+
+For every slot cell UL2P reads (the same questions, slots and layouts), CR1 gives two readings, both gold-anchored and pool-free:
+
+- **Part A: distance.** Each slot is classed D (its two ends are linked in B0), T (not linked, but at least one node is linked to both ends), or N (neither). A question is chain-connected within one link (CC1: all its slots D) or within two (CC2: all D or T). The two-link count of intermediates and whether an intermediate is itself a gold are read. A control with the same machinery and a different question's gold gives the chance level.
+- **Part B: order.** For the slots that are D, the target's rank among its source's B0 neighbours under three orders: the pair's own dot (GP1's and GP3's), the question's cosine to the neighbour (the flat question cosine), and the **residual question cosine** (the question with the source's own direction removed, then its cosine to the neighbour). The residual is the label-free form of the idea that the next hop answers what the question has not yet said; it has no parameter.
+
+CR1 declares **no rule**. If Part B calls the residual order better on enough datasets, a label-free path rule (CR2) is declared on its own page, with its own gates, before any pool number; the pool grade of CR2 needs the GP3 walker (the GP1 session's), reached by message. If Part A shows that two-link paths hold most chains at a small count of intermediates, a composed-path form is declared the same way. Neither is promised.
+
+## 3. Slots, versions, definitions
+
+- **Slots** are UL2P's: `UL2P.load_host(d)` (and `load_mhr()` for MultiHop-RAG) returns the cells keyed (carve, kind): **GP** is every pair of distinct golds of a question (the KBs: 2 to 10 golds, `UL.KB_GOLDS`, the grade's), **CH** is MuSiQue's chain pairs (zul1's `chain_slots`, the ORC rule). Both carves, `s1eval` decides, `s1sel` beside. **SQuAD has one gold per question and no slot: n/a**, as in UL2P (its seed-anchored read stands in UL2S).
+- **What a slot means per dataset.** MuSiQue CH: the oracle's chain pairs (2 to 4 hops). MuSiQue GP: all gold pairs of the same questions. 2Wiki, HotpotQA, MultiHop-RAG GP: the supporting passages' pairs; HotpotQA and 2Wiki bridge questions are chains of two, their comparison questions are two parallel golds with no chain (MHB Part C). **MetaQA and WebQSP golds are the answer set** (the KB's answer entities): their GP slots are answer to answer, not topic to answer; the topic-to-answer KB path is the S layer's own and is not a slot here (named, not read: the seed-to-gold hop distance is UL2H's and GP1's).
+- **Versions** are the grade's: RK on every dataset; SRK where S exists (HotpotQA, 2Wiki hyperlinks; MetaQA, WebQSP KB triples). B0 is UL2P's: S (SRK only), R (W2_S mention, F0T title and name co-mention), K (the e3v kNN), each pair once.
+- **N(x)** is the set of nodes joined to x by a B0 pair, either direction. **D**: b in N(a). **T**: not D, and N(a) and N(b) share a node (the intermediate m, m not a, not b). **N**: neither. `|M|` is the count of shared nodes. **Via gold** is a T slot with a shared node that is a gold of the same question.
+- **CC1** (a question with at least one slot and every slot D) and **CC2** (every slot D or T), per carve and kind, and by hop on MuSiQue (2, 3, 4). Unit: the question; paired intervals bootstrap over questions as UL2P does (`zap4.boot`).
+- **Control (chance):** for each slot (a, b) of question j, the control slot is (a, b') where b' is an end of the next question's (with a slot, in order, cyclic) first slot; skipped where b' = a. The control is read with the same classes. All its ends are anchors of the same cell, so no further neighbour list is needed.
+
+## 4. Part B in detail
+
+- **Question and node vectors:** the frozen e3v rows (`zenc.vec_shards(root, "e3v", d, "docs")`, `Rows`) and the question rows of the same encoder (`kind = "queries"`), looked up by the question id the carve names. Rows are unit norm (gate G-C5 checks the norm of the question rows and of a sample of node rows).
+- **Source and target:** for a D slot (a, b), the **source** is the end with the larger question cosine (ties: the lower node id), the target the other. This uses no gold beyond the slot's two ends being gold, and no chain direction (MuSiQue's order of hops is not used: it is a label).
+- **Scores of a neighbour x of the source s:** `pd(x) = row(s) . row(x)`; `fq(x) = q . row(x)`; `rq(x) = (q - (q . ŝ) ŝ) . row(x)`, with ŝ = row(s) / |row(s)|, which equals `fq(x) - (q . ŝ)(ŝ . row(x))`. Ranks do not depend on the residual's length, so it is not renormalised.
+- **Rank of the target** = 1 + the number of neighbours of the source with a strictly larger score (ties share the rank, as GP1's A3). Per slot and per order: rank, and `|N(s)|`.
+- **Reported per cell and version:** the number of D slots; the share of D slots with rank <= 10, <= 30 (GP1's cut) and <= 100; the median rank as a share of `|N(s)|`; the chance share (`mean(min(1, K/|N(s)|))`); the three paired differences **rq - fq**, **fq - pd** and **rq - pd** at <= 30, with intervals (questions resampled, UL2P's `boot`). Slots whose source has more than 200,000 neighbours are ranked in blocks (no neighbour is dropped); none is skipped.
+- **Selection effect, stated:** Part B reads only direct slots, the easier part. The D share of the cell is printed beside, and a statement about order is a statement about the slots the links already reach.
+
+## 5. Gates
+
+- **G-C1:** each cell's D count equals UL2P's any-link covered count in `outputs/ul2p/<d>/ledger.json` (per carve, kind, version), exactly.
+- **G-C2:** the neighbour lists of the anchors, built from the incident pairs, give each anchor the degree `zul2p.node_deg` gives it on the same keys.
+- **G-C3 (self-test, no real data):** D, T, N, `|M|`, via-gold, CC1, CC2 and the three ranks against a brute-force version on toy graphs (random graphs, ties, hubs, a slot whose ends share a neighbour that is the other end's gold).
+- **G-C4:** the control's slots have no self-pair and the same count as the cell's slots, up to skips; the skips are reported.
+- **G-C5:** the question rows are aligned: over the first 200 questions of a carve, the question cosine of each gold is above that of 1,000 fixed random nodes in at least 0.9 of the (gold, random) comparisons (a mis-aligned question row would give 0.5). The question rows and a sample of 1,000 node rows have norm 1 within 1e-3.
+- **G-C6:** on a sample of 1,000 D slots the vectorised ranks equal a per-slot loop's, exactly.
+- **G-C7:** the version's `B0` size equals the grade's (UL2P's G-P1), as the loader checks.
+
+A gate failure stops the row and is reported; nothing is relaxed after a number is read.
+
+## 6. Expectations (written before any number)
+
+- **X1:** the D share equals UL2P's any-link recall on every cell (this is G-C1; any difference stops the row).
+- **X2:** T is large on the dense graphs: **D + T is at least 0.9 of the slots on MultiHop-RAG, HotpotQA and 2Wiki RK**, which would mean a two-link path is a weak signal there unless `|M|` is small. Held at about even odds.
+- **X3:** on MuSiQue CH, **D + T is below 0.9** (the unlinked chain slots share no neighbour in B0 in a fair share), because the MHB bridges that are neither a title nor a name are not a link in any family. About even odds.
+- **X4:** the median `|M|` of a T slot is **at least 10** on every dataset except MetaQA's SRK, so that a path through an unnamed intermediate is not selective by itself. Likely.
+- **X5:** the control's D + T share is **at least 0.5 of the cell's own** on MetaQA and WebQSP (hub nodes: any two nodes share a neighbour), so that their T class carries little. Held with some confidence.
+- **X6:** `fq` is above `pd` at rank <= 30 on every cell (the question carries information the pair's own dot does not). Likely.
+- **X7:** **`rq` is above `fq` at rank <= 30 on at least 4 of the 6 datasets read (MuSiQue CH, MultiHop-RAG, HotpotQA, 2Wiki, MetaQA, WebQSP).** Held at about 0.4: the residual removes what the source says, which helps a chain and hurts a comparison pair (both golds answer the question), and R8 found the routed scorer below the flat question cosine.
+- **X8:** `rq` is **below** `fq` on HotpotQA's and 2Wiki's comparison-heavy cells (their GP slots are mostly parallel pairs). About even odds.
+
+## 7. Calls and effect sizes
+
+- **A: CHAIN_WITHIN_TWO**, per dataset: CC2 minus the control's CC2, paired intervals; the call is ABOVE / LEVEL / BELOW by `zap4.call`. The size of the intermediate set is printed beside (median and 90th percentile of `|M|`). A high T share with a large `|M|` is **not** a recreation of the chain.
+- **B: RESIDUAL_ORDER**, per cell: the paired difference `rq - fq` in the share of D slots with rank <= 30, by `zap4.call` (ABOVE, LEVEL, BELOW), at least 20 D slots (UL2P's MIN_T). Across datasets: **UNIVERSAL** if ABOVE on at least 5 of the 6 datasets' decide cells and BELOW on none; **NOT_UNIVERSAL** otherwise. The same for `fq - pd`. A call closes only its form: it does not say a path-aware order cannot work (a trained or relation-specific one is not read).
+- Effect size beside every call: the points of the share, the chance share and the D share. The control is read, not subtracted into a call, except in A.
+
+## 8. Cost, rows, outputs
+
+- One row per dataset on the host (`python outputs/host_ops/pylib_run.py outputs/mp_unified/zcr1.py ledger --ds D --host`), mostly small: B0's pairs are filtered to those incident to the anchors (UL2P's `incident`), the neighbour lists are of the anchors only; WebQSP's anchors have thousands of neighbours each, the ranking is blocked (no matrix larger than 2 GB). MultiHop-RAG runs on the laptop (its vectors are local).
+- Outputs: `outputs/cr1/<d>/ledger.json` (aggregated, small, committed with `git add -f`), `outputs/cr1/report.json` and `report.md` from `zcr1.py report`. No array is written.
+- Checkpoints: the ledger is written per (carve, kind, version) cell as it finishes, so a restart loses one cell.
+
+## 9. Not read here (named)
+
+- The pool survival of the slots (GP3 A4, the GP1 session) and the composed-path pool grade (CR2, after this page).
+- Chains for the KBs from the topic entity (the path the question names); a decomposition-free chain definition for MultiHop-RAG beyond its evidence pair.
+- A trained or relation-specific path scorer; the answer-string form of the MHB B4 bridge (it needs the answer).
+- SQuAD (no slot).
+
+## 10. Results
+
+None yet.
