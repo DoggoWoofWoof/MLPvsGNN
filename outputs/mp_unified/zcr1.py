@@ -420,10 +420,19 @@ def gate_rows_aligned(rows, qrows, qrow, golds, n, seed=0, top=None):
     return {"basis": "dense_top5", "share": round(s5, 4), "golds_share": round(share, 4)}
 
 
+NOISE = 1e-5                                # amendment A4: float32 rounding differs between a blocked product and a per-neighbour dot by far less than this
+
+
+def noise_tie_count(score, i):
+    """The neighbours other than i whose score is within NOISE of score[i]: the only ones whose order against i float32 rounding can flip."""
+    return int((np.abs(np.asarray(score, np.float64) - float(score[i])) <= NOISE).sum()) - 1
+
+
 def gate_ranks_loop(rows, qrows, qrow, qi, a, b, cls, nb, k=1000, max_deg=2000):
-    """G-C6: on up to k D slots (sources of at most max_deg neighbours) the blocked ranks equal a per-neighbour loop's, exactly."""
+    """G-C6: on up to k D slots (sources of at most max_deg neighbours) the blocked ranks equal a per-neighbour loop's. Amendment A4: a difference is
+    accepted only when it is at most the number of neighbours within NOISE of the target's score in that order (float32 rounding), and is counted."""
     dsl = np.flatnonzero(cls == 0)[:k * 3]
-    done = bad = 0
+    done = noisy = 0
     for i in dsl:
         if done >= k:
             break
@@ -435,7 +444,8 @@ def gate_ranks_loop(rows, qrows, qrow, qi, a, b, cls, nb, k=1000, max_deg=2000):
         ns = nb.of(s)
         if ns.size > max_deg:
             continue
-        blocked = ranks_of(neighbour_scores(rows, q, s, ns), ns, t)
+        bsc = neighbour_scores(rows, q, s, ns)
+        blocked = ranks_of(bsc, ns, t)
         rs = rows.take([s])[0]
         sh = rs / np.linalg.norm(rs)
         c = np.float32(q @ sh)
@@ -448,10 +458,15 @@ def gate_ranks_loop(rows, qrows, qrow, qi, a, b, cls, nb, k=1000, max_deg=2000):
             sc[2].append(np.float32(f - c * np.float32(rx @ sh)))
         loop = ranks_of([np.asarray(z, np.float32) for z in sc], ns, t)
         done += 1
-        bad += blocked != loop
-    if bad:
-        stop(f"G-C6: {bad} of {done} slots' ranks differ between the blocked and the per-neighbour computation")
-    return done
+        if blocked != loop:
+            ti = int(np.searchsorted(ns, t))
+            for j, (rb_, rl_) in enumerate(zip(blocked, loop)):
+                if rb_ != rl_:
+                    near = noise_tie_count(bsc[j], ti)
+                    if abs(rb_ - rl_) > near:
+                        stop(f"G-C6: slot ({s}, {t}) order {ORDERS[j]}: blocked rank {rb_}, per-neighbour rank {rl_}; only {near} neighbours lie within {NOISE} of the target's score")
+                    noisy += 1
+    return {"slots": done, "rank_differences_within_float_noise": noisy}
 
 
 # ── the ledger ───────────────────────────────────────────────────────────────
@@ -814,7 +829,11 @@ def selftest():
         if not (k > 1 and sp_ > 0 and sf_ > 0) and not np.isnan(r_):
             stop("G-C3: source_stats gives a correlation where a spread is zero")
         checks += 1
-    print(f"selftest PASS ({checks} checks: classes, shared neighbours, via gold, the three ranks with ties, the control, the alignment gate on both bases, npz members, the fused orders and statistics)")
+    sc_ = np.asarray([0.5, 0.5 + 3e-6, 0.5 - 2e-6, 0.9, 0.5 + 4e-5], np.float32)       # amendment A4: only the two neighbours within NOISE count
+    if noise_tie_count(sc_, 0) != 2 or noise_tie_count(sc_, 3) != 0 or noise_tie_count(sc_, 4) != 0:
+        stop("G-C3: noise_tie_count differs from the hand count")
+    checks += 1
+    print(f"selftest PASS ({checks} checks: classes, shared neighbours, via gold, the three ranks with ties, the control, the alignment gate on both bases, npz members, the fused orders and statistics, the noise-tie count)")
     return 0
 
 

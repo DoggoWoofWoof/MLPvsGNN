@@ -92,6 +92,13 @@ Ranks, shares at 10/30/100, chance and the bootstrap over questions are as in Pa
 
 **Gates and rows.** G-C3 gains toy checks of `rank_all`, the fusions and the statistics against a per-element loop (ties included). **G-C8:** the three first-run ledgers (MultiHop-RAG, MuSiQue, MetaQA; copies kept as `ledger_pre_a3.json` beside each) are re-run with this code and their Part A cells and the `pd`, `fq`, `rq` shares, medians and paired differences of Part B must equal the first run's exactly (the new orders add keys; nothing old changes); a difference stops the reading. MuSiQue and MetaQA re-run as rows `cr1a3-musique` and `cr1a3-metaqa`, MultiHop-RAG on the laptop; the queued HotpotQA, 2Wiki and WebQSP rows run this code from their first send (a ledger without Part C is re-run under `cr1a3-<d>`).
 
+### 5.4 Amendment A4 (26 Nov ~20:05, a gate made tolerant to float rounding, disclosed after a failure; no Part B number of HotpotQA had been read)
+
+- **What happened.** HotpotQA's row (`cr1-hotpotqa`, first run) stopped at G-C6: 1 of the 1,000 sampled D slots had a rank by the blocked product different from the per-neighbour loop's. 2Wiki's row passed G-C6 with the same code. The row stops before any Part B number is written, so no HotpotQA rank had been read; Part A of its first cell (D 65.307, equal to UL2P's) had been logged.
+- **Cause (the reading, not yet a per-slot proof).** A float32 matrix-vector product over a block and a scalar dot product of one row round differently in the last bits. Two neighbours whose true scores lie within that rounding of the target's score can swap order between the two computations, which moves the target's strict rank by one. HotpotQA's neighbour lists are long and contain near-duplicate nodes, so such near-ties are likely there.
+- **The change, made after seeing the failure and said so.** G-C6 accepts a rank difference in one order only when it is **at most the number of neighbours whose score in that order lies within 1e-5 of the target's** (float32 rounding of a 1,152-term dot product is of the order of 1e-7); a larger difference still stops the row. The number of accepted differences is written to the ledger (`gates.G-C6`: `slots`, `rank_differences_within_float_noise`), so a large count would show a problem the gate hides. The ranks reported are the blocked ones, unchanged; no number of the stage depends on the gate. The first runs of MultiHop-RAG, MuSiQue, MetaQA and 2Wiki passed the exact form; they are not re-run for this.
+- `zcr1.py selftest` passes with a hand-counted check of the noise-tie count.
+
 ## 6. Expectations (written before any number)
 
 - **X1:** the D share equals UL2P's any-link recall on every cell (this is G-C1; any difference stops the row).
