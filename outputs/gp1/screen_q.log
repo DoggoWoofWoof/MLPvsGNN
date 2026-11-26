@@ -1,0 +1,12 @@
+[09:30:28] pass 1: the dot cuts over the pooled control links, each dataset weighted equally
+[09:30:30] dot cuts [0.5894105434417725, 0.6417021155357361] over 7 datasets
+[09:30:31] multihoprag/RK: screened (3 s)
+[09:30:32] musique/RK: screened (4 s)
+[09:30:32] squad/RK: screened (4 s)
+[09:30:34] metaqa/SRK: screened (6 s)
+[09:30:35] webqsp/SRK: screened (7 s)
+[09:30:35] hotpotqa/RK: screened (7 s)
+[09:30:35] hotpotqa/SRK: screened (7 s)
+[09:30:36] 2wiki/RK: screened (8 s)
+[09:30:36] 2wiki/SRK: screened (8 s)
+[09:30:36] screen: K3 ['votes']  K4 ['votes']  votes dropped False  (outputs/gp1/screen_q.json)

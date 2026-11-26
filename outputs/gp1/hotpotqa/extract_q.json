@@ -1,0 +1,152 @@
+{
+ "dataset": "hotpotqa",
+ "declared_in": "docs/GP1_GOLD_LINK_PATTERNS.md",
+ "part": "q",
+ "status": "read",
+ "carve": "s1sel",
+ "nodes": 5233329,
+ "nodes_sha256": "c777ab4b7a64eaaa5af852265daf6ba9f9debb4658a67f0c96595662e43f182a",
+ "sources": {
+  "grade_json_sha256": "5eddcd94420d961c23c1fb91ec46e4f92884748f44bc4af0af28959259ec98f0",
+  "ranks_npz_sha256": "36ac066b725ec5c78b9b1f833c0a7708ac30ce67824bad689e05450ea95b52ec"
+ },
+ "gates": {
+  "UL2P": {
+   "G-P1": {
+    "RK": {
+     "S": 0,
+     "R": 53243304,
+     "K": 9357833,
+     "B0": 62601137
+    },
+    "SRK": {
+     "S": 15095287,
+     "R": 42527421,
+     "K": 9209848,
+     "B0": 66832556
+    }
+   },
+   "G-P2": {
+    "H5": 19127180,
+    "HM": 10458416,
+    "HK1": 11184149,
+    "NTc": 8559240,
+    "NT1": 15483311,
+    "HK2": 21334758,
+    "H10": 36691954
+   },
+   "G-P3": {
+    "s1sel/GP": {
+     "slots": 1508,
+     "questions": 1508
+    },
+    "s1eval/GP": {
+     "slots": 7405,
+     "questions": 7405
+    }
+   }
+  },
+  "G-G1": {
+   "questions": 1508,
+   "seeds_ok": true
+  }
+ },
+ "versions": {
+  "RK": {
+   "stats": {
+    "questions": 377,
+    "golds": 754,
+    "found": 553,
+    "dist": [
+     553,
+     146,
+     45,
+     10,
+     0
+    ],
+    "capped_golds": 0,
+    "units": 1405,
+    "ctrl_sampled": 66969,
+    "ctrl_exact": 15690401,
+    "sources": 854,
+    "g_g2_checked": 377,
+    "g5_checked": 5990,
+    "g5_bad": 0,
+    "mention_links": 55445,
+    "mention_exact_none": 46493,
+    "reachable_missed": 201,
+    "unreached": 0
+   },
+   "chunks": [
+    "outputs/gp1/hotpotqa/work/RK_q_000000.npz",
+    "outputs/gp1/hotpotqa/work/RK_q_000050.npz",
+    "outputs/gp1/hotpotqa/work/RK_q_000100.npz",
+    "outputs/gp1/hotpotqa/work/RK_q_000150.npz",
+    "outputs/gp1/hotpotqa/work/RK_q_000200.npz",
+    "outputs/gp1/hotpotqa/work/RK_q_000250.npz",
+    "outputs/gp1/hotpotqa/work/RK_q_000300.npz",
+    "outputs/gp1/hotpotqa/work/RK_q_000350.npz"
+   ]
+  },
+  "SRK": {
+   "stats": {
+    "questions": 377,
+    "golds": 754,
+    "found": 553,
+    "dist": [
+     553,
+     172,
+     22,
+     7,
+     0
+    ],
+    "capped_golds": 0,
+    "units": 918,
+    "ctrl_sampled": 45054,
+    "ctrl_exact": 8398894,
+    "sources": 646,
+    "g_g2_checked": 377,
+    "g5_checked": 5117,
+    "g5_bad": 0,
+    "mention_links": 32051,
+    "mention_exact_none": 25308,
+    "reachable_missed": 201,
+    "unreached": 0
+   },
+   "chunks": [
+    "outputs/gp1/hotpotqa/work/SRK_q_000000.npz",
+    "outputs/gp1/hotpotqa/work/SRK_q_000050.npz",
+    "outputs/gp1/hotpotqa/work/SRK_q_000100.npz",
+    "outputs/gp1/hotpotqa/work/SRK_q_000150.npz",
+    "outputs/gp1/hotpotqa/work/SRK_q_000200.npz",
+    "outputs/gp1/hotpotqa/work/SRK_q_000250.npz",
+    "outputs/gp1/hotpotqa/work/SRK_q_000300.npz",
+    "outputs/gp1/hotpotqa/work/SRK_q_000350.npz"
+   ]
+  }
+ },
+ "constants": {
+  "CAP_SRC": 200,
+  "CAP_Q": 20000,
+  "CAP_GOLD": 5000,
+  "QUARTER_M": 4,
+  "ENUM_LIMIT": 30000000,
+  "seeds": "dense5 U splade5, frozen package lists"
+ },
+ "rel_vocab": [
+  "hyperlink"
+ ],
+ "memory": {
+  "peak_working_set_gb": 20.22,
+  "peak_commit_gb": 6.29
+ },
+ "seconds": 1191.9,
+ "utc": "2026-11-26T03:01:20Z",
+ "zgp1_sha256": "0a9c6bc0026f71849fc4cacee333f9665390ce2bb3616ad9e338d7abe9df2c14",
+ "zul2h_sha256": "a0fea9a22bcfda1ec2d2e0d31a1140225e0e89ef6af570b01b5ab077613a0b8a",
+ "zul3a_sha256": "96643e761e5708b601584e9b7dc1b9efd75041eaa22dcdd14647469aa94ac579",
+ "shard": [
+  0,
+  1
+ ]
+}

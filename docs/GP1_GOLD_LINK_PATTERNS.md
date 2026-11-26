@@ -158,3 +158,84 @@ Written with `zgp1p.py` (screen, solve, grade, report) and the amended `zgp1.py`
 9. **Gold path retention** follows the section 9 definition link by link: a gold keeps a path iff its first-step links kept include one ending at a node from which a kept second-step link continues, and so on to the gold; a gold at distance 1 needs one kept first-step link.
 10. **Relations (KB diagnosis, A13).** The relation vocabulary of MetaQA and WebQSP is saved in the extract record (`rel_vocab`); the diagnosis lists the relations with the most needed weight and their control weight, nothing else uses it.
 11. **Parts and files.** The quarter's screen, solve and rule record are `outputs/gp1/screen_q.json` and `rule_q.json` (committed, aggregates only, with the sha256 of the extract files they read); the grade on the rest is `grade_r.json`; `report.md` prints the tables. The r rows (`gp1xr-<d>`, WebQSP in four shards) are queued only after `rule_q.json` is committed.
+
+## 15. Results on the dev quarter (26 Nov; the rest R is not yet read)
+
+All nine quarter host rows (WebQSP in four shards) and the MultiHop-RAG laptop run finished; **every gate held and no cell is NOT_READ** (WebQSP's capped golds are 34 of 2,006, 1.7 percent, under the 5 percent line). Code: `zgp1.py` 0a9c6bc0, `zgp1p.py` 062986dc (the tolerance edit of 5e5d007d included). Files: `outputs/gp1/screen_q.json`, `rule_q.json`, the nine `extract_q*.json` records (WebQSP's four shards), `report.md` (all tables). The link-level work files (30 MB) are not committed. Disclosed: section 14.11 said the screen and rule records embed the sha256 of the extract files they read; they do not (the extract records are committed beside them, so git holds the shas).
+
+### 15.1 The per-dataset diagnosis (the user's (a)), quarter
+
+| cell | questions | golds | found by first stage | at 1 hop | 2 hops | 3 hops | unreached | needed units (steps 1/2/3) | needed weight in S / R / K | control weight in S / R / K |
+|---|---|---|---|---|---|---|---|---|---|---|
+| MHR/RK | 56 | 141 | 99 (70%) | 41 | 1 | 0 | 0 | 452 (88/12/0%) | 0/99/1% | 0.0/99.5/0.5% |
+| MuSiQue/RK | 384 | 1017 | 512 (50%) | 241 | 205 | 55 | 4 | 26889 (40/56/4%) | 0/94/6% | 0.0/99.9/0.1% |
+| SQuAD/RK | 375 | 375 | 348 (93%) | 17 | 7 | 3 | 0 | 1327 (54/40/6%) | 0/96/4% | 0.0/99.8/0.2% |
+| MetaQA/SRK | 375 | 3228 | 14 (0%) | 409 | 1769 | 1036 | 0 | 74373 (10/71/18%) | 51/46/3% | 39.1/58.7/2.3% |
+| WebQSP/SRK | 377 | 2006 | 80 (4%) | 1192 | 704 | 30 | 0 | 193807 (25/74/1%) | 55/41/4% | 1.7/98.3/0.0% |
+| HotpotQA/RK | 377 | 754 | 553 (73%) | 146 | 45 | 10 | 0 | 1405 (70/24/6%) | 0/96/4% | 0.0/100.0/0.0% |
+| HotpotQA/SRK | 377 | 754 | 553 (73%) | 172 | 22 | 7 | 0 | 918 (68/24/8%) | 84/15/1% | 8.8/91.1/0.0% |
+| 2Wiki/RK | 374 | 916 | 552 (60%) | 301 | 55 | 8 | 0 | 1744 (61/32/7%) | 0/98/2% | 0.0/100.0/0.0% |
+| 2Wiki/SRK | 374 | 916 | 552 (60%) | 322 | 34 | 8 | 0 | 1540 (61/31/9%) | 77/21/2% | 3.3/96.7/0.0% |
+
+Where the needed links sit, **needed share against control share** (the pooled table, not stratified; the stratified AUCs are in 15.2):
+
+| cell | tail in the question's top 30 | dot high | exact title | dir one-way or mutual | votes 3+ |
+|---|---|---|---|---|---|
+| MHR/RK | 90% vs 36.9% | 98% vs 56% | 0% vs 0.0% | 57% vs 32% | 95% vs 69% |
+| MuSiQue/RK | 56% vs 1.8% | 63% vs 14% | 43% vs 1.8% | 78% vs 99% | 41% vs 97% |
+| SQuAD/RK | 54% vs 11.3% | 80% vs 38% | 27% vs 6.9% | 40% vs 84% | 56% vs 91% |
+| MetaQA/SRK | 66% vs 10.5% | 72% vs 78% | 1% vs 0.0% | 2% vs 2% | 36% vs 51% |
+| WebQSP/SRK | 35% vs 1.3% | 85% vs 28% | 19% vs 0.0% | 24% vs 4% | 29% vs 97% |
+| HotpotQA/RK | 78% vs 0.1% | 79% vs 13% | 68% vs 0.0% | 96% vs 100% | 27% vs 19% |
+| HotpotQA/SRK | 83% vs 0.2% | 85% vs 11% | 60% vs 0.1% | 93% vs 97% | 22% vs 24% |
+| 2Wiki/RK | 82% vs 0.1% | 86% vs 7% | 82% vs 0.1% | 98% vs 100% | 15% vs 39% |
+| 2Wiki/SRK | 83% vs 0.1% | 90% vs 7% | 78% vs 0.1% | 97% vs 99% | 12% vs 43% |
+
+(The other attributes' tables, the label profiles and the relations of MetaQA and WebQSP are in `report.md` and `screen_q.json`.) Readings, as tables say them and no more: the needed links point at tails that the question's own dense ranking already places in its top 30 (54 to 90 percent of needed units in eight of nine cells against 0.1 to 11 percent of controls, MultiHop-RAG's 609-node graph 37; WebQSP is the exception with 35 against 1.3), and at tails with a high pair dot (63 to 98 percent against 7 to 56 percent) in every cell except MetaQA (72 against 78). In HotpotQA, 2Wiki and MuSiQue 43 to 82 percent of the needed units have an exact title match (A6) against 0.0 to 1.8 percent of controls; in MetaQA it is 1 percent, in WebQSP 19. **MetaQA is the cell that behaves differently from the rest**: the first stage finds 14 of its 3,228 golds, 87 percent of the missed ones are 2 or 3 hops out, half of its needed weight sits on S links (51 percent) and the rest on typed relations, and its dot, dir, exact and caps AUCs lie below 0.5 where the other cells' lie above.
+
+### 15.2 The attribute calls (stratified AUC [95% interval], per judged cell)
+
+| attribute | call | score | direction | pooled AUC | MHR | MuSiQue | SQuAD | MetaQA | WebQSP | HotpotQA RK | HotpotQA SRK | 2Wiki RK | 2Wiki SRK |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| A2 dot | SIGN_SPLIT | 0 | +1 | 0.571 | 0.694 | 0.540 | 0.548 [0.491,0.593] | 0.484 | 0.700 | 0.556 | 0.580 | 0.623 | 0.640 |
+| A3 rank | SIGN_SPLIT | 0 | +1 | 0.520 | 0.237 | 0.475 | 0.383 | 0.581 | 0.491 [0.471,0.508] | 0.479 [0.452,0.504] | 0.458 | 0.413 | 0.406 |
+| A4 votes | **WEAK** | **0.026** | +1 | 0.576 | 0.646 | 0.565 | 0.581 [0.510,0.649] | 0.567 | 0.612 | 0.573 | 0.545 | 0.535 | 0.526 |
+| A5 dir | SIGN_SPLIT | 0 | +1 | 0.518 | 0.639 | 0.557 | 0.497 [0.443,0.553] | 0.453 | 0.514 [0.492,0.540] | 0.637 | 0.637 | 0.722 | 0.720 |
+| A6 exact | SIGN_SPLIT | 0 | +1 | 0.549 | 0.585 | 0.595 | 0.521 [0.467,0.577] | 0.462 | 0.576 | 0.704 | 0.675 | 0.753 | 0.748 |
+| A7 ntok | WEAK | 0 (0.500 in MHR and SQuAD) | -1 | 0.365 | 0.500 | 0.460 | 0.500 | 0.358 | 0.267 | 0.479 [0.447,0.513] | 0.513 | 0.499 | 0.519 |
+| A8 caps | SIGN_SPLIT | 0 | +1 | 0.577 | 0.485 | 0.507 | 0.503 | 0.477 | 0.771 | 0.544 | 0.533 | 0.580 | 0.585 |
+| A9 lead | SIGN_SPLIT | 0 | +1 | 0.516 | 0.517 | 0.510 | 0.516 | 0.500 | 0.490 | 0.450 | 0.435 | 0.568 | 0.569 |
+| A10 off | SIGN_SPLIT | 0 | -1 | 0.495 | 0.472 | 0.496 | 0.493 | 0.519 | 0.462 | 0.600 | 0.613 | 0.458 | 0.460 |
+| A11 cnt | NO_SIGNAL | 0 | -1 | 0.479 | 0.504 | 0.481 | 0.509 | 0.500 | 0.494 | 0.464 | 0.453 | 0.477 | 0.477 |
+| A12 qov | SIGN_SPLIT | 0 | -1 | 0.486 | 0.611 | 0.546 | 0.500 | 0.450 | 0.510 | 0.546 | 0.547 | 0.496 | 0.503 |
+
+(Intervals are printed only where they contain 0.5; all are in `report.md`.) **No attribute SEPARATES** (none has the lower end above 0.5 with the same sign everywhere and a minimum distance of 0.10). Eight are SIGN_SPLIT, two WEAK (`votes`, `ntok`), one NO_SIGNAL. `votes` is the only attribute with one sign in all nine cells; its smallest distance from 0.5 is 0.026 (2Wiki SRK) and its guard against being a degree proxy held (largest Spearman with the tail's neighbour count 0.53 on WebQSP, under 0.70), so **K3 = K4 = grp x votes, nine keys**: the attribute choice rule left one attribute beside `grp`. `ntok` is 0.500 (undefined) in MultiHop-RAG and SQuAD, so its score is 0 by section 14.4.
+
+### 15.3 The program on the quarter (S protected, rho 0.95, M with monotone keys)
+
+- **tau\* = 0.99997** (K3): chain L 0.9515 <= U 0.99997 = M 0.99997 = T 0.99997, M OPTIMAL at gap 0. The rule keeps 8 of the 9 keys (it drops K|votes=1 only); the T form (R: all three vote bins, K: the two better bins) equals M, so the rule is two thresholds. Price on the quarter 0.993 to 1.000 in every cell; reach 0.957 (MuSiQue) to 0.9999.
+- **K0 = grp x dot: tau\* = 1.000** (L 0.9661); all seven keys the quarter saw are kept. **Improvement of K3 over K0: 3.0e-5 of tau (0.003 points).** The greedy order of UL3 gives 1.000 on both.
+- **Beside:** S free 0.99997 (**cost of A.1 = 0**); rho 0.90: 0.99993, rho 0.99: 1.000; size caps 12, 24, 48: 0.99997 (the cap does not bind); relaxation at rho 0.94, 0.95, 0.96: 0.9419, 0.9515, 0.9612, so **a point of reach costs about a point of price**: the best fractional keep-rule on these keys is no better than thinning every key alike (tau_L = rho + 0.0015); **cost of universality** (shared minus the largest own optimum) **4.0e-5**.
+- **Own optima (private x, grp x votes):** MHR 0.832, HotpotQA SRK 0.526, MetaQA 0.977, and 0.998 to 1.000 for the other six cells. The two cells that can be tightened by their own votes keys are MHR and HotpotQA SRK (S carries 84 percent of that cell's needed weight).
+- **Duals** (relaxation): the reach constraints that bind are MultiHop-RAG (0.930) and MuSiQue (0.039) for K3, MuSiQue (0.678) for K0. **Frontier** (the best reach the worst cell can have at a price cap): 0.30 infeasible with S protected, 0.40 reach 0.000, 0.50 to 0.80 reach 0.012.
+
+### 15.4 Expectations of section 9, quarter part
+
+- **X1 FAILED:** no attribute outside `grp`, `dot`, `votes` SEPARATES (none does, 0 of 11).
+- **X2 FAILED:** K3's tau\* is 0.99997, not 0.80 or less; K0's 1.000 does meet "0.85 or more"; the 10-point improvement is 0.003 points.
+- **X3 HELD, with a caveat:** MuSiQue is one of the two binding reach constraints for K3 (the other is MultiHop-RAG) and the binding one for K0; every cell's price is 0.99 or above, so "binding" says which reach limits the rule, not which price.
+- **X4 FAILED as stated, on both halves:** among the passage datasets `exact` is 0.68 to 0.75 only in HotpotQA and 2Wiki (MuSiQue 0.595, MultiHop-RAG 0.585, SQuAD 0.521 with an interval over 0.5), and the text attributes of MultiHop-RAG and SQuAD are 0.5 or undefined; the KB datasets, which I expected not to separate on text, carry the largest distances in the table: WebQSP `caps` 0.771 and `ntok` 0.267, MetaQA `ntok` 0.358 (the needed links have shorter names), while `ntok` is 0.46 to 0.52 in every passage cell. The text patterns are dataset-specific, not passage-versus-KB.
+- **X5 FAILED:** `votes` is not a degree proxy at the declared guard (0.04 to 0.53) and is kept.
+- **X6 (the one that matters), the quarter part: HELD in direction and wrong in size.** No rule reaches price 0.50 (the program's own optimum prices 0.9999); the expected 10 to 25 points over K0 is 0.003 points. The call itself is graded on R.
+
+### 15.5 What I state before any R number (the rest R is read once, with these cut points and this rule)
+
+The quarter's rule keeps 99.3 to 100 percent of the candidate weight in every cell, so I expect:
+1. **NOT_UNIVERSAL on R, with no cell SCREEN_IN**: the price retained is 0.95 or more in every cell of R (every cell fails the 0.50 line); the call changes only if the price is 0.50 or less in all nine cells, which I put under 1 percent.
+2. Reach retained is 0.92 or more in at least seven of nine cells (MuSiQue 0.957 and SQuAD 0.963 on the quarter are the nearest to the line; SQuAD's quarter holds 27 reachable missed golds, so its R value moves most).
+3. **Stability:** `votes` stays above 0.5 in all nine cells on R, and no attribute SEPARATES on R (about 85 percent); `dot`, `exact`, `dir` and `rank` keep the quarter's sign in at least seven of nine cells each.
+These are written after the quarter, before any R value; they are not hypotheses the quarter tested.
+
+### 15.6 What follows (section 10, NOT_UNIVERSAL branch; named, not declared)
+
+The link attributes of section 5 do not tell the links gold paths need from their neighbours well enough, in one universal form, to take any weight off the walks: the price of 95 percent reach is about 100 percent. This closes the list of section 5, not the line. Named for the user to choose: (1) **the walk-time ordering**: the pooled tables above show the needed links pointing at tails that the question already ranks high (54 to 90 percent in the top 30 in eight of nine cells against 0.1 to 11 percent of controls, MultiHop-RAG's controls 37) and at high pair dot in every cell but MetaQA; that is the question-guided lever of PL5 to PL7 (rank the frontier by the question and cap it by budget), not a link filter, and MetaQA is where it is weakest; (2) a depth signal (UL4 10.6; UL5 32b3d4a5 found no label-free statistic of the five sets that sets one); (3) dataset-specific rules (HotpotQA and 2Wiki show a clear pattern in `exact` and `dir`, AUC 0.64 to 0.75; MHR and HotpotQA SRK can be tightened by their own votes keys), which the universal ruling excludes. GP2 is not declared; PL8 only on the user's word that the link set is final.

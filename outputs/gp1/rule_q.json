@@ -1,0 +1,1024 @@
+{
+ "part": "q",
+ "declared_in": "docs/GP1_GOLD_LINK_PATTERNS.md",
+ "screen_sha256": "509bd5750abd852d4c66f8ffed6534ba6c52053ac0b3cb43e655406fe52f4f93",
+ "dot_cuts": [
+  0.5894105434417725,
+  0.6417021155357361
+ ],
+ "cells": [
+  "multihoprag/RK",
+  "musique/RK",
+  "squad/RK",
+  "metaqa/SRK",
+  "webqsp/SRK",
+  "hotpotqa/RK",
+  "hotpotqa/SRK",
+  "2wiki/RK",
+  "2wiki/SRK"
+ ],
+ "spaces": {
+  "K3": {
+   "attrs": [
+    "votes"
+   ],
+   "attr_ids": [
+    "A4"
+   ],
+   "directions": [
+    1
+   ],
+   "keys": 9,
+   "cells": [
+    "multihoprag/RK",
+    "musique/RK",
+    "squad/RK",
+    "metaqa/SRK",
+    "webqsp/SRK",
+    "hotpotqa/RK",
+    "hotpotqa/SRK",
+    "2wiki/RK",
+    "2wiki/SRK"
+   ],
+   "chain_tau_L_U_M_T": [
+    0.9515458436077957,
+    0.9999698465739594,
+    0.9999698465739594,
+    0.9999698465739594
+   ],
+   "M": {
+    "status": "OPTIMAL",
+    "tau": 0.9999698465739594,
+    "gap": 0.0,
+    "bound": 0.9999698465739595,
+    "kept": 8,
+    "per_cell_on_Q": {
+     "multihoprag/RK": {
+      "reach": 0.9999,
+      "price": 0.9993
+     },
+     "musique/RK": {
+      "reach": 0.957,
+      "price": 0.9995
+     },
+     "squad/RK": {
+      "reach": 0.963,
+      "price": 0.9993
+     },
+     "metaqa/SRK": {
+      "reach": 0.9816,
+      "price": 0.9926
+     },
+     "webqsp/SRK": {
+      "reach": 0.991,
+      "price": 1.0
+     },
+     "hotpotqa/RK": {
+      "reach": 0.982,
+      "price": 0.9999
+     },
+     "hotpotqa/SRK": {
+      "reach": 0.9983,
+      "price": 0.9999
+     },
+     "2wiki/RK": {
+      "reach": 0.9928,
+      "price": 1.0
+     },
+     "2wiki/SRK": {
+      "reach": 0.9956,
+      "price": 0.9999
+     }
+    },
+    "kept_keys": [
+     {
+      "key": 0,
+      "label": "S|votes=1",
+      "reach_weight_pooled": 1.8162,
+      "price_weight_pooled": 0.1461
+     },
+     {
+      "key": 1,
+      "label": "S|votes=2",
+      "reach_weight_pooled": 0.4442,
+      "price_weight_pooled": 0.1639
+     },
+     {
+      "key": 2,
+      "label": "S|votes=3+",
+      "reach_weight_pooled": 0.4066,
+      "price_weight_pooled": 0.2167
+     },
+     {
+      "key": 3,
+      "label": "R|votes=1",
+      "reach_weight_pooled": 2.4064,
+      "price_weight_pooled": 2.0259
+     },
+     {
+      "key": 4,
+      "label": "R|votes=2",
+      "reach_weight_pooled": 0.8122,
+      "price_weight_pooled": 1.3362
+     },
+     {
+      "key": 5,
+      "label": "R|votes=3+",
+      "reach_weight_pooled": 2.8356,
+      "price_weight_pooled": 5.08
+     },
+     {
+      "key": 7,
+      "label": "K|votes=2",
+      "reach_weight_pooled": 0.056,
+      "price_weight_pooled": 0.0054
+     },
+     {
+      "key": 8,
+      "label": "K|votes=3+",
+      "reach_weight_pooled": 0.0841,
+      "price_weight_pooled": 0.0162
+     }
+    ],
+    "x": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     0,
+     1,
+     1
+    ]
+   },
+   "U": {
+    "status": "OPTIMAL",
+    "tau": 0.9999698465739594
+   },
+   "L": {
+    "status": "OPTIMAL",
+    "tau": 0.9515458436077957,
+    "duals_reach_by_cell": {
+     "multihoprag/RK": 0.9300049156628432,
+     "musique/RK": 0.039078212181241405,
+     "squad/RK": 0.0,
+     "metaqa/SRK": 0.0,
+     "webqsp/SRK": 0.0,
+     "hotpotqa/RK": 0.0,
+     "hotpotqa/SRK": 0.0,
+     "2wiki/RK": 0.0,
+     "2wiki/SRK": 0.0
+    }
+   },
+   "T": {
+    "status": "OPTIMAL_ON_THRESHOLDS",
+    "tau": 0.9999698465739594,
+    "thresholds": {
+     "R": [
+      3
+     ],
+     "K": [
+      2
+     ]
+    },
+    "kept": 8,
+    "per_cell_on_Q": {
+     "multihoprag/RK": {
+      "reach": 0.9999,
+      "price": 0.9993
+     },
+     "musique/RK": {
+      "reach": 0.957,
+      "price": 0.9995
+     },
+     "squad/RK": {
+      "reach": 0.963,
+      "price": 0.9993
+     },
+     "metaqa/SRK": {
+      "reach": 0.9816,
+      "price": 0.9926
+     },
+     "webqsp/SRK": {
+      "reach": 0.991,
+      "price": 1.0
+     },
+     "hotpotqa/RK": {
+      "reach": 0.982,
+      "price": 0.9999
+     },
+     "hotpotqa/SRK": {
+      "reach": 0.9983,
+      "price": 0.9999
+     },
+     "2wiki/RK": {
+      "reach": 0.9928,
+      "price": 1.0
+     },
+     "2wiki/SRK": {
+      "reach": 0.9956,
+      "price": 0.9999
+     }
+    }
+   },
+   "greedy_old_form": {
+    "status": "FEASIBLE",
+    "tau": 1.0,
+    "kept": 9
+   },
+   "seen": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "beside": {
+    "S_free": {
+     "status": "OPTIMAL",
+     "tau": 0.9999698465739594,
+     "cost_of_A1": 0.0
+    },
+    "rho": {
+     "0.9": {
+      "status": "OPTIMAL",
+      "tau": 0.9999298509490893
+     },
+     "0.99": {
+      "status": "OPTIMAL",
+      "tau": 1.0
+     },
+     "L_0.94": {
+      "tau": 0.9418550123293549
+     },
+     "L_0.96": {
+      "tau": 0.9612366748862365
+     }
+    },
+    "size": {
+     "12": {
+      "status": "OPTIMAL",
+      "tau": 0.9999698465739594
+     },
+     "24": {
+      "status": "OPTIMAL",
+      "tau": 0.9999698465739594
+     },
+     "48": {
+      "status": "OPTIMAL",
+      "tau": 0.9999698465739594
+     }
+    },
+    "own": {
+     "multihoprag/RK": {
+      "status": "OPTIMAL",
+      "tau": 0.832298437954788
+     },
+     "musique/RK": {
+      "status": "OPTIMAL",
+      "tau": 0.9995193419734762
+     },
+     "squad/RK": {
+      "status": "OPTIMAL",
+      "tau": 0.9980141490004724
+     },
+     "metaqa/SRK": {
+      "status": "OPTIMAL",
+      "tau": 0.9773845813185748
+     },
+     "webqsp/SRK": {
+      "status": "OPTIMAL",
+      "tau": 0.9996667547758645
+     },
+     "hotpotqa/RK": {
+      "status": "OPTIMAL",
+      "tau": 0.9998629925076116
+     },
+     "hotpotqa/SRK": {
+      "status": "OPTIMAL",
+      "tau": 0.5262213946410556
+     },
+     "2wiki/RK": {
+      "status": "OPTIMAL",
+      "tau": 0.9999298509490893
+     },
+     "2wiki/SRK": {
+      "status": "OPTIMAL",
+      "tau": 0.9999160664945151
+     }
+    },
+    "frontier": {
+     "0.3": {
+      "status": "INFEASIBLE",
+      "reach": null
+     },
+     "0.4": {
+      "status": "OPTIMAL",
+      "reach": 0.0
+     },
+     "0.5": {
+      "status": "OPTIMAL",
+      "reach": 0.012030738358905287
+     },
+     "0.6": {
+      "status": "OPTIMAL",
+      "reach": 0.012030738358905287
+     },
+     "0.7": {
+      "status": "OPTIMAL",
+      "reach": 0.012030738358905287
+     },
+     "0.8": {
+      "status": "OPTIMAL",
+      "reach": 0.012030738358905287
+     }
+    },
+    "no_monotone_S_free": null,
+    "S_free_L": {
+     "tau": 0.9494650720378164
+    },
+    "cost_of_universality": 3.999562487011499e-05
+   },
+   "total_per_cell": {
+    "multihoprag/RK": {
+     "needed_weight": 42.0,
+     "candidate_weight": 20614.0
+    },
+    "musique/RK": {
+     "needed_weight": 501.0,
+     "candidate_weight": 11806496.98
+    },
+    "squad/RK": {
+     "needed_weight": 27.0,
+     "candidate_weight": 141507.0
+    },
+    "metaqa/SRK": {
+     "needed_weight": 3214.0,
+     "candidate_weight": 3618080.0
+    },
+    "webqsp/SRK": {
+     "needed_weight": 1925.9999,
+     "candidate_weight": 589460818.15
+    },
+    "hotpotqa/RK": {
+     "needed_weight": 201.0,
+     "candidate_weight": 15691806.02
+    },
+    "hotpotqa/SRK": {
+     "needed_weight": 201.0,
+     "candidate_weight": 8399812.04
+    },
+    "2wiki/RK": {
+     "needed_weight": 364.0,
+     "candidate_weight": 42458782.91
+    },
+    "2wiki/SRK": {
+     "needed_weight": 364.0,
+     "candidate_weight": 31972154.84
+    }
+   }
+  },
+  "K4": {
+   "attrs": [
+    "votes"
+   ],
+   "attr_ids": [
+    "A4"
+   ],
+   "directions": [
+    1
+   ],
+   "keys": 9,
+   "cells": [
+    "multihoprag/RK",
+    "musique/RK",
+    "squad/RK",
+    "metaqa/SRK",
+    "webqsp/SRK",
+    "hotpotqa/RK",
+    "hotpotqa/SRK",
+    "2wiki/RK",
+    "2wiki/SRK"
+   ],
+   "chain_tau_L_U_M_T": [
+    0.9515458436077957,
+    0.9999698465739594,
+    0.9999698465739594,
+    0.9999698465739594
+   ],
+   "M": {
+    "status": "OPTIMAL",
+    "tau": 0.9999698465739594,
+    "gap": 0.0,
+    "bound": 0.9999698465739595,
+    "kept": 8,
+    "per_cell_on_Q": {
+     "multihoprag/RK": {
+      "reach": 0.9999,
+      "price": 0.9993
+     },
+     "musique/RK": {
+      "reach": 0.957,
+      "price": 0.9995
+     },
+     "squad/RK": {
+      "reach": 0.963,
+      "price": 0.9993
+     },
+     "metaqa/SRK": {
+      "reach": 0.9816,
+      "price": 0.9926
+     },
+     "webqsp/SRK": {
+      "reach": 0.991,
+      "price": 1.0
+     },
+     "hotpotqa/RK": {
+      "reach": 0.982,
+      "price": 0.9999
+     },
+     "hotpotqa/SRK": {
+      "reach": 0.9983,
+      "price": 0.9999
+     },
+     "2wiki/RK": {
+      "reach": 0.9928,
+      "price": 1.0
+     },
+     "2wiki/SRK": {
+      "reach": 0.9956,
+      "price": 0.9999
+     }
+    },
+    "kept_keys": [
+     {
+      "key": 0,
+      "label": "S|votes=1",
+      "reach_weight_pooled": 1.8162,
+      "price_weight_pooled": 0.1461
+     },
+     {
+      "key": 1,
+      "label": "S|votes=2",
+      "reach_weight_pooled": 0.4442,
+      "price_weight_pooled": 0.1639
+     },
+     {
+      "key": 2,
+      "label": "S|votes=3+",
+      "reach_weight_pooled": 0.4066,
+      "price_weight_pooled": 0.2167
+     },
+     {
+      "key": 3,
+      "label": "R|votes=1",
+      "reach_weight_pooled": 2.4064,
+      "price_weight_pooled": 2.0259
+     },
+     {
+      "key": 4,
+      "label": "R|votes=2",
+      "reach_weight_pooled": 0.8122,
+      "price_weight_pooled": 1.3362
+     },
+     {
+      "key": 5,
+      "label": "R|votes=3+",
+      "reach_weight_pooled": 2.8356,
+      "price_weight_pooled": 5.08
+     },
+     {
+      "key": 7,
+      "label": "K|votes=2",
+      "reach_weight_pooled": 0.056,
+      "price_weight_pooled": 0.0054
+     },
+     {
+      "key": 8,
+      "label": "K|votes=3+",
+      "reach_weight_pooled": 0.0841,
+      "price_weight_pooled": 0.0162
+     }
+    ],
+    "x": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     0,
+     1,
+     1
+    ]
+   },
+   "U": {
+    "status": "OPTIMAL",
+    "tau": 0.9999698465739594
+   },
+   "L": {
+    "status": "OPTIMAL",
+    "tau": 0.9515458436077957,
+    "duals_reach_by_cell": {
+     "multihoprag/RK": 0.9300049156628432,
+     "musique/RK": 0.039078212181241405,
+     "squad/RK": 0.0,
+     "metaqa/SRK": 0.0,
+     "webqsp/SRK": 0.0,
+     "hotpotqa/RK": 0.0,
+     "hotpotqa/SRK": 0.0,
+     "2wiki/RK": 0.0,
+     "2wiki/SRK": 0.0
+    }
+   },
+   "T": {
+    "status": "OPTIMAL_ON_THRESHOLDS",
+    "tau": 0.9999698465739594,
+    "thresholds": {
+     "R": [
+      3
+     ],
+     "K": [
+      2
+     ]
+    },
+    "kept": 8,
+    "per_cell_on_Q": {
+     "multihoprag/RK": {
+      "reach": 0.9999,
+      "price": 0.9993
+     },
+     "musique/RK": {
+      "reach": 0.957,
+      "price": 0.9995
+     },
+     "squad/RK": {
+      "reach": 0.963,
+      "price": 0.9993
+     },
+     "metaqa/SRK": {
+      "reach": 0.9816,
+      "price": 0.9926
+     },
+     "webqsp/SRK": {
+      "reach": 0.991,
+      "price": 1.0
+     },
+     "hotpotqa/RK": {
+      "reach": 0.982,
+      "price": 0.9999
+     },
+     "hotpotqa/SRK": {
+      "reach": 0.9983,
+      "price": 0.9999
+     },
+     "2wiki/RK": {
+      "reach": 0.9928,
+      "price": 1.0
+     },
+     "2wiki/SRK": {
+      "reach": 0.9956,
+      "price": 0.9999
+     }
+    }
+   },
+   "greedy_old_form": {
+    "status": "FEASIBLE",
+    "tau": 1.0,
+    "kept": 9
+   },
+   "seen": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "total_per_cell": {
+    "multihoprag/RK": {
+     "needed_weight": 42.0,
+     "candidate_weight": 20614.0
+    },
+    "musique/RK": {
+     "needed_weight": 501.0,
+     "candidate_weight": 11806496.98
+    },
+    "squad/RK": {
+     "needed_weight": 27.0,
+     "candidate_weight": 141507.0
+    },
+    "metaqa/SRK": {
+     "needed_weight": 3214.0,
+     "candidate_weight": 3618080.0
+    },
+    "webqsp/SRK": {
+     "needed_weight": 1925.9999,
+     "candidate_weight": 589460818.15
+    },
+    "hotpotqa/RK": {
+     "needed_weight": 201.0,
+     "candidate_weight": 15691806.02
+    },
+    "hotpotqa/SRK": {
+     "needed_weight": 201.0,
+     "candidate_weight": 8399812.04
+    },
+    "2wiki/RK": {
+     "needed_weight": 364.0,
+     "candidate_weight": 42458782.91
+    },
+    "2wiki/SRK": {
+     "needed_weight": 364.0,
+     "candidate_weight": 31972154.84
+    }
+   }
+  },
+  "K0": {
+   "attrs": [
+    "dot"
+   ],
+   "attr_ids": [
+    "A2"
+   ],
+   "directions": [
+    1
+   ],
+   "keys": 9,
+   "cells": [
+    "multihoprag/RK",
+    "musique/RK",
+    "squad/RK",
+    "metaqa/SRK",
+    "webqsp/SRK",
+    "hotpotqa/RK",
+    "hotpotqa/SRK",
+    "2wiki/RK",
+    "2wiki/SRK"
+   ],
+   "chain_tau_L_U_M_T": [
+    0.9661114157066317,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "M": {
+    "status": "OPTIMAL",
+    "tau": 1.0,
+    "gap": 0.0,
+    "bound": 1.0,
+    "kept": 7,
+    "per_cell_on_Q": {
+     "multihoprag/RK": {
+      "reach": 1.0,
+      "price": 1.0
+     },
+     "musique/RK": {
+      "reach": 1.0,
+      "price": 1.0
+     },
+     "squad/RK": {
+      "reach": 1.0,
+      "price": 1.0
+     },
+     "metaqa/SRK": {
+      "reach": 1.0,
+      "price": 1.0
+     },
+     "webqsp/SRK": {
+      "reach": 1.0,
+      "price": 1.0
+     },
+     "hotpotqa/RK": {
+      "reach": 1.0,
+      "price": 1.0
+     },
+     "hotpotqa/SRK": {
+      "reach": 1.0,
+      "price": 1.0
+     },
+     "2wiki/RK": {
+      "reach": 1.0,
+      "price": 1.0
+     },
+     "2wiki/SRK": {
+      "reach": 1.0,
+      "price": 1.0
+     }
+    },
+    "kept_keys": [
+     {
+      "key": 0,
+      "label": "S|dot=low",
+      "reach_weight_pooled": 0.0242,
+      "price_weight_pooled": 0.0378
+     },
+     {
+      "key": 1,
+      "label": "S|dot=mid",
+      "reach_weight_pooled": 0.2732,
+      "price_weight_pooled": 0.0755
+     },
+     {
+      "key": 2,
+      "label": "S|dot=high",
+      "reach_weight_pooled": 2.3695,
+      "price_weight_pooled": 0.4135
+     },
+     {
+      "key": 3,
+      "label": "R|dot=low",
+      "reach_weight_pooled": 0.4902,
+      "price_weight_pooled": 3.6326
+     },
+     {
+      "key": 4,
+      "label": "R|dot=mid",
+      "reach_weight_pooled": 0.8399,
+      "price_weight_pooled": 2.7264
+     },
+     {
+      "key": 5,
+      "label": "R|dot=high",
+      "reach_weight_pooled": 4.724,
+      "price_weight_pooled": 2.0831
+     },
+     {
+      "key": 8,
+      "label": "K|dot=high",
+      "reach_weight_pooled": 0.2789,
+      "price_weight_pooled": 0.0312
+     }
+    ],
+    "x": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     1
+    ]
+   },
+   "U": {
+    "status": "OPTIMAL",
+    "tau": 1.0
+   },
+   "L": {
+    "status": "OPTIMAL",
+    "tau": 0.9661114157066317,
+    "duals_reach_by_cell": {
+     "multihoprag/RK": 0.0,
+     "musique/RK": 0.677771685867363,
+     "squad/RK": 0.0,
+     "metaqa/SRK": 0.0,
+     "webqsp/SRK": 0.0,
+     "hotpotqa/RK": 0.0,
+     "hotpotqa/SRK": 0.0,
+     "2wiki/RK": 0.0,
+     "2wiki/SRK": 0.0
+    }
+   },
+   "T": {
+    "status": "OPTIMAL_ON_THRESHOLDS",
+    "tau": 1.0,
+    "thresholds": {
+     "R": [
+      3
+     ],
+     "K": [
+      1
+     ]
+    },
+    "kept": 7,
+    "per_cell_on_Q": {
+     "multihoprag/RK": {
+      "reach": 1.0,
+      "price": 1.0
+     },
+     "musique/RK": {
+      "reach": 1.0,
+      "price": 1.0
+     },
+     "squad/RK": {
+      "reach": 1.0,
+      "price": 1.0
+     },
+     "metaqa/SRK": {
+      "reach": 1.0,
+      "price": 1.0
+     },
+     "webqsp/SRK": {
+      "reach": 1.0,
+      "price": 1.0
+     },
+     "hotpotqa/RK": {
+      "reach": 1.0,
+      "price": 1.0
+     },
+     "hotpotqa/SRK": {
+      "reach": 1.0,
+      "price": 1.0
+     },
+     "2wiki/RK": {
+      "reach": 1.0,
+      "price": 1.0
+     },
+     "2wiki/SRK": {
+      "reach": 1.0,
+      "price": 1.0
+     }
+    }
+   },
+   "greedy_old_form": {
+    "status": "FEASIBLE",
+    "tau": 1.0,
+    "kept": 7
+   },
+   "seen": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    1
+   ],
+   "total_per_cell": {
+    "multihoprag/RK": {
+     "needed_weight": 42.0,
+     "candidate_weight": 20614.0
+    },
+    "musique/RK": {
+     "needed_weight": 501.0,
+     "candidate_weight": 11806496.98
+    },
+    "squad/RK": {
+     "needed_weight": 27.0,
+     "candidate_weight": 141507.0
+    },
+    "metaqa/SRK": {
+     "needed_weight": 3214.0,
+     "candidate_weight": 3618080.0
+    },
+    "webqsp/SRK": {
+     "needed_weight": 1925.9999,
+     "candidate_weight": 589460818.15
+    },
+    "hotpotqa/RK": {
+     "needed_weight": 201.0,
+     "candidate_weight": 15691806.02
+    },
+    "hotpotqa/SRK": {
+     "needed_weight": 201.0,
+     "candidate_weight": 8399812.04
+    },
+    "2wiki/RK": {
+     "needed_weight": 364.0,
+     "candidate_weight": 42458782.91
+    },
+    "2wiki/SRK": {
+     "needed_weight": 364.0,
+     "candidate_weight": 31972154.84
+    }
+   }
+  }
+ },
+ "zgp1p_sha256": "062986dcc0b6f5f5020c3094523228976f86839563dcf8e9d3fe851e80730839",
+ "improvement_over_K0_tau": 3.015342604062443e-05,
+ "rule": {
+  "space": "K3",
+  "attrs": [
+   "votes"
+  ],
+  "directions": [
+   1
+  ],
+  "dot_cuts": [
+   0.5894105434417725,
+   0.6417021155357361
+  ],
+  "keep": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   0,
+   1,
+   1
+  ],
+  "keys_kept": [
+   {
+    "key": 0,
+    "label": "S|votes=1",
+    "reach_weight_pooled": 1.8162,
+    "price_weight_pooled": 0.1461
+   },
+   {
+    "key": 1,
+    "label": "S|votes=2",
+    "reach_weight_pooled": 0.4442,
+    "price_weight_pooled": 0.1639
+   },
+   {
+    "key": 2,
+    "label": "S|votes=3+",
+    "reach_weight_pooled": 0.4066,
+    "price_weight_pooled": 0.2167
+   },
+   {
+    "key": 3,
+    "label": "R|votes=1",
+    "reach_weight_pooled": 2.4064,
+    "price_weight_pooled": 2.0259
+   },
+   {
+    "key": 4,
+    "label": "R|votes=2",
+    "reach_weight_pooled": 0.8122,
+    "price_weight_pooled": 1.3362
+   },
+   {
+    "key": 5,
+    "label": "R|votes=3+",
+    "reach_weight_pooled": 2.8356,
+    "price_weight_pooled": 5.08
+   },
+   {
+    "key": 7,
+    "label": "K|votes=2",
+    "reach_weight_pooled": 0.056,
+    "price_weight_pooled": 0.0054
+   },
+   {
+    "key": 8,
+    "label": "K|votes=3+",
+    "reach_weight_pooled": 0.0841,
+    "price_weight_pooled": 0.0162
+   }
+  ],
+  "kept_keys_count": 8,
+  "seen": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "empty_keys_default": "removed (second stage minimises the keys kept)"
+ },
+ "rule_K0": {
+  "space": "K0",
+  "attrs": [
+   "dot"
+  ],
+  "directions": [
+   1
+  ],
+  "dot_cuts": [
+   0.5894105434417725,
+   0.6417021155357361
+  ],
+  "keep": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   0,
+   0,
+   1
+  ],
+  "seen": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   0,
+   0,
+   1
+  ]
+ },
+ "seconds": 1.2
+}

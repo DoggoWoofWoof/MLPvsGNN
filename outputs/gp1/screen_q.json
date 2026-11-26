@@ -1,0 +1,4520 @@
+{
+ "part": "q",
+ "declared_in": "docs/GP1_GOLD_LINK_PATTERNS.md",
+ "dot_cuts": [
+  0.5894105434417725,
+  0.6417021155357361
+ ],
+ "dot_cut_datasets": [
+  "2wiki",
+  "hotpotqa",
+  "metaqa",
+  "multihoprag",
+  "musique",
+  "squad",
+  "webqsp"
+ ],
+ "cells": {
+  "multihoprag/RK": {
+   "status": "read",
+   "gold_distance_found_1_2_3_unreached": [
+    99,
+    41,
+    1,
+    0,
+    0
+   ],
+   "needed_weight": 42.0,
+   "needed_units": 452,
+   "controls_sampled": 20162,
+   "controls_exact_weight": 20162.0,
+   "needed_by_step": [
+    399,
+    53,
+    0
+   ],
+   "needed_by_grp": [
+    0,
+    449,
+    3
+   ],
+   "needed_weight_by_grp": [
+    0.0,
+    41.4947,
+    0.5053
+   ],
+   "control_weight_by_grp": [
+    0.0,
+    20067.0,
+    95.0
+   ],
+   "capped_golds": 0,
+   "stats": {
+    "questions": 56,
+    "golds": 141,
+    "found": 99,
+    "dist": [
+     99,
+     41,
+     1,
+     0,
+     0
+    ],
+    "capped_golds": 0,
+    "units": 452,
+    "ctrl_sampled": 20162,
+    "ctrl_exact": 20162,
+    "sources": 278,
+    "g_g2_checked": 56,
+    "g5_checked": 0,
+    "g5_bad": 0,
+    "mention_links": 0,
+    "mention_exact_none": 0,
+    "reachable_missed": 42,
+    "unreached": 0
+   },
+   "tables": {
+    "dot": {
+     "bins": [
+      "low",
+      "mid",
+      "high"
+     ],
+     "needed_share": [
+      0.0028,
+      0.0176,
+      0.9796
+     ],
+     "control_share": [
+      0.1641,
+      0.2785,
+      0.5574
+     ],
+     "needed_units": [
+      22,
+      55,
+      375
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "rank": {
+     "bins": [
+      "1-3",
+      "4-30",
+      ">30"
+     ],
+     "needed_share": [
+      0.2188,
+      0.6857,
+      0.0955
+     ],
+     "control_share": [
+      0.0379,
+      0.331,
+      0.6311
+     ],
+     "needed_units": [
+      70,
+      276,
+      106
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "votes": {
+     "bins": [
+      "1",
+      "2",
+      "3+"
+     ],
+     "needed_share": [
+      0.0261,
+      0.0263,
+      0.9476
+     ],
+     "control_share": [
+      0.1664,
+      0.148,
+      0.6857
+     ],
+     "needed_units": [
+      19,
+      22,
+      411
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "dir": {
+     "bins": [
+      "none",
+      "one-way",
+      "mutual"
+     ],
+     "needed_share": [
+      0.4258,
+      0.4403,
+      0.1339
+     ],
+     "control_share": [
+      0.6765,
+      0.2723,
+      0.0511
+     ],
+     "needed_units": [
+      201,
+      183,
+      68
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "exact": {
+     "bins": [
+      "none",
+      "folded/alias",
+      "exact"
+     ],
+     "needed_share": [
+      0.6573,
+      0.3427,
+      0.0
+     ],
+     "control_share": [
+      0.8224,
+      0.1776,
+      0.0
+     ],
+     "needed_units": [
+      314,
+      138,
+      0
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "ntok": {
+     "bins": [
+      "1",
+      "2",
+      "3+"
+     ],
+     "needed_share": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "control_share": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "needed_units": [
+      0,
+      0,
+      452
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "caps": {
+     "bins": [
+      "lower",
+      "mixed",
+      "all caps"
+     ],
+     "needed_share": [
+      0.0238,
+      0.9753,
+      0.0009
+     ],
+     "control_share": [
+      0.0066,
+      0.977,
+      0.0163
+     ],
+     "needed_units": [
+      1,
+      444,
+      7
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "lead": {
+     "bins": [
+      "no",
+      "yes",
+      "na"
+     ],
+     "needed_share": [
+      0.2989,
+      0.0439,
+      0.6573
+     ],
+     "control_share": [
+      0.1634,
+      0.0142,
+      0.8224
+     ],
+     "needed_units": [
+      112,
+      26,
+      314
+     ],
+     "needed_weight_defined": 0.3427
+    },
+    "off": {
+     "bins": [
+      "<=.10",
+      ".10-.50",
+      ">.50",
+      "na"
+     ],
+     "needed_share": [
+      0.1468,
+      0.1078,
+      0.0881,
+      0.6573
+     ],
+     "control_share": [
+      0.0654,
+      0.0666,
+      0.0456,
+      0.8224
+     ],
+     "needed_units": [
+      76,
+      35,
+      27,
+      314
+     ],
+     "needed_weight_defined": 0.3427
+    },
+    "cnt": {
+     "bins": [
+      "1",
+      "2",
+      "3+",
+      "na"
+     ],
+     "needed_share": [
+      0.1259,
+      0.0568,
+      0.1599,
+      0.6573
+     ],
+     "control_share": [
+      0.0623,
+      0.0286,
+      0.0867,
+      0.8224
+     ],
+     "needed_units": [
+      39,
+      21,
+      78,
+      314
+     ],
+     "needed_weight_defined": 0.3427
+    },
+    "qov": {
+     "bins": [
+      "0",
+      "1",
+      "2+"
+     ],
+     "needed_share": [
+      0.5947,
+      0.1434,
+      0.2619
+     ],
+     "control_share": [
+      0.767,
+      0.1942,
+      0.0388
+     ],
+     "needed_units": [
+      345,
+      41,
+      66
+     ],
+     "needed_weight_defined": 1.0
+    }
+   },
+   "auc": {
+    "dot": {
+     "auc": 0.69409,
+     "lo": 0.67356,
+     "hi": 0.71197,
+     "questions": 35
+    },
+    "rank": {
+     "auc": 0.23708,
+     "lo": 0.20805,
+     "hi": 0.26902,
+     "questions": 35
+    },
+    "votes": {
+     "auc": 0.64562,
+     "lo": 0.61606,
+     "hi": 0.66747,
+     "questions": 35
+    },
+    "dir": {
+     "auc": 0.63872,
+     "lo": 0.59157,
+     "hi": 0.68422,
+     "questions": 35
+    },
+    "exact": {
+     "auc": 0.58509,
+     "lo": 0.53184,
+     "hi": 0.6432,
+     "questions": 35
+    },
+    "ntok": {
+     "auc": 0.5,
+     "lo": 0.5,
+     "hi": 0.5,
+     "questions": 35
+    },
+    "caps": {
+     "auc": 0.48474,
+     "lo": 0.45753,
+     "hi": 0.49805,
+     "questions": 35
+    },
+    "lead": {
+     "auc": 0.5173,
+     "lo": 0.47172,
+     "hi": 0.57778,
+     "questions": 20
+    },
+    "off": {
+     "auc": 0.47244,
+     "lo": 0.38153,
+     "hi": 0.56816,
+     "questions": 20
+    },
+    "cnt": {
+     "auc": 0.50374,
+     "lo": 0.42155,
+     "hi": 0.5861,
+     "questions": 20
+    },
+    "qov": {
+     "auc": 0.61149,
+     "lo": 0.53173,
+     "hi": 0.70146,
+     "questions": 35
+    }
+   },
+   "needed_by_profile": {
+    "2": 405,
+    "4": 1,
+    "8": 3,
+    "10": 43
+   }
+  },
+  "musique/RK": {
+   "status": "read",
+   "gold_distance_found_1_2_3_unreached": [
+    512,
+    241,
+    205,
+    55,
+    4
+   ],
+   "needed_weight": 501.0,
+   "needed_units": 26889,
+   "controls_sampled": 938411,
+   "controls_exact_weight": 11779608.0,
+   "needed_by_step": [
+    10716,
+    15141,
+    1032
+   ],
+   "needed_by_grp": [
+    0,
+    26611,
+    278
+   ],
+   "needed_weight_by_grp": [
+    0.0,
+    469.8111,
+    31.1889
+   ],
+   "control_weight_by_grp": [
+    0.0,
+    11767236.55,
+    12371.42
+   ],
+   "capped_golds": 0,
+   "stats": {
+    "questions": 384,
+    "golds": 1017,
+    "found": 512,
+    "dist": [
+     512,
+     241,
+     205,
+     55,
+     4
+    ],
+    "capped_golds": 0,
+    "units": 26889,
+    "ctrl_sampled": 938411,
+    "ctrl_exact": 11779608,
+    "sources": 7788,
+    "g_g2_checked": 384,
+    "g5_checked": 8000,
+    "g5_bad": 0,
+    "mention_links": 889047,
+    "mention_exact_none": 730699,
+    "reachable_missed": 501,
+    "unreached": 4
+   },
+   "tables": {
+    "dot": {
+     "bins": [
+      "low",
+      "mid",
+      "high"
+     ],
+     "needed_share": [
+      0.1236,
+      0.2505,
+      0.6259
+     ],
+     "control_share": [
+      0.5178,
+      0.3416,
+      0.1406
+     ],
+     "needed_units": [
+      8450,
+      9808,
+      8631
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "rank": {
+     "bins": [
+      "1-3",
+      "4-30",
+      ">30"
+     ],
+     "needed_share": [
+      0.1019,
+      0.4589,
+      0.4392
+     ],
+     "control_share": [
+      0.0017,
+      0.0165,
+      0.9818
+     ],
+     "needed_units": [
+      565,
+      5168,
+      21156
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "votes": {
+     "bins": [
+      "1",
+      "2",
+      "3+"
+     ],
+     "needed_share": [
+      0.4327,
+      0.1595,
+      0.4077
+     ],
+     "control_share": [
+      0.0204,
+      0.0091,
+      0.9705
+     ],
+     "needed_units": [
+      3507,
+      3040,
+      20342
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "dir": {
+     "bins": [
+      "none",
+      "one-way",
+      "mutual"
+     ],
+     "needed_share": [
+      0.2234,
+      0.6564,
+      0.1203
+     ],
+     "control_share": [
+      0.0106,
+      0.9505,
+      0.0388
+     ],
+     "needed_units": [
+      1390,
+      23911,
+      1588
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "exact": {
+     "bins": [
+      "none",
+      "folded/alias",
+      "exact"
+     ],
+     "needed_share": [
+      0.4573,
+      0.1109,
+      0.4318
+     ],
+     "control_share": [
+      0.9439,
+      0.0378,
+      0.0183
+     ],
+     "needed_units": [
+      13323,
+      890,
+      12676
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "ntok": {
+     "bins": [
+      "1",
+      "2",
+      "3+"
+     ],
+     "needed_share": [
+      0.2758,
+      0.3571,
+      0.3671
+     ],
+     "control_share": [
+      0.0797,
+      0.3833,
+      0.537
+     ],
+     "needed_units": [
+      10171,
+      7682,
+      9036
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "caps": {
+     "bins": [
+      "lower",
+      "mixed",
+      "all caps"
+     ],
+     "needed_share": [
+      0.0,
+      0.2265,
+      0.7735
+     ],
+     "control_share": [
+      0.0011,
+      0.2324,
+      0.7664
+     ],
+     "needed_units": [
+      0,
+      3520,
+      23369
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "lead": {
+     "bins": [
+      "no",
+      "yes",
+      "na"
+     ],
+     "needed_share": [
+      0.1995,
+      0.3432,
+      0.4573
+     ],
+     "control_share": [
+      0.0299,
+      0.0262,
+      0.9439
+     ],
+     "needed_units": [
+      7378,
+      6188,
+      13323
+     ],
+     "needed_weight_defined": 0.5427
+    },
+    "off": {
+     "bins": [
+      "<=.10",
+      ".10-.50",
+      ">.50",
+      "na"
+     ],
+     "needed_share": [
+      0.1248,
+      0.2896,
+      0.1283,
+      0.4573
+     ],
+     "control_share": [
+      0.0214,
+      0.0212,
+      0.0135,
+      0.9439
+     ],
+     "needed_units": [
+      2371,
+      7580,
+      3615,
+      13323
+     ],
+     "needed_weight_defined": 0.5427
+    },
+    "cnt": {
+     "bins": [
+      "1",
+      "2",
+      "3+",
+      "na"
+     ],
+     "needed_share": [
+      0.4034,
+      0.078,
+      0.0612,
+      0.4573
+     ],
+     "control_share": [
+      0.027,
+      0.0118,
+      0.0173,
+      0.9439
+     ],
+     "needed_units": [
+      9964,
+      2310,
+      1292,
+      13323
+     ],
+     "needed_weight_defined": 0.5427
+    },
+    "qov": {
+     "bins": [
+      "0",
+      "1",
+      "2+"
+     ],
+     "needed_share": [
+      0.7873,
+      0.1349,
+      0.0778
+     ],
+     "control_share": [
+      0.9718,
+      0.0265,
+      0.0017
+     ],
+     "needed_units": [
+      22153,
+      3629,
+      1107
+     ],
+     "needed_weight_defined": 1.0
+    }
+   },
+   "auc": {
+    "dot": {
+     "auc": 0.54035,
+     "lo": 0.52448,
+     "hi": 0.55723,
+     "questions": 323
+    },
+    "rank": {
+     "auc": 0.47479,
+     "lo": 0.45894,
+     "hi": 0.49068,
+     "questions": 323
+    },
+    "votes": {
+     "auc": 0.56543,
+     "lo": 0.54795,
+     "hi": 0.58433,
+     "questions": 323
+    },
+    "dir": {
+     "auc": 0.55742,
+     "lo": 0.54055,
+     "hi": 0.57499,
+     "questions": 323
+    },
+    "exact": {
+     "auc": 0.59497,
+     "lo": 0.57593,
+     "hi": 0.61333,
+     "questions": 323
+    },
+    "ntok": {
+     "auc": 0.4598,
+     "lo": 0.43894,
+     "hi": 0.4796,
+     "questions": 323
+    },
+    "caps": {
+     "auc": 0.50669,
+     "lo": 0.49197,
+     "hi": 0.52092,
+     "questions": 323
+    },
+    "lead": {
+     "auc": 0.50966,
+     "lo": 0.49004,
+     "hi": 0.53025,
+     "questions": 262
+    },
+    "off": {
+     "auc": 0.49557,
+     "lo": 0.46841,
+     "hi": 0.52242,
+     "questions": 262
+    },
+    "cnt": {
+     "auc": 0.48074,
+     "lo": 0.45648,
+     "hi": 0.50379,
+     "questions": 262
+    },
+    "qov": {
+     "auc": 0.54635,
+     "lo": 0.53137,
+     "hi": 0.56115,
+     "questions": 323
+    }
+   },
+   "needed_by_profile": {
+    "1": 24650,
+    "2": 1355,
+    "3": 280,
+    "4": 25,
+    "5": 44,
+    "8": 278,
+    "9": 96,
+    "10": 83,
+    "11": 60,
+    "12": 1,
+    "13": 17
+   }
+  },
+  "squad/RK": {
+   "status": "read",
+   "gold_distance_found_1_2_3_unreached": [
+    348,
+    17,
+    7,
+    3,
+    0
+   ],
+   "needed_weight": 27.0,
+   "needed_units": 1327,
+   "controls_sampled": 67603,
+   "controls_exact_weight": 140180.0,
+   "needed_by_step": [
+    714,
+    528,
+    85
+   ],
+   "needed_by_grp": [
+    0,
+    1317,
+    10
+   ],
+   "needed_weight_by_grp": [
+    0.0,
+    25.9078,
+    1.0922
+   ],
+   "control_weight_by_grp": [
+    0.0,
+    139908.99,
+    271.01
+   ],
+   "capped_golds": 0,
+   "stats": {
+    "questions": 375,
+    "golds": 375,
+    "found": 348,
+    "dist": [
+     348,
+     17,
+     7,
+     3,
+     0
+    ],
+    "capped_golds": 0,
+    "units": 1327,
+    "ctrl_sampled": 67603,
+    "ctrl_exact": 140180,
+    "sources": 573,
+    "g_g2_checked": 375,
+    "g5_checked": 4919,
+    "g5_bad": 0,
+    "mention_links": 62751,
+    "mention_exact_none": 54616,
+    "reachable_missed": 27,
+    "unreached": 0
+   },
+   "tables": {
+    "dot": {
+     "bins": [
+      "low",
+      "mid",
+      "high"
+     ],
+     "needed_share": [
+      0.0514,
+      0.1493,
+      0.7993
+     ],
+     "control_share": [
+      0.1936,
+      0.423,
+      0.3834
+     ],
+     "needed_units": [
+      248,
+      464,
+      615
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "rank": {
+     "bins": [
+      "1-3",
+      "4-30",
+      ">30"
+     ],
+     "needed_share": [
+      0.2223,
+      0.3134,
+      0.4643
+     ],
+     "control_share": [
+      0.011,
+      0.1017,
+      0.8872
+     ],
+     "needed_units": [
+      58,
+      275,
+      994
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "votes": {
+     "bins": [
+      "1",
+      "2",
+      "3+"
+     ],
+     "needed_share": [
+      0.3561,
+      0.088,
+      0.5559
+     ],
+     "control_share": [
+      0.0603,
+      0.0257,
+      0.914
+     ],
+     "needed_units": [
+      264,
+      118,
+      945
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "dir": {
+     "bins": [
+      "none",
+      "one-way",
+      "mutual"
+     ],
+     "needed_share": [
+      0.5981,
+      0.3126,
+      0.0893
+     ],
+     "control_share": [
+      0.1561,
+      0.8287,
+      0.0153
+     ],
+     "needed_units": [
+      409,
+      883,
+      35
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "exact": {
+     "bins": [
+      "none",
+      "folded/alias",
+      "exact"
+     ],
+     "needed_share": [
+      0.7207,
+      0.0119,
+      0.2675
+     ],
+     "control_share": [
+      0.9238,
+      0.0069,
+      0.0693
+     ],
+     "needed_units": [
+      687,
+      42,
+      598
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "ntok": {
+     "bins": [
+      "1",
+      "2",
+      "3+"
+     ],
+     "needed_share": [
+      1.0,
+      0.0,
+      0.0
+     ],
+     "control_share": [
+      1.0,
+      0.0,
+      0.0
+     ],
+     "needed_units": [
+      1327,
+      0,
+      0
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "caps": {
+     "bins": [
+      "lower",
+      "mixed",
+      "all caps"
+     ],
+     "needed_share": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "control_share": [
+      0.0118,
+      0.0,
+      0.9882
+     ],
+     "needed_units": [
+      0,
+      0,
+      1327
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "lead": {
+     "bins": [
+      "no",
+      "yes",
+      "na"
+     ],
+     "needed_share": [
+      0.1633,
+      0.116,
+      0.7207
+     ],
+     "control_share": [
+      0.0484,
+      0.0278,
+      0.9238
+     ],
+     "needed_units": [
+      455,
+      185,
+      687
+     ],
+     "needed_weight_defined": 0.2793
+    },
+    "off": {
+     "bins": [
+      "<=.10",
+      ".10-.50",
+      ">.50",
+      "na"
+     ],
+     "needed_share": [
+      0.1081,
+      0.0892,
+      0.082,
+      0.7207
+     ],
+     "control_share": [
+      0.0156,
+      0.034,
+      0.0267,
+      0.9238
+     ],
+     "needed_units": [
+      179,
+      418,
+      43,
+      687
+     ],
+     "needed_weight_defined": 0.2793
+    },
+    "cnt": {
+     "bins": [
+      "1",
+      "2",
+      "3+",
+      "na"
+     ],
+     "needed_share": [
+      0.149,
+      0.0607,
+      0.0696,
+      0.7207
+     ],
+     "control_share": [
+      0.0527,
+      0.0125,
+      0.011,
+      0.9238
+     ],
+     "needed_units": [
+      400,
+      120,
+      120,
+      687
+     ],
+     "needed_weight_defined": 0.2793
+    },
+    "qov": {
+     "bins": [
+      "0",
+      "1",
+      "2+"
+     ],
+     "needed_share": [
+      1.0,
+      0.0,
+      0.0
+     ],
+     "control_share": [
+      0.9989,
+      0.0011,
+      0.0
+     ],
+     "needed_units": [
+      1327,
+      0,
+      0
+     ],
+     "needed_weight_defined": 1.0
+    }
+   },
+   "auc": {
+    "dot": {
+     "auc": 0.54754,
+     "lo": 0.49104,
+     "hi": 0.5931,
+     "questions": 27
+    },
+    "rank": {
+     "auc": 0.38277,
+     "lo": 0.30141,
+     "hi": 0.46699,
+     "questions": 27
+    },
+    "votes": {
+     "auc": 0.58117,
+     "lo": 0.5095,
+     "hi": 0.64913,
+     "questions": 27
+    },
+    "dir": {
+     "auc": 0.49684,
+     "lo": 0.44294,
+     "hi": 0.55348,
+     "questions": 27
+    },
+    "exact": {
+     "auc": 0.52137,
+     "lo": 0.46741,
+     "hi": 0.57678,
+     "questions": 27
+    },
+    "ntok": {
+     "auc": 0.5,
+     "lo": 0.5,
+     "hi": 0.5,
+     "questions": 27
+    },
+    "caps": {
+     "auc": 0.50321,
+     "lo": 0.50164,
+     "hi": 0.50508,
+     "questions": 27
+    },
+    "lead": {
+     "auc": 0.51565,
+     "lo": 0.39387,
+     "hi": 0.64698,
+     "questions": 12
+    },
+    "off": {
+     "auc": 0.49312,
+     "lo": 0.35845,
+     "hi": 0.62785,
+     "questions": 12
+    },
+    "cnt": {
+     "auc": 0.50943,
+     "lo": 0.38278,
+     "hi": 0.64156,
+     "questions": 12
+    },
+    "qov": {
+     "auc": 0.49968,
+     "lo": 0.49903,
+     "hi": 0.5,
+     "questions": 27
+    }
+   },
+   "needed_by_profile": {
+    "1": 1040,
+    "2": 202,
+    "3": 39,
+    "5": 5,
+    "8": 10,
+    "9": 18,
+    "10": 3,
+    "11": 10
+   }
+  },
+  "metaqa/SRK": {
+   "status": "read",
+   "gold_distance_found_1_2_3_unreached": [
+    14,
+    409,
+    1769,
+    1036,
+    0
+   ],
+   "needed_weight": 3214.0,
+   "needed_units": 74373,
+   "controls_sampled": 841827,
+   "controls_exact_weight": 3543707.0,
+   "needed_by_step": [
+    7751,
+    52969,
+    13653
+   ],
+   "needed_by_grp": [
+    23293,
+    49353,
+    1727
+   ],
+   "needed_weight_by_grp": [
+    1645.8418,
+    1464.6114,
+    103.5468
+   ],
+   "control_weight_by_grp": [
+    1384255.4,
+    2079354.2,
+    80097.39
+   ],
+   "capped_golds": 0,
+   "stats": {
+    "questions": 375,
+    "golds": 3228,
+    "found": 14,
+    "dist": [
+     14,
+     409,
+     1769,
+     1036,
+     0
+    ],
+    "capped_golds": 0,
+    "units": 74373,
+    "ctrl_sampled": 841827,
+    "ctrl_exact": 3543707,
+    "sources": 19590,
+    "g_g2_checked": 375,
+    "g5_checked": 60,
+    "g5_bad": 0,
+    "mention_links": 848523,
+    "mention_exact_none": 847301,
+    "reachable_missed": 3214,
+    "unreached": 0
+   },
+   "tables": {
+    "dot": {
+     "bins": [
+      "low",
+      "mid",
+      "high"
+     ],
+     "needed_share": [
+      0.0208,
+      0.2637,
+      0.7155
+     ],
+     "control_share": [
+      0.0177,
+      0.2016,
+      0.7807
+     ],
+     "needed_units": [
+      959,
+      14484,
+      58930
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "rank": {
+     "bins": [
+      "1-3",
+      "4-30",
+      ">30"
+     ],
+     "needed_share": [
+      0.0606,
+      0.5994,
+      0.34
+     ],
+     "control_share": [
+      0.0156,
+      0.0894,
+      0.895
+     ],
+     "needed_units": [
+      3931,
+      23396,
+      47046
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "votes": {
+     "bins": [
+      "1",
+      "2",
+      "3+"
+     ],
+     "needed_share": [
+      0.4446,
+      0.1995,
+      0.3559
+     ],
+     "control_share": [
+      0.187,
+      0.3012,
+      0.5118
+     ],
+     "needed_units": [
+      8914,
+      8538,
+      56921
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "dir": {
+     "bins": [
+      "none",
+      "one-way",
+      "mutual"
+     ],
+     "needed_share": [
+      0.98,
+      0.0111,
+      0.0089
+     ],
+     "control_share": [
+      0.9783,
+      0.0139,
+      0.0078
+     ],
+     "needed_units": [
+      73506,
+      444,
+      423
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "exact": {
+     "bins": [
+      "none",
+      "folded/alias",
+      "exact"
+     ],
+     "needed_share": [
+      0.9833,
+      0.0115,
+      0.0052
+     ],
+     "control_share": [
+      0.9915,
+      0.0084,
+      0.0001
+     ],
+     "needed_units": [
+      73697,
+      528,
+      148
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "ntok": {
+     "bins": [
+      "1",
+      "2",
+      "3+"
+     ],
+     "needed_share": [
+      0.5261,
+      0.3436,
+      0.1303
+     ],
+     "control_share": [
+      0.2629,
+      0.4466,
+      0.2905
+     ],
+     "needed_units": [
+      45596,
+      19918,
+      8859
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "caps": {
+     "bins": [
+      "lower",
+      "mixed",
+      "all caps"
+     ],
+     "needed_share": [
+      0.2868,
+      0.0561,
+      0.6571
+     ],
+     "control_share": [
+      0.16,
+      0.143,
+      0.697
+     ],
+     "needed_units": [
+      23721,
+      4060,
+      46592
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "lead": {
+     "bins": [
+      "no",
+      "yes",
+      "na"
+     ],
+     "needed_share": [
+      0.0,
+      0.0167,
+      0.9833
+     ],
+     "control_share": [
+      0.0,
+      0.0084,
+      0.9915
+     ],
+     "needed_units": [
+      5,
+      671,
+      73697
+     ],
+     "needed_weight_defined": 0.0167
+    },
+    "off": {
+     "bins": [
+      "<=.10",
+      ".10-.50",
+      ">.50",
+      "na"
+     ],
+     "needed_share": [
+      0.0053,
+      0.0047,
+      0.0067,
+      0.9833
+     ],
+     "control_share": [
+      0.0058,
+      0.0013,
+      0.0014,
+      0.9915
+     ],
+     "needed_units": [
+      182,
+      202,
+      292,
+      73697
+     ],
+     "needed_weight_defined": 0.0167
+    },
+    "cnt": {
+     "bins": [
+      "1",
+      "2",
+      "3+",
+      "na"
+     ],
+     "needed_share": [
+      0.0166,
+      0.0001,
+      0.0,
+      0.9833
+     ],
+     "control_share": [
+      0.0085,
+      0.0,
+      0.0,
+      0.9915
+     ],
+     "needed_units": [
+      664,
+      12,
+      0,
+      73697
+     ],
+     "needed_weight_defined": 0.0167
+    },
+    "qov": {
+     "bins": [
+      "0",
+      "1",
+      "2+"
+     ],
+     "needed_share": [
+      0.9921,
+      0.0079,
+      0.0
+     ],
+     "control_share": [
+      0.9964,
+      0.0036,
+      0.0
+     ],
+     "needed_units": [
+      74035,
+      338,
+      0
+     ],
+     "needed_weight_defined": 1.0
+    }
+   },
+   "auc": {
+    "dot": {
+     "auc": 0.48352,
+     "lo": 0.47199,
+     "hi": 0.49542,
+     "questions": 373
+    },
+    "rank": {
+     "auc": 0.5813,
+     "lo": 0.56912,
+     "hi": 0.59513,
+     "questions": 373
+    },
+    "votes": {
+     "auc": 0.56681,
+     "lo": 0.55267,
+     "hi": 0.58208,
+     "questions": 373
+    },
+    "dir": {
+     "auc": 0.45275,
+     "lo": 0.44278,
+     "hi": 0.46156,
+     "questions": 373
+    },
+    "exact": {
+     "auc": 0.46208,
+     "lo": 0.45193,
+     "hi": 0.47086,
+     "questions": 373
+    },
+    "ntok": {
+     "auc": 0.35772,
+     "lo": 0.33303,
+     "hi": 0.38206,
+     "questions": 373
+    },
+    "caps": {
+     "auc": 0.47653,
+     "lo": 0.4583,
+     "hi": 0.49504,
+     "questions": 373
+    },
+    "lead": {
+     "auc": 0.49993,
+     "lo": 0.49974,
+     "hi": 0.5,
+     "questions": 104
+    },
+    "off": {
+     "auc": 0.51869,
+     "lo": 0.45796,
+     "hi": 0.58186,
+     "questions": 104
+    },
+    "cnt": {
+     "auc": 0.5,
+     "lo": 0.5,
+     "hi": 0.5,
+     "questions": 104
+    },
+    "qov": {
+     "auc": 0.44963,
+     "lo": 0.43809,
+     "hi": 0.45903,
+     "questions": 373
+    }
+   },
+   "needed_by_profile": {
+    "1": 25,
+    "2": 49138,
+    "3": 23234,
+    "4": 135,
+    "6": 1,
+    "7": 2,
+    "16": 1727,
+    "18": 25,
+    "19": 30,
+    "20": 51,
+    "22": 3,
+    "23": 2
+   },
+   "relations_top": [
+    {
+     "rel": 7,
+     "needed_weight": 521.1077,
+     "control_weight": 32634.63
+    },
+    {
+     "rel": 1,
+     "needed_weight": 379.8904,
+     "control_weight": 977195.85
+    },
+    {
+     "rel": 0,
+     "needed_weight": 226.6029,
+     "control_weight": 15577.34
+    },
+    {
+     "rel": 4,
+     "needed_weight": 210.1306,
+     "control_weight": 120042.73
+    },
+    {
+     "rel": 6,
+     "needed_weight": 160.8586,
+     "control_weight": 176372.04
+    },
+    {
+     "rel": 8,
+     "needed_weight": 116.3006,
+     "control_weight": 10430.04
+    },
+    {
+     "rel": 5,
+     "needed_weight": 26.8301,
+     "control_weight": 42544.19
+    },
+    {
+     "rel": 2,
+     "needed_weight": 3.7322,
+     "control_weight": 8778.62
+    },
+    {
+     "rel": 3,
+     "needed_weight": 0.3888,
+     "control_weight": 679.96
+    }
+   ]
+  },
+  "webqsp/SRK": {
+   "status": "read",
+   "gold_distance_found_1_2_3_unreached": [
+    80,
+    1192,
+    704,
+    30,
+    0
+   ],
+   "needed_weight": 1925.9999,
+   "needed_units": 193807,
+   "controls_sampled": 793324,
+   "controls_exact_weight": 589267072.0,
+   "needed_by_step": [
+    48066,
+    142982,
+    2759
+   ],
+   "needed_by_grp": [
+    4151,
+    189439,
+    217
+   ],
+   "needed_weight_by_grp": [
+    1051.6953,
+    794.206,
+    80.0987
+   ],
+   "control_weight_by_grp": [
+    9723437.93,
+    579347355.21,
+    196218.0
+   ],
+   "capped_golds": 34,
+   "stats": {
+    "questions": 377,
+    "golds": 2006,
+    "found": 80,
+    "dist": [
+     80,
+     1192,
+     704,
+     30,
+     0
+    ],
+    "capped_golds": 34,
+    "units": 193807,
+    "ctrl_sampled": 793324,
+    "ctrl_exact": 589267011,
+    "sources": 82206,
+    "g_g2_checked": 377,
+    "g5_checked": 3495,
+    "g5_bad": 0,
+    "mention_links": 980225,
+    "mention_exact_none": 971226,
+    "reachable_missed": 1926,
+    "unreached": 0
+   },
+   "tables": {
+    "dot": {
+     "bins": [
+      "low",
+      "mid",
+      "high"
+     ],
+     "needed_share": [
+      0.0094,
+      0.1408,
+      0.8498
+     ],
+     "control_share": [
+      0.115,
+      0.6036,
+      0.2815
+     ],
+     "needed_units": [
+      22258,
+      110691,
+      60858
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "rank": {
+     "bins": [
+      "1-3",
+      "4-30",
+      ">30"
+     ],
+     "needed_share": [
+      0.0974,
+      0.2496,
+      0.6529
+     ],
+     "control_share": [
+      0.0023,
+      0.0109,
+      0.9867
+     ],
+     "needed_units": [
+      1345,
+      16444,
+      176018
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "votes": {
+     "bins": [
+      "1",
+      "2",
+      "3+"
+     ],
+     "needed_share": [
+      0.5205,
+      0.1877,
+      0.2918
+     ],
+     "control_share": [
+      0.0141,
+      0.0128,
+      0.9731
+     ],
+     "needed_units": [
+      32247,
+      10560,
+      151000
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "dir": {
+     "bins": [
+      "none",
+      "one-way",
+      "mutual"
+     ],
+     "needed_share": [
+      0.7634,
+      0.165,
+      0.0716
+     ],
+     "control_share": [
+      0.9594,
+      0.0391,
+      0.0016
+     ],
+     "needed_units": [
+      192123,
+      1260,
+      424
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "exact": {
+     "bins": [
+      "none",
+      "folded/alias",
+      "exact"
+     ],
+     "needed_share": [
+      0.7766,
+      0.0383,
+      0.1851
+     ],
+     "control_share": [
+      0.9981,
+      0.0018,
+      0.0
+     ],
+     "needed_units": [
+      192307,
+      393,
+      1107
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "ntok": {
+     "bins": [
+      "1",
+      "2",
+      "3+"
+     ],
+     "needed_share": [
+      0.4457,
+      0.3154,
+      0.239
+     ],
+     "control_share": [
+      0.0916,
+      0.4564,
+      0.452
+     ],
+     "needed_units": [
+      63184,
+      48924,
+      81699
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "caps": {
+     "bins": [
+      "lower",
+      "mixed",
+      "all caps"
+     ],
+     "needed_share": [
+      0.0442,
+      0.1342,
+      0.8216
+     ],
+     "control_share": [
+      0.0397,
+      0.2054,
+      0.7549
+     ],
+     "needed_units": [
+      62839,
+      25329,
+      105639
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "lead": {
+     "bins": [
+      "no",
+      "yes",
+      "na"
+     ],
+     "needed_share": [
+      0.0723,
+      0.1511,
+      0.7766
+     ],
+     "control_share": [
+      0.0,
+      0.0019,
+      0.9981
+     ],
+     "needed_units": [
+      644,
+      856,
+      192307
+     ],
+     "needed_weight_defined": 0.2234
+    },
+    "off": {
+     "bins": [
+      "<=.10",
+      ".10-.50",
+      ">.50",
+      "na"
+     ],
+     "needed_share": [
+      0.0535,
+      0.0703,
+      0.0996,
+      0.7766
+     ],
+     "control_share": [
+      0.0006,
+      0.0003,
+      0.001,
+      0.9981
+     ],
+     "needed_units": [
+      316,
+      611,
+      573,
+      192307
+     ],
+     "needed_weight_defined": 0.2234
+    },
+    "cnt": {
+     "bins": [
+      "1",
+      "2",
+      "3+",
+      "na"
+     ],
+     "needed_share": [
+      0.1811,
+      0.0401,
+      0.0022,
+      0.7766
+     ],
+     "control_share": [
+      0.0019,
+      0.0,
+      0.0,
+      0.9981
+     ],
+     "needed_units": [
+      1116,
+      358,
+      26,
+      192307
+     ],
+     "needed_weight_defined": 0.2234
+    },
+    "qov": {
+     "bins": [
+      "0",
+      "1",
+      "2+"
+     ],
+     "needed_share": [
+      0.799,
+      0.1643,
+      0.0367
+     ],
+     "control_share": [
+      0.9855,
+      0.0136,
+      0.0008
+     ],
+     "needed_units": [
+      174818,
+      18800,
+      189
+     ],
+     "needed_weight_defined": 1.0
+    }
+   },
+   "auc": {
+    "dot": {
+     "auc": 0.69977,
+     "lo": 0.65201,
+     "hi": 0.74021,
+     "questions": 343
+    },
+    "rank": {
+     "auc": 0.49085,
+     "lo": 0.47133,
+     "hi": 0.5085,
+     "questions": 343
+    },
+    "votes": {
+     "auc": 0.61248,
+     "lo": 0.57007,
+     "hi": 0.66076,
+     "questions": 343
+    },
+    "dir": {
+     "auc": 0.51382,
+     "lo": 0.49183,
+     "hi": 0.54044,
+     "questions": 343
+    },
+    "exact": {
+     "auc": 0.5755,
+     "lo": 0.54522,
+     "hi": 0.61133,
+     "questions": 343
+    },
+    "ntok": {
+     "auc": 0.26708,
+     "lo": 0.21854,
+     "hi": 0.32291,
+     "questions": 343
+    },
+    "caps": {
+     "auc": 0.77122,
+     "lo": 0.71507,
+     "hi": 0.81914,
+     "questions": 343
+    },
+    "lead": {
+     "auc": 0.49034,
+     "lo": 0.46882,
+     "hi": 0.5011,
+     "questions": 194
+    },
+    "off": {
+     "auc": 0.46178,
+     "lo": 0.40429,
+     "hi": 0.53301,
+     "questions": 194
+    },
+    "cnt": {
+     "auc": 0.4941,
+     "lo": 0.469,
+     "hi": 0.51237,
+     "questions": 194
+    },
+    "qov": {
+     "auc": 0.50982,
+     "lo": 0.48701,
+     "hi": 0.53736,
+     "questions": 343
+    }
+   },
+   "needed_by_profile": {
+    "1": 24,
+    "2": 189333,
+    "3": 4057,
+    "4": 40,
+    "6": 20,
+    "7": 8,
+    "16": 217,
+    "18": 33,
+    "19": 54,
+    "20": 8,
+    "22": 5,
+    "23": 8
+   },
+   "relations_top": [
+    {
+     "rel": 4705,
+     "needed_weight": 111.2042,
+     "control_weight": 192.39
+    },
+    {
+     "rel": 5431,
+     "needed_weight": 87.5409,
+     "control_weight": 418336.37
+    },
+    {
+     "rel": 6224,
+     "needed_weight": 51.7454,
+     "control_weight": 159762.46
+    },
+    {
+     "rel": 4223,
+     "needed_weight": 40.8985,
+     "control_weight": 0.0
+    },
+    {
+     "rel": 4799,
+     "needed_weight": 38.6701,
+     "control_weight": 216.62
+    },
+    {
+     "rel": 4310,
+     "needed_weight": 37.6773,
+     "control_weight": 973919.3
+    },
+    {
+     "rel": 6198,
+     "needed_weight": 35.1667,
+     "control_weight": 5.35
+    },
+    {
+     "rel": 5861,
+     "needed_weight": 30.3333,
+     "control_weight": 7301.64
+    },
+    {
+     "rel": 1986,
+     "needed_weight": 24.3488,
+     "control_weight": 16.45
+    },
+    {
+     "rel": 6634,
+     "needed_weight": 21.552,
+     "control_weight": 1524.46
+    }
+   ]
+  },
+  "hotpotqa/RK": {
+   "status": "read",
+   "gold_distance_found_1_2_3_unreached": [
+    553,
+    146,
+    45,
+    10,
+    0
+   ],
+   "needed_weight": 201.0,
+   "needed_units": 1405,
+   "controls_sampled": 66969,
+   "controls_exact_weight": 15690402.0,
+   "needed_by_step": [
+    982,
+    341,
+    82
+   ],
+   "needed_by_grp": [
+    0,
+    1353,
+    52
+   ],
+   "needed_weight_by_grp": [
+    0.0,
+    193.2855,
+    7.7145
+   ],
+   "control_weight_by_grp": [
+    0.0,
+    15688303.12,
+    2097.89
+   ],
+   "capped_golds": 0,
+   "stats": {
+    "questions": 377,
+    "golds": 754,
+    "found": 553,
+    "dist": [
+     553,
+     146,
+     45,
+     10,
+     0
+    ],
+    "capped_golds": 0,
+    "units": 1405,
+    "ctrl_sampled": 66969,
+    "ctrl_exact": 15690401,
+    "sources": 854,
+    "g_g2_checked": 377,
+    "g5_checked": 5990,
+    "g5_bad": 0,
+    "mention_links": 55445,
+    "mention_exact_none": 46493,
+    "reachable_missed": 201,
+    "unreached": 0
+   },
+   "tables": {
+    "dot": {
+     "bins": [
+      "low",
+      "mid",
+      "high"
+     ],
+     "needed_share": [
+      0.1013,
+      0.1116,
+      0.7871
+     ],
+     "control_share": [
+      0.6142,
+      0.2606,
+      0.1252
+     ],
+     "needed_units": [
+      355,
+      263,
+      787
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "rank": {
+     "bins": [
+      "1-3",
+      "4-30",
+      ">30"
+     ],
+     "needed_share": [
+      0.143,
+      0.6396,
+      0.2174
+     ],
+     "control_share": [
+      0.0002,
+      0.0011,
+      0.9988
+     ],
+     "needed_units": [
+      125,
+      761,
+      519
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "votes": {
+     "bins": [
+      "1",
+      "2",
+      "3+"
+     ],
+     "needed_share": [
+      0.5525,
+      0.1741,
+      0.2733
+     ],
+     "control_share": [
+      0.5366,
+      0.2714,
+      0.192
+     ],
+     "needed_units": [
+      309,
+      182,
+      914
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "dir": {
+     "bins": [
+      "none",
+      "one-way",
+      "mutual"
+     ],
+     "needed_share": [
+      0.0447,
+      0.8689,
+      0.0864
+     ],
+     "control_share": [
+      0.0006,
+      0.991,
+      0.0084
+     ],
+     "needed_units": [
+      118,
+      1163,
+      124
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "exact": {
+     "bins": [
+      "none",
+      "folded/alias",
+      "exact"
+     ],
+     "needed_share": [
+      0.2065,
+      0.1131,
+      0.6804
+     ],
+     "control_share": [
+      0.9911,
+      0.0085,
+      0.0004
+     ],
+     "needed_units": [
+      414,
+      170,
+      821
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "ntok": {
+     "bins": [
+      "1",
+      "2",
+      "3+"
+     ],
+     "needed_share": [
+      0.2001,
+      0.4607,
+      0.3393
+     ],
+     "control_share": [
+      0.0569,
+      0.4405,
+      0.5026
+     ],
+     "needed_units": [
+      535,
+      484,
+      386
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "caps": {
+     "bins": [
+      "lower",
+      "mixed",
+      "all caps"
+     ],
+     "needed_share": [
+      0.0,
+      0.1402,
+      0.8598
+     ],
+     "control_share": [
+      0.001,
+      0.2143,
+      0.7847
+     ],
+     "needed_units": [
+      0,
+      187,
+      1218
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "lead": {
+     "bins": [
+      "no",
+      "yes",
+      "na"
+     ],
+     "needed_share": [
+      0.448,
+      0.3455,
+      0.2065
+     ],
+     "control_share": [
+      0.0025,
+      0.0064,
+      0.9911
+     ],
+     "needed_units": [
+      423,
+      568,
+      414
+     ],
+     "needed_weight_defined": 0.7935
+    },
+    "off": {
+     "bins": [
+      "<=.10",
+      ".10-.50",
+      ">.50",
+      "na"
+     ],
+     "needed_share": [
+      0.0803,
+      0.3229,
+      0.3902,
+      0.2065
+     ],
+     "control_share": [
+      0.0057,
+      0.0019,
+      0.0014,
+      0.9911
+     ],
+     "needed_units": [
+      210,
+      423,
+      358,
+      414
+     ],
+     "needed_weight_defined": 0.7935
+    },
+    "cnt": {
+     "bins": [
+      "1",
+      "2",
+      "3+",
+      "na"
+     ],
+     "needed_share": [
+      0.7129,
+      0.0595,
+      0.0212,
+      0.2065
+     ],
+     "control_share": [
+      0.0032,
+      0.0027,
+      0.0031,
+      0.9911
+     ],
+     "needed_units": [
+      782,
+      137,
+      72,
+      414
+     ],
+     "needed_weight_defined": 0.7935
+    },
+    "qov": {
+     "bins": [
+      "0",
+      "1",
+      "2+"
+     ],
+     "needed_share": [
+      0.7026,
+      0.1969,
+      0.1004
+     ],
+     "control_share": [
+      0.9635,
+      0.0316,
+      0.0048
+     ],
+     "needed_units": [
+      813,
+      423,
+      169
+     ],
+     "needed_weight_defined": 1.0
+    }
+   },
+   "auc": {
+    "dot": {
+     "auc": 0.55563,
+     "lo": 0.531,
+     "hi": 0.58031,
+     "questions": 187
+    },
+    "rank": {
+     "auc": 0.47868,
+     "lo": 0.45206,
+     "hi": 0.50367,
+     "questions": 187
+    },
+    "votes": {
+     "auc": 0.57251,
+     "lo": 0.54026,
+     "hi": 0.60453,
+     "questions": 187
+    },
+    "dir": {
+     "auc": 0.63724,
+     "lo": 0.61556,
+     "hi": 0.65866,
+     "questions": 187
+    },
+    "exact": {
+     "auc": 0.70369,
+     "lo": 0.67882,
+     "hi": 0.72844,
+     "questions": 187
+    },
+    "ntok": {
+     "auc": 0.47871,
+     "lo": 0.4467,
+     "hi": 0.5135,
+     "questions": 187
+    },
+    "caps": {
+     "auc": 0.54431,
+     "lo": 0.51987,
+     "hi": 0.5666,
+     "questions": 187
+    },
+    "lead": {
+     "auc": 0.4503,
+     "lo": 0.42271,
+     "hi": 0.47821,
+     "questions": 170
+    },
+    "off": {
+     "auc": 0.59997,
+     "lo": 0.56719,
+     "hi": 0.62821,
+     "questions": 170
+    },
+    "cnt": {
+     "auc": 0.46381,
+     "lo": 0.44434,
+     "hi": 0.4855,
+     "questions": 170
+    },
+    "qov": {
+     "auc": 0.54563,
+     "lo": 0.51563,
+     "hi": 0.57743,
+     "questions": 187
+    }
+   },
+   "needed_by_profile": {
+    "1": 1079,
+    "2": 137,
+    "3": 49,
+    "4": 3,
+    "5": 37,
+    "8": 52,
+    "9": 17,
+    "10": 11,
+    "11": 15,
+    "12": 1,
+    "13": 4
+   }
+  },
+  "hotpotqa/SRK": {
+   "status": "read",
+   "gold_distance_found_1_2_3_unreached": [
+    553,
+    172,
+    22,
+    7,
+    0
+   ],
+   "needed_weight": 201.0,
+   "needed_units": 918,
+   "controls_sampled": 45054,
+   "controls_exact_weight": 8398894.0,
+   "needed_by_step": [
+    623,
+    224,
+    71
+   ],
+   "needed_by_grp": [
+    382,
+    502,
+    34
+   ],
+   "needed_weight_by_grp": [
+    167.8772,
+    30.3417,
+    2.7811
+   ],
+   "control_weight_by_grp": [
+    743050.55,
+    7654315.02,
+    1528.47
+   ],
+   "capped_golds": 0,
+   "stats": {
+    "questions": 377,
+    "golds": 754,
+    "found": 553,
+    "dist": [
+     553,
+     172,
+     22,
+     7,
+     0
+    ],
+    "capped_golds": 0,
+    "units": 918,
+    "ctrl_sampled": 45054,
+    "ctrl_exact": 8398894,
+    "sources": 646,
+    "g_g2_checked": 377,
+    "g5_checked": 5117,
+    "g5_bad": 0,
+    "mention_links": 32051,
+    "mention_exact_none": 25308,
+    "reachable_missed": 201,
+    "unreached": 0
+   },
+   "tables": {
+    "dot": {
+     "bins": [
+      "low",
+      "mid",
+      "high"
+     ],
+     "needed_share": [
+      0.0597,
+      0.0863,
+      0.854
+     ],
+     "control_share": [
+      0.6775,
+      0.211,
+      0.1116
+     ],
+     "needed_units": [
+      222,
+      128,
+      568
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "rank": {
+     "bins": [
+      "1-3",
+      "4-30",
+      ">30"
+     ],
+     "needed_share": [
+      0.145,
+      0.6819,
+      0.1731
+     ],
+     "control_share": [
+      0.0003,
+      0.0015,
+      0.9982
+     ],
+     "needed_units": [
+      104,
+      467,
+      347
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "votes": {
+     "bins": [
+      "1",
+      "2",
+      "3+"
+     ],
+     "needed_share": [
+      0.592,
+      0.1878,
+      0.2202
+     ],
+     "control_share": [
+      0.497,
+      0.2601,
+      0.2429
+     ],
+     "needed_units": [
+      268,
+      144,
+      506
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "dir": {
+     "bins": [
+      "none",
+      "one-way",
+      "mutual"
+     ],
+     "needed_share": [
+      0.0703,
+      0.839,
+      0.0906
+     ],
+     "control_share": [
+      0.0276,
+      0.9662,
+      0.0062
+     ],
+     "needed_units": [
+      116,
+      722,
+      80
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "exact": {
+     "bins": [
+      "none",
+      "folded/alias",
+      "exact"
+     ],
+     "needed_share": [
+      0.2173,
+      0.1871,
+      0.5957
+     ],
+     "control_share": [
+      0.993,
+      0.0064,
+      0.0006
+     ],
+     "needed_units": [
+      311,
+      136,
+      471
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "ntok": {
+     "bins": [
+      "1",
+      "2",
+      "3+"
+     ],
+     "needed_share": [
+      0.1368,
+      0.4743,
+      0.3889
+     ],
+     "control_share": [
+      0.0408,
+      0.46,
+      0.4991
+     ],
+     "needed_units": [
+      270,
+      359,
+      289
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "caps": {
+     "bins": [
+      "lower",
+      "mixed",
+      "all caps"
+     ],
+     "needed_share": [
+      0.0003,
+      0.17,
+      0.8297
+     ],
+     "control_share": [
+      0.0014,
+      0.2197,
+      0.7789
+     ],
+     "needed_units": [
+      2,
+      153,
+      763
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "lead": {
+     "bins": [
+      "no",
+      "yes",
+      "na"
+     ],
+     "needed_share": [
+      0.4689,
+      0.3139,
+      0.2173
+     ],
+     "control_share": [
+      0.0022,
+      0.0049,
+      0.993
+     ],
+     "needed_units": [
+      320,
+      287,
+      311
+     ],
+     "needed_weight_defined": 0.7827
+    },
+    "off": {
+     "bins": [
+      "<=.10",
+      ".10-.50",
+      ">.50",
+      "na"
+     ],
+     "needed_share": [
+      0.0696,
+      0.3048,
+      0.4083,
+      0.2173
+     ],
+     "control_share": [
+      0.0042,
+      0.0015,
+      0.0013,
+      0.993
+     ],
+     "needed_units": [
+      95,
+      253,
+      259,
+      311
+     ],
+     "needed_weight_defined": 0.7827
+    },
+    "cnt": {
+     "bins": [
+      "1",
+      "2",
+      "3+",
+      "na"
+     ],
+     "needed_share": [
+      0.7142,
+      0.0546,
+      0.0139,
+      0.2173
+     ],
+     "control_share": [
+      0.0035,
+      0.0015,
+      0.002,
+      0.993
+     ],
+     "needed_units": [
+      501,
+      68,
+      38,
+      311
+     ],
+     "needed_weight_defined": 0.7827
+    },
+    "qov": {
+     "bins": [
+      "0",
+      "1",
+      "2+"
+     ],
+     "needed_share": [
+      0.6864,
+      0.2178,
+      0.0958
+     ],
+     "control_share": [
+      0.9695,
+      0.0248,
+      0.0057
+     ],
+     "needed_units": [
+      556,
+      250,
+      112
+     ],
+     "needed_weight_defined": 1.0
+    }
+   },
+   "auc": {
+    "dot": {
+     "auc": 0.5804,
+     "lo": 0.55717,
+     "hi": 0.60309,
+     "questions": 187
+    },
+    "rank": {
+     "auc": 0.45847,
+     "lo": 0.42998,
+     "hi": 0.48405,
+     "questions": 187
+    },
+    "votes": {
+     "auc": 0.54502,
+     "lo": 0.51205,
+     "hi": 0.57655,
+     "questions": 187
+    },
+    "dir": {
+     "auc": 0.63684,
+     "lo": 0.61414,
+     "hi": 0.65966,
+     "questions": 187
+    },
+    "exact": {
+     "auc": 0.67507,
+     "lo": 0.64708,
+     "hi": 0.703,
+     "questions": 187
+    },
+    "ntok": {
+     "auc": 0.51284,
+     "lo": 0.47967,
+     "hi": 0.54844,
+     "questions": 187
+    },
+    "caps": {
+     "auc": 0.53334,
+     "lo": 0.50636,
+     "hi": 0.55882,
+     "questions": 187
+    },
+    "lead": {
+     "auc": 0.43488,
+     "lo": 0.40532,
+     "hi": 0.4629,
+     "questions": 165
+    },
+    "off": {
+     "auc": 0.6128,
+     "lo": 0.58203,
+     "hi": 0.64445,
+     "questions": 165
+    },
+    "cnt": {
+     "auc": 0.45276,
+     "lo": 0.43414,
+     "hi": 0.47328,
+     "questions": 165
+    },
+    "qov": {
+     "auc": 0.54702,
+     "lo": 0.51473,
+     "hi": 0.58101,
+     "questions": 187
+    }
+   },
+   "needed_by_profile": {
+    "1": 68,
+    "2": 393,
+    "3": 182,
+    "4": 97,
+    "5": 15,
+    "6": 2,
+    "7": 43,
+    "8": 2,
+    "9": 1,
+    "11": 35,
+    "16": 34,
+    "17": 5,
+    "18": 1,
+    "19": 12,
+    "20": 4,
+    "21": 7,
+    "22": 3,
+    "23": 9,
+    "27": 5
+   },
+   "relations_top": [
+    {
+     "rel": 0,
+     "needed_weight": 167.8772,
+     "control_weight": 743050.55
+    }
+   ]
+  },
+  "2wiki/RK": {
+   "status": "read",
+   "gold_distance_found_1_2_3_unreached": [
+    552,
+    301,
+    55,
+    8,
+    0
+   ],
+   "needed_weight": 364.0,
+   "needed_units": 1744,
+   "controls_sampled": 102772,
+   "controls_exact_weight": 42457040.0,
+   "needed_by_step": [
+    1067,
+    550,
+    127
+   ],
+   "needed_by_grp": [
+    0,
+    1696,
+    48
+   ],
+   "needed_weight_by_grp": [
+    0.0,
+    355.9536,
+    8.0464
+   ],
+   "control_weight_by_grp": [
+    0.0,
+    42454108.47,
+    2930.44
+   ],
+   "capped_golds": 0,
+   "stats": {
+    "questions": 374,
+    "golds": 916,
+    "found": 552,
+    "dist": [
+     552,
+     301,
+     55,
+     8,
+     0
+    ],
+    "capped_golds": 0,
+    "units": 1744,
+    "ctrl_sampled": 102772,
+    "ctrl_exact": 42457039,
+    "sources": 1176,
+    "g_g2_checked": 374,
+    "g5_checked": 7631,
+    "g5_bad": 0,
+    "mention_links": 80880,
+    "mention_exact_none": 62568,
+    "reachable_missed": 364,
+    "unreached": 0
+   },
+   "tables": {
+    "dot": {
+     "bins": [
+      "low",
+      "mid",
+      "high"
+     ],
+     "needed_share": [
+      0.0873,
+      0.0526,
+      0.8601
+     ],
+     "control_share": [
+      0.7009,
+      0.2338,
+      0.0652
+     ],
+     "needed_units": [
+      667,
+      275,
+      802
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "rank": {
+     "bins": [
+      "1-3",
+      "4-30",
+      ">30"
+     ],
+     "needed_share": [
+      0.1524,
+      0.6647,
+      0.1828
+     ],
+     "control_share": [
+      0.0001,
+      0.0006,
+      0.9993
+     ],
+     "needed_units": [
+      121,
+      741,
+      882
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "votes": {
+     "bins": [
+      "1",
+      "2",
+      "3+"
+     ],
+     "needed_share": [
+      0.7057,
+      0.1434,
+      0.1509
+     ],
+     "control_share": [
+      0.3652,
+      0.2464,
+      0.3884
+     ],
+     "needed_units": [
+      625,
+      244,
+      875
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "dir": {
+     "bins": [
+      "none",
+      "one-way",
+      "mutual"
+     ],
+     "needed_share": [
+      0.0234,
+      0.8456,
+      0.131
+     ],
+     "control_share": [
+      0.0005,
+      0.9937,
+      0.0058
+     ],
+     "needed_units": [
+      118,
+      1486,
+      140
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "exact": {
+     "bins": [
+      "none",
+      "folded/alias",
+      "exact"
+     ],
+     "needed_share": [
+      0.0933,
+      0.0844,
+      0.8223
+     ],
+     "control_share": [
+      0.9937,
+      0.0059,
+      0.0005
+     ],
+     "needed_units": [
+      534,
+      163,
+      1047
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "ntok": {
+     "bins": [
+      "1",
+      "2",
+      "3+"
+     ],
+     "needed_share": [
+      0.1134,
+      0.6283,
+      0.2582
+     ],
+     "control_share": [
+      0.064,
+      0.4526,
+      0.4834
+     ],
+     "needed_units": [
+      727,
+      560,
+      457
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "caps": {
+     "bins": [
+      "lower",
+      "mixed",
+      "all caps"
+     ],
+     "needed_share": [
+      0.0027,
+      0.1046,
+      0.8927
+     ],
+     "control_share": [
+      0.0013,
+      0.2114,
+      0.7873
+     ],
+     "needed_units": [
+      1,
+      171,
+      1572
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "lead": {
+     "bins": [
+      "no",
+      "yes",
+      "na"
+     ],
+     "needed_share": [
+      0.2995,
+      0.6072,
+      0.0933
+     ],
+     "control_share": [
+      0.0034,
+      0.0029,
+      0.9937
+     ],
+     "needed_units": [
+      464,
+      746,
+      534
+     ],
+     "needed_weight_defined": 0.9067
+    },
+    "off": {
+     "bins": [
+      "<=.10",
+      ".10-.50",
+      ">.50",
+      "na"
+     ],
+     "needed_share": [
+      0.0935,
+      0.5547,
+      0.2585,
+      0.0933
+     ],
+     "control_share": [
+      0.0028,
+      0.0011,
+      0.0025,
+      0.9937
+     ],
+     "needed_units": [
+      251,
+      575,
+      384,
+      534
+     ],
+     "needed_weight_defined": 0.9067
+    },
+    "cnt": {
+     "bins": [
+      "1",
+      "2",
+      "3+",
+      "na"
+     ],
+     "needed_share": [
+      0.833,
+      0.0593,
+      0.0144,
+      0.0933
+     ],
+     "control_share": [
+      0.0041,
+      0.0009,
+      0.0013,
+      0.9937
+     ],
+     "needed_units": [
+      1041,
+      124,
+      45,
+      534
+     ],
+     "needed_weight_defined": 0.9067
+    },
+    "qov": {
+     "bins": [
+      "0",
+      "1",
+      "2+"
+     ],
+     "needed_share": [
+      0.8139,
+      0.1249,
+      0.0611
+     ],
+     "control_share": [
+      0.9833,
+      0.0165,
+      0.0002
+     ],
+     "needed_units": [
+      1318,
+      251,
+      175
+     ],
+     "needed_weight_defined": 1.0
+    }
+   },
+   "auc": {
+    "dot": {
+     "auc": 0.6228,
+     "lo": 0.60643,
+     "hi": 0.63847,
+     "questions": 274
+    },
+    "rank": {
+     "auc": 0.41266,
+     "lo": 0.39359,
+     "hi": 0.43171,
+     "questions": 274
+    },
+    "votes": {
+     "auc": 0.53471,
+     "lo": 0.51679,
+     "hi": 0.55414,
+     "questions": 274
+    },
+    "dir": {
+     "auc": 0.72204,
+     "lo": 0.70695,
+     "hi": 0.73667,
+     "questions": 274
+    },
+    "exact": {
+     "auc": 0.75311,
+     "lo": 0.7395,
+     "hi": 0.76632,
+     "questions": 274
+    },
+    "ntok": {
+     "auc": 0.49851,
+     "lo": 0.4792,
+     "hi": 0.51822,
+     "questions": 274
+    },
+    "caps": {
+     "auc": 0.57956,
+     "lo": 0.56287,
+     "hi": 0.59439,
+     "questions": 274
+    },
+    "lead": {
+     "auc": 0.5675,
+     "lo": 0.5468,
+     "hi": 0.58883,
+     "questions": 271
+    },
+    "off": {
+     "auc": 0.45779,
+     "lo": 0.43507,
+     "hi": 0.47958,
+     "questions": 271
+    },
+    "cnt": {
+     "auc": 0.47718,
+     "lo": 0.46598,
+     "hi": 0.48915,
+     "questions": 271
+    },
+    "qov": {
+     "auc": 0.49612,
+     "lo": 0.47556,
+     "hi": 0.51503,
+     "questions": 274
+    }
+   },
+   "needed_by_profile": {
+    "1": 1323,
+    "2": 151,
+    "3": 128,
+    "4": 9,
+    "5": 25,
+    "8": 48,
+    "9": 19,
+    "10": 7,
+    "11": 31,
+    "13": 3
+   }
+  },
+  "2wiki/SRK": {
+   "status": "read",
+   "gold_distance_found_1_2_3_unreached": [
+    552,
+    322,
+    34,
+    8,
+    0
+   ],
+   "needed_weight": 364.0,
+   "needed_units": 1540,
+   "controls_sampled": 86181,
+   "controls_exact_weight": 31970612.0,
+   "needed_by_step": [
+    939,
+    470,
+    131
+   ],
+   "needed_by_grp": [
+    501,
+    997,
+    42
+   ],
+   "needed_weight_by_grp": [
+    281.5873,
+    76.5815,
+    5.8312
+   ],
+   "control_weight_by_grp": [
+    1044704.33,
+    30923268.98,
+    2641.54
+   ],
+   "capped_golds": 0,
+   "stats": {
+    "questions": 374,
+    "golds": 916,
+    "found": 552,
+    "dist": [
+     552,
+     322,
+     34,
+     8,
+     0
+    ],
+    "capped_golds": 0,
+    "units": 1540,
+    "ctrl_sampled": 86181,
+    "ctrl_exact": 31970615,
+    "sources": 1036,
+    "g_g2_checked": 374,
+    "g5_checked": 7638,
+    "g5_bad": 0,
+    "mention_links": 61106,
+    "mention_exact_none": 44516,
+    "reachable_missed": 364,
+    "unreached": 0
+   },
+   "tables": {
+    "dot": {
+     "bins": [
+      "low",
+      "mid",
+      "high"
+     ],
+     "needed_share": [
+      0.0581,
+      0.0408,
+      0.9011
+     ],
+     "control_share": [
+      0.6728,
+      0.2524,
+      0.0747
+     ],
+     "needed_units": [
+      546,
+      228,
+      766
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "rank": {
+     "bins": [
+      "1-3",
+      "4-30",
+      ">30"
+     ],
+     "needed_share": [
+      0.147,
+      0.6861,
+      0.1669
+     ],
+     "control_share": [
+      0.0001,
+      0.0007,
+      0.9992
+     ],
+     "needed_units": [
+      111,
+      660,
+      769
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "votes": {
+     "bins": [
+      "1",
+      "2",
+      "3+"
+     ],
+     "needed_share": [
+      0.731,
+      0.1461,
+      0.1229
+     ],
+     "control_share": [
+      0.3372,
+      0.236,
+      0.4268
+     ],
+     "needed_units": [
+      577,
+      220,
+      743
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "dir": {
+     "bins": [
+      "none",
+      "one-way",
+      "mutual"
+     ],
+     "needed_share": [
+      0.0325,
+      0.84,
+      0.1275
+     ],
+     "control_share": [
+      0.0075,
+      0.9866,
+      0.0059
+     ],
+     "needed_units": [
+      125,
+      1290,
+      125
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "exact": {
+     "bins": [
+      "none",
+      "folded/alias",
+      "exact"
+     ],
+     "needed_share": [
+      0.0823,
+      0.1338,
+      0.7839
+     ],
+     "control_share": [
+      0.9934,
+      0.0061,
+      0.0006
+     ],
+     "needed_units": [
+      472,
+      177,
+      891
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "ntok": {
+     "bins": [
+      "1",
+      "2",
+      "3+"
+     ],
+     "needed_share": [
+      0.0835,
+      0.6285,
+      0.2881
+     ],
+     "control_share": [
+      0.0722,
+      0.4439,
+      0.4839
+     ],
+     "needed_units": [
+      599,
+      546,
+      395
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "caps": {
+     "bins": [
+      "lower",
+      "mixed",
+      "all caps"
+     ],
+     "needed_share": [
+      0.0027,
+      0.1086,
+      0.8886
+     ],
+     "control_share": [
+      0.0014,
+      0.2076,
+      0.791
+     ],
+     "needed_units": [
+      1,
+      175,
+      1364
+     ],
+     "needed_weight_defined": 1.0
+    },
+    "lead": {
+     "bins": [
+      "no",
+      "yes",
+      "na"
+     ],
+     "needed_share": [
+      0.2986,
+      0.6191,
+      0.0823
+     ],
+     "control_share": [
+      0.0036,
+      0.003,
+      0.9934
+     ],
+     "needed_units": [
+      432,
+      636,
+      472
+     ],
+     "needed_weight_defined": 0.9177
+    },
+    "off": {
+     "bins": [
+      "<=.10",
+      ".10-.50",
+      ">.50",
+      "na"
+     ],
+     "needed_share": [
+      0.087,
+      0.5749,
+      0.2557,
+      0.0823
+     ],
+     "control_share": [
+      0.0029,
+      0.0013,
+      0.0025,
+      0.9934
+     ],
+     "needed_units": [
+      205,
+      510,
+      353,
+      472
+     ],
+     "needed_weight_defined": 0.9177
+    },
+    "cnt": {
+     "bins": [
+      "1",
+      "2",
+      "3+",
+      "na"
+     ],
+     "needed_share": [
+      0.8432,
+      0.0598,
+      0.0147,
+      0.0823
+     ],
+     "control_share": [
+      0.0041,
+      0.001,
+      0.0016,
+      0.9934
+     ],
+     "needed_units": [
+      919,
+      113,
+      36,
+      472
+     ],
+     "needed_weight_defined": 0.9177
+    },
+    "qov": {
+     "bins": [
+      "0",
+      "1",
+      "2+"
+     ],
+     "needed_share": [
+      0.7944,
+      0.1429,
+      0.0626
+     ],
+     "control_share": [
+      0.9856,
+      0.0143,
+      0.0002
+     ],
+     "needed_units": [
+      1138,
+      227,
+      175
+     ],
+     "needed_weight_defined": 1.0
+    }
+   },
+   "auc": {
+    "dot": {
+     "auc": 0.6399,
+     "lo": 0.62449,
+     "hi": 0.65528,
+     "questions": 274
+    },
+    "rank": {
+     "auc": 0.40555,
+     "lo": 0.38563,
+     "hi": 0.42504,
+     "questions": 274
+    },
+    "votes": {
+     "auc": 0.52585,
+     "lo": 0.50839,
+     "hi": 0.5453,
+     "questions": 274
+    },
+    "dir": {
+     "auc": 0.71999,
+     "lo": 0.70456,
+     "hi": 0.73508,
+     "questions": 274
+    },
+    "exact": {
+     "auc": 0.74762,
+     "lo": 0.73286,
+     "hi": 0.76304,
+     "questions": 274
+    },
+    "ntok": {
+     "auc": 0.51879,
+     "lo": 0.49859,
+     "hi": 0.53941,
+     "questions": 274
+    },
+    "caps": {
+     "auc": 0.58478,
+     "lo": 0.56769,
+     "hi": 0.59983,
+     "questions": 274
+    },
+    "lead": {
+     "auc": 0.56878,
+     "lo": 0.54797,
+     "hi": 0.59028,
+     "questions": 269
+    },
+    "off": {
+     "auc": 0.45998,
+     "lo": 0.43763,
+     "hi": 0.48206,
+     "questions": 269
+    },
+    "cnt": {
+     "auc": 0.4767,
+     "lo": 0.46543,
+     "hi": 0.4886,
+     "questions": 269
+    },
+    "qov": {
+     "auc": 0.50279,
+     "lo": 0.48157,
+     "hi": 0.52417,
+     "questions": 274
+    }
+   },
+   "needed_by_profile": {
+    "1": 58,
+    "2": 836,
+    "3": 242,
+    "4": 136,
+    "5": 12,
+    "6": 12,
+    "7": 114,
+    "8": 4,
+    "9": 5,
+    "10": 1,
+    "11": 24,
+    "16": 42,
+    "17": 3,
+    "18": 3,
+    "19": 10,
+    "20": 3,
+    "21": 2,
+    "22": 2,
+    "23": 28,
+    "27": 3
+   },
+   "relations_top": [
+    {
+     "rel": 0,
+     "needed_weight": 281.5873,
+     "control_weight": 1044704.33
+    }
+   ]
+  }
+ },
+ "attrs": {
+  "dot": {
+   "id": "A2",
+   "call": "SIGN_SPLIT",
+   "score": 0.0,
+   "direction": 1,
+   "pooled_auc": 0.571,
+   "per_cell": {
+    "multihoprag/RK": {
+     "auc": 0.69409,
+     "lo": 0.67356,
+     "hi": 0.71197,
+     "questions": 35
+    },
+    "musique/RK": {
+     "auc": 0.54035,
+     "lo": 0.52448,
+     "hi": 0.55723,
+     "questions": 323
+    },
+    "squad/RK": {
+     "auc": 0.54754,
+     "lo": 0.49104,
+     "hi": 0.5931,
+     "questions": 27
+    },
+    "metaqa/SRK": {
+     "auc": 0.48352,
+     "lo": 0.47199,
+     "hi": 0.49542,
+     "questions": 373
+    },
+    "webqsp/SRK": {
+     "auc": 0.69977,
+     "lo": 0.65201,
+     "hi": 0.74021,
+     "questions": 343
+    },
+    "hotpotqa/RK": {
+     "auc": 0.55563,
+     "lo": 0.531,
+     "hi": 0.58031,
+     "questions": 187
+    },
+    "hotpotqa/SRK": {
+     "auc": 0.5804,
+     "lo": 0.55717,
+     "hi": 0.60309,
+     "questions": 187
+    },
+    "2wiki/RK": {
+     "auc": 0.6228,
+     "lo": 0.60643,
+     "hi": 0.63847,
+     "questions": 274
+    },
+    "2wiki/SRK": {
+     "auc": 0.6399,
+     "lo": 0.62449,
+     "hi": 0.65528,
+     "questions": 274
+    }
+   },
+   "note": "",
+   "in_program": true
+  },
+  "rank": {
+   "id": "A3",
+   "call": "SIGN_SPLIT",
+   "score": 0.0,
+   "direction": 1,
+   "pooled_auc": 0.5201,
+   "per_cell": {
+    "multihoprag/RK": {
+     "auc": 0.23708,
+     "lo": 0.20805,
+     "hi": 0.26902,
+     "questions": 35
+    },
+    "musique/RK": {
+     "auc": 0.47479,
+     "lo": 0.45894,
+     "hi": 0.49068,
+     "questions": 323
+    },
+    "squad/RK": {
+     "auc": 0.38277,
+     "lo": 0.30141,
+     "hi": 0.46699,
+     "questions": 27
+    },
+    "metaqa/SRK": {
+     "auc": 0.5813,
+     "lo": 0.56912,
+     "hi": 0.59513,
+     "questions": 373
+    },
+    "webqsp/SRK": {
+     "auc": 0.49085,
+     "lo": 0.47133,
+     "hi": 0.5085,
+     "questions": 343
+    },
+    "hotpotqa/RK": {
+     "auc": 0.47868,
+     "lo": 0.45206,
+     "hi": 0.50367,
+     "questions": 187
+    },
+    "hotpotqa/SRK": {
+     "auc": 0.45847,
+     "lo": 0.42998,
+     "hi": 0.48405,
+     "questions": 187
+    },
+    "2wiki/RK": {
+     "auc": 0.41266,
+     "lo": 0.39359,
+     "hi": 0.43171,
+     "questions": 274
+    },
+    "2wiki/SRK": {
+     "auc": 0.40555,
+     "lo": 0.38563,
+     "hi": 0.42504,
+     "questions": 274
+    }
+   },
+   "note": "",
+   "in_program": true
+  },
+  "votes": {
+   "id": "A4",
+   "call": "WEAK",
+   "score": 0.0259,
+   "direction": 1,
+   "pooled_auc": 0.5758,
+   "per_cell": {
+    "multihoprag/RK": {
+     "auc": 0.64562,
+     "lo": 0.61606,
+     "hi": 0.66747,
+     "questions": 35
+    },
+    "musique/RK": {
+     "auc": 0.56543,
+     "lo": 0.54795,
+     "hi": 0.58433,
+     "questions": 323
+    },
+    "squad/RK": {
+     "auc": 0.58117,
+     "lo": 0.5095,
+     "hi": 0.64913,
+     "questions": 27
+    },
+    "metaqa/SRK": {
+     "auc": 0.56681,
+     "lo": 0.55267,
+     "hi": 0.58208,
+     "questions": 373
+    },
+    "webqsp/SRK": {
+     "auc": 0.61248,
+     "lo": 0.57007,
+     "hi": 0.66076,
+     "questions": 343
+    },
+    "hotpotqa/RK": {
+     "auc": 0.57251,
+     "lo": 0.54026,
+     "hi": 0.60453,
+     "questions": 187
+    },
+    "hotpotqa/SRK": {
+     "auc": 0.54502,
+     "lo": 0.51205,
+     "hi": 0.57655,
+     "questions": 187
+    },
+    "2wiki/RK": {
+     "auc": 0.53471,
+     "lo": 0.51679,
+     "hi": 0.55414,
+     "questions": 274
+    },
+    "2wiki/SRK": {
+     "auc": 0.52585,
+     "lo": 0.50839,
+     "hi": 0.5453,
+     "questions": 274
+    }
+   },
+   "note": "",
+   "in_program": true
+  },
+  "dir": {
+   "id": "A5",
+   "call": "SIGN_SPLIT",
+   "score": 0.0,
+   "direction": 1,
+   "pooled_auc": 0.5185,
+   "per_cell": {
+    "multihoprag/RK": {
+     "auc": 0.63872,
+     "lo": 0.59157,
+     "hi": 0.68422,
+     "questions": 35
+    },
+    "musique/RK": {
+     "auc": 0.55742,
+     "lo": 0.54055,
+     "hi": 0.57499,
+     "questions": 323
+    },
+    "squad/RK": {
+     "auc": 0.49684,
+     "lo": 0.44294,
+     "hi": 0.55348,
+     "questions": 27
+    },
+    "metaqa/SRK": {
+     "auc": 0.45275,
+     "lo": 0.44278,
+     "hi": 0.46156,
+     "questions": 373
+    },
+    "webqsp/SRK": {
+     "auc": 0.51382,
+     "lo": 0.49183,
+     "hi": 0.54044,
+     "questions": 343
+    },
+    "hotpotqa/RK": {
+     "auc": 0.63724,
+     "lo": 0.61556,
+     "hi": 0.65866,
+     "questions": 187
+    },
+    "hotpotqa/SRK": {
+     "auc": 0.63684,
+     "lo": 0.61414,
+     "hi": 0.65966,
+     "questions": 187
+    },
+    "2wiki/RK": {
+     "auc": 0.72204,
+     "lo": 0.70695,
+     "hi": 0.73667,
+     "questions": 274
+    },
+    "2wiki/SRK": {
+     "auc": 0.71999,
+     "lo": 0.70456,
+     "hi": 0.73508,
+     "questions": 274
+    }
+   },
+   "note": "",
+   "in_program": true
+  },
+  "exact": {
+   "id": "A6",
+   "call": "SIGN_SPLIT",
+   "score": 0.0,
+   "direction": 1,
+   "pooled_auc": 0.549,
+   "per_cell": {
+    "multihoprag/RK": {
+     "auc": 0.58509,
+     "lo": 0.53184,
+     "hi": 0.6432,
+     "questions": 35
+    },
+    "musique/RK": {
+     "auc": 0.59497,
+     "lo": 0.57593,
+     "hi": 0.61333,
+     "questions": 323
+    },
+    "squad/RK": {
+     "auc": 0.52137,
+     "lo": 0.46741,
+     "hi": 0.57678,
+     "questions": 27
+    },
+    "metaqa/SRK": {
+     "auc": 0.46208,
+     "lo": 0.45193,
+     "hi": 0.47086,
+     "questions": 373
+    },
+    "webqsp/SRK": {
+     "auc": 0.5755,
+     "lo": 0.54522,
+     "hi": 0.61133,
+     "questions": 343
+    },
+    "hotpotqa/RK": {
+     "auc": 0.70369,
+     "lo": 0.67882,
+     "hi": 0.72844,
+     "questions": 187
+    },
+    "hotpotqa/SRK": {
+     "auc": 0.67507,
+     "lo": 0.64708,
+     "hi": 0.703,
+     "questions": 187
+    },
+    "2wiki/RK": {
+     "auc": 0.75311,
+     "lo": 0.7395,
+     "hi": 0.76632,
+     "questions": 274
+    },
+    "2wiki/SRK": {
+     "auc": 0.74762,
+     "lo": 0.73286,
+     "hi": 0.76304,
+     "questions": 274
+    }
+   },
+   "note": "",
+   "in_program": true
+  },
+  "ntok": {
+   "id": "A7",
+   "call": "WEAK",
+   "score": 0.0,
+   "direction": -1,
+   "pooled_auc": 0.3653,
+   "per_cell": {
+    "multihoprag/RK": {
+     "auc": 0.5,
+     "lo": 0.5,
+     "hi": 0.5,
+     "questions": 35
+    },
+    "musique/RK": {
+     "auc": 0.4598,
+     "lo": 0.43894,
+     "hi": 0.4796,
+     "questions": 323
+    },
+    "squad/RK": {
+     "auc": 0.5,
+     "lo": 0.5,
+     "hi": 0.5,
+     "questions": 27
+    },
+    "metaqa/SRK": {
+     "auc": 0.35772,
+     "lo": 0.33303,
+     "hi": 0.38206,
+     "questions": 373
+    },
+    "webqsp/SRK": {
+     "auc": 0.26708,
+     "lo": 0.21854,
+     "hi": 0.32291,
+     "questions": 343
+    },
+    "hotpotqa/RK": {
+     "auc": 0.47871,
+     "lo": 0.4467,
+     "hi": 0.5135,
+     "questions": 187
+    },
+    "hotpotqa/SRK": {
+     "auc": 0.51284,
+     "lo": 0.47967,
+     "hi": 0.54844,
+     "questions": 187
+    },
+    "2wiki/RK": {
+     "auc": 0.49851,
+     "lo": 0.4792,
+     "hi": 0.51822,
+     "questions": 274
+    },
+    "2wiki/SRK": {
+     "auc": 0.51879,
+     "lo": 0.49859,
+     "hi": 0.53941,
+     "questions": 274
+    }
+   },
+   "note": "",
+   "in_program": true
+  },
+  "caps": {
+   "id": "A8",
+   "call": "SIGN_SPLIT",
+   "score": 0.0,
+   "direction": 1,
+   "pooled_auc": 0.577,
+   "per_cell": {
+    "multihoprag/RK": {
+     "auc": 0.48474,
+     "lo": 0.45753,
+     "hi": 0.49805,
+     "questions": 35
+    },
+    "musique/RK": {
+     "auc": 0.50669,
+     "lo": 0.49197,
+     "hi": 0.52092,
+     "questions": 323
+    },
+    "squad/RK": {
+     "auc": 0.50321,
+     "lo": 0.50164,
+     "hi": 0.50508,
+     "questions": 27
+    },
+    "metaqa/SRK": {
+     "auc": 0.47653,
+     "lo": 0.4583,
+     "hi": 0.49504,
+     "questions": 373
+    },
+    "webqsp/SRK": {
+     "auc": 0.77122,
+     "lo": 0.71507,
+     "hi": 0.81914,
+     "questions": 343
+    },
+    "hotpotqa/RK": {
+     "auc": 0.54431,
+     "lo": 0.51987,
+     "hi": 0.5666,
+     "questions": 187
+    },
+    "hotpotqa/SRK": {
+     "auc": 0.53334,
+     "lo": 0.50636,
+     "hi": 0.55882,
+     "questions": 187
+    },
+    "2wiki/RK": {
+     "auc": 0.57956,
+     "lo": 0.56287,
+     "hi": 0.59439,
+     "questions": 274
+    },
+    "2wiki/SRK": {
+     "auc": 0.58478,
+     "lo": 0.56769,
+     "hi": 0.59983,
+     "questions": 274
+    }
+   },
+   "note": "",
+   "in_program": true
+  },
+  "lead": {
+   "id": "A9",
+   "call": "SIGN_SPLIT",
+   "score": 0.0,
+   "direction": 1,
+   "pooled_auc": 0.516,
+   "per_cell": {
+    "multihoprag/RK": {
+     "auc": 0.5173,
+     "lo": 0.47172,
+     "hi": 0.57778,
+     "questions": 20
+    },
+    "musique/RK": {
+     "auc": 0.50966,
+     "lo": 0.49004,
+     "hi": 0.53025,
+     "questions": 262
+    },
+    "squad/RK": {
+     "auc": 0.51565,
+     "lo": 0.39387,
+     "hi": 0.64698,
+     "questions": 12
+    },
+    "metaqa/SRK": {
+     "auc": 0.49993,
+     "lo": 0.49974,
+     "hi": 0.5,
+     "questions": 104
+    },
+    "webqsp/SRK": {
+     "auc": 0.49034,
+     "lo": 0.46882,
+     "hi": 0.5011,
+     "questions": 194
+    },
+    "hotpotqa/RK": {
+     "auc": 0.4503,
+     "lo": 0.42271,
+     "hi": 0.47821,
+     "questions": 170
+    },
+    "hotpotqa/SRK": {
+     "auc": 0.43488,
+     "lo": 0.40532,
+     "hi": 0.4629,
+     "questions": 165
+    },
+    "2wiki/RK": {
+     "auc": 0.5675,
+     "lo": 0.5468,
+     "hi": 0.58883,
+     "questions": 271
+    },
+    "2wiki/SRK": {
+     "auc": 0.56878,
+     "lo": 0.54797,
+     "hi": 0.59028,
+     "questions": 269
+    }
+   },
+   "note": "",
+   "in_program": true
+  },
+  "off": {
+   "id": "A10",
+   "call": "SIGN_SPLIT",
+   "score": 0.0,
+   "direction": -1,
+   "pooled_auc": 0.4948,
+   "per_cell": {
+    "multihoprag/RK": {
+     "auc": 0.47244,
+     "lo": 0.38153,
+     "hi": 0.56816,
+     "questions": 20
+    },
+    "musique/RK": {
+     "auc": 0.49557,
+     "lo": 0.46841,
+     "hi": 0.52242,
+     "questions": 262
+    },
+    "squad/RK": {
+     "auc": 0.49312,
+     "lo": 0.35845,
+     "hi": 0.62785,
+     "questions": 12
+    },
+    "metaqa/SRK": {
+     "auc": 0.51869,
+     "lo": 0.45796,
+     "hi": 0.58186,
+     "questions": 104
+    },
+    "webqsp/SRK": {
+     "auc": 0.46178,
+     "lo": 0.40429,
+     "hi": 0.53301,
+     "questions": 194
+    },
+    "hotpotqa/RK": {
+     "auc": 0.59997,
+     "lo": 0.56719,
+     "hi": 0.62821,
+     "questions": 170
+    },
+    "hotpotqa/SRK": {
+     "auc": 0.6128,
+     "lo": 0.58203,
+     "hi": 0.64445,
+     "questions": 165
+    },
+    "2wiki/RK": {
+     "auc": 0.45779,
+     "lo": 0.43507,
+     "hi": 0.47958,
+     "questions": 271
+    },
+    "2wiki/SRK": {
+     "auc": 0.45998,
+     "lo": 0.43763,
+     "hi": 0.48206,
+     "questions": 269
+    }
+   },
+   "note": "",
+   "in_program": true
+  },
+  "cnt": {
+   "id": "A11",
+   "call": "NO_SIGNAL",
+   "score": 0.0,
+   "direction": -1,
+   "pooled_auc": 0.4786,
+   "per_cell": {
+    "multihoprag/RK": {
+     "auc": 0.50374,
+     "lo": 0.42155,
+     "hi": 0.5861,
+     "questions": 20
+    },
+    "musique/RK": {
+     "auc": 0.48074,
+     "lo": 0.45648,
+     "hi": 0.50379,
+     "questions": 262
+    },
+    "squad/RK": {
+     "auc": 0.50943,
+     "lo": 0.38278,
+     "hi": 0.64156,
+     "questions": 12
+    },
+    "metaqa/SRK": {
+     "auc": 0.5,
+     "lo": 0.5,
+     "hi": 0.5,
+     "questions": 104
+    },
+    "webqsp/SRK": {
+     "auc": 0.4941,
+     "lo": 0.469,
+     "hi": 0.51237,
+     "questions": 194
+    },
+    "hotpotqa/RK": {
+     "auc": 0.46381,
+     "lo": 0.44434,
+     "hi": 0.4855,
+     "questions": 170
+    },
+    "hotpotqa/SRK": {
+     "auc": 0.45276,
+     "lo": 0.43414,
+     "hi": 0.47328,
+     "questions": 165
+    },
+    "2wiki/RK": {
+     "auc": 0.47718,
+     "lo": 0.46598,
+     "hi": 0.48915,
+     "questions": 271
+    },
+    "2wiki/SRK": {
+     "auc": 0.4767,
+     "lo": 0.46543,
+     "hi": 0.4886,
+     "questions": 269
+    }
+   },
+   "note": "",
+   "in_program": true
+  },
+  "qov": {
+   "id": "A12",
+   "call": "SIGN_SPLIT",
+   "score": 0.0,
+   "direction": -1,
+   "pooled_auc": 0.4859,
+   "per_cell": {
+    "multihoprag/RK": {
+     "auc": 0.61149,
+     "lo": 0.53173,
+     "hi": 0.70146,
+     "questions": 35
+    },
+    "musique/RK": {
+     "auc": 0.54635,
+     "lo": 0.53137,
+     "hi": 0.56115,
+     "questions": 323
+    },
+    "squad/RK": {
+     "auc": 0.49968,
+     "lo": 0.49903,
+     "hi": 0.5,
+     "questions": 27
+    },
+    "metaqa/SRK": {
+     "auc": 0.44963,
+     "lo": 0.43809,
+     "hi": 0.45903,
+     "questions": 373
+    },
+    "webqsp/SRK": {
+     "auc": 0.50982,
+     "lo": 0.48701,
+     "hi": 0.53736,
+     "questions": 343
+    },
+    "hotpotqa/RK": {
+     "auc": 0.54563,
+     "lo": 0.51563,
+     "hi": 0.57743,
+     "questions": 187
+    },
+    "hotpotqa/SRK": {
+     "auc": 0.54702,
+     "lo": 0.51473,
+     "hi": 0.58101,
+     "questions": 187
+    },
+    "2wiki/RK": {
+     "auc": 0.49612,
+     "lo": 0.47556,
+     "hi": 0.51503,
+     "questions": 274
+    },
+    "2wiki/SRK": {
+     "auc": 0.50279,
+     "lo": 0.48157,
+     "hi": 0.52417,
+     "questions": 274
+    }
+   },
+   "note": "",
+   "in_program": true
+  }
+ },
+ "votes_guard": {
+  "multihoprag": 0.0486,
+  "musique": 0.3977,
+  "squad": 0.3349,
+  "metaqa": 0.4516,
+  "webqsp": 0.5292,
+  "hotpotqa": 0.126,
+  "2wiki": 0.0409
+ },
+ "votes_dropped": false,
+ "ranking": [
+  "votes"
+ ],
+ "K3": [
+  "votes"
+ ],
+ "K4": [
+  "votes"
+ ],
+ "K0": [
+  "dot"
+ ],
+ "cells_read": [
+  "multihoprag/RK",
+  "musique/RK",
+  "squad/RK",
+  "metaqa/SRK",
+  "webqsp/SRK",
+  "hotpotqa/RK",
+  "hotpotqa/SRK",
+  "2wiki/RK",
+  "2wiki/SRK"
+ ],
+ "cells_not_read": [],
+ "seconds": 8.2,
+ "zgp1p_sha256": "062986dcc0b6f5f5020c3094523228976f86839563dcf8e9d3fe851e80730839"
+}
