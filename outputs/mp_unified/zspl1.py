@@ -239,9 +239,14 @@ def cmd_encode(a):
     if a.smoke:
         texts = texts[:a.smoke]
     n, k = len(texts), min(TOPK, len(texts))
-    d = OUT / a.key / (a.ds + ("_smoke" if a.smoke else ""))
-    d.mkdir(parents=True, exist_ok=True)
     m, device = load_model(a.key, a.device)
+    d = OUT / a.key / (a.ds + (f"_smoke_{device}" if a.smoke else ""))
+    d.mkdir(parents=True, exist_ok=True)
+    gpu = None
+    if device == "cuda":
+        import torch
+        fm, tm = torch.cuda.mem_get_info()
+        gpu = {"name": torch.cuda.get_device_name(0), "free_mb_at_start": int(fm / 2**20), "total_mb": int(tm / 2**20)}
     t1 = time.time()
     Qm = enc_queries(m, qt)
     log(f"{a.key} {a.ds}: {len(qt)} questions encoded in {time.time() - t1:.1f} s on {device}, query nnz mean {np.diff(Qm.indptr).mean():.1f}, {n:,} nodes")
@@ -279,7 +284,8 @@ def cmd_encode(a):
     rec = {"stage": "SPL1 encode", "declared_in": DOC, "key": a.key, "repo": MODELS[a.key]["repo"], "revision": MODELS[a.key]["rev"],
            "dataset": a.ds, "smoke": a.smoke, "nodes": n, "questions": len(qt), "k": k, "device": device, "max_len": MAXLEN, "batch": BATCH,
            "nodes_per_s": round((n - n0) / max(el, 1e-9), 2), "encode_seconds": round(el, 1), "seconds": round(time.time() - t0, 1),
-           "doc_nnz_mean": round(nnz / max(n - n0, 1), 1), "cut_at_256": None if tok is None else cut, "cut_counted_on_nodes": n - n0,
+           "doc_nnz_mean": round(nnz / max(n - n0, 1), 1), "doc_bytes_per_node_at_8": round(8 * nnz / max(n - n0, 1), 1),
+           "query_nnz_mean": round(float(np.diff(Qm.indptr).mean()), 1), "gpu": gpu, "cut_at_256": None if tok is None else cut, "cut_counted_on_nodes": n - n0,
            "positive_slots_filled_mean": round(float((ids >= 0).sum(1).mean()), 1),
            "model_files": {p: v["sha256"][:16] for p, v in fr.get("files", {}).items()},
            "top1000_sha256": sha256(d / "top1000.npz"), "versions": {"torch": torch.__version__, "sentence_transformers": sentence_transformers.__version__,
@@ -353,6 +359,35 @@ def context(E, ds):
     return {"w": w, "rows": rows, "flat": flat, "off": off, "gt": gt, "c0": c0, "dense": dense, "e0_rrf5": e0}
 
 
+def rank_of(vals, high_is_better=False):
+    """1 = best; equal values share the lower rank."""
+    srt = sorted(vals.values(), reverse=high_is_better)
+    return {k: srt.index(v) + 1 for k, v in vals.items()}
+
+
+def pick_of(passers, params, nnz, speed):
+    """A2: among the passing candidates, the lowest sum of ranks over parameters (fewer), non-zeros per node (fewer) and nodes per
+    second on SQuAD (more); a tie goes to the fewer parameters. Returns (pick, table)."""
+    if not passers:
+        return None, {}
+    rp = rank_of({k: params[k] for k in passers})
+    rn = rank_of({k: nnz[k] for k in passers})
+    rs = rank_of({k: speed[k] for k in passers}, True)
+    tab = {k: {"params_m": params[k], "nnz_mean": nnz[k], "nodes_per_s": speed[k], "rank_params": rp[k], "rank_nnz": rn[k], "rank_speed": rs[k],
+               "rank_sum": rp[k] + rn[k] + rs[k]} for k in passers}
+    return min(passers, key=lambda k: (tab[k]["rank_sum"], params[k])), tab
+
+
+def c0_vectors(w):
+    """C0's own stored SPLADE vectors of the package (only MultiHop-RAG keeps them): mean non-zeros per node, read from the shard."""
+    import scipy.sparse as sp
+    p = w.root / "embeddings" / "splade" / "docs" / "shard_00000.npz"
+    if not p.is_file():
+        return None
+    M = sp.load_npz(p).tocsr()
+    return {"rows": int(M.shape[0]), "vocabulary": int(M.shape[1]), "nnz_mean": round(float(np.diff(M.indptr).mean()), 1)}
+
+
 def cmd_read(a):
     import zenc as E
     t0 = time.time()
@@ -376,7 +411,7 @@ def cmd_read(a):
         if not gate["pass"]:
             stop(f"G-S1 failed on {ds}: the reader does not reproduce the filed first stage; nothing is read")
         dres = {"questions": int(len(c["rows"])), "nodes": n, "gate_gs1": gate, "c0": {k: round(float(v.mean() * 100), 3) for k, v in base.items()},
-                "models": {}}
+                "c0_vectors": c0_vectors(c["w"]), "models": {}}
         for key in ORDER:
             p = OUT / key / ds / "top1000.npz"
             if not p.is_file():
@@ -395,6 +430,8 @@ def cmd_read(a):
                     mr["diff_vs_c0"][cell] = {"diff": round(dm, 3), "lo": round(lo, 3), "hi": round(hi, 3), "call": call_of(lo)}
             enc = json.loads((OUT / key / ds / "encode.json").read_text(encoding="utf-8")) if (OUT / key / ds / "encode.json").is_file() else {}
             mr["nodes_per_s"] = enc.get("nodes_per_s")
+            mr["doc_nnz_mean"] = enc.get("doc_nnz_mean")
+            mr["query_nnz_mean"] = enc.get("query_nnz_mean")
             dres["models"][key] = mr
         res["datasets"][ds] = dres
     verdict = {}
@@ -407,7 +444,18 @@ def cmd_read(a):
             verdict[key] = {"cells": cells, "passes": ok, "better_on_all_six": better_all, "params_m": MODELS[key]["params_m"]}
     res["verdict"] = verdict
     passing = [k for k in ORDER if verdict.get(k, {}).get("passes")]
-    res["pick"] = passing[0] if passing else None
+    def mean_nnz(k):
+        v = [res["datasets"][ds]["models"][k]["doc_nnz_mean"] for ds in SCREEN if k in res["datasets"].get(ds, {}).get("models", {})]
+        return round(float(np.mean(v)), 1) if v and all(x is not None for x in v) else None
+    speed = {k: (res["datasets"].get("squad", {}).get("models", {}).get(k) or {}).get("nodes_per_s") for k in ORDER}
+    nz = {k: mean_nnz(k) for k in ORDER}
+    cost_ok = [k for k in passing if nz[k] is not None and speed[k]]
+    res["pick"], res["rank_table"] = pick_of(cost_ok, {k: MODELS[k]["params_m"] for k in ORDER}, nz, speed)
+    res["cpu_nodes_per_s_smoke"] = {}
+    for k in ORDER:
+        sp_ = OUT / k / "squad_smoke_cpu" / "encode.json"
+        if sp_.is_file():
+            res["cpu_nodes_per_s_smoke"][k] = json.loads(sp_.read_text(encoding="utf-8")).get("nodes_per_s")
     if res["pick"]:
         res["named_beside"] = [k for k in passing if k != res["pick"] and verdict[k]["better_on_all_six"] and not verdict[res["pick"]]["better_on_all_six"]]
     res["cost_hours_at_squad_rate"] = {}
@@ -456,6 +504,11 @@ def selftest():
     m, lo, hi = boot(d)
     chk("boot null straddles zero", lo < 0 < hi and abs(m) < 1e-9)
     chk("calls", call_of(0.01) == "BETTER" and call_of(0.0) == "LEVEL" and call_of(-1.0) == "LEVEL" and call_of(-1.01) == "WORSE")
+    # the A2 pick: lowest rank sum over parameters, non-zeros per node and speed; a tie goes to the fewer parameters
+    pk, tb = pick_of(["c3", "c1", "c2"], {"c1": 30, "c2": 67, "c3": 23}, {"c1": 262.0, "c2": 252.0, "c3": 339.0}, {"c1": 900.0, "c2": 500.0, "c3": 1500.0})
+    chk("pick_of rank sums (c1: 2+2+2, c2: 3+1+3, c3: 1+3+1)", pk == "c3" and tb["c1"]["rank_sum"] == 6 and tb["c2"]["rank_sum"] == 7 and tb["c3"]["rank_sum"] == 5)
+    pk, _ = pick_of(["c1", "c2"], {"c1": 30, "c2": 67}, {"c1": 250.0, "c2": 250.0}, {"c1": 500.0, "c2": 900.0})
+    chk("pick_of tie goes to the fewer parameters", pk == "c1" and pick_of([], {}, {}, {}) == (None, {}))
     # hits and seeds on a toy: golds {1, 4}, {2}
     flat, off = np.array([1, 4, 2], np.int64), np.array([0, 2, 3], np.int64)
     h = hits_in([np.array([1, 7, 4]), np.array([0, 9])], flat, off)
