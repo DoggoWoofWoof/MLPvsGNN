@@ -3,7 +3,8 @@
     python -E -P -B outputs/mp_unified/zspl1l.py selftest                       # laptop, toy model
     python -I -B    outputs/mp_unified/zspl1l.py bench --ds squad               # host card: every arm interleaved on the same blocks -> outputs/spl1/lev/bench_squad.json
     python -I -B    outputs/mp_unified/zspl1l.py call                           # E1 and E2 -> outputs/spl1/lev/pick.json
-    python -I -B    outputs/mp_unified/zspl1l.py encode --arm pick|l0|..|l6 --ds D    # one full arm run: top-1000 list, block rates, non-zeros
+    python -I -B    outputs/mp_unified/zspl1l.py encode --arm pick|l0|..|l6 --ds D [--if-pick]   # one full arm run: top-1000 list, block rates, non-zeros
+                                                                                # (--if-pick: skipped, row done, when the bench picked no arm)
     python -E -P -B outputs/mp_unified/zspl1l.py read                           # laptop: lists against the record's, calls, D2 -> outputs/spl1/lev/read.json
     python -I -B    outputs/mp_unified/zspl1l.py gate --wait FILE [--max-s N]   # host: a row that ends when FILE exists (D2 pushed), fails after N seconds
 
@@ -245,6 +246,11 @@ def cmd_encode(a):
     import zworld
     t0 = time.time()
     arm_name = a.arm
+    if a.if_pick:                                                # the full runs of A11 exist only if the bench picked an arm
+        pk0 = json.loads((LEV / "pick.json").read_text(encoding="utf-8")) if (LEV / "pick.json").is_file() else None
+        if pk0 is None or pk0["pick"] is None:
+            log("no lever was picked (or no pick.json): this run is not needed")
+            return
     if arm_name == "pick":
         pk = json.loads((LEV / "pick.json").read_text(encoding="utf-8")) if (LEV / "pick.json").is_file() else None
         if pk is None:
@@ -481,6 +487,7 @@ def main():
     e.add_argument("--ds", required=True, choices=S.SCREEN)
     e.add_argument("--device", default=None)
     e.add_argument("--smoke", type=int, default=0)
+    e.add_argument("--if-pick", dest="if_pick", action="store_true")
     e.set_defaults(fn=cmd_encode)
     sub.add_parser("read").set_defaults(fn=cmd_read)
     g = sub.add_parser("gate")
