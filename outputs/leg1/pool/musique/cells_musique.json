@@ -1,0 +1,90 @@
+{
+ "stage": "LEG1-A6 cells",
+ "declared_in": "docs/LEG1_LEG_NECESSITY.md section 15 (LEG1-A6)",
+ "dataset": "musique",
+ "utc": "2026-11-27T08:06:10Z",
+ "nq": 2417,
+ "qids_sha256": "bad4f9b18a7abb8e475b7285db2c370540b9a4aa51770ce553056e9b0761ce46",
+ "chunk": 128,
+ "perm_seed": 20261127,
+ "n_chunks": 19,
+ "chunk_order": [
+  12,
+  15,
+  11,
+  10,
+  8,
+  16,
+  7,
+  5,
+  17,
+  13,
+  2,
+  4,
+  0,
+  3,
+  9,
+  14,
+  18,
+  6,
+  1
+ ],
+ "gate_questions": 16,
+ "max_nodes": 16000.0,
+ "r95": "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000",
+ "select_sha256": "cef5ed9300de5af4c93b32c44ffd5b5e34e3ce2f994efa4154dc2ede2de4a481",
+ "names": [
+  "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000",
+  "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+  "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+  "rrf1000_b1600+FULL:h2_bf_v2000~s10-cs-vr",
+  "rrf1000_b1600+FULL:h2_bf_v2000~cs-vr-rr+top1600",
+  "rrf1000_b1600+FULL:h3_bf_v10000~cs-fu+top7500",
+  "rrf1000_b1600+FULL:h2_c100_v20000~s20-cs-rk+top15000",
+  "equal_rrf_budget_200+FULL:h2_c25"
+ ],
+ "filed": {
+  "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000": {
+   "all": 0.9640049648324369,
+   "nodes": 15400.0
+  },
+  "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr": {
+   "all": 0.922217625155151,
+   "nodes": 5742.3624327678945
+  },
+  "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr": {
+   "all": 0.8845676458419528,
+   "nodes": 2438.235829540753
+  },
+  "rrf1000_b1600+FULL:h2_bf_v2000~s10-cs-vr": {
+   "all": 0.8903599503516756,
+   "nodes": 2950.2395531650805
+  },
+  "rrf1000_b1600+FULL:h2_bf_v2000~cs-vr-rr+top1600": {
+   "all": 0.8944973107157633,
+   "nodes": 2980.1857674803477
+  },
+  "rrf1000_b1600+FULL:h3_bf_v10000~cs-fu+top7500": {
+   "all": 0.935043442283823,
+   "nodes": 9076.197765825404
+  },
+  "rrf1000_b1600+FULL:h2_c100_v20000~s20-cs-rk+top15000": {
+   "all": 0.9429044269755896,
+   "nodes": 13614.768307819611
+  },
+  "equal_rrf_budget_200+FULL:h2_c25": {
+   "all": 0.8026479106330161,
+   "nodes": 2092.4435250310303
+  }
+ },
+ "left_out": [
+  {
+   "name": "rrf1000_b1600+FULL:h3_bf_v20000~cs-fu",
+   "filed_nodes": 20235.6727347952
+  },
+  {
+   "name": "rrf1000_b1600+FULL:h3_bf_v20000~cs-fu+top15000",
+   "filed_nodes": 16576.197765825404
+  }
+ ]
+}
