@@ -86,3 +86,32 @@ No model is trained or ranked; the pools are the filed links' pools, not a re-tu
 - **The request.** The user asked for quicker results on a smaller subset ("also can we get quicker results on a smaller subset i do not want to waste much of the time"). The chunk files are written in a seeded permutation of the question blocks (section 3) and a part takes every K-th position of that permutation, so the chunks present at any moment are a random subset of the split's question blocks, the same blocks for every arm that has them. `zdrp1.py read` already keeps only the questions every arm covers and marks the file PARTIAL; `zdrp1.py` is not edited.
 - **The rule.** A PARTIAL read is a **slice read**: it is named as such with its question count and the chunks it used; the gates, arms, cells and the 1.0-point line are those of sections 2 to 5, with intervals from the slice (wider than the whole split's). A slice call (NEEDED, DISPENSABLE, UNCLEAR) is a screen and not the read of section 5: it is not filed as one, adopts nothing, and no row is cancelled because of it. The rows keep running to the whole split, and where the whole-split read gives a different call at a cell both are reported. The expectations E1 to E7 are judged on the whole-split reads only.
 - **First slices.** Taken the same hour on whatever chunks WebQSP and HotpotQA have written; their question counts are printed beside each number in section 12.
+
+## 12. Results so far (22:28 IST, 27 Nov 2026): three whole-split reads and five screens; E1 to E7 are not judged yet
+
+`zdrp1.py read` on the chunks fetched at 22:26 (host rows `drp1-*`, laptop runs for MultiHop-RAG and SQuAD). The gates held on every dataset read (G-D0 0 mismatches over the first 16 questions and all cells; G-D1 and G-D2 pass for the three arms). Loss = filed ALL minus the arm's ALL, in points, with the paired bootstrap interval; the line is 1.0 point (section 5). **COMPLETE rows are whole-split reads and count for the expectations; PARTIAL rows are slices (amendment 2: screens, nothing adopted, no row cancelled).** The `both` arm (dense only, no K) is the user's 27 Nov main line; `nospl` isolates SPLADE and `nok` isolates K.
+
+**At the cell that reaches 0.95 in the filed pools ("R95"):**
+
+| dataset | read (questions) | R95 cell (filed ALL) | K: `nok` loss | SPLADE: `nospl` loss | both: `both` loss |
+|---|---|---|---|---|---|
+| MultiHop-RAG | COMPLETE (1,130) | `rrf1000_b25+FULL:h1_c100+top25` (0.9690) | +0.00 DISPENSABLE | +0.88 [+0.18, +1.59] UNCLEAR | +0.88 [+0.18, +1.59] UNCLEAR |
+| SQuAD | COMPLETE (11,873) | `rrf1000_b15` (0.9554) | +0.00 DISPENSABLE | **+1.76 [+1.42, +2.11] NEEDED** | **+1.76 [+1.41, +2.08] NEEDED** |
+| WebQSP | COMPLETE (1,503) | `rrf1000_b400+FULL:h3_bf_v40000~cs-vr` (0.9474, 39,530 nodes) | +0.80 [+0.27, +1.33] UNCLEAR | +0.53 [-0.13, +1.13] UNCLEAR | **+2.00 [+1.20, +2.93] NEEDED** |
+| HotpotQA | PARTIAL (3,309 of 7,405) | `rrf1000_b25+STRUCT:h1_c100~cs+top100` (0.9604) | +0.00 DISPENSABLE | **+2.63 [+2.02, +3.26] NEEDED** | **+2.63 [+1.99, +3.33] NEEDED** |
+| 2Wiki | PARTIAL (1,536 of 12,576) | `rrf1000_b400+FULL:h1_c100~s20+top800` (0.9603) | +0.20 [+0.00, +0.46] DISPENSABLE | **+8.72 [+7.29, +10.22] NEEDED** | **+8.79 [+7.29, +10.22] NEEDED** |
+| MuSiQue | PARTIAL (384 of 2,417) | `rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000` (0.9635) | +0.26 [-0.52, +1.04] UNCLEAR | (arm not yet written) | +1.30 [+0.00, +2.86] UNCLEAR |
+| STaRK Prime | PARTIAL (256 of 2,801) | best filed cell within 3,500 nodes `rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr` (0.9102 on these 256) | -0.78 UNCLEAR | +3.52 UNCLEAR | +3.12 UNCLEAR |
+| STaRK Amazon | PARTIAL (746 of 1,642) | the same cell (0.8713 on these 746) | +0.40 UNCLEAR | **+3.22 NEEDED** | **+3.89 NEEDED** |
+
+MetaQA is not in DRP1's seven rows (LEG1 A6's dense-only pool read of 26 Nov put it at -1.0); MAG waits for its links rows.
+
+**Other cells read (whole-split rows, from the same files):** SQuAD, SPLADE +1.13 at 63 nodes and +0.09 [+0.03, +0.15] at 1,572 nodes (the leg matters only in the smallest pools); K 0.00 at every K-free cell and +0.11 at the cell with K. WebQSP, K 0.00 at the STRUCT cells, +1.80 [+1.13, +2.46] NEEDED at a 4,977-node FULL cell and +3.39 at a weak 69 percent cell; SPLADE +2.20 [+1.20, +3.13] NEEDED at 2,095 nodes, +1.60 at 2,520 and +2.73 at 3,247; the `both` arm +3.99 at the FULL two-hop cell; WebQSP never reaches 0.95 within about 2,500 nodes (best filed 88.0 at 2,520). MultiHop-RAG, zero at the 100-node cell (99.1 in every arm). HotpotQA's first slice (1,408 questions): SPLADE +3.20 at 78 nodes, +2.98 at 154, +1.42 at 2,977 and +0.71 at 5,179. 2Wiki's first slice (640 questions): SPLADE +7.81 [+5.78, +10.00] at 918 nodes, +7.34 at 2,209 and 3,047, +16.09 at 106; the dense-only arm's best ALL within 2,500 nodes is 88.9 against the filed 95.9.
+
+**What it says (a screen where PARTIAL; no call is filed from a slice).**
+
+- **K does not pay anywhere it was read.** The loss is 0.00 to +0.26 on MultiHop-RAG, SQuAD, HotpotQA, 2Wiki and MuSiQue and +0.80 on WebQSP, none above the 1.0-point line; the two STaRK screens are -0.78 and +0.40 and unclear on 256 and 746 questions.
+- **SPLADE pays where the questions name their entities and the pool is small:** +8.7 on 2Wiki, +2.6 on HotpotQA, +1.8 on SQuAD, +3.2 on Amazon (screen). It is under the line or unclear on MultiHop-RAG (+0.88), WebQSP alone (+0.53) and the 256-question Prime screen (+3.52, interval not read). The loss shrinks with the pool: it is 0.09 on SQuAD at 1,572 nodes and 0.71 on HotpotQA at 5,179.
+- **The dense-only line therefore starts lowest on 2Wiki** (-8.8 at its 0.95 cell) and needs a name or lexical signal there; this page does not test one.
+
+**Not done here:** E1 to E7 are judged on whole-split reads only (amendment 2), and five of the eight rows are partial; the next reads come when `drp1-hp`, `tw`, `mu`, `pr`, `am` parts finish, and MAG after `stk2m-links` and `stk3m-run0` to `run5`. No row was cancelled, no SPLADE or K asset was deleted, and nothing is adopted: the main line's choice (dense only, no K, add-back later) is the user's, made on 27 Nov.
