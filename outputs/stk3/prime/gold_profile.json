@@ -1,0 +1,367 @@
+{
+ "stage": "STK3 gold_profile",
+ "declared_in": "docs/STK3_STARK_POOLS.md section 17",
+ "kb": "prime",
+ "utc": "2026-11-27T11:28:52Z",
+ "cells": {
+  "A": {
+   "cell": "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+   "single_gold_questions": 1769,
+   "all": {
+    "golds": 1769,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 335.2148106274731,
+     "median": 62.0
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 336.04918032786884,
+     "median": 62.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 346.37704918032784,
+     "median": 73.0
+    }
+   },
+   "hit": {
+    "golds": 1573,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 328.8347107438017,
+     "median": 52.0
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 329.6745073108709,
+     "median": 53.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 340.11951684678957,
+     "median": 68.0
+    }
+   },
+   "missed": {
+    "golds": 196,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 386.4183673469388,
+     "median": 105.0
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 387.2091836734694,
+     "median": 105.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 396.5969387755102,
+     "median": 115.0
+    }
+   },
+   "types": [
+    {
+     "type": "disease",
+     "golds": 635,
+     "missed": 32,
+     "miss_rate": 0.050393700787401574
+    },
+    {
+     "type": "gene/protein",
+     "golds": 590,
+     "missed": 102,
+     "miss_rate": 0.17288135593220338
+    },
+    {
+     "type": "drug",
+     "golds": 304,
+     "missed": 41,
+     "miss_rate": 0.13486842105263158
+    },
+    {
+     "type": "pathway",
+     "golds": 182,
+     "missed": 4,
+     "miss_rate": 0.02197802197802198
+    },
+    {
+     "type": "anatomy",
+     "golds": 30,
+     "missed": 6,
+     "miss_rate": 0.2
+    },
+    {
+     "type": "effect/phenotype",
+     "golds": 16,
+     "missed": 2,
+     "miss_rate": 0.125
+    },
+    {
+     "type": "exposure",
+     "golds": 6,
+     "missed": 6,
+     "miss_rate": 1.0
+    },
+    {
+     "type": "cellular_component",
+     "golds": 4,
+     "missed": 2,
+     "miss_rate": 0.5
+    }
+   ]
+  },
+  "B": {
+   "cell": "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+   "single_gold_questions": 1769,
+   "all": {
+    "golds": 1769,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 335.2148106274731,
+     "median": 62.0
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 336.04918032786884,
+     "median": 62.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 346.37704918032784,
+     "median": 73.0
+    }
+   },
+   "hit": {
+    "golds": 1637,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 350.63958460598656,
+     "median": 62.0
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 351.4691508857666,
+     "median": 62.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 361.7745876603543,
+     "median": 71.0
+    }
+   },
+   "missed": {
+    "golds": 132,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 143.92424242424244,
+     "median": 80.5
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 144.8181818181818,
+     "median": 80.5
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 155.42424242424244,
+     "median": 88.0
+    }
+   },
+   "types": [
+    {
+     "type": "disease",
+     "golds": 635,
+     "missed": 23,
+     "miss_rate": 0.03622047244094488
+    },
+    {
+     "type": "gene/protein",
+     "golds": 590,
+     "missed": 71,
+     "miss_rate": 0.12033898305084746
+    },
+    {
+     "type": "drug",
+     "golds": 304,
+     "missed": 27,
+     "miss_rate": 0.08881578947368421
+    },
+    {
+     "type": "pathway",
+     "golds": 182,
+     "missed": 4,
+     "miss_rate": 0.02197802197802198
+    },
+    {
+     "type": "anatomy",
+     "golds": 30,
+     "missed": 0,
+     "miss_rate": 0.0
+    },
+    {
+     "type": "effect/phenotype",
+     "golds": 16,
+     "missed": 1,
+     "miss_rate": 0.0625
+    },
+    {
+     "type": "exposure",
+     "golds": 6,
+     "missed": 5,
+     "miss_rate": 0.8333333333333334
+    },
+    {
+     "type": "cellular_component",
+     "golds": 4,
+     "missed": 0,
+     "miss_rate": 0.0
+    }
+   ]
+  },
+  "C": {
+   "cell": "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000",
+   "single_gold_questions": 1769,
+   "all": {
+    "golds": 1769,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 335.2148106274731,
+     "median": 62.0
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 336.04918032786884,
+     "median": 62.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 346.37704918032784,
+     "median": 73.0
+    }
+   },
+   "hit": {
+    "golds": 1636,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 291.799511002445,
+     "median": 54.5
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 292.6638141809291,
+     "median": 56.5
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 303.09352078239607,
+     "median": 68.0
+    }
+   },
+   "missed": {
+    "golds": 133,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 869.2556390977444,
+     "median": 115.0
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 869.7218045112782,
+     "median": 117.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 878.796992481203,
+     "median": 121.0
+    }
+   },
+   "types": [
+    {
+     "type": "disease",
+     "golds": 635,
+     "missed": 16,
+     "miss_rate": 0.025196850393700787
+    },
+    {
+     "type": "gene/protein",
+     "golds": 590,
+     "missed": 73,
+     "miss_rate": 0.12372881355932204
+    },
+    {
+     "type": "drug",
+     "golds": 304,
+     "missed": 27,
+     "miss_rate": 0.08881578947368421
+    },
+    {
+     "type": "pathway",
+     "golds": 182,
+     "missed": 0,
+     "miss_rate": 0.0
+    },
+    {
+     "type": "anatomy",
+     "golds": 30,
+     "missed": 13,
+     "miss_rate": 0.43333333333333335
+    },
+    {
+     "type": "effect/phenotype",
+     "golds": 16,
+     "missed": 0,
+     "miss_rate": 0.0
+    },
+    {
+     "type": "exposure",
+     "golds": 6,
+     "missed": 3,
+     "miss_rate": 0.5
+    },
+    {
+     "type": "cellular_component",
+     "golds": 4,
+     "missed": 0,
+     "miss_rate": 0.0
+    }
+   ]
+  }
+ },
+ "expectations": {
+  "G1_under_2_percent_of_A_missed_have_union_degree_0": true,
+  "G2_A_miss_rate_differs_10_points_between_the_two_largest_types": true,
+  "G3_A_missed_median_union_degree_below_the_hit_median": false
+ },
+ "cells_sha256": "4b9bfd160b18984cf6fa1a1526f1ef10a783cdb925a65f5c4dcc1b130e1c6514",
+ "layout_sha256": "6b596067a55664378638df0e5755b92d8bf77f0280c7a5ba6924bc3b4bde884e",
+ "note": "descriptive read of the test split; nothing is chosen or changed from it"
+}

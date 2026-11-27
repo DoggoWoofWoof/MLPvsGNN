@@ -207,3 +207,29 @@ Above 2,500 nodes the first stage's own list ends, so the flat reference is shor
 - **G3.** The median union degree of cell A's missed golds is lower than that of its hit golds.
 
 **What this is not.** The same as section 15: a descriptive read of the test split, **nothing is chosen or changed from it**, nothing is adopted, and any rule it suggests is declared first and read on Prime's dev split or on MAG and Amazon. The change to the module is the command `gold_profile` (host row, numpy only, reads the layout, the chunks, `ref.npz` and the package; writes `gold_profile.json`, no per-KB branch) and a selftest check; the rest of `zstk3.py` is not edited.
+
+## 18. The missed golds on Prime, by link degree and node type, read (16:59 IST, 27 Nov 2026; section 17's read, run on the host after amendment 5 was pushed; descriptive, nothing chosen)
+
+`zstk3.py gold_profile --kb prime` (host sha a10d8e0fb8f59432 = the laptop's; record `outputs/stk3/prime/gold_profile.json`): the 1,769 single-gold questions, the same cells A, B and C. Degrees count the distinct pairs a node is an end of.
+
+| group (single-gold golds) | golds | degree 0 in S | S degree, mean / median | union degree, median |
+| --- | ---: | ---: | ---: | ---: |
+| all | 1,769 | **0** | 335.2 / 62 | 73 |
+| A hit | 1,573 | 0 | 328.8 / 52 | 68 |
+| **A missed** (2,475 nodes) | 196 | **0** | 386.4 / 105 | **115** |
+| B hit | 1,637 | 0 | 350.6 / 62 | 71 |
+| **B missed** (5,780 nodes) | 132 | **0** | 143.9 / 80.5 | **88** |
+| C hit | 1,636 | 0 | 291.8 / 54.5 | 68 |
+| **C missed** (15,383 nodes) | 133 | **0** | 869.3 / 115 | **121** |
+
+Node types of the single-gold golds, with the golds missed by cell A (rate in percent; cells B and C in `gold_profile.json`): disease 635 golds, 32 missed (5.0); gene/protein 590, 102 (17.3); drug 304, 41 (13.5); pathway 182, 4 (2.2); anatomy 30, 6 (20.0); effect/phenotype 16, 2 (12.5); exposure 6, 6 (100); cellular component 4, 2 (50). Cell B: gene/protein 12.0 (71 missed), drug 8.9 (27), disease 3.6 (23); cell C: gene/protein 12.4 (73), drug 8.9 (27), disease 2.5 (16), anatomy 43.3 (13 of 30).
+
+**Calls on the expectations.** **G1 HELD:** none of the 196 golds cell A misses has degree 0 in the union, and none of the 1,769 single-gold golds has degree 0 even in S alone. **G2 HELD:** disease is missed at 5.0 percent and gene/protein at 17.3, a gap of 12.3 points. **G3 NOT HELD, and the other way round:** the median union degree of cell A's missed golds is **115 against 68 for its hit golds** (88 against 71 in cell B, 121 against 68 in cell C); the means follow in cells A and C (396.6 against 340.1; 878.8 against 303.1) and not in cell B (155.4 against 361.8), so the median is the stable reading.
+
+**What it says (descriptive; no rule follows from it by itself).**
+
+- **There is no isolation ceiling on Prime.** Every single-gold gold is linked in S; the golds the cells miss are linked, and on the median better linked than the golds they find. The loss is the first stage's rank plus the walks' reach and ordering, not a gold that no walk can touch.
+- **The misses sit in gene/protein and drug golds.** Of cell A's 196 missed golds 102 are gene/protein and 41 drug (73 percent together), against 33 and 17 percent of all single-gold golds; disease (36 percent of golds) holds 16 percent of the misses and pathway almost none. The rare types (anatomy, exposure, cellular component; 40 golds in all) miss at 20 to 100 percent in cell A. The types are Prime's own, so a type-based rule would not be a universal one; the read says where the first stage and the walks lose on this KB, not which lever to pull.
+- **Cell A's and cell C's missed golds have higher degree than their hit golds; cell B's mean is lower.** The median is above in all three; the pools differ by walk, family and budget, so the three groups are not one population.
+
+**Not read.** Why these golds are not ranked: whether the entities a question names are in the seeds, how many of the gold's neighbours the walk visits before the budget ends, and where the gold sits in the walk's own candidate order. Those need the engine's internal candidate lists, which `evaluate5` does not return; reading them needs a declared module change (or a dev-split first stage, an STK1 amendment) and is not declared here. **Nothing is adopted; no pool is frozen.** MAG and Amazon follow when their links rows finish, with the same cells, gates and reads.
