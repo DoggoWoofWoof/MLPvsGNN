@@ -1,0 +1,40 @@
+{
+ "stage": "DRP1 stark cells",
+ "declared_in": "docs/DRP1_DROP_SPLADE_AND_K.md",
+ "utc": "2026-11-27T14:39:39Z",
+ "names": [
+  "rrf1000_b15",
+  "rrf1000_b50+KNN:h1_c100+top25",
+  "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000",
+  "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+  "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+  "rrf1000_b25+STRUCT:h1_c100~cs+top100",
+  "rrf1000_b100+STRUCT:h1_c100~cs+top200",
+  "rrf1000_b400+FULL:h1_c100~s20+top800",
+  "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+  "rrf1000_b25+STRUCT:h3_c100_v5000",
+  "rrf1000_b400+STRUCT:h3_c25_v2000",
+  "rrf1000_b1600+STRUCT:h3_c100_v5000",
+  "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+  "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+  "rrf1000_b25+FULL:h1_c100+top25",
+  "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50"
+ ],
+ "cells_sha256": "28a2154bce9c452c23502bc6025b04962bcb133698fdb91537ce823618c1a069",
+ "stk3_cells_sha256": "4b9bfd160b18984cf6fa1a1526f1ef10a783cdb925a65f5c4dcc1b130e1c6514",
+ "uses_k": [
+  "rrf1000_b50+KNN:h1_c100+top25",
+  "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000",
+  "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+  "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+  "rrf1000_b400+FULL:h1_c100~s20+top800",
+  "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+  "rrf1000_b25+FULL:h1_c100+top25",
+  "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50"
+ ],
+ "arms_to_run": [
+  "nospl",
+  "nok",
+  "both"
+ ]
+}

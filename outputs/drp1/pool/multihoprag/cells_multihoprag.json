@@ -1,0 +1,62 @@
+{
+ "stage": "DRP1 cells",
+ "declared_in": "docs/DRP1_DROP_SPLADE_AND_K.md",
+ "dataset": "multihoprag",
+ "utc": "2026-11-27T14:39:39Z",
+ "nq": 1130,
+ "qids_sha256": "72d0a649d968d48c9fb4487efe7f63d0a98c727dc7c739143b47155d691ba246",
+ "chunk": 128,
+ "perm_seed": 20261127,
+ "n_chunks": 9,
+ "chunk_order": [
+  6,
+  0,
+  7,
+  1,
+  8,
+  5,
+  4,
+  2,
+  3
+ ],
+ "gate_questions": 16,
+ "max_nodes": 16000.0,
+ "r95": "rrf1000_b25+FULL:h1_c100+top25",
+ "bounded": "rrf1000_b25+FULL:h1_c100+top25",
+ "r95_over_cap": false,
+ "select_sha256": "24a538b18308694ec36ddb7c11353ff492e596049b3ed0ecc6937fc84e87b341",
+ "names": [
+  "rrf1000_b25+FULL:h1_c100+top25",
+  "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50",
+  "rrf1000_b50+FULL:h2_c100_v5000+top50",
+  "equal_rrf_budget_50"
+ ],
+ "uses_k": [
+  "rrf1000_b25+FULL:h1_c100+top25",
+  "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50",
+  "rrf1000_b50+FULL:h2_c100_v5000+top50"
+ ],
+ "arms_to_run": [
+  "nok",
+  "both"
+ ],
+ "filed": {
+  "rrf1000_b25+FULL:h1_c100+top25": {
+   "all": 0.9690265486725663,
+   "nodes": 50.0
+  },
+  "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50": {
+   "all": 0.9787610619469026,
+   "nodes": 58.00353982300885
+  },
+  "rrf1000_b50+FULL:h2_c100_v5000+top50": {
+   "all": 0.9911504424778761,
+   "nodes": 100.0
+  },
+  "equal_rrf_budget_50": {
+   "all": 0.9539823008849557,
+   "nodes": 50.0
+  }
+ },
+ "left_out": []
+}

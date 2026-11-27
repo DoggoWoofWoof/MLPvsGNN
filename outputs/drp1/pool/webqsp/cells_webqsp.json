@@ -1,0 +1,101 @@
+{
+ "stage": "DRP1 cells",
+ "declared_in": "docs/DRP1_DROP_SPLADE_AND_K.md",
+ "dataset": "webqsp",
+ "utc": "2026-11-27T14:39:39Z",
+ "nq": 1503,
+ "qids_sha256": "d0cd6dfff7aaece7e1c93cec581153fe7c3840de11af16f32404a79c04a5075b",
+ "chunk": 128,
+ "perm_seed": 20261127,
+ "n_chunks": 12,
+ "chunk_order": [
+  7,
+  2,
+  3,
+  4,
+  1,
+  6,
+  8,
+  5,
+  9,
+  11,
+  0,
+  10
+ ],
+ "gate_questions": 16,
+ "max_nodes": 16000.0,
+ "r95": "rrf1000_b400+FULL:h3_bf_v40000~cs-vr",
+ "bounded": "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+ "r95_over_cap": true,
+ "select_sha256": "904f000c326b3439c583b27a2ea7066158bf9501c106ecc644ec977adbe94ab0",
+ "names": [
+  "rrf1000_b400+FULL:h3_bf_v40000~cs-vr",
+  "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+  "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+  "rrf1000_b800+STRUCT:h3_bf_v2000~cs-fu",
+  "rrf1000_b1600+STRUCT:h2_bf_v2000~cs-fu",
+  "rrf1000_b800+FULL:h2_bf_v5000~cs-fu",
+  "rrf1000_b800+STRUCT:h3_bf_v5000~cs-fu",
+  "rrf1000_b1600+FULL:h3_bf_v10000~cs-fu",
+  "dense_top200+FULL:h3_c25_v2000"
+ ],
+ "uses_k": [
+  "rrf1000_b400+FULL:h3_bf_v40000~cs-vr",
+  "rrf1000_b800+FULL:h2_bf_v5000~cs-fu",
+  "rrf1000_b1600+FULL:h3_bf_v10000~cs-fu",
+  "dense_top200+FULL:h3_c25_v2000"
+ ],
+ "arms_to_run": [
+  "nospl",
+  "nok",
+  "both"
+ ],
+ "filed": {
+  "rrf1000_b400+FULL:h3_bf_v40000~cs-vr": {
+   "all": 0.9474384564204924,
+   "nodes": 39529.54091816367
+  },
+  "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu": {
+   "all": 0.9174983366600133,
+   "nodes": 6079.52628077179
+  },
+  "dense_top200+STRUCT:h3_bf_v2000~cs-fu": {
+   "all": 0.8789088489687292,
+   "nodes": 2094.5868263473053
+  },
+  "rrf1000_b800+STRUCT:h3_bf_v2000~cs-fu": {
+   "all": 0.8802395209580839,
+   "nodes": 2520.2029274783768
+  },
+  "rrf1000_b1600+STRUCT:h2_bf_v2000~cs-fu": {
+   "all": 0.8735861610113107,
+   "nodes": 3246.996007984032
+  },
+  "rrf1000_b800+FULL:h2_bf_v5000~cs-fu": {
+   "all": 0.8975382568196939,
+   "nodes": 4976.632069194943
+  },
+  "rrf1000_b800+STRUCT:h3_bf_v5000~cs-fu": {
+   "all": 0.916833000665336,
+   "nodes": 5488.54757152362
+  },
+  "rrf1000_b1600+FULL:h3_bf_v10000~cs-fu": {
+   "all": 0.9328010645375915,
+   "nodes": 10817.444444444445
+  },
+  "dense_top200+FULL:h3_c25_v2000": {
+   "all": 0.6879574184963406,
+   "nodes": 2119.596141051231
+  }
+ },
+ "left_out": [
+  {
+   "name": "rrf1000_b1600+FULL:h3_bf_v40000~cs-vr",
+   "filed_nodes": 40164.05788423154
+  },
+  {
+   "name": "rrf1000_b1600+FULL:h3_bf_v20000~cs-fu",
+   "filed_nodes": 20737.54091816367
+  }
+ ]
+}
