@@ -157,6 +157,51 @@ The user, 27 Nov: **"its not about the size but more of the speed to recall loss
 
 - **A path correction in `merge`.** The merge step looked for each part's gate file under the name of the part's arrays (`squad_c3_part0of4.json`); the gate files are written as `squad_part0of4.json`. The merge stopped with a file-not-found before reading any cell, so no SQuAD pool number was read. `cmd_merge` now reads the gate file of the same part under its real name. Nothing else changes: the cells, the paired bootstrap, the calls and D1 are those of section 8.8, and the four parts' own G-P1 results are read from the files they were written to.
 
+### 8.11 Amendment A11 (27 Nov, 06:27 IST, after the user's reply to the report of section 10.6 and before any number of a speed lever or of a further candidate)
+
+The user, 27 Nov, on the report that C0 stays and that its speed levers were not run: **"check and compare properly and if any other model also we should compare then add those and finally decide"**. A8 said that a C0_STAYS would be followed by an amendment declaring the speed levers of C0 itself; A9 and A10 were used for the split of the pool read and its merge fix, so this is A11. It has two parts: the levers of C0 (declared here in full, run now) and further candidates (named here with file, source and size, not downloaded; their screen is declared in A12 after the user's OK).
+
+**Part 1: C0's speed levers.**
+
+- **Why they can matter (reasoned, not measured).** C3 has about a fifth of C0's weights and is only 1.72 times faster on the card, against 6.44 times on the CPU: the card is not limited by the weight count. C0's forward pass ends in a vocabulary head (768 to 30,522) at every one of the 256 positions, in fp32, and the record's pooling then makes three element-wise passes (`relu`, `log1p`, `max`) over the `[rows, 256, 30,522]` logits. The tokenizer and the copy of the dense vectors to the CPU run between the card's calls.
+- **Arms** (C0's weights, the record's 256 tokens, batches of 64 in file order padded to the longest in the batch, unless the row says otherwise). All arms that pool as the record does return the same vector in exact arithmetic; the first one tests the identity, the others change the arithmetic only.
+
+| arm | what changes against the record's contract (L0 = `zspl1c.py`, fp32, chunks of 16) | vector |
+|---|---|---|
+| l0 | nothing (the reference, timed in the same process as the others) | the record's |
+| l1 | the maximum over positions is taken on the raw logits and `log1p(relu(.))` is applied to the pooled row: `max_t f(x_t) = f(max_t x_t)` for the non-decreasing `f`, so no element-wise pass over the logits | equal in exact arithmetic |
+| l2 | l1 with TF32 matrix products | rounding only |
+| l3 | l1 with the model in fp16 (logits in fp16, the pooled row in fp32) | rounding only |
+| l4 | l1 with the model in bf16 | rounding only |
+| l5 | l3 with chunks of 32 and the next batch tokenized in a second thread while the card runs the current one | as l3 |
+| l6 (information only) | l5 with the pooling over real tokens only and the nodes of a block sorted by length before batching (the vector then no longer depends on its batch; it is not the record's) | differs from the record's |
+
+- **Bench (rule fixed here).** The first 4,096 SQuAD nodes in blocks of 512, and the first 256 eval questions, on the host card in one process. Per block every arm is run on the same texts, the order of the arms rotated from block to block, after one untimed warm-up block per arm; the card's peak memory per arm is read. The rate of an arm is the median over the 8 blocks of nodes per second (tokenizer and the copy to the CPU inside the time, as in A7), and **E1** is the paired ratio: the median over blocks of (arm's rate over l0's rate on the same block), so the other account's load, which changes from minute to minute, is common to both.
+- **E2 (equivalence on the bench sample, nodes and questions each).** The first percentile of the per-vector cosine to l0's vector is at least 0.999 and the total non-zeros are within 1.0 percent of l0's. l1 is also reported as the share of bit-equal vectors; it is not required to be 1 (the identity is exact in real arithmetic; the `log1p` kernel is not guaranteed monotone to the last bit).
+- **Pick.** The arm among l1 to l5 with the largest E1 ratio among those with E1 at least 1.5 and E2 passed. If none, **LEVERS_NOT_ADOPTED** and nothing below is run. l6 is never picked: it is read for what it would buy.
+- **Full reads (only if a pick exists).** SQuAD (20,233 nodes; 11,873 eval questions), MultiHop-RAG (609; 2,255) and MuSiQue (117,534; 2,417) with the pick, and with l6; l0 as well on SQuAD and MultiHop-RAG (not MuSiQue: about ten minutes of card for a reference that the record's list already is). The rate is the median block rate of a full run (A4). Per dataset the lists are read as in section 5 against the record's list (H1: RRF R@5, H2: seeds, and the leg's R@20 and R@1000 where defined), paired bootstrap (1,000 resamples, seed 0), and the pick against l0 on SQuAD and MultiHop-RAG. **Calls for a lever**: BETTER (low end above 0), LEVEL (low end at least **-0.20** point, tighter than section 5's -1.0 because a numerical lever should move nothing), WORSE. The list agreement (the share of questions whose top 1,000 is the same set, and whose top 20 is the same sequence) is printed beside.
+- **D2 (declared here, before any number).** **ADOPT_LEVER(pick)** if E1 and E2 hold and every read of the pick (four reads on each of the three datasets against the record's list, and the same four reads against l0 on SQuAD and MultiHop-RAG) is BETTER or LEVEL. Otherwise **LEVERS_NOT_ADOPTED**. If adopted: the three STaRK legs (`stk1p-spl`, `stk1a-spl`, `stk1m-spl`; Prime's runs at l0 in any case, since it started before this amendment) run with the pick through an STK1 amendment that adds a flag to `zstk1g.py` whose default is the record's path; the seven datasets keep the record's lists, which the pick reproduces to within E2 and the calls above. No pool-coverage read is made for an equivalent lever unless the list agreement is below 99 percent of the questions; the user is told in that case and the pool cells are read as in A8. **If l6 is BETTER than l0 by the interval on H1 on all three datasets, the user is told**; adopting it would change every list of the ten datasets and is a separate decision.
+- **New module and rows.** `outputs/mp_unified/zspl1l.py` (one more declared module; `selftest`, `bench`, `call`, `encode --arm A --ds D`, `read`; it imports `zspl1`, `zspl1c` and `zworld` and edits none of them; the host runs it with `python -I -B`, the laptop with `-E -P -B`). Rows (host, GPU, the card to ourselves): `spl1l-bench`, `spl1l-call` (CPU), then the encodes `spl1l-*` named by arm and dataset; the reads run on the laptop. The Prime leg already running (`stk1p-spl`) is not touched; `stk1a-spl` and `stk1m-spl` wait for `spl1l-call` so that no lever is in doubt when they start.
+
+**Part 2: further candidates (named, not downloaded).** Sizes from the hub's file listing (no file fetched):
+
+| key | repo | weights file | listed size (all files) | licence |
+|---|---|---|---|---|
+| c4 | opensearch-project/opensearch-neural-sparse-encoding-doc-v3-distill | model.safetensors 268.0 MB | 271.6 MB | Apache-2.0 |
+| c5 | naver/splade-v3-distilbert | pytorch_model.bin 268.0 MB (a pickle) | 268.9 MB | CC BY-NC-SA 4.0 |
+| c6 | naver/splade-v3 | pytorch_model.bin 438.1 MB (a pickle) | 439.1 MB | CC BY-NC-SA 4.0 |
+| c7 | opensearch-project/opensearch-neural-sparse-encoding-doc-v3-gte | model.safetensors 549.6 MB | 553.2 MB | Apache-2.0 |
+
+The pickles would be read as C0's was (`torch.load(weights_only=True)`, written as safetensors, loaded from that alone). Each needs the user's OK with this file, source and size. Their screen (A12) is declared when the OK comes, before any candidate number.
+
+**Expectations, written before any number (marked held or not in section 10).**
+
+- **X8.** l1 passes E2 and is at most 1.3 times l0's rate: the matrix products, not the element-wise passes, dominate.
+- **X9.** l3 and l5 pass E2 and reach at least 2.0 times l0's rate; l5 is the pick.
+- **X10.** l6 is at least 1.3 times l5's rate on SQuAD, and its cosine to l0's vectors has a first percentile below 0.99 (the pad positions matter), without a loss of H1 beyond -1.0 point.
+
+**Disclosed.** The user's message repeats the text of the previous report; it is read as "run the screen, compare, add models, decide". The levers are chosen from what the record's contract allows without changing C0's weights; further levers (a custom kernel, pruning the vocabulary head to the tokens that fire) are not declared.
+
 ## 9. Expectations, written before any number
 
 - **X1.** C2 (the highest printed score) is BETTER or LEVEL on all six cells; it is the largest of the three, so it is the pick only if C1 and C3 do not pass.
