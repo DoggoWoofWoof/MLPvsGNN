@@ -1,0 +1,21 @@
+{
+ "mode": "delete",
+ "kind": "superseded intermediate arrays of a closed encoder screen (rebuildable)",
+ "time": "2026-11-28T01:26",
+ "path": "outputs/enc/e3b/win/*.npy",
+ "files": 8,
+ "gb": 1.351,
+ "why": "E3B's window vectors for the MuSiQue and SQuAD windows (gtemodern and granitesm, window widths 64 and 126). D101 adopted e3v with no windows; zenc3v reads only E3B's filed grid json and reads npz, and zenc6 reads outputs/enc/e2s/win, a different folder. Only zenc3b (E3B's own frozen code) names the win arrays, and it rebuilds them with `zenc3b.py winenc`. No pending feed row names them. The user's 21 Nov ruling: keep the frozen as the comparison, reclaim the space from the other encoders.",
+ "kept": "outputs/enc/e3b/win/{granite,granitesm,gtemodern}.json manifests, outputs/enc/e3b/reads, grid-*.json and every record",
+ "listing": [
+  {"path": "outputs/enc/e3b/win/granitesm_musique_w126.npy", "bytes": 122340992},
+  {"path": "outputs/enc/e3b/win/granitesm_musique_w64.npy", "bytes": 231548288},
+  {"path": "outputs/enc/e3b/win/granitesm_squad_w126.npy", "bytes": 30264704},
+  {"path": "outputs/enc/e3b/win/granitesm_squad_w64.npy", "bytes": 66134912},
+  {"path": "outputs/enc/e3b/win/gtemodern_musique_w126.npy", "bytes": 244681856},
+  {"path": "outputs/enc/e3b/win/gtemodern_musique_w64.npy", "bytes": 463096448},
+  {"path": "outputs/enc/e3b/win/gtemodern_squad_w126.npy", "bytes": 60529280},
+  {"path": "outputs/enc/e3b/win/gtemodern_squad_w64.npy", "bytes": 132269696}
+ ],
+ "check_after": "outputs/enc/e3b/win holds the three manifests only"
+}
