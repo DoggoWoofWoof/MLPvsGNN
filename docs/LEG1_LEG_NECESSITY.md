@@ -352,3 +352,36 @@ Every listed cell:
 **Disclosed.** The dense parts read the whole text up to their window and C0 reads the first 256 tokens, so the legs do different work per node by design, and the ratio is a ratio of the production paths, not of equal work. The pair's two parts are timed one after the other, not overlapped. The first 4,096 rows of two shards are not a random sample: STaRK nodes are ordered by type, so a KB's slices stand for the types they hold, and the three KBs are read separately for that reason. One machine, one card. Not read: the questions' encode, the CPU-side cost of building the SPLADE index or the dense matrix, storage (a node's sparse vector against its 1,152 half-precision numbers), retrieval time. Nothing is adopted or removed by this read; the decision on the SPLADE leg stays the user's.
 
 **Files.** New module `outputs/mp_unified/zleg1t.py` (commands `selftest` and `time`), declared here and committed after this section; it imports `zstk1d` and `zstk1g` and edits neither. Result record `outputs/leg1/timing_card.json`. One host card row, class `leg1t-card`, behind the end of `stk1m-spl3` (so that the card is free), with the dependency on `stk1m-first4` not required.
+
+
+## 19. Results of LEG1-A7 (15:10 IST): the SPLADE leg against the dense pair on one card (`outputs/leg1/timing_card.json`; host row `leg1t-card`, 379 s, module `zleg1t.py`, commit e1cabe42, host sha `c92fcc333092f89c`)
+
+**Run.** The row ran alone on the card as far as the feeder knows (no other GPU row of this session was running; the two peer rows and `stk1m-first4` are CPU rows); `nvidia-smi` lists 14 processes before and 15 after (one was added during the run), memory not shown under the display driver's mode, so it cannot say that no other process used the card; the row's log has no yield of the gpu guard. Texts: the first 4,096 rows of docs shards 0 and 3 of each KB, 8,192 nodes per KB, text hashes in the record; the same rows in all four arms; three repeats, arm order rotated (`gte, granite, c0_l0, c0_l5`; `granite, c0_l0, c0_l5, gte`; `c0_l0, c0_l5, gte, granite`).
+
+**What the slices hold (read after the run from the package's `type` field, decides nothing):** Prime: shard 0 is 4,096 `gene/protein` nodes and shard 3 is 4,096 `molecular_function` nodes; **MAG: all 8,192 are `author` nodes** (names; 9.7 tokens a node), none of MAG's 700,244 `paper` nodes, which are the type that holds MAG's golds; Amazon: 8,192 `product` nodes. The MAG row therefore stands for author names, not for the KB.
+
+**Rates (nodes per second, median of three repeats; tokens per node is the dense parts' count; the pair rate is 1 / (1 / gte + 1 / granite), range over the repeats beside it).**
+
+| KB (slice) | tokens a node (gte / C0) | gte | granite | pair | C0 l0 | C0 l5 | non-zeros a node (C0) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Prime (genes, functions) | 85.7 / 94.4 | 1,277 | 2,530 | 853 [751, 864] | 376 | 1,684 | 96.8 |
+| MAG (authors) | 9.7 / 9.2 | 9,973 | 18,811 | 6,518 [6,061, 7,136] | 2,165 | 4,438 | 36.0 |
+| Amazon (products) | 268.6 / 230.7 | 428 | 809 | 280 [259, 284] | 216 | 1,066 | 192.5 |
+| all 24,576 nodes (total nodes over total seconds) | | 935 | 1,779 | 613 [562, 621] | 387 | 1,714 | |
+
+**Ratios (C0 rate over the pair's rate; median [lowest, highest repeat]).**
+
+| KB | R_5 (C0 with l5 / pair) | R_0 (C0 at l0 / pair) | l5 over l0 (C0's own rates) |
+| --- | --- | --- | --- |
+| Prime | **1.99** [1.94, 2.24] | 0.44 [0.44, 0.48] | 4.5 |
+| MAG (authors) | **0.71** [0.62, 0.72] | 0.34 [0.26, 0.36] | 2.0 |
+| Amazon | **3.81** [3.76, 4.09] | 0.77 [0.76, 0.84] | 4.9 |
+| all 24,576 | **2.77** [2.76, 3.05] | 0.63 [0.63, 0.67] | 4.4 |
+
+**Expectations.** **T1 (R_5 above 1 on every KB): NOT held** (MAG's authors 0.71, and all three repeats are below 1: 0.72, 0.62, 0.71; Prime and Amazon hold in every repeat). **T2 (R_0 below 1 on every KB): held** (every repeat of every KB is below 1; the highest is 0.84, Amazon). **T3 (pooled R_5 between 1.5 and 3.0): held on the median** (2.77; the first repeat's 3.05 is above 3.0). **T4 (information): not held**: Prime's gte makes 1,277 nodes per second against G-V's 749 (+70 percent) and granite 2,530 against 1,240 (+104 percent); G-V ran with other rows on the card (section 18), so the pair is about 1.7 to 2.0 times faster here than the gate's rates.
+
+**The reading, in the cost's own terms.** With the lever l5 the SPLADE leg makes nodes **2.0 times (Prime) and 3.8 times (Amazon) as fast as the dense pair** on long and medium texts and **0.71 times as fast on author names**; with no lever it is dearer than the pair on all three (0.34 to 0.77 times). The lever is worth 4.5 to 4.9 times on long texts and 2.0 times on short ones. C0 at l5 is about as fast as granite alone on the pooled nodes (1,714 against 1,779) and 1.8 times faster than gte alone (935). **The belief that the SPLADE leg takes the same time or more than the dense encode holds for C0 without the lever and for short texts; it does not hold for C0 with l5 on texts of Prime's or Amazon's length.** Beside it, the pool read of section 16 puts the loss of dropping the leg at +0.9 to +1.8 points of coverage on four datasets (NEEDED on SQuAD only); that number is not part of this section, and nothing is adopted or removed here.
+
+**Disclosed (beside section 18's).** (1) The slices stand for the first types of each KB, and MAG's stand for authors only, so no whole-KB time is computed from them: MAG's papers (700,244 nodes, long abstracts) are the missing read, and a rate for them is not inferred from Amazon's (the leg's own production log, about 1,000 nodes per second over all 1.87 million nodes, mixes the two types). (2) The dense parts read the whole text up to their window and C0 reads the first 256 tokens (Amazon's mean 268.6 against 230.7), so the ratio is of production paths, not of equal work; the dense parts are float16 with longest-first batching, C0 at l0 is float32. (3) The two dense parts are timed one after the other, as section 18 says; run on two cards or overlapped, the pair would be faster. (4) The leg's production block also builds the sparse vectors and merges the top lists, which this timing leaves out. (5) The MAG dense timings are 0.4 to 0.9 seconds per arm, so its rates carry the most noise (the highest repeat is 18 percent above the lowest for the pair). (6) One machine, one card, one day.
+
+**What this section does not show.** The cost of the leg on MAG's papers; the question side's encode; the size on disk (a node's 96.8 or 192.5 non-zeros against the dense pair's 1,152 half-precision numbers); the cost of the first-stage fusion; whether the leg is needed (section 16 is the only read of that, on four datasets). **Nothing is adopted, removed or deleted; the decision on the SPLADE leg stays the user's.**
