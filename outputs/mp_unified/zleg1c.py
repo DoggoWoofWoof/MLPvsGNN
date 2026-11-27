@@ -2,6 +2,7 @@
 
     python -E -P -B outputs/mp_unified/zleg1c.py selftest
     python -E -P -B outputs/mp_unified/zleg1c.py caps --ds multihoprag|squad     # laptop; reads outputs/leg1/vec/<ds> (fetched from the host) and the record's e3v list; writes outputs/leg1/caps_<ds>.json
+    python -E -P -B outputs/mp_unified/zleg1c.py gate --ds squad                 # LEG1-A2 (section 9): G-B0c, the stored unmodified vectors' list against the record's C0 list; writes outputs/leg1/gate_gb0c_<ds>.json
     python -E -P -B outputs/mp_unified/zleg1c.py mix --ds multihoprag            # LEG1-A1 (section 7): the link-mixed vectors, 18 arms, the dev half picks, the held-out half calls; writes outputs/leg1/mix_<ds>.json
 
 Run from the workspace root. zspl1.py, zspl1l.py, zleg1b.py, zul2p.py (load_mhr) and zenc.py are imported and edited nowhere.
@@ -21,6 +22,7 @@ import zleg1b as B  # noqa: E402
 import zspl1 as S  # noqa: E402
 
 DOC = "docs/LEG1_LEG_NECESSITY.md section 3"
+DOC_A2 = "docs/LEG1_LEG_NECESSITY.md section 9 (LEG1-A2)"
 OUT = S.WS / "outputs" / "leg1"
 DOC_CAPS = (128, 64, 32)
 Q_CAPS = (32, 16, 8)
@@ -29,6 +31,8 @@ ALPHAS = (0.25, 0.5, 1.0)          # LEG1-A1: the weight of the neighbours' mean
 GRAPHS = ("R", "K", "RK")          # LEG1-A1: the rule links CN_all, the e3v kNN pairs Ke, their union
 MIX_CAP = 128                      # LEG1-A1: the document cap of the capped arms
 NOT_WORSE = -1.0                   # LEG1-A1: not WORSE = the lower end at least this
+GATE_C_PTS = -0.5                  # LEG1-A2: G-B0c passes if the lower end of (stored - record) is at least this on the leg's R@20 and on the seeds
+GATE_C_CELLS = ("leg20", "seeds")
 log, stop = S.log, S.stop
 
 
@@ -79,21 +83,64 @@ def reads_of_list(E, dense, leg, flat, off, gt, n):
     return r
 
 
+def gate_c_call(los):
+    """LEG1-A2: G-B0c passes if every lower end is at least GATE_C_PTS."""
+    return bool(min(los) >= GATE_C_PTS)
+
+
+def load_gate(d, ds, meta):
+    """The gate under which the stored vectors of a dataset may be read: G-B0 if it passed, else a passed G-B0c file (LEG1-A2); else stop."""
+    if meta is not None and meta["gate_gb0"]["pass"]:
+        return {"gate_gb0": meta["gate_gb0"]}
+    f = OUT / f"gate_gb0c_{ds}.json"
+    if meta is not None and f.is_file():
+        g = json.loads(f.read_text(encoding="utf-8"))
+        if g.get("pass"):
+            return {"gate_gb0": meta["gate_gb0"], "gate_gb0c": g}
+    stop(f"{ds}: no vectors, or neither G-B0 nor G-B0c passed: nothing is read")
+
+
+def cmd_gate(a):
+    import scipy.sparse as sp
+    import zenc as E
+    t0 = time.time()
+    d = OUT / "vec" / a.ds
+    meta = json.loads((d / "meta.json").read_text(encoding="utf-8")) if (d / "meta.json").is_file() else None
+    if meta is None:
+        stop(f"{a.ds}: no stored vectors")
+    if meta["gate_gb0"]["pass"]:
+        stop(f"{a.ds}: G-B0 passed; G-B0c is the replacement for a failed G-B0 only")
+    c = S.context(E, a.ds)
+    n, dense = c["w"].n, c["dense"]
+    Qm, Dm = B.load_shards(sp, d, "q", len(c["rows"])), B.load_shards(sp, d, "d", n)
+    mine = topk(sp, Qm, Dm, 1000)
+    r_mine = reads_of_list(E, dense, mine, c["flat"], c["off"], c["gt"], n)
+    r_rec = reads_of_list(E, dense, c["c0"], c["flat"], c["off"], c["gt"], n)
+    res = {"stage": "LEG1 G-B0c", "declared_in": DOC_A2, "ds": a.ds, "questions": int(len(c["rows"])), "nodes": int(n), "gate_gb0": meta["gate_gb0"], "line_pts": GATE_C_PTS, "cells": {}}
+    for k in GATE_C_CELLS:
+        dm, lo, hi = S.boot(r_mine[k] - r_rec[k])
+        res["cells"][k] = {"record": round(float(r_rec[k].mean() * 100), 3), "stored": round(float(r_mine[k].mean() * 100), 3), "diff": round(dm, 3), "lo": round(lo, 3), "hi": round(hi, 3)}
+        log(f"  {a.ds} {k}: record {res['cells'][k]['record']:.3f}, stored {res['cells'][k]['stored']:.3f}, stored - record {dm:+.3f} [{lo:+.3f}, {hi:+.3f}]")
+    res["pass"] = gate_c_call([res["cells"][k]["lo"] for k in GATE_C_CELLS])
+    res["seconds"] = round(time.time() - t0, 1)
+    S.wjson(OUT / f"gate_gb0c_{a.ds}.json", res)
+    log(f"G-B0c on {a.ds}: {'PASS' if res['pass'] else 'FAIL, part B is closed on this dataset'}")
+
+
 def cmd_caps(a):
     import scipy.sparse as sp
     import zenc as E
     t0 = time.time()
     d = OUT / "vec" / a.ds
     meta = json.loads((d / "meta.json").read_text(encoding="utf-8")) if (d / "meta.json").is_file() else None
-    if meta is None or not meta["gate_gb0"]["pass"]:
-        stop(f"{a.ds}: no vectors or G-B0 did not pass: nothing is read")
+    gates = load_gate(d, a.ds, meta)
     c = S.context(E, a.ds)
     n, dense = c["w"].n, c["dense"]
     Qm, Dm = B.load_shards(sp, d, "q", len(c["rows"])), B.load_shards(sp, d, "d", n)
     ref_leg = topk(sp, Qm, Dm, 1000)
     ref_r = reads_of_list(E, dense, ref_leg, c["flat"], c["off"], c["gt"], n)
     log(f"{a.ds}: reference read in {time.time() - t0:.0f} s: " + json.dumps({k: round(float(v.mean() * 100), 3) for k, v in ref_r.items()}))
-    res = {"stage": "LEG1 part B caps", "declared_in": DOC, "ds": a.ds, "questions": int(len(c["rows"])), "nodes": int(n), "gate_gb0": meta["gate_gb0"],
+    res = {"stage": "LEG1 part B caps", "declared_in": DOC, "ds": a.ds, "questions": int(len(c["rows"])), "nodes": int(n), **gates,
            "reference": {"level": {k: round(float(v.mean() * 100), 3) for k, v in ref_r.items()}, "doc_nnz_mean": round(Dm.nnz / n, 2), "query_nnz_mean": round(Qm.nnz / Qm.shape[0], 2)}, "arms": {}}
     arms = [(f"doc{k}", k, None) for k in DOC_CAPS] + [(f"query{k}", None, k) for k in Q_CAPS]
     for name, kd, kq in arms:
@@ -235,6 +282,7 @@ def selftest():
     t2 = topk(sp, Q2, Dm2, 3, block=1)
     chk("topk breaks an all-tie by node id (the argpartition shortcut keeps every tied node)", t2.tolist() == [[0, 1, 2], [0, 1, 2]])
     chk("FREE needs a lower end of -1.0 or better", FREE_PTS == -1.0)
+    chk("G-B0c: every lower end of at least -0.5 passes, one below fails", gate_c_call([-0.5, 0.2]) and not gate_c_call([-0.49, -0.51]) and GATE_C_PTS == -0.5 and GATE_C_CELLS == ("leg20", "seeds"))
     n = 4
     keys = np.array([0 * n + 1, 1 * n + 2], np.int64)                 # pairs (0,1) and (1,2); node 3 is alone
     A = adjacency(sp, keys, n)
@@ -250,7 +298,7 @@ def selftest():
     chk("the arms: 3 graphs x 3 weights x 2 sizes = 18", len(GRAPHS) * len(ALPHAS) * 2 == 18)
     if bad:
         raise SystemExit(f"zleg1c: selftest FAILED ({bad})")
-    log("selftest PASS (11 checks)")
+    log("selftest PASS (12 checks)")
 
 
 def main():
@@ -260,6 +308,9 @@ def main():
     g = sub.add_parser("caps")
     g.add_argument("--ds", required=True, choices=("multihoprag", "squad"))
     g.set_defaults(fn=cmd_caps)
+    gt = sub.add_parser("gate")
+    gt.add_argument("--ds", required=True)
+    gt.set_defaults(fn=cmd_gate)
     m = sub.add_parser("mix")
     m.add_argument("--ds", required=True)
     m.set_defaults(fn=cmd_mix)
