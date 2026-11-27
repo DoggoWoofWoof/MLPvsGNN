@@ -1,0 +1,326 @@
+{
+ "stage": "LEG1 part B caps",
+ "declared_in": "docs/LEG1_LEG_NECESSITY.md section 3",
+ "ds": "metaqa",
+ "questions": 9785,
+ "nodes": 43234,
+ "gate_gb0": {
+  "top5_same_sequence_share": 0.95483,
+  "top5_same_set_share": 0.98406,
+  "min_share": 0.99,
+  "pass": false,
+  "information_only": true
+ },
+ "gate_gb0c": {
+  "stage": "LEG1 G-B0c",
+  "declared_in": "docs/LEG1_LEG_NECESSITY.md section 11 (LEG1-A3)",
+  "ds": "metaqa",
+  "questions": 9785,
+  "nodes": 43234,
+  "gate_gb0": {
+   "top5_same_sequence_share": 0.95483,
+   "top5_same_set_share": 0.98406,
+   "min_share": 0.99,
+   "pass": false,
+   "information_only": true
+  },
+  "line_pts": -0.5,
+  "cells": {
+   "leg20": {
+    "record": 0.553,
+    "stored": 0.554,
+    "diff": 0.001,
+    "lo": -0.003,
+    "hi": 0.006
+   },
+   "seeds": {
+    "record": 0.694,
+    "stored": 0.694,
+    "diff": 0.0,
+    "lo": 0.0,
+    "hi": 0.0
+   }
+  },
+  "reference_reads_stored": {
+   "rrf5": 0.449,
+   "rrf20": 1.24,
+   "seeds": 0.694,
+   "leg20": 0.554,
+   "leg1000": 29.201
+  },
+  "pass": true,
+  "seconds": 107.1
+ },
+ "reference": {
+  "level": {
+   "rrf5": 0.449,
+   "rrf20": 1.24,
+   "seeds": 0.694,
+   "leg20": 0.554,
+   "leg1000": 29.201
+  },
+  "doc_nnz_mean": 40.82,
+  "query_nnz_mean": 41.94
+ },
+ "arms": {
+  "doc128": {
+   "doc_nnz_mean": 40.82,
+   "query_nnz_mean": 41.94,
+   "reads": {
+    "rrf5": {
+     "level": 0.449,
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "rrf20": {
+     "level": 1.24,
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "seeds": {
+     "level": 0.694,
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "leg20": {
+     "level": 0.554,
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "leg1000": {
+     "level": 29.201,
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    }
+   },
+   "call": "FREE",
+   "worst_lo": 0.0
+  },
+  "doc64": {
+   "doc_nnz_mean": 39.81,
+   "query_nnz_mean": 41.94,
+   "reads": {
+    "rrf5": {
+     "level": 0.445,
+     "diff": -0.003,
+     "lo": -0.01,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "rrf20": {
+     "level": 1.24,
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "seeds": {
+     "level": 0.694,
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "leg20": {
+     "level": 0.552,
+     "diff": -0.002,
+     "lo": -0.006,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "leg1000": {
+     "level": 29.138,
+     "diff": -0.063,
+     "lo": -0.108,
+     "hi": -0.019,
+     "call": "LEVEL"
+    }
+   },
+   "call": "FREE",
+   "worst_lo": -0.108
+  },
+  "doc32": {
+   "doc_nnz_mean": 29.4,
+   "query_nnz_mean": 41.94,
+   "reads": {
+    "rrf5": {
+     "level": 0.448,
+     "diff": -0.0,
+     "lo": -0.005,
+     "hi": 0.003,
+     "call": "LEVEL"
+    },
+    "rrf20": {
+     "level": 1.25,
+     "diff": 0.011,
+     "lo": -0.02,
+     "hi": 0.042,
+     "call": "LEVEL"
+    },
+    "seeds": {
+     "level": 0.704,
+     "diff": 0.01,
+     "lo": 0.0,
+     "hi": 0.031,
+     "call": "LEVEL"
+    },
+    "leg20": {
+     "level": 0.541,
+     "diff": -0.012,
+     "lo": -0.035,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "leg1000": {
+     "level": 28.584,
+     "diff": -0.616,
+     "lo": -0.763,
+     "hi": -0.481,
+     "call": "LEVEL"
+    }
+   },
+   "call": "FREE",
+   "worst_lo": -0.763
+  },
+  "query32": {
+   "doc_nnz_mean": 40.82,
+   "query_nnz_mean": 31.85,
+   "reads": {
+    "rrf5": {
+     "level": 0.449,
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "rrf20": {
+     "level": 1.238,
+     "diff": -0.002,
+     "lo": -0.033,
+     "hi": 0.032,
+     "call": "LEVEL"
+    },
+    "seeds": {
+     "level": 0.694,
+     "diff": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "leg20": {
+     "level": 0.531,
+     "diff": -0.022,
+     "lo": -0.055,
+     "hi": 0.0,
+     "call": "LEVEL"
+    },
+    "leg1000": {
+     "level": 29.351,
+     "diff": 0.15,
+     "lo": 0.049,
+     "hi": 0.265,
+     "call": "BETTER"
+    }
+   },
+   "call": "FREE",
+   "worst_lo": -0.055
+  },
+  "query16": {
+   "doc_nnz_mean": 40.82,
+   "query_nnz_mean": 16.0,
+   "reads": {
+    "rrf5": {
+     "level": 0.413,
+     "diff": -0.036,
+     "lo": -0.078,
+     "hi": -0.004,
+     "call": "LEVEL"
+    },
+    "rrf20": {
+     "level": 1.193,
+     "diff": -0.047,
+     "lo": -0.104,
+     "hi": 0.011,
+     "call": "LEVEL"
+    },
+    "seeds": {
+     "level": 0.694,
+     "diff": 0.001,
+     "lo": 0.0,
+     "hi": 0.002,
+     "call": "LEVEL"
+    },
+    "leg20": {
+     "level": 0.481,
+     "diff": -0.073,
+     "lo": -0.133,
+     "hi": -0.022,
+     "call": "LEVEL"
+    },
+    "leg1000": {
+     "level": 30.59,
+     "diff": 1.389,
+     "lo": 1.079,
+     "hi": 1.692,
+     "call": "BETTER"
+    }
+   },
+   "call": "FREE",
+   "worst_lo": -0.133
+  },
+  "query8": {
+   "doc_nnz_mean": 40.82,
+   "query_nnz_mean": 8.0,
+   "reads": {
+    "rrf5": {
+     "level": 0.47,
+     "diff": 0.021,
+     "lo": -0.049,
+     "hi": 0.089,
+     "call": "LEVEL"
+    },
+    "rrf20": {
+     "level": 1.396,
+     "diff": 0.157,
+     "lo": 0.044,
+     "hi": 0.269,
+     "call": "BETTER"
+    },
+    "seeds": {
+     "level": 0.69,
+     "diff": -0.004,
+     "lo": -0.012,
+     "hi": 0.001,
+     "call": "LEVEL"
+    },
+    "leg20": {
+     "level": 0.562,
+     "diff": 0.009,
+     "lo": -0.079,
+     "hi": 0.097,
+     "call": "LEVEL"
+    },
+    "leg1000": {
+     "level": 30.817,
+     "diff": 1.617,
+     "lo": 1.15,
+     "hi": 2.142,
+     "call": "BETTER"
+    }
+   },
+   "call": "FREE",
+   "worst_lo": -0.079
+  }
+ },
+ "seconds": 390.8
+}

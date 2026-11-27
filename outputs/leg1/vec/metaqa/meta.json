@@ -1,0 +1,32 @@
+{
+ "stage": "LEG1 part B vectors (A3)",
+ "declared_in": "docs/LEG1_LEG_NECESSITY.md section 11 (LEG1-A3)",
+ "ds": "metaqa",
+ "nodes": 43234,
+ "questions": 9785,
+ "device": "cpu",
+ "threads": 4,
+ "doc_nnz_total": 1764863,
+ "doc_nnz_mean": 40.82,
+ "query_nnz_mean": 41.94,
+ "gate_gb0": {
+  "top5_same_sequence_share": 0.95483,
+  "top5_same_set_share": 0.98406,
+  "min_share": 0.99,
+  "pass": false,
+  "information_only": true
+ },
+ "encode_seconds_this_run": {
+  "questions": 274.6,
+  "nodes": 661.3
+ },
+ "seconds": 968.1,
+ "versions": {
+  "torch": "2.8.0+cpu",
+  "transformers": "4.57.3"
+ },
+ "sha256": {
+  "doc_shard0": "318c7a031aee364dd41ecaf66d99bc29bb27a2b28eb9c5f1899a52ee8db031d3",
+  "q_shard0": "c080249dad7b8d922b6381ec73922d6fb6235d0eac5e76988ad54982164c4b02"
+ }
+}

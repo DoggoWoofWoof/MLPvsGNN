@@ -1,0 +1,633 @@
+{
+ "stage": "LEG1 part B3 mix (A3)",
+ "declared_in": "docs/LEG1_LEG_NECESSITY.md section 11 (LEG1-A3)",
+ "ds": "metaqa",
+ "questions": 9785,
+ "dev": 4893,
+ "held": 4892,
+ "nodes": 43234,
+ "links": {
+  "S": 124669,
+  "R": 12605,
+  "K": 96650,
+  "SRK": 229774
+ },
+ "gate_gb0": {
+  "top5_same_sequence_share": 0.95483,
+  "top5_same_set_share": 0.98406,
+  "min_share": 0.99,
+  "pass": false,
+  "information_only": true
+ },
+ "gate_gb0c_file": "gate_gb0c_metaqa.json",
+ "reference": {
+  "dev": {
+   "rrf5": 0.488,
+   "rrf20": 1.298,
+   "seeds": 0.751,
+   "leg20": 0.583,
+   "leg1000": 29.436
+  },
+  "held": {
+   "rrf5": 0.41,
+   "rrf20": 1.182,
+   "seeds": 0.637,
+   "leg20": 0.525,
+   "leg1000": 28.965
+  },
+  "doc_nnz_mean": 40.82
+ },
+ "arms": {
+  "S_a0.25_full": {
+   "graph": "S",
+   "alpha": 0.25,
+   "size": "full",
+   "doc_nnz_mean": 205.78,
+   "nodes_changed": 43234,
+   "dev": {
+    "rrf5": 0.546,
+    "rrf20": 1.375,
+    "seeds": 0.783,
+    "leg20": 0.825,
+    "leg1000": 33.234
+   },
+   "held": {
+    "rrf5": 0.448,
+    "rrf20": 1.213,
+    "seeds": 0.637,
+    "leg20": 0.71,
+    "leg1000": 32.975
+   },
+   "leg20_golds_recovered_per_question": 0.0031,
+   "leg20_golds_lost_per_question": 0.0004
+  },
+  "S_a0.25_cap128": {
+   "graph": "S",
+   "alpha": 0.25,
+   "size": "cap128",
+   "doc_nnz_mean": 111.66,
+   "nodes_changed": 43234,
+   "dev": {
+    "rrf5": 0.546,
+    "rrf20": 1.37,
+    "seeds": 0.783,
+    "leg20": 0.825,
+    "leg1000": 33.069
+   },
+   "held": {
+    "rrf5": 0.441,
+    "rrf20": 1.203,
+    "seeds": 0.637,
+    "leg20": 0.71,
+    "leg1000": 32.635
+   },
+   "leg20_golds_recovered_per_question": 0.0031,
+   "leg20_golds_lost_per_question": 0.0004
+  },
+  "S_a0.5_full": {
+   "graph": "S",
+   "alpha": 0.5,
+   "size": "full",
+   "doc_nnz_mean": 205.78,
+   "nodes_changed": 43234,
+   "dev": {
+    "rrf5": 0.576,
+    "rrf20": 1.512,
+    "seeds": 1.279,
+    "leg20": 2.679,
+    "leg1000": 33.539
+   },
+   "held": {
+    "rrf5": 0.409,
+    "rrf20": 1.427,
+    "seeds": 1.195,
+    "leg20": 2.044,
+    "leg1000": 32.624
+   },
+   "leg20_golds_recovered_per_question": 0.0298,
+   "leg20_golds_lost_per_question": 0.0009
+  },
+  "S_a0.5_cap128": {
+   "graph": "S",
+   "alpha": 0.5,
+   "size": "cap128",
+   "doc_nnz_mean": 111.66,
+   "nodes_changed": 43234,
+   "dev": {
+    "rrf5": 0.576,
+    "rrf20": 1.491,
+    "seeds": 1.299,
+    "leg20": 2.71,
+    "leg1000": 32.876
+   },
+   "held": {
+    "rrf5": 0.429,
+    "rrf20": 1.447,
+    "seeds": 1.195,
+    "leg20": 2.044,
+    "leg1000": 32.178
+   },
+   "leg20_golds_recovered_per_question": 0.03,
+   "leg20_golds_lost_per_question": 0.0009
+  },
+  "S_a1.0_full": {
+   "graph": "S",
+   "alpha": 1.0,
+   "size": "full",
+   "doc_nnz_mean": 205.78,
+   "nodes_changed": 43234,
+   "dev": {
+    "rrf5": 0.567,
+    "rrf20": 2.26,
+    "seeds": 3.326,
+    "leg20": 4.3,
+    "leg1000": 29.823
+   },
+   "held": {
+    "rrf5": 0.407,
+    "rrf20": 1.831,
+    "seeds": 2.813,
+    "leg20": 3.647,
+    "leg1000": 29.172
+   },
+   "leg20_golds_recovered_per_question": 0.0572,
+   "leg20_golds_lost_per_question": 0.0034
+  },
+  "S_a1.0_cap128": {
+   "graph": "S",
+   "alpha": 1.0,
+   "size": "cap128",
+   "doc_nnz_mean": 111.66,
+   "nodes_changed": 43234,
+   "dev": {
+    "rrf5": 0.567,
+    "rrf20": 2.259,
+    "seeds": 3.347,
+    "leg20": 4.32,
+    "leg1000": 28.756
+   },
+   "held": {
+    "rrf5": 0.414,
+    "rrf20": 1.851,
+    "seeds": 2.813,
+    "leg20": 3.647,
+    "leg1000": 28.066
+   },
+   "leg20_golds_recovered_per_question": 0.0574,
+   "leg20_golds_lost_per_question": 0.0035
+  },
+  "R_a0.25_full": {
+   "graph": "R",
+   "alpha": 0.25,
+   "size": "full",
+   "doc_nnz_mean": 53.89,
+   "nodes_changed": 4221,
+   "dev": {
+    "rrf5": 0.501,
+    "rrf20": 1.358,
+    "seeds": 0.742,
+    "leg20": 0.573,
+    "leg1000": 28.923
+   },
+   "held": {
+    "rrf5": 0.414,
+    "rrf20": 1.212,
+    "seeds": 0.65,
+    "leg20": 0.541,
+    "leg1000": 28.481
+   },
+   "leg20_golds_recovered_per_question": 0.001,
+   "leg20_golds_lost_per_question": 0.0014
+  },
+  "R_a0.25_cap128": {
+   "graph": "R",
+   "alpha": 0.25,
+   "size": "cap128",
+   "doc_nnz_mean": 46.26,
+   "nodes_changed": 4221,
+   "dev": {
+    "rrf5": 0.501,
+    "rrf20": 1.358,
+    "seeds": 0.742,
+    "leg20": 0.573,
+    "leg1000": 28.96
+   },
+   "held": {
+    "rrf5": 0.414,
+    "rrf20": 1.212,
+    "seeds": 0.65,
+    "leg20": 0.541,
+    "leg1000": 28.485
+   },
+   "leg20_golds_recovered_per_question": 0.001,
+   "leg20_golds_lost_per_question": 0.0014
+  },
+  "R_a0.5_full": {
+   "graph": "R",
+   "alpha": 0.5,
+   "size": "full",
+   "doc_nnz_mean": 53.89,
+   "nodes_changed": 4221,
+   "dev": {
+    "rrf5": 0.487,
+    "rrf20": 1.35,
+    "seeds": 0.746,
+    "leg20": 0.642,
+    "leg1000": 27.958
+   },
+   "held": {
+    "rrf5": 0.462,
+    "rrf20": 1.312,
+    "seeds": 0.667,
+    "leg20": 0.465,
+    "leg1000": 27.44
+   },
+   "leg20_golds_recovered_per_question": 0.0022,
+   "leg20_golds_lost_per_question": 0.003
+  },
+  "R_a0.5_cap128": {
+   "graph": "R",
+   "alpha": 0.5,
+   "size": "cap128",
+   "doc_nnz_mean": 46.26,
+   "nodes_changed": 4221,
+   "dev": {
+    "rrf5": 0.487,
+    "rrf20": 1.36,
+    "seeds": 0.746,
+    "leg20": 0.642,
+    "leg1000": 27.998
+   },
+   "held": {
+    "rrf5": 0.462,
+    "rrf20": 1.311,
+    "seeds": 0.667,
+    "leg20": 0.465,
+    "leg1000": 27.449
+   },
+   "leg20_golds_recovered_per_question": 0.0022,
+   "leg20_golds_lost_per_question": 0.003
+  },
+  "R_a1.0_full": {
+   "graph": "R",
+   "alpha": 1.0,
+   "size": "full",
+   "doc_nnz_mean": 53.89,
+   "nodes_changed": 4221,
+   "dev": {
+    "rrf5": 0.496,
+    "rrf20": 1.295,
+    "seeds": 0.749,
+    "leg20": 0.711,
+    "leg1000": 25.156
+   },
+   "held": {
+    "rrf5": 0.495,
+    "rrf20": 1.274,
+    "seeds": 0.701,
+    "leg20": 0.516,
+    "leg1000": 24.767
+   },
+   "leg20_golds_recovered_per_question": 0.0069,
+   "leg20_golds_lost_per_question": 0.0045
+  },
+  "R_a1.0_cap128": {
+   "graph": "R",
+   "alpha": 1.0,
+   "size": "cap128",
+   "doc_nnz_mean": 46.26,
+   "nodes_changed": 4221,
+   "dev": {
+    "rrf5": 0.496,
+    "rrf20": 1.294,
+    "seeds": 0.749,
+    "leg20": 0.712,
+    "leg1000": 25.227
+   },
+   "held": {
+    "rrf5": 0.488,
+    "rrf20": 1.274,
+    "seeds": 0.701,
+    "leg20": 0.516,
+    "leg1000": 24.848
+   },
+   "leg20_golds_recovered_per_question": 0.0069,
+   "leg20_golds_lost_per_question": 0.0044
+  },
+  "K_a0.25_full": {
+   "graph": "K",
+   "alpha": 0.25,
+   "size": "full",
+   "doc_nnz_mean": 129.58,
+   "nodes_changed": 43234,
+   "dev": {
+    "rrf5": 0.505,
+    "rrf20": 1.326,
+    "seeds": 0.773,
+    "leg20": 0.582,
+    "leg1000": 30.658
+   },
+   "held": {
+    "rrf5": 0.44,
+    "rrf20": 1.193,
+    "seeds": 0.635,
+    "leg20": 0.546,
+    "leg1000": 30.227
+   },
+   "leg20_golds_recovered_per_question": 0.0015,
+   "leg20_golds_lost_per_question": 0.0009
+  },
+  "K_a0.25_cap128": {
+   "graph": "K",
+   "alpha": 0.25,
+   "size": "cap128",
+   "doc_nnz_mean": 103.59,
+   "nodes_changed": 43234,
+   "dev": {
+    "rrf5": 0.505,
+    "rrf20": 1.326,
+    "seeds": 0.773,
+    "leg20": 0.582,
+    "leg1000": 30.631
+   },
+   "held": {
+    "rrf5": 0.44,
+    "rrf20": 1.193,
+    "seeds": 0.635,
+    "leg20": 0.546,
+    "leg1000": 30.198
+   },
+   "leg20_golds_recovered_per_question": 0.0015,
+   "leg20_golds_lost_per_question": 0.0009
+  },
+  "K_a0.5_full": {
+   "graph": "K",
+   "alpha": 0.5,
+   "size": "full",
+   "doc_nnz_mean": 129.58,
+   "nodes_changed": 43234,
+   "dev": {
+    "rrf5": 0.476,
+    "rrf20": 1.352,
+    "seeds": 0.774,
+    "leg20": 0.549,
+    "leg1000": 31.564
+   },
+   "held": {
+    "rrf5": 0.439,
+    "rrf20": 1.217,
+    "seeds": 0.652,
+    "leg20": 0.465,
+    "leg1000": 31.013
+   },
+   "leg20_golds_recovered_per_question": 0.0017,
+   "leg20_golds_lost_per_question": 0.002
+  },
+  "K_a0.5_cap128": {
+   "graph": "K",
+   "alpha": 0.5,
+   "size": "cap128",
+   "doc_nnz_mean": 103.59,
+   "nodes_changed": 43234,
+   "dev": {
+    "rrf5": 0.476,
+    "rrf20": 1.352,
+    "seeds": 0.774,
+    "leg20": 0.549,
+    "leg1000": 31.503
+   },
+   "held": {
+    "rrf5": 0.439,
+    "rrf20": 1.227,
+    "seeds": 0.655,
+    "leg20": 0.465,
+    "leg1000": 30.994
+   },
+   "leg20_golds_recovered_per_question": 0.0017,
+   "leg20_golds_lost_per_question": 0.002
+  },
+  "K_a1.0_full": {
+   "graph": "K",
+   "alpha": 1.0,
+   "size": "full",
+   "doc_nnz_mean": 129.58,
+   "nodes_changed": 43234,
+   "dev": {
+    "rrf5": 0.468,
+    "rrf20": 1.322,
+    "seeds": 0.774,
+    "leg20": 0.523,
+    "leg1000": 32.126
+   },
+   "held": {
+    "rrf5": 0.461,
+    "rrf20": 1.308,
+    "seeds": 0.625,
+    "leg20": 0.458,
+    "leg1000": 31.75
+   },
+   "leg20_golds_recovered_per_question": 0.0022,
+   "leg20_golds_lost_per_question": 0.0026
+  },
+  "K_a1.0_cap128": {
+   "graph": "K",
+   "alpha": 1.0,
+   "size": "cap128",
+   "doc_nnz_mean": 103.59,
+   "nodes_changed": 43234,
+   "dev": {
+    "rrf5": 0.468,
+    "rrf20": 1.322,
+    "seeds": 0.774,
+    "leg20": 0.523,
+    "leg1000": 32.052
+   },
+   "held": {
+    "rrf5": 0.461,
+    "rrf20": 1.308,
+    "seeds": 0.625,
+    "leg20": 0.458,
+    "leg1000": 31.636
+   },
+   "leg20_golds_recovered_per_question": 0.0022,
+   "leg20_golds_lost_per_question": 0.0026
+  },
+  "SRK_a0.25_full": {
+   "graph": "SRK",
+   "alpha": 0.25,
+   "size": "full",
+   "doc_nnz_mean": 285.18,
+   "nodes_changed": 43234,
+   "dev": {
+    "rrf5": 0.486,
+    "rrf20": 1.272,
+    "seeds": 0.763,
+    "leg20": 0.527,
+    "leg1000": 29.476
+   },
+   "held": {
+    "rrf5": 0.435,
+    "rrf20": 1.118,
+    "seeds": 0.637,
+    "leg20": 0.463,
+    "leg1000": 29.22
+   },
+   "leg20_golds_recovered_per_question": 0.0003,
+   "leg20_golds_lost_per_question": 0.0013
+  },
+  "SRK_a0.25_cap128": {
+   "graph": "SRK",
+   "alpha": 0.25,
+   "size": "cap128",
+   "doc_nnz_mean": 125.65,
+   "nodes_changed": 43234,
+   "dev": {
+    "rrf5": 0.486,
+    "rrf20": 1.272,
+    "seeds": 0.763,
+    "leg20": 0.527,
+    "leg1000": 29.354
+   },
+   "held": {
+    "rrf5": 0.414,
+    "rrf20": 1.118,
+    "seeds": 0.637,
+    "leg20": 0.463,
+    "leg1000": 29.045
+   },
+   "leg20_golds_recovered_per_question": 0.0003,
+   "leg20_golds_lost_per_question": 0.0013
+  },
+  "SRK_a0.5_full": {
+   "graph": "SRK",
+   "alpha": 0.5,
+   "size": "full",
+   "doc_nnz_mean": 285.18,
+   "nodes_changed": 43234,
+   "dev": {
+    "rrf5": 0.446,
+    "rrf20": 1.21,
+    "seeds": 0.766,
+    "leg20": 0.518,
+    "leg1000": 30.53
+   },
+   "held": {
+    "rrf5": 0.397,
+    "rrf20": 1.08,
+    "seeds": 0.63,
+    "leg20": 0.463,
+    "leg1000": 30.282
+   },
+   "leg20_golds_recovered_per_question": 0.0011,
+   "leg20_golds_lost_per_question": 0.0022
+  },
+  "SRK_a0.5_cap128": {
+   "graph": "SRK",
+   "alpha": 0.5,
+   "size": "cap128",
+   "doc_nnz_mean": 125.65,
+   "nodes_changed": 43234,
+   "dev": {
+    "rrf5": 0.437,
+    "rrf20": 1.21,
+    "seeds": 0.766,
+    "leg20": 0.518,
+    "leg1000": 30.286
+   },
+   "held": {
+    "rrf5": 0.398,
+    "rrf20": 1.079,
+    "seeds": 0.632,
+    "leg20": 0.463,
+    "leg1000": 30.011
+   },
+   "leg20_golds_recovered_per_question": 0.0011,
+   "leg20_golds_lost_per_question": 0.0022
+  },
+  "SRK_a1.0_full": {
+   "graph": "SRK",
+   "alpha": 1.0,
+   "size": "full",
+   "doc_nnz_mean": 285.18,
+   "nodes_changed": 43234,
+   "dev": {
+    "rrf5": 0.378,
+    "rrf20": 1.147,
+    "seeds": 0.791,
+    "leg20": 0.555,
+    "leg1000": 30.308
+   },
+   "held": {
+    "rrf5": 0.347,
+    "rrf20": 1.095,
+    "seeds": 0.633,
+    "leg20": 0.43,
+    "leg1000": 30.088
+   },
+   "leg20_golds_recovered_per_question": 0.0024,
+   "leg20_golds_lost_per_question": 0.0041
+  },
+  "SRK_a1.0_cap128": {
+   "graph": "SRK",
+   "alpha": 1.0,
+   "size": "cap128",
+   "doc_nnz_mean": 125.65,
+   "nodes_changed": 43234,
+   "dev": {
+    "rrf5": 0.378,
+    "rrf20": 1.127,
+    "seeds": 0.791,
+    "leg20": 0.555,
+    "leg1000": 29.646
+   },
+   "held": {
+    "rrf5": 0.347,
+    "rrf20": 1.078,
+    "seeds": 0.633,
+    "leg20": 0.43,
+    "leg1000": 29.231
+   },
+   "leg20_golds_recovered_per_question": 0.0024,
+   "leg20_golds_lost_per_question": 0.0041
+  }
+ },
+ "pick": {
+  "arm": "S_a1.0_cap128",
+  "dev_seeds": 3.347,
+  "held_vs_reference": {
+   "rrf5": {
+    "diff": 0.004,
+    "lo": -0.057,
+    "hi": 0.067,
+    "call": "LEVEL"
+   },
+   "rrf20": {
+    "diff": 0.669,
+    "lo": 0.438,
+    "hi": 0.907,
+    "call": "BETTER"
+   },
+   "seeds": {
+    "diff": 2.176,
+    "lo": 1.817,
+    "hi": 2.573,
+    "call": "BETTER"
+   },
+   "leg20": {
+    "diff": 3.122,
+    "lo": 2.649,
+    "hi": 3.58,
+    "call": "BETTER"
+   },
+   "leg1000": {
+    "diff": -0.899,
+    "lo": -2.157,
+    "hi": 0.215,
+    "call": "WORSE"
+   }
+  },
+  "call": "MIXING_COSTS",
+  "doc_nnz_ratio_to_reference": 2.735
+ },
+ "seconds": 1418.9
+}

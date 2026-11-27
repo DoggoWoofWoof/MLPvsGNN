@@ -289,3 +289,44 @@ Every listed cell:
 **Expectations (section 15).** **XD1** (MetaQA's loss below 1.0 point) **not held**: +1.02 points, call UNCLEAR, the point just above the line (the cells' losses on MetaQA run +0.82 to +1.13 apart from the dense-top-200 cell at +2.22 NEEDED). **XD2** (SQuAD at least 1.0, NEEDED) **held**: +1.76 [+1.42, +2.11]. **XD3** (MultiHop-RAG above 0, UNCLEAR or NEEDED) **held**: +0.88 [+0.18, +1.59] UNCLEAR. **XD4** (MuSiQue at least 1.0) **held** on the point (+1.28), not on the interval (low end +0.74). **XD5** (dense-only nodes lower where the loss is positive) **held in part**: on the walks whose size is set by their visited budget the dense-only pools are mostly smaller (x0.71 to x0.97 on 15 of the 16 walked cells, one MuSiQue cell x1.004; MetaQA's R95 cell x0.889), and on cells whose size is set by a cap or a list length (the R95 cells of SQuAD, MultiHop-RAG and MuSiQue) the two are equal (x1.000), so the same-cell loss there is a loss at equal nodes.
 
 **What the read shows and does not show.** Dropping the SPLADE leg lowers the pool's all-gold coverage by about one to two points at the filed cells on all four datasets (SQuAD the surest, MultiHop-RAG the smallest and least certain), and costs MetaQA about 5 percent more nodes to hold 0.95. It does not show that the loss is permanent: the cells were chosen on the dev carve with SPLADE in the pool (rule U), and a dense-only reselection by that rule on the dev grid, which could close part of the gap, is **not** made here; the reach table is read on the eval carve; five seeds against about eight is part of the difference at the walked cells. WebQSP, HotpotQA, 2Wiki and the STaRK graphs are not read, and encode cost (section 12's question) is not read here. Nothing is adopted or removed: the SPLADE leg stays in the pipeline, and whether to drop it stays the user's decision.
+
+
+## 17. Results of part B on MetaQA (14:50 IST; `outputs/leg1/gate_gb0c_metaqa.json`, `outputs/leg1/caps_metaqa.json`, `outputs/leg1/mix_metaqa.json`, `outputs/leg1/vec/metaqa/meta.json`; host rows `leg1e-vmq` (vectors, CPU, 968 s) and `leg1e-rmq` (reads, 32 min); module `zleg1d.py`, commit 9d388c48)
+
+**Gate.** G-B0c (section 9's) **passed**: the stored unmodified vectors' list reads the record's on the leg's R@20 (0.554 against 0.553, difference +0.001 [-0.003, +0.006]) and on the seeds (0.694 against 0.694, difference 0). The share of equal top 5 (information only here, section 11) is 0.955 in sequence and 0.984 as a set, so the CPU vectors do not reproduce every list of the card, as on SQuAD (section 9), and every comparison below is of a modified vector against the stored unmodified vector read the same way. Vectors: 43,234 nodes (40.8 non-zeros each) and 9,785 questions (41.9 each). All values below are percent of golds, differences in points.
+
+**B1 and B2, the caps (all 9,785 questions; reference: fusion R@5 0.449, R@20 1.240, seeds 0.694, leg R@20 0.554, leg R@1000 29.201).**
+
+| arm | doc non-zeros | seeds | fusion R@5 | fusion R@20 | leg R@20 | leg R@1000 (difference [interval]) | call |
+|---|---|---|---|---|---|---|---|
+| doc128 | 40.8 | +0.000 | +0.000 | +0.000 | +0.000 | +0.000 [+0.000, +0.000] | FREE |
+| doc64 | 39.8 | +0.000 | -0.003 | +0.000 | -0.002 | -0.063 [-0.108, -0.019] | FREE |
+| doc32 | 29.4 | +0.010 | -0.000 | +0.011 | -0.012 | -0.616 [-0.763, -0.481] | FREE |
+| query32 | 40.8 | +0.000 | +0.000 | -0.002 | -0.022 | +0.150 [+0.049, +0.265] | FREE |
+| query16 | 40.8 | +0.001 | -0.036 | -0.047 | -0.073 | +1.389 [+1.079, +1.692] | FREE |
+| query8 | 40.8 | -0.004 | +0.021 | +0.157 | +0.009 | +1.617 [+1.150, +2.142] | FREE |
+
+**All six caps are FREE** (no lower end below -1.0 on any read). The document cap of 128 changes nothing at all (the names hold 40.8 non-zeros on average, so no document is cut), the caps of 64 and 32 shrink the stored document to 39.8 and 29.4 non-zeros for a leg R@1000 of -0.06 and -0.62 points. The question caps are free and the tighter ones read **above** the reference at depth: a cap of 16 or 8 non-zeros on the question gives the leg's R@1000 +1.39 [+1.08, +1.69] and +1.62 [+1.15, +2.14] BETTER, while the seeds do not move (+0.001 and -0.004).
+
+**B3, the link-mixed vectors (24 arms; dev half 4,893 questions picks, held-out half 4,892 calls).** The vector of a node becomes `v + alpha * mean(neighbour vectors)` over a graph (S the knowledge-base triplets, 124,669 pairs; R the rule links, 12,605; K the e3v kNN pairs, 96,650; S+R+K their union, 229,774). The dev half's pick is **S, alpha 1.0, capped at 128 non-zeros** (dev seeds 3.347 against the dev reference 0.751). Held-out reads of every cap-128 arm (information; only the pick is called):
+
+| arm (cap 128) | non-zeros per node | held-out seeds (ref 0.637) | fusion R@5 (0.410) | fusion R@20 (1.182) | leg R@20 (0.525) | leg R@1000 (28.965) |
+|---|---|---|---|---|---|---|
+| S_a0.25 | 111.7 | 0.637 | 0.441 | 1.203 | 0.710 | 32.635 |
+| S_a0.5 | 111.7 | 1.195 | 0.429 | 1.447 | 2.044 | 32.178 |
+| S_a1.0 (the pick) | 111.7 | 2.813 | 0.414 | 1.851 | 3.647 | 28.066 |
+| R_a0.25 | 46.3 | 0.650 | 0.414 | 1.212 | 0.541 | 28.485 |
+| R_a0.5 | 46.3 | 0.667 | 0.462 | 1.311 | 0.465 | 27.449 |
+| R_a1.0 | 46.3 | 0.701 | 0.488 | 1.274 | 0.516 | 24.848 |
+| K_a0.25 | 103.6 | 0.635 | 0.440 | 1.193 | 0.546 | 30.198 |
+| K_a0.5 | 103.6 | 0.655 | 0.439 | 1.227 | 0.465 | 30.994 |
+| K_a1.0 | 103.6 | 0.625 | 0.461 | 1.308 | 0.458 | 31.636 |
+| SRK_a0.25 | 125.7 | 0.637 | 0.414 | 1.118 | 0.463 | 29.045 |
+| SRK_a0.5 | 125.7 | 0.632 | 0.398 | 1.079 | 0.463 | 30.011 |
+| SRK_a1.0 | 125.7 | 0.633 | 0.347 | 1.078 | 0.430 | 29.231 |
+
+**The pick, called on the held-out half against the unmodified vectors:** seeds **+2.18 [+1.82, +2.57] BETTER** (0.637 to 2.813); the leg's R@20 +3.12 [+2.65, +3.58] BETTER (0.525 to 3.647); fusion R@20 +0.67 [+0.44, +0.91] BETTER (1.182 to 1.851); fusion R@5 +0.00 [-0.06, +0.07] LEVEL (0.410 to 0.414); the leg's R@1000 -0.90 [-2.16, +0.21] WORSE (28.965 to 28.066). **The call as the code makes it (every read other than the seeds counts in "not WORSE", section 11's code `zleg1c.mix_call`): MIXING_COSTS, caused only by the leg's R@1000 (lower end -2.16 below the line of -1.0; its point difference is -0.90 and the interval crosses 0).** Read as section 7's text states it (the not-WORSE reads named there are the fusion's R@5 and R@20 and the leg's R@20), the same numbers would be MIXING_GAINS. The text and the code differ on this one read, the filed call is the code's, and the difference is disclosed, not chosen between. The pick holds 111.7 non-zeros per node against 40.8 (2.7 times), and 43,234 of 43,234 nodes change.
+
+**Expectations (section 11).** **X8** (the pick is MIXING_GAINS, seeds' lower end above 0) **not held as filed** (the call is MIXING_COSTS); the seeds' part of it holds (lower end +1.82). **X9** (the best held-out arm has S in its graph) **held**: S alone, alpha 1.0, in both its full and capped forms, holds the largest held-out seeds (2.813), and alpha 0.5 follows (1.195); R alone, K alone and S+R+K stay between 0.63 and 0.70 against the reference's 0.637 (information; not called). **X10** (the unmodified seeds read below 2%) **held** (0.694). **X11** (the document cap of 128 is FREE) **held, and trivially**: it changes no vector.
+
+**What the read shows and does not show.** On MetaQA a rule with no training, `v + 1.0 * mean(S neighbours)` on C0's document vectors, **lifts the SPLADE leg's R@20 by +3.1 points and the seeds' coverage by +2.2 points on the held-out half, on a base of 0.5 and 0.6 percent**, so the lift is large relative to the base and small in absolute terms: the seeds still reach under 3 percent of the golds. Mixing over R, K or their union moves the held-out seeds by at most +0.06 points (information; not called), which fits the reason this test was chosen (the answer entity is a graph neighbour of the topic entity only in S). It costs 2.7 times the stored non-zeros and reads **no better at fusion R@5** (+0.00) and slightly lower at depth 1,000 (-0.90 [-2.16, +0.22]). It is a first-stage read: **whether the mixed vectors raise the pool's all-gold coverage, the target, is not read** (the pool would be rebuilt with these vectors in the seeds and the first-stage lists); no pool, walk or timing is read here; WebQSP, HotpotQA, 2Wiki and the STaRK graphs are not read; the arms were chosen by the dev half and the call is on the held-out half, but the dev-half pick uses the 24-arm list written before any number. Nothing is adopted.

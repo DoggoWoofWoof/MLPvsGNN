@@ -1,0 +1,40 @@
+{
+ "stage": "LEG1 G-B0c",
+ "declared_in": "docs/LEG1_LEG_NECESSITY.md section 11 (LEG1-A3)",
+ "ds": "metaqa",
+ "questions": 9785,
+ "nodes": 43234,
+ "gate_gb0": {
+  "top5_same_sequence_share": 0.95483,
+  "top5_same_set_share": 0.98406,
+  "min_share": 0.99,
+  "pass": false,
+  "information_only": true
+ },
+ "line_pts": -0.5,
+ "cells": {
+  "leg20": {
+   "record": 0.553,
+   "stored": 0.554,
+   "diff": 0.001,
+   "lo": -0.003,
+   "hi": 0.006
+  },
+  "seeds": {
+   "record": 0.694,
+   "stored": 0.694,
+   "diff": 0.0,
+   "lo": 0.0,
+   "hi": 0.0
+  }
+ },
+ "reference_reads_stored": {
+  "rrf5": 0.449,
+  "rrf20": 1.24,
+  "seeds": 0.694,
+  "leg20": 0.554,
+  "leg1000": 29.201
+ },
+ "pass": true,
+ "seconds": 107.1
+}
