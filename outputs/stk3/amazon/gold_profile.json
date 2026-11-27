@@ -1,0 +1,241 @@
+{
+ "stage": "STK3 gold_profile",
+ "declared_in": "docs/STK3_STARK_POOLS.md section 17",
+ "kb": "amazon",
+ "utc": "2026-11-27T14:29:35Z",
+ "cells": {
+  "A": {
+   "cell": "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+   "single_gold_questions": 484,
+   "all": {
+    "golds": 484,
+    "S": {
+     "degree_0": 5,
+     "degree_0_share": 0.010330578512396695,
+     "mean": 10.171487603305785,
+     "median": 3.0
+    },
+    "structural": {
+     "degree_0": 4,
+     "degree_0_share": 0.008264462809917356,
+     "mean": 11.026859504132231,
+     "median": 4.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 24.803719008264462,
+     "median": 19.0
+    }
+   },
+   "hit": {
+    "golds": 481,
+    "S": {
+     "degree_0": 5,
+     "degree_0_share": 0.010395010395010396,
+     "mean": 10.218295218295218,
+     "median": 3.0
+    },
+    "structural": {
+     "degree_0": 4,
+     "degree_0_share": 0.008316008316008316,
+     "mean": 11.07068607068607,
+     "median": 4.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 24.806652806652806,
+     "median": 19.0
+    }
+   },
+   "missed": {
+    "golds": 3,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 2.6666666666666665,
+     "median": 2.0
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 4.0,
+     "median": 3.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 24.333333333333332,
+     "median": 30.0
+    }
+   },
+   "types": [
+    {
+     "type": "product",
+     "golds": 484,
+     "missed": 3,
+     "miss_rate": 0.006198347107438017
+    }
+   ]
+  },
+  "B": {
+   "cell": "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+   "single_gold_questions": 484,
+   "all": {
+    "golds": 484,
+    "S": {
+     "degree_0": 5,
+     "degree_0_share": 0.010330578512396695,
+     "mean": 10.171487603305785,
+     "median": 3.0
+    },
+    "structural": {
+     "degree_0": 4,
+     "degree_0_share": 0.008264462809917356,
+     "mean": 11.026859504132231,
+     "median": 4.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 24.803719008264462,
+     "median": 19.0
+    }
+   },
+   "hit": {
+    "golds": 482,
+    "S": {
+     "degree_0": 5,
+     "degree_0_share": 0.01037344398340249,
+     "mean": 10.199170124481327,
+     "median": 3.0
+    },
+    "structural": {
+     "degree_0": 4,
+     "degree_0_share": 0.008298755186721992,
+     "mean": 11.053941908713693,
+     "median": 4.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 24.767634854771785,
+     "median": 19.0
+    }
+   },
+   "missed": {
+    "golds": 2,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 3.5,
+     "median": 3.5
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 4.5,
+     "median": 4.5
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 33.5,
+     "median": 33.5
+    }
+   },
+   "types": [
+    {
+     "type": "product",
+     "golds": 484,
+     "missed": 2,
+     "miss_rate": 0.004132231404958678
+    }
+   ]
+  },
+  "C": {
+   "cell": "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000",
+   "single_gold_questions": 484,
+   "all": {
+    "golds": 484,
+    "S": {
+     "degree_0": 5,
+     "degree_0_share": 0.010330578512396695,
+     "mean": 10.171487603305785,
+     "median": 3.0
+    },
+    "structural": {
+     "degree_0": 4,
+     "degree_0_share": 0.008264462809917356,
+     "mean": 11.026859504132231,
+     "median": 4.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 24.803719008264462,
+     "median": 19.0
+    }
+   },
+   "hit": {
+    "golds": 482,
+    "S": {
+     "degree_0": 5,
+     "degree_0_share": 0.01037344398340249,
+     "mean": 10.199170124481327,
+     "median": 3.0
+    },
+    "structural": {
+     "degree_0": 4,
+     "degree_0_share": 0.008298755186721992,
+     "mean": 11.053941908713693,
+     "median": 4.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 24.767634854771785,
+     "median": 19.0
+    }
+   },
+   "missed": {
+    "golds": 2,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 3.5,
+     "median": 3.5
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 4.5,
+     "median": 4.5
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 33.5,
+     "median": 33.5
+    }
+   },
+   "types": [
+    {
+     "type": "product",
+     "golds": 484,
+     "missed": 2,
+     "miss_rate": 0.004132231404958678
+    }
+   ]
+  }
+ },
+ "expectations": {
+  "G1_under_2_percent_of_A_missed_have_union_degree_0": true,
+  "G2_A_miss_rate_differs_10_points_between_the_two_largest_types": false,
+  "G3_A_missed_median_union_degree_below_the_hit_median": false
+ },
+ "cells_sha256": "4b9bfd160b18984cf6fa1a1526f1ef10a783cdb925a65f5c4dcc1b130e1c6514",
+ "layout_sha256": "1879a66b010be27ec953a3c9e6a657a6b450da1173f2268b9010f8bb86658385",
+ "note": "descriptive read of the test split; nothing is chosen or changed from it"
+}

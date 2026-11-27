@@ -1,0 +1,174 @@
+{
+ "stage": "STK3 missed",
+ "declared_in": "docs/STK3_STARK_POOLS.md section 15",
+ "kb": "amazon",
+ "utc": "2026-11-27T14:29:23Z",
+ "cells": {
+  "A": {
+   "questions": 1642,
+   "by_gold_count": {
+    "1": {
+     "questions": 484,
+     "all": 0.993801652892562,
+     "any": 0.993801652892562,
+     "share_present": 0.993801652892562
+    },
+    "2": {
+     "questions": 234,
+     "all": 0.9529914529914529,
+     "any": 1.0,
+     "share_present": 0.9764957264957265
+    },
+    "3": {
+     "questions": 146,
+     "all": 0.8835616438356164,
+     "any": 0.9863013698630136,
+     "share_present": 0.9452054794520548
+    },
+    "4+": {
+     "questions": 778,
+     "all": 0.7686375321336761,
+     "any": 1.0,
+     "share_present": 0.9460438249697045
+    }
+   },
+   "any_zero": {
+    "questions": 5,
+    "share_of_questions": 0.0030450669914738123,
+    "by_gold_count": {
+     "1": 3,
+     "2": 0,
+     "3": 2,
+     "4+": 0
+    },
+    "by_last_gold_position": {
+     "position_under_1000": 1,
+     "position_1000_to_2499": 0,
+     "some_gold_outside_the_2500_list": 4
+    },
+    "single_gold_share": 0.6,
+    "some_gold_outside_share": 0.8
+   },
+   "partial": {
+    "questions": 206,
+    "share_of_questions": 0.12545676004872108,
+    "mean_share_of_golds_missed": 0.25960147657072724
+   },
+   "cell": "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+   "nodes": 2447.929354445798
+  },
+  "B": {
+   "questions": 1642,
+   "by_gold_count": {
+    "1": {
+     "questions": 484,
+     "all": 0.9958677685950413,
+     "any": 0.9958677685950413,
+     "share_present": 0.9958677685950413
+    },
+    "2": {
+     "questions": 234,
+     "all": 0.9786324786324786,
+     "any": 1.0,
+     "share_present": 0.9893162393162394
+    },
+    "3": {
+     "questions": 146,
+     "all": 0.9246575342465754,
+     "any": 0.9863013698630136,
+     "share_present": 0.9634703196347033
+    },
+    "4+": {
+     "questions": 778,
+     "all": 0.8354755784061697,
+     "any": 1.0,
+     "share_present": 0.9687724919621125
+    }
+   },
+   "any_zero": {
+    "questions": 4,
+    "share_of_questions": 0.00243605359317905,
+    "by_gold_count": {
+     "1": 2,
+     "2": 0,
+     "3": 2,
+     "4+": 0
+    },
+    "by_last_gold_position": {
+     "position_under_1000": 0,
+     "position_1000_to_2499": 0,
+     "some_gold_outside_the_2500_list": 4
+    },
+    "single_gold_share": 0.5,
+    "some_gold_outside_share": 1.0
+   },
+   "partial": {
+    "questions": 142,
+    "share_of_questions": 0.08647990255785627,
+    "mean_share_of_golds_missed": 0.2121713703296466
+   },
+   "cell": "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+   "nodes": 5867.27161997564
+  },
+  "C": {
+   "questions": 1642,
+   "by_gold_count": {
+    "1": {
+     "questions": 484,
+     "all": 0.9958677685950413,
+     "any": 0.9958677685950413,
+     "share_present": 0.9958677685950413
+    },
+    "2": {
+     "questions": 234,
+     "all": 0.9786324786324786,
+     "any": 1.0,
+     "share_present": 0.9893162393162394
+    },
+    "3": {
+     "questions": 146,
+     "all": 0.910958904109589,
+     "any": 0.9931506849315068,
+     "share_present": 0.95662100456621
+    },
+    "4+": {
+     "questions": 778,
+     "all": 0.8251928020565553,
+     "any": 1.0,
+     "share_present": 0.966114724634178
+    }
+   },
+   "any_zero": {
+    "questions": 3,
+    "share_of_questions": 0.0018270401948842874,
+    "by_gold_count": {
+     "1": 2,
+     "2": 0,
+     "3": 1,
+     "4+": 0
+    },
+    "by_last_gold_position": {
+     "position_under_1000": 0,
+     "position_1000_to_2499": 0,
+     "some_gold_outside_the_2500_list": 3
+    },
+    "single_gold_share": 0.6666666666666666,
+    "some_gold_outside_share": 1.0
+   },
+   "partial": {
+    "questions": 153,
+    "share_of_questions": 0.09317904993909866,
+    "mean_share_of_golds_missed": 0.22350377495387513
+   },
+   "cell": "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000",
+   "nodes": 15377.845919610232
+  }
+ },
+ "expectations": {
+  "X1_all_falls_with_gold_count_in_A": true,
+  "X2_half_of_C_any_zero_have_a_gold_outside_the_2500_list": true,
+  "X3_half_of_A_any_zero_are_single_gold": true
+ },
+ "cells_sha256": "4b9bfd160b18984cf6fa1a1526f1ef10a783cdb925a65f5c4dcc1b130e1c6514",
+ "note": "descriptive read of the test split; nothing is chosen or changed from it"
+}
