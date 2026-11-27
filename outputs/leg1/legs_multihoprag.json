@@ -1,0 +1,84 @@
+{
+ "stage": "LEG1 part A",
+ "declared_in": "docs/LEG1_LEG_NECESSITY.md section 2",
+ "ds": "multihoprag",
+ "questions": 2255,
+ "nodes": 609,
+ "gate_gs1": {
+  "rrf5_now": 61.87,
+  "top5_equals_mhr1_lists_share": 1.0,
+  "pass": true
+ },
+ "seeds": {
+  "union": 73.744,
+  "dense_alone": 72.912,
+  "splade_alone": 65.754,
+  "dropping_splade": {
+   "loss": 0.831,
+   "lo": 0.041,
+   "hi": 1.593,
+   "call": "UNCLEAR"
+  },
+  "dropping_dense": {
+   "loss": 7.99,
+   "lo": 7.036,
+   "hi": 8.969,
+   "call": "NEEDED"
+  }
+ },
+ "depth": {
+  "5": {
+   "fusion": 61.87,
+   "dense": 64.29,
+   "splade": 57.461,
+   "dropping_splade": {
+    "loss": -2.421,
+    "lo": -3.393,
+    "hi": -1.386,
+    "call": "DISPENSABLE"
+   },
+   "dropping_dense": {
+    "loss": 4.409,
+    "lo": 3.592,
+    "hi": 5.3,
+    "call": "NEEDED"
+   }
+  },
+  "20": {
+   "fusion": 91.282,
+   "dense": 92.14,
+   "splade": 83.917,
+   "dropping_splade": {
+    "loss": -0.857,
+    "lo": -1.519,
+    "hi": -0.166,
+    "call": "DISPENSABLE"
+   },
+   "dropping_dense": {
+    "loss": 7.365,
+    "lo": 6.677,
+    "hi": 8.089,
+    "call": "NEEDED"
+   }
+  },
+  "100": {
+   "fusion": 99.254,
+   "dense": 99.342,
+   "splade": 97.051,
+   "dropping_splade": {
+    "loss": -0.089,
+    "lo": -0.292,
+    "hi": 0.122,
+    "call": "DISPENSABLE"
+   },
+   "dropping_dense": {
+    "loss": 2.203,
+    "lo": 1.796,
+    "hi": 2.609,
+    "call": "NEEDED"
+   }
+  }
+ },
+ "seed_budget_mean": 7.4102,
+ "seconds": 12.0
+}

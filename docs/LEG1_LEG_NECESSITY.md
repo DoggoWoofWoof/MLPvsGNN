@@ -52,3 +52,19 @@ The budget u is the question's own union size (5 to 10), so a single leg gets ex
 - The seeds read is the first stage's coverage, not the pool's. The pool walks up to three hops from the seeds, so a leg that adds little to the seeds can still add to the pool's coverage: this is why a DISPENSABLE call asks for a pool read first.
 - Part A reads existing lists; it adds no encode and uses no card. Part B's vectors are made on the CPU, at the cost of time, with the record's pooling; whether CPU and card rounding change any list is what G-B0 checks.
 - The legs of the three STaRK sets (Prime, MAG, Amazon) are read when their lists exist; the verdict is over the datasets read, and the page lists which.
+
+## 6. Result of part A on SQuAD, MuSiQue and MultiHop-RAG (07:24 IST; `outputs/leg1/legs_<ds>.json`, `outputs/leg1/partA.json`; module `zleg1.py`, commit 381dcc56)
+
+The reader reproduces the filed first stage (G-S1: SQuAD and MuSiQue equal E0's filed R@5 to 5e-6; MultiHop-RAG's top 5 equal `outputs/mhr1/first/lists.npz` for every question). The seed budget is 7.4 to 7.9 nodes per question. **Seeds coverage (points; the loss is the union minus the other leg alone, with its 95% interval):**
+
+| dataset | union | dense alone | SPLADE alone | dropping SPLADE | dropping dense |
+|---|---|---|---|---|---|
+| MultiHop-RAG (2,255 questions) | 73.74 | 72.91 | 65.75 | 0.83 [0.04, 1.59] UNCLEAR | **7.99 [7.04, 8.97] NEEDED** |
+| MuSiQue (2,417) | 53.00 | 51.81 | 47.30 | 1.19 [0.57, 1.76] UNCLEAR | **5.70 [4.98, 6.40] NEEDED** |
+| SQuAD (11,873) | 91.81 | 87.17 | 91.26 | **4.63 [4.16, 5.08] NEEDED** | 0.55 [0.23, 0.86] DISPENSABLE |
+
+**Verdict over the three datasets read: dense NEEDED, SPLADE NEEDED; the first stage stays as it is.** The two legs are needed on different data: dense carries the two multi-hop sets (without it the seeds lose 5.7 to 8.0 points), SPLADE carries SQuAD (without it 4.6 points), and each is nearly dispensable where the other leads (SPLADE adds 0.8 and 1.2 points to the multi-hop seeds, with intervals that straddle the 1.0-point line; dense adds 0.55 to SQuAD). On the R@5 read of MultiHop-RAG the dense list alone (64.29) is above the fusion (61.87): the fusion costs 2.4 points there, which the seeds' union (top 5 of each) hides. Deeper lists lose less: dropping SPLADE costs at most 0.9 points at R@20 and 1.1 at R@100 on MuSiQue and MultiHop-RAG; dropping dense costs 2.2 to 7.4 points at R@20 to R@100 there.
+
+Expectations: **X1** held (dropping dense: 7.99 points on MultiHop-RAG, against the 3.0 written); **X2** held (SPLADE alone 0.55 points below the union on SQuAD); **X3** held, SPLADE only through SQuAD. X4 (part B) is open.
+
+**Not read.** MetaQA, WebQSP, HotpotQA, 2Wiki and the three STaRK sets: their e3v lists are made from the host's vectors (the canonical `retrieval_cache` of these datasets holds the older encoder's lists, which is not the first stage), so they need a host row of the same module. They are not part of this verdict, and they cannot change it: the rule keeps a leg that one dataset needs, and SQuAD shows that for SPLADE and MultiHop-RAG for dense. They would add the size of each leg's worth per dataset, nothing more, and are queued only as a table to fill.

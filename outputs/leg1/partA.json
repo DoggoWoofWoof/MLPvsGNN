@@ -1,0 +1,133 @@
+{
+ "stage": "LEG1 part A verdict",
+ "declared_in": "docs/LEG1_LEG_NECESSITY.md section 2",
+ "datasets": [
+  "multihoprag",
+  "musique",
+  "squad"
+ ],
+ "calls": {
+  "dense": [
+   "NEEDED",
+   "NEEDED",
+   "DISPENSABLE"
+  ],
+  "splade": [
+   "UNCLEAR",
+   "UNCLEAR",
+   "NEEDED"
+  ]
+ },
+ "SPLADE": "NEEDED",
+ "dense": "NEEDED",
+ "per_dataset": {
+  "multihoprag": {
+   "seeds": {
+    "union": 73.744,
+    "dense_alone": 72.912,
+    "splade_alone": 65.754,
+    "dropping_splade": {
+     "loss": 0.831,
+     "lo": 0.041,
+     "hi": 1.593,
+     "call": "UNCLEAR"
+    },
+    "dropping_dense": {
+     "loss": 7.99,
+     "lo": 7.036,
+     "hi": 8.969,
+     "call": "NEEDED"
+    }
+   },
+   "R@20": {
+    "fusion": 91.282,
+    "dense": 92.14,
+    "splade": 83.917,
+    "dropping_splade": {
+     "loss": -0.857,
+     "lo": -1.519,
+     "hi": -0.166,
+     "call": "DISPENSABLE"
+    },
+    "dropping_dense": {
+     "loss": 7.365,
+     "lo": 6.677,
+     "hi": 8.089,
+     "call": "NEEDED"
+    }
+   }
+  },
+  "musique": {
+   "seeds": {
+    "union": 52.996,
+    "dense_alone": 51.807,
+    "splade_alone": 47.297,
+    "dropping_splade": {
+     "loss": 1.189,
+     "lo": 0.572,
+     "hi": 1.758,
+     "call": "UNCLEAR"
+    },
+    "dropping_dense": {
+     "loss": 5.699,
+     "lo": 4.978,
+     "hi": 6.396,
+     "call": "NEEDED"
+    }
+   },
+   "R@20": {
+    "fusion": 60.419,
+    "dense": 59.506,
+    "splade": 55.272,
+    "dropping_splade": {
+     "loss": 0.914,
+     "lo": 0.272,
+     "hi": 1.576,
+     "call": "UNCLEAR"
+    },
+    "dropping_dense": {
+     "loss": 5.148,
+     "lo": 4.506,
+     "hi": 5.761,
+     "call": "NEEDED"
+    }
+   }
+  },
+  "squad": {
+   "seeds": {
+    "union": 91.805,
+    "dense_alone": 87.173,
+    "splade_alone": 91.257,
+    "dropping_splade": {
+     "loss": 4.632,
+     "lo": 4.16,
+     "hi": 5.079,
+     "call": "NEEDED"
+    },
+    "dropping_dense": {
+     "loss": 0.547,
+     "lo": 0.227,
+     "hi": 0.859,
+     "call": "DISPENSABLE"
+    }
+   },
+   "R@20": {
+    "fusion": 95.275,
+    "dense": 92.049,
+    "splade": 94.5,
+    "dropping_splade": {
+     "loss": 3.226,
+     "lo": 2.88,
+     "hi": 3.597,
+     "call": "NEEDED"
+    },
+    "dropping_dense": {
+     "loss": 0.775,
+     "lo": 0.488,
+     "hi": 1.078,
+     "call": "UNCLEAR"
+    }
+   }
+  }
+ }
+}

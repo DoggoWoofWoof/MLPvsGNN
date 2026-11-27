@@ -1,0 +1,101 @@
+{
+ "stage": "LEG1 part A",
+ "declared_in": "docs/LEG1_LEG_NECESSITY.md section 2",
+ "ds": "musique",
+ "questions": 2417,
+ "nodes": 117534,
+ "gate_gs1": {
+  "rrf5_now": 47.766,
+  "e0_filed_rrf5": 0.477658,
+  "pass": true
+ },
+ "seeds": {
+  "union": 52.996,
+  "dense_alone": 51.807,
+  "splade_alone": 47.297,
+  "dropping_splade": {
+   "loss": 1.189,
+   "lo": 0.572,
+   "hi": 1.758,
+   "call": "UNCLEAR"
+  },
+  "dropping_dense": {
+   "loss": 5.699,
+   "lo": 4.978,
+   "hi": 6.396,
+   "call": "NEEDED"
+  }
+ },
+ "depth": {
+  "5": {
+   "fusion": 47.766,
+   "dense": 47.687,
+   "splade": 43.139,
+   "dropping_splade": {
+    "loss": 0.079,
+    "lo": -0.607,
+    "hi": 0.755,
+    "call": "DISPENSABLE"
+   },
+   "dropping_dense": {
+    "loss": 4.627,
+    "lo": 3.892,
+    "hi": 5.337,
+    "call": "NEEDED"
+   }
+  },
+  "20": {
+   "fusion": 60.419,
+   "dense": 59.506,
+   "splade": 55.272,
+   "dropping_splade": {
+    "loss": 0.914,
+    "lo": 0.272,
+    "hi": 1.576,
+    "call": "UNCLEAR"
+   },
+   "dropping_dense": {
+    "loss": 5.148,
+    "lo": 4.506,
+    "hi": 5.761,
+    "call": "NEEDED"
+   }
+  },
+  "100": {
+   "fusion": 72.935,
+   "dense": 71.818,
+   "splade": 66.212,
+   "dropping_splade": {
+    "loss": 1.117,
+    "lo": 0.555,
+    "hi": 1.714,
+    "call": "UNCLEAR"
+   },
+   "dropping_dense": {
+    "loss": 6.723,
+    "lo": 5.989,
+    "hi": 7.406,
+    "call": "NEEDED"
+   }
+  },
+  "1000": {
+   "fusion": 85.564,
+   "dense": 85.361,
+   "splade": 80.882,
+   "dropping_splade": {
+    "loss": 0.203,
+    "lo": -0.262,
+    "hi": 0.648,
+    "call": "DISPENSABLE"
+   },
+   "dropping_dense": {
+    "loss": 4.682,
+    "lo": 4.065,
+    "hi": 5.31,
+    "call": "NEEDED"
+   }
+  }
+ },
+ "seed_budget_mean": 7.9015,
+ "seconds": 16.3
+}
