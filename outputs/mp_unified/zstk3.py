@@ -1,6 +1,7 @@
 """STK3 (docs/STK3_STARK_POOLS.md): do the seven's pool cells carry to the STaRK knowledge bases. A transfer read: nothing is selected on a STaRK question.
 
     python -I -B outputs/mp_unified/zstk3.py selftest
+    (on the lab host every command that opens the engine runs as `python outputs/host_ops/pylib_run.py outputs/mp_unified/zstk3.py <cmd> ... --host`: numba comes from pylib_run)
     python -I -B outputs/mp_unified/zstk3.py cells                              # laptop: the declared cell list (from PL6's select.json of the seven): outputs/stk3/cells.json
     python -I -B outputs/mp_unified/zstk3.py layout --kb prime                  # host: the B0 layout of the KB, F0T weights rebuilt in process, G-F and G-L: outputs/stk3/<kb>/layout.*
     python -I -B outputs/mp_unified/zstk3.py probe --kb prime [--questions 2]   # host: seconds per question and peak memory of the whole cell list; no label is read
@@ -221,8 +222,11 @@ def save_npz(path, **arrays):
     return P2.sha256_file(path)
 
 
+HOSTMODE = False                              # --host: the lab host's package mirror (zpkoh.apply_mirror), as every host row opens the engine
+
+
 def plain_op():
-    Z6.prepare(False)
+    Z6.prepare(HOSTMODE)
     return P2.opened()
 
 
@@ -634,6 +638,8 @@ def main(argv=None):
     for c in ("layout", "probe", "run", "read"):
         p = sub.add_parser(c)
         p.add_argument("--kb", required=True, choices=KB_ORDER)
+        if c != "read":
+            p.add_argument("--host", action="store_true")
         if c == "layout":
             p.add_argument("--redo", action="store_true")
         if c == "probe":
@@ -642,6 +648,8 @@ def main(argv=None):
             p.add_argument("--part", nargs=2, metavar=("I", "K"))
             p.add_argument("--upto", type=int, default=0)
     a = ap.parse_args(argv)
+    global HOSTMODE
+    HOSTMODE = bool(getattr(a, "host", False))
     return {"selftest": cmd_selftest, "cells": cmd_cells, "layout": cmd_layout, "probe": cmd_probe, "run": cmd_run, "read": cmd_read}[a.cmd](a)
 
 
