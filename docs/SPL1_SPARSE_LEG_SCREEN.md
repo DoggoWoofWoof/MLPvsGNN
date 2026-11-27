@@ -172,4 +172,110 @@ Expectations are not calls; each is read against the table and marked held or no
 
 ## 10. Result
 
-Empty. Nothing has run.
+Written 27 Nov 2026, 06:05 IST, after the MuSiQue pool read. Section 5's rule and D1 of section 8.8 are applied as declared; the changes made after a first number was read are A9 (the parts and the `src.splade` change, after the MultiHop-RAG pool read) and A10 (a path correction, before any SQuAD pool number); both are in sections 8.9 and 8.10.
+
+### 10.1 The first-stage screen (section 5): no candidate passes
+
+All-gold and recall points against C0 with the paired 95% bootstrap interval (SQuAD 11,873 questions, MuSiQue 2,417, MultiHop-RAG 2,255). A cell is WORSE when the interval's low end is below -1.0 point.
+
+**squad** (11,873 questions, 20,233 nodes). C0's own values: RRF R@5 88.25, seed recall 91.81, RRF R@20 95.28, leg R@20 94.50, leg R@1000 99.50.
+
+| read | C3 opensearch doc-v2-mini 23M | C1 granite 30M | C2 opensearch v2-distill 67M |
+|---|---|---|---|
+| RRF R@5 (points vs C0) | -1.04 [-1.39, -0.72] WORSE | -3.13 [-3.55, -2.73] WORSE | -2.04 [-2.39, -1.71] WORSE |
+| seed recall (points vs C0) | -1.65 [-1.98, -1.31] WORSE | -3.61 [-4.06, -3.15] WORSE | -2.38 [-2.69, -2.06] WORSE |
+| RRF R@20 (points vs C0) | -0.84 [-1.08, -0.58] WORSE | -2.29 [-2.59, -2.00] WORSE | -1.43 [-1.68, -1.17] WORSE |
+| leg R@20 (points vs C0) | -2.81 [-3.17, -2.47] WORSE | -3.04 [-3.45, -2.61] WORSE | -2.54 [-2.89, -2.19] WORSE |
+| leg R@1000 (points vs C0) | -0.56 [-0.72, -0.41] LEVEL | -0.06 [-0.19, +0.08] LEVEL | -0.14 [-0.25, -0.01] LEVEL |
+
+**musique** (2,417 questions, 117,534 nodes). C0's own values: RRF R@5 47.77, seed recall 53.00, RRF R@20 60.42, leg R@20 55.27, leg R@1000 80.88.
+
+| read | C3 opensearch doc-v2-mini 23M | C1 granite 30M | C2 opensearch v2-distill 67M |
+|---|---|---|---|
+| RRF R@5 (points vs C0) | -0.03 [-0.66, +0.62] LEVEL | +0.04 [-0.59, +0.73] LEVEL | +0.12 [-0.45, +0.67] LEVEL |
+| seed recall (points vs C0) | -0.48 [-0.95, +0.05] LEVEL | -0.77 [-1.30, -0.19] WORSE | -0.32 [-0.76, +0.12] LEVEL |
+| RRF R@20 (points vs C0) | +0.35 [-0.19, +0.87] LEVEL | -0.16 [-0.74, +0.43] LEVEL | +0.69 [+0.19, +1.20] BETTER |
+| leg R@20 (points vs C0) | -2.35 [-3.03, -1.61] WORSE | +1.41 [+0.66, +2.22] BETTER | +1.52 [+0.91, +2.14] BETTER |
+| leg R@1000 (points vs C0) | -2.11 [-2.76, -1.47] WORSE | +3.26 [+2.56, +3.95] BETTER | +2.53 [+1.95, +3.09] BETTER |
+
+**multihoprag** (2,255 questions, 609 nodes). C0's own values: RRF R@5 61.87, seed recall 73.74, RRF R@20 91.28, leg R@20 83.92.
+
+| read | C3 opensearch doc-v2-mini 23M | C1 granite 30M | C2 opensearch v2-distill 67M |
+|---|---|---|---|
+| RRF R@5 (points vs C0) | -0.34 [-1.03, +0.32] WORSE | +0.26 [-0.55, +1.06] LEVEL | +0.27 [-0.35, +0.86] LEVEL |
+| seed recall (points vs C0) | -0.47 [-0.93, +0.01] LEVEL | -1.80 [-2.40, -1.25] WORSE | -0.68 [-1.18, -0.18] WORSE |
+| RRF R@20 (points vs C0) | -1.18 [-1.70, -0.72] WORSE | -1.74 [-2.31, -1.25] WORSE | +0.05 [-0.40, +0.49] LEVEL |
+| leg R@20 (points vs C0) | -2.57 [-3.30, -1.91] WORSE | +0.65 [-0.16, +1.42] LEVEL | +1.48 [+0.89, +2.03] BETTER |
+| leg R@1000 (points vs C0) | n/a | n/a | n/a |
+
+Section 5's pass needs "not WORSE" on all six cells (RRF R@5 and seed recall, three datasets). C3 is WORSE on SQuAD (-1.04 and -1.65), and on MultiHop-RAG's RRF R@5 (-0.34, interval low end -1.03); C1 and C2 are WORSE on SQuAD and on a seed cell. Verdict of the screen: **none passes; no pick on the first-stage reads**. The reads were decided on the pools (A8), which is the next subsection.
+
+### 10.2 The pool-coverage read of C0 against C3 (A8 to A10, rule D1)
+
+The filed PL5/PL6 cells of the eval carves, C3's list in place of the record's SPLADE list, everything else as filed. Gate G-P1 (the replaced list reproduces the filed old-cell numbers exactly) passed on all questions of the three datasets (SQuAD 11,873 in four parts, MuSiQue 2,417 in four parts, MultiHop-RAG 1,130).
+
+| dataset | cell | role | C0 all-gold | C3 all-gold | diff pt [95% interval] | call | nodes C0 -> C3 |
+|---|---|---|---|---|---|---|---|
+| squad | `rrf1000_b400+STRUCT:h1_c100~cs+top50` | frontier_500 | 0.9965 | 0.9960 | -0.05 [-0.13, +0.03] | LEVEL | 446.7 -> 447.4 |
+| squad | `rrf1000_b100+FULL:h3_bf_v5000_w4096~cs-vr+top800` | frontier_1000 | 0.9979 | 0.9977 | -0.02 [-0.07, +0.03] | LEVEL | 900.0 -> 900.0 |
+| squad | `rrf1000_b400+FULL:h2_c100_v5000~s20-cs-vr+top800` | frontier_1500 | 0.9982 | 0.9985 | +0.03 [-0.04, +0.09] | LEVEL | 1200.0 -> 1200.0 |
+| squad | `rrf1000_b800+FULL:h3_c100_v5000~cs-rk+top800` | frontier_2000 | 0.9991 | 0.9987 | -0.03 [-0.08, +0.01] | LEVEL | 1599.9 -> 1599.8 |
+| squad | `rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800` | frontier_2500 **(deciding)** | 0.9992 | 0.9992 | +0.00 [-0.03, +0.03] | LEVEL | 2200.0 -> 2254.1 |
+| squad | `rrf1000_b15` | R95_bounded **(deciding)** | 0.9554 | 0.9463 | -0.91 [-1.16, -0.65] | WORSE | 15.0 -> 15.0 |
+| squad | `equal_rrf_budget_50` | old | 0.9798 | 0.9768 | -0.29 [-0.45, -0.13] | LEVEL | 50.0 -> 50.0 |
+| multihoprag | `rrf1000_b50+FULL:h2_c100_v5000+top50` | frontier_500 | 0.9912 | 0.9938 | +0.27 [+0.00, +0.62] | LEVEL | 100.0 -> 100.0 |
+| multihoprag | `rrf1000_b50+FULL:h2_c100_v5000+top50` | frontier_1000 | 0.9912 | 0.9938 | +0.27 [+0.00, +0.62] | LEVEL | 100.0 -> 100.0 |
+| multihoprag | `rrf1000_b50+FULL:h2_c100_v5000+top50` | frontier_1500 | 0.9912 | 0.9938 | +0.27 [+0.00, +0.62] | LEVEL | 100.0 -> 100.0 |
+| multihoprag | `rrf1000_b50+FULL:h2_c100_v5000+top50` | frontier_2000 | 0.9912 | 0.9938 | +0.27 [+0.00, +0.62] | LEVEL | 100.0 -> 100.0 |
+| multihoprag | `rrf1000_b50+FULL:h2_c100_v5000+top50` | frontier_2500 **(deciding)** | 0.9912 | 0.9938 | +0.27 [+0.00, +0.62] | LEVEL | 100.0 -> 100.0 |
+| multihoprag | `rrf1000_b25+FULL:h1_c100+top25` | R95_bounded **(deciding)** | 0.9690 | 0.9717 | +0.27 [-0.18, +0.80] | LEVEL | 50.0 -> 50.0 |
+| multihoprag | `equal_rrf_budget_50` | old | 0.9540 | 0.9442 | -0.97 [-2.04, +0.00] | WORSE | 50.0 -> 50.0 |
+| musique | `rrf1000_b400+FULL:h1_c100+brg100` | frontier_500 | 0.7683 | 0.7724 | +0.41 [-0.54, +1.37] | LEVEL | 498.1 -> 498.4 |
+| musique | `rrf1000_b800+FULL:h1_c100~s10+top200` | frontier_1000 | 0.8213 | 0.8312 | +0.99 [+0.25, +1.78] | BETTER | 986.6 -> 988.1 |
+| musique | `rrf1000_b800+FULL:h2_bf_v1000~cs-vr-rr+top800` | frontier_1500 | 0.8618 | 0.8672 | +0.54 [-0.00, +1.12] | LEVEL | 1470.0 -> 1485.4 |
+| musique | `rrf1000_b400+FULL:h2_bf_v2000~cs-vr-rr+top1600` | frontier_2000 | 0.8664 | 0.8676 | +0.12 [-0.54, +0.74] | LEVEL | 1999.5 -> 2000.0 |
+| musique | `rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr` | frontier_2500 **(deciding)** | 0.8846 | 0.8862 | +0.17 [-0.37, +0.74] | LEVEL | 2438.2 -> 2456.3 |
+| musique | `rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr` | R95_bounded **(deciding)** | 0.8846 | 0.8862 | +0.17 [-0.37, +0.74] | LEVEL | 2438.2 -> 2456.3 |
+| musique | `equal_rrf_budget_200+FULL:h2_c25` | old | 0.8026 | 0.8113 | +0.87 [+0.08, +1.61] | BETTER | 2092.4 -> 2101.2 |
+
+**D1: ADOPT_C3_AT_PRICE.** Five of the six deciding cells are LEVEL (SQuAD frontier_2500 +0.00; MultiHop-RAG +0.27 on both; MuSiQue +0.17 on both, one cell serves both roles there), one is WORSE: SQuAD's R95_bounded pool of 15 nodes, -0.91 point [-1.16, -0.65], which is a first-stage-only pool (no walk). Every point difference is above -1.5. No cell has MORE_NODES (largest +2.5% of nodes, SQuAD frontier_2500). The speed ratio is 6.44 (CPU, first 512 SQuAD nodes, 4 threads: C3 15.21, C0 2.36 nodes per second), above 3.0.
+
+**The price, in numbers.** The loss sits in the smallest pools: 15 nodes on SQuAD, -0.91 point of all-gold, and MultiHop-RAG's old 50-node cell, -0.97 [-2.04, +0.00] (not a deciding cell). Every other cell, from SQuAD's 50-node old cell up to 2,500 nodes, is LEVEL or BETTER; MuSiQue is BETTER on two cells (+0.99 at 1,000 nodes, +0.87 on the old cell). The first-stage screen's SQuAD losses (RRF R@5 -1.04, seeds -1.65) show up in a pool that has no walk and are gone from the pools that walk (read as a pattern of these cells, not a tested mechanism).
+
+**Expectations.** X5 (SQuAD's deciding cells LEVEL): **not held**, the 15-node cell is WORSE (the walk does not repair a pool that is only the first stage). X6 (MuSiQue loses most): **not held**, MuSiQue is LEVEL or BETTER on all seven cells although C3's own leg R@1000 there is -2.11 WORSE (the pools repair it; the screen's first-stage read mispredicted the pool read on this dataset). X7 (MultiHop-RAG LEVEL or BETTER): **held** on all deciding cells (the old cell, which decides nothing, is -0.97 WORSE).
+
+### 10.3 Costs
+
+| measure | C0 original 109M | C3 23M | C1 30M | C2 67M |
+|---|---|---|---|---|
+| card nodes/s, block median, squad | - | 343.8 | 287.9 | 266.4 |
+| card nodes/s, block median, musique | - | 27.2 | 337.3 | 321.1 |
+| card nodes/s, block median, multihoprag | - | 127.8 | - | 109.7 |
+| card nodes/s, whole run (wall), squad | - | 36.3 | 33.6 | 189.3 |
+| card nodes/s, whole run (wall), musique | - | 25.2 | 53.8 | 24.4 |
+| card nodes/s, whole run (wall), multihoprag | - | 83.6 | 74.8 | 72.1 |
+| doc non-zeros per node, squad | - | 340.4 | 269.2 | 245.4 |
+| doc non-zeros per node, musique | - | 315.4 | 200.8 | 211.0 |
+| doc non-zeros per node, multihoprag | - | 336.9 | 368.2 | 265.9 |
+| question non-zeros, squad | - | 11.9 | 57.2 | 134.5 |
+| question non-zeros, musique | - | 18.4 | 64.2 | 142.4 |
+| question non-zeros, multihoprag | - | 45.2 | 120.3 | 199.9 |
+| CPU nodes/s, first 512 SQuAD nodes, 4 threads | 2.36 | 15.21 | 10.81 | 6.90 |
+| doc non-zeros, the same 512 nodes | 193.6 | 337.0 | 262.3 | 245.5 |
+| doc non-zeros, MultiHop-RAG on CPU (all 609) | 213.2 | - | - | - |
+
+G-C0 (CPU row): this 213.2 vs record 213.2, difference +0.00: PASS
+
+C3's MuSiQue row ran on the host CPU (6 threads, 25.2 nodes per second wall) because the other account held the card from 03:45; its "block median" in the table is a CPU rate there. C0's card speed was not measured: `spl1c-gsq` and `spl1c-gmh` stay in the feed and their card rates are filed beside this table when the card lets them run. **C3's vectors are not smaller in non-zeros:** 315 to 340 document non-zeros per node against C0's 213.2 (MultiHop-RAG) and 193.6 (the 512 SQuAD nodes), about 1.6 times more; its question side is smaller (11.9 to 45.2 non-zeros against C0's 128.1 on MultiHop-RAG). SPL2 keeps the top-2,500 lists per question and not the document vectors, so this costs no storage there.
+
+### 10.4 Disclosures
+
+- D1's text says the CPU ratio stands in "if C0's card row fails". The card row has not failed: it has not run, because the card has been held since 03:45. The module's coded fallback ("the card row of C0 is not here") was used as committed in A8 before any pool number was read. The card ratio is filed when the row runs; if it falls below 3.0 the user is told, since that would change a premise of this decision.
+- The pool read uses the record's frozen dense list (the filed grids exist on it), not e3v's; the first-stage effect on e3v is the H1 and H2 reads of 10.1.
+- C1 and C2 were not read on the pools (they decide nothing under D1: slower than C3 and not better on the first stage).
+- C3's MuSiQue list was encoded on CPU, the others on the card; the lists are device-independent up to float noise (SPL2's dry run: scores within 4.2e-5 between CPU and card on MultiHop-RAG).
+- The laptop's Prime SPLADE leg (C0) is redundant once C3 serves Prime; it is not stopped by this page (it was reaped by the system's memory guard on 27 Nov at about 04:50 with its checkpoint at 49,152 of 129,375 nodes; it was not restarted).
+
+### 10.5 What follows
+
+The rebuild of the sparse leg over all ten datasets with C3 is declared on `docs/SPL2_SPARSE_LEG_REBUILD.md`. The STaRK A6 rows that were removed from the feed until D1 return as consumers of SPL2's lists in their own amendment.
