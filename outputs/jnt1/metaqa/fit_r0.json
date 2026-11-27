@@ -1,0 +1,11 @@
+{
+ "dataset": "metaqa",
+ "round": 0,
+ "shuffle": false,
+ "rows": 915210,
+ "positives": 414157,
+ "questions": 1197,
+ "train_auc_sample": 0.8811,
+ "seconds": 27.5,
+ "zjnt1_sha256": "41017353c6762303d314e7643a5b8b9cdc3560dd1b79dc37cac31ee83a8b5b77"
+}

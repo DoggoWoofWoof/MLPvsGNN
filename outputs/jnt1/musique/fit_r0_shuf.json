@@ -1,0 +1,11 @@
+{
+ "dataset": "musique",
+ "round": 0,
+ "shuffle": true,
+ "rows": 1042474,
+ "positives": 478731,
+ "questions": 1234,
+ "train_auc_sample": 0.6673,
+ "seconds": 68.0,
+ "zjnt1_sha256": "41017353c6762303d314e7643a5b8b9cdc3560dd1b79dc37cac31ee83a8b5b77"
+}
