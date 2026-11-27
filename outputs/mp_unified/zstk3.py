@@ -55,7 +55,7 @@ REF_DEPTH = 2500                              # the depth of first.npz's lists
 PICK_KEYS = ("R95_all", "R95_rung0", "R95_bounded", "R98_all", "R98_rung0")
 FLAT_RE = re.compile(r"^(rrf1000_b\d+|dense_top\d+|splade_top200)$")
 GATE_CELLS = ("dense_top20", "dense_top100", "splade_top200", "rrf1000_b20", "rrf1000_b100")
-RRF_AGREE = 0.99                              # G-S: the engine's fused top N equals first.npz's as a set on at least this share of the gate chunk
+RRF_ALL_AGREE = 0.98                          # G-S (amendment 3): the all-gold booleans of rrf1000_b20 and rrf1000_b100 equal those of first.npz's fused top 20 and 100 on this share of the gate chunk
 log, stop, rjson, wjson, utc = P2.log, P2.stop, P2.rjson, P2.wjson, P2.utc
 
 
@@ -382,7 +382,9 @@ def make_ref(kb, src):
 # ── gates and probe ──────────────────────────────────────────────────────
 
 def gate_s(op, kb, src, lo, hi):
-    """G-S: the engine's flat cells equal the lists of first.npz on the gate chunk."""
+    """G-S: the engine's flat cells equal the lists of first.npz on the gate chunk (exact for the dense and SPLADE tops; the fused tops by their all-gold booleans, amendment 3:
+    the engine's fusion (M3A's inherited equal-RRF over lists 1,000 deep) and STK1's (float32 1/(60 + rank), lists 2,500 deep, ties by node id) are two implementations, so
+    their top-N sets are reported, not gated)."""
     M3A = op.m3a
     plan = Z5.Plan5(list(GATE_CELLS))
     P, S = Z5.evaluate5(op, src, plan, lo, hi, every=64)
@@ -404,7 +406,7 @@ def gate_s(op, kb, src, lo, hi):
         got = P[:, plan.names.index(nm)].astype(np.int64) == gc
         out["rrf"][nm] = {"set_agreement": ag, "all_gold_agreement": float((ref == got).mean())}
     out["verdict"] = "PASS" if (all(v["mismatches"] == 0 and v["sizes_ok"] for v in out["exact"].values())
-                                and all(v["set_agreement"] >= RRF_AGREE for v in out["rrf"].values())) else "FAIL"
+                                and all(v["all_gold_agreement"] >= RRF_ALL_AGREE for v in out["rrf"].values())) else "FAIL"
     return out
 
 
