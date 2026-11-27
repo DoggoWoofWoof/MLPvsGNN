@@ -75,3 +75,8 @@ Per dataset and arm, on the questions every source covers: per cell the filed AL
 ## 9. What this does not read or decide
 
 No model is trained or ranked; the pools are the filed links' pools, not a re-tuned grid (a cell outside the list could do better without SPLADE or K; the re-pick read is inside the list only). SPLADE's use as a model input and K's use as a model feature are not read. Nothing is deleted: the SPLADE vectors, K stores and their weights stay until the user decides and per-action OK is given. No cell, rule or link set is chosen; PL8 stays undeclared.
+
+## 10. Amendment 1 (20:23 IST, 27 Nov 2026): where two datasets run; WebQSP's measured cost (no arm number is used here)
+
+- **MultiHop-RAG and SQuAD run on the laptop, not as host rows.** Their data packages exist only on the laptop (LEG1-A6 ran them there too). A smoke run of MultiHop-RAG on the host stopped at its first read (the retrieval cache of the package is not on the host); it wrote no gate file and no chunk, and no number was read from it. Section 8's rows `mh0` and `sq0..sq1` are therefore **not queued**; the two datasets run as `zdrp1.py run --ds multihoprag` and `run --ds squad` on the laptop (2 BLAS threads, `-E -P -B`), each with the same gates and the same chunk files under `outputs/drp1/pool/<ds>/`. Nothing else in sections 2 to 7 changes.
+- **WebQSP's cost, measured by its first rows (`drp1-wq0..3`, started 20:15):** gates passed (G-D0 0 mismatches over 16 questions and 9 cells; G-D1 and G-D2 pass for the three arms); a chunk of 128 questions takes about 306 seconds for each arm, peak 7.3 GB (12 GB asked), so each of the four parts (3 chunks, 3 arms) takes about 2.8 hours. HotpotQA's and 2Wiki's costs stay unmeasured until their rows run.
