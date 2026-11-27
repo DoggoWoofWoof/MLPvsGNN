@@ -170,3 +170,26 @@ Above 2,500 nodes the first stage's own list ends, so the flat reference is shor
 - **X3.** In cell A, at least half of the questions with ANY = 0 are single-gold questions.
 
 **What this is not.** A descriptive read of the test split, which is the transfer read of section 1: **no cell, rule, walk, cut or window is chosen or changed from it**, nothing is adopted, and any rule it suggests is declared first and read on Prime's dev split or on MAG and Amazon, which this read does not touch. The module change is the command `missed` (laptop only, reads the chunks and `ref.npz`, writes `missed.json`, no per-KB branch) and a selftest check; the rest of `zstk3.py` is not edited.
+
+## 16. The missed questions on Prime, read (16:54 IST, 27 Nov 2026; section 15's read, run after amendment 4 was pushed; descriptive, nothing chosen)
+
+`zstk3.py missed --kb prime` on the 22 chunks (all 2,801 questions; record `outputs/stk3/prime/missed.json`). Prime's test questions are **63 percent single-gold** (1,769 of 2,801; 319 with two golds, 187 with three, 526 with four or more).
+
+| cell | nodes | ALL, 1 gold | ALL, 2 | ALL, 3 | ALL, 4+ | ANY = 0 (questions, share) | of those: single-gold | of those: a gold outside the 2,500 list | partial (questions, share of golds missed) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| A `rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr` | 2,475 | 88.9 | 85.6 | 88.8 | 72.6 | 225 (8.0 %) | 196 (87.1 %) | 202 (89.8 %) | 182 (41.6 %) |
+| B `rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu` | 5,780 | 92.5 | 92.8 | 96.3 | 87.6 | 140 (5.0 %) | 132 (94.3 %) | 139 (99.3 %) | 87 (38.2 %) |
+| C `rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000` | 15,383 | 92.5 | 92.5 | 90.9 | 82.5 | 143 (5.1 %) | 133 (93.0 %) | 139 (97.2 %) | 123 (37.5 %) |
+
+(For a single-gold question ALL and ANY are the same event, so the first column is also ANY. ANY for two, three and four or more golds in cell A: 96.2, 96.8, 97.9; in cell B: 98.4, 100.0, 99.4.)
+
+**Calls on the expectations.** **X1 NOT HELD:** in cell A ALL reads 88.9, 85.6, 88.8, 72.6 by gold count, not falling at each step; it falls clearly only for four or more golds (the bins hold 1,769, 319, 187 and 526 questions). **X2 HELD:** 97.2 percent of cell C's questions with no gold (139 of 143) have a gold outside the first stage's 2,500-deep fused list. **X3 HELD:** 87.1 percent of cell A's questions with no gold (196 of 225) are single-gold.
+
+**What it says (descriptive; no rule follows from it by itself).**
+
+- **The no-gold questions are single-gold questions whose gold is outside the first stage's list.** At 2,475 nodes 196 of the 225 are single-gold and 202 have a gold outside the list; at 5,780 nodes 132 of 140 and 139 of 140. These are questions the first stage does not reach at 2,500 and the walks do not reach from the seeds in three hops within the budget: a first-stage, seed or link-reach loss, not a pool-size loss (the 15,383-node cell leaves 143 of them, the 5,780-node cell 140).
+- **The partial questions carry the rest, and they are many-gold questions.** At 2,475 nodes 182 questions (6.5 percent) hold some golds and miss on average 41.6 percent of them; four-or-more-gold questions reach ANY 97.9 percent and ALL 72.6 percent. Cells B and C show the same at larger size (87 and 123 questions).
+- **Cell B (STRUCT, 5,780 nodes) beats cell C (FULL, 15,383 nodes) on ALL for three and four-or-more golds** (96.3 against 90.9, 87.6 against 82.5): the two cells differ in family (FULL against STRUCT), visit budget (20,000 against 5,000) and seed budget (400 against 1,600), so the cause is not isolated here; it is consistent with section 14's finding that R and K add nothing on Prime.
+- The target (95 percent at about 2,500 nodes) is therefore missed by 11.1 points on single-gold questions (cell A: 88.9) and by 22 points on questions with four or more golds (72.6), and the test split's single-gold share makes the first the larger part of the loss (196 of 225 no-gold questions; of the 14.5 percent of questions not complete, 8.0 points are no-gold and 6.5 points partial).
+
+**Not read.** How far (in hops, in which family) the missed golds sit from the seeds; whether a path of any length reaches them; whether they are reachable from the first stage's list deeper than five seeds per leg. Those are the next read (section 17, to be declared before it runs); nothing here is adopted.
