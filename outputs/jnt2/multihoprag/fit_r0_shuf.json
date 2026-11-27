@@ -1,0 +1,67 @@
+{
+ "dataset": "multihoprag",
+ "round": 0,
+ "shuffle": true,
+ "rows": 82137,
+ "positives": 13768,
+ "questions": 112,
+ "label_hops": {
+  "1": 0,
+  "2": 1,
+  "3": 0
+ },
+ "per_hop": {
+  "1": {
+   "rows": 23683,
+   "positives": 114,
+   "sample_pos_rate": 0.0048,
+   "population": {
+    "candidates": 23683,
+    "within0": 114,
+    "within1": 14237,
+    "within2": 23673,
+    "declared_rate": 0.9996,
+    "label_hops": 0,
+    "label_rate": 0.0048
+   },
+   "own_head": true,
+   "train_auc_sample": 0.5071
+  },
+  "2": {
+   "rows": 36054,
+   "positives": 13654,
+   "sample_pos_rate": 0.3787,
+   "population": {
+    "candidates": 54863,
+    "within0": 10,
+    "within1": 13654,
+    "within2": 54799,
+    "declared_rate": 0.2489,
+    "label_hops": 1,
+    "label_rate": 0.2489
+   },
+   "own_head": true,
+   "train_auc_sample": 0.5445
+  },
+  "3": {
+   "rows": 22400,
+   "positives": 0,
+   "sample_pos_rate": 0.0,
+   "population": {
+    "candidates": 45979,
+    "within0": 0,
+    "within1": 7461,
+    "within2": 45755,
+    "declared_rate": 0.0,
+    "label_hops": 0,
+    "label_rate": 0.0
+   },
+   "own_head": false,
+   "train_auc_sample": null
+  }
+ },
+ "pooled_train_auc_sample": 0.8476,
+ "thinned_in_tables": false,
+ "seconds": 7.2,
+ "zjnt2_sha256": "d6b06dd8b9ea881f5dc34a1090a65838ad8bb0a3fd35643304103fce29ad05a9"
+}
