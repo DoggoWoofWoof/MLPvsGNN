@@ -76,3 +76,21 @@ Named share of MAG by type: papers 100 percent, institutions 99.8 percent (8,685
 **L4 at the names level.** The same-name sibling count is 228 on Prime and 2,145,044 on MAG, 4.3 percent of the 50,000,000 stop, so neither stops. This is the count the links row recomputes before it builds. The page expected MAG's authors to be the case the stop exists for; the largest group is indeed an author name (192 nodes, 36,672 ordered pairs by itself), and the total, which was not split by type, is far below the stop.
 
 **Not read yet:** any family's size, the e3v vectors (Prime's encode is running), K's cost. Prime's links row (`stk2p-links`, 8 cpus, 16 GB asked, behind `stk1p-vec`) is in the feed; MAG's and Amazon's first links rows are the pricing pass of section 6.
+
+
+### 9.2 Prime's links, Amazon's names, and the pricing passes of MAG and Amazon (15:02 IST): sizes and costs, no retrieval number
+
+**Prime, built** (`stk2p-links`, host, 8 threads, 446.4 s, peak 2,284.6 MB; record `outputs/stark/prime/links.json`; gate L4 passed with 228 sibling pairs). The store holds **4,431,605 pairs**: S 4,049,642 (from 8,100,498 directed edges), R-only 179,072, K-only 202,891. The families before dedup: W2_S 46,649 pairs (47,316 mention links and 228 sibling ordered links, 25,451 common forms, 0 ambiguous), F0T 183,735 (F0 183,546 plus 189 title co-mention pairs), R as a union 215,166, K 279,251 pairs (three neighbours of each of the 129,375 nodes; 26,667 rows with ties). Overlaps: 36,094 pairs are in both S and R, 57,048 in S and K, 28,865 in R and K; 76,360 of the K pairs are already held by S or R. Labels: S 4,049,642; R.mention 46,649; R.name_comention 183,546; R.title_comention 189; K.knn 279,251. S pairs by relation, the five largest (a pair can carry several): expression present 1,518,203; synergistic interaction 1,336,314; interacts with 343,275; ppi 321,075; phenotype present 150,317. **The R families add 179,072 pairs to S's 4.05 million (4.4 percent) and K 202,891 (5.0 percent); whether any of them adds coverage at equal nodes is STK3's, not read here.**
+
+**Amazon's names (N1)** (`stk2a-names`, host, 63 s; record `outputs/stark/amazon/names.json`): **957,142 of 1,035,542 nodes are named (92.4 percent), all through `title`**; per type: product 957,142 of 957,192 (99.995 percent), **brand 0 of 75,215, category 0 of 1,423, color 0 of 1,712**. The brand, category and color nodes carry none of `name`, `title`, `DisplayName` under N1 as declared, so they are nameless and no name rule can reach them; the S edges (a product's brand, category and color) reach them. N1 is not changed (no key is added after the count; a change would be an amendment that reads all three KBs the same way). Same-name sibling pairs if built: 647,816 over 913,363 name groups (1.3 percent of the stop); the largest group is `Majestic MLB Mens T-Shirt`, 322 products.
+
+**The pricing passes of section 6** (`stk2m-price` 118 s and `stk2a-price` 101 s, host, 8 threads, records `links_price.json`):
+
+| KB | nodes | L4 sibling pairs (stop 50,000,000) | surface forms (seconds) | K groups, one 2,048-group block | K estimate on 8 threads | peak of the pass |
+| --- | --- | --- | --- | --- | --- | --- |
+| MAG | 1,872,968 | 2,145,044 (4.3 percent) | 3,443,280 (53.6 s) | 1,507,349; 45.8 s | **9.37 h** | 5,760 MB |
+| Amazon | 1,035,542 | 647,816 (1.3 percent) | 5,028,261 (60.6 s) | 1,035,497; 29.1 s | **4.09 h** | 7,181 MB |
+
+Neither L4 count stops a row, and both K estimates are far below the three days of section 6, so **no amendment on the thread count or the search method is needed; the full links rows are queued** as `stk2m-links` and `stk2a-links` (8 cpus; memory asked by section 6's rule, the previous KB's measured peak scaled by node count: 34 GB and 19 GB), each checkpointed family by family. **Expectation, written before the rows run:** neither stops at L4 or L5, MAG's row ends in under 12 hours and Amazon's in under 6 on 8 threads, and the peak of each stays under the asked memory.
+
+**Not read:** any retrieval number, any pool, the effect of R or K at equal nodes on any of the three KBs.

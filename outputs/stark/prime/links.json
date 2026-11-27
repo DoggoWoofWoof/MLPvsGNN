@@ -1,0 +1,141 @@
+{
+ "stage": "STK2 links",
+ "declared_in": "docs/STK2_STARK_LINKS.md sections 4 to 6",
+ "kb": "prime",
+ "dataset": "stark_prime",
+ "nodes": 129375,
+ "dataset_json_sha256": "42327f55684ddcb35084cbc22538514b0b7a9c339d43f31a9478c90df2ecc8e9",
+ "names_sha256": "32f658dbcd2336e19f2605949d280c060b815200aa0ff36c0135ad7639e4ebe1",
+ "L4": {
+  "sibling_pairs": 228,
+  "name_groups": 129262,
+  "largest_groups": [
+   {
+    "name": "Vitamin E",
+    "nodes": 3
+   },
+   {
+    "name": "4-hydroxyphenylacetic aciduria",
+    "nodes": 2
+   },
+   {
+    "name": "Acetaminophen",
+    "nodes": 2
+   },
+   {
+    "name": "Ammonia",
+    "nodes": 2
+   },
+   {
+    "name": "Amoxicillin",
+    "nodes": 2
+   },
+   {
+    "name": "Androstenedione",
+    "nodes": 2
+   },
+   {
+    "name": "Attachment and Entry",
+    "nodes": 2
+   },
+   {
+    "name": "Axenfeld anomaly",
+    "nodes": 2
+   },
+   {
+    "name": "Barrett esophagus",
+    "nodes": 2
+   },
+   {
+    "name": "Budd-Chiari syndrome",
+    "nodes": 2
+   }
+  ]
+ },
+ "threads": 8,
+ "surfaces": {
+  "forms": 145858,
+  "seconds": 1.4
+ },
+ "rule_build": {
+  "keys": 175742,
+  "name_entries": 441065,
+  "title_run_entries": 23,
+  "articles_with_a_title_run": 23,
+  "lt_pairs": 183735
+ },
+ "S": {
+  "edges": 8100498,
+  "pairs": 4049642,
+  "by_relation": {
+   "ppi": 321075,
+   "carrier": 864,
+   "enzyme": 5317,
+   "target": 16380,
+   "transporter": 3092,
+   "contraindication": 30675,
+   "indication": 9388,
+   "off-label use": 2568,
+   "synergistic interaction": 1336314,
+   "associated with": 83741,
+   "parent-child": 140872,
+   "phenotype absent": 1193,
+   "phenotype present": 150317,
+   "side effect": 64784,
+   "interacts with": 343275,
+   "linked to": 2304,
+   "expression present": 1518203,
+   "expression absent": 19887
+  }
+ },
+ "W2_S": {
+  "pairs": 46649,
+  "mention_links": 47316,
+  "sibling_links": 228,
+  "descriptive_nodes": 129375,
+  "surfaces": 145858,
+  "common_forms": 25451,
+  "W2_surface_links": 47082,
+  "W2_ambiguous": 0
+ },
+ "F0": 183546,
+ "F0T": 183735,
+ "K": {
+  "groups": 129375,
+  "edges": 279251,
+  "tie_rows": 26667,
+  "pairs": 279251
+ },
+ "R": 215166,
+ "store": 4431605,
+ "families": {
+  "S": 4049642,
+  "R": 179072,
+  "K": 202891
+ },
+ "per_label": {
+  "S": 4049642,
+  "R.mention": 46649,
+  "R.name_comention": 183546,
+  "R.title_comention": 189,
+  "K.knn": 279251
+ },
+ "overlaps": {
+  "S_in_R": 36094,
+  "S_in_K": 57048,
+  "R_in_K": 28865,
+  "K_in_S_or_R": 76360
+ },
+ "files": {
+  "S": "7cdcd355a33abfe07405e1432487ca5776927b0b979ad87a9dc9fa9c6d692987",
+  "F0": "75d912cea47fd48859c8c74a1c549847f19752dba8216602ffd9dba5d15cdc46",
+  "F0T": "cfb0a6a7410baea3275fa7af0e7b373d8870419ce2ea4d66f09436b8bd9688cb",
+  "W2_S": "71f6997dfe1fd44eee50492fd061c41ab75962880783c53141b2f2788d6c52e4",
+  "K": "167ed60d73541ed6c3caa5202c020de9c6ea1e5d6211d316fa1f644c59d62346",
+  "store": "0f4ba6ecdc2c2feb98123659eb9ad62d2ea5c2153c18c4dc43f5331d47663903"
+ },
+ "peak_mb": 2284.6,
+ "seconds": 446.4,
+ "utc": "2026-11-27T00:48:24Z",
+ "outputs/mp_unified/zstk2.py": "af1330f71e9c9868736c1fc4d2cca14231f911e5c08caf5b19f8e6e6150ab09a"
+}

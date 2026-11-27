@@ -1,0 +1,70 @@
+{
+ "stage": "STK2 links (price)",
+ "declared_in": "docs/STK2_STARK_LINKS.md sections 4 to 6",
+ "kb": "mag",
+ "dataset": "stark_mag",
+ "nodes": 1872968,
+ "dataset_json_sha256": "f53227d5c9b5d069d58fdca685f3863e889a264dac32701e1cc637a982140ea5",
+ "names_sha256": "3828a3fddf6759d47c65b7ef023f83f3dfbc714da1a93e3c5ec919a29382139b",
+ "L4": {
+  "sibling_pairs": 2145044,
+  "name_groups": 1507199,
+  "largest_groups": [
+   {
+    "name": "Wei Wang",
+    "nodes": 192
+   },
+   {
+    "name": "Wei Zhang",
+    "nodes": 171
+   },
+   {
+    "name": "Lei Wang",
+    "nodes": 161
+   },
+   {
+    "name": "Yang Liu",
+    "nodes": 150
+   },
+   {
+    "name": "Wei Li",
+    "nodes": 137
+   },
+   {
+    "name": "Yang Li",
+    "nodes": 124
+   },
+   {
+    "name": "Jing Wang",
+    "nodes": 123
+   },
+   {
+    "name": "Yu Zhang",
+    "nodes": 121
+   },
+   {
+    "name": "Wei Liu",
+    "nodes": 119
+   },
+   {
+    "name": "Jing Li",
+    "nodes": 114
+   }
+  ]
+ },
+ "threads": 8,
+ "surfaces": {
+  "forms": 3443280,
+  "seconds": 53.6
+ },
+ "K_price": {
+  "queried_groups": 2048,
+  "groups": 1507349,
+  "block_seconds": 45.8,
+  "estimate_hours": 9.37
+ },
+ "peak_mb": 5760.2,
+ "seconds": 117.9,
+ "utc": "2026-11-27T09:29:22Z",
+ "outputs/mp_unified/zstk2.py": "af1330f71e9c9868736c1fc4d2cca14231f911e5c08caf5b19f8e6e6150ab09a"
+}

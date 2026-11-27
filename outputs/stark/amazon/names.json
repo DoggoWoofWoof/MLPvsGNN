@@ -1,0 +1,89 @@
+{
+ "stage": "STK2 names",
+ "declared_in": "docs/STK2_STARK_LINKS.md section 3",
+ "kb": "amazon",
+ "dataset": "stark_amazon",
+ "nodes": 1035542,
+ "named": 957142,
+ "by_key": {
+  "title": 957142,
+  "none": 78400
+ },
+ "by_type": {
+  "brand": {
+   "nodes": 75215,
+   "named": 0,
+   "share": 0.0
+  },
+  "category": {
+   "nodes": 1423,
+   "named": 0,
+   "share": 0.0
+  },
+  "color": {
+   "nodes": 1712,
+   "named": 0,
+   "share": 0.0
+  },
+  "product": {
+   "nodes": 957192,
+   "named": 957142,
+   "share": 0.999948
+  }
+ },
+ "name_groups": 913363,
+ "sibling_pairs_if_built": 647816,
+ "sibling_stop": 50000000,
+ "largest_groups": [
+  {
+   "name": "Majestic MLB Mens T-Shirt",
+   "nodes": 322
+  },
+  {
+   "name": "Under Armour Men's Storm Armour Fleece Pants",
+   "nodes": 215
+  },
+  {
+   "name": "WinCraft NFL New York Giants Logo Crystal Mirror License Pla",
+   "nodes": 151
+  },
+  {
+   "name": "Ravenox Natural Twisted Cotton Rope | Made in the USA | Stro",
+   "nodes": 142
+  },
+  {
+   "name": "Under Armour Men's HeatGear Armour Short Sleeve Compression ",
+   "nodes": 123
+  },
+  {
+   "name": "Under Armour Men's HeatGear Armour Long Sleeve Compression S",
+   "nodes": 120
+  },
+  {
+   "name": "The North Face Men's Thermoball Full Zip Jacket",
+   "nodes": 118
+  },
+  {
+   "name": "NIKE Men's Flat Front Pant",
+   "nodes": 111
+  },
+  {
+   "name": "NIKE Women's Tempo Short",
+   "nodes": 89
+  },
+  {
+   "name": "The North Face Men's Half Dome Hoodie",
+   "nodes": 79
+  }
+ ],
+ "sample_check": {
+  "nodes": 1000,
+  "name_not_in_text": 0
+ },
+ "names_sha256": "47b9f5c3d887b7bd00a3aa1566db0f2ceeaa7fdc20c4508665b5a04a76d7b852",
+ "dataset_json_sha256": "f2090b7904c41baadf7b709e88936259a4bd61bf05bd2f075ee923c08cb5bd87",
+ "peak_mb": 18896.9,
+ "seconds": 58.1,
+ "utc": "2026-11-27T09:27:13Z",
+ "outputs/mp_unified/zstk2.py": "af1330f71e9c9868736c1fc4d2cca14231f911e5c08caf5b19f8e6e6150ab09a"
+}
