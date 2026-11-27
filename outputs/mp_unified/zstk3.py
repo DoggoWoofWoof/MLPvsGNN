@@ -655,6 +655,107 @@ def cmd_missed(a):
     return 0
 
 
+# ── gold_profile: the golds the best cells miss, by link degree and node type (section 17; amendment 5) ──
+
+TOP_TYPES = 8
+
+
+def degrees_of(tab, n):
+    """Per node the number of distinct pairs it is an end of: in S alone, in the structural store (S and R) and in the union (structural, ner and knn; the layout keeps them disjoint)."""
+    sa, sb = struct_arrays(tab["structural_keys"], n)
+    lab = np.asarray(tab["structural_label"])
+    if lab.shape[0] != sa.shape[0]:
+        stop("the structural labels and keys differ in length")
+
+    def deg(x, y):
+        return np.bincount(np.asarray(x, np.int64), minlength=n).astype(np.int64) + np.bincount(np.asarray(y, np.int64), minlength=n).astype(np.int64)
+    s = lab == 0
+    d_s, d_st = deg(sa[s], sb[s]), deg(sa, sb)
+    d_u = d_st + deg(tab["ner"]["a"], tab["ner"]["b"]) + deg(tab["knn"]["a"], tab["knn"]["b"])
+    return {"S": d_s, "structural": d_st, "union": d_u}
+
+
+def gold_group(nodes, deg):
+    """One group of gold nodes: their number and, per store, the share and number with degree 0 and the mean and median degree."""
+    nodes = np.asarray(nodes, np.int64)
+    out = {"golds": int(nodes.size)}
+    for k, d in deg.items():
+        v = d[nodes] if nodes.size else np.zeros(0, np.int64)
+        out[k] = {"degree_0": int((v == 0).sum()), "degree_0_share": float((v == 0).mean()) if v.size else None,
+                  "mean": float(v.mean()) if v.size else None, "median": float(np.median(v)) if v.size else None}
+    return out
+
+
+def type_table(types_all, missed, top=TOP_TYPES):
+    """Per node type (the `top` largest by golds): golds, golds missed, miss rate."""
+    types_all, missed = np.asarray(types_all), np.asarray(missed, bool)
+    rows = []
+    for ty in sorted(set(types_all.tolist())):
+        m = types_all == ty
+        n_, k_ = int(m.sum()), int((m & missed).sum())
+        rows.append({"type": str(ty), "golds": n_, "missed": k_, "miss_rate": k_ / n_})
+    rows.sort(key=lambda r: (-r["golds"], r["type"]))
+    return rows[:top]
+
+
+def cmd_gold_profile(a):
+    import zstk2 as K2
+    import zworld as W
+    kb = a.kb
+    cells = rjson(cells_path())
+    gp = kb_dir(kb) / "gate_s.json"
+    if not gp.is_file() or rjson(gp).get("verdict") != "PASS":
+        stop(f"{kb}: no PASS gate file: no number is read")
+    got = load_chunks(kb, cells["names"], cells["cells_sha256"])
+    if got is None:
+        stop(f"{kb}: no chunks")
+    idx, qids, pres, size, gc = got
+    z = np.load(ref_path(kb), allow_pickle=False)
+    try:
+        ref_q, ref_gc = [str(x) for x in z["qids"]], z["gold_counts"].astype(np.int64)
+    finally:
+        z.close()
+    if idx.size != len(ref_q) or [ref_q[i] for i in idx] != qids or not np.array_equal(ref_gc[idx], gc):
+        stop(f"{kb}: the read is declared on every chunk, in the reference's questions")
+    w = W.load(K2.KBS[kb])
+    qs = list(w.iter_queries(splits=["test"]))
+    if [str(q["query_id"]) for q in qs] != ref_q:
+        stop(f"{kb}: the test split's questions are not the reference's")
+    golds = [np.unique(q["gold_pos"]).astype(np.int64) for q in qs]
+    if not np.array_equal(np.asarray([g.size for g in golds]), ref_gc):
+        stop(f"{kb}: the gold counts differ from the reference's")
+    _ids, types, _texts = K2.read_nodes(w)
+    types = np.asarray(types)
+    tab, _lay = read_layout(kb)
+    deg = degrees_of(tab, int(w.n))
+    at = {n: i for i, n in enumerate(cells["names"])}
+    single = np.flatnonzero(ref_gc == 1)
+    node = np.asarray([golds[q][0] for q in single], np.int64)
+    out = {}
+    for tag, name in MISSED_CELLS.items():
+        p = np.zeros(len(ref_q), np.int64)
+        p[idx] = pres[:, at[name]]
+        hit = p[single] > 0
+        out[tag] = {"cell": name, "single_gold_questions": int(single.size), "all": gold_group(node, deg), "hit": gold_group(node[hit], deg), "missed": gold_group(node[~hit], deg),
+                    "types": type_table(types[node], ~hit)}
+    A = out["A"]
+    tt = A["types"]
+    x = {"G1_under_2_percent_of_A_missed_have_union_degree_0": bool(A["missed"]["union"]["degree_0_share"] is not None and A["missed"]["union"]["degree_0_share"] < 0.02),
+         "G2_A_miss_rate_differs_10_points_between_the_two_largest_types": bool(len(tt) >= 2 and abs(tt[0]["miss_rate"] - tt[1]["miss_rate"]) >= 0.10),
+         "G3_A_missed_median_union_degree_below_the_hit_median": bool(A["missed"]["union"]["median"] is not None and A["hit"]["union"]["median"] is not None
+                                                                     and A["missed"]["union"]["median"] < A["hit"]["union"]["median"])}
+    rec = {"stage": "STK3 gold_profile", "declared_in": DOC + " section 17", "kb": kb, "utc": utc(), "cells": out, "expectations": x, "cells_sha256": cells["cells_sha256"],
+           "layout_sha256": _lay["layout_npz_sha256"], "note": "descriptive read of the test split; nothing is chosen or changed from it"}
+    wjson(kb_dir(kb) / "gold_profile.json", rec)
+    for tag in "ABC":
+        t = out[tag]
+        log(f"{kb} cell {tag}: single-gold {t['single_gold_questions']}, missed {t['missed']['golds']}; union degree 0: missed {t['missed']['union']['degree_0']} "
+            f"(median {t['missed']['union']['median']}), hit {t['hit']['union']['degree_0']} (median {t['hit']['union']['median']}); S degree 0 of missed {t['missed']['S']['degree_0']}")
+    log(f"cell A types {[(r['type'], r['golds'], round(r['miss_rate'], 3)) for r in tt]}")
+    log(f"expectations {x}")
+    return 0
+
+
 # ── self-test ────────────────────────────────────────────────────────────
 
 def cmd_selftest(a):
@@ -719,6 +820,15 @@ def cmd_selftest(a):
        "missed: the questions with no gold, by gold count and by the last gold's first-stage position (-1 is outside the list)")
     ok(mt["partial"]["questions"] == 1 and abs(mt["partial"]["mean_share_of_golds_missed"] - 1 / 3) < 1e-12 and rank_bin(999) == RANK_BINS[0] and rank_bin(1000) == RANK_BINS[1],
        "missed: the questions with some golds, the share of golds they miss, the position bins")
+    toy = {"structural_keys": np.asarray([0 * 6 + 1, 1 * 6 + 2, 2 * 6 + 3], np.int64), "structural_label": np.asarray([0, 0, 1], np.int8),
+           "ner": {"a": np.asarray([3]), "b": np.asarray([4])}, "knn": {"a": np.asarray([4]), "b": np.asarray([5])}}
+    dg = degrees_of(toy, 6)
+    ok(list(dg["S"]) == [1, 2, 1, 0, 0, 0] and list(dg["structural"]) == [1, 2, 2, 1, 0, 0] and list(dg["union"]) == [1, 2, 2, 2, 2, 1], "gold_profile: degrees in S, in S and R, in the union")
+    gg = gold_group([0, 3, 5], dg)
+    ok(gg["golds"] == 3 and gg["S"]["degree_0"] == 2 and gg["structural"]["degree_0"] == 1 and gg["union"]["degree_0"] == 0 and gg["union"]["median"] == 1.0 and gold_group([], dg)["S"]["degree_0_share"] is None,
+       "gold_profile: a group's degree-0 counts and median (an empty group reads None)")
+    tp = type_table(["a", "a", "b", "c"], [True, False, False, False], top=2)
+    ok([r["type"] for r in tp] == ["a", "b"] and tp[0]["golds"] == 2 and tp[0]["missed"] == 1 and tp[0]["miss_rate"] == 0.5 and tp[1]["miss_rate"] == 0.0, "gold_profile: the type table, largest types first")
     print(f"{checks - len(bad)}/{checks} checks passed")
     if bad:
         print("FAILED:", bad)
@@ -731,10 +841,10 @@ def main(argv=None):
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("selftest")
     sub.add_parser("cells")
-    for c in ("layout", "probe", "run", "read", "missed"):
+    for c in ("layout", "probe", "run", "read", "missed", "gold_profile"):
         p = sub.add_parser(c)
         p.add_argument("--kb", required=True, choices=KB_ORDER)
-        if c not in ("read", "missed"):
+        if c not in ("read", "missed", "gold_profile"):
             p.add_argument("--host", action="store_true")
         if c == "layout":
             p.add_argument("--redo", action="store_true")
@@ -746,7 +856,7 @@ def main(argv=None):
     a = ap.parse_args(argv)
     global HOSTMODE
     HOSTMODE = bool(getattr(a, "host", False))
-    return {"selftest": cmd_selftest, "cells": cmd_cells, "layout": cmd_layout, "probe": cmd_probe, "run": cmd_run, "read": cmd_read, "missed": cmd_missed}[a.cmd](a)
+    return {"selftest": cmd_selftest, "cells": cmd_cells, "layout": cmd_layout, "probe": cmd_probe, "run": cmd_run, "read": cmd_read, "missed": cmd_missed, "gold_profile": cmd_gold_profile}[a.cmd](a)
 
 
 if __name__ == "__main__":

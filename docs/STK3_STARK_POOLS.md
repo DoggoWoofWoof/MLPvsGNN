@@ -193,3 +193,17 @@ Above 2,500 nodes the first stage's own list ends, so the flat reference is shor
 - The target (95 percent at about 2,500 nodes) is therefore missed by 11.1 points on single-gold questions (cell A: 88.9) and by 22 points on questions with four or more golds (72.6), and the test split's single-gold share makes the first the larger part of the loss (196 of 225 no-gold questions; of the 14.5 percent of questions not complete, 8.0 points are no-gold and 6.5 points partial).
 
 **Not read.** How far (in hops, in which family) the missed golds sit from the seeds; whether a path of any length reaches them; whether they are reachable from the first stage's list deeper than five seeds per leg. Those are the next read (section 17, to be declared before it runs); nothing here is adopted.
+
+## 17. Amendment 5 (16:58 IST, 27 Nov 2026; one descriptive read of the golds the best cells miss, by link degree and node type, declared before it runs; code `zstk3.py gold_profile`)
+
+**Why.** Section 16 found the no-gold questions to be single-gold questions whose gold the first stage does not list and the walks do not reach, and that no pool size recovers them. Two things can be read from records on disk without the engine: whether those golds have links at all (a gold with no link of any family cannot be reached by any walk), and what kind of node they are. The first separates an isolation ceiling from a ranking loss; the second says where the first stage and the walks lose.
+
+**What is read (Prime, the 22 chunks, all 2,801 questions; the same three cells A, B and C as section 15).** The single-gold questions (1,769) in three groups per cell: all, **hit** (the gold is in the pool) and **missed** (it is not). For the golds of each group: the number; the share with link degree 0 and the mean and median degree, where a node's degree is the number of distinct pairs of a store it is an end of, counted in **S alone**, in the **structural store** (S and R) and in the **union** (structural, ner and knn stores, which the layout keeps disjoint); and the **node type** table: per type the golds of all single-gold questions, the golds missed, and the miss rate, for the eight largest types. Degrees come from `layout.npz`; types from `nodes.jsonl`; the golds from the test split's query file; the hits from the chunks. The record is `outputs/stk3/prime/gold_profile.json`.
+
+**Expectations (written before any of these numbers).**
+
+- **G1.** Fewer than 2 percent of cell A's missed golds have union degree 0 (they are linked; the loss is ranking and reach, not isolation).
+- **G2.** The miss rate of cell A differs by at least 10 points between the two largest gold types.
+- **G3.** The median union degree of cell A's missed golds is lower than that of its hit golds.
+
+**What this is not.** The same as section 15: a descriptive read of the test split, **nothing is chosen or changed from it**, nothing is adopted, and any rule it suggests is declared first and read on Prime's dev split or on MAG and Amazon. The change to the module is the command `gold_profile` (host row, numpy only, reads the layout, the chunks, `ref.npz` and the package; writes `gold_profile.json`, no per-KB branch) and a selftest check; the rest of `zstk3.py` is not edited.
