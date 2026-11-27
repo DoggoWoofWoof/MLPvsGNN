@@ -1,0 +1,492 @@
+{
+ "stage": "STK3 cells",
+ "declared_in": "docs/STK3_STARK_POOLS.md",
+ "utc": "2026-11-27T09:56:53Z",
+ "max_nodes": 16000.0,
+ "pick_keys": [
+  "R95_all",
+  "R95_rung0",
+  "R95_bounded",
+  "R98_all",
+  "R98_rung0"
+ ],
+ "names": [
+  "rrf1000_b15",
+  "rrf1000_b50+KNN:h1_c100+top25",
+  "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000",
+  "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+  "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+  "rrf1000_b25+STRUCT:h1_c100~cs+top100",
+  "rrf1000_b100+STRUCT:h1_c100~cs+top200",
+  "rrf1000_b400+FULL:h1_c100~s20+top800",
+  "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+  "rrf1000_b25+STRUCT:h3_c100_v5000",
+  "rrf1000_b400+STRUCT:h3_c25_v2000",
+  "rrf1000_b1600+STRUCT:h3_c100_v5000",
+  "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+  "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+  "rrf1000_b25+FULL:h1_c100+top25",
+  "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50",
+  "rrf1000_b400+STRUCT:h3_bf_v20000~cs-fu+top15000",
+  "rrf1000_b25+FULL:h1_c100~cs+top100",
+  "rrf1000_b100+FULL:h1_c100~cs+top200",
+  "rrf1000_b25+FULL:h3_c100_v5000",
+  "rrf1000_b400+FULL:h3_c25_v2000",
+  "rrf1000_b1600+FULL:h3_c100_v5000",
+  "rrf1000_b1600+FULL:h3_bf_v5000~cs-fu",
+  "dense_top200+FULL:h3_bf_v2000~cs-fu",
+  "rrf1000_b25+STRUCT:h1_c100+top25",
+  "rrf1000_b10",
+  "rrf1000_b20",
+  "rrf1000_b25",
+  "rrf1000_b30",
+  "rrf1000_b40",
+  "rrf1000_b50",
+  "rrf1000_b60",
+  "rrf1000_b75",
+  "rrf1000_b100",
+  "rrf1000_b125",
+  "rrf1000_b150",
+  "rrf1000_b200",
+  "rrf1000_b250",
+  "rrf1000_b300",
+  "rrf1000_b400",
+  "rrf1000_b500",
+  "rrf1000_b600",
+  "rrf1000_b800",
+  "rrf1000_b1000",
+  "rrf1000_b1200",
+  "rrf1000_b1600",
+  "rrf1000_b2000",
+  "dense_top5",
+  "dense_top10",
+  "dense_top20",
+  "dense_top25",
+  "dense_top30",
+  "dense_top50",
+  "dense_top75",
+  "dense_top100",
+  "dense_top150",
+  "dense_top200",
+  "dense_top300",
+  "dense_top400",
+  "dense_top600",
+  "dense_top800",
+  "dense_top1000",
+  "splade_top200"
+ ],
+ "groups": {
+  "picks": [
+   "rrf1000_b15",
+   "rrf1000_b50+KNN:h1_c100+top25",
+   "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000",
+   "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr",
+   "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+   "rrf1000_b25+STRUCT:h1_c100~cs+top100",
+   "rrf1000_b100+STRUCT:h1_c100~cs+top200",
+   "rrf1000_b400+FULL:h1_c100~s20+top800",
+   "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk",
+   "rrf1000_b25+STRUCT:h3_c100_v5000",
+   "rrf1000_b400+STRUCT:h3_c25_v2000",
+   "rrf1000_b1600+STRUCT:h3_c100_v5000",
+   "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+   "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+   "rrf1000_b25+FULL:h1_c100+top25",
+   "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50"
+  ],
+  "twins": [
+   "rrf1000_b400+STRUCT:h3_bf_v20000~cs-fu+top15000",
+   "rrf1000_b25+FULL:h1_c100~cs+top100",
+   "rrf1000_b100+FULL:h1_c100~cs+top200",
+   "rrf1000_b25+FULL:h3_c100_v5000",
+   "rrf1000_b400+FULL:h3_c25_v2000",
+   "rrf1000_b1600+FULL:h3_c100_v5000",
+   "rrf1000_b1600+FULL:h3_bf_v5000~cs-fu",
+   "dense_top200+FULL:h3_bf_v2000~cs-fu",
+   "rrf1000_b25+STRUCT:h1_c100+top25"
+  ],
+  "flat": [
+   "rrf1000_b10",
+   "rrf1000_b20",
+   "rrf1000_b25",
+   "rrf1000_b30",
+   "rrf1000_b40",
+   "rrf1000_b50",
+   "rrf1000_b60",
+   "rrf1000_b75",
+   "rrf1000_b100",
+   "rrf1000_b125",
+   "rrf1000_b150",
+   "rrf1000_b200",
+   "rrf1000_b250",
+   "rrf1000_b300",
+   "rrf1000_b400",
+   "rrf1000_b500",
+   "rrf1000_b600",
+   "rrf1000_b800",
+   "rrf1000_b1000",
+   "rrf1000_b1200",
+   "rrf1000_b1600",
+   "rrf1000_b2000",
+   "dense_top5",
+   "dense_top10",
+   "dense_top20",
+   "dense_top25",
+   "dense_top30",
+   "dense_top50",
+   "dense_top75",
+   "dense_top100",
+   "dense_top150",
+   "dense_top200",
+   "dense_top300",
+   "dense_top400",
+   "dense_top600",
+   "dense_top800",
+   "dense_top1000",
+   "splade_top200"
+  ]
+ },
+ "cells_sha256": "4b9bfd160b18984cf6fa1a1526f1ef10a783cdb925a65f5c4dcc1b130e1c6514",
+ "select_sha256": {
+  "squad": "4fcde9a8fc8e4a703eb613eb30aed705905028bf0c4d6811e53e46417b4d950c",
+  "musique": "cef5ed9300de5af4c93b32c44ffd5b5e34e3ce2f994efa4154dc2ede2de4a481",
+  "hotpotqa": "ece2e3316efde78df133ab81b2a2fa62815969658ba2506b47a77b9bcafd35e1",
+  "2wiki": "8b2f910e1f55ab974fadb6a461fe264a2f3aff7eabbad349c02e627a2ae440f3",
+  "metaqa": "259a06a4fa71f42d2ecea47ca1a671d1d46c5095e8c92fc548e03f6f96388b05",
+  "webqsp": "904f000c326b3439c583b27a2ea7066158bf9501c106ecc644ec977adbe94ab0",
+  "multihoprag": "24a538b18308694ec36ddb7c11353ff492e596049b3ed0ecc6937fc84e87b341"
+ },
+ "picked_by": {
+  "rrf1000_b15": [
+   {
+    "dataset": "squad",
+    "key": "R95_all",
+    "nodes": 15.0
+   },
+   {
+    "dataset": "squad",
+    "key": "R95_rung0",
+    "nodes": 15.0
+   },
+   {
+    "dataset": "squad",
+    "key": "R95_bounded",
+    "nodes": 15.0
+   },
+   {
+    "dataset": "squad",
+    "key": "incumbent",
+    "nodes": 15.0
+   }
+  ],
+  "rrf1000_b50+KNN:h1_c100+top25": [
+   {
+    "dataset": "squad",
+    "key": "R98_all",
+    "nodes": 63.264352469959945
+   },
+   {
+    "dataset": "squad",
+    "key": "R98_rung0",
+    "nodes": 63.264352469959945
+   }
+  ],
+  "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000": [
+   {
+    "dataset": "musique",
+    "key": "R95_all",
+    "nodes": 15400.0
+   }
+  ],
+  "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr": [
+   {
+    "dataset": "musique",
+    "key": "R95_rung0",
+    "nodes": 5783.431551499348
+   },
+   {
+    "dataset": "musique",
+    "key": "R98_rung0",
+    "nodes": 5783.431551499348
+   }
+  ],
+  "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr": [
+   {
+    "dataset": "musique",
+    "key": "R95_bounded",
+    "nodes": 2464.284224250326
+   },
+   {
+    "dataset": "musique",
+    "key": "incumbent",
+    "nodes": 2464.284224250326
+   }
+  ],
+  "rrf1000_b1600+FULL:h3_bf_v20000~cs-fu": [
+   {
+    "dataset": "musique",
+    "key": "R98_all",
+    "nodes": 20264.229465449804
+   }
+  ],
+  "rrf1000_b25+STRUCT:h1_c100~cs+top100": [
+   {
+    "dataset": "hotpotqa",
+    "key": "R95_all",
+    "nodes": 77.25464190981432
+   },
+   {
+    "dataset": "hotpotqa",
+    "key": "R95_rung0",
+    "nodes": 77.25464190981432
+   },
+   {
+    "dataset": "hotpotqa",
+    "key": "R95_bounded",
+    "nodes": 77.25464190981432
+   },
+   {
+    "dataset": "hotpotqa",
+    "key": "incumbent",
+    "nodes": 77.25464190981432
+   }
+  ],
+  "rrf1000_b100+STRUCT:h1_c100~cs+top200": [
+   {
+    "dataset": "hotpotqa",
+    "key": "R98_all",
+    "nodes": 152.723474801061
+   },
+   {
+    "dataset": "hotpotqa",
+    "key": "R98_rung0",
+    "nodes": 152.723474801061
+   }
+  ],
+  "rrf1000_b400+FULL:h1_c100~s20+top800": [
+   {
+    "dataset": "2wiki",
+    "key": "R95_all",
+    "nodes": 908.1918449197861
+   },
+   {
+    "dataset": "2wiki",
+    "key": "R95_rung0",
+    "nodes": 908.1918449197861
+   },
+   {
+    "dataset": "2wiki",
+    "key": "R95_bounded",
+    "nodes": 908.1918449197861
+   },
+   {
+    "dataset": "2wiki",
+    "key": "incumbent",
+    "nodes": 908.1918449197861
+   }
+  ],
+  "rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-rk": [
+   {
+    "dataset": "2wiki",
+    "key": "R98_all",
+    "nodes": 6277.681818181818
+   },
+   {
+    "dataset": "2wiki",
+    "key": "R98_rung0",
+    "nodes": 6277.681818181818
+   }
+  ],
+  "rrf1000_b25+STRUCT:h3_c100_v5000": [
+   {
+    "dataset": "metaqa",
+    "key": "R95_all",
+    "nodes": 4983.559786239145
+   },
+   {
+    "dataset": "metaqa",
+    "key": "R95_rung0",
+    "nodes": 4983.559786239145
+   }
+  ],
+  "rrf1000_b400+STRUCT:h3_c25_v2000": [
+   {
+    "dataset": "metaqa",
+    "key": "R95_bounded",
+    "nodes": 2339.7247828991317
+   },
+   {
+    "dataset": "metaqa",
+    "key": "incumbent",
+    "nodes": 2339.7247828991317
+   }
+  ],
+  "rrf1000_b1600+STRUCT:h3_c100_v5000": [
+   {
+    "dataset": "metaqa",
+    "key": "R98_all",
+    "nodes": 6268.156980627922
+   },
+   {
+    "dataset": "metaqa",
+    "key": "R98_rung0",
+    "nodes": 6268.156980627922
+   }
+  ],
+  "rrf1000_b400+FULL:h3_bf_v40000~cs-vr": [
+   {
+    "dataset": "webqsp",
+    "key": "R95_all",
+    "nodes": 39571.58792302588
+   }
+  ],
+  "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu": [
+   {
+    "dataset": "webqsp",
+    "key": "R95_rung0",
+    "nodes": 6070.474452554745
+   },
+   {
+    "dataset": "webqsp",
+    "key": "R98_rung0",
+    "nodes": 6070.474452554745
+   }
+  ],
+  "dense_top200+STRUCT:h3_bf_v2000~cs-fu": [
+   {
+    "dataset": "webqsp",
+    "key": "R95_bounded",
+    "nodes": 2094.187790311878
+   },
+   {
+    "dataset": "webqsp",
+    "key": "incumbent",
+    "nodes": 2094.187790311878
+   }
+  ],
+  "rrf1000_b1600+FULL:h3_bf_v40000~cs-vr": [
+   {
+    "dataset": "webqsp",
+    "key": "R98_all",
+    "nodes": 40201.08161911082
+   }
+  ],
+  "rrf1000_b25+FULL:h1_c100+top25": [
+   {
+    "dataset": "multihoprag",
+    "key": "R95_all",
+    "nodes": 50.0
+   },
+   {
+    "dataset": "multihoprag",
+    "key": "R95_rung0",
+    "nodes": 50.0
+   },
+   {
+    "dataset": "multihoprag",
+    "key": "R95_bounded",
+    "nodes": 50.0
+   },
+   {
+    "dataset": "multihoprag",
+    "key": "incumbent",
+    "nodes": 50.0
+   }
+  ],
+  "rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50": [
+   {
+    "dataset": "multihoprag",
+    "key": "R98_all",
+    "nodes": 58.611607142857146
+   },
+   {
+    "dataset": "multihoprag",
+    "key": "R98_rung0",
+    "nodes": 58.611607142857146
+   }
+  ]
+ },
+ "twin_of": {
+  "rrf1000_b400+STRUCT:h3_bf_v20000~cs-fu+top15000": {
+   "of": "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000",
+   "dataset": "musique",
+   "nodes": 15400.0
+  },
+  "rrf1000_b25+FULL:h1_c100~cs+top100": {
+   "of": "rrf1000_b25+STRUCT:h1_c100~cs+top100",
+   "dataset": "hotpotqa",
+   "nodes": 118.87931034482759
+  },
+  "rrf1000_b100+FULL:h1_c100~cs+top200": {
+   "of": "rrf1000_b100+STRUCT:h1_c100~cs+top200",
+   "dataset": "hotpotqa",
+   "nodes": 238.8819628647215
+  },
+  "rrf1000_b25+FULL:h3_c100_v5000": {
+   "of": "rrf1000_b25+STRUCT:h3_c100_v5000",
+   "dataset": "metaqa",
+   "nodes": 5006.520374081496
+  },
+  "rrf1000_b400+FULL:h3_c25_v2000": {
+   "of": "rrf1000_b400+STRUCT:h3_c25_v2000",
+   "dataset": "metaqa",
+   "nodes": 2310.1583166332666
+  },
+  "rrf1000_b1600+FULL:h3_c100_v5000": {
+   "of": "rrf1000_b1600+STRUCT:h3_c100_v5000",
+   "dataset": "metaqa",
+   "nodes": 6221.404809619238
+  },
+  "rrf1000_b1600+FULL:h3_bf_v5000~cs-fu": {
+   "of": "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+   "dataset": "webqsp",
+   "nodes": 5863.7186463171865
+  },
+  "dense_top200+FULL:h3_bf_v2000~cs-fu": {
+   "of": "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+   "dataset": "webqsp",
+   "nodes": 2049.64100862641
+  },
+  "rrf1000_b25+STRUCT:h1_c100+top25": {
+   "of": "rrf1000_b25+FULL:h1_c100+top25",
+   "dataset": "multihoprag",
+   "nodes": 25.017857142857142
+  }
+ },
+ "left_out": [
+  {
+   "name": "rrf1000_b1600+FULL:h3_bf_v20000~cs-fu",
+   "from": [
+    {
+     "dataset": "musique",
+     "key": "R98_all",
+     "nodes": 20264.229465449804
+    }
+   ]
+  },
+  {
+   "name": "rrf1000_b400+FULL:h3_bf_v40000~cs-vr",
+   "from": [
+    {
+     "dataset": "webqsp",
+     "key": "R95_all",
+     "nodes": 39571.58792302588
+    }
+   ]
+  },
+  {
+   "name": "rrf1000_b1600+FULL:h3_bf_v40000~cs-vr",
+   "from": [
+    {
+     "dataset": "webqsp",
+     "key": "R98_all",
+     "nodes": 40201.08161911082
+    }
+   ]
+  }
+ ],
+ "chunk": 128,
+ "perm_seed": 20261127,
+ "depth": 1000,
+ "script_sha256": "eebb9f455fec4fc28584bf13972bb12e102237f7f2f7075aa6777d9ee97385f4"
+}
