@@ -10,6 +10,9 @@
     python -I -B outputs/mp_unified/zleg1d.py legs --ds metaqa
         # LEG1-A4 (section 12): part A on MetaQA (zleg1's legs, unchanged, with the host's filed first-stage record as G-S1's value); writes outputs/leg1/legs_<ds>.json
 
+    LEG1-A5 (section 13): for MetaQA every command above reads the filed first-stage record's 9,785 questions (outputs/enc/e0/e3v/metaqa.npz: rows, ids and the stored dense lists),
+        not the package's 407,513: zspl1.eval_rows is replaced for MetaQA by `use_filed_rows` (zspl1.py is not edited)
+
 Run from the workspace root. zspl1.py, zspl1l.py, zleg1.py, zleg1b.py, zleg1c.py and zul2p.py (load_host) are imported and edited nowhere.
 """
 import argparse
@@ -170,6 +173,46 @@ def mix_read(a):
     log(f"pick {pk}: held-out seeds {diffs['seeds']['diff']:+.2f} [{diffs['seeds']['lo']:+.2f}, {diffs['seeds']['hi']:+.2f}] -> {call}")
 
 
+def check_ids(rows, ids, qids):
+    """LEG1-A5: the filed record's question ids equal the package's ids of the same rows (a stop otherwise)."""
+    rows = np.asarray(rows, np.int64)
+    if len(rows) != len(ids):
+        stop(f"the filed record has {len(rows)} rows and {len(ids)} ids")
+    if rows.min() < 0 or rows.max() >= len(qids):
+        stop("a filed row is outside the package's questions")
+    bad = [int(r) for r, i in zip(rows, ids) if str(qids[int(r)]) != str(i)]
+    if bad:
+        stop(f"{len(bad)} filed question ids differ from the package's at the same rows (first row {bad[0]})")
+    if len(set(rows.tolist())) != len(rows):
+        stop("the filed rows are not distinct")
+
+
+def filed_rows(ds, root=None):
+    """LEG1-A5: the filed first-stage record's question set of a dataset: (rows, the npz) from outputs/enc/e0/e3v/<ds>.npz, the file zspl1.eval_rows reads for SQuAD and MuSiQue."""
+    p = Path(root if root is not None else S.WS / "outputs" / "enc" / "e0" / "e3v") / f"{ds}.npz"
+    if not p.is_file():
+        stop(f"{ds}: the filed first-stage lists {p.name} are not here")
+    z = np.load(p, allow_pickle=False)
+    return z["rows"].astype(np.int64), z
+
+
+def use_filed_rows():
+    """LEG1-A5: MetaQA is read on the filed record's questions. zspl1.eval_rows (all questions of the package for a dataset without stored lists) is replaced for the
+    datasets of this module by the filed rows and npz, so that zspl1.context takes its stored-list path: the record's dense lists, the gold counts checked against the
+    record's, the record's rrf5 as G-S1's value. Any other dataset keeps zspl1's own function."""
+    orig = S.eval_rows
+
+    def er(ds, w):
+        if ds not in LEGS_DATASETS:
+            return orig(ds, w)
+        rows, z = filed_rows(ds)
+        check_ids(rows, z["ids"], w.query_row_ids())
+        return rows, z
+
+    S.eval_rows = er
+    return orig
+
+
 def filed_rrf5(ds, root=None):
     """The host's filed first-stage record of a dataset (outputs/enc/e0/e3v/<ds>.json): its fusion R@5, as a fraction (LEG1-A4's G-S1 value)."""
     p = Path(root if root is not None else S.WS / "outputs" / "enc" / "e0" / "e3v") / f"{ds}.json"
@@ -229,9 +272,37 @@ def selftest():
         (Path(td) / "toy.json").write_text(json.dumps({"recall": {"rrf5": 0.004454, "d5": 0.1}}), encoding="utf-8")
         chk("the filed rrf5 is read from the record's recall block", filed_rrf5("toy", td) == 0.004454)
     chk("part A is declared for MetaQA only", LEGS_DATASETS == ("metaqa",))
+    with tempfile.TemporaryDirectory() as td:
+        np.savez(Path(td) / "toyq.npz", rows=np.array([5, 9, 13]), ids=np.array(["q5", "q9", "q13"]), top_ids=np.zeros((3, 4), np.int32))
+        r, z = filed_rows("toyq", td)
+        chk("the filed rows and the npz are read from the record's file", r.tolist() == [5, 9, 13] and "top_ids" in z.files and r.dtype == np.int64)
+        z.close()
+    qids = [f"q{i}" for i in range(20)]
+    check_ids([5, 9, 13], ["q5", "q9", "q13"], qids)
+    chk("ids that equal the package's pass", True)
+    for name, rows, ids in (("a different id", [5, 9, 13], ["q5", "q9", "q14"]), ("a repeated row", [5, 5, 13], ["q5", "q5", "q13"]), ("a row outside the package", [5, 9, 40], ["q5", "q9", "q40"]),
+                            ("a length mismatch", [5, 9], ["q5", "q9", "q13"])):
+        try:
+            check_ids(rows, ids, qids)
+            ok = False
+        except SystemExit:
+            ok = True
+        chk(f"{name} stops", ok)
+    orig = S.eval_rows
+    marker = (np.array([1]), None)
+    S.eval_rows = lambda ds, w: marker
+    try:
+        hold = S.eval_rows
+        use_filed_rows()
+        chk("a dataset outside the amendment keeps zspl1's own function", S.eval_rows("squad", None) is marker)
+        S.eval_rows = hold
+    finally:
+        S.eval_rows = orig
+    d, h = parity_split(9785)
+    chk("the parity split of the filed 9,785 is 4,893 and 4,892", int(d.sum()) == 4893 and int(h.sum()) == 4892)
     if bad:
         stop(f"selftest: {bad} check(s) failed")
-    log("selftest PASS (8 checks)")
+    log("selftest PASS (16 checks)")
 
 
 def main():
@@ -250,6 +321,8 @@ def main():
     lg.add_argument("--ds", required=True)
     lg.set_defaults(fn=cmd_legs)
     a = ap.parse_args()
+    if a.cmd != "selftest":
+        use_filed_rows()
     a.fn(a)
 
 
