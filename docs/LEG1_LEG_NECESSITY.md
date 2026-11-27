@@ -177,3 +177,22 @@ Expectation **X4** held in full on SQuAD (document cap 128 and question cap 32 F
 **Files.** The 127 question shards of the cancelled encode (`q_000000.npz` to `q_000126.npz`, 43 MB, from the 407,513-question order) are renamed on the host to `outputs/leg1/vec/metaqa_all407k_partial` so that `zleg1b.encode_shards`, which keeps any shard that exists, can never take one of them for a shard of the new set; nothing is removed. Part B's vectors, caps and mix are written to `outputs/leg1/vec/metaqa` as section 11 says. The new host rows are `leg1e-lmq` (part A, `zleg1d.py legs --ds metaqa`), `leg1e-vmq` (the stored C0 vectors of the nodes and the 9,785 questions) and `leg1e-rmq` (gate, caps and the 24 arms, after the vectors); the three rows of sections 11 and 12 (`leg1d-lmq`, `leg1d-vmq`, `leg1d-rmq`) are not re-sent.
 
 **Disclosed.** Section 12's cost paragraph stands as written; its "3.9 times the dense pair per token" compares CPU figures taken under different threads and load and is not a per-token cost ratio: by multiply-adds per token, C0 (85M encoder parameters and a 24M-parameter output layer over 30,522 words) is about 0.8 times the dense pair and about 1.3 times one dense model of its size, and the lever made C0 4.31 times faster on the card. A same-text, same-card timing of C0 against the dense pair is not made by this amendment; it is declared separately as amendment A6 before any timing is read. The 407,513 questions of the package are not read on MetaQA by any amendment.
+
+## 14. Results of part A on MetaQA (13:07 IST; `outputs/leg1/legs_metaqa.json`, host row `leg1e-lmq`, job 261127-130419-leg1e-lmq-8391; `zleg1d.py legs --ds metaqa`, commit 9d388c48 on the filed record's 9,785 questions of section 13)
+
+**Gate G-S1 passed:** the reader's fusion R@5 is 0.445 percent, the filed record's 0.004454 (within 5e-6), on the same 9,785 questions; the package's gold counts equal the record's. The row took 108 seconds. The 9,785 questions are one fixed sample, every fourth question of the dev rows (2,498 one-hop, 3,718 two-hop, 3,569 three-hop); no other sample of MetaQA is read.
+
+**Seeds** (the golds covered by the seeds, percent, equal seed budget of 8.22 seeds a question): the union of the two legs 0.694, dense alone 0.908, SPLADE alone 0.360. Dropping SPLADE costs **-0.214** points [-0.317, -0.129] (the dense seeds alone cover more, DISPENSABLE); dropping dense costs **+0.334** points [+0.222, +0.457] (DISPENSABLE). Both calls are far inside the +1.0 line, because the whole first stage reaches under 1 percent of the golds of this dataset at the seeds.
+
+**Depth** (the fusion's R@k against dropping a leg; the loss is the fusion minus the remaining leg, in points, positive = dropping costs; the interval is the paired bootstrap):
+
+| R@k | fusion | dense | SPLADE | dropping SPLADE | dropping dense |
+|---|---|---|---|---|---|
+| 5 | 0.445 | 0.653 | 0.297 | -0.208 [-0.323, -0.099] DISPENSABLE | +0.148 [+0.071, +0.235] DISPENSABLE |
+| 20 | 1.252 | 1.479 | 0.553 | -0.226 [-0.368, -0.087] DISPENSABLE | +0.700 [+0.549, +0.868] DISPENSABLE |
+| 100 | 4.045 | 4.180 | 2.157 | -0.135 [-0.349, +0.059] DISPENSABLE | **+1.888 [+1.602, +2.156] NEEDED** |
+| 1000 | 27.447 | 20.282 | 29.234 | **+7.166 [+6.610, +7.760] NEEDED** | -1.786 [-2.298, -1.334] DISPENSABLE |
+
+**Expectations.** **X12 held:** dropping SPLADE costs less than 1.0 point of seeds coverage (it costs -0.21, a gain). **X13 held:** dropping dense costs more (+0.33) than dropping SPLADE (-0.21), by 0.55 points.
+
+**What the read shows and does not show.** At the seeds and down to R@20 neither leg is needed on MetaQA, the dense leg alone is the better of the two, and the union at an equal budget is below dense alone. At depth the picture turns: from R@100 the dense leg is NEEDED (+1.9 points), and at R@1000 the SPLADE leg is NEEDED (+7.2 points; SPLADE alone reaches 29.2 percent of the golds against dense's 20.3 and the fusion's 27.4, so on this dataset the fusion at constant 60 is 1.8 points below its SPLADE list alone). Which of the two matters depends on what the pool takes from the first stage: the seeds (dense wins at equal budget) or the deep list (SPLADE wins). Section 2's rule is not re-run here, and **this read is not the pool read**: it says nothing about what the walk makes of dense-only seeds, which is the target metric and is not declared by any amendment. The decision on the leg stays the user's.
