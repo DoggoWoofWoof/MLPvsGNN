@@ -7,8 +7,10 @@
     python -I -B outputs/mp_unified/zleg1d.py read --ds metaqa
         # host row (needs the e3v lists and the filed links): G-B0c (section 9's gate, directly), then zleg1c's caps (B1, B2), then the 24-arm mix (B3) with the parity split;
         # writes outputs/leg1/gate_gb0c_<ds>.json, caps_<ds>.json, mix_<ds>.json
+    python -I -B outputs/mp_unified/zleg1d.py legs --ds metaqa
+        # LEG1-A4 (section 12): part A on MetaQA (zleg1's legs, unchanged, with the host's filed first-stage record as G-S1's value); writes outputs/leg1/legs_<ds>.json
 
-Run from the workspace root. zspl1.py, zspl1l.py, zleg1b.py, zleg1c.py and zul2p.py (load_host) are imported and edited nowhere.
+Run from the workspace root. zspl1.py, zspl1l.py, zleg1.py, zleg1b.py, zleg1c.py and zul2p.py (load_host) are imported and edited nowhere.
 """
 import argparse
 import json
@@ -28,6 +30,7 @@ import zspl1 as S  # noqa: E402
 DOC_A3 = "docs/LEG1_LEG_NECESSITY.md section 11 (LEG1-A3)"
 OUT = C.OUT
 DATASETS = ("metaqa",)                      # LEG1-A3: MetaQA only; any other dataset by its own amendment
+LEGS_DATASETS = ("metaqa",)                 # LEG1-A4: part A on MetaQA only
 GRAPHS3 = ("S", "R", "K", "SRK")            # LEG1-A3: the knowledge-base triplets, the rule links CN_all, the e3v kNN pairs Ke, their union
 SIZES = ("full", f"cap{C.MIX_CAP}")
 log, stop = S.log, S.stop
@@ -167,6 +170,34 @@ def mix_read(a):
     log(f"pick {pk}: held-out seeds {diffs['seeds']['diff']:+.2f} [{diffs['seeds']['lo']:+.2f}, {diffs['seeds']['hi']:+.2f}] -> {call}")
 
 
+def filed_rrf5(ds, root=None):
+    """The host's filed first-stage record of a dataset (outputs/enc/e0/e3v/<ds>.json): its fusion R@5, as a fraction (LEG1-A4's G-S1 value)."""
+    p = Path(root if root is not None else S.WS / "outputs" / "enc" / "e0" / "e3v") / f"{ds}.json"
+    if not p.is_file():
+        stop(f"{ds}: the filed first-stage record {p.name} is not here")
+    return float(json.loads(p.read_text(encoding="utf-8"))["recall"]["rrf5"])
+
+
+def cmd_legs(a):
+    """Part A on MetaQA (LEG1-A4): zleg1.cmd_legs unchanged, its context loader wrapped to supply the filed rrf5 where zspl1.context has none."""
+    import zleg1 as Z
+    if a.ds not in LEGS_DATASETS:
+        stop("LEG1-A4 declares MetaQA only; other datasets by their own amendment")
+    orig = S.context
+
+    def ctx(E, ds):
+        c = orig(E, ds)
+        if c["e0_rrf5"] is None:
+            c["e0_rrf5"] = filed_rrf5(ds)
+        return c
+
+    S.context = ctx
+    try:
+        Z.cmd_legs(a)
+    finally:
+        S.context = orig
+
+
 def cmd_read(a):
     if a.ds not in DATASETS:
         stop("LEG1-A3 declares MetaQA only; other datasets by their own amendment")
@@ -193,9 +224,14 @@ def selftest():
     chk("arms: 4 graphs x 3 weights x 2 sizes = 24", len(GRAPHS3) * len(C.ALPHAS) * len(SIZES) == 24)
     chk("the gate line is section 9's -0.5 on the leg's R@20 and the seeds", C.GATE_C_PTS == -0.5 and C.GATE_C_CELLS == ("leg20", "seeds"))
     chk("the cap and the not-worse line are section 7's", C.MIX_CAP == 128 and C.NOT_WORSE == -1.0)
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        (Path(td) / "toy.json").write_text(json.dumps({"recall": {"rrf5": 0.004454, "d5": 0.1}}), encoding="utf-8")
+        chk("the filed rrf5 is read from the record's recall block", filed_rrf5("toy", td) == 0.004454)
+    chk("part A is declared for MetaQA only", LEGS_DATASETS == ("metaqa",))
     if bad:
         stop(f"selftest: {bad} check(s) failed")
-    log("selftest PASS (6 checks)")
+    log("selftest PASS (8 checks)")
 
 
 def main():
@@ -210,6 +246,9 @@ def main():
     r = sub.add_parser("read")
     r.add_argument("--ds", required=True)
     r.set_defaults(fn=cmd_read)
+    lg = sub.add_parser("legs")
+    lg.add_argument("--ds", required=True)
+    lg.set_defaults(fn=cmd_legs)
     a = ap.parse_args()
     a.fn(a)
 
