@@ -1,0 +1,32 @@
+{
+ "stage": "LEG1 G-B0c",
+ "declared_in": "docs/LEG1_LEG_NECESSITY.md section 9 (LEG1-A2)",
+ "ds": "squad",
+ "questions": 11873,
+ "nodes": 20233,
+ "gate_gb0": {
+  "top5_same_sequence_share": 0.9749,
+  "top5_same_set_share": 0.99048,
+  "min_share": 0.99,
+  "pass": false
+ },
+ "line_pts": -0.5,
+ "cells": {
+  "leg20": {
+   "record": 94.5,
+   "stored": 94.5,
+   "diff": 0.0,
+   "lo": -0.025,
+   "hi": 0.025
+  },
+  "seeds": {
+   "record": 91.805,
+   "stored": 91.805,
+   "diff": 0.0,
+   "lo": 0.0,
+   "hi": 0.0
+  }
+ },
+ "pass": true,
+ "seconds": 106.1
+}

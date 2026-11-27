@@ -119,3 +119,24 @@ Expectations: **X5** held (MIXING_LEVEL); **X6** held in a trivial sense (severa
 **Replacement gate for SQuAD, G-B0c.** Every comparison of part B is of a modified vector against the **stored unmodified** vector, scored the same way (section 3), so what the gate must show is that the stored unmodified vectors stand for the record's. G-B0c: the stored unmodified vectors' list against the record's C0 list, on the SPLADE leg's R@20 and on the seeds (with the record's e3v list), by the paired bootstrap of section 2: the lower end of the difference at least **-0.5 point on both**. Passed: part B runs on SQuAD as declared (B1 and B2, section 3), with the stored unmodified vectors as the reference; the gate's own reads are filed with the result (`outputs/leg1/gate_gb0c_squad.json`), and the code that makes them is added to `zleg1c.py` after this page is committed (`gate` command; `caps` accepts the stored vectors of a dataset only on a passed G-B0 or G-B0c). Failed: part B stops on SQuAD and is closed there. G-B0 stays as written for MultiHop-RAG (passed). The calls (FREE at -1.0, and the rest) are unchanged.
 
 **Disclosed.** This gate was written after the first one failed and after the diagnosis above, which is why it is declared here, before the SQuAD caps are read, with its line fixed (-0.5, tighter than the calls' -1.0). It reads the stored vectors' list against the record's list on two reads, which is a reading of agreement, not of a modification. The finding also concerns the lever screen of `docs/SPL1_SPARSE_LEG_SCREEN.md` section 8.11: its arm l0 is the same pooling, so the card's l0 lists are expected to differ from the record's by the same small amount on SQuAD, and its reads against the record carry that.
+
+## 10. Results of part B on SQuAD (10:54 IST; `outputs/leg1/gate_gb0c_squad.json`, `outputs/leg1/caps_squad.json`; `zleg1c.py` commit ae17577f)
+
+**Gate G-B0c (section 9) passed.** Against the record's C0 list, the stored unmodified vectors' list reads the same on both cells: the SPLADE leg's R@20 94.500 against 94.500 (stored minus record +0.000, 95% interval [-0.025, +0.025]) and the seeds 91.805 against 91.805 (difference 0, interval [0, 0]); the line was -0.5. The 298 questions whose top 5 differ (section 9) do not move a coverage read. Reference reads (the stored unmodified vectors, all 11,873 questions): fusion R@5 88.24, R@20 95.28, seeds 91.81, SPLADE leg R@20 94.50, R@1000 99.50; 195.2 non-zeros per node and 57.4 per question.
+
+**B1 and B2, the caps (differences to the reference, points; the lower end of the 95% interval in the call column is the worst over the five reads; FREE = at least -1.0):**
+
+| arm | non-zeros | fusion R@5 | fusion R@20 | seeds | leg R@20 | leg R@1000 | worst lower end | call |
+|---|---|---|---|---|---|---|---|---|
+| document cap 128 | 127.2 per node (-35%) | -0.13 | -0.12 | -0.19 | -0.23 | -0.05 | -0.36 | **FREE** |
+| document cap 64 | 64 | -1.72 | -0.96 | -1.64 | -2.86 | -0.60 | -3.19 | COSTS |
+| document cap 32 | 32 | -5.81 | -3.43 | -3.84 | -9.48 | -2.26 | -10.02 | COSTS |
+| question cap 32 | 32.0 per question (-44%) | +0.05 | -0.03 | -0.14 | -0.03 | +0.01 | -0.24 | **FREE** |
+| question cap 16 | 16.0 (-72%) | +0.19 | +0.03 | -0.14 | -0.24 | -0.01 | -0.45 | **FREE** |
+| question cap 8 | 8.0 | +0.16 | 0.00 | -0.41 | -1.39 | -0.14 | -1.66 | COSTS |
+
+Expectation **X4** held in full on SQuAD (document cap 128 and question cap 32 FREE; document cap 32 and question cap 8 not). The question cap of 16, not named in X4, is FREE here too. No cap is BETTER by its lower end anywhere; the free caps are LEVEL, with differences of at most 0.24 points in either direction.
+
+**Both datasets together.** The document cap of 128 is FREE on both (MultiHop-RAG 213 to 128 non-zeros, SQuAD 195 to 127; the worst lower ends -0.50 and -0.36), the caps of 64 and 32 cost on both, so a stored document vector of the first-stage SPLADE leg can be cut to its 128 largest weights on the two datasets read. The question caps differ: MultiHop-RAG's questions hold 128 non-zeros on average and a cap of 32 (-75%) costs 1.1 points of the leg's R@20, SQuAD's hold 57 and caps of 32 and 16 are free. The reads fix no cap for questions as a rule of both datasets; a cap that is relative to the question's length was not declared and is not read here. MuSiQue's vectors (117,534 nodes, about 16 hours on the host CPU against about 10 minutes on the card) are not made; a read there waits for the card.
+
+**Disclosed.** The five reads of every arm include the leg's R@1000, which only SQuAD has (MultiHop-RAG has 609 nodes). The 298 questions with a different top 5 (section 9) are in the reference and in every arm alike. The link-mixed vectors (B3) are not read on SQuAD: section 7 declares the graph of MultiHop-RAG only.
