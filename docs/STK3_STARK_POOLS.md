@@ -119,3 +119,40 @@ Above 2,500 nodes the first stage's own list ends, so the flat reference is shor
 - **E6 HELD** by a wide margin: 3.4 seconds a question, the whole list; Prime's whole split is about 2.6 CPU-hours (the expectation said 23) and the largest pool is 15,400 nodes.
 
 **What the screen says about the user's target (95 percent of the golds at about 2,500 nodes, one rule on all ten).** The seven's pick cells carry to Prime: the best cell at 2,479 nodes is **19.3 points above the flat list at equal nodes**, and this is a transfer, nothing selected on a STaRK question. It is **6.5 points short of 95** on this easier sample, and 93.8 at 5.8 thousand nodes is the highest reading, so no pick as filed reaches the target. ANY is 93.4 at 2,479 nodes against ALL 88.5: about five percent of the questions have some gold in the pool and not all. The remaining 18 chunks give the whole-split read; **nothing is adopted and no pool is frozen**. Candidates for what follows, none declared: a gold-link diagnosis on Prime's dev split in the way of the seven's (which golds are missed, how far they sit from a seed, whether a link of any family reaches them), and Step B (R7(2,500) on the dev split). Both wait for the whole-split read.
+
+## 14. Prime's whole-split read (16:51 IST, 27 Nov 2026; 22 of 22 chunks, 2,801 questions; COMPLETE)
+
+**What ran.** The rows `stk3p-run2` to `stk3p-run5` wrote the other 18 chunks (queued 16:03; 36 to 44 minutes a part, 2 CPUs each; peak 0.64 GB), so Prime's 22 chunks hold every test question once under one layout sha and one cells sha. **Cost: 3.12 CPU-hours, 4.01 seconds a question** for the whole list. `zstk3.py read --kb prime` gave the numbers below; the record is `outputs/stk3/prime/read.json` and the 22 chunk files. The screen of section 13 was an easier sample, as it said: the paired lifts hold (best cell +19.3 on the screen, +20.9 here) and every level is lower.
+
+**First stage on all 2,801 questions (STK1 section 10.1's reference):** the fused list's ALL @100 43.9, @500 54.6, @1,000 59.2, @2,000 63.3, @2,500 64.7; the dense leg alone 39.1, 51.4, 56.0, 60.4, 61.9. The engine's own flat cells equal it at 100 and 400 nodes (-0.0 and -0.2) and fall **BELOW** it by 0.5 [-0.8, -0.2] at 1,000 nodes and 0.8 [-1.2, -0.5] at 1,811 nodes (the depth effect section 12 gave: the engine fuses lists 1,000 deep, STK1 lists 2,500 deep). The pick cells below are compared with STK1's list, the stronger of the two. Dense alone is BELOW the fused list by 4.0 [-4.9, -3.0] (top 200) and 3.1 [-4.1, -2.2] (top 1,000), SPLADE alone by 7.0 [-8.0, -6.0] (top 200).
+
+**Pick cells against the flat list at equal nodes: 13 of 16 LIFT, 3 LEVEL, none BELOW** (ALL in percent with the Wilson 95 percent interval, ANY, mean distinct nodes, paired difference with its bootstrap interval; `*` = the flat reference ends at 2,500 nodes, shorter than the pool, so the difference overstates the equal-nodes gain). The three LEVEL cells are the smallest: `rrf1000_b15` (15 nodes, -0.0), `rrf1000_b50+KNN:h1_c100+top25` (63 nodes, -0.2 [-0.7, +0.4]) and `rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50` (75 nodes, -0.6 [-1.5, +0.2]).
+
+| cell | nodes | ALL | ANY | flat at equal nodes | difference | call |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| `rrf1000_b25+FULL:h1_c100+top25` | 50 | 44.8 [43.0, 46.7] | 59.8 | 39.3 | +5.5 [+4.4, +6.7] | LIFTS |
+| `rrf1000_b25+STRUCT:h1_c100~cs+top100` | 118 | 59.8 [58.0, 61.6] | 74.5 | 45.6 | +14.2 [+12.6, +15.8] | LIFTS |
+| `rrf1000_b100+STRUCT:h1_c100~cs+top200` | 269 | 69.3 [67.5, 70.9] | 82.1 | 51.1 | +18.2 [+16.6, +19.8] | LIFTS |
+| `rrf1000_b400+FULL:h1_c100~s20+top800` | 957 | 78.5 [76.9, 80.0] | 89.4 | 58.7 | +19.8 [+18.0, +21.5] | LIFTS |
+| `dense_top200+STRUCT:h3_bf_v2000~cs-fu` | 2,065 | 84.8 [83.4, 86.1] | 91.0 | 63.3 | +21.5 [+19.9, +23.2] | LIFTS |
+| `rrf1000_b400+STRUCT:h3_c25_v2000` | 2,315 | 73.3 [71.6, 74.9] | 84.7 | 64.1 | +9.2 [+7.7, +10.8] | LIFTS |
+| `rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr` | 2,475 | **85.5 [84.1, 86.7]** | 92.0 | 64.6 | **+20.9 [+19.3, +22.5]** | LIFTS |
+| `rrf1000_b25+STRUCT:h3_c100_v5000` | 5,000 | 83.3 [81.9, 84.7] | 90.9 | 64.7 | +18.6 * | LIFTS |
+| `rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr` | 5,753 | 90.2 [89.0, 91.2] | 94.9 | 64.7 | +25.5 * | LIFTS |
+| `rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu` | 5,780 | **91.9 [90.8, 92.8]** | 95.0 | 64.7 | +27.2 [+25.6, +28.8] * | LIFTS |
+| `rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000` | 15,383 | 90.5 [89.4, 91.5] | 94.9 | 64.7 | +25.8 * | LIFTS |
+
+(The other five pick cells are in `read.json`: the three LEVEL cells named above and two that LIFT, at 5,870 and 6,254 nodes.)
+
+**FULL against STRUCT at equal walk and budget (the nine twins).** FULL minus STRUCT in points: -0.1 [-0.6, +0.4] (15,383 nodes), **-1.0 [-1.8, -0.3]** (121), -0.2 [-0.9, +0.3] (276), +0.8 [0.0, +1.6] (5,004), **+1.1 [+0.4, +1.8] (2,300)**, -0.2 [-0.7, +0.4] (6,231), **-0.6 [-1.1, -0.1]** (5,675), **-0.9 [-1.5, -0.4]** (2,039) and **-4.2 [-5.2, -3.3]** (50 nodes); nodes ratios 0.98 to 1.03; the mean of the nine is -0.59 points.
+
+**Calls on the expectations (whole split).**
+
+- **E1 PASS.**
+- **E2 NOT HELD AS WORDED.** The fused list rises from 54.6 at 500 nodes to 64.7 at 2,500, **+10.1 points, not "a few"**; from 1,000 to 2,500 it rises +5.5 (59.2 to 64.7), the figure the expectation was anchored on.
+- **E3 HELD.** 13 pick cells LIFT; within 3,500 nodes the largest lifts are +21.5 [+19.9, +23.2] at 2,065 nodes and +20.9 [+19.3, +22.5] at 2,475, against the 5 points expected.
+- **E4 HELD.** The best ALL within 5,000 nodes is **85.5 [84.1, 86.7] at 2,475 nodes** (ANY 92.0); no cell of the 63 reaches 0.95 at any size, the highest being 91.9 [90.8, 92.8] at 5,780 nodes and 90.5 at 15,383 nodes. The expectation's "at least 30 points short" for the first stage's best leg was 30.3 points (64.7); the best cell here is 9.5 points short at 2,475 nodes.
+- **E5 HELD, nine of nine: every FULL-minus-STRUCT gain is under 2 points** (the largest +1.1 [+0.4, +1.8]); the point estimate is below zero in seven pairs and the interval lies entirely below zero in four (-1.0, -0.6, -0.9, -4.2). **On Prime S carries the lift and the R and K edges add nothing at equal size** (they cost up to 4.2 points at 50 nodes); the screen's +2.6 pair came to +1.1 on the whole split.
+- **E6 HELD** (4.01 seconds a question against the 30 allowed; 3.12 CPU-hours against the 23 expected).
+
+**What the whole split says about the user's target (95 percent of the golds at about 2,500 nodes, one rule on all ten).** The seven's pick cells carry to Prime and **lift it by 20.9 points at equal nodes** (flat 64.6, best pick 85.5); that is a transfer, nothing was selected on a STaRK question, and the best cell is read post-hoc (section 6: no cell is "the pick" for Prime). The target is **9.5 points away at 2,475 nodes and 3.1 points away at 5,780 nodes. ANY stops at 95.0 and 94.9 at 5,780 and 15,383 nodes: about five percent of Prime's test questions have no gold in any pool of this list (the largest cell is 15,400 nodes), so ALL cannot reach 0.95 with these seeds (five from each leg) and these walks (three hops over the walk stores); the larger cells read here add nothing to ANY beyond about 5,800 nodes.** What the missing five percent are (golds with no link to the seeds, golds beyond three hops, or golds the seeds' lists never reach) is not read; the test split is the transfer read and nothing is diagnosed on it. **Nothing is adopted and no pool is frozen.** Not declared, in this order: the same transfer read on Amazon and MAG when their links rows finish; a diagnosis of the missing five percent on Prime's dev split, which needs the first stage on that split (an STK1 amendment); Step B (R7(2,500) on the dev split).
