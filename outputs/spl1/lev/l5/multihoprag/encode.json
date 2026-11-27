@@ -1,0 +1,35 @@
+{
+ "stage": "SPL1 A11 encode",
+ "declared_in": "docs/SPL1_SPARSE_LEG_SCREEN.md section 8.11 (A11)",
+ "arm": "l5",
+ "spec": {
+  "dtype": "fp16",
+  "chunk": 32,
+  "prefetch": true
+ },
+ "dataset": "multihoprag",
+ "smoke": 0,
+ "nodes": 609,
+ "questions": 2255,
+ "k": 609,
+ "device": "cuda",
+ "nodes_per_s": 249.14,
+ "block_rate_median": 293.21,
+ "block_rates": [
+  293.2
+ ],
+ "encode_seconds": 2.4,
+ "seconds": 10.8,
+ "doc_nnz_mean": 213.1,
+ "query_nnz_mean": 128.0,
+ "gpu": {
+  "name": "NVIDIA RTX 4500 Ada Generation",
+  "free_mb_at_start": 22257,
+  "total_mb": 24569
+ },
+ "top1000_sha256": "366ea0b1fb40055306a632ead1641c81a0b1e7cfa5c130e677006a23f2c40e95",
+ "versions": {
+  "torch": "2.8.0+cu128",
+  "transformers": "4.57.3"
+ }
+}

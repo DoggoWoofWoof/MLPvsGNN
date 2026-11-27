@@ -1,0 +1,304 @@
+{
+ "stage": "SPL1 A11 bench",
+ "declared_in": "docs/SPL1_SPARSE_LEG_SCREEN.md section 8.11 (A11)",
+ "dataset": "squad",
+ "nodes": 4096,
+ "block": 512,
+ "blocks": 8,
+ "questions": 256,
+ "gpu": {
+  "name": "NVIDIA RTX 4500 Ada Generation",
+  "free_mb_at_start": 22069,
+  "total_mb": 24569
+ },
+ "versions": {
+  "torch": "2.8.0+cu128",
+  "transformers": "4.57.3"
+ },
+ "arms": {
+  "l0": {
+   "spec": {
+    "record": true
+   },
+   "rate_median": 218.09,
+   "rates": [
+    220.2,
+    224.6,
+    219.3,
+    216.4,
+    218.5,
+    217.7,
+    216.7,
+    215.2
+   ],
+   "ratio": 1.0,
+   "peak_mb": 1836,
+   "doc_nnz_mean": 195.5,
+   "question_seconds": 0.231,
+   "measures": {
+    "docs": {
+     "cos_min": 0.9999999999999998,
+     "cos_p1": 0.9999999999999998,
+     "cos_median": 1.0,
+     "bit_equal_share": 1.0,
+     "nnz_ratio": 1.0,
+     "rows": 4096
+    },
+    "questions": {
+     "cos_min": 0.9999999999999998,
+     "cos_p1": 0.9999999999999998,
+     "cos_median": 1.0,
+     "bit_equal_share": 1.0,
+     "nnz_ratio": 1.0,
+     "rows": 256
+    }
+   },
+   "e2": null
+  },
+  "l1": {
+   "spec": {
+    "dtype": "fp32",
+    "chunk": 16
+   },
+   "rate_median": 234.32,
+   "rates": [
+    235.9,
+    239.9,
+    237.5,
+    232.8,
+    235.9,
+    227.4,
+    225.1,
+    230.9
+   ],
+   "ratio": 1.0722,
+   "peak_mb": 1861,
+   "doc_nnz_mean": 195.5,
+   "question_seconds": 0.173,
+   "measures": {
+    "docs": {
+     "cos_min": 0.9999999999999998,
+     "cos_p1": 0.9999999999999998,
+     "cos_median": 1.0,
+     "bit_equal_share": 1.0,
+     "nnz_ratio": 1.0,
+     "rows": 4096
+    },
+    "questions": {
+     "cos_min": 0.9999999999999998,
+     "cos_p1": 0.9999999999999998,
+     "cos_median": 1.0,
+     "bit_equal_share": 1.0,
+     "nnz_ratio": 1.0,
+     "rows": 256
+    }
+   },
+   "e2": true
+  },
+  "l2": {
+   "spec": {
+    "dtype": "tf32",
+    "chunk": 16
+   },
+   "rate_median": 435.49,
+   "rates": [
+    430.3,
+    449.6,
+    448.5,
+    443.2,
+    438.7,
+    422.7,
+    432.3,
+    428.3
+   ],
+   "ratio": 1.9985,
+   "peak_mb": 1861,
+   "doc_nnz_mean": 195.4,
+   "question_seconds": 0.229,
+   "measures": {
+    "docs": {
+     "cos_min": 0.9997523113984403,
+     "cos_p1": 0.9999995979127868,
+     "cos_median": 0.9999998515643591,
+     "bit_equal_share": 0.0,
+     "nnz_ratio": 0.9999862597727367,
+     "rows": 4096
+    },
+    "questions": {
+     "cos_min": 0.9999995031909389,
+     "cos_p1": 0.9999996170939277,
+     "cos_median": 0.9999998413914133,
+     "bit_equal_share": 0.0,
+     "nnz_ratio": 0.9998610145934677,
+     "rows": 256
+    }
+   },
+   "e2": true
+  },
+  "l3": {
+   "spec": {
+    "dtype": "fp16",
+    "chunk": 16
+   },
+   "rate_median": 702.9,
+   "rates": [
+    689.9,
+    708.0,
+    690.0,
+    699.1,
+    713.7,
+    706.7,
+    681.2,
+    718.6
+   ],
+   "ratio": 3.1916,
+   "peak_mb": 1372,
+   "doc_nnz_mean": 195.4,
+   "question_seconds": 0.191,
+   "measures": {
+    "docs": {
+     "cos_min": 0.9999772306971189,
+     "cos_p1": 0.9999983704397876,
+     "cos_median": 0.9999992615163824,
+     "bit_equal_share": 0.0,
+     "nnz_ratio": 0.999530334049907,
+     "rows": 4096
+    },
+    "questions": {
+     "cos_min": 0.9999976126870453,
+     "cos_p1": 0.9999981267563031,
+     "cos_median": 0.9999993005411019,
+     "bit_equal_share": 0.0,
+     "nnz_ratio": 0.9998610145934677,
+     "rows": 256
+    }
+   },
+   "e2": true
+  },
+  "l4": {
+   "spec": {
+    "dtype": "bf16",
+    "chunk": 16
+   },
+   "rate_median": 711.09,
+   "rates": [
+    701.7,
+    713.8,
+    733.7,
+    734.6,
+    712.1,
+    709.2,
+    686.6,
+    710.1
+   ],
+   "ratio": 3.2586,
+   "peak_mb": 1372,
+   "doc_nnz_mean": 195.4,
+   "question_seconds": 0.217,
+   "measures": {
+    "docs": {
+     "cos_min": 0.9992386274985372,
+     "cos_p1": 0.9998949321608437,
+     "cos_median": 0.9999533416336418,
+     "bit_equal_share": 0.0,
+     "nnz_ratio": 0.9998026403720354,
+     "rows": 4096
+    },
+    "questions": {
+     "cos_min": 0.9998696870422111,
+     "cos_p1": 0.999887822655976,
+     "cos_median": 0.9999541330916228,
+     "bit_equal_share": 0.0,
+     "nnz_ratio": 1.0001389854065323,
+     "rows": 256
+    }
+   },
+   "e2": true
+  },
+  "l5": {
+   "spec": {
+    "dtype": "fp16",
+    "chunk": 32,
+    "prefetch": true
+   },
+   "rate_median": 941.59,
+   "rates": [
+    967.0,
+    970.8,
+    949.0,
+    918.9,
+    934.2,
+    928.6,
+    933.3,
+    959.5
+   ],
+   "ratio": 4.3148,
+   "peak_mb": 1861,
+   "doc_nnz_mean": 195.4,
+   "question_seconds": 0.132,
+   "measures": {
+    "docs": {
+     "cos_min": 0.9999772306971189,
+     "cos_p1": 0.9999983704397876,
+     "cos_median": 0.9999992615163824,
+     "bit_equal_share": 0.0,
+     "nnz_ratio": 0.999530334049907,
+     "rows": 4096
+    },
+    "questions": {
+     "cos_min": 0.9999979541189974,
+     "cos_p1": 0.9999981267563031,
+     "cos_median": 0.9999992695406819,
+     "bit_equal_share": 0.0,
+     "nnz_ratio": 0.9996525364836693,
+     "rows": 256
+    }
+   },
+   "e2": true
+  },
+  "l6": {
+   "spec": {
+    "dtype": "fp16",
+    "chunk": 32,
+    "prefetch": true,
+    "mask": true,
+    "sort": true
+   },
+   "rate_median": 922.43,
+   "rates": [
+    882.3,
+    930.6,
+    991.2,
+    945.7,
+    961.7,
+    885.4,
+    877.9,
+    914.3
+   ],
+   "ratio": 4.1964,
+   "peak_mb": 1861,
+   "doc_nnz_mean": 189.6,
+   "question_seconds": 0.131,
+   "measures": {
+    "docs": {
+     "cos_min": 0.9711043391611524,
+     "cos_p1": 0.9925468893277258,
+     "cos_median": 0.9993831598895416,
+     "bit_equal_share": 0.0,
+     "nnz_ratio": 0.9701774612806642,
+     "rows": 4096
+    },
+    "questions": {
+     "cos_min": 0.9915567318139519,
+     "cos_p1": 0.9929460058917743,
+     "cos_median": 0.9992562480216471,
+     "bit_equal_share": 0.0,
+     "nnz_ratio": 0.9594857539958305,
+     "rows": 256
+    }
+   },
+   "e2": null
+  }
+ },
+ "seconds": 109.6
+}

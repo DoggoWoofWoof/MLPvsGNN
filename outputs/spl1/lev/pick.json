@@ -1,0 +1,42 @@
+{
+ "stage": "SPL1 A11 call",
+ "declared_in": "docs/SPL1_SPARSE_LEG_SCREEN.md section 8.11 (A11)",
+ "pick": "l5",
+ "table": {
+  "l1": {
+   "ratio": 1.0722,
+   "e2": true,
+   "e1": false,
+   "rate_median": 234.32
+  },
+  "l2": {
+   "ratio": 1.9985,
+   "e2": true,
+   "e1": true,
+   "rate_median": 435.49
+  },
+  "l3": {
+   "ratio": 3.1916,
+   "e2": true,
+   "e1": true,
+   "rate_median": 702.9
+  },
+  "l4": {
+   "ratio": 3.2586,
+   "e2": true,
+   "e1": true,
+   "rate_median": 711.09
+  },
+  "l5": {
+   "ratio": 4.3148,
+   "e2": true,
+   "e1": true,
+   "rate_median": 941.59
+  }
+ },
+ "bench": "bench_squad.json",
+ "bench_sha256": "cd002516c600f3964e73fa3c2dd0ca1b9996706b64a946c508b83cfc61b1ad34",
+ "decision": "PICK",
+ "rule": "E1 ratio >= 1.5, E2 cosine p1 >= 0.999 and non-zeros within 0.01",
+ "utc": "2026-11-27T06:21:13Z"
+}

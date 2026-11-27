@@ -1,0 +1,16 @@
+{
+ "stage": "SPL1 A11 D2",
+ "declared_in": "docs/SPL1_SPARSE_LEG_SCREEN.md section 8.11 (A11)",
+ "pick": "l5",
+ "D2": {
+  "decision": "ADOPT_LEVER(l5)",
+  "reads": 18,
+  "worse": 0,
+  "agreement_below_99": [
+   "squad",
+   "musique",
+   "multihoprag"
+  ]
+ },
+ "read_sha256": "f6c86b5eeb8ca1404ddaeb66ef723436fa418ea25251299092ef96269bb60347"
+}

@@ -240,6 +240,24 @@ The user, 27 Nov, answering the question that listed the four models of A11 with
 
 **A11a, second cause (11:15 IST; the first change above was not enough).** After the share change the bench still did not start (checked 11:06). The feeder's log reads `head stk1p-first2 cannot start; holding later items for it` from 09:22:56 and never clears: `stk1p-first2` (8 cores, ready since 08:22 when `stk1p-spl` ended) became the blocked head under the feeder's 60-minute head-of-line rule and held every later item, this chain among them, while 5.3 cores were free. The share change was needed at 08:22 (the log then named `spl1l-bench` the GPU head), but it is not what held the row from 09:23; the text above, which named only the share, was incomplete. **Second change:** the one line `stk1p-first2` was moved to just after `spl1l-gat2` (the end of the chain; feed edit under the shared lock, backup kept, no field of any row changed, no row names it as a dependency, host copy equal to the local sha `035ba415c3356804f718`). `spl1l-bench` was sent at 11:13:03 (2 cores, 6 GB, `gpu:0.15`). **Cost:** `stk1p-first2` (the Prime first stage with the SPLADE leg) now starts behind the chain, which holds 2 cores at a time; it needs 8 free cores and would not have had them before the four 2Wiki quarter rows of the other session end (about 13:10), so the delay is at most the chain's length minus that wait, and it is read as a cost of A11 and A12.
 
+### 8.14 Amendment A13 (27 Nov, 12:30 IST, after A11's lever reads were taken (section 10.7) and before any pool-coverage number of the lever)
+
+**Why it is due.** A11's D2 says that no pool-coverage read is made for an equivalent lever unless the list agreement is below 99 percent of the questions, and that the user is told and the pool cells are read as in A8 in that case. The agreement of l5's lists with the record's (section 10.7) is below 99 percent on all three datasets (top 1,000 the same set for 19.0 percent of SQuAD's questions, 2.1 percent of MuSiQue's and 12.4 percent of MultiHop-RAG's; the first 20 the same sequence for 67.1, 44.2 and 87.9 percent). So the read is due. The user is told here and in the report. Read beside it: l0, the record's own contract run on the card, agrees with the record's top 1,000 as a set for 54.3 percent of SQuAD's questions and 12.4 percent of MultiHop-RAG's, and A2 of the LEG1 page found the stored vectors of SQuAD reproduce the record's top five for 97.49 percent. A low set agreement at depth is therefore not specific to the lever (the ranks past the positive scores, near ties, and C0's vectors that depend on the padding of the batch); it is the reason the pool read, not the list agreement, decides.
+
+**What is read.** The filed pool cells of A8 (PL5's `frontier_picks.all` at 500 to 2,500 nodes, PL6's `R95_bounded`, the old cell) on the eval carves, with l5's list in place of the record's SPLADE list, everything else as filed; the record's arm is the filed eval confirmation grids (no re-run); gate G-P1 and the padding rule are A8's and A9's. The lists are the three `outputs/spl1/lev/l5/D/top1000.npz` files of section 10.7.
+
+**New module.** `outputs/mp_unified/zspl1q.py` (one more declared module; `selftest`, `prep`, `pool`, `merge`, `read`). It runs `zspl1p.py` unedited in its own process with three module values changed (the folder of the leg's list, the folder the reads are written to, and the page reference); `prep` hard-links the three list files under `outputs/spl1/lev5view/c3/D/` because `zspl1p.py` names its list folder `c3`. In `zspl1p.py`'s files and keys (`*_c3_*`, `c3_all`) the label `c3` stands for the list read here (l5); the reads are written to `outputs/spl1/pool_l5/`, not to the C3 reads' folder. Selftest passes.
+
+**Decision rule D4 (declared here, before any number).** The deciding cells are the two at the node bound on each dataset: the 2,500-node frontier cell and `R95_bounded` (MuSiQue's two are one cell). **LEVER_POOL_OK** if every one of the six is BETTER or LEVEL by A8's calls (low end at least -1.0 point, no more than 5 percent more nodes) **and** its point difference is at least -0.5 point; otherwise **LEVER_POOL_FLAG**. Two tests because A8's interval alone would allow a loss of a point at its low end, and a numerical lever should move nothing (A11 held it to -0.20 on the first-stage reads, whose intervals are far narrower than a pool cell's on 1,130 to 11,873 questions); the smaller cells are read and reported, not called.
+
+**What follows.** LEVER_POOL_OK: D2 stands and the Amazon and MAG legs run at l5 (STK1 amendment A7). LEVER_POOL_FLAG: the user is told with the cells; the legs that have not started run at l0 (re-queued under new names); a leg already written at l5 is kept, named as l5 in every table that reads it, and its l0 leg is queued behind. The STaRK rows do not wait for this read (a flag costs the legs' hours, about four of card at l0). No pool read of l6 (information only) and none of the seven datasets' lists, which keep the record's.
+
+**Expectation, written before any number.** **X16** all six deciding cells are LEVEL with a point difference within +-0.3, and SQuAD's 15-node `R95_bounded` cell (a first-stage-only pool, the one that cost C3 0.91 point) moves most of the cells; the reads of section 10.7 (four reads on each dataset within +-0.1 point of the record's) say the lists agree where it matters.
+
+**Rows.** Laptop only (the filed grids and pool modules are there): `zspl1q.py prep`; MultiHop-RAG whole; SQuAD in four parts; MuSiQue in four parts (A9's split, no change); the merges; `read`. Run as the laptop's cores allow (MultiHop-RAG and SQuAD first, MuSiQue after).
+
+**Disclosed.** The l5 lists are one run on the card (fp16 on a shared machine; the guard may suspend it, which changes timing, not values). The page keeps zspl1p's `c3` labels in the stored files for the reason above.
+
 ## 9. Expectations, written before any number
 
 - **X1.** C2 (the highest printed score) is BETTER or LEVEL on all six cells; it is the largest of the three, so it is the pick only if C1 and C3 do not pass.
@@ -380,3 +398,55 @@ The CPU ratio of the first 512 nodes (6.44) overstated the card's: a small model
 - **The A6 rows return as declared.** The STK1 A6 rows that A8 took out of the feed (C0 on the host card for Prime, Amazon and MAG, then the first-stage rows that read them: `stk1p-spg`, `stk1p-spl`, `stk1p-first2`, `stk1a-spl`, `stk1a-first2`, `stk1m-spl`, `stk1m-first2`) are put back unchanged, except that `stk1p-spg` no longer waits for `spl1c-gmq` (C0's MuSiQue card timing decides nothing now and is not returned). At C0's card rate the three legs are about 11 minutes (Prime, 129,375 nodes), 1.4 hours (Amazon, 1,035,542) and 2.6 hours (MAG, 1,872,968) of an exclusive card.
 - **Speed levers (A8's declared follow-up) are not run.** fp16, larger micro-batches and a masked pooling are options only for C0's three STaRK legs; fp16 and the micro-batch change values (C0's contract pools over padding, so a vector depends on its batch), and the 4-hour card cost does not justify a screen. If the user wants them, they are a new amendment.
 - **The laptop's Prime SPLADE leg (C0 on CPU)** is redundant: the card does Prime in minutes. It was reaped by the memory guard at about 04:50 and is not restarted.
+
+### 10.7 The speed-lever screen (A11): l5 is picked and D2 adopts it; the list agreement is below 99 percent, so A13's pool read is due
+
+The first bench row (`spl1l-bench`, started 11:13) was lost with the host's restart at about 11:15 and read nothing; the row ran again at 11:48 (the card had 22,069 of 24,569 MB free at the start) and is the one bench. Rows: bench 1 min 52 s, then the encodes of l5 (SQuAD 1 min 15 s) and the other arms, the reads on the laptop (`zspl1l.py read`, 544 s).
+
+**Bench (SQuAD, the first 4,096 nodes in 8 blocks of 512, the first 256 questions; E1 is the median of the paired per-block ratios, E2 the first percentile of the cosine to l0's vectors and the non-zero count).**
+
+| arm | what changes | nodes/s (block median) | E1 ratio to l0 | E1 (at least 1.5) | docs cos p1 | questions cos p1 | doc non-zeros vs l0 | E2 | card peak MB |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| l0 | the record's contract (fp32, chunks of 16) | 218.09 | 1.000 | - | - | - | - | - | 1,836 |
+| l1 | max over positions of the raw logits, then log1p(relu) | 234.32 | 1.072 | no | 1.00000 | 1.00000 | 1.00000 | yes | 1,861 |
+| l2 | TF32 | 435.49 | 1.999 | yes | 1.00000 | 1.00000 | 0.99999 | yes | 1,861 |
+| l3 | fp16 | 702.90 | 3.192 | yes | 0.999998 | 0.999998 | 0.99953 | yes | 1,372 |
+| l4 | bf16 | 711.09 | 3.259 | yes | 0.999895 | 0.999888 | 0.99980 | yes | 1,372 |
+| **l5** | fp16, chunks of 32, the next batch tokenized in a second thread | **941.59** | **4.315** | yes | 0.999998 | 0.999998 | 0.99953 | yes | 1,861 |
+| l6 | l5 with masked pooling and length-sorted batches (information only) | 922.43 | 4.196 | - | 0.992547 | 0.992946 | 0.97018 | (not applied; its numbers would fail) | 1,861 |
+
+l1 is bit-equal to l0 on every vector (share 1.0000), so the exact identity of the rewrite held on this card. **Pick: l5** (largest E1 ratio among l1 to l5 with E1 and E2). Expectations: **X8 held** (l1 passes E2 at 1.07 times l0). **X9 held** (l3 3.19 and l5 4.31 times, both pass E2, l5 is the pick). **X10 not held**: l6's rate is 1.13 times l5's on SQuAD's full run (1,013.4 against 897.3; 0.98 in the bench), under the 1.3 declared, and the first percentile of its cosine to l0 is 0.9925, not below 0.99; the clause on H1 held (-0.017 point against the record).
+
+**Reads against the record's lists (full runs; effect in points, 95 percent interval from 1,000 paired resamples; every call is LEVEL, none BETTER, none WORSE).**
+
+| dataset (questions, nodes) | read | record | l5 | l5 minus record [interval] | l5 minus l0 [interval] |
+| --- | --- | --- | --- | --- | --- |
+| SQuAD (11,873; 20,233) | RRF R@5 | 88.251 | 88.242 | -0.008 [-0.025, 0.000] | 0.000 [0.000, 0.000] |
+| | seeds | 91.805 | 91.805 | 0.000 [0.000, 0.000] | 0.000 [0.000, 0.000] |
+| | leg R@20 | 94.500 | 94.500 | 0.000 [-0.025, +0.025] | 0.000 [0.000, 0.000] |
+| | leg R@1000 | 99.503 | 99.503 | 0.000 [0.000, 0.000] | 0.000 [0.000, 0.000] |
+| MuSiQue (2,417; 117,534) | RRF R@5 | 47.766 | 47.780 | +0.014 [-0.066, +0.093] | (not read: the record's list is the reference) |
+| | seeds | 52.996 | 52.975 | -0.021 [-0.062, 0.000] | |
+| | leg R@20 | 55.272 | 55.299 | +0.028 [-0.028, +0.103] | |
+| | leg R@1000 | 80.882 | 80.906 | +0.024 [-0.041, +0.103] | |
+| MultiHop-RAG (2,255; 609) | RRF R@5 | 61.870 | 61.892 | +0.022 [0.000, +0.067] | +0.022 [0.000, +0.067] |
+| | seeds | 73.744 | 73.777 | +0.033 [0.000, +0.089] | +0.033 [0.000, +0.089] |
+| | leg R@20 | 83.917 | 83.917 | 0.000 [0.000, 0.000] | 0.000 [0.000, 0.000] |
+
+**D2: ADOPT_LEVER(l5)** (E1 and E2 hold; 18 reads, none WORSE; the largest move is 0.033 point). The record's own contract on the card (l0) reads the same as the record to the third decimal on SQuAD (RRF R@5 -0.008, the rest 0.000) and MultiHop-RAG (all 0.000).
+
+**List agreement (printed beside, as declared; below 99 percent of the questions on all three datasets, so D2's pool-read clause applies and the user is told).**
+
+| dataset | l5 vs record: top 1,000 the same set | first 20 the same sequence | l0 vs record: top 1,000 the same set | first 20 the same sequence | l5 vs l0: set | sequence |
+| --- | --- | --- | --- | --- | --- | --- |
+| SQuAD | 18.97% | 67.14% | 54.27% | 82.68% | 32.63% | 79.63% |
+| MuSiQue | 2.07% | 44.23% | (not run) | (not run) | (not run) | (not run) |
+| MultiHop-RAG | 12.37% | 87.94% | 12.42% | 99.96% | 95.88% | 87.89% |
+
+The record's contract itself does not reproduce the record's deep lists on the card (l0 54.27 percent on SQuAD, 12.42 percent on MultiHop-RAG as sets), so the agreement at depth is not a property of the lever; the reads above, which are the numbers the first stage is used for, do not move. A13 declares the pool read the clause requires.
+
+**Rates (what the lever buys in a whole run).** Block medians of the full encodes: SQuAD 897.26 nodes/s for l5 against 213.09 for l0 (4.21 times), MultiHop-RAG 293.21 against 144.72 (2.03 times; articles that fill the 256-token cut leave less to gain), MuSiQue 1,021.96 for l5 (no l0 run). The wall rates of whole runs are lower and closer: SQuAD 378.66 against 163.63 (2.31 times), MultiHop-RAG 249.14 against 135.11 (1.84 times), because the sparse-row conversion, the top-k scoring and the checkpoints around the forward passes do not speed up. The STaRK legs' wall gain will sit between the two (STK1 A7 reads it from the rows). Document non-zeros per node are unchanged (195.1 against 195.2; 213.1 against 213.2; MuSiQue 155.7).
+
+**l6 (information only, never adopted).** SQuAD: RRF R@5 -0.017 [-0.118, +0.076], seeds -0.109 [-0.211, -0.017] (WORSE at the lever's -0.20 scale against l0 and against the record), leg R@20 +0.025, R@1000 +0.025; MuSiQue: leg R@20 -0.059 [-0.248, +0.121] (WORSE at that scale), the other three LEVEL; MultiHop-RAG all LEVEL. l6 is not BETTER than l0 on H1 on any dataset, so D2's message about l6 does not arise; its vectors have 3.0 percent fewer non-zeros on SQuAD (189.3 against 195.2).
+
+**What this changes.** (1) D3's reference R is now l5's SQuAD median block rate, 897.26 nodes per second, not A7's 199.61: a candidate's ratio is read against it (C3's 343.83 would be 0.38). (2) The Amazon and MAG legs run at l5 through STK1 amendment A7; Prime's leg stays at l0 (it ran before A11); the seven datasets keep the record's lists. (3) A13's pool read (section 8.14) runs on the laptop.

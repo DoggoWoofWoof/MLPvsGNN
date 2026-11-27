@@ -1,0 +1,495 @@
+{
+ "stage": "SPL1 A11 read",
+ "declared_in": "docs/SPL1_SPARSE_LEG_SCREEN.md section 8.11 (A11)",
+ "pick": "l5",
+ "datasets": {
+  "squad": {
+   "questions": 11873,
+   "nodes": 20233,
+   "record": {
+    "rrf5": 88.251,
+    "rrf20": 95.275,
+    "seeds": 91.805,
+    "leg20": 94.5,
+    "leg1000": 99.503
+   },
+   "arms": {
+    "l0": {
+     "level": {
+      "rrf5": 88.242,
+      "rrf20": 95.275,
+      "seeds": 91.805,
+      "leg20": 94.5,
+      "leg1000": 99.503
+     },
+     "vs_record": {
+      "rrf5": {
+       "diff": -0.008,
+       "lo": -0.025,
+       "hi": 0.0,
+       "call": "LEVEL"
+      },
+      "seeds": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      },
+      "leg20": {
+       "diff": 0.0,
+       "lo": -0.025,
+       "hi": 0.025,
+       "call": "LEVEL"
+      },
+      "leg1000": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      }
+     },
+     "vs_l0": {},
+     "agreement_with_record": {
+      "same_top_set_share": 0.54266,
+      "same_top20_sequence_share": 0.82675,
+      "k": 1000
+     },
+     "block_rate_median": 213.09,
+     "nodes_per_s_wall": 163.63,
+     "doc_nnz_mean": 195.2
+    },
+    "l5": {
+     "level": {
+      "rrf5": 88.242,
+      "rrf20": 95.283,
+      "seeds": 91.805,
+      "leg20": 94.5,
+      "leg1000": 99.503
+     },
+     "vs_record": {
+      "rrf5": {
+       "diff": -0.008,
+       "lo": -0.025,
+       "hi": 0.0,
+       "call": "LEVEL"
+      },
+      "seeds": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      },
+      "leg20": {
+       "diff": 0.0,
+       "lo": -0.025,
+       "hi": 0.025,
+       "call": "LEVEL"
+      },
+      "leg1000": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      }
+     },
+     "vs_l0": {
+      "rrf5": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      },
+      "seeds": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      },
+      "leg20": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      },
+      "leg1000": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      }
+     },
+     "agreement_with_record": {
+      "same_top_set_share": 0.18967,
+      "same_top20_sequence_share": 0.67136,
+      "k": 1000
+     },
+     "block_rate_median": 897.26,
+     "nodes_per_s_wall": 378.66,
+     "doc_nnz_mean": 195.1,
+     "agreement_with_l0": {
+      "same_top_set_share": 0.32629,
+      "same_top20_sequence_share": 0.79626,
+      "k": 1000
+     }
+    },
+    "l6": {
+     "level": {
+      "rrf5": 88.234,
+      "rrf20": 95.326,
+      "seeds": 91.695,
+      "leg20": 94.525,
+      "leg1000": 99.528
+     },
+     "vs_record": {
+      "rrf5": {
+       "diff": -0.017,
+       "lo": -0.118,
+       "hi": 0.076,
+       "call": "LEVEL"
+      },
+      "seeds": {
+       "diff": -0.109,
+       "lo": -0.211,
+       "hi": -0.017,
+       "call": "WORSE"
+      },
+      "leg20": {
+       "diff": 0.025,
+       "lo": -0.051,
+       "hi": 0.101,
+       "call": "LEVEL"
+      },
+      "leg1000": {
+       "diff": 0.025,
+       "lo": -0.008,
+       "hi": 0.067,
+       "call": "LEVEL"
+      }
+     },
+     "vs_l0": {
+      "rrf5": {
+       "diff": -0.008,
+       "lo": -0.109,
+       "hi": 0.093,
+       "call": "LEVEL"
+      },
+      "seeds": {
+       "diff": -0.109,
+       "lo": -0.211,
+       "hi": -0.017,
+       "call": "WORSE"
+      },
+      "leg20": {
+       "diff": 0.025,
+       "lo": -0.051,
+       "hi": 0.109,
+       "call": "LEVEL"
+      },
+      "leg1000": {
+       "diff": 0.025,
+       "lo": -0.008,
+       "hi": 0.067,
+       "call": "LEVEL"
+      }
+     },
+     "agreement_with_record": {
+      "same_top_set_share": 0.00017,
+      "same_top20_sequence_share": 0.06578,
+      "k": 1000
+     },
+     "block_rate_median": 1013.37,
+     "nodes_per_s_wall": 449.03,
+     "doc_nnz_mean": 189.3,
+     "agreement_with_l0": {
+      "same_top_set_share": 0.00017,
+      "same_top20_sequence_share": 0.0657,
+      "k": 1000
+     }
+    }
+   }
+  },
+  "musique": {
+   "questions": 2417,
+   "nodes": 117534,
+   "record": {
+    "rrf5": 47.766,
+    "rrf20": 60.419,
+    "seeds": 52.996,
+    "leg20": 55.272,
+    "leg1000": 80.882
+   },
+   "arms": {
+    "l5": {
+     "level": {
+      "rrf5": 47.78,
+      "rrf20": 60.395,
+      "seeds": 52.975,
+      "leg20": 55.299,
+      "leg1000": 80.906
+     },
+     "vs_record": {
+      "rrf5": {
+       "diff": 0.014,
+       "lo": -0.066,
+       "hi": 0.093,
+       "call": "LEVEL"
+      },
+      "seeds": {
+       "diff": -0.021,
+       "lo": -0.062,
+       "hi": 0.0,
+       "call": "LEVEL"
+      },
+      "leg20": {
+       "diff": 0.028,
+       "lo": -0.028,
+       "hi": 0.103,
+       "call": "LEVEL"
+      },
+      "leg1000": {
+       "diff": 0.024,
+       "lo": -0.041,
+       "hi": 0.103,
+       "call": "LEVEL"
+      }
+     },
+     "vs_l0": {},
+     "agreement_with_record": {
+      "same_top_set_share": 0.02069,
+      "same_top20_sequence_share": 0.44228,
+      "k": 1000
+     },
+     "block_rate_median": 1021.96,
+     "nodes_per_s_wall": 742.42,
+     "doc_nnz_mean": 155.7
+    },
+    "l6": {
+     "level": {
+      "rrf5": 47.845,
+      "rrf20": 60.516,
+      "seeds": 52.993,
+      "leg20": 55.213,
+      "leg1000": 80.951
+     },
+     "vs_record": {
+      "rrf5": {
+       "diff": 0.079,
+       "lo": -0.134,
+       "hi": 0.276,
+       "call": "LEVEL"
+      },
+      "seeds": {
+       "diff": -0.003,
+       "lo": -0.124,
+       "hi": 0.124,
+       "call": "LEVEL"
+      },
+      "leg20": {
+       "diff": -0.059,
+       "lo": -0.248,
+       "hi": 0.121,
+       "call": "WORSE"
+      },
+      "leg1000": {
+       "diff": 0.069,
+       "lo": -0.142,
+       "hi": 0.283,
+       "call": "LEVEL"
+      }
+     },
+     "vs_l0": {},
+     "agreement_with_record": {
+      "same_top_set_share": 0.0,
+      "same_top20_sequence_share": 0.01696,
+      "k": 1000
+     },
+     "block_rate_median": 1432.17,
+     "nodes_per_s_wall": 857.0,
+     "doc_nnz_mean": 145.7
+    }
+   }
+  },
+  "multihoprag": {
+   "questions": 2255,
+   "nodes": 609,
+   "record": {
+    "rrf5": 61.87,
+    "rrf20": 91.282,
+    "seeds": 73.744,
+    "leg20": 83.917
+   },
+   "arms": {
+    "l0": {
+     "level": {
+      "rrf5": 61.87,
+      "rrf20": 91.282,
+      "seeds": 73.744,
+      "leg20": 83.917
+     },
+     "vs_record": {
+      "rrf5": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      },
+      "seeds": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      },
+      "leg20": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      }
+     },
+     "vs_l0": {},
+     "agreement_with_record": {
+      "same_top_set_share": 0.12417,
+      "same_top20_sequence_share": 0.99956,
+      "k": 609
+     },
+     "block_rate_median": 144.72,
+     "nodes_per_s_wall": 135.11,
+     "doc_nnz_mean": 213.2
+    },
+    "l5": {
+     "level": {
+      "rrf5": 61.892,
+      "rrf20": 91.245,
+      "seeds": 73.777,
+      "leg20": 83.917
+     },
+     "vs_record": {
+      "rrf5": {
+       "diff": 0.022,
+       "lo": 0.0,
+       "hi": 0.067,
+       "call": "LEVEL"
+      },
+      "seeds": {
+       "diff": 0.033,
+       "lo": 0.0,
+       "hi": 0.089,
+       "call": "LEVEL"
+      },
+      "leg20": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      }
+     },
+     "vs_l0": {
+      "rrf5": {
+       "diff": 0.022,
+       "lo": 0.0,
+       "hi": 0.067,
+       "call": "LEVEL"
+      },
+      "seeds": {
+       "diff": 0.033,
+       "lo": 0.0,
+       "hi": 0.089,
+       "call": "LEVEL"
+      },
+      "leg20": {
+       "diff": 0.0,
+       "lo": 0.0,
+       "hi": 0.0,
+       "call": "LEVEL"
+      }
+     },
+     "agreement_with_record": {
+      "same_top_set_share": 0.12373,
+      "same_top20_sequence_share": 0.87938,
+      "k": 609
+     },
+     "block_rate_median": 293.21,
+     "nodes_per_s_wall": 249.14,
+     "doc_nnz_mean": 213.1,
+     "agreement_with_l0": {
+      "same_top_set_share": 0.95876,
+      "same_top20_sequence_share": 0.87894,
+      "k": 609
+     }
+    },
+    "l6": {
+     "level": {
+      "rrf5": 61.959,
+      "rrf20": 91.268,
+      "seeds": 73.799,
+      "leg20": 83.932
+     },
+     "vs_record": {
+      "rrf5": {
+       "diff": 0.089,
+       "lo": -0.067,
+       "hi": 0.237,
+       "call": "LEVEL"
+      },
+      "seeds": {
+       "diff": 0.055,
+       "lo": -0.037,
+       "hi": 0.159,
+       "call": "LEVEL"
+      },
+      "leg20": {
+       "diff": 0.015,
+       "lo": -0.089,
+       "hi": 0.118,
+       "call": "LEVEL"
+      }
+     },
+     "vs_l0": {
+      "rrf5": {
+       "diff": 0.089,
+       "lo": -0.067,
+       "hi": 0.237,
+       "call": "LEVEL"
+      },
+      "seeds": {
+       "diff": 0.055,
+       "lo": -0.037,
+       "hi": 0.159,
+       "call": "LEVEL"
+      },
+      "leg20": {
+       "diff": 0.015,
+       "lo": -0.089,
+       "hi": 0.118,
+       "call": "LEVEL"
+      }
+     },
+     "agreement_with_record": {
+      "same_top_set_share": 0.10599,
+      "same_top20_sequence_share": 0.4102,
+      "k": 609
+     },
+     "block_rate_median": 159.38,
+     "nodes_per_s_wall": 147.09,
+     "doc_nnz_mean": 213.1,
+     "agreement_with_l0": {
+      "same_top_set_share": 0.6541,
+      "same_top20_sequence_share": 0.40976,
+      "k": 609
+     }
+    }
+   }
+  }
+ },
+ "D2": {
+  "decision": "ADOPT_LEVER(l5)",
+  "reads": 18,
+  "worse": 0,
+  "agreement_below_99": [
+   "squad",
+   "musique",
+   "multihoprag"
+  ]
+ },
+ "seconds": 544.0
+}
