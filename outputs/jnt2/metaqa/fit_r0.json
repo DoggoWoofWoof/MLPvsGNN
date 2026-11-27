@@ -1,0 +1,67 @@
+{
+ "dataset": "metaqa",
+ "round": 0,
+ "shuffle": false,
+ "rows": 953168,
+ "positives": 418101,
+ "questions": 1197,
+ "label_hops": {
+  "1": 1,
+  "2": 1,
+  "3": 0
+ },
+ "per_hop": {
+  "1": {
+   "rows": 74169,
+   "positives": 16562,
+   "sample_pos_rate": 0.2233,
+   "population": {
+    "candidates": 74938,
+    "within0": 828,
+    "within1": 17168,
+    "within2": 54174,
+    "declared_rate": 0.7229,
+    "label_hops": 1,
+    "label_rate": 0.2291
+   },
+   "own_head": true,
+   "train_auc_sample": 0.7884
+  },
+  "2": {
+   "rows": 637013,
+   "positives": 398953,
+   "sample_pos_rate": 0.6263,
+   "population": {
+    "candidates": 7460733,
+    "within0": 4663,
+    "within1": 1142546,
+    "within2": 4373862,
+    "declared_rate": 0.1531,
+    "label_hops": 1,
+    "label_rate": 0.1531
+   },
+   "own_head": true,
+   "train_auc_sample": 0.7663
+  },
+  "3": {
+   "rows": 241986,
+   "positives": 2586,
+   "sample_pos_rate": 0.0107,
+   "population": {
+    "candidates": 5906473,
+    "within0": 2586,
+    "within1": 690917,
+    "within2": 2858796,
+    "declared_rate": 0.0004,
+    "label_hops": 0,
+    "label_rate": 0.0004
+   },
+   "own_head": true,
+   "train_auc_sample": 0.8784
+  }
+ },
+ "pooled_train_auc_sample": 0.8847,
+ "thinned_in_tables": false,
+ "seconds": 148.9,
+ "zjnt2_sha256": "d6b06dd8b9ea881f5dc34a1090a65838ad8bb0a3fd35643304103fce29ad05a9"
+}
