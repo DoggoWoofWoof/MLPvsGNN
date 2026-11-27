@@ -450,3 +450,23 @@ The record's contract itself does not reproduce the record's deep lists on the c
 **l6 (information only, never adopted).** SQuAD: RRF R@5 -0.017 [-0.118, +0.076], seeds -0.109 [-0.211, -0.017] (WORSE at the lever's -0.20 scale against l0 and against the record), leg R@20 +0.025, R@1000 +0.025; MuSiQue: leg R@20 -0.059 [-0.248, +0.121] (WORSE at that scale), the other three LEVEL; MultiHop-RAG all LEVEL. l6 is not BETTER than l0 on H1 on any dataset, so D2's message about l6 does not arise; its vectors have 3.0 percent fewer non-zeros on SQuAD (189.3 against 195.2).
 
 **What this changes.** (1) D3's reference R is now l5's SQuAD median block rate, 897.26 nodes per second, not A7's 199.61: a candidate's ratio is read against it (C3's 343.83 would be 0.38). (2) The Amazon and MAG legs run at l5 through STK1 amendment A7; Prime's leg stays at l0 (it ran before A11); the seven datasets keep the record's lists. (3) A13's pool read (section 8.14) runs on the laptop.
+
+
+### 10.8 The screen of c4 and c5, and D3 (14:26 IST; `outputs/spl1/cand_read.json`, `zspl1m.py read`; rows `spl1m-gc4*`, `spl1m-gc5*`)
+
+The user asked whether a SPLADE model has been selected "from all the c3 etc". Until this section none of c4 and c5 had been read (their six GPU rows had finished at about 12:25). The reader is section 8.12's, unchanged; the reference R is section 10.7's, 897.26 nodes per second (C0 with the lever l5, SQuAD block median). G-S1 passed on all three datasets (C0's RRF R@5 equals the filed value to six places on SQuAD and MuSiQue; MultiHop-RAG's top 5 equal the record's lists). Differences are against the record's C0 lists, in points, with the paired bootstrap's call (BETTER, LEVEL, WORSE; LEVEL needs the low end at least -1.0).
+
+| candidate | dataset | RRF R@5 (H1) | seeds (H2) | leg R@20 | leg R@1000 | card block rate (nodes/s) | document non-zeros |
+|---|---|---|---|---|---|---|---|
+| c4 doc-v3-distill (67M) | SQuAD | **-1.29 WORSE** | **-2.10 WORSE** | -2.67 WORSE | -0.51 LEVEL | 330.3 | 235.1 |
+| c4 | MuSiQue | +0.23 LEVEL | -0.38 LEVEL | -0.98 WORSE | -0.25 LEVEL | 491.6 | 216.5 |
+| c4 | MultiHop-RAG | +0.17 LEVEL | **-0.75 WORSE** | -0.97 WORSE | n/a | 140.5 | 246.5 |
+| c5 splade-v3-distilbert (67M) | SQuAD | +0.18 LEVEL | -0.07 LEVEL | -0.26 LEVEL | -0.09 LEVEL | 320.1 | 287.7 |
+| c5 | MuSiQue | -0.03 LEVEL | -0.23 LEVEL | -1.59 WORSE | +0.04 LEVEL | 442.1 | 197.1 |
+| c5 | MultiHop-RAG | +0.55 LEVEL | -0.08 LEVEL | +0.82 BETTER | n/a | 129.1 | 346.4 |
+
+**D3.** **c4: C0_STAYS** (not FIRST-STAGE-OK: WORSE on SQuAD's H1 and H2 and on MultiHop-RAG's seeds; its speed ratio to R is 0.368, so none of (a), (b), (c) is met). **c5: RETIME_FP16.** It is FIRST-STAGE-OK (all six deciding cells LEVEL or better, none WORSE), and no gain is large enough for (b) (its H1 differences are -0.03 to +0.55 points, not +1.0 on each dataset); its speed ratio at the native contract (fp32, micro-batch 16) is 0.357, and (a) needs 3.0. The rule sends a candidate that would meet (a) or (c) except for the ratio to an fp16 re-time before the call; **c5 cannot reach the line by that route in this read's numbers**: it would need a rate of about 2,690 nodes per second, 8.4 times its native 320.1, where C0's own lever (fp16, 32-row chunks) bought 4.2 times. The re-time is therefore not queued; it is left as declared and the call is C0 stays unless the user wants the re-time run.
+
+**Expectations (section 8.12).** **X11** held on H1 (c4 is WORSE on SQuAD's H1, LEVEL on MuSiQue's and MultiHop-RAG's) and not held on MultiHop-RAG's seeds (WORSE, -0.75 [-1.29, -0.26]). **X12** held (c5 is LEVEL or better on all six deciding cells; its rate is below 2.0 times R's). **X13 and X14** not read: c6 is gated (401) and c7 needs remote model code, both out (sections 8.12a and 8.12b). **X15** (no candidate meets (a), (b) or (c)) held as read: C0 stays, with D2's lever l5.
+
+**What is selected.** The SPLADE model of the pipeline is **C0 with the lever l5** (the record's model, half precision, 32-row chunks); C3 (section 10.6), c4 and c5 do not replace it; the three STaRK legs run at C0 (Prime at l0, Amazon and MAG at l5). Whether the sparse leg stays at all is the user's open question, read by LEG1 (sections 14 and 15).

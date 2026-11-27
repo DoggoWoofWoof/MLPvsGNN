@@ -1,0 +1,400 @@
+{
+ "stage": "SPL1 A12 read",
+ "declared_in": "docs/SPL1_SPARSE_LEG_SCREEN.md section 8.12 (A12)",
+ "datasets": {
+  "squad": {
+   "questions": 11873,
+   "nodes": 20233,
+   "gate_gs1": {
+    "c0_rrf5": 0.882507,
+    "e0_filed_rrf5": 0.882507,
+    "pass": true
+   },
+   "c0": {
+    "rrf5": 88.251,
+    "rrf20": 95.275,
+    "seeds": 91.805,
+    "leg20": 94.5,
+    "leg1000": 99.503
+   },
+   "models": {
+    "c4": {
+     "level": {
+      "rrf5": 86.962,
+      "rrf20": 94.306,
+      "seeds": 89.708,
+      "leg20": 91.83,
+      "leg1000": 98.989
+     },
+     "diff_vs_c0": {
+      "rrf5": {
+       "diff": -1.289,
+       "lo": -1.617,
+       "hi": -0.943,
+       "call": "WORSE"
+      },
+      "seeds": {
+       "diff": -2.097,
+       "lo": -2.443,
+       "hi": -1.769,
+       "call": "WORSE"
+      },
+      "rrf20": {
+       "diff": -0.969,
+       "lo": -1.221,
+       "hi": -0.707,
+       "call": "WORSE"
+      },
+      "leg20": {
+       "diff": -2.67,
+       "lo": -3.024,
+       "hi": -2.316,
+       "call": "WORSE"
+      },
+      "leg1000": {
+       "diff": -0.514,
+       "lo": -0.665,
+       "hi": -0.371,
+       "call": "LEVEL"
+      }
+     },
+     "block_rate_median": 330.3,
+     "nodes_per_s_wall": 221.67,
+     "doc_nnz_mean": 235.1,
+     "query_nnz_mean": 11.9
+    },
+    "c5": {
+     "level": {
+      "rrf5": 88.436,
+      "rrf20": 95.174,
+      "seeds": 91.738,
+      "leg20": 94.239,
+      "leg1000": 99.41
+     },
+     "diff_vs_c0": {
+      "rrf5": {
+       "diff": 0.185,
+       "lo": -0.093,
+       "hi": 0.489,
+       "call": "LEVEL"
+      },
+      "seeds": {
+       "diff": -0.067,
+       "lo": -0.362,
+       "hi": 0.253,
+       "call": "LEVEL"
+      },
+      "rrf20": {
+       "diff": -0.101,
+       "lo": -0.32,
+       "hi": 0.126,
+       "call": "LEVEL"
+      },
+      "leg20": {
+       "diff": -0.261,
+       "lo": -0.548,
+       "hi": 0.051,
+       "call": "LEVEL"
+      },
+      "leg1000": {
+       "diff": -0.093,
+       "lo": -0.202,
+       "hi": 0.008,
+       "call": "LEVEL"
+      }
+     },
+     "block_rate_median": 320.1,
+     "nodes_per_s_wall": 201.12,
+     "doc_nnz_mean": 287.7,
+     "query_nnz_mean": 22.2
+    }
+   }
+  },
+  "musique": {
+   "questions": 2417,
+   "nodes": 117534,
+   "gate_gs1": {
+    "c0_rrf5": 0.477658,
+    "e0_filed_rrf5": 0.477658,
+    "pass": true
+   },
+   "c0": {
+    "rrf5": 47.766,
+    "rrf20": 60.419,
+    "seeds": 52.996,
+    "leg20": 55.272,
+    "leg1000": 80.882
+   },
+   "models": {
+    "c4": {
+     "level": {
+      "rrf5": 47.997,
+      "rrf20": 61.44,
+      "seeds": 52.62,
+      "leg20": 54.293,
+      "leg1000": 80.63
+     },
+     "diff_vs_c0": {
+      "rrf5": {
+       "diff": 0.231,
+       "lo": -0.359,
+       "hi": 0.807,
+       "call": "LEVEL"
+      },
+      "seeds": {
+       "diff": -0.376,
+       "lo": -0.855,
+       "hi": 0.111,
+       "call": "LEVEL"
+      },
+      "rrf20": {
+       "diff": 1.021,
+       "lo": 0.486,
+       "hi": 1.576,
+       "call": "BETTER"
+      },
+      "leg20": {
+       "diff": -0.979,
+       "lo": -1.703,
+       "hi": -0.299,
+       "call": "WORSE"
+      },
+      "leg1000": {
+       "diff": -0.252,
+       "lo": -0.89,
+       "hi": 0.372,
+       "call": "LEVEL"
+      }
+     },
+     "block_rate_median": 491.6,
+     "nodes_per_s_wall": 389.42,
+     "doc_nnz_mean": 216.5,
+     "query_nnz_mean": 18.4
+    },
+    "c5": {
+     "level": {
+      "rrf5": 47.731,
+      "rrf20": 60.233,
+      "seeds": 52.769,
+      "leg20": 53.682,
+      "leg1000": 80.923
+     },
+     "diff_vs_c0": {
+      "rrf5": {
+       "diff": -0.034,
+       "lo": -0.624,
+       "hi": 0.572,
+       "call": "LEVEL"
+      },
+      "seeds": {
+       "diff": -0.228,
+       "lo": -0.635,
+       "hi": 0.197,
+       "call": "LEVEL"
+      },
+      "rrf20": {
+       "diff": -0.186,
+       "lo": -0.738,
+       "hi": 0.335,
+       "call": "LEVEL"
+      },
+      "leg20": {
+       "diff": -1.589,
+       "lo": -2.324,
+       "hi": -0.865,
+       "call": "WORSE"
+      },
+      "leg1000": {
+       "diff": 0.041,
+       "lo": -0.493,
+       "hi": 0.607,
+       "call": "LEVEL"
+      }
+     },
+     "block_rate_median": 442.05,
+     "nodes_per_s_wall": 360.9,
+     "doc_nnz_mean": 197.1,
+     "query_nnz_mean": 28.1
+    }
+   }
+  },
+  "multihoprag": {
+   "questions": 2255,
+   "nodes": 609,
+   "gate_gs1": {
+    "c0_rrf5_top5_equals_mhr1_lists_share": 1.0,
+    "golds_equal_mhr1": true,
+    "pass": true
+   },
+   "c0": {
+    "rrf5": 61.87,
+    "rrf20": 91.282,
+    "seeds": 73.744,
+    "leg20": 83.917
+   },
+   "models": {
+    "c4": {
+     "level": {
+      "rrf5": 62.044,
+      "rrf20": 90.835,
+      "seeds": 72.997,
+      "leg20": 82.945
+     },
+     "diff_vs_c0": {
+      "rrf5": {
+       "diff": 0.174,
+       "lo": -0.503,
+       "hi": 0.787,
+       "call": "LEVEL"
+      },
+      "seeds": {
+       "diff": -0.746,
+       "lo": -1.286,
+       "hi": -0.258,
+       "call": "WORSE"
+      },
+      "rrf20": {
+       "diff": -0.447,
+       "lo": -0.942,
+       "hi": 0.033,
+       "call": "LEVEL"
+      },
+      "leg20": {
+       "diff": -0.972,
+       "lo": -1.596,
+       "hi": -0.443,
+       "call": "WORSE"
+      }
+     },
+     "block_rate_median": 140.48,
+     "nodes_per_s_wall": 94.56,
+     "doc_nnz_mean": 246.5,
+     "query_nnz_mean": 45.2
+    },
+    "c5": {
+     "level": {
+      "rrf5": 62.417,
+      "rrf20": 91.183,
+      "seeds": 73.666,
+      "leg20": 84.741
+     },
+     "diff_vs_c0": {
+      "rrf5": {
+       "diff": 0.547,
+       "lo": -0.174,
+       "hi": 1.194,
+       "call": "LEVEL"
+      },
+      "seeds": {
+       "diff": -0.078,
+       "lo": -0.676,
+       "hi": 0.429,
+       "call": "LEVEL"
+      },
+      "rrf20": {
+       "diff": -0.1,
+       "lo": -0.532,
+       "hi": 0.403,
+       "call": "LEVEL"
+      },
+      "leg20": {
+       "diff": 0.824,
+       "lo": 0.133,
+       "hi": 1.445,
+       "call": "BETTER"
+      }
+     },
+     "block_rate_median": 129.08,
+     "nodes_per_s_wall": 85.63,
+     "doc_nnz_mean": 346.4,
+     "query_nnz_mean": 148.7
+    }
+   }
+  }
+ },
+ "reference_speed": {
+  "basis": "C0 with lever l5 (D2), SQuAD block median",
+  "rate": 897.26
+ },
+ "D3": {
+  "c4": {
+   "params_m": 67,
+   "ratio": 0.368,
+   "first_stage_ok": false,
+   "h1_h2": {
+    "squad": {
+     "rrf5": [
+      -1.289,
+      -1.617
+     ],
+     "seeds": [
+      -2.097,
+      -2.443
+     ]
+    },
+    "musique": {
+     "rrf5": [
+      0.231,
+      -0.359
+     ],
+     "seeds": [
+      -0.376,
+      -0.855
+     ]
+    },
+    "multihoprag": {
+     "rrf5": [
+      0.174,
+      -0.503
+     ],
+     "seeds": [
+      -0.746,
+      -1.286
+     ]
+    }
+   },
+   "verdict": "C0_STAYS",
+   "because": "no rule of D3 is met"
+  },
+  "c5": {
+   "params_m": 67,
+   "ratio": 0.357,
+   "first_stage_ok": true,
+   "h1_h2": {
+    "squad": {
+     "rrf5": [
+      0.185,
+      -0.093
+     ],
+     "seeds": [
+      -0.067,
+      -0.362
+     ]
+    },
+    "musique": {
+     "rrf5": [
+      -0.034,
+      -0.624
+     ],
+     "seeds": [
+      -0.228,
+      -0.635
+     ]
+    },
+    "multihoprag": {
+     "rrf5": [
+      0.547,
+      -0.174
+     ],
+     "seeds": [
+      -0.078,
+      -0.676
+     ]
+    }
+   },
+   "verdict": "RETIME_FP16",
+   "because": "would meet (a) or (c) except for the ratio: re-time at fp16 (arm l3 on the same weights) and call again"
+  }
+ },
+ "seconds": 129.8
+}
