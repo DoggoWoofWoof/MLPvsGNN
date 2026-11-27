@@ -233,3 +233,27 @@ Node types of the single-gold golds, with the golds missed by cell A (rate in pe
 - **Cell A's and cell C's missed golds have higher degree than their hit golds; cell B's mean is lower.** The median is above in all three; the pools differ by walk, family and budget, so the three groups are not one population.
 
 **Not read.** Why these golds are not ranked: whether the entities a question names are in the seeds, how many of the gold's neighbours the walk visits before the budget ends, and where the gold sits in the walk's own candidate order. Those need the engine's internal candidate lists, which `evaluate5` does not return; reading them needs a declared module change (or a dev-split first stage, an STK1 amendment) and is not declared here. **Nothing is adopted; no pool is frozen.** MAG and Amazon follow when their links rows finish, with the same cells, gates and reads.
+
+## 19. Amendment 6 (18:53 IST, 27 Nov 2026; Amazon and MAG declared before any of their rows runs; no STaRK-Amazon or STaRK-MAG pool number read)
+
+**Why.** Sections 13 to 18 read Prime. Section 8 left MAG and Amazon until their links rows finish, with the same cells, gates and reads. The links rows `stk2a-links` (Amazon) and `stk2m-links` (MAG) are still running (3 h 46 min at 18:50; W2_S done at 16:24 and 15:54), and the host queue behind them is empty: the feeder holds 31 unsent rows, all waiting on held parents, so the host is at about 29 percent CPU with the card idle. The rows below are queued **now with the links rows as parents**, so each KB's layout starts by itself the moment its links row ends, and the expectations are written here before any of these rows can run.
+
+**What runs (no code change; `zstk3.py` a10d8e0fb8f59432 is not edited, no per-KB branch).** For each KB, the same chain as Prime, on the same 63 cells (`outputs/stk3/cells.json`, hash 4b9bfd16...), the same gates G-F, G-L, G-S (as amended in section 12) and G-P, the same chunking (128 questions, seeded order, seed 20261127, KB index 1 MAG and 2 Amazon):
+
+- Amazon (1,642 test questions, 13 chunks): `stk3a-layout` (parent `stk2a-links`; 2 CPUs, 10 GB asked), `stk3a-probe` (parent the layout; two questions), `stk3a-run0` to `stk3a-run3` (parent the probe; `run --kb amazon --part i 4`; 2 CPUs, 6 GB each).
+- MAG (2,665 test questions, 21 chunks): `stk3m-layout` (parent `stk2m-links`; 2 CPUs, 16 GB asked), `stk3m-probe`, `stk3m-run0` to `stk3m-run5` (`run --kb mag --part i 6`; 2 CPUs, 8 GB each).
+
+Every part checks the gate on the first chunk of the order before it writes a chunk, so a failed G-S stops the KB with no number read (section 3). The memory is asked above Prime's measured peaks (0.45 GB layout, 0.57 GB probe) because the KBs hold 8 and 14.5 times Prime's nodes; the peaks are read from the layout and probe records and the asks are corrected for any later row. The subset-first step of section 5 is the order itself: a part writes its chunks in the declared order, so any prefix of the chunks is a spread sample; the probe's price is read before the first chunk is, and the run rows are cancelled if the probe prices the list above 30 seconds a question (13.7 CPU-hours on Amazon, 22 on MAG).
+
+**Reads after the chunks.** `read --kb K` (section 6, the same calls), then the two descriptive reads of sections 15 and 17 on each KB by the same commands (`missed`, `gold_profile`) and **the same three named cells A, B and C** (not re-chosen on MAG or Amazon). Those two reads carry no expectation here: Prime's results (X1 NOT HELD, X2 HELD, X3 HELD; G1 HELD, G2 HELD, G3 NOT HELD) are the reference.
+
+**Expectations (written before any Amazon or MAG chunk exists; each can fail).**
+
+- **A1.** G-F, G-L, G-S and G-P pass on both KBs with the same code.
+- **A2.** On each KB at least one pick cell within 3,500 nodes LIFTS the flat cell of equal nodes (lower end of the paired interval above 0), and the best such lift is smaller than Prime's +20.9 because the room is smaller: **at most 6 points on Amazon** (STK1's fused ALL@2,500 is 90.6; Prime closed about 59 percent of its room, 59 percent of 9.4 is 5.5) and **at most 10 points on MAG** (83.9; 59 percent of 16.1 is 9.5).
+- **A3.** The point estimate of at least one **Amazon** cell within 5,000 nodes is ALL 95.0 or more (borderline: it needs +4.4 over the flat list); **no MAG cell** within 5,000 nodes reaches 95.0.
+- **A4.** On MAG the FULL cell's gain over its STRUCT twin at equal nodes is under 2 points in every twin pair (as Prime). **No expectation on Amazon:** its rule family is far larger than Prime's (F0 5.87 million pairs against Prime's 0.18 million, and 647,816 L4 same-name sibling links), so the pairs are read as information.
+- **A5.** The probe prices the 63 cells at no more than 30 seconds a question on one CPU on each KB, peak memory below 16 GB.
+- **A6.** The engine's flat cells are within 1 point of STK1's fused list at equal nodes on both KBs (Prime: 0.5 and 0.8 below).
+
+**What this is not.** The same as sections 8 and 15: nothing is chosen, adopted or frozen; no cell is the pick of a KB; a read of the best cell is post-hoc. No STaRK dev split is read (Step B stays undeclared). The pools are on the current links and provisional in PL7 section 10's sense.
