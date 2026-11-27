@@ -1,0 +1,26 @@
+{
+ "dataset": "webqsp",
+ "declared_in": "docs/GP3_NODE_COUNT_RULE.md",
+ "amendment": "A4",
+ "slots": 4069,
+ "notes": {
+  "GP": "4069 slots on 573 questions"
+ },
+ "versions": {
+  "SRK": {
+   "GP": {
+    "slots": 4069,
+    "linked": 850
+   },
+   "CH": {
+    "slots": 0,
+    "linked": 0
+   }
+  }
+ },
+ "nq": 1507,
+ "seconds": 250.8,
+ "utc": "2026-11-27T03:05:12Z",
+ "zgp3p_sha256": "43919b31d506fb5a2a3aebe890d627a6e0c46aaaa1d70cb9e0c256785a9cb887",
+ "zgp3_sha256": "12895fff62e3835a2f44d0385909406c15c1910519e126dafafbde31ee77aad4"
+}

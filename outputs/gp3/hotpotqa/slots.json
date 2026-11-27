@@ -1,0 +1,36 @@
+{
+ "dataset": "hotpotqa",
+ "declared_in": "docs/GP3_NODE_COUNT_RULE.md",
+ "amendment": "A4",
+ "slots": 1508,
+ "notes": {
+  "GP": "1508 slots on 1508 questions"
+ },
+ "versions": {
+  "RK": {
+   "GP": {
+    "slots": 1508,
+    "linked": 1028
+   },
+   "CH": {
+    "slots": 0,
+    "linked": 0
+   }
+  },
+  "SRK": {
+   "GP": {
+    "slots": 1508,
+    "linked": 1209
+   },
+   "CH": {
+    "slots": 0,
+    "linked": 0
+   }
+  }
+ },
+ "nq": 1508,
+ "seconds": 335.6,
+ "utc": "2026-11-27T03:06:34Z",
+ "zgp3p_sha256": "43919b31d506fb5a2a3aebe890d627a6e0c46aaaa1d70cb9e0c256785a9cb887",
+ "zgp3_sha256": "12895fff62e3835a2f44d0385909406c15c1910519e126dafafbde31ee77aad4"
+}
