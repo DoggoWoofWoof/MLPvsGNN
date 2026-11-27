@@ -77,7 +77,7 @@ Carried in: dense top-5 seeds (R2a with the SPLADE leg removed); the source-rela
 
 ## 9. Results
 
-None yet.
+Section 12 (28 Nov 2026) holds the results of step 1 on the defined encoder.
 
 ## 10. Amendment 1 (22:38 IST, 27 Nov 2026): the code, and the choices section 2 left open; written before any row runs
 
@@ -116,3 +116,45 @@ None yet.
 **A2.8 What this does to the standing readings.** DRP1's filed conclusions on the seven (K dispensable; SPLADE needed on four) and PL2 to PL7, LEG1 A6 and the DRP1 engine's pools were run on the older encoder's first-stage lists and vectors for the six host datasets (MultiHop-RAG and the STaRK sets are e3v): they stay filed, labelled **older-encoder pool reads**, and are not used to decide SPLADE's removal. The pool instrument of the main line is the e3v-seeded, walk-time pruned B1 pool of this module (the pruned walk is parameter-free; the learned L arm is read against it). Nothing is deleted from any stored graph.
 
 **A2.9 Plumbing facts read before this page was committed (MultiHop-RAG on the laptop, 112 read questions, 112 fit questions; no call is made from them; `outputs/jnt2/multihoprag/`).** The module is `zjnt2.py` (sha256 prefix `d6b06dd8b9ea881f`); the self-test passes (40 toy graphs, the per-hop model's round trip and dispatch, the component bits against a brute-force check, the question-name rule on a toy with a group). G-J1 differs on 0 of 50 questions from the second pass and from the older encoder's filed top 5. **The declared label's population rate at hop 1 is 0.9996** (nearly every hop-1 candidate lies within two hops of a gold on this 609-node graph), so A2.2 tightened hop 1 to the golds themselves (rate 0.0048): the hop-1 head's train AUC is 0.85 where the pooled model of the first run had 0.32 on the same rows; hop 2 keeps the declared label (rate 0.249, AUC 0.80). The label-shuffled control's AUC is 0.51 to 0.54. The learned arm is still BELOW the question-cosine order at the narrowest width (65 nodes: L0 88.4, L1 79.5 against B1 96.4) and LEVEL at 205 nodes; every arm is 100 at 595. The seeds hold a gold on 66.2 percent of the read questions (76.6 with SPLADE's top 5). The name rule finds one name seed in 224 questions (its titles are not spans of these long questions), so MultiHop-RAG says nothing about it. Nothing here is a MuSiQue or MetaQA number.
+
+## 12. Results of step 1 on the defined encoder (05:09 IST, 28 Nov 2026)
+
+Rows `jn2-*` of Amendment 2 (`zjnt2.py`, sha256 prefix `d6b06dd8b9ea881f`), 300 read questions per dataset, e3v seeds (G-J1 passes: 0 of 50 questions differ on MuSiQue and MetaQA), the calls as declared in section 4 (paired bootstrap, 2,000 resamples, seed 20261127, plus or minus 1.0 point). Records: `outputs/jnt2/musique/` and `outputs/jnt2/metaqa/` (the chain: labels, fits, reads, shuffled controls), `outputs/jnt2/{squad,musique,metaqa,hotpotqa}/read_b*.json` (the five seed variants). The 2Wiki and WebQSP parameter-free reads are still running and are filed in a later paragraph of this section. The first chain (`jnt1-*`, `zjnt1.py`) used the older encoder's top 5 as seeds; its records (`outputs/jnt1/`) are older-seed screens and make no call.
+
+**12.1 Gates.** G-J1 passes on both datasets. **G-J2 fails on MetaQA** and passes on MuSiQue: the label-shuffled L arm is ABOVE B1 at four of five widths on MetaQA (L0 66.0 against B1 33.0 at 65 nodes), and BELOW B1 at all five widths on MuSiQue. By the rule of section 5, MetaQA's L numbers are not read. G-J3 is not read in this filing.
+
+**12.2 The numbers (ALL, percent; mean distinct nodes in the first column).**
+
+| Dataset | Nodes | B0 flat | B1 question cosine | L0 | L1 | L0 shuffled | L1 shuffled |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| MuSiQue | 65 | 59.0 | 51.7 | 53.0 | 54.3 | 39.7 | 39.0 |
+| MuSiQue | 205 | 69.3 | 66.3 | 65.7 | 63.7 | 42.3 | 39.3 |
+| MuSiQue | 594 | 82.0 | 76.0 | 73.3 | 76.0 | 44.0 | 43.0 |
+| MuSiQue | 1,980 | 89.0 | 85.3 | 80.3 | 83.0 | 49.0 | 49.0 |
+| MuSiQue | 4,027 | 92.3 | 88.0 | 83.0 | 84.7 | 55.7 | 56.0 |
+| MetaQA (not read) | 65 | 3.0 | 33.0 | 76.7 | 78.0 | 66.0 | 64.3 |
+| MetaQA (not read) | 205 | 7.0 | 54.3 | 90.0 | 91.7 | 85.3 | 82.0 |
+| MetaQA (not read) | 591 | 12.3 | 79.3 | 96.3 | 96.7 | 94.0 | 93.0 |
+| MetaQA (not read) | 1,956 | 23.0 | 94.3 | 98.3 | 98.3 | 98.7 | 98.3 |
+| MetaQA (not read) | 3,954 | 32.0 | 98.7 | 99.3 | 99.3 | 99.3 | 99.0 |
+
+The MetaQA rows are printed because they are the record, not because they are read: the declared gate stops their reading. The B arms are not affected by G-J2.
+
+**12.3 Calls.** On MuSiQue, L0 against B1 is LEVEL at the three narrowest widths and BELOW at the two widest; L1 against B1 is LEVEL at all five widths. **L is ABOVE B1 at 0 of 5 widths.** B1 against the flat list B0 is BELOW at 65 and 594 nodes and LEVEL elsewhere: the flat e3v question-cosine list is ahead of the walk at equal nodes by 3.0 to 7.3 points at every width. On MetaQA, B1 is ABOVE B0 at all five widths (the walk is worth having where the structure carries the answer).
+
+**12.4 Step 1: NOT_CARRIED.** CARRIED needs L ABOVE B1 at three or more widths on both datasets; MuSiQue has none, and MetaQA's L numbers are not read. For completeness: had MetaQA's L numbers been counted (ABOVE B1 at four of five widths), the rule's label would have been HELD OPEN, not CARRIED. The rule has no wording for an unread dataset; this page takes the stricter reading and files NOT_CARRIED, with this paragraph as the reason. The ranking head (step 2) and the all-ten read stay closed.
+
+**12.5 Expectations.** J1 holds on MetaQA (B1 ABOVE B0 at five widths; MultiHop-RAG's part is not read). J2 fails (MuSiQue, L against B1 at the two middle widths: -0.6 and -2.7 for L0, -2.6 and 0.0 for L1, none ABOVE). J3 is not read (G-J2). J4 is not called: the records hold per-question arrays for B0 and B1 only; the point differences L1 minus L0 are +1.3, -2.0, +2.7, +2.7, +1.7 on MuSiQue. J5 and the permutation importances are not part of this filing. **J6 fails** (the shuffled control is ABOVE B1 on MetaQA; its prior was 90 percent). J7 is not read in CPU-hours; the real read rows took 2 h 18 min (MuSiQue) and 55 min (MetaQA) of wall clock on a 2-CPU row.
+
+**12.6 What is not known (post-hoc, no number here depends on it).** Why MetaQA's shuffled arm stays strong is not tested. A first guess, that a within-question permutation keeps each question's positive rate and features tied to candidate-list size predict it, is not supported: MuSiQue's shuffled fit has the same inflated training AUC (0.62 to 0.68 per hop) and its shuffled arm collapses. What remains is that MetaQA's budgeted walk from the topic entity reaches the gold without learned labels (B1 against B0 above), which the shuffled control does not separate from the learned part. A control that permutes the labels among the candidates of one source node would keep the per-source positive counts and remove the choice among siblings; it is not declared and would be a new amendment that keeps this failure on record.
+
+**12.7 The SPLADE gap (A2.6), parameter-free reads, five seed variants.** SQuAD, MuSiQue, MetaQA and HotpotQA are read; 2Wiki and WebQSP are running.
+
+| Dataset | SPLADE seeds against dense-only seeds | Name seeds (qn) against dense-only seeds | Gap |
+|---|---|---|---|
+| SQuAD | LEVEL at all five widths (+1.0 to +2.3, lower end at most 0.7) | no name seed on the read questions | NO_GAP |
+| MuSiQue | LEVEL at all five widths (+0.7 to +3.3) | ABOVE at four of five widths (+3.3 to +4.3; +3.0 and LEVEL at the widest); name-seed precision 64.8 percent | NO_GAP |
+| MetaQA | BELOW at the three narrowest widths (-9.7 to -12.7) | LEVEL; precision 0 against the golds (the name seed is the topic entity) | NO_GAP |
+| HotpotQA | LEVEL at all five widths (+1.0 to -3.7) | BELOW at 65, 205 and 594 nodes (-4.3, -5.3, -4.7); precision 23.6 percent | NO_GAP |
+
+In every dataset read so far SPLADE's seeds are not ABOVE the dense-only seeds, so the declared gap is NO_GAP and there is nothing for a rule to recover on these four. The question-name rule is not a universal addition: it gains on MuSiQue, does nothing on SQuAD and MetaQA, and costs points on HotpotQA. Q1 fails (MetaQA LEVEL), Q3 fails (HotpotQA BELOW), Q4 fails (MetaQA precision 0), Q6's first half fails (the group variant is not ABOVE the name rule on SQuAD) while its second half holds on HotpotQA (group precision 5.1 percent against 23.6); Q2 holds; Q5 holds so far (2Wiki pending). On HotpotQA the dense walk B1 is ahead of the flat list B0 by 17 points at 594 nodes (94.3 against 77.0).

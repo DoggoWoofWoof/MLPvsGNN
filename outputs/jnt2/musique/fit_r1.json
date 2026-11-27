@@ -1,0 +1,67 @@
+{
+ "dataset": "musique",
+ "round": 1,
+ "shuffle": false,
+ "rows": 1013469,
+ "positives": 268539,
+ "questions": 1234,
+ "label_hops": {
+  "1": 1,
+  "2": 1,
+  "3": 0
+ },
+ "per_hop": {
+  "1": {
+   "rows": 367239,
+   "positives": 115845,
+   "sample_pos_rate": 0.3154,
+   "population": {
+    "candidates": 458245,
+    "within0": 838,
+    "within1": 129432,
+    "within2": 323304,
+    "declared_rate": 0.7055,
+    "label_hops": 1,
+    "label_rate": 0.2825
+   },
+   "own_head": true,
+   "train_auc_sample": 0.8072
+  },
+  "2": {
+   "rows": 398768,
+   "positives": 152032,
+   "sample_pos_rate": 0.3813,
+   "population": {
+    "candidates": 9472928,
+    "within0": 868,
+    "within1": 165261,
+    "within2": 6679214,
+    "declared_rate": 0.0174,
+    "label_hops": 1,
+    "label_rate": 0.0174
+   },
+   "own_head": true,
+   "train_auc_sample": 0.8713
+  },
+  "3": {
+   "rows": 247462,
+   "positives": 662,
+   "sample_pos_rate": 0.0027,
+   "population": {
+    "candidates": 19764646,
+    "within0": 662,
+    "within1": 163891,
+    "within2": 7168692,
+    "declared_rate": 0.0,
+    "label_hops": 0,
+    "label_rate": 0.0
+   },
+   "own_head": true,
+   "train_auc_sample": 0.9619
+  }
+ },
+ "pooled_train_auc_sample": 0.8884,
+ "thinned_in_tables": false,
+ "seconds": 166.8,
+ "zjnt2_sha256": "d6b06dd8b9ea881f5dc34a1090a65838ad8bb0a3fd35643304103fce29ad05a9"
+}
