@@ -222,3 +222,70 @@ Expectation **X4** held in full on SQuAD (document cap 128 and question cap 32 F
 **Disclosures.** The cells were chosen on the dev carve with SPLADE in the pool (rule U of PL6), which favours the filed side: a dense-only reselection by rule U on the dev grid is **not** made here and could close part of any gap; the reach table is read on the eval carve. The seed budget changes with the leg (5 against about 8), so the same-cell comparison is not an equal-node comparison. WebQSP, HotpotQA, 2Wiki and the three STaRK graphs are not read. Encode and index cost are not read here (the same-card timing amendment is separate and not declared). This is a read, not a rule change: nothing is adopted, and the decision on the SPLADE leg stays the user's.
 
 **Files.** Module `zleg1p.py` (new; imports `zpl2g.py` to `zpl6g.py` and edits none); `outputs/leg1/pool/<ds>/` (`cells_<ds>.json`, `gate_ref_<ds>.npz` committed; `gate_p<i>.json`, `chunk_<n>.npz` from the host; `read_<ds>.json`, `pool_dense_only.json` from the laptop). Host rows `leg1p-*` (CPU, `--host`, the PL6 rows' runner).
+
+
+## 16. Results of the pool read without the SPLADE leg (14:47 IST; `outputs/leg1/pool/<ds>/read_<ds>.json`, `outputs/leg1/pool/pool_dense_only.json`; module `zleg1p.py`, commit 637c8562; host rows `leg1p-mt0/mt1` (MetaQA), `leg1p-mu0/mu1/mu2` (MuSiQue), laptop runs for MultiHop-RAG and SQuAD)
+
+All four datasets are COMPLETE (every question of the eval carve: MetaQA 9,785, MuSiQue 2,417, SQuAD 11,873, MultiHop-RAG 1,130). **G-D0 passed on every part** (the intact SPLADE list reproduced the filed arrays of the first 16 questions for every cell, 0 mismatches; MetaQA 7 cells, MuSiQue 8, SQuAD 4, MultiHop-RAG 4), **G-D1 passed** (the dense-only seeds number five a question; the SPLADE list is the dense list). MuSiQue left out two cells above 16,000 filed nodes (`rrf1000_b1600+FULL:h3_bf_v20000~cs-fu` at 20,236 and its `+top15000` at 16,576).
+
+**At the cell PL6 carried (R95), the pool without SPLADE loses 0.9 to 1.8 points of ALL on every dataset** (ALL = the share of questions with every gold in the pool; filed = with SPLADE in the seeds and the first-stage lists; the loss is filed minus dense-only):
+
+| dataset (questions) | R95 cell | filed pool: ALL @ mean nodes | dense-only: ALL @ mean nodes | loss in points [interval] and call | nodes, dense-only over filed |
+|---|---|---|---|---|---|
+| SQuAD (11,873) | `rrf1000_b15` | 0.9554 @ 15 | 0.9378 @ 15 | +1.76 [+1.42, +2.11] NEEDED | x1.000 |
+| MetaQA (9,785) | `rrf1000_b25+STRUCT:h3_c100_v5000` | 0.9582 @ 4973 | 0.9480 @ 4422 | +1.02 [+0.77, +1.29] UNCLEAR | x0.889 |
+| MultiHop-RAG (1,130) | `rrf1000_b25+FULL:h1_c100+top25` | 0.9690 @ 50 | 0.9602 @ 50 | +0.88 [+0.18, +1.59] UNCLEAR | x1.000 |
+| MuSiQue (2,417) | `rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000` | 0.9640 @ 15400 | 0.9512 @ 15400 | +1.28 [+0.74, +1.86] UNCLEAR | x1.000 |
+
+**Calls (section 2's convention at the R95 cell): SQuAD NEEDED; MetaQA, MuSiQue and MultiHop-RAG UNCLEAR; no dataset DISPENSABLE.** The three UNCLEAR calls sit on point losses of 0.9 to 1.3 points with intervals that cross the +1.0 line (MetaQA's interval is +0.77 to +1.29, MultiHop-RAG's +0.18 to +1.59, MuSiQue's +0.74 to +1.86), so the data neither put the loss over the line nor under it.
+
+**Equal nodes (the reach table, read on the eval carve among the listed cells; post-hoc, not a selection).** SQuAD: the filed pool reaches 0.95 at 15 nodes (0.9554); the dense-only pool reaches it first at the 50-node cell (0.9694), and the list has no cell between, so what it needs lies between 15 and 50. MetaQA: filed 0.9582 at 4,973 nodes, dense-only first reaches 0.95 at 5,238 nodes (0.9501), 5.3 percent more. MuSiQue: both reach at the 15,400-node cell (0.9640 against 0.9512); no smaller listed cell reaches for either. MultiHop-RAG: both reach at the plain 50-node cell, where the dense top 50 (0.9619) is above the filed fused top 50 (0.9540) by 0.8 points [interval -0.27, +1.77, LEVEL]; the walked 50-node cell with SPLADE seeds is 0.9690.
+
+Every listed cell:
+
+**SQuAD** (loss = filed ALL minus dense-only ALL, points):
+
+| cell | filed | dense-only | loss [interval] and call | nodes ratio |
+|---|---|---|---|---|
+| `rrf1000_b15` | 0.9554 @ 15 | 0.9378 @ 15 | +1.76 [+1.42, +2.11] NEEDED | x1.000 |
+| `rrf1000_b50+KNN:h1_c100+top25` | 0.9818 @ 63 | 0.9705 @ 57 | +1.13 [+0.88, +1.35] UNCLEAR | x0.900 |
+| `rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800` | 0.9992 @ 2200 | 0.9982 @ 1572 | +0.09 [+0.03, +0.15] DISPENSABLE | x0.714 |
+| `equal_rrf_budget_50` | 0.9798 @ 50 | 0.9694 @ 50 | +1.04 [+0.83, +1.25] UNCLEAR | x1.000 |
+
+**MetaQA** (loss = filed ALL minus dense-only ALL, points):
+
+| cell | filed | dense-only | loss [interval] and call | nodes ratio |
+|---|---|---|---|---|
+| `rrf1000_b25+STRUCT:h3_c100_v5000` | 0.9582 @ 4973 | 0.9480 @ 4422 | +1.02 [+0.77, +1.29] UNCLEAR | x0.889 |
+| `rrf1000_b400+STRUCT:h3_c25_v2000` | 0.8968 @ 2336 | 0.8883 @ 2130 | +0.85 [+0.58, +1.10] UNCLEAR | x0.912 |
+| `rrf1000_b1600+STRUCT:h3_c100_v5000` | 0.9615 @ 6259 | 0.9501 @ 5238 | +1.13 [+0.88, +1.38] UNCLEAR | x0.837 |
+| `rrf1000_b800+STRUCT:h3_c25_v2000` | 0.8999 @ 2699 | 0.8898 @ 2500 | +1.01 [+0.72, +1.32] UNCLEAR | x0.926 |
+| `dense_top200+STRUCT:h3_c25_v4000` | 0.9244 @ 3600 | 0.9022 @ 2719 | +2.22 [+1.92, +2.50] NEEDED | x0.755 |
+| `rrf1000_b800+STRUCT:h3_c100_v5000` | 0.9599 @ 5602 | 0.9499 @ 5067 | +1.00 [+0.74, +1.28] UNCLEAR | x0.905 |
+| `equal_rrf_budget_50+STRUCT:h3_c25_v2000` | 0.8949 @ 2018 | 0.8868 @ 1811 | +0.82 [+0.54, +1.09] UNCLEAR | x0.898 |
+
+**MultiHop-RAG** (loss = filed ALL minus dense-only ALL, points):
+
+| cell | filed | dense-only | loss [interval] and call | nodes ratio |
+|---|---|---|---|---|
+| `rrf1000_b25+FULL:h1_c100+top25` | 0.9690 @ 50 | 0.9602 @ 50 | +0.88 [+0.18, +1.59] UNCLEAR | x1.000 |
+| `rrf1000_b25+FS:h3_c25_v2000~cs-vr+top50` | 0.9788 @ 58 | 0.9611 @ 51 | +1.77 [+0.97, +2.74] UNCLEAR | x0.884 |
+| `rrf1000_b50+FULL:h2_c100_v5000+top50` | 0.9912 @ 100 | 0.9912 @ 100 | +0.00 [-0.44, +0.44] DISPENSABLE | x1.000 |
+| `equal_rrf_budget_50` | 0.9540 @ 50 | 0.9619 @ 50 | -0.80 [-1.77, +0.27] DISPENSABLE | x1.000 |
+
+**MuSiQue** (loss = filed ALL minus dense-only ALL, points):
+
+| cell | filed | dense-only | loss [interval] and call | nodes ratio |
+|---|---|---|---|---|
+| `rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000` | 0.9640 @ 15400 | 0.9512 @ 15400 | +1.28 [+0.74, +1.86] UNCLEAR | x1.000 |
+| `rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr` | 0.9222 @ 5742 | 0.9082 @ 5350 | +1.41 [+0.74, +2.07] UNCLEAR | x0.932 |
+| `rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr` | 0.8846 @ 2438 | 0.8589 @ 2449 | +2.57 [+1.78, +3.39] NEEDED | x1.004 |
+| `rrf1000_b1600+FULL:h2_bf_v2000~s10-cs-vr` | 0.8904 @ 2950 | 0.8705 @ 2469 | +1.99 [+1.32, +2.65] NEEDED | x0.837 |
+| `rrf1000_b1600+FULL:h2_bf_v2000~cs-vr-rr+top1600` | 0.8945 @ 2980 | 0.8631 @ 2520 | +3.14 [+2.32, +3.97] NEEDED | x0.846 |
+| `rrf1000_b1600+FULL:h3_bf_v10000~cs-fu+top7500` | 0.9350 @ 9076 | 0.9268 @ 8500 | +0.83 [+0.17, +1.49] UNCLEAR | x0.937 |
+| `rrf1000_b1600+FULL:h2_c100_v20000~s20-cs-rk+top15000` | 0.9429 @ 13615 | 0.9326 @ 13135 | +1.03 [+0.37, +1.74] UNCLEAR | x0.965 |
+| `equal_rrf_budget_200+FULL:h2_c25` | 0.8026 @ 2092 | 0.7799 @ 1973 | +2.28 [+1.32, +3.27] NEEDED | x0.943 |
+
+**Expectations (section 15).** **XD1** (MetaQA's loss below 1.0 point) **not held**: +1.02 points, call UNCLEAR, the point just above the line (the cells' losses on MetaQA run +0.82 to +1.13 apart from the dense-top-200 cell at +2.22 NEEDED). **XD2** (SQuAD at least 1.0, NEEDED) **held**: +1.76 [+1.42, +2.11]. **XD3** (MultiHop-RAG above 0, UNCLEAR or NEEDED) **held**: +0.88 [+0.18, +1.59] UNCLEAR. **XD4** (MuSiQue at least 1.0) **held** on the point (+1.28), not on the interval (low end +0.74). **XD5** (dense-only nodes lower where the loss is positive) **held in part**: on the walks whose size is set by their visited budget the dense-only pools are mostly smaller (x0.71 to x0.97 on 15 of the 16 walked cells, one MuSiQue cell x1.004; MetaQA's R95 cell x0.889), and on cells whose size is set by a cap or a list length (the R95 cells of SQuAD, MultiHop-RAG and MuSiQue) the two are equal (x1.000), so the same-cell loss there is a loss at equal nodes.
+
+**What the read shows and does not show.** Dropping the SPLADE leg lowers the pool's all-gold coverage by about one to two points at the filed cells on all four datasets (SQuAD the surest, MultiHop-RAG the smallest and least certain), and costs MetaQA about 5 percent more nodes to hold 0.95. It does not show that the loss is permanent: the cells were chosen on the dev carve with SPLADE in the pool (rule U), and a dense-only reselection by that rule on the dev grid, which could close part of the gap, is **not** made here; the reach table is read on the eval carve; five seeds against about eight is part of the difference at the walked cells. WebQSP, HotpotQA, 2Wiki and the STaRK graphs are not read, and encode cost (section 12's question) is not read here. Nothing is adopted or removed: the SPLADE leg stays in the pipeline, and whether to drop it stays the user's decision.

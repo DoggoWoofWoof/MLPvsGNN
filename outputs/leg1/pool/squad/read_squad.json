@@ -1,0 +1,155 @@
+{
+ "stage": "LEG1-A6 read",
+ "declared_in": "docs/LEG1_LEG_NECESSITY.md section 15 (LEG1-A6)",
+ "dataset": "squad",
+ "utc": "2026-11-27T09:17:04Z",
+ "questions_covered": 11873,
+ "questions_total": 11873,
+ "status": "COMPLETE",
+ "chunks": "93 of 93",
+ "r95": "rrf1000_b15",
+ "r95_row": {
+  "questions": 11873,
+  "filed_all": 0.9553609028889076,
+  "filed_all_ci": [
+   0.9514967256456999,
+   0.9589305152529506
+  ],
+  "filed_nodes": 15.0,
+  "dense_all": 0.9377579381790617,
+  "dense_all_ci": [
+   0.9332690909788356,
+   0.9419636075452994
+  ],
+  "dense_nodes": 15.0,
+  "loss": 0.017602964709845903,
+  "loss_ci": [
+   0.01423397624863132,
+   0.021140402594121088
+  ],
+  "call": "NEEDED",
+  "nodes_dense_over_filed": 1.0,
+  "nodes_dense_over_filed_ci": [
+   1.0,
+   1.0
+  ]
+ },
+ "call": "NEEDED",
+ "cells": {
+  "rrf1000_b15": {
+   "questions": 11873,
+   "filed_all": 0.9553609028889076,
+   "filed_all_ci": [
+    0.9514967256456999,
+    0.9589305152529506
+   ],
+   "filed_nodes": 15.0,
+   "dense_all": 0.9377579381790617,
+   "dense_all_ci": [
+    0.9332690909788356,
+    0.9419636075452994
+   ],
+   "dense_nodes": 15.0,
+   "loss": 0.017602964709845903,
+   "loss_ci": [
+    0.01423397624863132,
+    0.021140402594121088
+   ],
+   "call": "NEEDED",
+   "nodes_dense_over_filed": 1.0,
+   "nodes_dense_over_filed_ci": [
+    1.0,
+    1.0
+   ]
+  },
+  "rrf1000_b50+KNN:h1_c100+top25": {
+   "questions": 11873,
+   "filed_all": 0.9818074623094416,
+   "filed_all_ci": [
+    0.9792430058414393,
+    0.9840602460887798
+   ],
+   "filed_nodes": 63.04185968163059,
+   "dense_all": 0.970521350964373,
+   "dense_all_ci": [
+    0.967323397386864,
+    0.9734149326381636
+   ],
+   "dense_nodes": 56.751789775120024,
+   "loss": 0.011286111345068628,
+   "loss_ci": [
+    0.008843594710688182,
+    0.01347805946264637
+   ],
+   "call": "UNCLEAR",
+   "nodes_dense_over_filed": 0.9002239156922683,
+   "nodes_dense_over_filed_ci": [
+    0.8990945906681986,
+    0.901446527980115
+   ]
+  },
+  "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800": {
+   "questions": 11873,
+   "filed_all": 0.9991577528846963,
+   "filed_all_ci": [
+    0.9984501789255618,
+    0.9995424305603999
+   ],
+   "filed_nodes": 2200.0112018866334,
+   "dense_all": 0.9982312810578624,
+   "dense_all_ci": [
+    0.9972974531958417,
+    0.9988428119546192
+   ],
+   "dense_nodes": 1571.550576939274,
+   "loss": 0.0009264718268339189,
+   "loss_ci": [
+    0.0003368988461215361,
+    0.0015160448075466348
+   ],
+   "call": "DISPENSABLE",
+   "nodes_dense_over_filed": 0.7143375340959995,
+   "nodes_dense_over_filed_ci": [
+    0.7128903721429931,
+    0.7157667956350675
+   ]
+  },
+  "equal_rrf_budget_50": {
+   "questions": 11873,
+   "filed_all": 0.9797860692327128,
+   "filed_all_ci": [
+    0.9770951542553038,
+    0.9821666191247317
+   ],
+   "filed_nodes": 50.0,
+   "dense_all": 0.9694264297144782,
+   "dense_all_ci": [
+    0.9661746836691207,
+    0.972374512141224
+   ],
+   "dense_nodes": 50.0,
+   "loss": 0.010359639518234598,
+   "loss_ci": [
+    0.008251916112187322,
+    0.012465257306493727
+   ],
+   "call": "UNCLEAR",
+   "nodes_dense_over_filed": 1.0,
+   "nodes_dense_over_filed_ci": [
+    1.0,
+    1.0
+   ]
+  }
+ },
+ "reach_filed": {
+  "name": "rrf1000_b15",
+  "all": 0.9553609028889076,
+  "nodes": 15.0
+ },
+ "reach_dense_only": {
+  "name": "equal_rrf_budget_50",
+  "all": 0.9694264297144782,
+  "nodes": 50.0
+ },
+ "left_out": []
+}

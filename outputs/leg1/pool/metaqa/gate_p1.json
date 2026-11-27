@@ -1,0 +1,21 @@
+{
+ "stage": "LEG1-A6 gates",
+ "declared_in": "docs/LEG1_LEG_NECESSITY.md section 15 (LEG1-A6)",
+ "dataset": "metaqa",
+ "part": 1,
+ "utc": "2026-11-27T08:09:14Z",
+ "G-D0": {
+  "questions": 16,
+  "cells": 7,
+  "mismatches": [],
+  "n_mismatches": 0
+ },
+ "G-D1": {
+  "seeds_per_question": [
+   5
+  ],
+  "splade_is_dense": true
+ },
+ "seconds": 0.2,
+ "verdict": "PASS"
+}

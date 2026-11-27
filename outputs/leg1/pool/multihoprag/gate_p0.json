@@ -1,0 +1,21 @@
+{
+ "stage": "LEG1-A6 gates",
+ "declared_in": "docs/LEG1_LEG_NECESSITY.md section 15 (LEG1-A6)",
+ "dataset": "multihoprag",
+ "part": 0,
+ "utc": "2026-11-27T08:07:26Z",
+ "G-D0": {
+  "questions": 16,
+  "cells": 4,
+  "mismatches": [],
+  "n_mismatches": 0
+ },
+ "G-D1": {
+  "seeds_per_question": [
+   5
+  ],
+  "splade_is_dense": true
+ },
+ "seconds": 0.6,
+ "verdict": "PASS"
+}
