@@ -569,6 +569,92 @@ def cmd_read(a):
     return 0
 
 
+# ── missed: a descriptive read of the questions the best cells miss (section 15; amendment 4) ──
+
+MISSED_CELLS = {"A": "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr", "B": "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu", "C": "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000"}
+GOLD_BINS = (("1", 1, 1), ("2", 2, 2), ("3", 3, 3), ("4+", 4, 10 ** 9))
+RANK_BINS = ("position_under_1000", "position_1000_to_2499", "some_gold_outside_the_2500_list")
+
+
+def rank_bin(m):
+    """The first-stage position (0-based) of the question's last gold; -1 means some gold is not in the 2,500-deep fused list."""
+    if m < 0:
+        return RANK_BINS[2]
+    return RANK_BINS[0] if m < 1000 else RANK_BINS[1]
+
+
+def missed_tables(pres, gc, mr):
+    """One cell: by gold count the questions, ALL, ANY and the mean share of golds present; the questions with no gold in the pool, split by gold count and by the position
+    of their last gold in the first stage's fused list; the questions with some but not all golds and the mean share of golds they miss."""
+    pres, gc, mr = (np.asarray(x, np.int64) for x in (pres, gc, mr))
+    if gc.min() < 1:
+        stop("a question has no gold: the read is not defined")
+    allg, anyg = pres == gc, pres > 0
+    by, zero_by = {}, {}
+    zero = ~anyg
+    for key, lo, hi in GOLD_BINS:
+        m = (gc >= lo) & (gc <= hi)
+        n = int(m.sum())
+        by[key] = {"questions": n, "all": float(allg[m].mean()) if n else None, "any": float(anyg[m].mean()) if n else None,
+                   "share_present": float((pres[m] / gc[m]).mean()) if n else None}
+        zero_by[key] = int((m & zero).sum())
+    zr = {k: 0 for k in RANK_BINS}
+    for v in mr[zero]:
+        zr[rank_bin(int(v))] += 1
+    nz = int(zero.sum())
+    part = anyg & ~allg
+    return {"questions": int(gc.size), "by_gold_count": by,
+            "any_zero": {"questions": nz, "share_of_questions": nz / gc.size, "by_gold_count": zero_by, "by_last_gold_position": zr,
+                         "single_gold_share": (zero_by["1"] / nz) if nz else None,
+                         "some_gold_outside_share": (zr[RANK_BINS[2]] / nz) if nz else None},
+            "partial": {"questions": int(part.sum()), "share_of_questions": float(part.mean()),
+                        "mean_share_of_golds_missed": float((1.0 - pres[part] / gc[part]).mean()) if part.any() else None}}
+
+
+def cmd_missed(a):
+    kb = a.kb
+    cells = rjson(cells_path())
+    gp = kb_dir(kb) / "gate_s.json"
+    if not gp.is_file() or rjson(gp).get("verdict") != "PASS":
+        stop(f"{kb}: no PASS gate file: no number is read")
+    got = load_chunks(kb, cells["names"], cells["cells_sha256"])
+    if got is None:
+        stop(f"{kb}: no chunks")
+    idx, qids, pres, size, gc = got
+    z = np.load(ref_path(kb), allow_pickle=False)
+    try:
+        ref_q, ref_gc, fused = [str(x) for x in z["qids"]], z["gold_counts"].astype(np.int64), z["maxrank_fused"].astype(np.int64)
+    finally:
+        z.close()
+    if [ref_q[i] for i in idx] != qids or not np.array_equal(ref_gc[idx], gc):
+        stop(f"{kb}: the chunks' questions are not the reference's")
+    if idx.size != len(ref_q):
+        stop(f"{kb}: the read is declared on every chunk ({idx.size} of {len(ref_q)})")
+    at = {n: i for i, n in enumerate(cells["names"])}
+    out = {}
+    for tag, name in MISSED_CELLS.items():
+        if name not in at:
+            stop(f"{name}: not in the declared cells")
+        t = missed_tables(pres[:, at[name]], gc, fused[idx])
+        t["cell"], t["nodes"] = name, float(size[:, at[name]].mean())
+        out[tag] = t
+    A, C = out["A"], out["C"]
+    ab = [A["by_gold_count"][k]["all"] for k, _, _ in GOLD_BINS]
+    x = {"X1_all_falls_with_gold_count_in_A": bool(all(v is not None for v in ab) and ab[0] > ab[1] > ab[2] > ab[3]),
+         "X2_half_of_C_any_zero_have_a_gold_outside_the_2500_list": bool(C["any_zero"]["some_gold_outside_share"] is not None and C["any_zero"]["some_gold_outside_share"] >= 0.5),
+         "X3_half_of_A_any_zero_are_single_gold": bool(A["any_zero"]["single_gold_share"] is not None and A["any_zero"]["single_gold_share"] >= 0.5)}
+    rec = {"stage": "STK3 missed", "declared_in": DOC + " section 15", "kb": kb, "utc": utc(), "cells": out, "expectations": x, "cells_sha256": cells["cells_sha256"],
+           "note": "descriptive read of the test split; nothing is chosen or changed from it"}
+    wjson(kb_dir(kb) / "missed.json", rec)
+    for tag in "ABC":
+        t = out[tag]
+        log(f"{kb} cell {tag} ({t['nodes']:.0f} nodes): ANY=0 {t['any_zero']['questions']} ({100 * t['any_zero']['share_of_questions']:.1f} percent) "
+            f"single-gold {t['any_zero']['single_gold_share']:.3f} gold-outside-list {t['any_zero']['some_gold_outside_share']:.3f}; partial {t['partial']['questions']}; "
+            f"ALL by gold count {[round(100 * t['by_gold_count'][k]['all'], 1) if t['by_gold_count'][k]['all'] is not None else None for k, _, _ in GOLD_BINS]}")
+    log(f"expectations {x}")
+    return 0
+
+
 # ── self-test ────────────────────────────────────────────────────────────
 
 def cmd_selftest(a):
@@ -625,6 +711,14 @@ def cmd_selftest(a):
     if os.path.isfile(cells_path()):
         c = rjson(cells_path())
         ok(len(c["names"]) == len(set(c["names"])) and c["cells_sha256"] == P2.cells_sha256(c["names"]), "cells.json: unique names and its hash")
+    mt = missed_tables([0, 1, 2, 0, 3], [1, 1, 3, 2, 3], [-1, 10, 1500, 2000, 5])
+    ok(mt["by_gold_count"]["1"]["questions"] == 2 and mt["by_gold_count"]["1"]["all"] == 0.5 and mt["by_gold_count"]["3"]["all"] == 0.5 and mt["by_gold_count"]["2"]["all"] == 0.0
+       and mt["by_gold_count"]["4+"]["questions"] == 0 and mt["by_gold_count"]["4+"]["all"] is None, "missed: the gold-count bins (an empty bin reads None)")
+    ok(mt["any_zero"]["questions"] == 2 and mt["any_zero"]["by_gold_count"] == {"1": 1, "2": 1, "3": 0, "4+": 0} and mt["any_zero"]["single_gold_share"] == 0.5
+       and mt["any_zero"]["by_last_gold_position"] == {RANK_BINS[0]: 0, RANK_BINS[1]: 1, RANK_BINS[2]: 1} and mt["any_zero"]["some_gold_outside_share"] == 0.5,
+       "missed: the questions with no gold, by gold count and by the last gold's first-stage position (-1 is outside the list)")
+    ok(mt["partial"]["questions"] == 1 and abs(mt["partial"]["mean_share_of_golds_missed"] - 1 / 3) < 1e-12 and rank_bin(999) == RANK_BINS[0] and rank_bin(1000) == RANK_BINS[1],
+       "missed: the questions with some golds, the share of golds they miss, the position bins")
     print(f"{checks - len(bad)}/{checks} checks passed")
     if bad:
         print("FAILED:", bad)
@@ -637,10 +731,10 @@ def main(argv=None):
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("selftest")
     sub.add_parser("cells")
-    for c in ("layout", "probe", "run", "read"):
+    for c in ("layout", "probe", "run", "read", "missed"):
         p = sub.add_parser(c)
         p.add_argument("--kb", required=True, choices=KB_ORDER)
-        if c != "read":
+        if c not in ("read", "missed"):
             p.add_argument("--host", action="store_true")
         if c == "layout":
             p.add_argument("--redo", action="store_true")
@@ -652,7 +746,7 @@ def main(argv=None):
     a = ap.parse_args(argv)
     global HOSTMODE
     HOSTMODE = bool(getattr(a, "host", False))
-    return {"selftest": cmd_selftest, "cells": cmd_cells, "layout": cmd_layout, "probe": cmd_probe, "run": cmd_run, "read": cmd_read}[a.cmd](a)
+    return {"selftest": cmd_selftest, "cells": cmd_cells, "layout": cmd_layout, "probe": cmd_probe, "run": cmd_run, "read": cmd_read, "missed": cmd_missed}[a.cmd](a)
 
 
 if __name__ == "__main__":
