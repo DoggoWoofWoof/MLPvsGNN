@@ -84,3 +84,28 @@ Declared with the stored MultiHop-RAG vectors made but unread, after reading the
 **Expectations, written before any number.** **X5** MultiHop-RAG's pick is MIXING_LEVEL or MIXING_COSTS on the seeds: its fusion lists already hold 91% of the golds at depth 20, and its rule links are dense enough (mean degree 82) that mixing averages in the corpus. **X6** For the SPLADE leg alone, some arm recovers more golds than it loses at depth 20. **X7** The uncapped arms hold at least three times the unmodified number of non-zeros per node.
 
 **Disclosed.** MultiHop-RAG is the cheap test, not the deciding one: it has 609 nodes and few hops to recover. A MIXING_GAINS there is a reason to read MuSiQue (117,534 nodes, the hop-rich set), and a MIXING_COSTS there is no reason to skip it. Nodes with no stored neighbour in a graph keep their vector, so an arm's graph decides how many nodes change. Ties at a score of zero in the lists are broken by node id, the same in every arm.
+
+## 8. Results of part B on MultiHop-RAG (07:43 IST; `outputs/leg1/caps_multihoprag.json`, `outputs/leg1/mix_multihoprag.json`; modules `zleg1b.py` (vectors, host row `leg1b-vmhr`, host sha e78e2b6494b4b27e) and `zleg1c.py` (commit cd581f0e))
+
+**Vectors and gate.** The C0 vectors of the 609 nodes and 2,255 questions were made on the host CPU with the record's pooling. **G-B0 passed with every question's top 5 identical in sequence to the record's** (share 1.0): the CPU vectors reproduce the card's lists on this dataset. Non-zeros: 213.2 per node, 128.1 per question. Reference reads (the unmodified vectors, all 2,255 questions): fusion R@5 61.87, R@20 91.28, seeds 73.74, SPLADE leg R@20 83.92 (MultiHop-RAG has fewer than 1,000 nodes, so there is no R@1000).
+
+**B1 and B2, the caps (differences to the reference, points, with the lower end of the 95% interval; FREE = lower end at least -1.0 on every read):**
+
+| arm | non-zeros | fusion R@5 | fusion R@20 | seeds | leg R@20 | call |
+|---|---|---|---|---|---|---|
+| document cap 128 | 128 per node (-40%) | +0.61 (+0.20) | +0.19 (-0.08) | +0.17 (-0.05) | -0.19 (-0.50) | **FREE** |
+| document cap 64 | 64 | +0.02 | -0.19 | -0.38 (-0.82) | -2.65 (-3.20) | COSTS |
+| document cap 32 | 32 | -1.43 | -0.09 | -1.89 (-2.39) | -3.98 (-4.79) | COSTS |
+| question cap 32 | 32 per question | -0.78 (-1.32) | +0.64 | -0.19 | -1.06 (-1.59) | COSTS (just) |
+| question cap 16 | 16 | -2.04 | -0.75 | -1.03 | -4.38 (-5.12) | COSTS |
+| question cap 8 | 8 | -4.84 | -2.28 | -2.13 | -9.80 (-10.77) | COSTS |
+
+A node's vector can be cut from 213 to 128 non-zeros with no loss on this dataset (the fusion's R@5 is even 0.6 points better, BETTER by the lower end). Expectation **X4** held for the document cap of 128 and for the caps of 32 and 8, and **did not hold for the question cap of 32**, which costs 1.1 points of the leg's R@20 (lower end -1.59, past the -1.0 line). The 64 cap, not named in X4, costs 2.7 points of the leg's R@20.
+
+**B3, the link-mixed vectors (LEG1-A1).** Links: R 25,005 pairs, K 1,366, R+K 25,269. All 18 arms were read on both halves (dev 1,127 questions, held-out 1,128); the arm with the largest dev seeds is the pick: **R+K, alpha 0.25, document cap 128** (dev seeds 73.89 against the reference's 73.74). On the held-out half against the unmodified vectors: seeds -0.06 [-0.43, +0.33], fusion R@5 +0.49 [-0.06, +1.07], R@20 +0.31 [-0.02, +0.67], leg R@20 +0.07 [-0.32, +0.44]: **MIXING_LEVEL**, nothing gained and nothing lost. No arm moves the held-out seeds by more than 0.9 points in either direction (range 72.92 to 73.73 against 73.74; the worst is K, alpha 1.0, capped). At depth 20 the leg alone recovers 0.015 to 0.117 golds per question and loses 0.004 to 0.125: the largest recovery (K, alpha 1.0, uncapped, 0.117) comes with the largest loss (0.125), a net of nothing. The mixed vectors without the cap hold 826 non-zeros per node (K) to 5,796 (R+K, 27 times the reference), because the rule links connect every node to about 82 others.
+
+Expectations: **X5** held (MIXING_LEVEL); **X6** held in a trivial sense (several arms recover more golds than they lose at depth 20, by at most 0.05 per question); **X7** held (the uncapped arms hold 3.9 to 27 times the reference's non-zeros).
+
+**What this answers, and what it does not.** On MultiHop-RAG, mixing a node's sparse vector with its neighbours' (rule links or e3v kNN) does not put graph information to use: the first stage holds 91% of the golds at depth 20 already, and the links are too dense on this dataset to select anything. This is the cheap test (609 nodes). It does not read MuSiQue, the hop-rich dataset, whose vectors need the card (117,534 nodes), nor SQuAD, which has one gold per question. The reading of the user's question that remains open is therefore: **whether a graph mixed into the sparse vectors helps where later-hop golds sit far from the question in the first stage**; MuSiQue decides it, by an amendment naming its graph before its vectors are read.
+
+**Disclosed.** The vectors were made on the CPU; G-B0 equal to the record on all questions means no rounding changed a list. Where fewer than 1,000 nodes score above zero, ties at zero are ordered by node id, the same in every arm. The pick was made on the dev half and called on the held-out half; the other 17 arms are not called.

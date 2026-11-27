@@ -1,0 +1,242 @@
+{
+ "stage": "LEG1 part B caps",
+ "declared_in": "docs/LEG1_LEG_NECESSITY.md section 3",
+ "ds": "multihoprag",
+ "questions": 2255,
+ "nodes": 609,
+ "gate_gb0": {
+  "top5_same_sequence_share": 1.0,
+  "top5_same_set_share": 1.0,
+  "min_share": 0.99,
+  "pass": true
+ },
+ "reference": {
+  "level": {
+   "rrf5": 61.87,
+   "rrf20": 91.282,
+   "seeds": 73.744,
+   "leg20": 83.917
+  },
+  "doc_nnz_mean": 213.19,
+  "query_nnz_mean": 128.08
+ },
+ "arms": {
+  "doc128": {
+   "doc_nnz_mean": 127.99,
+   "query_nnz_mean": 128.08,
+   "reads": {
+    "rrf5": {
+     "level": 62.483,
+     "diff": 0.613,
+     "lo": 0.199,
+     "hi": 1.009,
+     "call": "BETTER"
+    },
+    "rrf20": {
+     "level": 91.471,
+     "diff": 0.188,
+     "lo": -0.078,
+     "hi": 0.455,
+     "call": "LEVEL"
+    },
+    "seeds": {
+     "level": 73.914,
+     "diff": 0.17,
+     "lo": -0.048,
+     "hi": 0.395,
+     "call": "LEVEL"
+    },
+    "leg20": {
+     "level": 83.725,
+     "diff": -0.192,
+     "lo": -0.503,
+     "hi": 0.115,
+     "call": "LEVEL"
+    }
+   },
+   "call": "FREE",
+   "worst_lo": -0.503
+  },
+  "doc64": {
+   "doc_nnz_mean": 64.0,
+   "query_nnz_mean": 128.08,
+   "reads": {
+    "rrf5": {
+     "level": 61.885,
+     "diff": 0.015,
+     "lo": -0.621,
+     "hi": 0.636,
+     "call": "LEVEL"
+    },
+    "rrf20": {
+     "level": 91.094,
+     "diff": -0.188,
+     "lo": -0.695,
+     "hi": 0.266,
+     "call": "LEVEL"
+    },
+    "seeds": {
+     "level": 73.359,
+     "diff": -0.384,
+     "lo": -0.817,
+     "hi": 0.045,
+     "call": "LEVEL"
+    },
+    "leg20": {
+     "level": 81.264,
+     "diff": -2.653,
+     "lo": -3.197,
+     "hi": -2.162,
+     "call": "WORSE"
+    }
+   },
+   "call": "COSTS",
+   "worst_lo": -3.197
+  },
+  "doc32": {
+   "doc_nnz_mean": 32.0,
+   "query_nnz_mean": 128.08,
+   "reads": {
+    "rrf5": {
+     "level": 60.44,
+     "diff": -1.43,
+     "lo": -2.222,
+     "hi": -0.702,
+     "call": "WORSE"
+    },
+    "rrf20": {
+     "level": 91.19,
+     "diff": -0.092,
+     "lo": -0.758,
+     "hi": 0.525,
+     "call": "LEVEL"
+    },
+    "seeds": {
+     "level": 71.855,
+     "diff": -1.888,
+     "lo": -2.391,
+     "hi": -1.415,
+     "call": "WORSE"
+    },
+    "leg20": {
+     "level": 79.941,
+     "diff": -3.976,
+     "lo": -4.789,
+     "hi": -3.208,
+     "call": "WORSE"
+    }
+   },
+   "call": "COSTS",
+   "worst_lo": -4.789
+  },
+  "query32": {
+   "doc_nnz_mean": 213.19,
+   "query_nnz_mean": 32.0,
+   "reads": {
+    "rrf5": {
+     "level": 61.09,
+     "diff": -0.78,
+     "lo": -1.319,
+     "hi": -0.248,
+     "call": "WORSE"
+    },
+    "rrf20": {
+     "level": 91.922,
+     "diff": 0.639,
+     "lo": 0.24,
+     "hi": 1.027,
+     "call": "BETTER"
+    },
+    "seeds": {
+     "level": 73.555,
+     "diff": -0.188,
+     "lo": -0.595,
+     "hi": 0.2,
+     "call": "LEVEL"
+    },
+    "leg20": {
+     "level": 82.86,
+     "diff": -1.057,
+     "lo": -1.589,
+     "hi": -0.51,
+     "call": "WORSE"
+    }
+   },
+   "call": "COSTS",
+   "worst_lo": -1.589
+  },
+  "query16": {
+   "doc_nnz_mean": 213.19,
+   "query_nnz_mean": 16.0,
+   "reads": {
+    "rrf5": {
+     "level": 59.826,
+     "diff": -2.044,
+     "lo": -2.772,
+     "hi": -1.33,
+     "call": "WORSE"
+    },
+    "rrf20": {
+     "level": 90.532,
+     "diff": -0.75,
+     "lo": -1.293,
+     "hi": -0.207,
+     "call": "WORSE"
+    },
+    "seeds": {
+     "level": 72.712,
+     "diff": -1.031,
+     "lo": -1.552,
+     "hi": -0.521,
+     "call": "WORSE"
+    },
+    "leg20": {
+     "level": 79.542,
+     "diff": -4.375,
+     "lo": -5.122,
+     "hi": -3.618,
+     "call": "WORSE"
+    }
+   },
+   "call": "COSTS",
+   "worst_lo": -5.122
+  },
+  "query8": {
+   "doc_nnz_mean": 213.19,
+   "query_nnz_mean": 8.0,
+   "reads": {
+    "rrf5": {
+     "level": 57.029,
+     "diff": -4.841,
+     "lo": -5.824,
+     "hi": -3.969,
+     "call": "WORSE"
+    },
+    "rrf20": {
+     "level": 89.006,
+     "diff": -2.276,
+     "lo": -2.964,
+     "hi": -1.596,
+     "call": "WORSE"
+    },
+    "seeds": {
+     "level": 71.615,
+     "diff": -2.129,
+     "lo": -2.72,
+     "hi": -1.563,
+     "call": "WORSE"
+    },
+    "leg20": {
+     "level": 74.12,
+     "diff": -9.797,
+     "lo": -10.77,
+     "hi": -8.773,
+     "call": "WORSE"
+    }
+   },
+   "call": "COSTS",
+   "worst_lo": -10.77
+  }
+ },
+ "seconds": 26.5
+}
