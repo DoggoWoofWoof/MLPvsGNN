@@ -1,5 +1,11 @@
 {
   "_about": "ING1 registry (docs/ING1_INGESTION_AND_STAGE_REGISTRY.md section 3.1): the one place a dataset name is listed. Paths are relative to the workspace root unless they start with ~ or $; the first candidate whose record file exists is the package.",
+  "encoder_policy": {
+    "defined": "e3v",
+    "comparison": "frozen",
+    "rule": "Every first stage, seed, flat list, question vector and node row of the main line comes from the defined encoder. The comparison encoder (frozen) is read only by a module listed in configs/legacy_encoder_modules.json with its reason; its numbers are labelled older-encoder reads. Checked by scripts/ingest/encoder_policy.py and tests/test_encoder_policy.py (docs/ING1_INGESTION_AND_STAGE_REGISTRY.md amendment 2).",
+    "legacy_list": "configs/legacy_encoder_modules.json"
+  },
   "roots": {
     "canonical": [
       "$ENC_SERVED",

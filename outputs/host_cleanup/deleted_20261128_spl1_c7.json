@@ -1,0 +1,24 @@
+{
+ "mode": "delete",
+ "kind": "superseded download: a model the study cannot use",
+ "time": "2026-11-28T00:58",
+ "path": "outputs/spl1/models/c7",
+ "files": 41,
+ "gb": 0.553,
+ "why": "SPL1 candidate c7 (a sparse model whose configuration needs remote code from another repository) was excluded by the declared rule: remote code is never run. Its weights (model.safetensors, 549,592,272 bytes) were fetched and never loaded. The user's 28 Nov instruction was to delete the older superseded material. No feed row, document or module names the folder's files; the SPL1 page keeps the exclusion.",
+ "kept": "docs/SPL1_SPARSE_LEG_SCREEN.md and every SPL1 record; c0 to c5 untouched",
+ "check_before": "no feed row names spl1/models/c7 (grep of outputs/host_ops/hostfeed_items.txt), no running job, the folder holds no link",
+ "check_after": "outputs/spl1/models listed on the host: c0, c1, c2, c3, c4, c5, c6; c7 absent",
+ "largest_files": [
+  {"path": "outputs/spl1/models/c7/model.safetensors", "bytes": 549592272},
+  {"path": "outputs/spl1/models/c7/idf.json", "bytes": 889360},
+  {"path": "outputs/spl1/models/c7/query_token_weights.txt", "bytes": 740138},
+  {"path": "outputs/spl1/models/c7/tokenizer.json", "bytes": 711650},
+  {"path": "outputs/spl1/models/c7/vocab.txt", "bytes": 231508}
+ ],
+ "not_deleted_and_why": [
+  {"path": "outputs/enc/granitesm and outputs/enc/gtemodern", "gb": 7.8, "why": "these are the two parts e3v is fused from (zenc3v: [sqrt(0.5) v_gtemodern ; sqrt(0.5) v_granitesm]), so they are the defined encoder's sources, not superseded screens; the earlier plan to treat them as screens was wrong"},
+  {"path": "outputs/enc/e3b", "gb": 1.41, "why": "E3B's window arrays; e3v's self-test and zenc6 read E3B's filed reads, and the window arrays have no stated successor yet; 1.4 GB of 1,021 does not repay the risk"},
+  {"path": "outputs/leg1/vec/metaqa_all407k_partial and outputs/stark/amazon/splade_state.l0_cancelled.npz", "gb": 0.08, "why": "LEG1 documents the first as renamed so that an encode sha check ignores it; too small to matter"}
+ ]
+}

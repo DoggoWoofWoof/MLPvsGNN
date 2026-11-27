@@ -1,0 +1,226 @@
+{
+ "_about": "Modules that read the older encoder's cached first-stage lists or the frozen source (scripts/ingest/encoder_policy.py scan). A module not listed here must not (docs/ING1_INGESTION_AND_STAGE_REGISTRY.md amendment 2).",
+ "modules": {
+  "outputs/mp_unified/zcr1.py": {
+   "markers": [
+    "cached_lists"
+   ],
+   "reason": "SEM2 / SEM1 / MHB / MHR / CR1 / SPL1 readers of the first-stage lists (older encoder for the six; MultiHop-RAG is e3v): older-encoder reads where they use the cache"
+  },
+  "outputs/mp_unified/zdrp1.py": {
+   "markers": [
+    "frozen_source"
+   ],
+   "reason": "pool engine and its coverage rounds (PL2-PL7, LEG1, DRP1, STK/UL readers): run on the frozen source (older encoder's lists and vectors) for the six host datasets; older-encoder pool reads, labelled so in JNT1 amendment 2 (A2.8)"
+  },
+  "outputs/mp_unified/zenc.py": {
+   "markers": [
+    "cached_lists"
+   ],
+   "reason": "encoder screens (E-series): they compare encoders by design, so the older encoder's lists are the comparison"
+  },
+  "outputs/mp_unified/zenc1b.py": {
+   "markers": [
+    "cached_lists"
+   ],
+   "reason": "encoder screens (E-series): they compare encoders by design, so the older encoder's lists are the comparison"
+  },
+  "outputs/mp_unified/zenc2m.py": {
+   "markers": [
+    "cached_lists"
+   ],
+   "reason": "encoder screens (E-series): they compare encoders by design, so the older encoder's lists are the comparison"
+  },
+  "outputs/mp_unified/zenc2n.py": {
+   "markers": [
+    "cached_lists"
+   ],
+   "reason": "encoder screens (E-series): they compare encoders by design, so the older encoder's lists are the comparison"
+  },
+  "outputs/mp_unified/zenc2s.py": {
+   "markers": [
+    "cached_lists"
+   ],
+   "reason": "encoder screens (E-series): they compare encoders by design, so the older encoder's lists are the comparison"
+  },
+  "outputs/mp_unified/zenc2w.py": {
+   "markers": [
+    "cached_lists"
+   ],
+   "reason": "encoder screens (E-series): they compare encoders by design, so the older encoder's lists are the comparison"
+  },
+  "outputs/mp_unified/zenc5.py": {
+   "markers": [
+    "cached_lists"
+   ],
+   "reason": "encoder screens (E-series): they compare encoders by design, so the older encoder's lists are the comparison"
+  },
+  "outputs/mp_unified/zgp1.py": {
+   "markers": [
+    "cached_lists",
+    "dev_slice"
+   ],
+   "reason": "gold-link pattern readers (GP sessions, read only for others): first-stage lists and seeds from the older encoder's retrieval cache; their numbers are older-encoder reads"
+  },
+  "outputs/mp_unified/zgp2.py": {
+   "markers": [
+    "cached_lists",
+    "dev_slice"
+   ],
+   "reason": "gold-link pattern readers (GP sessions, read only for others): first-stage lists and seeds from the older encoder's retrieval cache; their numbers are older-encoder reads"
+  },
+  "outputs/mp_unified/zgp2a3.py": {
+   "markers": [
+    "cached_lists",
+    "dev_slice"
+   ],
+   "reason": "gold-link pattern readers (GP sessions, read only for others): first-stage lists and seeds from the older encoder's retrieval cache; their numbers are older-encoder reads"
+  },
+  "outputs/mp_unified/zgp3.py": {
+   "markers": [
+    "dev_slice"
+   ],
+   "reason": "gold-link pattern readers (GP sessions, read only for others): first-stage lists and seeds from the older encoder's retrieval cache; their numbers are older-encoder reads"
+  },
+  "outputs/mp_unified/zjnt1.py": {
+   "markers": [
+    "dev_slice"
+   ],
+   "reason": "frozen: its seeds are the older encoder's cached lists (declared e3v, see JNT1 amendment 2); its rows finish as older-seed screens with no call"
+  },
+  "outputs/mp_unified/zjnt2.py": {
+   "markers": [
+    "dev_slice"
+   ],
+   "reason": "reads ids, golds, question text and SPLADE's top 5 from dev_slice; its seeds and flat lists are computed from the stored e3v rows (JNT1 amendment 2, A2.1) and G-J1 stops a mismatch"
+  },
+  "outputs/mp_unified/zleg1b.py": {
+   "markers": [
+    "cached_lists"
+   ],
+   "reason": "pool engine and its coverage rounds (PL2-PL7, LEG1, DRP1, STK/UL readers): run on the frozen source (older encoder's lists and vectors) for the six host datasets; older-encoder pool reads, labelled so in JNT1 amendment 2 (A2.8)"
+  },
+  "outputs/mp_unified/zleg1d.py": {
+   "markers": [
+    "cached_lists"
+   ],
+   "reason": "pool engine and its coverage rounds (PL2-PL7, LEG1, DRP1, STK/UL readers): run on the frozen source (older encoder's lists and vectors) for the six host datasets; older-encoder pool reads, labelled so in JNT1 amendment 2 (A2.8)"
+  },
+  "outputs/mp_unified/zleg1p.py": {
+   "markers": [
+    "frozen_source"
+   ],
+   "reason": "pool engine and its coverage rounds (PL2-PL7, LEG1, DRP1, STK/UL readers): run on the frozen source (older encoder's lists and vectors) for the six host datasets; older-encoder pool reads, labelled so in JNT1 amendment 2 (A2.8)"
+  },
+  "outputs/mp_unified/zmhb.py": {
+   "markers": [
+    "cached_lists"
+   ],
+   "reason": "SEM2 / SEM1 / MHB / MHR / CR1 / SPL1 readers of the first-stage lists (older encoder for the six; MultiHop-RAG is e3v): older-encoder reads where they use the cache"
+  },
+  "outputs/mp_unified/zmhr.py": {
+   "markers": [
+    "cached_lists"
+   ],
+   "reason": "SEM2 / SEM1 / MHB / MHR / CR1 / SPL1 readers of the first-stage lists (older encoder for the six; MultiHop-RAG is e3v): older-encoder reads where they use the cache"
+  },
+  "outputs/mp_unified/zpl1g.py": {
+   "markers": [
+    "cached_lists"
+   ],
+   "reason": "pool engine and its coverage rounds (PL2-PL7, LEG1, DRP1, STK/UL readers): run on the frozen source (older encoder's lists and vectors) for the six host datasets; older-encoder pool reads, labelled so in JNT1 amendment 2 (A2.8)"
+  },
+  "outputs/mp_unified/zpl1h.py": {
+   "markers": [
+    "cached_lists"
+   ],
+   "reason": "pool engine and its coverage rounds (PL2-PL7, LEG1, DRP1, STK/UL readers): run on the frozen source (older encoder's lists and vectors) for the six host datasets; older-encoder pool reads, labelled so in JNT1 amendment 2 (A2.8)"
+  },
+  "outputs/mp_unified/zpl2g.py": {
+   "markers": [
+    "cached_lists",
+    "frozen_source"
+   ],
+   "reason": "pool engine and its coverage rounds (PL2-PL7, LEG1, DRP1, STK/UL readers): run on the frozen source (older encoder's lists and vectors) for the six host datasets; older-encoder pool reads, labelled so in JNT1 amendment 2 (A2.8)"
+  },
+  "outputs/mp_unified/zpl3g.py": {
+   "markers": [
+    "frozen_source"
+   ],
+   "reason": "pool engine and its coverage rounds (PL2-PL7, LEG1, DRP1, STK/UL readers): run on the frozen source (older encoder's lists and vectors) for the six host datasets; older-encoder pool reads, labelled so in JNT1 amendment 2 (A2.8)"
+  },
+  "outputs/mp_unified/zpl3r.py": {
+   "markers": [
+    "frozen_source"
+   ],
+   "reason": "pool engine and its coverage rounds (PL2-PL7, LEG1, DRP1, STK/UL readers): run on the frozen source (older encoder's lists and vectors) for the six host datasets; older-encoder pool reads, labelled so in JNT1 amendment 2 (A2.8)"
+  },
+  "outputs/mp_unified/zpl4g.py": {
+   "markers": [
+    "frozen_source"
+   ],
+   "reason": "pool engine and its coverage rounds (PL2-PL7, LEG1, DRP1, STK/UL readers): run on the frozen source (older encoder's lists and vectors) for the six host datasets; older-encoder pool reads, labelled so in JNT1 amendment 2 (A2.8)"
+  },
+  "outputs/mp_unified/zpl4r.py": {
+   "markers": [
+    "frozen_source"
+   ],
+   "reason": "pool engine and its coverage rounds (PL2-PL7, LEG1, DRP1, STK/UL readers): run on the frozen source (older encoder's lists and vectors) for the six host datasets; older-encoder pool reads, labelled so in JNT1 amendment 2 (A2.8)"
+  },
+  "outputs/mp_unified/zpl5g.py": {
+   "markers": [
+    "frozen_source"
+   ],
+   "reason": "pool engine and its coverage rounds (PL2-PL7, LEG1, DRP1, STK/UL readers): run on the frozen source (older encoder's lists and vectors) for the six host datasets; older-encoder pool reads, labelled so in JNT1 amendment 2 (A2.8)"
+  },
+  "outputs/mp_unified/zpl5r.py": {
+   "markers": [
+    "frozen_source"
+   ],
+   "reason": "pool engine and its coverage rounds (PL2-PL7, LEG1, DRP1, STK/UL readers): run on the frozen source (older encoder's lists and vectors) for the six host datasets; older-encoder pool reads, labelled so in JNT1 amendment 2 (A2.8)"
+  },
+  "outputs/mp_unified/zpl6g.py": {
+   "markers": [
+    "frozen_source"
+   ],
+   "reason": "pool engine and its coverage rounds (PL2-PL7, LEG1, DRP1, STK/UL readers): run on the frozen source (older encoder's lists and vectors) for the six host datasets; older-encoder pool reads, labelled so in JNT1 amendment 2 (A2.8)"
+  },
+  "outputs/mp_unified/zpl7g.py": {
+   "markers": [
+    "frozen_source"
+   ],
+   "reason": "pool engine and its coverage rounds (PL2-PL7, LEG1, DRP1, STK/UL readers): run on the frozen source (older encoder's lists and vectors) for the six host datasets; older-encoder pool reads, labelled so in JNT1 amendment 2 (A2.8)"
+  },
+  "outputs/mp_unified/zsem1.py": {
+   "markers": [
+    "cached_lists"
+   ],
+   "reason": "SEM2 / SEM1 / MHB / MHR / CR1 / SPL1 readers of the first-stage lists (older encoder for the six; MultiHop-RAG is e3v): older-encoder reads where they use the cache"
+  },
+  "outputs/mp_unified/zspl1.py": {
+   "markers": [
+    "cached_lists"
+   ],
+   "reason": "pool engine and its coverage rounds (PL2-PL7, LEG1, DRP1, STK/UL readers): run on the frozen source (older encoder's lists and vectors) for the six host datasets; older-encoder pool reads, labelled so in JNT1 amendment 2 (A2.8)"
+  },
+  "outputs/mp_unified/zspl1p.py": {
+   "markers": [
+    "cached_lists",
+    "frozen_source"
+   ],
+   "reason": "pool engine and its coverage rounds (PL2-PL7, LEG1, DRP1, STK/UL readers): run on the frozen source (older encoder's lists and vectors) for the six host datasets; older-encoder pool reads, labelled so in JNT1 amendment 2 (A2.8)"
+  },
+  "outputs/mp_unified/zul2s.py": {
+   "markers": [
+    "cached_lists"
+   ],
+   "reason": "pool engine and its coverage rounds (PL2-PL7, LEG1, DRP1, STK/UL readers): run on the frozen source (older encoder's lists and vectors) for the six host datasets; older-encoder pool reads, labelled so in JNT1 amendment 2 (A2.8)"
+  },
+  "outputs/mp_unified/zul5st.py": {
+   "markers": [
+    "frozen_source"
+   ],
+   "reason": "pool engine and its coverage rounds (PL2-PL7, LEG1, DRP1, STK/UL readers): run on the frozen source (older encoder's lists and vectors) for the six host datasets; older-encoder pool reads, labelled so in JNT1 amendment 2 (A2.8)"
+  }
+ }
+}
