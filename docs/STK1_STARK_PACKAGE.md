@@ -215,4 +215,61 @@ For every test question, exact float32 top **2,500** over all nodes for each leg
 
 ## 10. Result
 
-(empty until the rows are read)
+### 10.1 The first stage on the three knowledge bases (15:14 IST; `outputs/stark/<kb>/first.json`; host rows `stk1p-first2` (Prime, 11:35), `stk1a-first4` (Amazon, 14:29), `stk1m-first4` (MAG, 15:03); `zstk1.py` sha256 `7f781269ec36`; the test split, every question; means in percent, 95 percent bootstrap intervals over questions, 1,000 resamples, seed 0)
+
+The three legs are the dense leg (e3v, 1,152 wide), the SPLADE leg (C0; **Prime's leg ran on A6's path in float32, MAG's and Amazon's on A8's lever l5**, a difference bounded by A11's reads at 0.033 point on three other datasets and not read on Prime) and the seven's reciprocal-rank fusion of the two (constant 60). No BM25 leg exists (A4); the published BM25 row stands beside as a published number only.
+
+**Benchmark metrics.**
+
+| KB (test questions) | leg | Hit@1 | Hit@5 | R@20 | MRR |
+| --- | --- | --- | --- | --- | --- |
+| Prime (2,801) | dense (e3v) | 13.1 [11.9, 14.4] | 28.4 [26.7, 30.1] | 33.6 [31.9, 35.3] | 20.5 [19.3, 21.7] |
+| Prime (2,801) | SPLADE (C0) | 13.3 [12.2, 14.7] | 27.0 [25.4, 28.7] | 31.8 [30.3, 33.5] | 20.1 [18.9, 21.4] |
+| Prime (2,801) | fused (RRF 60) | 15.1 [13.9, 16.5] | 31.8 [30.1, 33.5] | 37.8 [36.1, 39.4] | 23.1 [21.9, 24.5] |
+| MAG (2,665) | dense (e3v) | 27.7 [26.1, 29.4] | 52.7 [50.8, 54.5] | 52.8 [51.0, 54.4] | 39.5 [37.9, 41.0] |
+| MAG (2,665) | SPLADE (C0) | 30.8 [29.0, 32.5] | 52.4 [50.4, 54.1] | 50.4 [48.7, 51.9] | 40.8 [39.2, 42.3] |
+| MAG (2,665) | fused (RRF 60) | 33.9 [32.1, 35.6] | 57.1 [55.3, 58.8] | 56.5 [54.9, 58.1] | 44.9 [43.2, 46.4] |
+| Amazon (1,642) | dense (e3v) | 39.0 [36.5, 41.2] | 63.1 [60.7, 65.4] | 52.0 [50.1, 53.9] | 50.0 [47.9, 52.0] |
+| Amazon (1,642) | SPLADE (C0) | 48.1 [45.7, 50.5] | 71.0 [68.6, 73.1] | 56.5 [54.4, 58.2] | 58.7 [56.6, 60.6] |
+| Amazon (1,642) | fused (RRF 60) | 45.9 [43.4, 48.2] | 69.8 [67.5, 72.0] | 58.5 [56.7, 60.2] | 57.1 [54.9, 59.0] |
+
+**Coverage at depth (the repository's metrics: R@k = answers found in the top k over the answers, averaged over questions; ALL@k = every answer inside the top k).**
+
+| KB | leg | R@100 | R@1000 | R@2500 | ALL@100 | ALL@1000 | ALL@2500 [interval] |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Prime | dense (e3v) | 45.5 | 62.2 | 68.4 | 39.1 | 56.0 | **61.9** [60.1, 63.7] |
+| Prime | SPLADE (C0) | 44.4 | 58.8 | 65.6 | 37.9 | 52.5 | **59.8** [58.1, 61.7] |
+| Prime | fused (RRF 60) | 50.4 | 65.0 | 70.6 | 43.9 | 59.2 | **64.7** [63.1, 66.5] |
+| MAG | dense (e3v) | 66.8 | 84.3 | 89.4 | 55.2 | 74.7 | **82.0** [80.6, 83.4] |
+| MAG | SPLADE (C0) | 63.6 | 81.5 | 87.3 | 51.7 | 69.9 | **77.1** [75.5, 78.7] |
+| MAG | fused (RRF 60) | 70.7 | 87.1 | 91.5 | 58.6 | 77.3 | **83.9** [82.5, 85.3] |
+| Amazon | dense (e3v) | 70.5 | 91.8 | 96.5 | 48.2 | 76.9 | **88.1** [86.6, 89.7] |
+| Amazon | SPLADE (C0) | 73.4 | 91.6 | 95.8 | 51.6 | 75.2 | **84.5** [82.6, 86.2] |
+| Amazon | fused (RRF 60) | 77.0 | 94.3 | 97.6 | 55.2 | 81.7 | **90.6** [89.0, 91.9] |
+
+**Beside the published rows (A = the leg's interval lies above the published point, L = level, B = below; difference in points; H1 = Hit@1, H5 = Hit@5, R20 = Recall@20).** Prime's published rows were read from the paper's HTML by this session; MAG's and Amazon's were read from the same table by a delegated reader and have **not** been re-read by this session. The published documents differ from T1 (section 4), so these are readings beside, not claims of reproduction or of superiority; the published systems use no train split and no language model.
+
+| KB | leg | BM25 | ada-002 | multi-ada-002 |
+| --- | --- | --- | --- | --- |
+| Prime | dense (e3v) | H1 +0.4 L H5 +0.5 L R20 +2.3 A MRR +0.7 L | H1 +0.5 L H5 -3.0 B R20 -2.4 B MRR -0.9 L | H1 -2.0 B H5 -5.1 B R20 -4.5 B MRR -3.0 B |
+| Prime | SPLADE (C0) | H1 +0.6 L H5 -0.9 L R20 +0.6 L MRR +0.3 L | H1 +0.7 L H5 -4.5 B R20 -4.2 B MRR -1.3 L | H1 -1.8 B H5 -6.5 B R20 -6.2 B MRR -3.3 B |
+| Prime | fused (RRF 60) | H1 +2.4 A H5 +3.9 A R20 +6.5 A MRR +3.3 A | H1 +2.5 A H5 +0.3 L R20 +1.8 A MRR +1.7 A | H1 +0.0 L H5 -1.8 B R20 -0.3 L MRR -0.3 L |
+| MAG | dense (e3v) | H1 +1.9 A H5 +7.4 A R20 +7.1 A MRR +4.6 A | H1 -1.4 L H5 +3.1 A R20 +4.4 A MRR +0.8 L | H1 +1.8 A H5 +2.2 A R20 +2.0 A MRR +2.5 A |
+| MAG | SPLADE (C0) | H1 +4.9 A H5 +7.1 A R20 +4.7 A MRR +5.9 A | H1 +1.7 L H5 +2.7 A R20 +2.0 A MRR +2.1 A | H1 +4.8 A H5 +1.9 L R20 -0.4 L MRR +3.8 A |
+| MAG | fused (RRF 60) | H1 +8.1 A H5 +11.8 A R20 +10.9 A MRR +10.0 A | H1 +4.8 A H5 +7.5 A R20 +8.2 A MRR +6.3 A | H1 +8.0 A H5 +6.6 A R20 +5.8 A MRR +8.0 A |
+| Amazon | dense (e3v) | H1 -5.9 B H5 -4.3 B R20 -1.7 L MRR -5.3 B | H1 -0.1 L H5 +0.4 L R20 -1.3 L MRR -0.3 L | H1 -1.0 L H5 -1.9 L R20 -3.1 B MRR -1.5 L |
+| Amazon | SPLADE (C0) | H1 +3.2 A H5 +3.5 A R20 +2.7 A MRR +3.4 A | H1 +8.9 A H5 +8.2 A R20 +3.2 A MRR +8.3 A | H1 +8.0 A H5 +6.0 A R20 +1.4 L MRR +7.1 A |
+| Amazon | fused (RRF 60) | H1 +0.9 L H5 +2.4 A R20 +4.7 A MRR +1.8 L | H1 +6.7 A H5 +7.1 A R20 +5.2 A MRR +6.7 A | H1 +5.8 A H5 +4.8 A R20 +3.4 A MRR +5.5 A |
+
+**Expectations (section 8).**
+- **X1** (package gates): **held for P1 and P4 on all three** (the `package.json` records) and **P2 not read here** (the self-test's pass is recorded on this page for Prime only, and is not a key of the records); P5 on Prime: 8,100,498 directed edges over 129,375 nodes (62.6 a node, 125.2 endpoints a node, the benchmark's own figure is about 125), every edge's reverse present (share 1.000); MAG 19,919,698 edges, 0.2 percent reciprocal; Amazon 5,382,103 edges, 17.3 percent reciprocal, 221 self loops.
+- **X2** (T1's cap binds on a minority of Prime's nodes, on most of MAG's papers and Amazon's products): **held for Prime** (10,060 of 129,375 nodes, 7.8 percent, between 5 percent and a half) and **not held for MAG and Amazon as worded**: at most 249,052 of MAG's 700,244 papers (35.6 percent, if every node at the cap is a paper) and 418,678 of Amazon's 957,192 products (43.7 percent) are at the cap; the median text of Amazon's nodes is 1,166 characters against the cap of 1,200, so most products are near the cap without reaching it.
+- **X3** (G-B, T1 against the published BM25 row): **not computed**: A4 removed the BM25 leg, so no statement about T1's distance from the benchmark's documents is made.
+- **X4** (dense above BM25 on R@20 on Prime and MAG, level or below on Amazon): **held** (against the published BM25 row: Prime +2.3 ABOVE, MAG +7.1 ABOVE, Amazon -1.7 LEVEL).
+- **X5** (ALL@2,500 of every leg below 0.95 on Prime and MAG; nothing predicted for Amazon): **held, and Amazon is below too**: the fused leg's ALL@2,500 is **64.7 on Prime, 83.9 on MAG and 90.6 on Amazon** (the interval's upper ends are 66.5, 85.3 and 91.9), **30.3, 11.1 and 4.4 points short of the target of 95**; a pool has room on all three, most on Prime.
+- **X6** (cost): not read here (the encode rows' logs and LEG1's A7 timing carry it).
+- **X7** (dense against BM25 on a text-bearing KB compared with MetaQA): **not read**: with no BM25 leg there is no like-for-like difference; the published BM25 row stands in for X4 only.
+
+**The reading.** On Prime the fused first stage is **level with the best published row that uses no language model (multi-ada-002) on Hit@1, R@20 and MRR and below it on Hit@5** (differences +0.0, -1.8, -0.3, -0.3); the dense leg alone is below it on all four (-2.0, -5.1, -4.5, -3.0). On MAG the fused leg is **above multi-ada-002 on all four metrics** (+8.0, +6.6, +5.8, +8.0) and on Amazon **above on all four** (+5.8, +4.8, +3.4, +5.5). Against the published BM25 row the fused leg is above on every metric of Prime and MAG and above on Amazon's Hit@5 and R@20, level on its Hit@1 and MRR. The SPLADE leg is above the dense leg on Hit@1 on MAG and Amazon (+3.0, +9.1) and below it at depth (ALL@2,500 -2.1 on Prime, -4.8 on MAG, -3.6 on Amazon). **The fusion lifts ALL@2,500 over the dense leg by +2.8 (Prime), +2.0 (MAG) and +2.5 points (Amazon)**; these are differences of the two legs' means with overlapping intervals, not paired intervals, which the per-question arrays in `first.npz` would give and which are not read here.
+
+**Not read.** Paired intervals between the legs; any pool on these KBs; the train split; the benchmark's Table 6 rows of systems that use training or a language model; a re-read of MAG's and Amazon's published rows; G-B. **Nothing is adopted, removed or deleted.**
