@@ -1,0 +1,51 @@
+{
+ "stage": "SPL1 A8 call",
+ "declared_in": "docs/SPL1_SPARSE_LEG_SCREEN.md section 8.8 (A8)",
+ "speed": {
+  "basis": "CPU, first 512 SQuAD nodes (the card row of C0 is not here)",
+  "c3": 15.21,
+  "c0": 2.36,
+  "ratio": 6.444915254237289
+ },
+ "deciding": [
+  [
+   "squad",
+   "frontier_2500",
+   "LEVEL",
+   0.0
+  ],
+  [
+   "squad",
+   "R95_bounded",
+   "WORSE",
+   -0.9096268845279205
+  ],
+  [
+   "multihoprag",
+   "frontier_2500",
+   "LEVEL",
+   0.2654867256637168
+  ],
+  [
+   "multihoprag",
+   "R95_bounded",
+   "LEVEL",
+   0.2654867256637168
+  ],
+  [
+   "musique",
+   "frontier_2500",
+   "LEVEL",
+   0.16549441456350847
+  ],
+  [
+   "musique",
+   "R95_bounded",
+   "LEVEL",
+   0.16549441456350847
+  ]
+ ],
+ "decision": "ADOPT_C3_AT_PRICE",
+ "because": "some cells WORSE, every point difference -1.5 points or better",
+ "utc": "2026-11-27T00:24:45Z"
+}

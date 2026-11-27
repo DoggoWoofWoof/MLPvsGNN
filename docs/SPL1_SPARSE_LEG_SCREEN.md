@@ -238,7 +238,7 @@ The filed PL5/PL6 cells of the eval carves, C3's list in place of the record's S
 | musique | `rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr` | R95_bounded **(deciding)** | 0.8846 | 0.8862 | +0.17 [-0.37, +0.74] | LEVEL | 2438.2 -> 2456.3 |
 | musique | `equal_rrf_budget_200+FULL:h2_c25` | old | 0.8026 | 0.8113 | +0.87 [+0.08, +1.61] | BETTER | 2092.4 -> 2101.2 |
 
-**D1: ADOPT_C3_AT_PRICE.** Five of the six deciding cells are LEVEL (SQuAD frontier_2500 +0.00; MultiHop-RAG +0.27 on both; MuSiQue +0.17 on both, one cell serves both roles there), one is WORSE: SQuAD's R95_bounded pool of 15 nodes, -0.91 point [-1.16, -0.65], which is a first-stage-only pool (no walk). Every point difference is above -1.5. No cell has MORE_NODES (largest +2.5% of nodes, SQuAD frontier_2500). The speed ratio is 6.44 (CPU, first 512 SQuAD nodes, 4 threads: C3 15.21, C0 2.36 nodes per second), above 3.0.
+**D1 on the CPU basis: ADOPT_C3_AT_PRICE (superseded: section 10.6 applies D1 with C0's card rate, which landed three minutes after this section was committed, and gives C0_STAYS).** Five of the six deciding cells are LEVEL (SQuAD frontier_2500 +0.00; MultiHop-RAG +0.27 on both; MuSiQue +0.17 on both, one cell serves both roles there), one is WORSE: SQuAD's R95_bounded pool of 15 nodes, -0.91 point [-1.16, -0.65], which is a first-stage-only pool (no walk). Every point difference is above -1.5. No cell has MORE_NODES (largest +2.5% of nodes, SQuAD frontier_2500). The speed ratio is 6.44 (CPU, first 512 SQuAD nodes, 4 threads: C3 15.21, C0 2.36 nodes per second), above 3.0.
 
 **The price, in numbers.** The loss sits in the smallest pools: 15 nodes on SQuAD, -0.91 point of all-gold, and MultiHop-RAG's old 50-node cell, -0.97 [-2.04, +0.00] (not a deciding cell). Every other cell, from SQuAD's 50-node old cell up to 2,500 nodes, is LEVEL or BETTER; MuSiQue is BETTER on two cells (+0.99 at 1,000 nodes, +0.87 on the old cell). The first-stage screen's SQuAD losses (RRF R@5 -1.04, seeds -1.65) show up in a pool that has no walk and are gone from the pools that walk (read as a pattern of these cells, not a tested mechanism).
 
@@ -270,12 +270,30 @@ C3's MuSiQue row ran on the host CPU (6 threads, 25.2 nodes per second wall) bec
 
 ### 10.4 Disclosures
 
-- D1's text says the CPU ratio stands in "if C0's card row fails". The card row has not failed: it has not run, because the card has been held since 03:45. The module's coded fallback ("the card row of C0 is not here") was used as committed in A8 before any pool number was read. The card ratio is filed when the row runs; if it falls below 3.0 the user is told, since that would change a premise of this decision.
+- D1's text says the CPU ratio stands in "if C0's card row fails". The card row has not failed: it has not run, because the card has been held since 03:45. The module's coded fallback ("the card row of C0 is not here") was used as committed in A8 before any pool number was read. The card ratio is filed when the row runs; if it falls below 3.0 the user is told, since that would change a premise of this decision. (It did: section 10.6.)
 - The pool read uses the record's frozen dense list (the filed grids exist on it), not e3v's; the first-stage effect on e3v is the H1 and H2 reads of 10.1.
 - C1 and C2 were not read on the pools (they decide nothing under D1: slower than C3 and not better on the first stage).
 - C3's MuSiQue list was encoded on CPU, the others on the card; the lists are device-independent up to float noise (SPL2's dry run: scores within 4.2e-5 between CPU and card on MultiHop-RAG).
 - The laptop's Prime SPLADE leg (C0) is redundant once C3 serves Prime; it is not stopped by this page (it was reaped by the system's memory guard on 27 Nov at about 04:50 with its checkpoint at 49,152 of 129,375 nodes; it was not restarted).
 
-### 10.5 What follows
+### 10.5 What followed (superseded by 10.6)
 
-The rebuild of the sparse leg over all ten datasets with C3 is declared on `docs/SPL2_SPARSE_LEG_REBUILD.md`. The STaRK A6 rows that were removed from the feed until D1 return as consumers of SPL2's lists in their own amendment.
+The rebuild of the sparse leg over all ten datasets with C3 was declared on `docs/SPL2_SPARSE_LEG_REBUILD.md` (0be8ccce) and its nine rows were put in the feed at 06:06. One of them ran (`spl2-mhr`, MultiHop-RAG, 17 seconds on the card, 609 nodes) before section 10.6 withdrew them.
+
+### 10.6 C0's card rate landed: D1 gives C0_STAYS
+
+`spl1c-gsq` (C0 on the host card, SQuAD, 20,233 nodes) finished at about 06:08, after section 10.2 was committed at 06:05 on the CPU basis (A8's coded fallback, "the card row of C0 is not here"). D1 names the card rate as the speed ratio and the CPU ratio only as a stand-in, so the card rate decides:
+
+| measure (SQuAD, card, micro-batch 16, fp32) | C0 | C3 | ratio |
+| --- | --- | --- | --- |
+| median per-block rate, nodes per second | 199.61 | 343.83 | **1.72** |
+| document non-zeros per node | 195.2 | 340.4 | 1.74 more |
+| whole run (wall; the guard suspends rows) | 19.74 | 36.26 | 1.84 |
+
+The CPU ratio of the first 512 nodes (6.44) overstated the card's: a small model on the card is probably limited by per-call overhead more than by arithmetic (not tested here). **D1: C0_STAYS (the card speed ratio is below 3.0)**, `outputs/spl1/pool/call.json` (the CPU-basis call is kept as `call_cpu_basis.json`). The decision of 10.2 is not carried; its pool reads (the six deciding cells and the price) stand as read.
+
+- **What this means.** C3 is 1.72 times faster than C0 on the card, with 1.7 times more document non-zeros per node and a loss of 0.91 point on SQuAD's 15-node pool. The user's premise ("6x faster with barely a 1 point recall loss seems worth it") was the CPU ratio; on the card it does not hold, and D1's pre-declared threshold (3.0) is not met. C3 is not adopted.
+- **SPL2 is withdrawn.** `docs/SPL2_SPARSE_LEG_REBUILD.md` and `zspl2.py` stay in the repository as written, no row of them is in the feed, and the one row that ran (`spl2-mhr`, C3 on MultiHop-RAG) is not used by anything. The seven datasets keep the record's SPLADE lists (C0); only the three STaRK KBs need a sparse leg.
+- **The A6 rows return as declared.** The STK1 A6 rows that A8 took out of the feed (C0 on the host card for Prime, Amazon and MAG, then the first-stage rows that read them: `stk1p-spg`, `stk1p-spl`, `stk1p-first2`, `stk1a-spl`, `stk1a-first2`, `stk1m-spl`, `stk1m-first2`) are put back unchanged, except that `stk1p-spg` no longer waits for `spl1c-gmq` (C0's MuSiQue card timing decides nothing now and is not returned). At C0's card rate the three legs are about 11 minutes (Prime, 129,375 nodes), 1.4 hours (Amazon, 1,035,542) and 2.6 hours (MAG, 1,872,968) of an exclusive card.
+- **Speed levers (A8's declared follow-up) are not run.** fp16, larger micro-batches and a masked pooling are options only for C0's three STaRK legs; fp16 and the micro-batch change values (C0's contract pools over padding, so a vector depends on its batch), and the 4-hour card cost does not justify a screen. If the user wants them, they are a new amendment.
+- **The laptop's Prime SPLADE leg (C0 on CPU)** is redundant: the card does Prime in minutes. It was reaped by the memory guard at about 04:50 and is not restarted.

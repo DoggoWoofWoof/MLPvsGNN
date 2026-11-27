@@ -2,10 +2,10 @@
  "stage": "SPL1 A8 call",
  "declared_in": "docs/SPL1_SPARSE_LEG_SCREEN.md section 8.8 (A8)",
  "speed": {
-  "basis": "CPU, first 512 SQuAD nodes (the card row of C0 is not here)",
-  "c3": 15.21,
-  "c0": 2.36,
-  "ratio": 6.444915254237289
+  "basis": "card, SQuAD block median",
+  "c3": 343.83,
+  "c0": 199.61,
+  "ratio": 1.7225088923400629
  },
  "deciding": [
   [
@@ -45,7 +45,7 @@
    0.16549441456350847
   ]
  ],
- "decision": "ADOPT_C3_AT_PRICE",
- "because": "some cells WORSE, every point difference -1.5 points or better",
- "utc": "2026-11-27T00:24:45Z"
+ "decision": "C0_STAYS",
+ "because": "the card speed ratio is below 3.0",
+ "utc": "2026-11-27T00:39:39Z"
 }

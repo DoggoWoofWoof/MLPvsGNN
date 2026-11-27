@@ -1,5 +1,7 @@
 # SPL2: the sparse leg of the first stage, rebuilt over all ten datasets with the leg SPL1 chose
 
+**WITHDRAWN 27 Nov 2026, 06:11 IST (before any list of it was used).** The page was declared on D1's CPU-basis call (ADOPT_C3_AT_PRICE). C0's card rate landed at about 06:08 (SQuAD: C0 199.61, C3 343.83 nodes per second, ratio 1.72) and D1, which names the card rate, gives C0_STAYS (`docs/SPL1_SPARSE_LEG_SCREEN.md` section 10.6). The nine rows were taken out of the feed at 06:09; one ran first (`spl2-mhr`, MultiHop-RAG, 17 seconds on the card) and its output (`outputs/spl2/multihoprag` on the host) is not used. No other row ran. The page and `zspl2.py` stay as written; a later rebuild with another leg is a new page.
+
 Declared 27 Nov 2026, 06:06 IST, after the decision of rule D1 (`docs/SPL1_SPARSE_LEG_SCREEN.md` sections 8.8 to 8.10, result in section 10) and before any SPL2 row has run. Follows `docs/ING1_INGESTION_AND_STAGE_REGISTRY.md` (registry rule set RS1, stage `first`: "e3v dense and SPLADE fused by reciprocal rank (C=60), depth 2,500"). Code: `outputs/mp_unified/zspl2.py` (a new module, written and checked before this page; committed with it).
 
 ## 1. Why this page exists

@@ -1,0 +1,45 @@
+{
+ "stage": "SPL1 C0 encode",
+ "declared_in": "docs/SPL1_SPARSE_LEG_SCREEN.md",
+ "repo": "naver/splade-cocondenser-ensembledistil",
+ "revision": "49cf4c7b0db5b870a401ddf5e2669993ef3699c7",
+ "dataset": "squad",
+ "smoke": 0,
+ "nodes": 20233,
+ "questions": 11873,
+ "device": "cuda",
+ "threads": null,
+ "max_len": 256,
+ "batch": 64,
+ "chunk": 16,
+ "nodes_per_s": 19.74,
+ "block_rate_median": 199.61,
+ "block_rates": [
+  199.6,
+  200.1,
+  199.2,
+  197.8,
+  2.2,
+  200.5,
+  199.6,
+  200.8,
+  200.1,
+  199.2
+ ],
+ "encode_seconds": 1025.0,
+ "seconds": 1043.2,
+ "doc_nnz_mean": 195.2,
+ "doc_bytes_per_node_at_8": 1561.6,
+ "query_nnz_mean": 57.4,
+ "gpu": {
+  "name": "NVIDIA RTX 4500 Ada Generation",
+  "free_mb_at_start": 18117,
+  "total_mb": 24569
+ },
+ "cut_at_256": 1468,
+ "cut_counted_on_nodes": 20233,
+ "versions": {
+  "torch": "2.8.0+cu128",
+  "transformers": "4.57.3"
+ }
+}
