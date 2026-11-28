@@ -1,0 +1,206 @@
+{
+ "stage": "BRG5 read",
+ "declared_in": "docs/BRG5_LEARNED_ORDER_SCREEN.md",
+ "set": "mag",
+ "cell": "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+ "utc": "2026-11-28T14:28:25Z",
+ "chunks": [
+  "scr_c0008.npz",
+  "scr_c0010.npz",
+  "scr_c0017.npz"
+ ],
+ "train_chunks": [
+  18,
+  12,
+  16
+ ],
+ "fit": {
+  "1": {
+   "rows": 91651,
+   "positives": 451,
+   "fitted": true,
+   "lr_iterations": 22
+  },
+  "2": {
+   "rows": 400272,
+   "positives": 273,
+   "fitted": true,
+   "lr_iterations": 19
+  },
+  "3": {
+   "rows": 400070,
+   "positives": 71,
+   "fitted": true,
+   "lr_iterations": 12
+  }
+ },
+ "questions": 384,
+ "golds": 1064,
+ "variants": {
+  "control": {
+   "ALL": 0.9244791666666666,
+   "golds_in_pool": 0.9323308270676691,
+   "mean_nodes": 2044.5546875,
+   "ceiling_ALL": 0.9739583333333334,
+   "ceiling_golds": 0.9868421052631579,
+   "hops": {
+    "1": {
+     "candidate_golds": 450,
+     "kept_golds": 450,
+     "kept_share": 1.0
+    },
+    "2": {
+     "candidate_golds": 318,
+     "kept_golds": 264,
+     "kept_share": 0.8301886792452831
+    },
+    "3": {
+     "candidate_golds": 73,
+     "kept_golds": 29,
+     "kept_share": 0.3972602739726027
+    }
+   },
+   "by_gold_count": {
+    "1": {
+     "questions": 195,
+     "ALL": 0.9692307692307692
+    },
+    "2": {
+     "questions": 72,
+     "ALL": 0.9305555555555556
+    },
+    "3": {
+     "questions": 27,
+     "ALL": 0.9259259259259259
+    },
+    "4+": {
+     "questions": 90,
+     "ALL": 0.8222222222222222
+    }
+   }
+  },
+  "lr": {
+   "ALL": 0.9348958333333334,
+   "golds_in_pool": 0.9492481203007519,
+   "mean_nodes": 2046.265625,
+   "ceiling_ALL": 0.9765625,
+   "ceiling_golds": 0.9877819548872181,
+   "minus_control": 0.010416666666666666,
+   "ci95": [
+    0.0,
+    0.0234375
+   ],
+   "call": "LEVEL",
+   "nodes_over_control": 1.0008368264788712,
+   "reached": false,
+   "hops": {
+    "1": {
+     "candidate_golds": 450,
+     "kept_golds": 450,
+     "kept_share": 1.0
+    },
+    "2": {
+     "candidate_golds": 319,
+     "kept_golds": 285,
+     "kept_share": 0.8934169278996865
+    },
+    "3": {
+     "candidate_golds": 54,
+     "kept_golds": 25,
+     "kept_share": 0.46296296296296297
+    }
+   },
+   "by_gold_count": {
+    "1": {
+     "questions": 195,
+     "ALL": 0.9692307692307692
+    },
+    "2": {
+     "questions": 72,
+     "ALL": 0.9583333333333334
+    },
+    "3": {
+     "questions": 27,
+     "ALL": 0.9259259259259259
+    },
+    "4+": {
+     "questions": 90,
+     "ALL": 0.8444444444444444
+    }
+   }
+  },
+  "gb": {
+   "ALL": 0.8854166666666666,
+   "golds_in_pool": 0.9238721804511278,
+   "mean_nodes": 2108.3776041666665,
+   "ceiling_ALL": 0.96875,
+   "ceiling_golds": 0.9859022556390977,
+   "minus_control": -0.0390625,
+   "ci95": [
+    -0.0625,
+    -0.018229166666666668
+   ],
+   "call": "BELOW",
+   "nodes_over_control": 1.0312160477080252,
+   "reached": false,
+   "hops": {
+    "1": {
+     "candidate_golds": 450,
+     "kept_golds": 450,
+     "kept_share": 1.0
+    },
+    "2": {
+     "candidate_golds": 319,
+     "kept_golds": 228,
+     "kept_share": 0.7147335423197492
+    },
+    "3": {
+     "candidate_golds": 102,
+     "kept_golds": 12,
+     "kept_share": 0.11764705882352941
+    }
+   },
+   "by_gold_count": {
+    "1": {
+     "questions": 195,
+     "ALL": 0.9538461538461539
+    },
+    "2": {
+     "questions": 72,
+     "ALL": 0.8888888888888888
+    },
+    "3": {
+     "questions": 27,
+     "ALL": 0.8888888888888888
+    },
+    "4+": {
+     "questions": 90,
+     "ALL": 0.7333333333333333
+    }
+   }
+  }
+ },
+ "auc": {
+  "1": {
+   "positives": 450,
+   "negatives_sampled": 89984,
+   "auc_control": 0.9016614558637585,
+   "auc_lr": 0.9457863002805438,
+   "auc_gb": 0.9340986669235024
+  },
+  "2": {
+   "positives": 318,
+   "negatives_sampled": 300000,
+   "auc_control": 0.9544465094339623,
+   "auc_lr": 0.974536357442348,
+   "auc_gb": 0.8297149004192872
+  },
+  "3": {
+   "positives": 73,
+   "negatives_sampled": 300000,
+   "auc_control": 0.8581167351598175,
+   "auc_lr": 0.9039250228310503,
+   "auc_gb": 0.49624401826484016
+  }
+ }
+}

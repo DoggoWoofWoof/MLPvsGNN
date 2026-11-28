@@ -1,0 +1,119 @@
+{
+ "stage": "BRG5 gates",
+ "declared_in": "docs/BRG5_LEARNED_ORDER_SCREEN.md",
+ "set": "amazon",
+ "cell": "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+ "variants": [
+  "control",
+  "lr",
+  "gb"
+ ],
+ "features": [
+  "log1p_place",
+  "cos",
+  "cos_share",
+  "log1p_support",
+  "ppr",
+  "log1p_min_rank",
+  "families",
+  "parent_cos_max",
+  "cos_minus_parent",
+  "log1p_best_parent_place",
+  "log1p_n_cand",
+  "log_budget_over_n"
+ ],
+ "train_chunks": [
+  9,
+  1,
+  10
+ ],
+ "eval_chunks": [
+  7,
+  11,
+  5
+ ],
+ "train": {
+  "9": {
+   "questions": 128,
+   "G-L1_recount_mismatches": 0,
+   "first": [],
+   "G-L2_nonfinite": 0,
+   "seconds": 10.6,
+   "positives": {
+    "1": 179,
+    "2": 170,
+    "3": 0
+   },
+   "rows": {
+    "1": 11410,
+    "2": 133503,
+    "3": 0
+   }
+  },
+  "1": {
+   "questions": 128,
+   "G-L1_recount_mismatches": 0,
+   "first": [],
+   "G-L2_nonfinite": 0,
+   "seconds": 14.2,
+   "positives": {
+    "1": 173,
+    "2": 162,
+    "3": 0
+   },
+   "rows": {
+    "1": 12229,
+    "2": 133495,
+    "3": 0
+   }
+  },
+  "10": {
+   "questions": 128,
+   "G-L1_recount_mismatches": 0,
+   "first": [],
+   "G-L2_nonfinite": 0,
+   "seconds": 15.2,
+   "positives": {
+    "1": 174,
+    "2": 182,
+    "3": 0
+   },
+   "rows": {
+    "1": 15515,
+    "2": 133515,
+    "3": 0
+   }
+  }
+ },
+ "chunks": {
+  "7": {
+   "questions": 128,
+   "G-L0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-L2_nonfinite": 0,
+   "seconds": 40.7
+  },
+  "11": {
+   "questions": 128,
+   "G-L0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-L2_nonfinite": 0,
+   "seconds": 42.1
+  },
+  "5": {
+   "questions": 128,
+   "G-L0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-L2_nonfinite": 0,
+   "seconds": 41.1
+  }
+ },
+ "utc": "2026-11-28T14:09:40Z",
+ "verdict": "PASS"
+}

@@ -1,0 +1,206 @@
+{
+ "stage": "BRG5 read",
+ "declared_in": "docs/BRG5_LEARNED_ORDER_SCREEN.md",
+ "set": "webqsp",
+ "cell": "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+ "utc": "2026-11-28T14:28:31Z",
+ "chunks": [
+  "scr_c0002.npz",
+  "scr_c0003.npz",
+  "scr_c0007.npz"
+ ],
+ "train_chunks": [
+  4,
+  1,
+  6
+ ],
+ "fit": {
+  "1": {
+   "rows": 94302,
+   "positives": 1044,
+   "fitted": true,
+   "lr_iterations": 17
+  },
+  "2": {
+   "rows": 400830,
+   "positives": 831,
+   "fitted": true,
+   "lr_iterations": 20
+  },
+  "3": {
+   "rows": 400272,
+   "positives": 273,
+   "fitted": true,
+   "lr_iterations": 14
+  }
+ },
+ "questions": 384,
+ "golds": 2784,
+ "variants": {
+  "control": {
+   "ALL": 0.8776041666666666,
+   "golds_in_pool": 0.6300287356321839,
+   "mean_nodes": 2096.7473958333335,
+   "ceiling_ALL": 0.9322916666666666,
+   "ceiling_golds": 0.7686781609195402,
+   "hops": {
+    "1": {
+     "candidate_golds": 907,
+     "kept_golds": 901,
+     "kept_share": 0.9933847850055126
+    },
+    "2": {
+     "candidate_golds": 1066,
+     "kept_golds": 748,
+     "kept_share": 0.701688555347092
+    },
+    "3": {
+     "candidate_golds": 193,
+     "kept_golds": 50,
+     "kept_share": 0.25906735751295334
+    }
+   },
+   "by_gold_count": {
+    "1": {
+     "questions": 185,
+     "ALL": 0.9675675675675676
+    },
+    "2": {
+     "questions": 65,
+     "ALL": 0.9076923076923077
+    },
+    "3": {
+     "questions": 37,
+     "ALL": 0.8648648648648649
+    },
+    "4+": {
+     "questions": 97,
+     "ALL": 0.6907216494845361
+    }
+   }
+  },
+  "lr": {
+   "ALL": 0.8958333333333334,
+   "golds_in_pool": 0.7338362068965517,
+   "mean_nodes": 2102.1223958333335,
+   "ceiling_ALL": 0.9270833333333334,
+   "ceiling_golds": 0.7758620689655172,
+   "minus_control": 0.018229166666666668,
+   "ci95": [
+    -0.0026041666666666665,
+    0.0390625
+   ],
+   "call": "LEVEL",
+   "nodes_over_control": 1.002563494301069,
+   "reached": false,
+   "hops": {
+    "1": {
+     "candidate_golds": 907,
+     "kept_golds": 907,
+     "kept_share": 1.0
+    },
+    "2": {
+     "candidate_golds": 1063,
+     "kept_golds": 1010,
+     "kept_share": 0.9501411100658513
+    },
+    "3": {
+     "candidate_golds": 157,
+     "kept_golds": 69,
+     "kept_share": 0.4394904458598726
+    }
+   },
+   "by_gold_count": {
+    "1": {
+     "questions": 185,
+     "ALL": 0.972972972972973
+    },
+    "2": {
+     "questions": 65,
+     "ALL": 0.9384615384615385
+    },
+    "3": {
+     "questions": 37,
+     "ALL": 0.8918918918918919
+    },
+    "4+": {
+     "questions": 97,
+     "ALL": 0.7216494845360825
+    }
+   }
+  },
+  "gb": {
+   "ALL": 0.8203125,
+   "golds_in_pool": 0.6059626436781609,
+   "mean_nodes": 2113.0625,
+   "ceiling_ALL": 0.9296875,
+   "ceiling_golds": 0.7661637931034483,
+   "minus_control": -0.057291666666666664,
+   "ci95": [
+    -0.0859375,
+    -0.03125
+   ],
+   "call": "BELOW",
+   "nodes_over_control": 1.0077811491260644,
+   "reached": false,
+   "hops": {
+    "1": {
+     "candidate_golds": 907,
+     "kept_golds": 904,
+     "kept_share": 0.9966923925027563
+    },
+    "2": {
+     "candidate_golds": 1064,
+     "kept_golds": 663,
+     "kept_share": 0.6231203007518797
+    },
+    "3": {
+     "candidate_golds": 224,
+     "kept_golds": 51,
+     "kept_share": 0.22767857142857142
+    }
+   },
+   "by_gold_count": {
+    "1": {
+     "questions": 185,
+     "ALL": 0.9567567567567568
+    },
+    "2": {
+     "questions": 65,
+     "ALL": 0.8615384615384616
+    },
+    "3": {
+     "questions": 37,
+     "ALL": 0.7297297297297297
+    },
+    "4+": {
+     "questions": 97,
+     "ALL": 0.5670103092783505
+    }
+   }
+  }
+ },
+ "auc": {
+  "1": {
+   "positives": 907,
+   "negatives_sampled": 102246,
+   "auc_control": 0.7021998590812425,
+   "auc_lr": 0.733018688028727,
+   "auc_gb": 0.8084029122663523
+  },
+  "2": {
+   "positives": 1066,
+   "negatives_sampled": 300000,
+   "auc_control": 0.9269636147592245,
+   "auc_lr": 0.9782742839274546,
+   "auc_gb": 0.8034666713570981
+  },
+  "3": {
+   "positives": 193,
+   "negatives_sampled": 300000,
+   "auc_control": 0.8531486355785838,
+   "auc_lr": 0.8938731260794472,
+   "auc_gb": 0.7702267962003454
+  }
+ }
+}

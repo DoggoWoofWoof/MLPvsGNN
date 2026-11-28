@@ -1,0 +1,31 @@
+{
+ "stage": "BRG5 fit",
+ "declared_in": "docs/BRG5_LEARNED_ORDER_SCREEN.md",
+ "set": "webqsp",
+ "utc": "2026-11-28T14:14:03Z",
+ "train_chunks": [
+  4,
+  1,
+  6
+ ],
+ "hops": {
+  "1": {
+   "rows": 94302,
+   "positives": 1044,
+   "fitted": true,
+   "lr_iterations": 17
+  },
+  "2": {
+   "rows": 400830,
+   "positives": 831,
+   "fitted": true,
+   "lr_iterations": 20
+  },
+  "3": {
+   "rows": 400272,
+   "positives": 273,
+   "fitted": true,
+   "lr_iterations": 14
+  }
+ }
+}

@@ -1,0 +1,206 @@
+{
+ "stage": "BRG5 read",
+ "declared_in": "docs/BRG5_LEARNED_ORDER_SCREEN.md",
+ "set": "prime",
+ "cell": "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+ "utc": "2026-11-28T14:25:31Z",
+ "chunks": [
+  "scr_c0010.npz",
+  "scr_c0018.npz",
+  "scr_c0021.npz"
+ ],
+ "train_chunks": [
+  16,
+  2,
+  0
+ ],
+ "fit": {
+  "1": {
+   "rows": 95027,
+   "positives": 397,
+   "fitted": true,
+   "lr_iterations": 21
+  },
+  "2": {
+   "rows": 400346,
+   "positives": 347,
+   "fitted": true,
+   "lr_iterations": 16
+  },
+  "3": {
+   "rows": 400100,
+   "positives": 101,
+   "fitted": true,
+   "lr_iterations": 14
+  }
+ },
+ "questions": 369,
+ "golds": 809,
+ "variants": {
+  "control": {
+   "ALL": 0.8672086720867209,
+   "golds_in_pool": 0.8949320148331273,
+   "mean_nodes": 2075.9485094850947,
+   "ceiling_ALL": 0.964769647696477,
+   "ceiling_golds": 0.9629171817058096,
+   "hops": {
+    "1": {
+     "candidate_golds": 328,
+     "kept_golds": 328,
+     "kept_share": 1.0
+    },
+    "2": {
+     "candidate_golds": 272,
+     "kept_golds": 227,
+     "kept_share": 0.8345588235294118
+    },
+    "3": {
+     "candidate_golds": 75,
+     "kept_golds": 31,
+     "kept_share": 0.41333333333333333
+    }
+   },
+   "by_gold_count": {
+    "1": {
+     "questions": 241,
+     "ALL": 0.8796680497925311
+    },
+    "2": {
+     "questions": 44,
+     "ALL": 0.8636363636363636
+    },
+    "3": {
+     "questions": 31,
+     "ALL": 0.9032258064516129
+    },
+    "4+": {
+     "questions": 53,
+     "ALL": 0.7924528301886793
+    }
+   }
+  },
+  "lr": {
+   "ALL": 0.9024390243902439,
+   "golds_in_pool": 0.92336217552534,
+   "mean_nodes": 2075.1734417344173,
+   "ceiling_ALL": 0.967479674796748,
+   "ceiling_golds": 0.9641532756489494,
+   "minus_control": 0.03523035230352303,
+   "ci95": [
+    0.016260162601626018,
+    0.056910569105691054
+   ],
+   "call": "ABOVE",
+   "nodes_over_control": 0.9996266440390327,
+   "reached": true,
+   "hops": {
+    "1": {
+     "candidate_golds": 328,
+     "kept_golds": 328,
+     "kept_share": 1.0
+    },
+    "2": {
+     "candidate_golds": 272,
+     "kept_golds": 242,
+     "kept_share": 0.8897058823529411
+    },
+    "3": {
+     "candidate_golds": 67,
+     "kept_golds": 39,
+     "kept_share": 0.582089552238806
+    }
+   },
+   "by_gold_count": {
+    "1": {
+     "questions": 241,
+     "ALL": 0.9128630705394191
+    },
+    "2": {
+     "questions": 44,
+     "ALL": 0.9090909090909091
+    },
+    "3": {
+     "questions": 31,
+     "ALL": 0.967741935483871
+    },
+    "4+": {
+     "questions": 53,
+     "ALL": 0.8113207547169812
+    }
+   }
+  },
+  "gb": {
+   "ALL": 0.8563685636856369,
+   "golds_in_pool": 0.8912237330037083,
+   "mean_nodes": 2123.880758807588,
+   "ceiling_ALL": 0.967479674796748,
+   "ceiling_golds": 0.9641532756489494,
+   "minus_control": -0.01084010840108401,
+   "ci95": [
+    -0.03523035230352303,
+    0.01084010840108401
+   ],
+   "call": "LEVEL",
+   "nodes_over_control": 1.0230893247609412,
+   "reached": false,
+   "hops": {
+    "1": {
+     "candidate_golds": 328,
+     "kept_golds": 328,
+     "kept_share": 1.0
+    },
+    "2": {
+     "candidate_golds": 272,
+     "kept_golds": 203,
+     "kept_share": 0.7463235294117647
+    },
+    "3": {
+     "candidate_golds": 95,
+     "kept_golds": 28,
+     "kept_share": 0.29473684210526313
+    }
+   },
+   "by_gold_count": {
+    "1": {
+     "questions": 241,
+     "ALL": 0.8838174273858921
+    },
+    "2": {
+     "questions": 44,
+     "ALL": 0.8181818181818182
+    },
+    "3": {
+     "questions": 31,
+     "ALL": 0.8387096774193549
+    },
+    "4+": {
+     "questions": 53,
+     "ALL": 0.7735849056603774
+    }
+   }
+  }
+ },
+ "auc": {
+  "1": {
+   "positives": 328,
+   "negatives_sampled": 91553,
+   "auc_control": 0.9086151084551052,
+   "auc_lr": 0.9167878868244517,
+   "auc_gb": 0.9001687647006013
+  },
+  "2": {
+   "positives": 272,
+   "negatives_sampled": 300000,
+   "auc_control": 0.9212038235294118,
+   "auc_lr": 0.9421430147058825,
+   "auc_gb": 0.8416311090686275
+  },
+  "3": {
+   "positives": 75,
+   "negatives_sampled": 300000,
+   "auc_control": 0.845894688888889,
+   "auc_lr": 0.9064353777777778,
+   "auc_gb": 0.7594005777777777
+  }
+ }
+}

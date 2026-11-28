@@ -1,0 +1,30 @@
+{
+ "stage": "BRG5 fit",
+ "declared_in": "docs/BRG5_LEARNED_ORDER_SCREEN.md",
+ "set": "musique",
+ "utc": "2026-11-28T14:08:30Z",
+ "train_chunks": [
+  10,
+  8,
+  16
+ ],
+ "hops": {
+  "1": {
+   "rows": 115024,
+   "positives": 242,
+   "fitted": true,
+   "lr_iterations": 17
+  },
+  "2": {
+   "rows": 400267,
+   "positives": 268,
+   "fitted": true,
+   "lr_iterations": 15
+  },
+  "3": {
+   "rows": 0,
+   "positives": 0,
+   "fitted": false
+  }
+ }
+}

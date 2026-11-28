@@ -1,0 +1,198 @@
+{
+ "stage": "BRG5 read",
+ "declared_in": "docs/BRG5_LEARNED_ORDER_SCREEN.md",
+ "set": "amazon",
+ "cell": "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+ "utc": "2026-11-28T14:12:47Z",
+ "chunks": [
+  "scr_c0005.npz",
+  "scr_c0007.npz",
+  "scr_c0011.npz"
+ ],
+ "train_chunks": [
+  9,
+  1,
+  10
+ ],
+ "fit": {
+  "1": {
+   "rows": 39154,
+   "positives": 526,
+   "fitted": true,
+   "lr_iterations": 20
+  },
+  "2": {
+   "rows": 400513,
+   "positives": 514,
+   "fitted": true,
+   "lr_iterations": 25
+  },
+  "3": {
+   "rows": 0,
+   "positives": 0,
+   "fitted": false
+  }
+ },
+ "questions": 384,
+ "golds": 1957,
+ "variants": {
+  "control": {
+   "ALL": 0.8567708333333334,
+   "golds_in_pool": 0.9315278487480838,
+   "mean_nodes": 2439.5416666666665,
+   "ceiling_ALL": 0.8645833333333334,
+   "ceiling_golds": 0.9335717935615738,
+   "hops": {
+    "1": {
+     "candidate_golds": 526,
+     "kept_golds": 526,
+     "kept_share": 1.0
+    },
+    "2": {
+     "candidate_golds": 457,
+     "kept_golds": 453,
+     "kept_share": 0.9912472647702407
+    },
+    "3": {
+     "candidate_golds": 0,
+     "kept_golds": 0,
+     "kept_share": null
+    }
+   },
+   "by_gold_count": {
+    "1": {
+     "questions": 110,
+     "ALL": 0.990909090909091
+    },
+    "2": {
+     "questions": 62,
+     "ALL": 0.967741935483871
+    },
+    "3": {
+     "questions": 47,
+     "ALL": 0.851063829787234
+    },
+    "4+": {
+     "questions": 165,
+     "ALL": 0.7272727272727273
+    }
+   }
+  },
+  "lr": {
+   "ALL": 0.859375,
+   "golds_in_pool": 0.9320388349514563,
+   "mean_nodes": 2439.5416666666665,
+   "ceiling_ALL": 0.8645833333333334,
+   "ceiling_golds": 0.9335717935615738,
+   "minus_control": 0.0026041666666666665,
+   "ci95": [
+    0.0,
+    0.0078125
+   ],
+   "call": "LEVEL",
+   "nodes_over_control": 1.0,
+   "reached": false,
+   "hops": {
+    "1": {
+     "candidate_golds": 526,
+     "kept_golds": 526,
+     "kept_share": 1.0
+    },
+    "2": {
+     "candidate_golds": 457,
+     "kept_golds": 454,
+     "kept_share": 0.9934354485776805
+    },
+    "3": {
+     "candidate_golds": 0,
+     "kept_golds": 0,
+     "kept_share": null
+    }
+   },
+   "by_gold_count": {
+    "1": {
+     "questions": 110,
+     "ALL": 0.990909090909091
+    },
+    "2": {
+     "questions": 62,
+     "ALL": 0.967741935483871
+    },
+    "3": {
+     "questions": 47,
+     "ALL": 0.851063829787234
+    },
+    "4+": {
+     "questions": 165,
+     "ALL": 0.7333333333333333
+    }
+   }
+  },
+  "gb": {
+   "ALL": 0.859375,
+   "golds_in_pool": 0.9320388349514563,
+   "mean_nodes": 2440.5494791666665,
+   "ceiling_ALL": 0.8645833333333334,
+   "ceiling_golds": 0.9335717935615738,
+   "minus_control": 0.0026041666666666665,
+   "ci95": [
+    0.0,
+    0.0078125
+   ],
+   "call": "LEVEL",
+   "nodes_over_control": 1.0004131155100855,
+   "reached": false,
+   "hops": {
+    "1": {
+     "candidate_golds": 526,
+     "kept_golds": 526,
+     "kept_share": 1.0
+    },
+    "2": {
+     "candidate_golds": 457,
+     "kept_golds": 452,
+     "kept_share": 0.9890590809628009
+    },
+    "3": {
+     "candidate_golds": 0,
+     "kept_golds": 0,
+     "kept_share": null
+    }
+   },
+   "by_gold_count": {
+    "1": {
+     "questions": 110,
+     "ALL": 0.990909090909091
+    },
+    "2": {
+     "questions": 62,
+     "ALL": 0.967741935483871
+    },
+    "3": {
+     "questions": 47,
+     "ALL": 0.851063829787234
+    },
+    "4+": {
+     "questions": 165,
+     "ALL": 0.7333333333333333
+    }
+   }
+  }
+ },
+ "auc": {
+  "1": {
+   "positives": 526,
+   "negatives_sampled": 39797,
+   "auc_control": 0.8389351624895585,
+   "auc_lr": 0.9124148446904161,
+   "auc_gb": 0.8918971957589712
+  },
+  "2": {
+   "positives": 457,
+   "negatives_sampled": 300000,
+   "auc_control": 0.9589726039387308,
+   "auc_lr": 0.9741318198395332,
+   "auc_gb": 0.9448397155361049
+  }
+ }
+}
