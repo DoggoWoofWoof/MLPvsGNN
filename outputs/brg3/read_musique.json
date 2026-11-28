@@ -1,0 +1,153 @@
+{
+ "stage": "BRG3 read",
+ "declared_in": "docs/BRG3_DEPTH_AND_BEAM_SCREEN.md",
+ "set": "musique",
+ "cell": "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+ "utc": "2026-11-28T08:03:31Z",
+ "chunks": [
+  "dep_c0011.npz",
+  "dep_c0012.npz",
+  "dep_c0015.npz"
+ ],
+ "questions": 384,
+ "golds": 1280,
+ "variants": {
+  "control": {
+   "ALL": 0.8619791666666666,
+   "golds_in_pool": 0.95,
+   "mean_nodes": 2467.2239583333335,
+   "ceiling_ALL": 0.8932291666666666,
+   "ceiling_golds": 0.9609375,
+   "by_gold_count": {
+    "3": {
+     "questions": 256,
+     "ALL": 0.9296875
+    },
+    "4+": {
+     "questions": 128,
+     "ALL": 0.7265625
+    }
+   }
+  },
+  "h3": {
+   "ALL": 0.8515625,
+   "golds_in_pool": 0.94609375,
+   "mean_nodes": 2231.9479166666665,
+   "ceiling_ALL": 0.9401041666666666,
+   "ceiling_golds": 0.98125,
+   "minus_control": -0.010416666666666666,
+   "ci95": [
+    -0.03125,
+    0.010416666666666666
+   ],
+   "call": "LEVEL",
+   "nodes_over_control": 0.9046393656838508,
+   "by_gold_count": {
+    "3": {
+     "questions": 256,
+     "ALL": 0.9296875
+    },
+    "4+": {
+     "questions": 128,
+     "ALL": 0.6953125
+    }
+   }
+  },
+  "h4": {
+   "ALL": 0.8359375,
+   "golds_in_pool": 0.94140625,
+   "mean_nodes": 2188.3255208333335,
+   "ceiling_ALL": 0.9401041666666666,
+   "ceiling_golds": 0.98046875,
+   "minus_control": -0.026041666666666668,
+   "ci95": [
+    -0.052083333333333336,
+    -0.0025390625000003553
+   ],
+   "call": "LEVEL",
+   "nodes_over_control": 0.8869586052137713,
+   "by_gold_count": {
+    "3": {
+     "questions": 256,
+     "ALL": 0.93359375
+    },
+    "4+": {
+     "questions": 128,
+     "ALL": 0.640625
+    }
+   }
+  },
+  "h3b100": {
+   "ALL": 0.8567708333333334,
+   "golds_in_pool": 0.9484375,
+   "mean_nodes": 2421.2317708333335,
+   "ceiling_ALL": 0.875,
+   "ceiling_golds": 0.9546875,
+   "minus_control": -0.005208333333333333,
+   "ci95": [
+    -0.026041666666666668,
+    0.015625
+   ],
+   "call": "LEVEL",
+   "nodes_over_control": 0.9813587301855367,
+   "by_gold_count": {
+    "3": {
+     "questions": 256,
+     "ALL": 0.9375
+    },
+    "4+": {
+     "questions": 128,
+     "ALL": 0.6953125
+    }
+   }
+  },
+  "h4b100": {
+   "ALL": 0.8515625,
+   "golds_in_pool": 0.94609375,
+   "mean_nodes": 2364.4036458333335,
+   "ceiling_ALL": 0.8828125,
+   "ceiling_golds": 0.9578125,
+   "minus_control": -0.010416666666666666,
+   "ci95": [
+    -0.033854166666666664,
+    0.010416666666666666
+   ],
+   "call": "LEVEL",
+   "nodes_over_control": 0.9583255050062591,
+   "by_gold_count": {
+    "3": {
+     "questions": 256,
+     "ALL": 0.9296875
+    },
+    "4+": {
+     "questions": 128,
+     "ALL": 0.6953125
+    }
+   }
+  },
+  "h5b100": {
+   "ALL": 0.8385416666666666,
+   "golds_in_pool": 0.9421875,
+   "mean_nodes": 2324.7395833333335,
+   "ceiling_ALL": 0.890625,
+   "ceiling_golds": 0.9609375,
+   "minus_control": -0.0234375,
+   "ci95": [
+    -0.049479166666666664,
+    0.0
+   ],
+   "call": "LEVEL",
+   "nodes_over_control": 0.9422491117927326,
+   "by_gold_count": {
+    "3": {
+     "questions": 256,
+     "ALL": 0.91796875
+    },
+    "4+": {
+     "questions": 128,
+     "ALL": 0.6796875
+    }
+   }
+  }
+ }
+}

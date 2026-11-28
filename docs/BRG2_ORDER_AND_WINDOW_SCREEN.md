@@ -54,6 +54,48 @@ Per question and variant the record keeps: the golds in the pool (head and expan
 
 CPU only, on the host through `rx exec` streams (`pylib_run.py outputs/mp_unified/zbrg2.py order --ds D | --kb K --host`), one set at a time per stream, two streams (MuSiQue then WebQSP; Amazon then Prime), MAG after its BRG1 trace ends. A `read` per set on the laptop after the fetch. Cost: six walks per question against BRG1's one.
 
-## 6. Results
+## 6. Results (28 Nov 2026 13:40 IST)
 
-None yet.
+**What ran.** `order` on the five sets of BRG1, three chunks each (384 questions; Prime 369), module sha256 prefix `30d9a5de5eea529b`, 30 chunk-variants per set. Streams on the host: MuSiQue then WebQSP; Amazon; Prime then MAG; and two extra MAG streams for chunk positions 1 and 2 (the first MAG stream skipped the chunks they had written). G-O1 PASS on every chunk of every set (0 mismatches between `control@512` and the engine's expansion and grade); `control@512`'s ALL equals BRG1's on all five sets (86.2, 87.8, 85.7, 86.7, 92.4). Records: `outputs/brg2/<set>/gate_order.json`, `ord_c*.npz`, `read_<set>.json`. All numbers are subset reads (screens), post hoc in the sense of the page's section 4.
+
+**Table 1. ALL (percent) by variant; the paired difference to `control@512` in points with its interval, and the call.**
+
+| set | `control@512` | `sup@512` | `ppr@512` | `fus@512` | `control@4096` | `fus@4096` |
+| --- | --- | --- | --- | --- | --- | --- |
+| MuSiQue | 86.2 | 78.6 (-7.55 [-10.42, -4.95] BELOW) | 79.7 (-6.51 [-9.12, -3.91] BELOW) | 83.9 (-2.34 [-4.17, -0.52] LEVEL) | 85.9 (-0.26 [-1.56, +1.04] LEVEL) | 82.0 (-4.17 [-6.51, -2.08] BELOW) |
+| WebQSP | 87.8 | 79.2 (-8.59 [-11.46, -5.99] BELOW) | 76.8 (-10.94 [-14.32, -7.81] BELOW) | 85.4 (-2.34 [-3.91, -1.04] BELOW) | 88.8 (+1.04 [-0.78, +3.12] LEVEL) | 87.5 (-0.26 [-2.86, +2.08] LEVEL) |
+| Amazon | 85.7 | 84.6 (-1.04 [-2.08, -0.26] LEVEL) | 84.1 (-1.56 [-2.86, -0.52] LEVEL) | 85.2 (-0.52 [-1.30, +0.00] LEVEL) | 87.5 (+1.82 [+0.00, +3.91] LEVEL) | 86.5 (+0.78 [-0.78, +2.60] LEVEL) |
+| Prime | 86.7 | 82.7 (-4.07 [-6.50, -1.90] BELOW) | 82.9 (-3.79 [-6.50, -1.36] BELOW) | 86.7 (+0.00 [-1.36, +1.63] LEVEL) | 86.4 (-0.27 [-1.90, +1.36] LEVEL) | 85.9 (-0.81 [-2.71, +0.81] LEVEL) |
+| MAG | 92.4 | 87.8 (-4.69 [-6.77, -2.86] BELOW) | 87.0 (-5.47 [-8.07, -3.39] BELOW) | 91.4 (-1.04 [-2.34, +0.00] LEVEL) | 93.2 (+0.78 [+0.00, +1.82] LEVEL) | 91.7 (-0.78 [-2.34, +0.78] LEVEL) |
+
+**Table 2. The ceiling: ALL of a perfect order at each variant's own frontier (golds in the head or among any hop's candidates), and what the wide window adds.**
+
+| set | ALL (`control@512`) | ceiling `control@512` | ceiling `control@4096` | candidate golds, 512 to 4096 (summed over hops) | kept share of the candidate golds at hop 2 / hop 3 (`control@512`) | mean pool size of `control@4096` over `control@512` |
+| --- | --- | --- | --- | --- | --- | --- |
+| MuSiQue | 86.2 | 89.3 (+3.1) | 90.1 | 568 to 608 (+7.0%) | 95.2% / - | 0.961 |
+| WebQSP | 87.8 | 93.2 (+5.4) | 97.7 | 2,166 to 2,425 (+12.0%) | 70.2% / 25.9% | 0.990 |
+| Amazon | 85.7 | 86.5 (+0.8) | 90.4 | 983 to 1,191 (+21.2%) | 99.1% / - | 0.957 |
+| Prime | 86.7 | 96.5 (+9.8) | 97.8 | 675 to 692 (+2.5%) | 83.5% / 41.3% | 0.995 |
+| MAG | 92.4 | 97.4 (+5.0) | 99.5 | 841 to 881 (+4.8%) | 83.0% / 39.7% | 0.990 |
+
+Pool sizes of the orders at 512 against the control: `sup` 1.014 to 1.058 times, `ppr` 1.021 to 1.063 times, `fus` 1.000 to 1.002 times.
+
+**Calls on the priors** (each against every value of its sentence).
+
+- **O1 HELD.** MuSiQue: `sup` -7.55 and `ppr` -6.51 are BELOW, `fus` -2.34 LEVEL, none ABOVE; the ceiling of `control@512` is 3.1 points above its ALL (at most 4.0 expected).
+- **O2 NOT HELD.** Prime `fus@512` is +0.00 [-1.36, +1.63] LEVEL, not ABOVE, and at hop 2 it keeps 83.1 percent of the candidate golds against the control's 83.5 (3 points more were expected). (Prime's `control` key is already the fusion `fu`.)
+- **O3 NOT HELD as worded.** WebQSP `control@4096` has 12.0 percent more candidate golds than `control@512` (at least 20 expected); its ALL is +1.04 [-0.78, +3.12], LEVEL (as expected).
+- **O4 HELD.** WebQSP: `sup` -8.59, `ppr` -10.94 and `fus` -2.34 are BELOW; none ABOVE.
+- **O5 HELD.** Amazon: all five variants LEVEL (-1.56 to +1.82); `control@4096` is the nearest to ABOVE (+1.82 [+0.00, +3.91]).
+- **O6 HELD.** Amazon's ceiling rises from 86.5 to 90.4 with the wide window (+3.9; at least +2.0 expected).
+- **O7 NOT HELD.** MAG: `sup` -4.69 [-6.77, -2.86] and `ppr` -5.47 [-8.07, -3.39] are BELOW (none BELOW expected); `fus` -1.04 LEVEL.
+- **O8 NOT HELD.** BELOW appears on four of the five sets (`sup`, `ppr` on MuSiQue, WebQSP, Prime, MAG; `fus` on WebQSP; `fus@4096` on MuSiQue), and the pool sizes of `sup` and `ppr` are 1.4 to 6.3 percent above the control's, of `control@4096` up to 4.3 percent below (within 2 percent expected).
+- **O9 HELD.** 0 mismatches on all 15 chunks of the five sets, 3 chunks each.
+
+**What the screen says.**
+
+1. **Ordering the candidates by how many frontier nodes list them, or by a reciprocal-rank sum of the frontier's places, is worse than the question's cosine on every set** (BELOW on four of five, LEVEL on Amazon at -1.04 and -1.56; the hop-2 kept share of the candidate golds falls by 8 to 42 points, Amazon 99.1 to 91.2 and 81.2, MuSiQue 95.2 to 54.0 and 52.9), and its fusion with the control order is level or below. The question's cosine is a stronger signal than the frontier's agreement. By the page's section 4 rule (a lever needs ABOVE on at least three of five sets and BELOW on none) **support, `ppr` and `fus` are closed as orders for this walk in this form**, and no variant is ABOVE on any set.
+2. **The wide window raises the ceilings (+0.8 to +4.5 points; Amazon +3.9, WebQSP +4.5) but its ALL is level on all five sets** (WebQSP +1.04, Amazon +1.82, MAG +0.78 positive, MuSiQue and Prime -0.26 and -0.27): the candidates arrive and the same order does not keep them.
+3. **The headroom is in the order and it is large where the walk already has the golds as candidates.** At the cell's own frontier a perfect order would give Prime 96.5 (+9.8), MAG 97.4 (+5.0), WebQSP 93.2 (+5.4), MuSiQue 89.3 (+3.1), Amazon 86.5 (+0.8); with the wide window 97.8, 99.5, 97.7, 90.1, 90.4. MuSiQue (+3.1) and Amazon (+0.8) have little at the cell's frontier (their misses are mostly beyond it: BRG1's no-path and window cuts), Prime, MAG and WebQSP have 5 to 10 points that no parameter-free key of PL4 to PL6 or this page realises. A scorer that sees the question and the edge is what is left for them; the learned stage is the place to measure it.
+
+Nothing is adopted.

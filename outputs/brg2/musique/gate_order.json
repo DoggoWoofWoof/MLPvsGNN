@@ -1,0 +1,42 @@
+{
+ "stage": "BRG2 gates",
+ "declared_in": "docs/BRG2_ORDER_AND_WINDOW_SCREEN.md",
+ "set": "musique",
+ "cell": "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+ "variants": [
+  "control@512",
+  "sup@512",
+  "ppr@512",
+  "fus@512",
+  "control@4096",
+  "fus@4096"
+ ],
+ "chunks": {
+  "12": {
+   "questions": 128,
+   "G-O1": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 86.4
+  },
+  "15": {
+   "questions": 128,
+   "G-O1": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 81.9
+  },
+  "11": {
+   "questions": 128,
+   "G-O1": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 56.1
+  }
+ },
+ "utc": "2026-11-28T07:37:01Z",
+ "verdict": "PASS"
+}

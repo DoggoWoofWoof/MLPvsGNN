@@ -48,6 +48,47 @@ Per question and variant: the golds in the pool (head and expansion), the pool s
 
 CPU only, on the host through `rx exec` streams (`pylib_run.py outputs/mp_unified/zbrg3.py depth --ds D | --kb K --host`), one stream per set. A `read` per set on the laptop after the fetch.
 
-## 6. Results
+## 6. Results (28 Nov 2026 13:40 IST)
 
-None yet.
+**What ran.** `depth` on MuSiQue, Amazon and Prime, three chunks each (BRG1's; 384, 384 and 369 questions), module sha256 prefix `73cf9a930ff01701`, three streams on the host. G-H1 PASS on every chunk (0 mismatches). `control` equals BRG1's and BRG2's `control@512` on all three sets (86.2, 85.7, 86.7), and Prime's `h3` equals `control` as constructed. Records: `outputs/brg3/<set>/gate_depth.json`, `dep_c*.npz`, `read_<set>.json`. Subset reads (screens).
+
+**Table 1. ALL (percent) by variant, the paired difference to `control` in points with its interval and the call; the ceiling (a perfect order at the variant's own frontier) and the mean pool size over the control's.**
+
+| set | variant | ALL | minus `control` [95% interval], call | ceiling | pool size over `control` |
+| --- | --- | --- | --- | --- | --- |
+| MuSiQue (cell h2) | `control` | 86.2 | | 89.3 | 1.000 |
+| | `h3` | 85.2 | -1.04 [-3.12, +1.04] LEVEL | 94.0 | 0.905 |
+| | `h4` | 83.6 | -2.60 [-5.21, -0.25] LEVEL | 94.0 | 0.887 |
+| | `h3b100` | 85.7 | -0.52 [-2.60, +1.56] LEVEL | 87.5 | 0.981 |
+| | `h4b100` | 85.2 | -1.04 [-3.39, +1.04] LEVEL | 88.3 | 0.958 |
+| | `h5b100` | 83.9 | -2.34 [-4.95, +0.00] LEVEL | 89.1 | 0.942 |
+| Amazon (cell h2) | `control` | 85.7 | | 86.5 | 1.000 |
+| | `h3` | 86.7 | +1.04 [-0.26, +2.60] LEVEL | 88.0 | 0.976 |
+| | `h4` | 87.0 | +1.30 [+0.00, +2.86] LEVEL | 88.3 | 0.942 |
+| | `h3b100` | 85.2 | -0.52 [-2.08, +0.78] LEVEL | 86.5 | 0.972 |
+| | `h4b100` | 85.7 | +0.00 [-1.56, +1.56] LEVEL | 87.0 | 0.993 |
+| | `h5b100` | 85.9 | +0.26 [-1.30, +1.82] LEVEL | 87.2 | 0.982 |
+| Prime (cell h3) | `control` (= `h3`) | 86.7 | | 96.5 | 1.000 |
+| | `h4` | 85.9 | -0.81 [-2.44, +0.54] LEVEL | 97.3 | 0.988 |
+| | `h3b100` | 88.9 | +2.17 [+0.27, +4.07] LEVEL | 93.8 | 1.011 |
+| | `h4b100` | 88.1 | +1.36 [-0.27, +3.25] LEVEL | 95.1 | 1.002 |
+| | `h5b100` | 87.8 | +1.08 [-0.54, +2.71] LEVEL | 95.4 | 0.997 |
+
+By gold count (4 or more golds): MuSiQue 72.7 (`control`), 69.5 (`h3`), 64.1 (`h4`), 69.5, 69.5, 68.0 (the three beams); Amazon 72.7, 74.5, 75.2, 71.5, 72.7, 73.3; Prime 79.2, 79.2 (`h3`), 75.5, 83.0, 77.4, 75.5.
+
+**Calls on the priors.**
+
+- **D1 HELD.** MuSiQue `h3` -1.04 and `h4` -2.60 are LEVEL (the upper end of `h4` is -0.25, above the -1.0 line), neither ABOVE.
+- **D2 NOT HELD.** No beam variant is ABOVE on MuSiQue (-0.52, -1.04, -2.34), and their ceilings (87.5, 88.3, 89.1) are below `control`'s 89.3, not 3 points above.
+- **D3 HELD.** Amazon: none ABOVE; `h4` is the nearest (+1.30 [+0.00, +2.86]).
+- **D4 HELD by the declared call, with a direction to report.** Prime: none ABOVE (the interval of `h3b100`, [+0.27, +4.07], lies above 0 and not above the +1.0 line); the three beams are +2.17, +1.36 and +1.08 and `h4` -0.81.
+- **D5 NOT HELD.** Pool sizes within 5 percent of `control`'s fail on MuSiQue (`h3` 0.905, `h4` 0.887, `h5b100` 0.942) and Amazon (`h4` 0.942); Prime's stay within 1.2 percent. More hops spend less of the visited budget when the candidates run short.
+- **D6 HELD.** 0 mismatches on all 9 chunks.
+
+**What the screen says.**
+
+1. **Depth and a question-ordered beam do not reach MuSiQue's missed golds: no variant is ABOVE on any of the three sets**, so by the page's section 4 rule (ABOVE on at least two of three, BELOW on none) depth and a beam of 100 are **closed as levers for this walk in this form**. MuSiQue's remaining distance is not the hop count.
+2. **The golds beyond the cell's hops are among the candidates once the walk goes deeper, and the order does not keep them.** MuSiQue's ceiling is 94.0 at three and four hops (against 89.3 at two) while its ALL falls to 85.2 and 83.6: the golds are among the candidates of the later hops and the order that keeps them does not pick them (BRG2: the question's cosine, which found the chain's first golds, beats the frontier-agreement orders, and none of the orders tried recovers the ceiling). On Amazon the ceiling at four hops is 88.3 (+1.8) and the ALL +1.30.
+3. **Prime leans the other way for a narrow frontier**: all three beams are positive (+1.08 to +2.17, ALL 87.8 to 88.9) while the same variants give -0.52 to -2.34 on MuSiQue and -0.52 to +0.26 on Amazon; with one set positive, one level and one negative it is not a lever, and it is the one direction of this page worth a whole-split read if the rules path is continued.
+
+Nothing is adopted.

@@ -1,0 +1,42 @@
+{
+ "stage": "BRG2 gates",
+ "declared_in": "docs/BRG2_ORDER_AND_WINDOW_SCREEN.md",
+ "set": "webqsp",
+ "cell": "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+ "variants": [
+  "control@512",
+  "sup@512",
+  "ppr@512",
+  "fus@512",
+  "control@4096",
+  "fus@4096"
+ ],
+ "chunks": {
+  "7": {
+   "questions": 128,
+   "G-O1": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 339.2
+  },
+  "2": {
+   "questions": 128,
+   "G-O1": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 399.7
+  },
+  "3": {
+   "questions": 128,
+   "G-O1": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 423.7
+  }
+ },
+ "utc": "2026-11-28T07:56:28Z",
+ "verdict": "PASS"
+}
