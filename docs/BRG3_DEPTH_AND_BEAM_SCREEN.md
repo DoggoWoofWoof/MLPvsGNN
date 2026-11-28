@@ -105,3 +105,29 @@ Declared after section 6 and before any number of WebQSP or MAG on this page. No
 - **D10 (size and gate).** Mean pool sizes of every variant are within 5 percent of `control`'s on both sets; `control` equals the engine on every question (0 mismatches).
 
 Each prior is judged against every value of its sentence; results go into this section as section 7.1 after the rows end. Nothing is adopted.
+
+### 7.1 Results (28 Nov 2026 13:53 IST)
+
+`depth` on WebQSP (384 questions) and MAG (384), three chunks each, one host stream per set, module sha256 prefix `73cf9a930ff01701`. G-H1 PASS on all 6 chunks (0 mismatches). `control` equals BRG1's and BRG2's `control@512` (87.8 and 92.4); `h3` equals `control` as constructed. Records: `outputs/brg3/{webqsp,mag}/gate_depth.json`, `dep_c*.npz`, `read_<set>.json`.
+
+| set | variant | ALL | minus `control` [95% interval], call | ceiling | pool size over `control` |
+| --- | --- | --- | --- | --- | --- |
+| WebQSP (cell h3) | `control` (= `h3`) | 87.8 | | 93.2 | 1.000 |
+| | `h4` | 85.9 | -1.82 [-3.91, +0.26] LEVEL | 96.1 | 0.993 |
+| | `h3b100` | 85.9 | -1.82 [-4.17, +0.52] LEVEL | 87.5 | 1.005 |
+| | `h4b100` | 87.5 | -0.26 [-2.86, +2.34] LEVEL | 90.4 | 1.004 |
+| | `h5b100` | 86.7 | -1.04 [-3.91, +1.56] LEVEL | 91.1 | 1.001 |
+| MAG (cell h3) | `control` (= `h3`) | 92.4 | | 97.4 | 1.000 |
+| | `h4` | 91.9 | -0.52 [-1.82, +0.78] LEVEL | 98.4 | 0.993 |
+| | `h3b100` | 91.4 | -1.04 [-2.86, +0.78] LEVEL | 94.0 | 1.013 |
+| | `h4b100` | 90.1 | -2.34 [-4.17, -0.52] LEVEL | 94.0 | 1.006 |
+| | `h5b100` | 90.4 | -2.08 [-4.17, -0.26] LEVEL | 94.8 | 1.003 |
+
+**Calls on the priors.**
+
+- **D7 NOT HELD.** WebQSP: no variant is ABOVE (as expected), but no beam variant is BELOW either: the three beams are -1.82, -0.26 and -1.04 with intervals reaching +0.52, +2.34 and +1.56, all LEVEL; at least one BELOW was expected.
+- **D8 NOT HELD.** MAG `h3b100` is not BELOW (-1.04 [-2.86, +0.78] LEVEL, as expected) and no variant is ABOVE, but its difference is below 0, not above: the direction of Prime does not repeat (all three beams are negative, -1.04, -2.34, -2.08).
+- **D9 HELD.** No beam variant is ABOVE on any of Prime, WebQSP, MAG (the only interval whose lower end is above 0 is Prime's `h3b100`, +0.27), so the candidate rule (ABOVE on at least two of three, BELOW on none) is not met.
+- **D10 HELD.** Mean pool sizes are within 1.3 percent of `control`'s on both sets (0.993 to 1.013); 0 mismatches on all 6 chunks.
+
+**What it says.** Across the three sets whose cell walks three hops the beam of 100 is +2.17 (Prime), -1.82 (WebQSP) and -1.04 (MAG) at `h3b100`, and the other beam variants have the same mixed signs (Prime +1.36, +1.08; WebQSP -0.26, -1.04; MAG -2.34, -2.08). Prime's positive reading is not repeated on the two sets with the same cell; with the MuSiQue and Amazon reads of section 6 **a question-ordered beam of 100 and the depth of three to five hops are closed as levers for this walk, on all five screened sets, in this form** (no variant ABOVE anywhere; the only interval above 0 is Prime's, at +0.27). What remains of the order headroom of BRG2 (Prime +9.8, WebQSP +5.4, MAG +5.0) is not reached by the question's cosine, by frontier agreement, by a wider window, by depth or by a narrower frontier; it needs a scorer that sees the question and the edge. Nothing is adopted.

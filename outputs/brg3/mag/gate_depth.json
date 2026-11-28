@@ -1,0 +1,42 @@
+{
+ "stage": "BRG3 gates",
+ "declared_in": "docs/BRG3_DEPTH_AND_BEAM_SCREEN.md",
+ "set": "mag",
+ "cell": "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+ "variants": [
+  "control",
+  "h3",
+  "h4",
+  "h3b100",
+  "h4b100",
+  "h5b100"
+ ],
+ "chunks": {
+  "10": {
+   "questions": 128,
+   "G-H1": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 209.8
+  },
+  "8": {
+   "questions": 128,
+   "G-H1": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 211.3
+  },
+  "17": {
+   "questions": 128,
+   "G-H1": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 198.1
+  }
+ },
+ "utc": "2026-11-28T08:22:50Z",
+ "verdict": "PASS"
+}
