@@ -1,0 +1,914 @@
+{
+ "stage": "BRG7 gates",
+ "declared_in": "docs/BRG7_LEARNED_ORDER_CAP_WALK.md",
+ "set": "metaqa",
+ "cell": "rrf1000_b800+STRUCT:h3_c25_v2000",
+ "fit_chunks": [
+  13,
+  73,
+  39,
+  23,
+  54,
+  3
+ ],
+ "screen_chunks": [
+  70,
+  4,
+  43
+ ],
+ "read_chunks": [
+  70,
+  4,
+  43,
+  42,
+  32,
+  19,
+  27,
+  52,
+  71,
+  60,
+  15,
+  57,
+  58,
+  50,
+  63,
+  9,
+  33,
+  65,
+  51,
+  5,
+  72,
+  67,
+  21,
+  14,
+  38,
+  1,
+  10,
+  8,
+  0,
+  69,
+  30,
+  34,
+  36,
+  2,
+  20,
+  48,
+  47,
+  24,
+  68,
+  6,
+  76,
+  56,
+  31,
+  11,
+  18,
+  16,
+  66,
+  59,
+  64,
+  37,
+  46,
+  22,
+  41,
+  49,
+  35,
+  61,
+  40,
+  44,
+  17,
+  53,
+  7,
+  74,
+  29,
+  45,
+  28,
+  75,
+  55,
+  12,
+  62,
+  25,
+  26
+ ],
+ "variants": [
+  "c25",
+  "l25",
+  "c50",
+  "l50",
+  "c100",
+  "l100"
+ ],
+ "questions_expected": 9017,
+ "train": {
+  "13": {
+   "questions": 128,
+   "G-M1_recount_mismatches": 0,
+   "G-M1_nonfinite": 0,
+   "seconds": 9.7,
+   "positives": {
+    "25_2": 0,
+    "25_3": 0,
+    "50_2": 0,
+    "50_3": 0,
+    "100_2": 0,
+    "100_3": 0
+   }
+  },
+  "73": {
+   "questions": 128,
+   "G-M1_recount_mismatches": 0,
+   "G-M1_nonfinite": 0,
+   "seconds": 11.7,
+   "positives": {
+    "25_2": 66,
+    "25_3": 1158,
+    "50_2": 78,
+    "50_3": 1209,
+    "100_2": 79,
+    "100_3": 1223
+   }
+  },
+  "39": {
+   "questions": 128,
+   "G-M1_recount_mismatches": 0,
+   "G-M1_nonfinite": 0,
+   "seconds": 9.1,
+   "positives": {
+    "25_2": 967,
+    "25_3": 4,
+    "50_2": 1068,
+    "50_3": 0,
+    "100_2": 1069,
+    "100_3": 1
+   }
+  },
+  "23": {
+   "questions": 128,
+   "G-M1_recount_mismatches": 0,
+   "G-M1_nonfinite": 0,
+   "seconds": 8.7,
+   "positives": {
+    "25_2": 652,
+    "25_3": 1,
+    "50_2": 674,
+    "50_3": 0,
+    "100_2": 675,
+    "100_3": 0
+   }
+  },
+  "54": {
+   "questions": 128,
+   "G-M1_recount_mismatches": 0,
+   "G-M1_nonfinite": 0,
+   "seconds": 13.2,
+   "positives": {
+    "25_2": 63,
+    "25_3": 1402,
+    "50_2": 78,
+    "50_3": 1511,
+    "100_2": 78,
+    "100_3": 1503
+   }
+  },
+  "3": {
+   "questions": 128,
+   "G-M1_recount_mismatches": 0,
+   "G-M1_nonfinite": 0,
+   "seconds": 12.7,
+   "positives": {
+    "25_2": 1,
+    "25_3": 1,
+    "50_2": 0,
+    "50_3": 0,
+    "100_2": 0,
+    "100_3": 0
+   }
+  }
+ },
+ "chunks": {
+  "70": {
+   "questions": 128,
+   "seen": true,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 28.8
+  },
+  "4": {
+   "questions": 128,
+   "seen": true,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 27.7
+  },
+  "43": {
+   "questions": 128,
+   "seen": true,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 23.6
+  },
+  "42": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 21.6
+  },
+  "32": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 16.0
+  },
+  "19": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 14.2
+  },
+  "27": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 15.8
+  },
+  "52": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 18.4
+  },
+  "71": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 22.3
+  },
+  "60": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 27.5
+  },
+  "15": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 27.0
+  },
+  "57": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 27.6
+  },
+  "58": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 27.7
+  },
+  "50": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 27.5
+  },
+  "63": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 27.1
+  },
+  "9": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 26.5
+  },
+  "33": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 22.2
+  },
+  "65": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 27.4
+  },
+  "51": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 28.6
+  },
+  "5": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 26.5
+  },
+  "72": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 28.5
+  },
+  "67": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 28.0
+  },
+  "21": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 22.3
+  },
+  "14": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 26.8
+  },
+  "38": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 22.4
+  },
+  "1": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 19.8
+  },
+  "10": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 25.5
+  },
+  "8": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 26.2
+  },
+  "0": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 20.2
+  },
+  "69": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 25.7
+  },
+  "30": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 22.3
+  },
+  "34": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 22.5
+  },
+  "36": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 22.0
+  },
+  "2": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 20.7
+  },
+  "20": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 21.7
+  },
+  "48": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 23.5
+  },
+  "47": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 21.1
+  },
+  "24": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 21.7
+  },
+  "68": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 26.7
+  },
+  "6": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 26.0
+  },
+  "76": {
+   "questions": 57,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 11.6
+  },
+  "56": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 26.9
+  },
+  "31": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 21.5
+  },
+  "11": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 25.5
+  },
+  "18": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 20.8
+  },
+  "16": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 25.2
+  },
+  "66": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 26.2
+  },
+  "59": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 26.2
+  },
+  "64": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 26.2
+  },
+  "37": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 22.1
+  },
+  "46": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 21.8
+  },
+  "22": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 21.6
+  },
+  "41": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 21.5
+  },
+  "49": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 26.4
+  },
+  "35": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 21.4
+  },
+  "61": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 25.5
+  },
+  "40": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 21.9
+  },
+  "44": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 21.2
+  },
+  "17": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 22.8
+  },
+  "53": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 25.9
+  },
+  "7": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 25.9
+  },
+  "74": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 27.3
+  },
+  "29": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 22.1
+  },
+  "45": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 22.0
+  },
+  "28": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 21.1
+  },
+  "75": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 25.6
+  },
+  "55": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 25.9
+  },
+  "12": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 25.4
+  },
+  "62": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 25.9
+  },
+  "25": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 22.1
+  },
+  "26": {
+   "questions": 128,
+   "seen": false,
+   "G-M0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-M2": null,
+   "seconds": 21.7
+  }
+ },
+ "questions_read": 9017,
+ "G-M3": {
+  "complete": true
+ },
+ "verdict": "PASS",
+ "utc": "2026-11-28T15:38:07Z"
+}

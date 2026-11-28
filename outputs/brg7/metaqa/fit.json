@@ -1,0 +1,73 @@
+{
+ "stage": "BRG7 fit",
+ "declared_in": "docs/BRG7_LEARNED_ORDER_CAP_WALK.md",
+ "set": "metaqa",
+ "utc": "2026-11-28T15:10:02Z",
+ "fit_chunks": [
+  13,
+  73,
+  39,
+  23,
+  54,
+  3
+ ],
+ "fits": {
+  "25": {
+   "1": {
+    "rows": 0,
+    "positives": 0,
+    "fitted": false
+   },
+   "2": {
+    "rows": 269497,
+    "positives": 1749,
+    "fitted": true,
+    "iterations": 17
+   },
+   "3": {
+    "rows": 802564,
+    "positives": 2566,
+    "fitted": true,
+    "iterations": 16
+   }
+  },
+  "50": {
+   "1": {
+    "rows": 0,
+    "positives": 0,
+    "fitted": false
+   },
+   "2": {
+    "rows": 414441,
+    "positives": 1898,
+    "fitted": true,
+    "iterations": 16
+   },
+   "3": {
+    "rows": 802718,
+    "positives": 2720,
+    "fitted": true,
+    "iterations": 17
+   }
+  },
+  "100": {
+   "1": {
+    "rows": 0,
+    "positives": 0,
+    "fitted": false
+   },
+   "2": {
+    "rows": 650909,
+    "positives": 1901,
+    "fitted": true,
+    "iterations": 17
+   },
+   "3": {
+    "rows": 802725,
+    "positives": 2727,
+    "fitted": true,
+    "iterations": 21
+   }
+  }
+ }
+}

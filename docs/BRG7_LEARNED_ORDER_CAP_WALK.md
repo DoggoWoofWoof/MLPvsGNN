@@ -43,6 +43,33 @@ Correction of section 4 and prior P5 (before any row of this page, after reading
 
 One stream on the host (CPU only, two threads), `zbrg7.py screen --ds metaqa --host`, then `read` on the laptop; records `outputs/brg7/metaqa/` (per-chunk `scr_c*.npz`, `gate_m.json`, `fit.json`) and `outputs/brg7/read_metaqa.json`. The training matrices stay on the host. Module sha: recorded here after the self-test.
 
-## 7. Results
+## 7. Results (28 Nov 2026 21:11 IST)
 
-None yet.
+`screen --ds metaqa` on the host, module sha256 prefix `c00428636a681398` (local = host; committed 14fdd2d8; self-test PASS on 288 walks; smoke of 24 questions before the row), one stream, 20:38 to 21:07. The fit: chunks 70, 4, 43 are the screen chunks (positions 0 to 2); the fit chunks are positions 3 to 8; 71 chunks read (8,633 unseen questions with 64,369 golds, 384 screen questions). G-M0 PASS (0 mismatches between the `c25` walk and the engine on all 71 chunks), G-M1 PASS (recount 0, non-finite 0 on the six training chunks), G-M2 PASS (`c25`, `c50`, `c100` reproduce BRG4's three controls on the three screen chunks), G-M3 PASS (complete). Positives per hop in the fit (cap 25 / 50 / 100): hop 2 1,749 / 1,898 / 1,901, hop 3 2,566 / 2,720 / 2,727 (hop 1 is not scored). Records: `outputs/brg7/metaqa/gate_m.json`, `fit.json`, `scr_c*.npz` and `outputs/brg7/read_metaqa.json`.
+
+Unseen part (8,633 questions). Each cell: ALL; mean nodes (ratio to `c25`); ceiling (golds among the candidates); difference to `c25` [95% interval], call; difference to the control of the same cap, call.
+
+| variant | ALL | mean nodes (over `c25`) | ceiling | minus `c25` [interval], call | minus same-cap control, call |
+| --- | --- | --- | --- | --- | --- |
+| `c25` (the cell) | 93.3 | 2,478 (1.000) | 94.2 | | |
+| `l25` | 89.0 | 2,470 (0.997) | 94.2 | -4.29 [-4.75, -3.83] BELOW | -4.29, BELOW |
+| `c50` | 92.8 | 2,616 (1.056) | 99.5 | -0.56 [-1.20, +0.06] LEVEL | |
+| `l50` | 87.4 | 2,606 (1.052) | 99.5 | -5.94 [-6.64, -5.26] BELOW | -5.39 [-6.03, -4.70] BELOW |
+| `c100` | 80.6 | 2,689 (1.085) | 99.9 | -12.70 [-13.59, -11.87] BELOW | |
+| `l100` | 85.8 | 2,676 (1.080) | 99.9 | -7.53 [-8.29, -6.79] BELOW | **+5.17 [+4.54, +5.83] ABOVE** |
+
+The screen part (384 questions) reproduces BRG4's numbers (`c25` 93.8, `c50` 93.0, `c100` 81.8) and the remainder (9,017 questions) the unseen part's (`c25` 93.3, `l25` 89.0, `c50` 92.8, `l50` 87.4, `c100` 80.7, `l100` 85.8).
+
+Golds that are candidates of hop 3 (the last hop, where the visited cap binds) and the share that the walk keeps within the budget, unseen part: `c25` 32,858 of 33,848 (97.1 percent); `l25` 29,367 (86.8); `c50` 27,694 of 35,360 (78.3); `l50` 24,938 (70.5); `c100` 14,538 of 35,312 (41.2); `l100` 19,900 (56.4). Hop 2 never binds: every gold among the hop-2 candidates is kept by every variant (20,285 of 20,285 at cap 25; 21,908 at cap 50; 22,073 at cap 100).
+
+**Calls on the priors.**
+
+- **P1 NOT HELD.** `l25` against `c25` is -4.29 [-4.75, -3.83], BELOW (the prior said LEVEL, between -0.5 and +1.5).
+- **P2 NOT HELD.** `l50` against `c25` is -5.94 [-6.64, -5.26], BELOW (the prior said ABOVE).
+- **P3 HELD.** `l100` against `c100` is +5.17 [+4.54, +5.83] (at least +3.0), and `l100` against `c25` is -7.53 [-8.29, -6.79], upper end below -1.0.
+- **P4 NOT HELD.** `l50` (87.4) is above `l100` (85.8) and below `l25` (89.0).
+- **P5 HELD.** The pools of the learned variants are 0.997, 0.996 and 0.995 times their same-cap controls'.
+- **P6 HELD.** The unseen `c25` ALL is 93.3, the filed whole-split value.
+- **P7 HELD.** G-M0 to G-M3.
+
+**What it says.** On MetaQA's cap walk a logistic regression on the 12 walk features ranks the last hop's candidates worse than their arrival order at the point that matters, the cut at the remaining visited cap: it keeps 86.8 percent of the golds that are candidates against 97.1 at cap 25, and 70.5 against 78.3 at cap 50. It is ABOVE only where the arrival order floods (cap 100, +5.17), and that is still 7.5 points below the cell. The arrival order is not an arbitrary one here: candidates arrive grouped under their frontier node in the row's own order, and the golds of a question arrive as blocks under a few parents, which a score of each candidate on its own cannot keep (a reading, not tested on this page). MetaQA's misses are not an order problem, as BRG4 found for the parameter-free orders; they are the row cap, and the screen leaves the row as the thing to change: BRG8 (`docs/BRG8_ROW_LENGTH_CAP.md`).
