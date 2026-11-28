@@ -107,3 +107,35 @@ Priors (written before any row of this amendment).
 - **T5.** No variant is ABOVE on HotpotQA, SQuAD or MultiHop-RAG (they are at the ceiling already).
 
 Rows: four streams (MetaQA, HotpotQA, SQuAD on the host, CPU only, two threads each; MultiHop-RAG on the laptop), `zbrg9.py screen --ds D --chunks 0`, then `read`; module sha unchanged.
+
+## 9. Results of Amendment 1 (28 Nov 2026 22:38 IST)
+
+`zbrg9.py screen --ds D --chunks 0` on the whole split of MetaQA (77 chunks, 9,785 questions), HotpotQA (58 chunks, 7,405), SQuAD (93 chunks, 11,873) and MultiHop-RAG (9 chunks, 1,130; the laptop), then `read`; module sha256 prefix `ee33c22782d00628`, unchanged (local = host). HotpotQA and SQuAD ran on the host from 21:46 to 22:19 and 22:27 (two threads each), MetaQA and MultiHop-RAG before them. Gates: G-S0 0 differences on every chunk of the four sets; G-S1 0 differences on the three screen chunks (MetaQA's V1, V2, V3 equal BRG8's per question); G-S3 every chunk read; **G-S4** the whole-split `eng` ALL equals DRP1 section 17's filed value within 0.1 point and the question counts are the filed ones: MetaQA 93.32 (filed 93.3, 9,785 questions); HotpotQA 98.54 (filed 98.5, 7,405 questions); SQuAD 99.59 (filed 99.6, 11,873 questions); MultiHop-RAG 98.76 (filed 98.8, 1,130 questions). MetaQA's V1, V2, V3 on the whole split are 98.15, 97.57, 98.90 against BRG8's 98.2, 97.6, 98.9.
+
+Whole split, per set: ALL of `eng` at its mean pool, then V1 to V7: ALL, in brackets the paired difference to `eng` in points and its call (A above, L level, B below at the 1.0-point line, 2,000 bootstrap resamples, seed 20261128), and the mean pool after @.
+
+| set | questions | `eng` | V1 (50, 25) | V2 (100, 25) | V3 (100, 10) | V4 (200, 10) | V5 (200, 25) | V6 (100, 50) | V7 (50, 10) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| MetaQA | 9,785 | 93.32 @ 2,485 | 98.15 (+4.83 A) @ 2,501 | 97.57 (+4.25 A) @ 2,541 | 98.90 (+5.58 A) @ 2,413 | 95.07 (+1.76 A) @ 2,573 | 92.45 (-0.87 L) @ 2,618 | 92.39 (-0.93 L) @ 2,629 | 98.89 (+5.57 A) @ 2,283 |
+| HotpotQA | 7,405 | 98.54 @ 1,885 | 98.31 (-0.23 L) @ 1,315 | 98.38 (-0.16 L) @ 1,413 | 98.31 (-0.23 L) @ 1,331 | 98.50 (-0.04 L) @ 1,507 | 98.50 (-0.04 L) @ 1,575 | 98.47 (-0.07 L) @ 1,564 | 98.16 (-0.38 L) @ 1,212 |
+| SQuAD | 11,873 | 99.59 @ 1,574 | 99.49 (-0.09 L) @ 1,062 | 99.51 (-0.08 L) @ 1,223 | 99.51 (-0.08 L) @ 1,190 | 99.54 (-0.05 L) @ 1,521 | 99.54 (-0.05 L) @ 1,537 | 99.52 (-0.07 L) @ 1,325 | 99.49 (-0.10 L) @ 1,034 |
+| MultiHop-RAG | 1,130 | 98.76 @ 100 | 98.94 (+0.18 L) @ 100 | 98.85 (+0.09 L) @ 100 | 98.94 (+0.18 L) @ 100 | 98.76 (+0.00 L) @ 100 | 98.76 (+0.00 L) @ 100 | 98.76 (+0.00 L) @ 100 | 98.41 (-0.35 L) @ 97 |
+
+The unseen part (every chunk outside the three screen chunks) and its two halves (even and odd chunk positions): the calls on the unseen part, the even half and the odd half in that order, then the unseen part's pool ratio to `eng`'s. A variant is `reached` when all three calls are A with a ratio of at most 1.05.
+
+| set | V1 | V2 | V3 | V4 | V5 | V6 | V7 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| MetaQA | V1 A/A/A 1.007 | V2 A/A/A 1.023 | V3 A/A/A 0.971 | V4 A/A/L 1.036 | V5 L/L/B 1.054 | V6 L/L/B 1.058 | V7 A/A/A 0.919 |
+| HotpotQA | V1 L/L/L 0.698 | V2 L/L/L 0.750 | V3 L/L/L 0.706 | V4 L/L/L 0.799 | V5 L/L/L 0.835 | V6 L/L/L 0.829 | V7 L/L/L 0.643 |
+| SQuAD | V1 L/L/L 0.674 | V2 L/L/L 0.777 | V3 L/L/L 0.756 | V4 L/L/L 0.967 | V5 L/L/L 0.977 | V6 L/L/L 0.841 | V7 L/L/L 0.656 |
+| MultiHop-RAG | V1 L/L/L 1.000 | V2 L/L/L 1.000 | V3 L/L/L 1.000 | V4 L/L/L 1.000 | V5 L/L/L 1.000 | V6 L/L/L 1.000 | V7 L/L/L 0.973 |
+
+**Calls on the priors.**
+
+- **T1 HELD.** G-S4 holds on all four sets (above); MetaQA's V1, V2, V3 equal BRG8's whole-split values within 0.1 point.
+- **T2 HELD.** MetaQA V7 is ABOVE on the unseen part and on both halves (+5.56, +5.74, +5.38) with a pool ratio of 0.919 (at most 0.97) and a whole-split ALL of 98.89 (at least 98.5). V1 (1.007), V2 (1.023) and V3 (0.971) are reached too; V4 is ABOVE on the unseen part and the even half and LEVEL on the odd half; V5 and V6 are LEVEL on the unseen part and the even half and BELOW on the odd half.
+- **T3 HELD.** HotpotQA: all seven variants are not BELOW on the unseen part (LEVEL, -0.04 to -0.36) with ratios of 0.643 to 0.835 (at most 0.85); SQuAD: V1, V2, V3, V6 and V7 are LEVEL on the unseen part (-0.07 to -0.08) with ratios of 0.656 to 0.841.
+- **T4 NOT HELD as worded.** MultiHop-RAG: every variant is within 0.5 point of `eng` (the largest difference is V7's -0.35) but V7's pool is 0.974 of `eng`'s (0.973 on the unseen part), 0.026 away (the clause was 0.02); V1 to V6 are within 0.001 of it. V7 cuts long rows at 10, the smallest H of the seven, and on a few questions its walk gives fewer of the nodes the pool takes from it (read from the pool sizes, not traced).
+- **T5 HELD.** No variant is ABOVE on HotpotQA, SQuAD or MultiHop-RAG (all LEVEL on the whole split, the unseen part and both halves).
+
+**What it says.** The whole split confirms the screen on the four per-row-cap sets, and the effect is the pool, not the coverage, where the cell was already at the target: HotpotQA's V7 holds ALL at 98.16 against 98.54 (-0.38, LEVEL) at 1,212 nodes against 1,885 (0.643), SQuAD's at 99.49 against 99.59 (-0.10, LEVEL) at 1,034 nodes against 1,574 (0.657), MultiHop-RAG's at 98.41 against 98.76 (-0.35, LEVEL) at 97 nodes against 100; MetaQA's V7 is ABOVE, 98.89 against 93.32 at 2,283 nodes against 2,485 (0.919). The same pair (50, 10) is ABOVE on one and LEVEL on four of the five per-row-cap sets (2Wiki on the screen only: +0.26, pool 1.001), and BELOW or LEVEL on the budget-following cells (section 7), so it is one rule for one family of cells and the family is not all ten. MetaQA reads 98.89 at 2,283 nodes, ABOVE on the unseen part and on both halves. The pair itself was one of seven read on 384 questions; BRG10 (`docs/BRG10_ROW_LENGTH_SURFACE.md`) reads a grid of 35 and 22 pairs on the same whole splits and makes the choice on one half of the chunks and checks it on the other. Nothing is adopted.
