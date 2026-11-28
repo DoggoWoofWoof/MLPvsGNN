@@ -1,0 +1,97 @@
+{
+ "stage": "BRG9 gates",
+ "declared_in": "docs/BRG9_ROW_LENGTH_CAP_ALL.md",
+ "set": "2wiki",
+ "cell": "rrf1000_b400+FULL:h3_c25_v2000~s20-cs-vr-eq",
+ "variants": [
+  [
+   "eng",
+   null,
+   null
+  ],
+  [
+   "same",
+   null,
+   null
+  ],
+  [
+   "V1",
+   50,
+   25
+  ],
+  [
+   "V2",
+   100,
+   25
+  ],
+  [
+   "V3",
+   100,
+   10
+  ],
+  [
+   "V4",
+   200,
+   10
+  ],
+  [
+   "V5",
+   200,
+   25
+  ],
+  [
+   "V6",
+   100,
+   50
+  ],
+  [
+   "V7",
+   50,
+   10
+  ]
+ ],
+ "chunks": {
+  "47": {
+   "position": 0,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": null,
+   "seconds": 649.7
+  },
+  "1": {
+   "position": 1,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": null,
+   "seconds": 596.7
+  },
+  "83": {
+   "position": 2,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": null,
+   "seconds": 598.0
+  }
+ },
+ "order": [
+  47,
+  1,
+  83
+ ],
+ "questions_expected": 384,
+ "questions_read": 384,
+ "G-S3": {
+  "complete": true
+ },
+ "verdict": "PASS",
+ "utc": "2026-11-28T16:26:30Z"
+}

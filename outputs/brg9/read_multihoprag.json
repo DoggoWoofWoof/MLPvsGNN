@@ -1,0 +1,675 @@
+{
+ "stage": "BRG9 read",
+ "declared_in": "docs/BRG9_ROW_LENGTH_CAP_ALL.md",
+ "set": "multihoprag",
+ "cell": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+ "utc": "2026-11-28T16:19:55Z",
+ "variants": [
+  [
+   "eng",
+   null,
+   null
+  ],
+  [
+   "same",
+   null,
+   null
+  ],
+  [
+   "V1",
+   50,
+   25
+  ],
+  [
+   "V2",
+   100,
+   25
+  ],
+  [
+   "V3",
+   100,
+   10
+  ],
+  [
+   "V4",
+   200,
+   10
+  ],
+  [
+   "V5",
+   200,
+   25
+  ],
+  [
+   "V6",
+   100,
+   50
+  ],
+  [
+   "V7",
+   50,
+   10
+  ]
+ ],
+ "chunks_read": 9,
+ "all": {
+  "questions": 1130,
+  "golds": 2985,
+  "variants": {
+   "eng": {
+    "ALL": 0.9876106194690265,
+    "golds_in_pool": 0.9949748743718593,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0
+   },
+   "same": {
+    "ALL": 0.9876106194690265,
+    "golds_in_pool": 0.9949748743718593,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V1": {
+    "ALL": 0.9893805309734514,
+    "golds_in_pool": 0.995644891122278,
+    "mean_nodes": 99.96814159292036,
+    "nodes_over_eng": 0.9996814159292036,
+    "vs_eng": {
+     "diff": 0.0017699115044247787,
+     "ci95": [
+      0.0,
+      0.004424778761061947
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V2": {
+    "ALL": 0.988495575221239,
+    "golds_in_pool": 0.9953098827470687,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0008849557522123894,
+     "ci95": [
+      0.0,
+      0.002654867256637168
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V3": {
+    "ALL": 0.9893805309734514,
+    "golds_in_pool": 0.995644891122278,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0017699115044247787,
+     "ci95": [
+      0.0,
+      0.004424778761061947
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V4": {
+    "ALL": 0.9876106194690265,
+    "golds_in_pool": 0.9949748743718593,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V5": {
+    "ALL": 0.9876106194690265,
+    "golds_in_pool": 0.9949748743718593,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V6": {
+    "ALL": 0.9876106194690265,
+    "golds_in_pool": 0.9949748743718593,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V7": {
+    "ALL": 0.984070796460177,
+    "golds_in_pool": 0.9939698492462311,
+    "mean_nodes": 97.38849557522124,
+    "nodes_over_eng": 0.9738849557522125,
+    "vs_eng": {
+     "diff": -0.0035398230088495575,
+     "ci95": [
+      -0.009734513274336283,
+      0.0017699115044247787
+     ],
+     "call": "LEVEL"
+    }
+   }
+  }
+ },
+ "screen": {
+  "questions": 384,
+  "golds": 1010,
+  "variants": {
+   "eng": {
+    "ALL": 0.9817708333333334,
+    "golds_in_pool": 0.9920792079207921,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0
+   },
+   "same": {
+    "ALL": 0.9817708333333334,
+    "golds_in_pool": 0.9920792079207921,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V1": {
+    "ALL": 0.9817708333333334,
+    "golds_in_pool": 0.9920792079207921,
+    "mean_nodes": 99.9609375,
+    "nodes_over_eng": 0.999609375,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V2": {
+    "ALL": 0.9817708333333334,
+    "golds_in_pool": 0.9920792079207921,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V3": {
+    "ALL": 0.9817708333333334,
+    "golds_in_pool": 0.9920792079207921,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V4": {
+    "ALL": 0.9817708333333334,
+    "golds_in_pool": 0.9920792079207921,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V5": {
+    "ALL": 0.9817708333333334,
+    "golds_in_pool": 0.9920792079207921,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V6": {
+    "ALL": 0.9817708333333334,
+    "golds_in_pool": 0.9920792079207921,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V7": {
+    "ALL": 0.9791666666666666,
+    "golds_in_pool": 0.9920792079207921,
+    "mean_nodes": 97.65364583333333,
+    "nodes_over_eng": 0.9765364583333332,
+    "vs_eng": {
+     "diff": -0.0026041666666666665,
+     "ci95": [
+      -0.010416666666666666,
+      0.005208333333333333
+     ],
+     "call": "LEVEL"
+    }
+   }
+  }
+ },
+ "unseen": {
+  "questions": 746,
+  "golds": 1975,
+  "variants": {
+   "eng": {
+    "ALL": 0.9906166219839142,
+    "golds_in_pool": 0.9964556962025316,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0
+   },
+   "same": {
+    "ALL": 0.9906166219839142,
+    "golds_in_pool": 0.9964556962025316,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V1": {
+    "ALL": 0.9932975871313673,
+    "golds_in_pool": 0.9974683544303797,
+    "mean_nodes": 99.97184986595174,
+    "nodes_over_eng": 0.9997184986595173,
+    "vs_eng": {
+     "diff": 0.002680965147453083,
+     "ci95": [
+      0.0,
+      0.006702412868632708
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V2": {
+    "ALL": 0.9919571045576407,
+    "golds_in_pool": 0.9969620253164557,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0013404825737265416,
+     "ci95": [
+      0.0,
+      0.004021447721179625
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V3": {
+    "ALL": 0.9932975871313673,
+    "golds_in_pool": 0.9974683544303797,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.002680965147453083,
+     "ci95": [
+      0.0,
+      0.006702412868632708
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V4": {
+    "ALL": 0.9906166219839142,
+    "golds_in_pool": 0.9964556962025316,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V5": {
+    "ALL": 0.9906166219839142,
+    "golds_in_pool": 0.9964556962025316,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V6": {
+    "ALL": 0.9906166219839142,
+    "golds_in_pool": 0.9964556962025316,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V7": {
+    "ALL": 0.9865951742627346,
+    "golds_in_pool": 0.9949367088607595,
+    "mean_nodes": 97.2520107238606,
+    "nodes_over_eng": 0.9725201072386059,
+    "vs_eng": {
+     "diff": -0.004021447721179625,
+     "ci95": [
+      -0.010723860589812333,
+      0.002680965147453083
+     ],
+     "call": "LEVEL"
+    }
+   }
+  }
+ },
+ "half_even": {
+  "questions": 362,
+  "golds": 971,
+  "variants": {
+   "eng": {
+    "ALL": 0.9917127071823204,
+    "golds_in_pool": 0.9969104016477858,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0
+   },
+   "same": {
+    "ALL": 0.9917127071823204,
+    "golds_in_pool": 0.9969104016477858,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V1": {
+    "ALL": 0.9917127071823204,
+    "golds_in_pool": 0.9969104016477858,
+    "mean_nodes": 99.94198895027624,
+    "nodes_over_eng": 0.9994198895027624,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V2": {
+    "ALL": 0.9917127071823204,
+    "golds_in_pool": 0.9969104016477858,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V3": {
+    "ALL": 0.9917127071823204,
+    "golds_in_pool": 0.9969104016477858,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V4": {
+    "ALL": 0.9917127071823204,
+    "golds_in_pool": 0.9969104016477858,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V5": {
+    "ALL": 0.9917127071823204,
+    "golds_in_pool": 0.9969104016477858,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V6": {
+    "ALL": 0.9917127071823204,
+    "golds_in_pool": 0.9969104016477858,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V7": {
+    "ALL": 0.988950276243094,
+    "golds_in_pool": 0.995880535530381,
+    "mean_nodes": 96.85911602209944,
+    "nodes_over_eng": 0.9685911602209945,
+    "vs_eng": {
+     "diff": -0.0027624309392265192,
+     "ci95": [
+      -0.011118784530386736,
+      0.0055248618784530384
+     ],
+     "call": "LEVEL"
+    }
+   }
+  }
+ },
+ "half_odd": {
+  "questions": 384,
+  "golds": 1004,
+  "variants": {
+   "eng": {
+    "ALL": 0.9895833333333334,
+    "golds_in_pool": 0.9960159362549801,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0
+   },
+   "same": {
+    "ALL": 0.9895833333333334,
+    "golds_in_pool": 0.9960159362549801,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V1": {
+    "ALL": 0.9947916666666666,
+    "golds_in_pool": 0.99800796812749,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.005208333333333333,
+     "ci95": [
+      0.0,
+      0.013020833333333334
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V2": {
+    "ALL": 0.9921875,
+    "golds_in_pool": 0.9970119521912351,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0026041666666666665,
+     "ci95": [
+      0.0,
+      0.0078125
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V3": {
+    "ALL": 0.9947916666666666,
+    "golds_in_pool": 0.99800796812749,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.005208333333333333,
+     "ci95": [
+      0.0,
+      0.013020833333333334
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V4": {
+    "ALL": 0.9895833333333334,
+    "golds_in_pool": 0.9960159362549801,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V5": {
+    "ALL": 0.9895833333333334,
+    "golds_in_pool": 0.9960159362549801,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V6": {
+    "ALL": 0.9895833333333334,
+    "golds_in_pool": 0.9960159362549801,
+    "mean_nodes": 100.0,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "V7": {
+    "ALL": 0.984375,
+    "golds_in_pool": 0.9940239043824701,
+    "mean_nodes": 97.62239583333333,
+    "nodes_over_eng": 0.9762239583333333,
+    "vs_eng": {
+     "diff": -0.005208333333333333,
+     "ci95": [
+      -0.015625,
+      0.005208333333333333
+     ],
+     "call": "LEVEL"
+    }
+   }
+  }
+ }
+}

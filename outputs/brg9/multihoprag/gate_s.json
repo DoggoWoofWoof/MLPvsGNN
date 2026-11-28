@@ -1,0 +1,163 @@
+{
+ "stage": "BRG9 gates",
+ "declared_in": "docs/BRG9_ROW_LENGTH_CAP_ALL.md",
+ "set": "multihoprag",
+ "cell": "rrf1000_b50+FULL:h2_c100_v5000+top50",
+ "variants": [
+  [
+   "eng",
+   null,
+   null
+  ],
+  [
+   "same",
+   null,
+   null
+  ],
+  [
+   "V1",
+   50,
+   25
+  ],
+  [
+   "V2",
+   100,
+   25
+  ],
+  [
+   "V3",
+   100,
+   10
+  ],
+  [
+   "V4",
+   200,
+   10
+  ],
+  [
+   "V5",
+   200,
+   25
+  ],
+  [
+   "V6",
+   100,
+   50
+  ],
+  [
+   "V7",
+   50,
+   10
+  ]
+ ],
+ "chunks": {
+  "6": {
+   "position": 0,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": null,
+   "seconds": 22.9
+  },
+  "0": {
+   "position": 1,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": null,
+   "seconds": 26.4
+  },
+  "7": {
+   "position": 2,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": null,
+   "seconds": 23.5
+  },
+  "1": {
+   "position": 3,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": null,
+   "seconds": 19.9
+  },
+  "8": {
+   "position": 4,
+   "questions": 106,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": null,
+   "seconds": 15.4
+  },
+  "5": {
+   "position": 5,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": null,
+   "seconds": 21.8
+  },
+  "4": {
+   "position": 6,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": null,
+   "seconds": 20.6
+  },
+  "2": {
+   "position": 7,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": null,
+   "seconds": 20.4
+  },
+  "3": {
+   "position": 8,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": null,
+   "seconds": 19.6
+  }
+ },
+ "order": [
+  6,
+  0,
+  7,
+  1,
+  8,
+  5,
+  4,
+  2,
+  3
+ ],
+ "questions_expected": 1130,
+ "questions_read": 1130,
+ "G-S3": {
+  "complete": true
+ },
+ "verdict": "PASS",
+ "utc": "2026-11-28T16:18:18Z"
+}

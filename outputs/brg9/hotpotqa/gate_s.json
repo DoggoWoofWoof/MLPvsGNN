@@ -1,0 +1,97 @@
+{
+ "stage": "BRG9 gates",
+ "declared_in": "docs/BRG9_ROW_LENGTH_CAP_ALL.md",
+ "set": "hotpotqa",
+ "cell": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs-vr",
+ "variants": [
+  [
+   "eng",
+   null,
+   null
+  ],
+  [
+   "same",
+   null,
+   null
+  ],
+  [
+   "V1",
+   50,
+   25
+  ],
+  [
+   "V2",
+   100,
+   25
+  ],
+  [
+   "V3",
+   100,
+   10
+  ],
+  [
+   "V4",
+   200,
+   10
+  ],
+  [
+   "V5",
+   200,
+   25
+  ],
+  [
+   "V6",
+   100,
+   50
+  ],
+  [
+   "V7",
+   50,
+   10
+  ]
+ ],
+ "chunks": {
+  "22": {
+   "position": 0,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": null,
+   "seconds": 44.6
+  },
+  "17": {
+   "position": 1,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": null,
+   "seconds": 57.0
+  },
+  "33": {
+   "position": 2,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": null,
+   "seconds": 53.9
+  }
+ },
+ "order": [
+  22,
+  17,
+  33
+ ],
+ "questions_expected": 384,
+ "questions_read": 384,
+ "G-S3": {
+  "complete": true
+ },
+ "verdict": "PASS",
+ "utc": "2026-11-28T15:58:21Z"
+}

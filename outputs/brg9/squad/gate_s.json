@@ -1,0 +1,97 @@
+{
+ "stage": "BRG9 gates",
+ "declared_in": "docs/BRG9_ROW_LENGTH_CAP_ALL.md",
+ "set": "squad",
+ "cell": "rrf1000_b1600+STRUCT:h2_c100_v5000~cs+top800",
+ "variants": [
+  [
+   "eng",
+   null,
+   null
+  ],
+  [
+   "same",
+   null,
+   null
+  ],
+  [
+   "V1",
+   50,
+   25
+  ],
+  [
+   "V2",
+   100,
+   25
+  ],
+  [
+   "V3",
+   100,
+   10
+  ],
+  [
+   "V4",
+   200,
+   10
+  ],
+  [
+   "V5",
+   200,
+   25
+  ],
+  [
+   "V6",
+   100,
+   50
+  ],
+  [
+   "V7",
+   50,
+   10
+  ]
+ ],
+ "chunks": {
+  "74": {
+   "position": 0,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": null,
+   "seconds": 35.5
+  },
+  "58": {
+   "position": 1,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": null,
+   "seconds": 51.0
+  },
+  "54": {
+   "position": 2,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": null,
+   "seconds": 43.3
+  }
+ },
+ "order": [
+  74,
+  58,
+  54
+ ],
+ "questions_expected": 384,
+ "questions_read": 384,
+ "G-S3": {
+  "complete": true
+ },
+ "verdict": "PASS",
+ "utc": "2026-11-28T15:58:00Z"
+}

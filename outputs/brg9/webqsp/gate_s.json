@@ -1,0 +1,106 @@
+{
+ "stage": "BRG9 gates",
+ "declared_in": "docs/BRG9_ROW_LENGTH_CAP_ALL.md",
+ "set": "webqsp",
+ "cell": "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+ "variants": [
+  [
+   "eng",
+   null,
+   null
+  ],
+  [
+   "same",
+   null,
+   null
+  ],
+  [
+   "V1",
+   50,
+   25
+  ],
+  [
+   "V2",
+   100,
+   25
+  ],
+  [
+   "V3",
+   100,
+   10
+  ],
+  [
+   "V4",
+   200,
+   10
+  ],
+  [
+   "V5",
+   200,
+   25
+  ],
+  [
+   "V6",
+   100,
+   50
+  ],
+  [
+   "V7",
+   50,
+   10
+  ]
+ ],
+ "chunks": {
+  "7": {
+   "position": 0,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 446.8
+  },
+  "2": {
+   "position": 1,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 389.4
+  },
+  "3": {
+   "position": 2,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 365.3
+  }
+ },
+ "order": [
+  7,
+  2,
+  3
+ ],
+ "questions_expected": 384,
+ "questions_read": 384,
+ "G-S3": {
+  "complete": true
+ },
+ "verdict": "PASS",
+ "utc": "2026-11-28T16:15:52Z"
+}
