@@ -72,6 +72,16 @@ It reports, per set, the table of reasons (counts, shares, Wilson), the bridge s
 
 Host CPU rows, `retry_cmd` + `pylib_run` as the DRP1 rows run: `brg-mu`, `brg-wq`, `brg-pr`, `brg-mg`, `brg-am` (`trace --ds|--kb`), `brl-*` (`links`, ten sets), `brs-pr`, `brs-mg`, `brs-am` (`lists`; `--text` on Prime and Amazon). Records: `outputs/brg1/<set>/gate_trace.json`, `trace_c<chunk>.npz`, `outputs/brg1/links_<set>.json`, `lists_<kb>.json`; `read` writes `outputs/brg1/read_<set>.json`. The results go into section 6 below with the calls on the priors.
 
+## 7. Amendment 1 (28 Nov 2026 12:22 IST, before any number of `lists --ds`)
+
+**What changes.** `lists` also takes `--ds` (the seven datasets): the e3v dense list and the filed SPLADE list of the dataset's pool source (1,000 deep, the instrument's own), their reciprocal-rank fusion, and the same tables (gold recall and ALL by gold count at depths 5 to 1,000, the dense/SPLADE overlap, the share of questions with a gold in the top five). Why: the user asked to check "wherever we are worse", and the first-stage part of each gap to the filed pool is one table per set (SQuAD -2.28 at 50 nodes in DRP1 section 15; MuSiQue -2.6, WebQSP -1.3 and Amazon -4.0 at about 2,500 nodes). Module sha256 prefix `ef34bbc4a9ab1eb7`; selftest PASS. `trace`, `read`, `links` and `lists --kb` are unchanged in this amendment. Rows that ran before it (`trace` of the five sets, `links` of the ten, `lists --kb` of the three STaRK sets, from 12:21 IST) ran under `fc4cdb5b5ba74a69`.
+
+**Priors for `lists --ds` (written before any of its numbers).**
+
+- **S1.** SQuAD: the fused list's ALL exceeds the dense list's by at least 2 points at depth 50 and by less than 1 point at depth 200 (the 50-node loss of section 15 is the first stage's lexical leg; a deeper list absorbs it).
+- **S2.** MuSiQue and WebQSP: the fused-minus-dense gap in ALL at depth 1,000 is under 1 point (the distance of those two sets to the filed pool is not the first stage).
+- **S3.** Among the seven, no set other than SQuAD (at depth 50) has a fused-minus-dense gap in ALL above 2 points at any depth of 200 or more.
+
 ## 6. Results
 
 None yet.

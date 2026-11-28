@@ -563,11 +563,11 @@ def cmd_links(a):
 TOK = re.compile(r"[a-z0-9]+")
 
 
-def recall_table(pos, gold_q, ng):
+def recall_table(pos, gold_q, ng, depths=None):
     """pos: (golds,) place of each gold in one list (INF when absent); gold_q: its question index; ng: golds per question. Gold-level recall and question-level ALL at the depths."""
     t = {}
     nq = ng.size
-    for k in DEPTHS:
+    for k in (DEPTHS if depths is None else depths):
         hit = pos < k
         per_q = np.bincount(gold_q, weights=hit.astype(np.float64), minlength=nq)
         t[str(k)] = {"gold_recall": float(hit.mean()), "ALL": float((per_q == ng).mean()),
@@ -576,14 +576,20 @@ def recall_table(pos, gold_q, ng):
 
 
 def cmd_lists(a):
-    import zstk2 as K2
-    import zworld as W
+    """The first-stage lists of one set. --kb: a STaRK set (e3v dense and SPLADE lists of first.npz, 2,500 deep). --ds (amendment 1): one of the seven, the e3v dense list and the
+    filed SPLADE list of its pool source (1,000 deep). The fused list is the reciprocal-rank fusion of the two, cut to the depth."""
     kb = a.kb
-    T3.HOSTMODE = bool(a.host)
-    op, src = T3.load_stark_source(kb)
-    with np.load(T3.STARK / kb / "first.npz") as z:
-        dense = z["top_dense_e3v"].astype(np.int64)
-        splade = z["top_splade"].astype(np.int64)
+    if kb:
+        T3.HOSTMODE = bool(a.host)
+        op, src = T3.load_stark_source(kb)
+        name = kb
+        with np.load(T3.STARK / kb / "first.npz") as z:
+            dense = z["top_dense_e3v"].astype(np.int64)
+            splade = z["top_splade"].astype(np.int64)
+    else:
+        name, op, src, _o, _r, _n = load(a)
+        dense, splade = np.asarray(src.dense, dtype=np.int64), np.asarray(src.splade, dtype=np.int64)
+    depths = tuple(k for k in DEPTHS if k <= dense.shape[1])
     nq = src.nq
     M3A = op.m3a
     fused = []
@@ -596,9 +602,9 @@ def cmd_lists(a):
     pos = {}
     for lab, lists in (("dense", [dense[i] for i in range(nq)]), ("splade", [splade[i] for i in range(nq)]), ("fused", fused)):
         pos[lab] = np.concatenate([P2.Lst(lists[i]).pos(src.golds[i]) for i in range(nq)])
-    out = {"stage": "BRG1 lists", "declared_in": DOC, "kb": kb, "utc": utc(), "questions": nq, "golds": int(gn.size), "list_depth": int(dense.shape[1]),
+    out = {"stage": "BRG1 lists", "declared_in": DOC, "set": name, "utc": utc(), "questions": nq, "golds": int(gn.size), "list_depth": int(dense.shape[1]),
            "gold_count": {str(int(k)): int(v) for k, v in zip(*np.unique(np.minimum(ng, 4), return_counts=True))},
-           "tables": {lab: recall_table(p, gq, ng) for lab, p in pos.items()}}
+           "tables": {lab: recall_table(p, gq, ng, depths) for lab, p in pos.items()}}
     k = 1000
     pd, ps = pos["dense"], pos["splade"]
     out["overlap_at_1000"] = {"both": int(((pd < k) & (ps < k)).sum()), "dense_only": int(((pd < k) & (ps >= k)).sum()), "splade_only": int(((pd >= k) & (ps < k)).sum()),
@@ -612,6 +618,10 @@ def cmd_lists(a):
                            "fused_top5_has_a_gold": float(np.mean([np.isin(src.golds[i], fused[i][:5]).any() for i in range(nq)]))}
     out["dense_place_quantiles_of_golds_found"] = quant(pd[pd < dense.shape[1]])
     if a.text:
+        if not kb:
+            stop("--text is for the STaRK sets")
+        import zstk2 as K2
+        import zworld as W
         w = W.load(K2.KBS[kb])
         qtxt = {int(q["row"]): q["question"] for q in w.iter_queries(splits=["test"])}
         rows = [int(r) for r in src.idx]
@@ -634,8 +644,8 @@ def cmd_lists(a):
                           "question_terms_in_text_quantiles": quant(ov)}
         out["text_features"] = feats
     OUT.mkdir(parents=True, exist_ok=True)
-    wjson(OUT / f"lists_{kb}.json", out)
-    log(f"{kb}: lists written ({nq} questions)")
+    wjson(OUT / f"lists_{name}.json", out)
+    log(f"{name}: lists written ({nq} questions)")
     return 0
 
 
