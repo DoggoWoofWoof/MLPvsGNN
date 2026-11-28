@@ -14,6 +14,10 @@ hop by hop with every hop's candidate list kept, asserts that the re-run equals 
         # Amendment 1: the declared cell's walk with the per-node cap at 25 (the control), 50, 100 and 200, same visited cap: outputs/brg4/<name>/[whole/]cap_c<chunk>.npz and gate_cap.json
     python -E -P -B outputs/mp_unified/zbrg4.py capread --ds D [--whole]
         # aggregates them: outputs/brg4/read_cap_<name>[_whole].json
+    python -E -P -B outputs/mp_unified/zbrg4.py ordsweep --ds D [--whole] [--smoke M] [--host]
+        # Amendment 2: caps 25, 50, 100 with the fresh candidates ordered by arrival (the cell's), sup, ppr or vr: outputs/brg4/<name>/[whole/]ord_c<chunk>.npz and gate_ord.json
+    python -E -P -B outputs/mp_unified/zbrg4.py ordread --ds D [--whole]
+        # aggregates them: outputs/brg4/read_ord_<name>[_whole].json
 
 Run from the workspace root.
 """
@@ -49,7 +53,26 @@ CELL = {"metaqa": "rrf1000_b800+STRUCT:h3_c25_v2000"}
 log, stop, rjson, wjson, utc = P2.log, P2.stop, P2.rjson, P2.wjson, P2.utc
 
 
-def trace_cap_walk(seeds, fams1, fams2, setting, mods, scorer):
+def order_cap(kind, cols, grp, fam, rank, key, rr, scorer, n_par):
+    """The distinct fresh nodes of a hop in the variant's order. control: the cell's own (zpl4g.order_fresh). vr: the question's cosine, highest first (ties to the lower id). sup: the number of distinct
+    frontier nodes whose row lists the node, most first. ppr: the sum over those frontier nodes of 1 / (RRF_C + the frontier node's place + 1). Ties of sup and ppr go to the control order."""
+    if kind == "vr":
+        return Z4.order_fresh(cols, grp, fam, rank, "vr", rr, scorer, n_par)
+    ctrl = Z4.order_fresh(cols, grp, fam, rank, key, rr, scorer, n_par)
+    if kind == "control":
+        return ctrl
+    u = np.unique(cols)
+    m = int(grp.max()) + 1
+    pr = np.unique(cols.astype(np.int64) * m + grp.astype(np.int64))
+    inv = np.searchsorted(u, pr // m)
+    pp = pr % m
+    sc = np.bincount(inv, minlength=u.size).astype(np.float64) if kind == "sup" else np.bincount(inv, weights=1.0 / (Z5.RRF_C + pp + 1.0), minlength=u.size)
+    pos = np.empty(u.size, dtype=np.int64)
+    pos[np.searchsorted(u, ctrl)] = np.arange(ctrl.size, dtype=np.int64)
+    return u[np.lexsort((pos, -sc))]
+
+
+def trace_cap_walk(seeds, fams1, fams2, setting, mods, scorer, kind="control"):
     """zpl4g.expand4 for a walk without cosine inside the cap (no `cs`), written out so that every hop's candidate list is kept. Returns (expansion, hop records {h, frontier, budget, fa})."""
     first = Z5.m3b_pools._first_occurrence_unique
     key = "vr" if "vr" in mods else ("sp" if "sp" in mods else ("rk" if "rk" in mods else ""))
@@ -74,7 +97,7 @@ def trace_cap_walk(seeds, fams1, fams2, setting, mods, scorer):
         if cols.size == 0:
             break
         k = np.isin(cols, visited, invert=True)
-        fa = Z4.order_fresh(cols[k], grp[k], fam[k], rank[k], key, rr, scorer, int(frontier.size))
+        fa = order_cap(kind, cols[k], grp[k], fam[k], rank[k], key, rr, scorer, int(frontier.size))
         recs.append({"h": h, "frontier": frontier, "budget": int(budget), "fa": fa})
         fresh = fa[:budget]
         if fresh.size == 0:
@@ -311,26 +334,30 @@ def cmd_capsweep(a):
     return 0
 
 
-def sweep_aggregate(Q):
-    ng = Q[:, QIS["ng"]]
+def aggregate_variants(Q, qis, names):
+    ng = Q[:, qis["ng"]]
     nq = Q.shape[0]
-    full = [(Q[:, QIS[f"p{v}"]] == ng).astype(np.float64) for v in range(len(CAPS))]
+    full = [(Q[:, qis[f"p{v}"]] == ng).astype(np.float64) for v in range(len(names))]
     rng = np.random.default_rng(BOOT_SEED)
     boot = rng.integers(0, nq, size=(BOOT_N, nq))
     out = {"questions": int(nq), "golds": int(ng.sum()), "variants": {}}
-    for v, nm in enumerate(CVN):
-        rec = {"ALL": float(full[v].mean()), "golds_in_pool": float(Q[:, QIS[f"p{v}"]].sum() / ng.sum()), "mean_nodes": float(Q[:, QIS[f"s{v}"]].mean()),
-               "ceiling_ALL": float((Q[:, QIS[f"u{v}"]] == ng).mean()), "ceiling_golds": float(Q[:, QIS[f"u{v}"]].sum() / ng.sum())}
+    for v, nm in enumerate(names):
+        rec = {"ALL": float(full[v].mean()), "golds_in_pool": float(Q[:, qis[f"p{v}"]].sum() / ng.sum()), "mean_nodes": float(Q[:, qis[f"s{v}"]].mean()),
+               "ceiling_ALL": float((Q[:, qis[f"u{v}"]] == ng).mean()), "ceiling_golds": float(Q[:, qis[f"u{v}"]].sum() / ng.sum())}
         if v:
             diff = full[v] - full[0]
             bs = diff[boot].mean(axis=1)
             ci = [float(np.quantile(bs, 0.025)), float(np.quantile(bs, 0.975))]
-            rec.update({"minus_control": float(diff.mean()), "ci95": ci, "call": B.D2.gain_call(ci), "nodes_over_control": float(Q[:, QIS[f"s{v}"]].mean() / Q[:, QIS["s0"]].mean())})
+            rec.update({"minus_control": float(diff.mean()), "ci95": ci, "call": B.D2.gain_call(ci), "nodes_over_control": float(Q[:, qis[f"s{v}"]].mean() / Q[:, qis["s0"]].mean())})
         for lab, m in (("1", ng == 1), ("2", ng == 2), ("3", ng == 3), ("4+", ng >= 4)):
             if m.any():
                 rec.setdefault("by_gold_count", {})[lab] = {"questions": int(m.sum()), "ALL": float(full[v][m].mean())}
         out["variants"][nm] = rec
     return out
+
+
+def sweep_aggregate(Q):
+    return aggregate_variants(Q, QIS, CVN)
 
 
 def cmd_capread(a):
@@ -356,6 +383,125 @@ def cmd_capread(a):
     rec = {"stage": "BRG4 amendment 1 read", "declared_in": DOC, "set": name, "cell": CELL[name], "whole": bool(a.whole), "utc": utc(), "chunks": [p.name for p in files], **sweep_aggregate(np.concatenate(Qs))}
     wjson(OUT / f"read_cap_{name}{'_whole' if a.whole else ''}.json", rec)
     log(f"{name}: cap read written ({rec['questions']} questions): " + "; ".join(f"{k} {100 * x['ALL']:.1f} @{x['mean_nodes']:.0f}" + (f" ({100 * x['minus_control']:+.2f} {x['call']})" if "call" in x else "") for k, x in rec["variants"].items()))
+    return 0
+
+
+ORDV = tuple((cap, kind) for cap in (25, 50, 100) for kind in ("control", "sup", "ppr", "vr"))      # Amendment 2: (per-node cap, order); the first is the declared cell's own
+OVN = tuple(f"cap{c}_{k}" for c, k in ORDV)
+QCOLS_O = ("q", "ng") + tuple(f"{k}{v}" for v in range(len(ORDV)) for k in ("p", "s", "u"))
+QIO = {c: i for i, c in enumerate(QCOLS_O)}
+
+
+def ord_row(q, golds, head, exps, recs_all):
+    golds = np.asarray(golds, dtype=np.int64)
+    r = {c: 0 for c in QCOLS_O}
+    r["q"], r["ng"] = q, int(golds.size)
+    for v, (exp, recs) in enumerate(zip(exps, recs_all)):
+        pool = np.union1d(head, exp)
+        r[f"p{v}"], r[f"s{v}"] = int(np.isin(golds, pool).sum()), int(pool.size)
+        cand = np.concatenate([head] + [rec["fa"] for rec in recs]) if recs else head
+        r[f"u{v}"] = int(np.isin(golds, cand).sum())
+    return np.asarray([r[c] for c in QCOLS_O], dtype=np.int64)
+
+
+def ord_range(op, d, plan, cell, lo, hi, limit=None):
+    ln, b, regime, setting, mods, n1, n2 = cell_parts(cell)
+    fams1, fams2 = [d.fams[f] for f in n1], [d.fams[f] for f in n2]
+    walk = Z5.parse5(cell)[3]
+    if (int(setting["per_seed_cap"]), "control") != ORDV[0]:
+        stop(f"{cell}: the declared cap is {setting['per_seed_cap']}, the sweep's control {ORDV[0]}")
+    Q, bad = [], []
+    for q, st, seeds, qv in B.states(op, d, plan, lo, hi, limit):
+        scorer = Z3.Scorer(d.dvec, {"q": np.asarray(qv, dtype=np.float64)}, d.n)
+        try:
+            exps, recs_all = [], []
+            for cap, kind in ORDV:
+                sv = dict(setting)
+                sv["per_seed_cap"] = sv["per_frontier_cap"] = int(cap)
+                exp, recs = trace_cap_walk(seeds, fams1, fams2, sv, mods, scorer, kind)
+                exps.append(exp)
+                recs_all.append(recs)
+        finally:
+            scorer.release()
+        if not np.array_equal(exps[0], st.W[walk].exp):
+            bad.append([q, "expansion", int(exps[0].size), int(st.W[walk].exp.size)])
+        P = np.zeros(1, dtype=np.int16)
+        S = np.zeros(1, dtype=np.int32)
+        Z3.grade3(plan, st, d.golds[q], P, S)
+        row = ord_row(q, d.golds[q], st.L[ln].L[:b].astype(np.int64), exps, recs_all)
+        if int(row[QIO["p0"]]) != int(P[0]) or int(row[QIO["s0"]]) != int(S[0]):
+            bad.append([q, "grade", [int(row[QIO["p0"]]), int(row[QIO["s0"]])], [int(P[0]), int(S[0])]])
+        Q.append(row)
+    return (np.asarray(Q) if Q else np.zeros((0, len(QCOLS_O)), np.int64)), bad
+
+
+def cmd_ordsweep(a):
+    name, op, src, order, crange, nch = B.load(a)
+    cell = CELL.get(name)
+    if cell is None:
+        stop(f"{name}: no declared cell")
+    bad0 = declared_cell_gate(name)
+    if bad0:
+        stop(f"G-C0 failed: {bad0}")
+    d = D1.variant(src, "both")
+    for x in B.D2.arm_fails(src, d, "both"):
+        stop(f"G-D1 failed: {x}")
+    plan = Z5.Plan5([cell])
+    if a.smoke:
+        lo, hi = crange(order[0], src.nq)
+        t0 = time.time()
+        Q, bad = ord_range(op, d, plan, cell, lo, hi, limit=int(a.smoke))
+        print(f"smoke {name}: {int(a.smoke)} questions, G-C3 mismatches {len(bad)} {bad[:3]}, {time.time() - t0:.1f} s")
+        return 0 if not bad else 3
+    top = nch if a.whole else min(int(a.slice or B.SLICE), nch)
+    outd = OUT / name / ("whole" if a.whole else "")
+    outd.mkdir(parents=True, exist_ok=True)
+    gate_p = outd / "gate_ord.json"
+    gates = rjson(gate_p) if gate_p.is_file() else {"stage": "BRG4 amendment 2 gates", "declared_in": DOC, "set": name, "cell": cell, "variants": list(OVN), "chunks": {}}
+    for pos in range(top):
+        c = order[pos]
+        path = outd / f"ord_c{c:04d}.npz"
+        if path.is_file():
+            continue
+        lo, hi = crange(c, src.nq)
+        t0 = time.time()
+        Q, bad = ord_range(op, d, plan, cell, lo, hi)
+        gates["chunks"][str(c)] = {"questions": hi - lo, "G-C3": {"mismatches": len(bad), "first": bad[:5]}, "seconds": round(time.time() - t0, 1)}
+        gates["utc"], gates["verdict"] = utc(), ("PASS" if all(v["G-C3"]["mismatches"] == 0 for v in gates["chunks"].values()) else "FAIL")
+        wjson(gate_p, gates)
+        if bad:
+            stop(f"{name}: chunk {c}: G-C3 failed ({len(bad)} mismatches, first {bad[:3]})")
+        tmp = path.with_name(path.name + ".part")
+        with open(tmp, "wb") as f:
+            np.savez(f, quest=Q, qcols=np.asarray(QCOLS_O), variants=np.asarray(OVN), cell=np.asarray(cell), lo=lo, hi=hi)
+        os.replace(tmp, path)
+        log(f"{name}: chunk {c} (questions {lo}-{hi}): G-C3 PASS, {Q.shape[0]} questions, {time.time() - t0:.0f} s ({P2.peak_gb()} GB)")
+    return 0
+
+
+def cmd_ordread(a):
+    name = a.ds
+    folder = OUT / name / ("whole" if a.whole else "")
+    gate = rjson(folder / "gate_ord.json") if (folder / "gate_ord.json").is_file() else None
+    if gate is None or gate.get("verdict") != "PASS":
+        stop(f"{name}: no PASS gate_ord.json: no number is read")
+    files = sorted(folder.glob("ord_c*.npz"))
+    if not files:
+        stop(f"{name}: no chunk file")
+    if len(files) != len(gate["chunks"]):
+        stop(f"{name}: {len(files)} chunk files but {len(gate['chunks'])} gate entries")
+    Qs = []
+    for p in files:
+        z = np.load(p, allow_pickle=False)
+        try:
+            if [str(x) for x in z["qcols"]] != list(QCOLS_O) or [str(x) for x in z["variants"]] != list(OVN) or str(z["cell"]) != CELL[name]:
+                stop(f"{p.name}: not this module's columns, variants or cell")
+            Qs.append(z["quest"])
+        finally:
+            z.close()
+    rec = {"stage": "BRG4 amendment 2 read", "declared_in": DOC, "set": name, "cell": CELL[name], "whole": bool(a.whole), "utc": utc(), "chunks": [p.name for p in files], **aggregate_variants(np.concatenate(Qs), QIO, OVN)}
+    wjson(OUT / f"read_ord_{name}{'_whole' if a.whole else ''}.json", rec)
+    log(f"{name}: ord read written ({rec['questions']} questions): " + "; ".join(f"{k} {100 * x['ALL']:.1f} @{x['mean_nodes']:.0f}" + (f" ({100 * x['minus_control']:+.2f} {x['call']})" if "call" in x else "") for k, x in rec["variants"].items()))
     return 0
 
 
@@ -402,7 +548,35 @@ def cmd_selftest(_a):
         for v in range(4):
             assert row[QIS[f"p{v}"]] <= row[QIS[f"u{v}"]] <= 6, ("ceiling below the pool or above the golds", v, trial)
             assert row[QIS[f"s{v}"]] >= np.union1d(head, exps[v]).size
-    print(f"zbrg4 selftest: the traced cap walk equals zpl4g.expand4 on {ok} walks (six settings, with vr, rr and eq), candidate lists are distinct and skip the seeds; the cap sweep's rows keep the pool under the visited cap and the pool under the ceiling on 10 toy questions: PASS")
+    for trial in range(10):
+        q = rng.normal(size=dim)
+        q /= np.linalg.norm(q)
+        seeds = rng.choice(n, size=5, replace=False)
+        for cap in (4, 8):
+            st = {"name": "t", "hops": 3, "per_seed_cap": cap, "per_frontier_cap": cap, "visited_cap": 60}
+            for kind in ("control", "sup", "ppr", "vr"):
+                sc = Z3.Scorer(lambda x: V[np.asarray(x)], {"q": q}, n)
+                e, recs = trace_cap_walk(seeds, [fams[0]], fams, st, (), sc, kind)
+                e0, _r = trace_cap_walk(seeds, [fams[0]], fams, st, (), sc, "control")
+                sc.release()
+                assert np.unique(e).size == e.size and np.union1d(seeds, e).size <= 60 + 5, ("visited cap", kind, cap, trial)
+                if kind == "control":
+                    assert np.array_equal(e, e0)
+                for r in recs[1:]:
+                    cols = np.unique(r["fa"])
+                    assert cols.size == r["fa"].size, ("a candidate list repeats a node", kind)
+                assert recs[0]["fa"].size == recs[0]["budget"]
+    k0, g0, f0, r0 = Z4.capped_parts(seeds, [fams[0]], 8, Z3.Scorer(lambda x: V[np.asarray(x)], {"q": q}, n), False)
+    sc = Z3.Scorer(lambda x: V[np.asarray(x)], {"q": q}, n)
+    oc = order_cap("control", k0, g0, f0, r0, "", False, sc, int(seeds.size))
+    for kind in ("sup", "ppr", "vr"):
+        ok_ = order_cap(kind, k0, g0, f0, r0, "", False, sc, int(seeds.size))
+        assert np.array_equal(np.sort(ok_), np.sort(oc)), ("an order drops or repeats a node", kind)
+    sc.release()
+    sup = order_cap("sup", k0, g0, f0, r0, "", False, sc if False else Z3.Scorer(lambda x: V[np.asarray(x)], {"q": q}, n), int(seeds.size))
+    cnt = {int(v): len(np.unique(g0[k0 == v])) for v in np.unique(k0)}
+    assert all(cnt[int(sup[i])] >= cnt[int(sup[i + 1])] for i in range(sup.size - 1)), "sup is not in descending support"
+    print(f"zbrg4 selftest: the traced cap walk equals zpl4g.expand4 on {ok} walks (six settings, with vr, rr and eq), candidate lists are distinct and skip the seeds; the cap sweep's rows keep the pool under the visited cap and the pool under the ceiling on 10 toy questions; the four orders are permutations of the same candidates, control equals the cell's order and sup is in descending support: PASS")
     return 0
 
 
@@ -410,20 +584,20 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("selftest")
-    for c in ("trace", "read", "capsweep", "capread"):
+    for c in ("trace", "read", "capsweep", "capread", "ordsweep", "ordread"):
         p = sub.add_parser(c)
         p.add_argument("--ds", choices=sorted(CELL), required=True)
         p.add_argument("--host", action="store_true")
-        if c in ("trace", "capsweep"):
+        if c in ("trace", "capsweep", "ordsweep"):
             p.add_argument("--slice", type=int, default=0)
             p.add_argument("--smoke", type=int, default=0)
-        if c in ("capsweep", "capread"):
+        if c in ("capsweep", "capread", "ordsweep", "ordread"):
             p.add_argument("--whole", action="store_true")
     a = ap.parse_args()
     a.kb = None
     if a.cmd == "selftest":
         return cmd_selftest(a)
-    return {"trace": cmd_trace, "read": cmd_read, "capsweep": cmd_capsweep, "capread": cmd_capread}[a.cmd](a)
+    return {"trace": cmd_trace, "read": cmd_read, "capsweep": cmd_capsweep, "capread": cmd_capread, "ordsweep": cmd_ordsweep, "ordread": cmd_ordread}[a.cmd](a)
 
 
 if __name__ == "__main__":
