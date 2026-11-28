@@ -89,6 +89,19 @@ By gold count (4 or more golds): MuSiQue 72.7 (`control`), 69.5 (`h3`), 64.1 (`h
 
 1. **Depth and a question-ordered beam do not reach MuSiQue's missed golds: no variant is ABOVE on any of the three sets**, so by the page's section 4 rule (ABOVE on at least two of three, BELOW on none) depth and a beam of 100 are **closed as levers for this walk in this form**. MuSiQue's remaining distance is not the hop count.
 2. **The golds beyond the cell's hops are among the candidates once the walk goes deeper, and the order does not keep them.** MuSiQue's ceiling is 94.0 at three and four hops (against 89.3 at two) while its ALL falls to 85.2 and 83.6: the golds are among the candidates of the later hops and the order that keeps them does not pick them (BRG2: the question's cosine, which found the chain's first golds, beats the frontier-agreement orders, and none of the orders tried recovers the ceiling). On Amazon the ceiling at four hops is 88.3 (+1.8) and the ALL +1.30.
-3. **Prime leans the other way for a narrow frontier**: all three beams are positive (+1.08 to +2.17, ALL 87.8 to 88.9) while the same variants give -0.52 to -2.34 on MuSiQue and -0.52 to +0.26 on Amazon; with one set positive, one level and one negative it is not a lever, and it is the one direction of this page worth a whole-split read if the rules path is continued.
+3. **Prime leans the other way for a narrow frontier**: all three beams are positive (+1.08 to +2.17, ALL 87.8 to 88.9) while the same variants give -0.52 to -2.34 on MuSiQue and -0.52 to +0.26 on Amazon; with one set positive, one level and one negative it is not a lever, and it is the one direction of this page worth testing on the other two sets whose cells walk three hops (WebQSP, MAG): Amendment 1 below.
 
 Nothing is adopted.
+
+## 7. Amendment 1 (28 Nov 2026 13:41 IST): the beam on the other two three-hop cells
+
+Declared after section 6 and before any number of WebQSP or MAG on this page. No code change: `zbrg3.py` (sha prefix `73cf9a930ff01701`) runs `--ds webqsp` and `--kb mag` at their declared cells (`dense_top200+STRUCT:h3_bf_v2000~cs-fu`), the same three chunks of BRG1, the same six variants (`h3` equals `control` there by construction), the same beam of 100 and the same gates. Reason: Prime is the only set whose beam variants are all positive, and a direction seen on one of three sets is a hypothesis, not a result; WebQSP and MAG are the two other sets of the same cell.
+
+**Priors (before any number of the two sets).**
+
+- **D7 (WebQSP).** No variant is ABOVE `control`, and at least one beam variant is BELOW (its giant answer sets hold their golds in the first hops, and a frontier of 100 drops the rows of the other kept nodes).
+- **D8 (MAG).** `h3b100` is not BELOW `control` and its paired difference is above 0 (the direction of Prime repeats), and no variant is ABOVE by the +1.0 line.
+- **D9 (the three three-hop sets together).** A beam variant is a candidate for a whole-split declaration only if it is ABOVE on at least two of Prime, WebQSP and MAG and BELOW on none; expected NOT met (Prime's `h3b100` has its lower end at +0.27, below the +1.0 line).
+- **D10 (size and gate).** Mean pool sizes of every variant are within 5 percent of `control`'s on both sets; `control` equals the engine on every question (0 mismatches).
+
+Each prior is judged against every value of its sentence; results go into this section as section 7.1 after the rows end. Nothing is adopted.
