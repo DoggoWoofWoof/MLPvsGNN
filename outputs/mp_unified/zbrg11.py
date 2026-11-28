@@ -40,7 +40,7 @@ OUT = ROOT / "outputs" / "brg11"
 BF_SETS = ("musique", "webqsp")
 BF_KBS = ("prime", "mag", "amazon")
 # variant = (name, num, den): the hop weights are (num/den)^(k-1). `eng` is the engine unpatched, `same` the copy with r = 1.
-VARS11 = (("eng", None, None), ("same", 1, 1), ("f2", 1, 2), ("b2", 2, 1), ("b4", 4, 1), ("b8", 8, 1))
+VARS11 = (("eng", None, None), ("same", 1, 1), ("f2", 1, 2), ("f4", 1, 4), ("f8", 1, 8), ("b2", 2, 1), ("b4", 4, 1), ("b8", 8, 1))
 
 
 def weights(hops, num, den):
@@ -147,14 +147,14 @@ def cmd_selftest(_a):
     rc = Z9.cmd_selftest(_a)
     assert rc == 0
     # the arithmetic of the shares
-    assert weights(3, 1, 1) == [1, 1, 1] and weights(3, 2, 1) == [1, 2, 4] and weights(3, 1, 2) == [4, 2, 1] and weights(2, 8, 1) == [1, 8]
+    assert weights(3, 1, 1) == [1, 1, 1] and weights(3, 2, 1) == [1, 2, 4] and weights(3, 1, 2) == [4, 2, 1] and weights(2, 8, 1) == [1, 8] and weights(3, 1, 4) == [16, 4, 1] and weights(2, 1, 8) == [8, 1]
     for hops in (2, 3, 4):
         for rem in (1, 7, 100, 1800):
             for h in range(1, hops + 1):
                 assert hop_budget(rem, h, weights(hops, 1, 1)) == -(-rem // (hops - h + 1)), "r = 1 is not the engine's share"
     assert hop_budget(1800, 1, [1, 2, 4]) == 258 and hop_budget(1800, 3, [1, 2, 4]) == 1800 and hop_budget(1800, 1, [4, 2, 1]) == 1029
     use_vars()
-    assert Z9.VN == ("eng", "same", "f2", "b2", "b4", "b8") and len(Z9.QCOLS) == 2 + 2 * len(Z9.VN) and Z9.OUT == OUT
+    assert Z9.VN == ("eng", "same", "f2", "f4", "f8", "b2", "b4", "b8") and len(Z9.QCOLS) == 2 + 2 * len(Z9.VN) and Z9.OUT == OUT
     rng = np.random.default_rng(23)
     n, dim = 700, 8
     V = rng.normal(size=(n, dim))
@@ -177,7 +177,7 @@ def cmd_selftest(_a):
                 with Sched(1, 1):
                     e2 = Z5.expand5(seeds, [fams[0]], fams, st, mods, sc)
                 assert np.array_equal(e0, e2)
-                for num, den in ((1, 2), (2, 1), (4, 1), (8, 1)):
+                for num, den in ((1, 2), (1, 4), (1, 8), (2, 1), (4, 1), (8, 1)):
                     e3 = expand5s(seeds, [fams[0]], fams, st, mods, sc, num, den)
                     assert np.unique(e3).size == e3.size and not np.isin(e3, seeds).any(), "a node is visited twice"
                     assert e3.size + np.unique(seeds).size <= st["visited_cap"], "the visited budget is exceeded"

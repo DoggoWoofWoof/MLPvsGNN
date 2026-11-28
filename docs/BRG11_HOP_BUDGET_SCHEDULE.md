@@ -14,7 +14,7 @@ One thing of the walk has not been varied: how the visited budget is split over 
 
 **The rule.** The share of hop h is ceil(rem * w_h / (w_h + ... + w_H)) with w_k = r^(k-1), in integers (r = num/den; the weights are num^(k-1) den^(H-k)), rem the visited budget minus the nodes visited so far; what a hop cannot fill passes to the next, and the last hop keeps what is left, as in the engine. r = 1 is the engine's own rule; r above 1 gives the later hops more, r below 1 the earlier ones. For a three-hop walk with 1,800 left after the seeds, hop 1 keeps 258 (r = 2), 86 (r = 4), 25 (r = 8) or 1,029 (r = 1/2) at the first hop; for a two-hop walk hop 1 keeps a third, a fifth, a ninth or two thirds of what is left.
 
-**Variants.** `eng` (the engine unpatched), `same` (r = 1 through the copy; G-S0), `f2` (r = 1/2), `b2` (r = 2), `b4` (r = 4), `b8` (r = 8). Four schedules, three back-loaded and one front-loaded; none is fitted and none reads a label; which of them is best on a set is read from the screen, and a choice among them on one read is not a rule.
+**Variants.** `eng` (the engine unpatched), `same` (r = 1 through the copy; G-S0), `f2` (r = 1/2), `f4` (r = 1/4), `f8` (r = 1/8), `b2` (r = 2), `b4` (r = 4), `b8` (r = 8). Six schedules, three back-loaded and three front-loaded; none is fitted and none reads a label; which of them is best on a set is read from the screen, and a choice among them on one read is not a rule. `f4` and `f8` were added before any screen row, after the smoke of 128 questions per set (G-S0 only; its ALL values were printed, not recorded, not read) showed WebQSP's front-loaded variant above the engine's on those questions; the page's priors W1 to W7 were written before the smoke and are not changed, W8 is the prior of the added points.
 
 **Instrument.** BRG9's: the engine's states loop (`zbrg1.states`) and its grader `zpl3g.grade3`, with `zpl5g.expand5` replaced for the duration of one variant's pass over a chunk and put back after (also after an error). Subset: the first three chunks of each set (128 questions each), the same as BRG9's screen and BRG5's control rows.
 
@@ -39,10 +39,11 @@ Per set: ALL (every gold in the pool), the share of golds in the pool, the mean 
 - **W5.** `f2` is not ABOVE on any of the five sets.
 - **W6.** `b8` is BELOW `eng` on at least one set (the first hop keeps too little).
 - **W7.** No variant is at least LEVEL on all five sets and ABOVE on two or more.
+- **W8.** (Written after the smoke, before any screen row.) On WebQSP at least one of `f2`, `f4`, `f8` is ABOVE `eng`, and none of the front-loaded variants is ABOVE on Prime, MAG, MuSiQue or Amazon.
 
 ## 6. Rows
 
-Five streams on the host (CPU only, two threads each), `zbrg11.py screen --ds D | --kb K --host`, then `read` on the laptop after `rx fetch` of `outputs/brg11/<set>/`; records `outputs/brg11/<set>/` (per-chunk `scr_c*.npz`, `gate_s.json`) and `outputs/brg11/read_<set>.json`. Module sha256 prefix `e6a89b577570c14f` (self-test PASS before any row; local = host before the rows).
+Five streams on the host (CPU only, two threads each), `zbrg11.py screen --ds D | --kb K --host`, then `read` on the laptop after `rx fetch` of `outputs/brg11/<set>/`; records `outputs/brg11/<set>/` (per-chunk `scr_c*.npz`, `gate_s.json`) and `outputs/brg11/read_<set>.json`. Module sha256 prefix `b2544915449ea838` (self-test PASS before any row; local = host before the rows).
 
 ## 7. Results
 
