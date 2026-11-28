@@ -1,0 +1,99 @@
+{
+ "stage": "BRG1 links",
+ "declared_in": "docs/BRG1_BRIDGE_TRACE.md",
+ "set": "squad",
+ "utc": "2026-11-28T06:53:00Z",
+ "questions": 11873,
+ "questions_with_2_or_more_golds": 0,
+ "window": 512,
+ "gold_count": {
+  "1": 11873
+ },
+ "links": {
+  "S": {
+   "golds_with_a_linked_gold": {
+    "n": 0,
+    "of": 0,
+    "share": null,
+    "wilson": null
+   },
+   "questions_one_component": {
+    "n": 0,
+    "of": 0,
+    "share": null,
+    "wilson": null
+   },
+   "by_gold_count": {},
+   "edges": 0,
+   "edge_place_ge_window": null
+  },
+  "R": {
+   "golds_with_a_linked_gold": {
+    "n": 0,
+    "of": 0,
+    "share": null,
+    "wilson": null
+   },
+   "questions_one_component": {
+    "n": 0,
+    "of": 0,
+    "share": null,
+    "wilson": null
+   },
+   "by_gold_count": {},
+   "edges": 0,
+   "edge_place_ge_window": null
+  },
+  "K": {
+   "golds_with_a_linked_gold": {
+    "n": 0,
+    "of": 0,
+    "share": null,
+    "wilson": null
+   },
+   "questions_one_component": {
+    "n": 0,
+    "of": 0,
+    "share": null,
+    "wilson": null
+   },
+   "by_gold_count": {},
+   "edges": 0,
+   "edge_place_ge_window": null
+  },
+  "S+R": {
+   "golds_with_a_linked_gold": {
+    "n": 0,
+    "of": 0,
+    "share": null,
+    "wilson": null
+   },
+   "questions_one_component": {
+    "n": 0,
+    "of": 0,
+    "share": null,
+    "wilson": null
+   },
+   "by_gold_count": {},
+   "edges": 0,
+   "edge_place_ge_window": null
+  },
+  "S+R+K": {
+   "golds_with_a_linked_gold": {
+    "n": 0,
+    "of": 0,
+    "share": null,
+    "wilson": null
+   },
+   "questions_one_component": {
+    "n": 0,
+    "of": 0,
+    "share": null,
+    "wilson": null
+   },
+   "by_gold_count": {},
+   "edges": 0,
+   "edge_place_ge_window": null
+  }
+ }
+}
