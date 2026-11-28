@@ -1,0 +1,30 @@
+{
+ "stage": "DRP1 amendment 3 gates",
+ "declared_in": "docs/DRP1_DROP_SPLADE_AND_K.md",
+ "dataset": "multihoprag",
+ "utc": "2026-11-28T04:35:24Z",
+ "G-E0": {
+  "failed": []
+ },
+ "G-N1": {
+  "failed": [],
+  "n_failed": 0
+ },
+ "verdict": "PASS",
+ "names": {
+  "questions": 1130,
+  "with_a_name_seed": 1,
+  "mean_name_seeds": 0.0008849557522123894,
+  "info": {
+   "titles_with_a_unique_node": 1,
+   "titles_shared_by_nodes": 0,
+   "questions": 1130,
+   "with_a_name_seed": 1,
+   "mean_name_seeds": 0.001,
+   "with_a_group": 0,
+   "mean_group_nodes": 0.0,
+   "dfq_threshold": 23,
+   "seconds": 1.2
+  }
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "stage": "DRP1 amendment 3 gates",
+ "declared_in": "docs/DRP1_DROP_SPLADE_AND_K.md",
+ "dataset": "musique",
+ "part": 1,
+ "utc": "2026-11-28T04:51:11Z",
+ "G-D1": {
+  "failed": []
+ },
+ "G-E2": {
+  "checked": false,
+  "k_free_cells": 0,
+  "questions": 16,
+  "n_mismatches": 0,
+  "mismatches": []
+ },
+ "seconds": 0.1,
+ "verdict": "PASS"
+}

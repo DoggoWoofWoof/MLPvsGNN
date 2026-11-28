@@ -1,0 +1,30 @@
+{
+ "stage": "DRP1 amendment 3 gates",
+ "declared_in": "docs/DRP1_DROP_SPLADE_AND_K.md",
+ "dataset": "musique",
+ "utc": "2026-11-28T04:35:58Z",
+ "G-E0": {
+  "failed": []
+ },
+ "G-N1": {
+  "failed": [],
+  "n_failed": 0
+ },
+ "verdict": "PASS",
+ "names": {
+  "questions": 2417,
+  "with_a_name_seed": 1925,
+  "mean_name_seeds": 1.2196938353330575,
+  "info": {
+   "titles_with_a_unique_node": 1462,
+   "titles_shared_by_nodes": 422,
+   "questions": 2417,
+   "with_a_name_seed": 1925,
+   "mean_name_seeds": 1.22,
+   "with_a_group": 1059,
+   "mean_group_nodes": 6.07,
+   "dfq_threshold": 49,
+   "seconds": 1.0
+  }
+ }
+}

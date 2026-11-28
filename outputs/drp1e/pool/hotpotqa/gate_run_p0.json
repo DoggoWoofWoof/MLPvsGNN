@@ -1,0 +1,19 @@
+{
+ "stage": "DRP1 amendment 3 gates",
+ "declared_in": "docs/DRP1_DROP_SPLADE_AND_K.md",
+ "dataset": "hotpotqa",
+ "part": 0,
+ "utc": "2026-11-28T04:37:29Z",
+ "G-D1": {
+  "failed": []
+ },
+ "G-E2": {
+  "checked": true,
+  "k_free_cells": 4,
+  "questions": 16,
+  "n_mismatches": 0,
+  "mismatches": []
+ },
+ "seconds": 6.3,
+ "verdict": "PASS"
+}
