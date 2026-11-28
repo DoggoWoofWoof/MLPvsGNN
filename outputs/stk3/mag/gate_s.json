@@ -1,0 +1,37 @@
+{
+ "stage": "STK3 gates",
+ "declared_in": "docs/STK3_STARK_POOLS.md",
+ "kb": "mag",
+ "utc": "2026-11-27T18:45:41Z",
+ "gate_chunk": 10,
+ "G-S": {
+  "questions": 128,
+  "exact": {
+   "dense_top20": {
+    "mismatches": 0,
+    "sizes_ok": true
+   },
+   "dense_top100": {
+    "mismatches": 0,
+    "sizes_ok": true
+   },
+   "splade_top200": {
+    "mismatches": 0,
+    "sizes_ok": true
+   }
+  },
+  "rrf": {
+   "rrf1000_b20": {
+    "set_agreement": 0.890625,
+    "all_gold_agreement": 1.0
+   },
+   "rrf1000_b100": {
+    "set_agreement": 0.3046875,
+    "all_gold_agreement": 1.0
+   }
+  },
+  "verdict": "PASS"
+ },
+ "seconds": 0.4,
+ "verdict": "PASS"
+}

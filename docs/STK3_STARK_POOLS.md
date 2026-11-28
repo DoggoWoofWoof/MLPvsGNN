@@ -302,3 +302,48 @@ Of the 53 cells whose reference is not shorter than the pool, **4 LIFT, 21 LEVEL
 **What this says about the user's target (95 percent of the golds at about 2,500 nodes, one rule on all ten).** On Amazon the fused first-stage list already holds 90.6 percent of the golds at 2,500 nodes, and **no walk beats it at that size** (the best cell is 3.3 points below, 87.1 against 90.5); the walk gives back only in small pools. Prime was the opposite (walk +20.9 at equal nodes). So the transfer of the seven's rule is **not universal across the two STaRK KBs read so far**: it LIFTS Prime and does not lift Amazon at the target size. Nothing is chosen or adopted; the best cell is read post-hoc; no rule, cell or link set changes from this page.
 
 **Not read:** MAG (its rows wait for its links row); which of R and K carries the FULL-over-STRUCT gain on Amazon; what the walk returns when the SPLADE leg or K is removed (DRP1).
+
+## 21. MAG's whole-split read (06:48 IST, 28 Nov 2026; 21 of 21 chunks, 2,665 test questions; COMPLETE; section 19's reads, run as declared)
+
+**What ran.** `stk3m-layout` (474.7 s, peak 2.88 GB) and `stk3m-probe` (the first question 61.2 s, the second 9.6 s; peak 3.04 GB) ran on 27 Nov, then `stk3m-run0` to `stk3m-run5` (1 h 03 min to 1 h 26 min a part, 2 CPUs each, finished on 28 Nov at about 01:45; about 9.6 seconds a question for the whole list and about 14 CPU-hours, from the rows' wall times). The three reads of section 19 (`zstk3.py read`, `missed`, `gold_profile --kb mag`, host sha a10d8e0fb8f59432 = the laptop's) ran on the host at 06:46 IST on 28 Nov, after the chunks had waited unread for about five hours; `outputs/stk3/mag/`. One layout sha (`baf731b4...`) and one cells sha (`4b9bfd16...`) cover the 21 chunks. Gates: layout PASS (G-F: the five link files equal their records; G-L: 19,901,058 S and 3,069,825 R pairs, the union of 29,279,610 pairs equals STK2's store), G-S PASS on gate chunk 10 (128 questions; the exact lists differ on none), G-P: the probe priced the list with no label read.
+
+**First stage on all 2,665 questions:** the fused list's ALL @100 58.6, @500 71.8, @1,000 77.3, @2,000 82.7, @2,500 **83.9**; the dense leg alone 55.2, 68.8, 74.7, 80.3, 82.0. The engine's own flat cells (`rrf1000_bN`) track the fused list within 0.8 points at equal nodes (the lowest, `rrf1000_b2000` at 1,711 nodes: -0.8 [-1.3, -0.3]).
+
+**Pick cells against the flat list at equal nodes** (ALL in percent with the Wilson 95 percent interval, ANY, mean distinct nodes, paired difference with its bootstrap interval; `*` = the flat reference ends at 2,500 nodes, shorter than the pool, so the difference is against the list's last point; the same eleven cells as sections 14 and 20):
+
+| cell | nodes | ALL | ANY | flat at equal nodes | difference | call |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| `rrf1000_b25+FULL:h1_c100+top25` | 50 | 58.1 [56.2, 60.0] | 81.4 | 53.6 | +4.5 [+3.4, +5.6] | LIFTS |
+| `rrf1000_b25+STRUCT:h1_c100~cs+top100` | 123 | 69.0 [67.2, 70.7] | 85.4 | 60.5 | +8.5 [+6.9, +10.1] | LIFTS |
+| `rrf1000_b100+STRUCT:h1_c100~cs+top200` | 258 | 76.7 [75.1, 78.3] | 91.0 | 66.5 | +10.2 [+8.7, +11.6] | LIFTS |
+| `rrf1000_b400+FULL:h1_c100~s20+top800` | 848 | 83.5 [82.0, 84.8] | 94.7 | 75.9 | +7.6 [+6.3, +8.9] | LIFTS |
+| `dense_top200+STRUCT:h3_bf_v2000~cs-fu` | 2,039 | 90.3 [89.1, 91.4] | 98.0 | 82.9 | +7.4 [+6.1, +8.7] | LIFTS |
+| `rrf1000_b400+STRUCT:h3_c25_v2000` | 2,325 | **90.8 [89.7, 91.9]** | 98.2 | 83.5 | **+7.3 [+6.0, +8.6]** | LIFTS |
+| `rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr` | 2,423 | 89.9 [88.7, 91.0] | 97.9 | 83.7 | +6.2 [+5.1, +7.3] | LIFTS |
+| `rrf1000_b25+STRUCT:h3_c100_v5000` | 5,006 | 93.6 [92.6, 94.5] | 96.9 | 83.9 | +9.7 [+8.2, +11.3] * | LIFTS * |
+| `rrf1000_b1600+FULL:h2_c100_v5000~s20-cs-vr` | 5,779 | 94.8 [93.9, 95.6] | 98.9 | 83.9 | +10.9 [+9.8, +12.2] * | LIFTS * |
+| `rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu` | 5,648 | 96.3 [95.5, 97.0] | 99.5 | 83.9 | +12.4 [+11.2, +13.7] * | LIFTS * |
+| `rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000` | 15,400 | 97.1 [96.4, 97.7] | 99.6 | 83.9 | +13.2 [+11.9, +14.6] * | LIFTS * |
+
+Of the 53 cells whose reference is not shorter than the pool, **12 LIFT, 17 LEVEL, 24 BELOW** (Prime 13, 17, 23; Amazon 4, 21, 28). The largest lift is +10.3 [+8.8, +11.9] at 279 nodes (`rrf1000_b100+FULL:h1_c100~cs+top200`, ALL 77.4). Unlike Amazon, **the lifts reach the target size: within 5,000 nodes the best ALL is 90.8 [89.7, 91.9] at 2,325 nodes, 7.3 [6.0, 8.6] above the flat list of the same size**; every one of the eleven pick cells LIFTS. Six of the 63 cells reach 95 (point estimate), **the smallest at 5,648 nodes** (`rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu`, 96.3), then 5,934, 6,225 and 6,261 nodes, and two at 15,400.
+
+**FULL against STRUCT at equal walk and budget (the nine twins), in points:** -1.7 [-2.5, -0.9], -1.7 [-2.3, -1.1], -1.5 [-2.0, -1.1], -1.3 [-1.9, -0.7], -0.4 [-0.8, -0.1], -0.4 [-1.0, +0.3], -0.3 [-0.7, 0.0], +0.3 [-0.4, +1.1], +0.6 [+0.2, +1.1]. **The K edges do not help on MAG:** FULL is below its STRUCT twin in seven of nine pairs (up to 1.7 points) and above in two by at most 0.6. Amazon read the opposite (five of nine twins above by 2 points or more), Prime was neutral.
+
+**Dense leg alone against the fused list at equal size (flat cells `dense_topN`, no walk).** Every call is BELOW: -3.6 [-4.8, -2.5] at 5, -3.8 [-5.0, -2.7] at 20, -4.3 [-5.4, -3.2] at 50, -3.4 [-4.4, -2.4] at 100 and at 200, -2.7 [-3.8, -1.7] at 400, -2.6 [-3.6, -1.7] at 1,000 (ALL 74.7 against the fused 77.3). `splade_top200` is 57.3 against the dense 61.1 and the fused 64.4 (-7.1 [-8.3, -6.0]). Prime and Amazon show the same sign. These are first-stage lists, not pools.
+
+**Missed questions (section 15's read on the three cells A, B and C, no choice made).** Cell A (`rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr`, 2,423 nodes): **57 questions (2.1 percent) have no gold in the pool**, 212 (8.0 percent) have some but not all golds; ALL by gold count 1, 2, 3, 4 or more: 97.5, 91.9, 87.9, 71.4. Of the 57, 32 are single-gold and **50 (87.7 percent) have a gold outside the first-stage list of 2,500**. Cell B (5,648): 12 (0.5 percent) and 86; cell C (15,400): 11 (0.4 percent) and 65, all 11 with a gold outside the list. X1, X2 and X3 of section 15 all read true.
+
+**Missed golds by degree and type (section 17's read).** 1,292 of 2,665 questions are single-gold; the single-gold golds missed are 32 (A), 8 (B) and 7 (C), all of the one node type, `paper`. G1 HELD (none has union degree 0). G2 NOT HELD as worded (the KB has one node type). **G3 HELD at A, by a small margin:** the missed golds' median union degree is 29.0 against 31.0 for the hits (B 30.0 against 31.0; C 46.0 against 31.0, the other way); Prime and Amazon read G3 NOT HELD. On 32, 8 and 7 golds this is a direction only.
+
+**Calls on section 19's expectations (MAG).**
+
+- **A1 HELD** (G-F, G-L, G-S and G-P pass with the same code, `zstk3.py` a10d8e0fb8f59432).
+- **A2 NOT HELD as worded.** At least one pick cell within 3,500 nodes LIFTS (all eleven do), but the best such lift is **+10.2 [+8.7, +11.6]** at 258 nodes (+10.3 over all 63 cells), against the ceiling of 10 points; the interval contains 10, the point estimate does not. At the target size the lift is +7.3 [+6.0, +8.6].
+- **A3 HELD.** No cell within 5,000 nodes reaches 95.0 (the best is 90.8); the first that does is at 5,648 nodes.
+- **A4 HELD.** No FULL cell gains 2 points over its STRUCT twin (the range is -1.7 to +0.6).
+- **A5 HELD.** 61.2 seconds for the first question (cold load) and 9.6 for the second against the 30 allowed; peak 3.04 GB against 16.
+- **A6 HELD.** The engine's flat cells are within 0.8 points of the fused list at equal nodes (the bound was 1).
+
+**What this says about the user's target (95 percent of the golds at about 2,500 nodes, one rule on all ten).** The seven's rule carries to **two of the three STaRK KBs**: it lifts Prime by 20.9 points at equal nodes (85.5 at 2,475 nodes, section 14) and MAG by 7.3 (90.8 at 2,325 nodes), and does not lift Amazon at that size (87.1 against 90.5, section 20). **None of the three reaches 95 at 2,500 nodes** (Prime 85.5, MAG 90.8, Amazon 87.1); MAG reaches it at about 5,600 nodes. On MAG the K edges cost points, on Amazon they carry five of nine twin gains, so the rule's K share is not one thing across the KBs. Nothing is chosen or adopted; the best cells are read post-hoc; no rule, cell or link set changes from this page.
+
+**Not read:** which of R and K carries the FULL-over-STRUCT gain on Amazon; what the walk returns when the SPLADE leg or K is removed on the three KBs (DRP1's STaRK part); the three KBs under the dense-only line of the e3v-seeded walk.

@@ -1,0 +1,241 @@
+{
+ "stage": "STK3 gold_profile",
+ "declared_in": "docs/STK3_STARK_POOLS.md section 17",
+ "kb": "mag",
+ "utc": "2026-11-28T01:16:42Z",
+ "cells": {
+  "A": {
+   "cell": "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+   "single_gold_questions": 1292,
+   "all": {
+    "golds": 1292,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 65.69969040247678,
+     "median": 22.0
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 66.71052631578948,
+     "median": 23.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 76.0905572755418,
+     "median": 31.0
+    }
+   },
+   "hit": {
+    "golds": 1260,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 66.60634920634921,
+     "median": 22.0
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 67.61428571428571,
+     "median": 23.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 76.97539682539683,
+     "median": 31.0
+    }
+   },
+   "missed": {
+    "golds": 32,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 30.0,
+     "median": 21.5
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 31.125,
+     "median": 23.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 41.25,
+     "median": 29.0
+    }
+   },
+   "types": [
+    {
+     "type": "paper",
+     "golds": 1292,
+     "missed": 32,
+     "miss_rate": 0.02476780185758514
+    }
+   ]
+  },
+  "B": {
+   "cell": "rrf1000_b1600+STRUCT:h3_bf_v5000~cs-fu",
+   "single_gold_questions": 1292,
+   "all": {
+    "golds": 1292,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 65.69969040247678,
+     "median": 22.0
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 66.71052631578948,
+     "median": 23.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 76.0905572755418,
+     "median": 31.0
+    }
+   },
+   "hit": {
+    "golds": 1284,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 65.90342679127725,
+     "median": 22.0
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 66.91510903426791,
+     "median": 23.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 76.24532710280374,
+     "median": 31.0
+    }
+   },
+   "missed": {
+    "golds": 8,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 33.0,
+     "median": 23.0
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 33.875,
+     "median": 25.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 51.25,
+     "median": 30.0
+    }
+   },
+   "types": [
+    {
+     "type": "paper",
+     "golds": 1292,
+     "missed": 8,
+     "miss_rate": 0.006191950464396285
+    }
+   ]
+  },
+  "C": {
+   "cell": "rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000",
+   "single_gold_questions": 1292,
+   "all": {
+    "golds": 1292,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 65.69969040247678,
+     "median": 22.0
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 66.71052631578948,
+     "median": 23.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 76.0905572755418,
+     "median": 31.0
+    }
+   },
+   "hit": {
+    "golds": 1285,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 65.86770428015564,
+     "median": 22.0
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 66.87937743190662,
+     "median": 23.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 76.21867704280156,
+     "median": 31.0
+    }
+   },
+   "missed": {
+    "golds": 7,
+    "S": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 34.857142857142854,
+     "median": 28.0
+    },
+    "structural": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 35.714285714285715,
+     "median": 28.0
+    },
+    "union": {
+     "degree_0": 0,
+     "degree_0_share": 0.0,
+     "mean": 52.57142857142857,
+     "median": 46.0
+    }
+   },
+   "types": [
+    {
+     "type": "paper",
+     "golds": 1292,
+     "missed": 7,
+     "miss_rate": 0.005417956656346749
+    }
+   ]
+  }
+ },
+ "expectations": {
+  "G1_under_2_percent_of_A_missed_have_union_degree_0": true,
+  "G2_A_miss_rate_differs_10_points_between_the_two_largest_types": false,
+  "G3_A_missed_median_union_degree_below_the_hit_median": true
+ },
+ "cells_sha256": "4b9bfd160b18984cf6fa1a1526f1ef10a783cdb925a65f5c4dcc1b130e1c6514",
+ "layout_sha256": "baf731b409957395a6d1c8fb3f1d24bc7f127bcf2e160801ff1bae278d6545cb",
+ "note": "descriptive read of the test split; nothing is chosen or changed from it"
+}

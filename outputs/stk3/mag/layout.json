@@ -1,0 +1,94 @@
+{
+ "stage": "STK3 layout",
+ "declared_in": "docs/STK3_STARK_POOLS.md",
+ "kb": "mag",
+ "dataset": "stark_mag",
+ "version": "SRK",
+ "layout_kind": "B0",
+ "nodes": 1872968,
+ "inputs": {
+  "links_json_sha256": "4381ca565eab6e99fcc27961b10c8a5bc972ca4776756e9a6917cc2b62f96484",
+  "links_files": {
+   "S": "bc73ca8d8a68134478b54b73596c444f3ada254446e97b4926b7b3de2bf9883a",
+   "F0": "60160ceec2d0f81323d0f45bc49179254b2ad8eba87c9a9e8efe31871681b99f",
+   "F0T": "2aa75733a33c42814fb44465b16e312331d918de1c55b5b0b800f0308088a7e8",
+   "W2_S": "72a5b601dfcc61fc9f787fcfeac1e21c20dbe5ce7e45414b160e3a1881fbadb8",
+   "K": "a57be8d4164aa595cb79ba73a37f69fe70ca7ecd4d34087afe10370f084db656",
+   "store": "be93ca2cb47825064050f6fc8afc2a60b71ac0e674435a1a8e8208edcd2bfbdf"
+  },
+  "names_sha256": "3828a3fddf6759d47c65b7ef023f83f3dfbc714da1a93e3c5ec919a29382139b"
+ },
+ "counts": {
+  "version": "SRK",
+  "F0T_pairs": 3236512,
+  "W2_S_pairs": 3650472,
+  "S_pairs": 19901058,
+  "K_pairs_in": 4499837,
+  "carried_pairs": 0,
+  "ner_pairs_in": 3236512,
+  "ner_removed_in_S": 182471,
+  "knn_removed_in_SR": 842759,
+  "knn_pairs_out": 3657078,
+  "ner_pairs_out": 3054041,
+  "structural_pairs": 22970883,
+  "structural_S": 19901058,
+  "structural_R": 3069825,
+  "tiers": {
+   "F0T": 3054041,
+   "carried": 0
+  },
+  "union": 29279610
+ },
+ "gate_GF": {
+  "links_files_equal_record": {
+   "S": true,
+   "F0": true,
+   "F0T": true,
+   "W2_S": true,
+   "K": true,
+   "store": true
+  },
+  "F0_keys_equal": true,
+  "F0T_keys_equal": true,
+  "F0_pairs": 3235662,
+  "F0T_pairs": 3236512,
+  "weights_positive": true,
+  "triple_keys_equal": true,
+  "S_pairs": 19901058,
+  "S_pairs_record": 19901058,
+  "S_equal_record": true,
+  "verdict": "PASS"
+ },
+ "gate_GL": {
+  "knn_disjoint_from_structural": true,
+  "knn_disjoint_from_ner": true,
+  "ner_disjoint_from_S": true,
+  "labels": {
+   "S": 19901058,
+   "R": 3069825,
+   "S_expected": 19901058,
+   "equal": true
+  },
+  "union": {
+   "stores": 29279610,
+   "layout": 29279610,
+   "equal": true
+  },
+  "verdict": "PASS",
+  "union_equals_store": {
+   "here": 29279610,
+   "stk2_store": 29279610,
+   "equal": true
+  },
+  "row_order_equals_FamilyCSR": {
+   "ner": true,
+   "knn": true
+  }
+ },
+ "layout_npz_sha256": "baf731b409957395a6d1c8fb3f1d24bc7f127bcf2e160801ff1bae278d6545cb",
+ "seconds": 474.7,
+ "peak_gb": 2.88,
+ "utc": "2026-11-27T18:41:31Z",
+ "script_sha256": "a10d8e0fb8f594326b253703db4f25590cb1ec6e358784d1b84a27c92b46ba92",
+ "verdict": "PASS"
+}
