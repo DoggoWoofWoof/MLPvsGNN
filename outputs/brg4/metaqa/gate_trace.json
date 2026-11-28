@@ -1,0 +1,34 @@
+{
+ "stage": "BRG4 gates",
+ "declared_in": "docs/BRG4_CAP_WALK_TRACE.md",
+ "set": "metaqa",
+ "cell": "rrf1000_b800+STRUCT:h3_c25_v2000",
+ "chunks": {
+  "70": {
+   "questions": 128,
+   "G-C1": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 0.9
+  },
+  "4": {
+   "questions": 128,
+   "G-C1": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 0.9
+  },
+  "43": {
+   "questions": 128,
+   "G-C1": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 0.6
+  }
+ },
+ "utc": "2026-11-28T13:50:20Z",
+ "verdict": "PASS"
+}
