@@ -1,0 +1,216 @@
+{
+ "stage": "BRG6 read",
+ "declared_in": "docs/BRG6_LEARNED_ORDER_REMAINDER.md",
+ "set": "webqsp",
+ "cell": "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+ "utc": "2026-11-28T15:19:54Z",
+ "fit_chunks": [
+  4,
+  1,
+  6,
+  8,
+  5,
+  9
+ ],
+ "screen_chunks": [
+  7,
+  2,
+  3
+ ],
+ "read_chunks": [
+  7,
+  2,
+  3,
+  11,
+  0,
+  10
+ ],
+ "fit": {
+  "1": {
+   "rows": 197149,
+   "positives": 2016,
+   "fitted": true,
+   "iterations": 13
+  },
+  "2": {
+   "rows": 801709,
+   "positives": 1711,
+   "fitted": true,
+   "iterations": 18
+  },
+  "3": {
+   "rows": 800601,
+   "positives": 603,
+   "fitted": true,
+   "iterations": 12
+  }
+ },
+ "unseen": {
+  "questions": 351,
+  "golds": 2697,
+  "variants": {
+   "control": {
+    "ALL": 0.8717948717948718,
+    "golds_in_pool": 0.6755654430849092,
+    "mean_nodes": 2100.5840455840457,
+    "ceiling_ALL": 0.9259259259259259,
+    "hops": {
+     "1": {
+      "candidate_golds": 1076,
+      "kept_golds": 1075
+     },
+     "2": {
+      "candidate_golds": 942,
+      "kept_golds": 599
+     },
+     "3": {
+      "candidate_golds": 559,
+      "kept_golds": 87
+     }
+    }
+   },
+   "lr6": {
+    "ALL": 0.886039886039886,
+    "golds_in_pool": 0.7078235076010382,
+    "mean_nodes": 2104.840455840456,
+    "ceiling_ALL": 0.9202279202279202,
+    "vs_control": {
+     "diff": 0.014245014245014245,
+     "ci95": [
+      -0.005698005698005698,
+      0.03418803418803419
+     ],
+     "call": "LEVEL"
+    },
+    "nodes_over_control": 1.0020262984789199,
+    "reached": false,
+    "hops": {
+     "1": {
+      "candidate_golds": 1076,
+      "kept_golds": 1069
+     },
+     "2": {
+      "candidate_golds": 947,
+      "kept_golds": 661
+     },
+     "3": {
+      "candidate_golds": 543,
+      "kept_golds": 116
+     }
+    }
+   }
+  }
+ },
+ "remainder": {
+  "questions": 735,
+  "golds": 5481,
+  "variants": {
+   "control": {
+    "ALL": 0.8748299319727891,
+    "golds_in_pool": 0.6524356869184456,
+    "mean_nodes": 2098.579591836735,
+    "ceiling_ALL": 0.9292517006802721,
+    "hops": {
+     "1": {
+      "candidate_golds": 1983,
+      "kept_golds": 1976
+     },
+     "2": {
+      "candidate_golds": 2008,
+      "kept_golds": 1347
+     },
+     "3": {
+      "candidate_golds": 752,
+      "kept_golds": 137
+     }
+    }
+   },
+   "lr6": {
+    "ALL": 0.889795918367347,
+    "golds_in_pool": 0.7206714103265828,
+    "mean_nodes": 2103.0149659863946,
+    "ceiling_ALL": 0.9238095238095239,
+    "vs_control": {
+     "diff": 0.014965986394557823,
+     "ci95": [
+      0.0013605442176870747,
+      0.029931972789115645
+     ],
+     "call": "LEVEL"
+    },
+    "nodes_over_control": 1.0021135124762068,
+    "reached": false,
+    "hops": {
+     "1": {
+      "candidate_golds": 1983,
+      "kept_golds": 1975
+     },
+     "2": {
+      "candidate_golds": 2011,
+      "kept_golds": 1671
+     },
+     "3": {
+      "candidate_golds": 701,
+      "kept_golds": 184
+     }
+    }
+   }
+  }
+ },
+ "screen": {
+  "questions": 384,
+  "golds": 2784,
+  "variants": {
+   "control": {
+    "ALL": 0.8776041666666666,
+    "golds_in_pool": 0.6300287356321839,
+    "mean_nodes": 2096.7473958333335,
+    "ceiling_ALL": 0.9322916666666666,
+    "hops": {
+     "1": {
+      "candidate_golds": 907,
+      "kept_golds": 901
+     },
+     "2": {
+      "candidate_golds": 1066,
+      "kept_golds": 748
+     },
+     "3": {
+      "candidate_golds": 193,
+      "kept_golds": 50
+     }
+    }
+   },
+   "lr6": {
+    "ALL": 0.8932291666666666,
+    "golds_in_pool": 0.733117816091954,
+    "mean_nodes": 2101.3463541666665,
+    "ceiling_ALL": 0.9270833333333334,
+    "vs_control": {
+     "diff": 0.015625,
+     "ci95": [
+      -0.005208333333333333,
+      0.036458333333333336
+     ],
+     "call": "LEVEL"
+    },
+    "nodes_over_control": 1.0021933773913214,
+    "reached": false,
+    "hops": {
+     "1": {
+      "candidate_golds": 907,
+      "kept_golds": 906
+     },
+     "2": {
+      "candidate_golds": 1064,
+      "kept_golds": 1010
+     },
+     "3": {
+      "candidate_golds": 158,
+      "kept_golds": 68
+     }
+    }
+   }
+  }
+ }
+}

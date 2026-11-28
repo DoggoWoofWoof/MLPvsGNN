@@ -1,0 +1,129 @@
+{
+ "stage": "BRG6 gates",
+ "declared_in": "docs/BRG6_LEARNED_ORDER_REMAINDER.md",
+ "set": "webqsp",
+ "cell": "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+ "fit_chunks": [
+  4,
+  1,
+  6,
+  8,
+  5,
+  9
+ ],
+ "read_chunks": [
+  7,
+  2,
+  3,
+  11,
+  0,
+  10
+ ],
+ "screen_chunks": [
+  7,
+  2,
+  3
+ ],
+ "questions_expected": 735,
+ "fit": {
+  "1": {
+   "rows": 197149,
+   "positives": 2016,
+   "fitted": true,
+   "iterations": 13
+  },
+  "2": {
+   "rows": 801709,
+   "positives": 1711,
+   "fitted": true,
+   "iterations": 18
+  },
+  "3": {
+   "rows": 800601,
+   "positives": 603,
+   "fitted": true,
+   "iterations": 12
+  }
+ },
+ "chunks": {
+  "7": {
+   "questions": 128,
+   "seen": true,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 176.1
+  },
+  "2": {
+   "questions": 128,
+   "seen": true,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 198.2
+  },
+  "3": {
+   "questions": 128,
+   "seen": true,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 183.6
+  },
+  "11": {
+   "questions": 95,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 105.7
+  },
+  "0": {
+   "questions": 128,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 181.1
+  },
+  "10": {
+   "questions": 128,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 182.8
+  }
+ },
+ "G-R1": {
+  "fit_equals_amendment_1": true,
+  "disjoint": true
+ },
+ "questions_read": 735,
+ "G-R3": {
+  "complete": true
+ },
+ "verdict": "PASS",
+ "utc": "2026-11-28T15:19:48Z"
+}

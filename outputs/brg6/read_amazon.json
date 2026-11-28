@@ -1,0 +1,216 @@
+{
+ "stage": "BRG6 read",
+ "declared_in": "docs/BRG6_LEARNED_ORDER_REMAINDER.md",
+ "set": "amazon",
+ "cell": "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+ "utc": "2026-11-28T15:08:45Z",
+ "fit_chunks": [
+  9,
+  1,
+  10,
+  6,
+  2,
+  8
+ ],
+ "screen_chunks": [
+  7,
+  11,
+  5
+ ],
+ "read_chunks": [
+  7,
+  11,
+  5,
+  4,
+  12,
+  3,
+  0
+ ],
+ "fit": {
+  "1": {
+   "rows": 75212,
+   "positives": 1045,
+   "fitted": true,
+   "iterations": 18
+  },
+  "2": {
+   "rows": 801012,
+   "positives": 1014,
+   "fitted": true,
+   "iterations": 27
+  },
+  "3": {
+   "rows": 0,
+   "positives": 0,
+   "fitted": false
+  }
+ },
+ "unseen": {
+  "questions": 490,
+  "golds": 2709,
+  "variants": {
+   "control": {
+    "ALL": 0.826530612244898,
+    "golds_in_pool": 0.9280177187153932,
+    "mean_nodes": 2464.6938775510203,
+    "ceiling_ALL": 0.8428571428571429,
+    "hops": {
+     "1": {
+      "candidate_golds": 705,
+      "kept_golds": 705
+     },
+     "2": {
+      "candidate_golds": 746,
+      "kept_golds": 732
+     },
+     "3": {
+      "candidate_golds": 0,
+      "kept_golds": 0
+     }
+    }
+   },
+   "lr6": {
+    "ALL": 0.8387755102040816,
+    "golds_in_pool": 0.9313399778516057,
+    "mean_nodes": 2464.6938775510203,
+    "ceiling_ALL": 0.8428571428571429,
+    "vs_control": {
+     "diff": 0.012244897959183673,
+     "ci95": [
+      0.004081632653061225,
+      0.02249999999999972
+     ],
+     "call": "LEVEL"
+    },
+    "nodes_over_control": 1.0,
+    "reached": false,
+    "hops": {
+     "1": {
+      "candidate_golds": 705,
+      "kept_golds": 705
+     },
+     "2": {
+      "candidate_golds": 746,
+      "kept_golds": 741
+     },
+     "3": {
+      "candidate_golds": 0,
+      "kept_golds": 0
+     }
+    }
+   }
+  }
+ },
+ "remainder": {
+  "questions": 874,
+  "golds": 4666,
+  "variants": {
+   "control": {
+    "ALL": 0.8398169336384439,
+    "golds_in_pool": 0.9294899271324475,
+    "mean_nodes": 2453.6430205949655,
+    "ceiling_ALL": 0.8524027459954233,
+    "hops": {
+     "1": {
+      "candidate_golds": 1231,
+      "kept_golds": 1231
+     },
+     "2": {
+      "candidate_golds": 1203,
+      "kept_golds": 1185
+     },
+     "3": {
+      "candidate_golds": 0,
+      "kept_golds": 0
+     }
+    }
+   },
+   "lr6": {
+    "ALL": 0.8478260869565217,
+    "golds_in_pool": 0.9316330904414917,
+    "mean_nodes": 2453.6430205949655,
+    "ceiling_ALL": 0.8524027459954233,
+    "vs_control": {
+     "diff": 0.008009153318077803,
+     "ci95": [
+      0.003403890160183068,
+      0.014874141876430207
+     ],
+     "call": "LEVEL"
+    },
+    "nodes_over_control": 1.0,
+    "reached": false,
+    "hops": {
+     "1": {
+      "candidate_golds": 1231,
+      "kept_golds": 1231
+     },
+     "2": {
+      "candidate_golds": 1203,
+      "kept_golds": 1195
+     },
+     "3": {
+      "candidate_golds": 0,
+      "kept_golds": 0
+     }
+    }
+   }
+  }
+ },
+ "screen": {
+  "questions": 384,
+  "golds": 1957,
+  "variants": {
+   "control": {
+    "ALL": 0.8567708333333334,
+    "golds_in_pool": 0.9315278487480838,
+    "mean_nodes": 2439.5416666666665,
+    "ceiling_ALL": 0.8645833333333334,
+    "hops": {
+     "1": {
+      "candidate_golds": 526,
+      "kept_golds": 526
+     },
+     "2": {
+      "candidate_golds": 457,
+      "kept_golds": 453
+     },
+     "3": {
+      "candidate_golds": 0,
+      "kept_golds": 0
+     }
+    }
+   },
+   "lr6": {
+    "ALL": 0.859375,
+    "golds_in_pool": 0.9320388349514563,
+    "mean_nodes": 2439.5416666666665,
+    "ceiling_ALL": 0.8645833333333334,
+    "vs_control": {
+     "diff": 0.0026041666666666665,
+     "ci95": [
+      0.0,
+      0.0078125
+     ],
+     "call": "LEVEL"
+    },
+    "nodes_over_control": 1.0,
+    "reached": false,
+    "hops": {
+     "1": {
+      "candidate_golds": 526,
+      "kept_golds": 526
+     },
+     "2": {
+      "candidate_golds": 457,
+      "kept_golds": 454
+     },
+     "3": {
+      "candidate_golds": 0,
+      "kept_golds": 0
+     }
+    }
+   }
+  }
+ }
+}

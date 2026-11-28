@@ -1,0 +1,139 @@
+{
+ "stage": "BRG6 gates",
+ "declared_in": "docs/BRG6_LEARNED_ORDER_REMAINDER.md",
+ "set": "amazon",
+ "cell": "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+ "fit_chunks": [
+  9,
+  1,
+  10,
+  6,
+  2,
+  8
+ ],
+ "read_chunks": [
+  7,
+  11,
+  5,
+  4,
+  12,
+  3,
+  0
+ ],
+ "screen_chunks": [
+  7,
+  11,
+  5
+ ],
+ "questions_expected": 874,
+ "fit": {
+  "1": {
+   "rows": 75212,
+   "positives": 1045,
+   "fitted": true,
+   "iterations": 18
+  },
+  "2": {
+   "rows": 801012,
+   "positives": 1014,
+   "fitted": true,
+   "iterations": 27
+  },
+  "3": {
+   "rows": 0,
+   "positives": 0,
+   "fitted": false
+  }
+ },
+ "chunks": {
+  "7": {
+   "questions": 128,
+   "seen": true,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 14.1
+  },
+  "11": {
+   "questions": 128,
+   "seen": true,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 18.7
+  },
+  "5": {
+   "questions": 128,
+   "seen": true,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 20.5
+  },
+  "4": {
+   "questions": 128,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 20.8
+  },
+  "12": {
+   "questions": 106,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 18.2
+  },
+  "3": {
+   "questions": 128,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 20.6
+  },
+  "0": {
+   "questions": 128,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 20.6
+  }
+ },
+ "G-R1": {
+  "fit_equals_amendment_1": true,
+  "disjoint": true
+ },
+ "questions_read": 874,
+ "G-R3": {
+  "complete": true
+ },
+ "verdict": "PASS",
+ "utc": "2026-11-28T15:05:08Z"
+}

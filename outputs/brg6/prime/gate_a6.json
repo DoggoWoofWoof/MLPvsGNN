@@ -1,0 +1,239 @@
+{
+ "stage": "BRG6 gates",
+ "declared_in": "docs/BRG6_LEARNED_ORDER_REMAINDER.md",
+ "set": "prime",
+ "cell": "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+ "fit_chunks": [
+  16,
+  2,
+  0,
+  17,
+  11,
+  5
+ ],
+ "read_chunks": [
+  10,
+  18,
+  21,
+  6,
+  9,
+  1,
+  3,
+  14,
+  19,
+  8,
+  20,
+  7,
+  15,
+  13,
+  12,
+  4
+ ],
+ "screen_chunks": [
+  10,
+  18,
+  21
+ ],
+ "questions_expected": 2033,
+ "fit": {
+  "1": {
+   "rows": 191716,
+   "positives": 797,
+   "fitted": true,
+   "iterations": 20
+  },
+  "2": {
+   "rows": 800665,
+   "positives": 667,
+   "fitted": true,
+   "iterations": 13
+  },
+  "3": {
+   "rows": 800220,
+   "positives": 222,
+   "fitted": true,
+   "iterations": 12
+  }
+ },
+ "chunks": {
+  "10": {
+   "questions": 128,
+   "seen": true,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 150.9
+  },
+  "18": {
+   "questions": 128,
+   "seen": true,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 154.3
+  },
+  "21": {
+   "questions": 113,
+   "seen": true,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 145.3
+  },
+  "6": {
+   "questions": 128,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 136.9
+  },
+  "9": {
+   "questions": 128,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 139.9
+  },
+  "1": {
+   "questions": 128,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 153.7
+  },
+  "3": {
+   "questions": 128,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 153.0
+  },
+  "14": {
+   "questions": 128,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 137.1
+  },
+  "19": {
+   "questions": 128,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 140.3
+  },
+  "8": {
+   "questions": 128,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 139.4
+  },
+  "20": {
+   "questions": 128,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 137.6
+  },
+  "7": {
+   "questions": 128,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 142.4
+  },
+  "15": {
+   "questions": 128,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 134.8
+  },
+  "13": {
+   "questions": 128,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 140.0
+  },
+  "12": {
+   "questions": 128,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 139.1
+  },
+  "4": {
+   "questions": 128,
+   "seen": false,
+   "G-R0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-R2": null,
+   "seconds": 133.5
+  }
+ },
+ "G-R1": {
+  "fit_equals_amendment_1": true,
+  "disjoint": true
+ },
+ "questions_read": 2033,
+ "G-R3": {
+  "complete": true
+ },
+ "verdict": "PASS",
+ "utc": "2026-11-28T15:40:41Z"
+}
