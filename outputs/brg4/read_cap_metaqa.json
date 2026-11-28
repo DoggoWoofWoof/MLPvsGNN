@@ -1,0 +1,138 @@
+{
+ "stage": "BRG4 amendment 1 read",
+ "declared_in": "docs/BRG4_CAP_WALK_TRACE.md",
+ "set": "metaqa",
+ "cell": "rrf1000_b800+STRUCT:h3_c25_v2000",
+ "whole": false,
+ "utc": "2026-11-28T13:53:42Z",
+ "chunks": [
+  "cap_c0004.npz",
+  "cap_c0043.npz",
+  "cap_c0070.npz"
+ ],
+ "questions": 384,
+ "golds": 2901,
+ "variants": {
+  "cap25": {
+   "ALL": 0.9375,
+   "golds_in_pool": 0.9531196139262323,
+   "mean_nodes": 2509.4739583333335,
+   "ceiling_ALL": 0.953125,
+   "ceiling_golds": 0.9613926232333678,
+   "by_gold_count": {
+    "1": {
+     "questions": 105,
+     "ALL": 1.0
+    },
+    "2": {
+     "questions": 73,
+     "ALL": 0.958904109589041
+    },
+    "3": {
+     "questions": 58,
+     "ALL": 1.0
+    },
+    "4+": {
+     "questions": 148,
+     "ALL": 0.8581081081081081
+    }
+   }
+  },
+  "cap50": {
+   "ALL": 0.9296875,
+   "golds_in_pool": 0.9052051016890728,
+   "mean_nodes": 2622.5364583333335,
+   "ceiling_ALL": 1.0,
+   "ceiling_golds": 1.0,
+   "minus_control": -0.0078125,
+   "ci95": [
+    -0.03391927083333333,
+    0.018229166666666668
+   ],
+   "call": "LEVEL",
+   "nodes_over_control": 1.0450542631154023,
+   "by_gold_count": {
+    "1": {
+     "questions": 105,
+     "ALL": 1.0
+    },
+    "2": {
+     "questions": 73,
+     "ALL": 0.958904109589041
+    },
+    "3": {
+     "questions": 58,
+     "ALL": 0.9827586206896551
+    },
+    "4+": {
+     "questions": 148,
+     "ALL": 0.8445945945945946
+    }
+   }
+  },
+  "cap100": {
+   "ALL": 0.8177083333333334,
+   "golds_in_pool": 0.6680455015511892,
+   "mean_nodes": 2685.234375,
+   "ceiling_ALL": 0.9973958333333334,
+   "ceiling_golds": 0.9972423302309549,
+   "minus_control": -0.11979166666666667,
+   "ci95": [
+    -0.15885416666666666,
+    -0.0859375
+   ],
+   "call": "BELOW",
+   "nodes_over_control": 1.0700387489908036,
+   "by_gold_count": {
+    "1": {
+     "questions": 105,
+     "ALL": 0.9714285714285714
+    },
+    "2": {
+     "questions": 73,
+     "ALL": 0.9178082191780822
+    },
+    "3": {
+     "questions": 58,
+     "ALL": 0.9482758620689655
+    },
+    "4+": {
+     "questions": 148,
+     "ALL": 0.6081081081081081
+    }
+   }
+  },
+  "cap200": {
+   "ALL": 0.7447916666666666,
+   "golds_in_pool": 0.5298173043778007,
+   "mean_nodes": 2712.3932291666665,
+   "ceiling_ALL": 0.9244791666666666,
+   "ceiling_golds": 0.8900379179593244,
+   "minus_control": -0.19270833333333334,
+   "ci95": [
+    -0.234375,
+    -0.15104166666666666
+   ],
+   "call": "BELOW",
+   "nodes_over_control": 1.0808612777827358,
+   "by_gold_count": {
+    "1": {
+     "questions": 105,
+     "ALL": 0.9523809523809523
+    },
+    "2": {
+     "questions": 73,
+     "ALL": 0.863013698630137
+    },
+    "3": {
+     "questions": 58,
+     "ALL": 0.9137931034482759
+    },
+    "4+": {
+     "questions": 148,
+     "ALL": 0.47297297297297297
+    }
+   }
+  }
+ }
+}

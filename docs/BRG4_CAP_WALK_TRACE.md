@@ -73,6 +73,41 @@ Declared after section 6 and before any number of the sweep. The trace says abou
 - **C4.** The cap of 200 is not better than the cap of 100 by more than 0.5 point (more candidates per node meet the visited cap earlier).
 - **C5.** The cap-25 variant equals the engine on every question (0 mismatches).
 
-## 8. Results of Amendment 1
+## 8. Results of Amendment 1 (28 Nov 2026 19:24 IST)
+
+`capsweep` on MetaQA, the same three chunks (384 questions), module sha256 prefix `c44eaab7a571f767` (local = host; committed 14fd410b), G-C2 PASS on all 3 chunks (0 mismatches). Records: `outputs/brg4/metaqa/gate_cap.json`, `cap_c*.npz`, `outputs/brg4/read_cap_metaqa.json`. Subset read (a screen).
+
+| per-node cap | ALL | golds in the pool | mean nodes (over cap 25) | ceiling ALL (golds among the head and every hop's candidates) | minus cap 25 [95% interval], call |
+| --- | --- | --- | --- | --- | --- |
+| 25 (the cell) | 93.8 | 95.3 | 2,509 | 95.3 | |
+| 50 | 93.0 | 90.5 | 2,623 (1.045) | 100.0 | -0.78 [-3.39, +1.82] LEVEL |
+| 100 | 81.8 | 66.8 | 2,685 (1.070) | 99.7 | -11.98 [-15.89, -8.59] BELOW |
+| 200 | 74.5 | 53.0 | 2,712 (1.081) | 92.4 | -19.27 [-23.44, -15.10] BELOW |
+
+By gold count (ALL): cap 25 100.0 / 95.9 / 100.0 / 85.8 for 1, 2, 3, 4 or more golds; cap 50 100.0 / 95.9 / 98.3 / 84.5; cap 100 97.1 / 91.8 / 94.8 / 60.8; cap 200 95.2 / 86.3 / 91.4 / 47.3.
+
+**Calls on the priors.**
+
+- **C1 NOT HELD.** Cap 50 is -0.78 [-3.39, +1.82] LEVEL and cap 100 is -11.98 BELOW; neither is ABOVE.
+- **C2 NOT HELD.** Mean pool sizes are 1.045, 1.070 and 1.081 times the control's (within 3 percent expected).
+- **C3 NOT HELD.** The ceiling is 95.3, 100.0, 99.7 and 92.4: it rises to cap 50 and falls after.
+- **C4 HELD.** Cap 200 (74.5) is 7.3 points below cap 100 (81.8), not better.
+- **C5 HELD.** 0 mismatches on all 3 chunks.
+
+**What it says.** A larger cap does not buy the golds: at cap 50 every gold is among the candidates of the hops (ceiling 100.0, up from 95.3) and the pool still holds 93.0, and the larger the cap the more the first-arrived nodes of hop 3 are the wrong ones (cap 100: 66.8 percent of the golds in the pool against a ceiling of 99.7). The visited cap keeps the first fresh nodes of a hop in arrival order, and a larger cap fills it with the first rows' neighbours. **MetaQA's misses are an ordering problem inside the visited cap, as Prime's and WebQSP's are**: at cap 50 a perfect order would give 100.0 against 93.0 at 4.5 percent more nodes (the cell's own cap of 25 has a ceiling of 95.3 against its 93.8). The cosine key the other sets use is not an option here (PL's grid found it hurts on MetaQA); Amendment 2 asks whether a question-free key (the frontier's agreement) orders the hop better than arrival. Nothing is adopted.
+
+## 9. Amendment 2 (28 Nov 2026 19:24 IST): which order inside the visited cap
+
+Declared after section 8 and before any number of this amendment. A new command `ordsweep --ds metaqa` of `zbrg4.py` (added after this commit, self-test first): the declared cell's walk at the caps 25, 50 and 100 with the hop's fresh candidates ordered by `control` (arrival, the cell's), `sup` (the number of distinct frontier nodes whose row lists the node, most first, ties to arrival), `ppr` (the sum over those frontier nodes of 1 / (RRF_C + the frontier node's place + 1), ties to arrival) or `vr` (the question's cosine, highest first, ties to the lower id): 12 variants, the control being cap 25 with arrival. Same subset, visited cap 2,000, hops 3, gates and statistics as sections 7 and 8 (**G-C3**: the control equals the engine's expansion and grade on every question). Ceiling as in section 8 per variant. A whole-split read of the best variant follows only if one variant is ABOVE on the subset with a mean pool size no more than 2 percent above the control's.
+
+**Priors (before any number of this amendment).**
+
+- **K1.** At the cap of 25, no order is ABOVE the control (arrival is row order, which already puts a node's neighbours in a fixed relation order, and the other orders cannot add a signal the row does not have).
+- **K2.** At the cap of 50, `sup` or `ppr` is ABOVE the control (the golds are all candidates there and the answers of a multi-hop question are reached from several frontier nodes).
+- **K3.** `vr` is BELOW the control at the caps 50 and 100 (PL's grid and CR1: cosine hurts on MetaQA).
+- **K4.** Every variant's mean pool size is within 10 percent of the control's.
+- **K5.** G-C3 holds (0 mismatches).
+
+## 10. Results of Amendment 2
 
 None yet.
