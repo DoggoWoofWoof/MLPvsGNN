@@ -258,3 +258,41 @@ Within 3,500 nodes: MuSiQue filed 87.0 [2,981], `both` and `names` unchanged (83
 **What the seven reads say together (slices except WebQSP and MultiHop-RAG; nothing adopted).** Dense-only, no K, on e3v reaches 95 or more within about 2,500 nodes on 2Wiki (96.2), HotpotQA (98.8), SQuAD (99.5), MultiHop-RAG (98.8) and MetaQA (95.2 at 2,522 nodes; 94.4 within 2,500), and does not on MuSiQue (83.4) and WebQSP (86.6). The question-name rule is never BELOW `both` and is called ABOVE only in small cells (2Wiki at about 80 nodes, MuSiQue at about 1,900 nodes). The name rule is therefore not a replacement for SPLADE's lexical leg at 2,500 nodes on MuSiQue (gap 2.6, share 0.37) or WebQSP (share -0.47). The remaining distance on those two is walk coverage per node (and, on the STaRK sets, the same under their own cells), not a missing first-stage list.
 
 **Rows.** `d2w-mu0..3` (parts of MuSiQue's whole split over the remaining 11 chunks; the eight chunks of the slice are kept) and `d2z-mu` (the read), declared by section 15's last paragraph, pushed to the feed before the first unsent held row (feed sha aba35e663e72, 12,460 items). Whole-split rows of 2Wiki (`d2w-tw0..5`), HotpotQA (`d2w-hp0..3`), MetaQA (`d2w-me0..1`) and SQuAD (`d2w-sq0..1`) are running or waiting as declared in section 15. SPLADE, K and PL8 stay as they are.
+
+## 17. Whole-split reads of all seven datasets on e3v (12:43 IST, 28 Nov 2026): the target holds on four, not on MetaQA, MuSiQue and WebQSP
+
+**What ran.** The whole-split rows declared in sections 15 and 16 (`d2w-tw0..5`, `d2w-hp0..3`, `d2w-me0..1`, `d2w-sq0..1`, `d2w-mu0..3`, same module sha 5e05e7a6f9d88a2c) and their reads. 2Wiki (12,576 questions), HotpotQA (7,405) and MuSiQue (2,417) were read on the host (`d2z-tw`, `d2z-hp`, `d2z-mu`); MetaQA (9,785) by the same command (`zdrp2.py read --ds metaqa`); SQuAD (11,873) on the laptop (the host has no filed eval grid for it, as in section 16). WebQSP (1,503) and MultiHop-RAG (1,130) were whole splits already. All 32 gate files (`gate_names.json`, `gate_run_p*.json`) read PASS and every read says COMPLETE. Records: `outputs/drp1e/read_<ds>.json` (the slice records of sections 15 and 16 stay in git history, commits 9c473c1c and e7d2c2e8).
+
+**A trap found on the way.** `d2z-me` wrote the whole-split MetaQA record at 11:44 and the host file was then overwritten by a push that carried the laptop's tracked slice record (the files are tracked, so `rx push` replaces a newer host copy; a push after 11:44 did it). The row's log showed COMPLETE and the file said SLICE. The read command was run again on the host after the push and the record is the whole one. From this commit the laptop's copies are the whole-split records, so a later push no longer reverts them.
+
+**The best cell within 2,500 nodes, whole splits (each arm's own best; ALL in percent, nodes in brackets; post hoc as in sections 15 and 16).**
+
+| dataset | questions | filed | `both` (e3v) | `names` (e3v) | `names - both` | older `both` | e3v - older | gap call (filed - `both`) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2Wiki | 12576 (COMPLETE) | 96.6 [2,211] | 96.7 [2,228] | 97.0 [2,228] | +0.30 [+0.21, +0.41] LEVEL | 88.2 | +8.55 [+8.04, +9.06] | -0.2 points NO_GAP |
+| HotpotQA | 7405 (COMPLETE) | 97.8 [154] | 98.5 [1,885] | 98.8 [2,483] | +0.26 [+0.14, +0.36] LEVEL | 98.3 | +0.27 [+0.00, +0.54] | -0.7 points NO_GAP |
+| MetaQA | 9785 (COMPLETE) | 89.7 [2,336] | 93.3 [2,485] | 93.3 [2,496] | +0.00 [+0.00, +0.00] LEVEL | 88.8 | +4.49 [+4.05, +4.95] | -3.6 points NO_GAP |
+| SQuAD | 11873 (COMPLETE) | 99.9 [2,200] | 99.6 [1,574] | 99.6 [1,574] | +0.00 [+0.00, +0.00] LEVEL | 99.8 | -0.24 [-0.35, -0.13] | 0.3 points NO_GAP |
+| MultiHop-RAG | 1130 (COMPLETE) | 99.1 [100] | 98.8 [100] | 98.8 [100] | +0.00 [+0.00, +0.00] LEVEL | 99.1 | -0.35 [-1.06, +0.35] | 0.4 points NO_GAP |
+| MuSiQue | 2417 (COMPLETE) | 88.5 [2,438] | 86.2 [2,487] | 87.4 [2,476] | +1.16 [+0.66, +1.70] LEVEL | 86.1 | +0.17 [-0.91, +1.28] | 2.2 points PARTIAL (share 0.52) |
+| WebQSP | 1503 (COMPLETE) | 87.9 [2,095] | 86.6 [2,099] | 86.0 [2,096] | -0.60 [-1.40, +0.20] LEVEL | 85.7 | +0.93 [-0.27, +2.20] | 1.3 points NOT_RECOVERED (share -0.47) |
+
+Cells of each cells file (`names - both`): 2Wiki 5 LEVEL and 1 ABOVE (`equal_rrf_budget_50+STRUCT:h1_c25`, +2.78 at about 80 nodes), HotpotQA 5 LEVEL (-0.34 to +0.43), MetaQA 7 LEVEL (0.00), SQuAD 4 LEVEL (0.00), MultiHop-RAG 4 LEVEL (0.00), MuSiQue 7 LEVEL and 1 ABOVE (`equal_rrf_budget_200+FULL:h2_c25`, +2.15 [+1.61, +2.73], `names` at 1.049 times the nodes), WebQSP 9 LEVEL (-0.60 to +1.06).
+
+**What changed against the slices.** The slice numbers move by up to 3 points where the slice was a small share of the split: MetaQA's `both` is 93.3 at 2,485 nodes (the slice had 94.4 at 2,457 and 95.2 at 2,522; on the whole split 94.1 is reached at 2,585 nodes, so the slice's "95 within about 2,500" does not carry), MuSiQue's `both` is 86.2 (slice 83.4) and its filed pool 88.5 (slice 86.0), so the gap is 2.2 points (slice 2.6).
+
+**The target (all golds in the pool at 95 or more within about 2,500 nodes).** Met by the dense-only, no-K, no-name e3v pool on 2Wiki (96.7), HotpotQA (98.5), SQuAD (99.6 at 1,574 nodes) and MultiHop-RAG (98.8 at 100 nodes). Not met on MetaQA (93.3 within 2,500 nodes; the cell with 99.5 sits at 4,404 nodes, the filed pool's 95.8 at 4,973), MuSiQue (86.2; its best listed cell, 94.0, is at 15,400 nodes) and WebQSP (86.6; 93.0 at 39,142 nodes). On MetaQA the e3v pool is 3.6 points above the filed one, so the shortfall to 95 is the walk's coverage per node, as on the other two.
+
+**Calls on section 14's expectations, whole splits.**
+
+- **N1 NOT HELD as worded** (unchanged): there is no 8.4-point gap on e3v. 2Wiki `both` 96.7 against the filed 96.6.
+- **N2 HELD.** HotpotQA `names - both` +0.26 [+0.14, +0.36], LEVEL.
+- **N3 HELD on SQuAD, MetaQA, WebQSP and MultiHop-RAG** (0.00, 0.00, -0.60 [-1.40, +0.20], 0.00, all LEVEL).
+- **N4 HELD, and this time at a cell.** MuSiQue has one ABOVE cell within 2,500 nodes (+2.15 [+1.61, +2.73], `names` using 4.9 percent more nodes there); at the best within 2,500 nodes the gain is +1.16 [+0.66, +1.70], LEVEL by the declared 1.0-point line (the interval's upper end is above 1.0).
+- **N5 HELD.** e3v minus older at the best within 2,500 nodes: +8.55 (2Wiki), +4.49 (MetaQA), +0.93 (WebQSP), +0.27 (HotpotQA), +0.17 (MuSiQue), -0.24 (SQuAD), -0.35 (MultiHop-RAG); none below by more than 1.0. SQuAD at 50 nodes stays -1.64 [-1.97, -1.33] on the whole split (more than 1.0 below the older arm), outside the wording of N5, and is reported as in section 15.
+- **N6 HELD.** No dataset has `names` BELOW `both` at its best within 2,500 nodes (lowest -0.60 on WebQSP) and no cell is called BELOW (lowest cell -0.60).
+- **N7 HELD with the exceptions of section 16** (the host's `d2q-sq`/`d2z-sq` rows, a missing input, run on the laptop; and the overwritten MetaQA record above, re-read). The 32 gate files pass.
+
+**What the seven whole-split reads say together.** On the defined encoder the dense-only, no-K pool needs no SPLADE and no K on four datasets, loses nothing against the filed pool within 2,500 nodes on five (2Wiki, HotpotQA, MetaQA, SQuAD, MultiHop-RAG; MetaQA is 3.6 above), and is 2.2 (MuSiQue) and 1.3 (WebQSP) points below it. The name rule is LEVEL everywhere within 2,500 nodes, ABOVE in two small cells, and stays out of the main line (user, 28 Nov): nothing from the `names` arm is carried. The remaining distance to 95 on MetaQA, MuSiQue and WebQSP is the walk's coverage per node; BRG1 reads where the missed golds are lost.
+
+**Rows.** None new. SPLADE, K, PL8 stay as they are.
