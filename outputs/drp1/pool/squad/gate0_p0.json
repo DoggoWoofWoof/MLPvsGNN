@@ -1,0 +1,15 @@
+{
+ "stage": "DRP1 gates",
+ "declared_in": "docs/DRP1_DROP_SPLADE_AND_K.md",
+ "dataset": "squad",
+ "part": 0,
+ "utc": "2026-11-27T14:44:22Z",
+ "G-D0": {
+  "questions": 16,
+  "cells": 4,
+  "mismatches": [],
+  "n_mismatches": 0
+ },
+ "seconds": 1.2,
+ "verdict": "PASS"
+}

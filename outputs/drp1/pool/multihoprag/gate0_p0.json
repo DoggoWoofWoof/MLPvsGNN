@@ -1,0 +1,15 @@
+{
+ "stage": "DRP1 gates",
+ "declared_in": "docs/DRP1_DROP_SPLADE_AND_K.md",
+ "dataset": "multihoprag",
+ "part": 0,
+ "utc": "2026-11-27T14:43:48Z",
+ "G-D0": {
+  "questions": 16,
+  "cells": 4,
+  "mismatches": [],
+  "n_mismatches": 0
+ },
+ "seconds": 0.3,
+ "verdict": "PASS"
+}

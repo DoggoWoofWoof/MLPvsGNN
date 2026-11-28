@@ -1,0 +1,15 @@
+{
+ "stage": "DRP1 gates",
+ "declared_in": "docs/DRP1_DROP_SPLADE_AND_K.md",
+ "dataset": "webqsp",
+ "part": 2,
+ "utc": "2026-11-27T14:46:14Z",
+ "G-D0": {
+  "questions": 16,
+  "cells": 9,
+  "mismatches": [],
+  "n_mismatches": 0
+ },
+ "seconds": 73.2,
+ "verdict": "PASS"
+}

@@ -1,0 +1,15 @@
+{
+ "stage": "DRP1 gates",
+ "declared_in": "docs/DRP1_DROP_SPLADE_AND_K.md",
+ "dataset": "musique",
+ "part": 1,
+ "utc": "2026-11-27T17:09:33Z",
+ "G-D0": {
+  "questions": 16,
+  "cells": 8,
+  "mismatches": [],
+  "n_mismatches": 0
+ },
+ "seconds": 68.2,
+ "verdict": "PASS"
+}

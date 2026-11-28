@@ -1,0 +1,17 @@
+{
+ "stage": "DRP1 gates",
+ "declared_in": "docs/DRP1_DROP_SPLADE_AND_K.md",
+ "set": "mag",
+ "arm": "both",
+ "utc": "2026-11-27T23:57:01Z",
+ "G-D1": {
+  "failed": []
+ },
+ "G-D2": {
+  "checked": false,
+  "mismatches": [],
+  "n_mismatches": 0
+ },
+ "seconds": 0.0,
+ "verdict": "PASS"
+}

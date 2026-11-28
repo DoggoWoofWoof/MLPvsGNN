@@ -1,0 +1,16 @@
+{
+ "stage": "DRP1 gates",
+ "declared_in": "docs/DRP1_DROP_SPLADE_AND_K.md",
+ "kb": "amazon",
+ "part": 0,
+ "gate_chunk": 7,
+ "utc": "2026-11-27T15:48:37Z",
+ "G-D0": {
+  "questions": 16,
+  "cells": 16,
+  "mismatches": [],
+  "n_mismatches": 0
+ },
+ "seconds": 53.4,
+ "verdict": "PASS"
+}

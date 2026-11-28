@@ -115,3 +115,58 @@ MetaQA is not in DRP1's seven rows (LEG1 A6's dense-only pool read of 26 Nov put
 - **The dense-only line therefore starts lowest on 2Wiki** (-8.8 at its 0.95 cell) and needs a name or lexical signal there; this page does not test one.
 
 **Not done here:** E1 to E7 are judged on whole-split reads only (amendment 2), and five of the eight rows are partial; the next reads come when `drp1-hp`, `tw`, `mu`, `pr`, `am` parts finish, and MAG after `stk2m-links` and `stk3m-run0` to `run5`. No row was cancelled, no SPLADE or K asset was deleted, and nothing is adopted: the main line's choice (dense only, no K, add-back later) is the user's, made on 27 Nov.
+
+## 13. Whole-split results of the nine datasets (09:52 IST, 28 Nov 2026): E1 to E7 judged
+
+**What ran.** Every `drp1-*` host row finished (the last, `ma5`, at about 08:00 IST on 28 Nov); MultiHop-RAG and SQuAD ran on the laptop (section 10). `zdrp1.py read` (host sha 28431aba7885ec3a = the laptop's) ran on the host at 09:45 IST on 28 Nov for HotpotQA, 2Wiki, MuSiQue, WebQSP, Prime, Amazon and MAG; the section 12 reads of SQuAD and MultiHop-RAG were already whole-split. **All nine reads are COMPLETE** (questions: SQuAD 11,873; MultiHop-RAG 1,130; HotpotQA 7,405; 2Wiki 12,576; MuSiQue 2,417; WebQSP 1,503; Prime 2,801; MAG 2,665; Amazon 1,642). MetaQA is not a DRP1 row. Records: `outputs/drp1/read_<name>.json`, the gate files `outputs/drp1/pool/<name>/gate*.json` and the chunks. **Which encoder:** the first six datasets' first-stage lists and vectors are the older encoder's (`load_source(ds, "eval", "frozen")`; the policy page's list of older-encoder modules names `zdrp1.py`), so their numbers are **older-encoder reads**; the three STaRK KBs are e3v.
+
+**Gates (E6).** Every gate file of every row reads PASS: G-D0 (the intact source reproduces the filed arrays; 0 mismatches), G-D1 and G-D2, on all nine datasets and every part (114 files, six of them from the laptop runs).
+
+**Loss at the headline cell** (filed ALL minus the arm's ALL, in points, paired bootstrap interval, call at the 1.0-point line; the headline cell is the R95 cell of the seven and, for STaRK, the best filed cell within 3,500 nodes, post hoc, as in section 5; nodes ratio arm over filed in the last column):
+
+| dataset | headline cell (filed ALL at nodes) | K: `nok` | SPLADE: `nospl` | both | nodes ratio (both) |
+| --- | --- | --- | --- | --- | ---: |
+| SQuAD | `rrf1000_b15` (95.5 at 15) | +0.00 DISPENSABLE | +1.76 [+1.42, +2.11] NEEDED | +1.76 [+1.41, +2.08] NEEDED | 1.00 |
+| MultiHop-RAG | `rrf1000_b25+FULL:h1_c100+top25` (96.9 at 50) | +0.00 DISPENSABLE | +0.88 [+0.18, +1.59] UNCLEAR | +0.88 [+0.18, +1.59] UNCLEAR | 1.00 |
+| HotpotQA | `rrf1000_b25+STRUCT:h1_c100~cs+top100` (96.3 at 78) | +0.00 DISPENSABLE | +2.98 [+2.57, +3.43] NEEDED | +2.98 [+2.54, +3.46] NEEDED | 0.80 |
+| 2Wiki | `rrf1000_b400+FULL:h1_c100~s20+top800` (96.1 at 917) | +0.17 [+0.10, +0.26] DISPENSABLE | **+8.56 [+8.06, +9.07] NEEDED** | **+8.77 [+8.27, +9.28] NEEDED** | 0.92 |
+| MuSiQue | `rrf1000_b400+FULL:h3_bf_v20000~cs-fu+top15000` (96.4 at 15,400) | +1.37 [+0.83, +1.94] UNCLEAR | +1.28 [+0.74, +1.86] UNCLEAR | +2.52 [+1.78, +3.27] NEEDED | 1.00 |
+| WebQSP | `rrf1000_b400+FULL:h3_bf_v40000~cs-vr` (94.7 at 39,530) | +0.80 [+0.27, +1.33] UNCLEAR | +0.53 [-0.13, +1.13] UNCLEAR | +2.00 [+1.20, +2.93] NEEDED | 0.94 |
+| Prime | `rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr` (85.5 at 2,475) | -0.32 [-0.82, +0.18] DISPENSABLE | +2.78 [+1.64, +3.86] NEEDED | +1.96 [+0.82, +2.96] UNCLEAR | 0.98 |
+| MAG | `rrf1000_b400+STRUCT:h3_c25_v2000` (90.8 at 2,325) | +0.00 DISPENSABLE | +2.48 [+1.73, +3.34] NEEDED | +2.48 [+1.65, +3.26] NEEDED | 1.00 |
+| Amazon | `rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr` (87.1 at 2,448) | +0.67 [+0.24, +1.16] UNCLEAR | +3.23 [+2.01, +4.33] NEEDED | +4.02 [+2.86, +5.24] NEEDED | 1.00 |
+
+**The dense-only, no-K arm re-picked inside the list (post hoc: the best ALL among the list's cells within 2,500 nodes, filed beside the arm; no rule picks it).**
+
+| dataset | filed best within 2,500 | `both` best within 2,500 | difference | smallest cell at 95 (filed / `both`) |
+| --- | --- | --- | ---: | --- |
+| SQuAD | 99.9 at 2,200 | 99.8 at 1,572 | -0.1 | 15 / 50 nodes |
+| MultiHop-RAG | 99.1 at 100 | 99.1 at 100 | 0.0 | 50 / 50 |
+| HotpotQA | 97.8 at 154 | 98.3 at 1,891 | +0.5 | 78 / 136 |
+| 2Wiki | 96.6 at 2,211 | **88.2 at 2,200** | **-8.4** | 917 / none |
+| MuSiQue | 88.5 at 2,438 | 86.1 at 2,485 | -2.4 | 15,400 / none |
+| WebQSP | 87.9 at 2,095 | 85.7 at 2,100 | -2.2 | none / none |
+| Prime | 85.5 at 2,475 | 85.0 at 2,073 | -0.5 | none / none |
+| MAG | 90.8 at 2,325 | 91.7 at 2,043 | +0.9 | 5,648 / 5,259 |
+| Amazon | 87.1 at 2,448 | 83.1 at 2,456 | -4.0 | none / none |
+
+K alone (`nok`) at the same read: 2Wiki 96.4 at 2,243, MuSiQue 88.0 at 2,471, WebQSP 87.9 at 2,095 (equal to the filed), Prime 85.8 at 2,488 (above the filed), MAG 90.8 (equal), Amazon 86.5 at 2,473.
+
+**Calls on section 7's expectations (whole-split reads only, amendment 2).**
+
+- **E1 NOT HELD as worded.** Dropping SPLADE costs +0.53 on WebQSP (in the 0.5 to 2.5 range), but +2.98 on HotpotQA and +8.56 on 2Wiki (both above 2.5). The second half holds: the call is NEEDED on HotpotQA and 2Wiki.
+- **E2 HELD.** Prime +2.78 [+1.64, +3.86] and Amazon +3.23 [+2.01, +4.33] at the best filed cell within 3,500 nodes (both at least 2).
+- **E3 HELD.** The loss is under 1.0 on MultiHop-RAG (0.00), WebQSP (+0.80) and 2Wiki (+0.17), three of the four; MuSiQue is +1.37 [+0.83, +1.94] (over). SQuAD and HotpotQA read exactly 0.00.
+- **E4 HELD.** Prime -0.32 (under 1.0). On Amazon the largest K loss at a FULL pick cell is +3.53 at the 15,400-node cell, which is less than that cell's FULL-minus-STRUCT gap of +6.09 (section 20 of the STK3 page); the other FULL cells read -0.49 to +0.67 (the one non-FULL K cell, `rrf1000_b50+KNN:h1_c100+top25`, +0.91).
+- **E5 HELD on all nine.** The tightest is WebQSP: `both` +2.00 against a bound of +2.33 (the two single losses plus 1 point); the largest `both` loss is 2Wiki's +8.77 against +9.74.
+- **E6 HELD** (above).
+- **E7 HELD.** The `both` arm's mean nodes are 0.80 to 1.00 of the filed nodes at the nine headline cells.
+
+**What this says (the main line is dense only, no K, as the user ruled on 27 Nov).**
+
+- **K is dispensable on every dataset read.** The whole-split loss is at most +0.80 at the headline cell except MuSiQue's +1.37 [+0.83, +1.94] (UNCLEAR; its dense-only no-K arm is 2.4 points below the filed best within 2,500 nodes, of which K alone is 0.5). Dropping K also removes the K-search cost (WebQSP 9,712 s, HotpotQA 7,540 s, 2Wiki 6,616 s, Amazon about 4.1 h, MAG about 9.4 h).
+- **SPLADE matters where the question names the entities and the pool is small.** At the filed headline cell it is NEEDED on SQuAD, HotpotQA, 2Wiki, Prime, MAG and Amazon; once the dense-only arm may re-pick inside the list, the loss at about 2,500 nodes is -0.1 (SQuAD), +0.5 in the arm's favour (HotpotQA), +0.9 in the arm's favour (MAG), -0.5 (Prime), -2.2 (WebQSP), -2.4 (MuSiQue), -4.0 (Amazon) and **-8.4 on 2Wiki**. **The gap that is left at the target size is 2Wiki (8.4 points), Amazon (4.0), MuSiQue (2.4) and WebQSP (2.2).**
+- **Against the user's target (95 percent of the golds at about 2,500 nodes), the dense-only no-K arm re-picked reaches it on SQuAD (99.8), MultiHop-RAG (99.1) and HotpotQA (98.3) only.** The other six are below it at 2,500 nodes: 2Wiki 88.2, MuSiQue 86.1, WebQSP 85.7, Prime 85.0, MAG 91.7, Amazon 83.1 (MetaQA is not read here; LEG1 A6's dense-only read put it 1.0 below its filed R95 cell). Within the list's cells the dense-only arm reaches 95 on MAG at 5,259 nodes (the filed list at 5,648) and nowhere on 2Wiki, MuSiQue, WebQSP, Prime or Amazon.
+- **Instrument note.** These are the pool engine's cells (a flat first-stage head plus budgeted walks over the filed links). The simpler budgeted walk of JNT1 section 12.8 (dense top 5 seeds only, e3v) reads 56.3 on WebQSP and 84.3 on 2Wiki at about 2,000 nodes; the two instruments are not comparable, and the engine's WebQSP number (85.7 at 2,100 nodes, older encoder) is 29 points higher than JNT1's.
+
+**Not read here:** the seven datasets' dense-only arm on the defined encoder (the first-stage lists here are the older encoder's; e3v lists for the eval carves exist under `outputs/enc/e0/e3v`); a rule that recovers 2Wiki's lexical signal without SPLADE or BM25; MetaQA; the STaRK KBs under a name rule. Nothing is adopted, deleted or chosen by this section; SPLADE and K stay on disk; PL8 stays undeclared.

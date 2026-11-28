@@ -1,0 +1,15 @@
+{
+ "stage": "DRP1 gates",
+ "declared_in": "docs/DRP1_DROP_SPLADE_AND_K.md",
+ "dataset": "hotpotqa",
+ "part": 0,
+ "utc": "2026-11-27T15:01:18Z",
+ "G-D0": {
+  "questions": 16,
+  "cells": 5,
+  "mismatches": [],
+  "n_mismatches": 0
+ },
+ "seconds": 68.7,
+ "verdict": "PASS"
+}
