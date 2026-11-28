@@ -46,3 +46,21 @@ Nine streams on the host (CPU only, two threads each), one per set, `zbrg9.py sc
 ## 7. Results
 
 None yet.
+
+## 8. Amendment 1 (declared 28 Nov 2026 21:45 IST, before any row of it): the whole split of the four finished cap-cell sets
+
+Why. Seven of the ten screens are read (section 7 is written when all ten are in): MetaQA is ABOVE `eng` under V1, V2, V3 and V7 (V7 99.5 at 2,315 nodes against 93.8 at 2,509 on the screen); HotpotQA and SQuAD keep their ALL under V1 to V6 with pools 25 to 30 percent smaller (HotpotQA V1 97.9 at 1,315 against 97.9 at 1,885; SQuAD V3 99.7 at 1,170 against 99.7 at 1,552); MultiHop-RAG does not move (pool of 100 nodes); the budget-following cells are LEVEL or BELOW under every variant (MuSiQue, Amazon, Prime). The cap cells are where the rule acts, and the target reads on the whole split, so the whole split of MetaQA, HotpotQA, SQuAD and MultiHop-RAG is read now with the same module and the same nine variants (no code change: `screen --chunks 0`, which keeps the three chunk files of the screen and adds the others). 2Wiki, WebQSP, MAG (screens still running) and the budget-following sets get their own amendment after their screens are read.
+
+Gate G-S4 (read time, no code): the whole-split `eng` ALL of a set equals DRP1 section 17's filed value to within 0.1 point (MetaQA 93.3, HotpotQA 98.5, SQuAD 99.6, MultiHop-RAG 98.8); if it does not, no number of that set is used. G-S0 holds per chunk as before, and G-S1 holds on the three screen chunks. For MetaQA the whole-split V1, V2 and V3 are compared with BRG8's whole-split `L50`, `L100` and `L100h10` (98.2, 97.6, 98.9) as a check of the engine route.
+
+Read. The page reads the whole split, the unseen part (every chunk outside the three screen chunks) and its two halves (even and odd chunk positions) per set, with the same calls and bootstrap as section 4. A variant is `reached` on a set when it is ABOVE on the unseen part and on both halves with a mean pool no larger than 1.05 times `eng`'s; on a set that is already at 95 or above the effect that matters is the pool, so the page also gives, per variant, the pool ratio and whether ALL stays within 1.0 point (not BELOW) of `eng`.
+
+Priors (written before any row of this amendment).
+
+- **T1.** G-S4 holds on all four sets and MetaQA's V1, V2, V3 equal BRG8's whole-split values within 0.1 point.
+- **T2.** MetaQA: V7 is ABOVE `eng` on the unseen part and on both halves with a pool ratio of at most 0.97, and its whole-split ALL is at least 98.5.
+- **T3.** HotpotQA and SQuAD: at least one of V1 to V7 is not BELOW `eng` on the unseen part with a pool ratio of at most 0.85, on each of the two sets.
+- **T4.** MultiHop-RAG: every variant is within 0.5 point of `eng` and within 0.02 of its pool.
+- **T5.** No variant is ABOVE on HotpotQA, SQuAD or MultiHop-RAG (they are at the ceiling already).
+
+Rows: four streams (MetaQA, HotpotQA, SQuAD on the host, CPU only, two threads each; MultiHop-RAG on the laptop), `zbrg9.py screen --ds D --chunks 0`, then `read`; module sha unchanged.
