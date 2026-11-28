@@ -25,7 +25,7 @@ Chunks of 128 questions in the set's chunk order (as BRG4). The fit: chunks at p
 
 ## 4. What the read may say
 
-On the unseen part, the screen part and the remainder: ALL, the share of golds in the pool, the mean pool size and its ratio to `c25`'s, the ceiling, and the paired differences with a bootstrap of 2,000 resamples (seed 20261128) and the call at the 1.0-point line: every variant against `c25` (the cell), and `l25`, `l50`, `l100` against `c25`, `c50`, `c100` of the same cap. `reached` means ABOVE `c25` on the unseen part with a pool no larger than 1.02 times `c25`'s. The target (95 and above on the whole split, at about 2,500 nodes) is read off `l50`'s or `l25`'s unseen ALL, with the whole-split control (93.3) beside it; nothing is adopted and no claim of a rule.
+On the unseen part, the screen part and the remainder: ALL, the share of golds in the pool, the mean pool size and its ratio to `c25`'s, the ceiling, and the paired differences with a bootstrap of 2,000 resamples (seed 20261128) and the call at the 1.0-point line: every variant against `c25` (the cell), and `l25`, `l50`, `l100` against `c25`, `c50`, `c100` of the same cap. `reached` means ABOVE `c25` on the unseen part with a pool no larger than 1.05 times `c25`'s (BRG4's controls at caps 50 and 100 already have pools of 1.045 and 1.070 times `c25`'s: 2,623 and 2,685 against 2,509 nodes, because the first hop keeps more neighbours of the seeds); the pool ratio is reported beside every number. The target (95 and above on the whole split, at about 2,500 nodes) is read off `l50`'s or `l25`'s unseen ALL, with the whole-split control (93.3) beside it; nothing is adopted and no claim of a rule.
 
 ## 5. Priors (written before any number of this page)
 
@@ -33,9 +33,11 @@ On the unseen part, the screen part and the remainder: ALL, the share of golds i
 - **P2.** `l50` against `c25` is ABOVE on the unseen part (lower end above +1.0): the ceiling at cap 50 is 100.0 and the control order wastes it.
 - **P3.** `l100` against `c100` is ABOVE with a point difference of at least +3.0, and `l100` against `c25` is BELOW (upper end below -1.0): the flood at cap 100 is too large for the order to undo.
 - **P4.** `l50` is above `l25` and `l100` in ALL.
-- **P5.** Every learned variant's pool is within 1.02 times `c25`'s.
+- **P5.** Every learned variant's pool is within 1.02 times the pool of the cell's own order at the same cap (BRG4: 2,509, 2,623 and 2,685 nodes).
 - **P6.** The unseen `c25` ALL is within 2.0 points of the filed whole-split value 93.3.
 - **P7.** G-M0 to G-M3 hold.
+
+Correction of section 4 and prior P5 (before any row of this page, after reading BRG4's pool sizes for the caps): the first wording compared every pool with `c25`'s within 1.02, which the cap-50 and cap-100 controls themselves exceed by construction (1.045 and 1.070); the wording above compares within the same cap, and `reached` allows 1.05 times `c25`'s.
 
 ## 6. Rows
 
