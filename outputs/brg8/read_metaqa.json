@@ -1,0 +1,904 @@
+{
+ "stage": "BRG8 read",
+ "declared_in": "docs/BRG8_ROW_LENGTH_CAP.md",
+ "set": "metaqa",
+ "cell": "rrf1000_b800+STRUCT:h3_c25_v2000",
+ "utc": "2026-11-28T15:47:00Z",
+ "variants": [
+  [
+   "base",
+   25,
+   25
+  ],
+  [
+   "L50",
+   50,
+   25
+  ],
+  [
+   "L100",
+   100,
+   25
+  ],
+  [
+   "L200",
+   200,
+   25
+  ],
+  [
+   "L100h10",
+   100,
+   10
+  ],
+  [
+   "L200h10",
+   200,
+   10
+  ]
+ ],
+ "whole": {
+  "questions": 9785,
+  "golds": 72697,
+  "variants": {
+   "base": {
+    "ALL": 0.9331630045988758,
+    "golds_in_pool": 0.9353618443677181,
+    "mean_nodes": 2484.8152273888604,
+    "ceiling_ALL": 0.9418497700562085,
+    "nodes_over_base": 1.0,
+    "hops": {
+     "1": {
+      "candidate_golds": 7938,
+      "kept_golds": 7938
+     },
+     "2": {
+      "candidate_golds": 22725,
+      "kept_golds": 22725
+     },
+     "3": {
+      "candidate_golds": 38050,
+      "kept_golds": 36965
+     }
+    }
+   },
+   "L50": {
+    "ALL": 0.9815022994379152,
+    "golds_in_pool": 0.9707415711790033,
+    "mean_nodes": 2501.2036791006644,
+    "ceiling_ALL": 0.9926417986714359,
+    "nodes_over_base": 1.0065954407922015,
+    "vs_base": {
+     "diff": 0.04833929483903934,
+     "ci95": [
+      0.04384261624936127,
+      0.052733776188042925
+     ],
+     "call": "ABOVE"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 7973,
+      "kept_golds": 7973
+     },
+     "2": {
+      "candidate_golds": 23902,
+      "kept_golds": 23902
+     },
+     "3": {
+      "candidate_golds": 39828,
+      "kept_golds": 38457
+     }
+    },
+    "reached": true
+   },
+   "L100": {
+    "ALL": 0.9756770567194686,
+    "golds_in_pool": 0.9595856775382753,
+    "mean_nodes": 2541.194685743485,
+    "ceiling_ALL": 0.9990802248339294,
+    "nodes_over_base": 1.0226895978957238,
+    "vs_base": {
+     "diff": 0.04251405212059274,
+     "ci95": [
+      0.037506387327542155,
+      0.04721768012263668
+     ],
+     "call": "ABOVE"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 7974,
+      "kept_golds": 7974
+     },
+     "2": {
+      "candidate_golds": 24533,
+      "kept_golds": 24533
+     },
+     "3": {
+      "candidate_golds": 40061,
+      "kept_golds": 36994
+     }
+    },
+    "reached": true
+   },
+   "L200": {
+    "ALL": 0.9244762391415432,
+    "golds_in_pool": 0.8790596585828852,
+    "mean_nodes": 2617.5002554931016,
+    "ceiling_ALL": 0.999386816555953,
+    "nodes_over_base": 1.0533983479502707,
+    "vs_base": {
+     "diff": -0.008686765457332652,
+     "ci95": [
+      -0.01492079713847726,
+      -0.0027542156361778512
+     ],
+     "call": "LEVEL"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 7974,
+      "kept_golds": 7974
+     },
+     "2": {
+      "candidate_golds": 24540,
+      "kept_golds": 24540
+     },
+     "3": {
+      "candidate_golds": 40058,
+      "kept_golds": 30800
+     }
+    },
+    "reached": false
+   },
+   "L100h10": {
+    "ALL": 0.9889626980071539,
+    "golds_in_pool": 0.9833555717567437,
+    "mean_nodes": 2413.1963208993357,
+    "ceiling_ALL": 0.9990802248339294,
+    "nodes_over_base": 0.9711773713795272,
+    "vs_base": {
+     "diff": 0.05579969340827798,
+     "ci95": [
+      0.050792028615227386,
+      0.06060551865099641
+     ],
+     "call": "ABOVE"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 7974,
+      "kept_golds": 7974
+     },
+     "2": {
+      "candidate_golds": 24487,
+      "kept_golds": 24487
+     },
+     "3": {
+      "candidate_golds": 40105,
+      "kept_golds": 38842
+     }
+    },
+    "reached": true
+   },
+   "L200h10": {
+    "ALL": 0.9507409299948901,
+    "golds_in_pool": 0.918813706205208,
+    "mean_nodes": 2573.0614205416455,
+    "ceiling_ALL": 0.999386816555953,
+    "nodes_over_base": 1.0355141872039788,
+    "vs_base": {
+     "diff": 0.01757792539601431,
+     "ci95": [
+      0.01195707715891671,
+      0.02330097087378641
+     ],
+     "call": "ABOVE"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 7974,
+      "kept_golds": 7974
+     },
+     "2": {
+      "candidate_golds": 24498,
+      "kept_golds": 24498
+     },
+     "3": {
+      "candidate_golds": 40099,
+      "kept_golds": 33894
+     }
+    },
+    "reached": false
+   }
+  }
+ },
+ "unseen": {
+  "questions": 9401,
+  "golds": 69796,
+  "variants": {
+   "base": {
+    "ALL": 0.9329858525688757,
+    "golds_in_pool": 0.9346237606739641,
+    "mean_nodes": 2483.8079991490267,
+    "ceiling_ALL": 0.9413892139134135,
+    "nodes_over_base": 1.0,
+    "hops": {
+     "1": {
+      "candidate_golds": 7488,
+      "kept_golds": 7488
+     },
+     "2": {
+      "candidate_golds": 22034,
+      "kept_golds": 22034
+     },
+     "3": {
+      "candidate_golds": 36414,
+      "kept_golds": 35356
+     }
+    }
+   },
+   "L50": {
+    "ALL": 0.981491330709499,
+    "golds_in_pool": 0.9702131927331079,
+    "mean_nodes": 2500.3150728645887,
+    "ceiling_ALL": 0.9924476119561749,
+    "nodes_over_base": 1.0066458734818542,
+    "vs_base": {
+     "diff": 0.04850547814062334,
+     "ci95": [
+      0.04393149664929263,
+      0.05297574726092967
+     ],
+     "call": "ABOVE"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 7521,
+      "kept_golds": 7521
+     },
+     "2": {
+      "candidate_golds": 23184,
+      "kept_golds": 23184
+     },
+     "3": {
+      "candidate_golds": 38114,
+      "kept_golds": 36780
+     }
+    }
+   },
+   "L100": {
+    "ALL": 0.9758536325922774,
+    "golds_in_pool": 0.9588515101151929,
+    "mean_nodes": 2540.7464099563877,
+    "ceiling_ALL": 0.9990426550366982,
+    "nodes_over_base": 1.0229238374410858,
+    "vs_base": {
+     "diff": 0.04286778002340177,
+     "ci95": [
+      0.03776194021912563,
+      0.048079991490266996
+     ],
+     "call": "ABOVE"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 7522,
+      "kept_golds": 7522
+     },
+     "2": {
+      "candidate_golds": 23810,
+      "kept_golds": 23810
+     },
+     "3": {
+      "candidate_golds": 38340,
+      "kept_golds": 35339
+     }
+    }
+   },
+   "L200": {
+    "ALL": 0.9240506329113924,
+    "golds_in_pool": 0.8772135939022293,
+    "mean_nodes": 2617.476013190086,
+    "ceiling_ALL": 0.9993617700244655,
+    "nodes_over_base": 1.0538157595461708,
+    "vs_base": {
+     "diff": -0.008935219657483246,
+     "ci95": [
+      -0.01542389107541751,
+      -0.0028720348899053294
+     ],
+     "call": "LEVEL"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 7522,
+      "kept_golds": 7522
+     },
+     "2": {
+      "candidate_golds": 23816,
+      "kept_golds": 23816
+     },
+     "3": {
+      "candidate_golds": 38338,
+      "kept_golds": 29310
+     }
+    }
+   },
+   "L100h10": {
+    "ALL": 0.9888309754281459,
+    "golds_in_pool": 0.9828786749957018,
+    "mean_nodes": 2412.7585363259227,
+    "ceiling_ALL": 0.9990426550366982,
+    "nodes_over_base": 0.9713949456449749,
+    "vs_base": {
+     "diff": 0.05584512285927029,
+     "ci95": [
+      0.05084565471758323,
+      0.06084459100095734
+     ],
+     "call": "ABOVE"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 7522,
+      "kept_golds": 7522
+     },
+     "2": {
+      "candidate_golds": 23766,
+      "kept_golds": 23766
+     },
+     "3": {
+      "candidate_golds": 38382,
+      "kept_golds": 37134
+     }
+    }
+   },
+   "L200h10": {
+    "ALL": 0.9508562918838421,
+    "golds_in_pool": 0.9179465871969741,
+    "mean_nodes": 2572.8934155940856,
+    "ceiling_ALL": 0.9993617700244655,
+    "nodes_over_base": 1.0358664665205928,
+    "vs_base": {
+     "diff": 0.017870439314966492,
+     "ci95": [
+      0.012019997872566749,
+      0.023508137432188065
+     ],
+     "call": "ABOVE"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 7522,
+      "kept_golds": 7522
+     },
+     "2": {
+      "candidate_golds": 23775,
+      "kept_golds": 23775
+     },
+     "3": {
+      "candidate_golds": 38378,
+      "kept_golds": 32352
+     }
+    }
+   }
+  }
+ },
+ "half_even": {
+  "questions": 4665,
+  "golds": 34775,
+  "variants": {
+   "base": {
+    "ALL": 0.9320471596998928,
+    "golds_in_pool": 0.9377426312005751,
+    "mean_nodes": 2435.4302250803858,
+    "ceiling_ALL": 0.9391211146838156,
+    "nodes_over_base": 1.0,
+    "hops": {
+     "1": {
+      "candidate_golds": 3267,
+      "kept_golds": 3267
+     },
+     "2": {
+      "candidate_golds": 13705,
+      "kept_golds": 13705
+     },
+     "3": {
+      "candidate_golds": 15776,
+      "kept_golds": 15456
+     }
+    }
+   },
+   "L50": {
+    "ALL": 0.9830653804930333,
+    "golds_in_pool": 0.972508986340762,
+    "mean_nodes": 2454.658949624866,
+    "ceiling_ALL": 0.992282958199357,
+    "nodes_over_base": 1.007895411802999,
+    "vs_base": {
+     "diff": 0.05101822079314041,
+     "ci95": [
+      0.04458735262593783,
+      0.05787781350482315
+     ],
+     "call": "ABOVE"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 3292,
+      "kept_golds": 3292
+     },
+     "2": {
+      "candidate_golds": 14438,
+      "kept_golds": 14438
+     },
+     "3": {
+      "candidate_golds": 16449,
+      "kept_golds": 15966
+     }
+    }
+   },
+   "L100": {
+    "ALL": 0.9794212218649517,
+    "golds_in_pool": 0.9678504672897196,
+    "mean_nodes": 2501.924115755627,
+    "ceiling_ALL": 0.9993569131832798,
+    "nodes_over_base": 1.0273027286885408,
+    "vs_base": {
+     "diff": 0.04737406216505895,
+     "ci95": [
+      0.040085744908896034,
+      0.05466237942122187
+     ],
+     "call": "ABOVE"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 3293,
+      "kept_golds": 3293
+     },
+     "2": {
+      "candidate_golds": 14796,
+      "kept_golds": 14796
+     },
+     "3": {
+      "candidate_golds": 16618,
+      "kept_golds": 15451
+     }
+    }
+   },
+   "L200": {
+    "ALL": 0.9352625937834941,
+    "golds_in_pool": 0.8899784327821711,
+    "mean_nodes": 2592.5781350482316,
+    "ceiling_ALL": 0.9995712754555198,
+    "nodes_over_base": 1.0645257286985748,
+    "vs_base": {
+     "diff": 0.003215434083601286,
+     "ci95": [
+      -0.005787781350482315,
+      0.012004287245444802
+     ],
+     "call": "LEVEL"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 3293,
+      "kept_golds": 3293
+     },
+     "2": {
+      "candidate_golds": 14797,
+      "kept_golds": 14797
+     },
+     "3": {
+      "candidate_golds": 16618,
+      "kept_golds": 12599
+     }
+    }
+   },
+   "L100h10": {
+    "ALL": 0.9916398713826367,
+    "golds_in_pool": 0.9905679367361611,
+    "mean_nodes": 2368.0216505894964,
+    "ceiling_ALL": 0.9993569131832798,
+    "nodes_over_base": 0.9723216974985747,
+    "vs_base": {
+     "diff": 0.05959271168274384,
+     "ci95": [
+      0.05251875669882101,
+      0.06688102893890675
+     ],
+     "call": "ABOVE"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 3293,
+      "kept_golds": 3293
+     },
+     "2": {
+      "candidate_golds": 14782,
+      "kept_golds": 14782
+     },
+     "3": {
+      "candidate_golds": 16631,
+      "kept_golds": 16284
+     }
+    }
+   },
+   "L200h10": {
+    "ALL": 0.9594855305466238,
+    "golds_in_pool": 0.9283968368080517,
+    "mean_nodes": 2542.9528403001073,
+    "ceiling_ALL": 0.9995712754555198,
+    "nodes_over_base": 1.0441493310350012,
+    "vs_base": {
+     "diff": 0.027438370846730974,
+     "ci95": [
+      0.019506966773847802,
+      0.03536977491961415
+     ],
+     "call": "ABOVE"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 3293,
+      "kept_golds": 3293
+     },
+     "2": {
+      "candidate_golds": 14783,
+      "kept_golds": 14783
+     },
+     "3": {
+      "candidate_golds": 16631,
+      "kept_golds": 14018
+     }
+    }
+   }
+  }
+ },
+ "half_odd": {
+  "questions": 4736,
+  "golds": 35021,
+  "variants": {
+   "base": {
+    "ALL": 0.933910472972973,
+    "golds_in_pool": 0.9315267982067902,
+    "mean_nodes": 2531.4605152027025,
+    "ceiling_ALL": 0.9436233108108109,
+    "nodes_over_base": 1.0,
+    "hops": {
+     "1": {
+      "candidate_golds": 4221,
+      "kept_golds": 4221
+     },
+     "2": {
+      "candidate_golds": 8329,
+      "kept_golds": 8329
+     },
+     "3": {
+      "candidate_golds": 20638,
+      "kept_golds": 19900
+     }
+    }
+   },
+   "L50": {
+    "ALL": 0.9799408783783784,
+    "golds_in_pool": 0.9679335255989263,
+    "mean_nodes": 2545.286739864865,
+    "ceiling_ALL": 0.9926097972972973,
+    "nodes_over_base": 1.0054617579769185,
+    "vs_base": {
+     "diff": 0.04603040540540541,
+     "ci95": [
+      0.03990181587837838,
+      0.052364864864864864
+     ],
+     "call": "ABOVE"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 4229,
+      "kept_golds": 4229
+     },
+     "2": {
+      "candidate_golds": 8746,
+      "kept_golds": 8746
+     },
+     "3": {
+      "candidate_golds": 21665,
+      "kept_golds": 20814
+     }
+    }
+   },
+   "L100": {
+    "ALL": 0.972339527027027,
+    "golds_in_pool": 0.9499157648268182,
+    "mean_nodes": 2578.986697635135,
+    "ceiling_ALL": 0.9987331081081081,
+    "nodes_over_base": 1.0187742143900778,
+    "vs_base": {
+     "diff": 0.03842905405405406,
+     "ci95": [
+      0.03146114864864865,
+      0.04539695945945946
+     ],
+     "call": "ABOVE"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 4229,
+      "kept_golds": 4229
+     },
+     "2": {
+      "candidate_golds": 9014,
+      "kept_golds": 9014
+     },
+     "3": {
+      "candidate_golds": 21722,
+      "kept_golds": 19888
+     }
+    }
+   },
+   "L200": {
+    "ALL": 0.9130067567567568,
+    "golds_in_pool": 0.8645384198052597,
+    "mean_nodes": 2642.000633445946,
+    "ceiling_ALL": 0.9991554054054054,
+    "nodes_over_base": 1.043666538576997,
+    "vs_base": {
+     "diff": -0.020903716216216218,
+     "ci95": [
+      -0.029988386824324323,
+      -0.011824324324324325
+     ],
+     "call": "BELOW"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 4229,
+      "kept_golds": 4229
+     },
+     "2": {
+      "candidate_golds": 9019,
+      "kept_golds": 9019
+     },
+     "3": {
+      "candidate_golds": 21720,
+      "kept_golds": 16711
+     }
+    }
+   },
+   "L100h10": {
+    "ALL": 0.9860641891891891,
+    "golds_in_pool": 0.9752434253733474,
+    "mean_nodes": 2456.8247466216217,
+    "ceiling_ALL": 0.9987331081081081,
+    "nodes_over_base": 0.9705167162857745,
+    "vs_base": {
+     "diff": 0.052153716216216214,
+     "ci95": [
+      0.04539695945945946,
+      0.05891575168918916
+     ],
+     "call": "ABOVE"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 4229,
+      "kept_golds": 4229
+     },
+     "2": {
+      "candidate_golds": 8984,
+      "kept_golds": 8984
+     },
+     "3": {
+      "candidate_golds": 21751,
+      "kept_golds": 20850
+     }
+    }
+   },
+   "L200h10": {
+    "ALL": 0.942356418918919,
+    "golds_in_pool": 0.907569743867965,
+    "mean_nodes": 2602.385135135135,
+    "ceiling_ALL": 0.9991554054054054,
+    "nodes_over_base": 1.0280172728377528,
+    "vs_base": {
+     "diff": 0.008445945945945946,
+     "ci95": [
+      0.00021114864864864866,
+      0.01689717060810808
+     ],
+     "call": "LEVEL"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 4229,
+      "kept_golds": 4229
+     },
+     "2": {
+      "candidate_golds": 8992,
+      "kept_golds": 8992
+     },
+     "3": {
+      "candidate_golds": 21747,
+      "kept_golds": 18334
+     }
+    }
+   }
+  }
+ },
+ "screen": {
+  "questions": 384,
+  "golds": 2901,
+  "variants": {
+   "base": {
+    "ALL": 0.9375,
+    "golds_in_pool": 0.9531196139262323,
+    "mean_nodes": 2509.4739583333335,
+    "ceiling_ALL": 0.953125,
+    "nodes_over_base": 1.0,
+    "hops": {
+     "1": {
+      "candidate_golds": 450,
+      "kept_golds": 450
+     },
+     "2": {
+      "candidate_golds": 691,
+      "kept_golds": 691
+     },
+     "3": {
+      "candidate_golds": 1636,
+      "kept_golds": 1609
+     }
+    }
+   },
+   "L50": {
+    "ALL": 0.9817708333333334,
+    "golds_in_pool": 0.983453981385729,
+    "mean_nodes": 2522.9583333333335,
+    "ceiling_ALL": 0.9973958333333334,
+    "nodes_over_base": 1.0053733871017956,
+    "vs_base": {
+     "diff": 0.044270833333333336,
+     "ci95": [
+      0.0234375,
+      0.06770833333333333
+     ],
+     "call": "ABOVE"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 452,
+      "kept_golds": 452
+     },
+     "2": {
+      "candidate_golds": 718,
+      "kept_golds": 718
+     },
+     "3": {
+      "candidate_golds": 1714,
+      "kept_golds": 1677
+     }
+    }
+   },
+   "L100": {
+    "ALL": 0.9713541666666666,
+    "golds_in_pool": 0.9772492244053774,
+    "mean_nodes": 2552.1692708333335,
+    "ceiling_ALL": 1.0,
+    "nodes_over_base": 1.0170136503541787,
+    "vs_base": {
+     "diff": 0.033854166666666664,
+     "ci95": [
+      0.010416666666666666,
+      0.057291666666666664
+     ],
+     "call": "ABOVE"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 452,
+      "kept_golds": 452
+     },
+     "2": {
+      "candidate_golds": 723,
+      "kept_golds": 723
+     },
+     "3": {
+      "candidate_golds": 1721,
+      "kept_golds": 1655
+     }
+    }
+   },
+   "L200": {
+    "ALL": 0.9348958333333334,
+    "golds_in_pool": 0.9234746639089969,
+    "mean_nodes": 2618.09375,
+    "ceiling_ALL": 1.0,
+    "nodes_over_base": 1.0432838887632077,
+    "vs_base": {
+     "diff": -0.0026041666666666665,
+     "ci95": [
+      -0.03125,
+      0.026041666666666668
+     ],
+     "call": "LEVEL"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 452,
+      "kept_golds": 452
+     },
+     "2": {
+      "candidate_golds": 724,
+      "kept_golds": 724
+     },
+     "3": {
+      "candidate_golds": 1720,
+      "kept_golds": 1490
+     }
+    }
+   },
+   "L100h10": {
+    "ALL": 0.9921875,
+    "golds_in_pool": 0.9948293691830403,
+    "mean_nodes": 2423.9140625,
+    "ceiling_ALL": 1.0,
+    "nodes_over_base": 0.9659052465759963,
+    "vs_base": {
+     "diff": 0.0546875,
+     "ci95": [
+      0.03125,
+      0.08072916666666667
+     ],
+     "call": "ABOVE"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 452,
+      "kept_golds": 452
+     },
+     "2": {
+      "candidate_golds": 721,
+      "kept_golds": 721
+     },
+     "3": {
+      "candidate_golds": 1723,
+      "kept_golds": 1708
+     }
+    }
+   },
+   "L200h10": {
+    "ALL": 0.9479166666666666,
+    "golds_in_pool": 0.9396759738021372,
+    "mean_nodes": 2577.1744791666665,
+    "ceiling_ALL": 1.0,
+    "nodes_over_base": 1.026977973056272,
+    "vs_base": {
+     "diff": 0.010416666666666666,
+     "ci95": [
+      -0.018229166666666668,
+      0.0390625
+     ],
+     "call": "LEVEL"
+    },
+    "hops": {
+     "1": {
+      "candidate_golds": 452,
+      "kept_golds": 452
+     },
+     "2": {
+      "candidate_golds": 723,
+      "kept_golds": 723
+     },
+     "3": {
+      "candidate_golds": 1721,
+      "kept_golds": 1542
+     }
+    }
+   }
+  }
+ }
+}
