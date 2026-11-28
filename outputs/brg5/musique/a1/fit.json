@@ -1,0 +1,97 @@
+{
+ "stage": "BRG5 amendment 1 fit",
+ "declared_in": "docs/BRG5_LEARNED_ORDER_SCREEN.md",
+ "set": "musique",
+ "utc": "2026-11-28T14:35:31Z",
+ "train3": [
+  10,
+  8,
+  16
+ ],
+ "train6": [
+  10,
+  8,
+  16,
+  7,
+  5,
+  17
+ ],
+ "fits": {
+  "lr": {
+   "1": {
+    "rows": 115024,
+    "positives": 242,
+    "fitted": true,
+    "iterations": 17
+   },
+   "2": {
+    "rows": 400267,
+    "positives": 268,
+    "fitted": true,
+    "iterations": 15
+   },
+   "3": {
+    "rows": 0,
+    "positives": 0,
+    "fitted": false
+   }
+  },
+  "lr6": {
+   "1": {
+    "rows": 227904,
+    "positives": 454,
+    "fitted": true,
+    "iterations": 17
+   },
+   "2": {
+    "rows": 800392,
+    "positives": 394,
+    "fitted": true,
+    "iterations": 13
+   },
+   "3": {
+    "rows": 0,
+    "positives": 0,
+    "fitted": false
+   }
+  },
+  "lr2": {
+   "1": {
+    "rows": 115024,
+    "positives": 242,
+    "fitted": true,
+    "iterations": 41
+   },
+   "2": {
+    "rows": 400267,
+    "positives": 268,
+    "fitted": true,
+    "iterations": 28
+   },
+   "3": {
+    "rows": 0,
+    "positives": 0,
+    "fitted": false
+   }
+  },
+  "lr26": {
+   "1": {
+    "rows": 227904,
+    "positives": 454,
+    "fitted": true,
+    "iterations": 38
+   },
+   "2": {
+    "rows": 800392,
+    "positives": 394,
+    "fitted": true,
+    "iterations": 18
+   },
+   "3": {
+    "rows": 0,
+    "positives": 0,
+    "fitted": false
+   }
+  }
+ }
+}

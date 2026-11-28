@@ -82,14 +82,14 @@ Area under the ROC curve of the order over the evaluation candidates of the cont
 
 **Calls on the priors.**
 
-- **L1 NOT HELD as worded.** `gb` is LEVEL on Prime (-1.08) and BELOW on MAG (-3.91) and WebQSP (-5.73). The estimator that is ABOVE is `lr` (Prime +3.52 [+1.63, +5.69]); I had expected the trees to be the stronger.
+- **L1 NOT HELD as worded.** `gb` is LEVEL on Prime (-1.08) and BELOW on MAG (-3.91) and WebQSP (-5.73). The estimator that is ABOVE is `lr` (Prime +3.52 [+1.63, +5.69]); the trees had been expected to be the stronger.
 - **L2 NOT HELD.** `gb` is BELOW on MuSiQue (-2.86), MAG (-3.91) and WebQSP (-5.73).
 - **L3 HELD.** On MuSiQue (`lr` -0.78 LEVEL, `gb` -2.86 BELOW) and Amazon (+0.26 LEVEL for both) neither estimator is ABOVE.
 - **L4 NOT HELD.** `gb`'s area is below the control place's at hop 2 on Amazon (0.945 against 0.959), MuSiQue (0.921 against 0.966), Prime, MAG and WebQSP, at hop 3 on Prime, MAG and WebQSP, and at hop 1 on MuSiQue (0.845 against 0.908). `lr`'s area is above the control's at every hop on Prime, MAG, WebQSP and Amazon and equal on MuSiQue (0.910 and 0.966 against 0.908 and 0.966).
 - **L5 NOT HELD for `gb`.** Its pool is 1.023 times the control's on Prime and 1.031 on MAG (within 1.02 expected); `lr`'s is within 1.003 everywhere.
 - **L6 HELD.** G-L0, G-L1 and G-L2 hold on all five sets.
 
-**By the page's own rule (section 4)** one set is `reached`: Prime with `lr`. MAG (+1.04, lower end 0.00) and WebQSP (+1.82, lower end -0.26) are positive and LEVEL. Over the control's own ceiling (ceiling ALL minus control ALL: Prime 9.8, WebQSP 5.4, MAG 5.0), `lr` closes about 36, 34 and 21 percent of it (my arithmetic).
+**By the page's own rule (section 4)** one set is `reached`: Prime with `lr`. MAG (+1.04, lower end 0.00) and WebQSP (+1.82, lower end -0.26) are positive and LEVEL. Over the control's own ceiling (ceiling ALL minus control ALL: Prime 9.8, WebQSP 5.4, MAG 5.0), `lr` closes about 36, 34 and 21 percent of it (arithmetic on the values above).
 
 **What it says.** A linear scorer on the 12 features of the walk, fitted on 3 chunks of other questions, orders the hop's candidates better than the cell's own order everywhere the budget binds (area under the curve up at every hop of Prime, MAG, WebQSP) and, at the same pool size, lifts ALL on Prime by 3.5 points (ABOVE), MAG by 1.0 and WebQSP by 1.8 (LEVEL). The boosted trees fall below the control wherever the training rows are few (about 70 to 1,000 positives a hop), the usual overfit. MuSiQue and Amazon gain nothing, as their misses are links and a lexical first stage. This is the first lever of BRG1 to BRG5 that is ABOVE at an unchanged pool size; it is a screen on a held-out part of the same split with 369 questions, fitted per set, and carries nothing (section 4). The question it leaves is whether more training questions and a regularized non-linear form lift MAG and WebQSP to ABOVE: Amendment 1.
 
@@ -108,6 +108,29 @@ Declared after section 7 and before any number of this amendment. A new module `
 - **M5.** Every variant's mean pool is within 2 percent of the control's.
 - **M6.** G-L3 holds and the gates of section 3 hold.
 
-## 9. Results of Amendment 1
+## 9. Results of Amendment 1 (28 Nov 2026 20:28 IST)
 
-None yet.
+Module `zbrg5b.py`, sha256 prefix `7da50557e334b206` (local = host; committed e6382c15, selftest PASS on the laptop, smoke of 24 questions on WebQSP on the host). Five streams on the host, 20:02 to 20:24; the training matrices of positions 3 to 5 were BRG5's own, the three new training chunks of positions 6 to 8 were collected per set (G-L1 recount mismatches 0, G-L2 non-finite 0 on all 15). **G-L0 PASS** (0 mismatches over the 15 evaluation chunks), **G-L3 PASS** (the `lr` variant reproduces section 7's `lr` row of every question: 0 differences in golds in the pool and in pool size on all 15 chunks). Records: `outputs/brg5/<set>/a1/gate_a1.json`, `fit.json`, `scr_c*.npz` and `outputs/brg5/read_a1_<set>.json`.
+
+Each cell: ALL (mean nodes over the control's); difference to the control [95% interval], call; difference to `lr`, call.
+
+| set (questions) | `lr` | `lr6` | `lr2` | `lr26` |
+| --- | --- | --- | --- | --- |
+| Prime (369), control 86.7 | 90.2 (1.000); +3.52 [+1.63, +5.69] ABOVE | 89.7 (1.000); +2.98 [+1.08, +5.15] ABOVE; -0.54 [-2.17, +1.08] LEVEL | 90.2 (1.006); +3.52 [+1.36, +5.96] ABOVE; +0.00 [-1.90, +1.90] LEVEL | **91.3** (1.003); +4.61 [+2.44, +7.05] ABOVE; +1.08 [-0.81, +2.98] LEVEL |
+| MAG (384), control 92.4 | 93.5 (1.001); +1.04 [+0.00, +2.34] LEVEL | 93.2 (1.001); +0.78 [-0.52, +2.34] LEVEL; -0.26 [-1.04, +0.52] LEVEL | 91.9 (1.002); -0.52 [-2.34, +1.30] LEVEL; -1.56 [-3.12, -0.26] LEVEL | 92.4 (1.001); +0.00 [-1.82, +1.82] LEVEL; -1.04 [-2.60, +0.52] LEVEL |
+| WebQSP (384), control 87.8 | 89.6 (1.003); +1.82 [-0.26, +3.91] LEVEL | 89.3 (1.002); +1.56 [-0.52, +3.65] LEVEL; -0.26 [-1.30, +0.52] LEVEL | 88.0 (1.003); +0.26 [-1.82, +2.34] LEVEL; -1.56 [-2.86, -0.26] LEVEL | 88.5 (1.002); +0.78 [-1.30, +2.86] LEVEL; -1.04 [-2.34, +0.52] LEVEL |
+| MuSiQue (384), control 86.2 | 85.4 (1.000); -0.78 [-2.08, +0.26] LEVEL | 86.2 (1.000); +0.00 [-1.30, +1.30] LEVEL; +0.78 [+0.00, +1.82] LEVEL | 85.9 (1.002); -0.26 [-1.82, +1.30] LEVEL; +0.52 [-0.26, +1.56] LEVEL | 85.9 (1.000); -0.26 [-1.82, +1.30] LEVEL; +0.52 [-0.26, +1.56] LEVEL |
+| Amazon (384), control 85.7 | 85.9 (1.000); +0.26 [+0.00, +0.78] LEVEL | 85.9 (1.000); +0.26 [+0.00, +0.78] LEVEL; +0.00 LEVEL | 85.9 (1.000); +0.26 [+0.00, +0.78] LEVEL; +0.00 LEVEL | 85.7 (1.000); +0.00 LEVEL; -0.26 [-0.78, +0.00] LEVEL |
+
+Positives per hop in the six training chunks: Prime 797 / 667 / 222, MAG 884 / 674 / 174, WebQSP 2,016 / 1,711 / 603, MuSiQue 454 / 394 / 0, Amazon 1,045 / 1,014 / 0 (a hop with fewer than 20 positives keeps the control order).
+
+**Calls on the priors.**
+
+- **M1 NOT HELD, on both clauses.** `lr6` against `lr` is -0.54 on Prime (the prior said no lower than -0.5), and against the control `lr6` is +0.78 on MAG and +1.56 on WebQSP, both LEVEL: neither is ABOVE.
+- **M2 HELD.** `lr2` against `lr`: Prime +0.00, MAG -1.56, WebQSP -1.56, MuSiQue +0.52, Amazon +0.00; the largest rise is +0.52 (the prior said no more than +1.0). On MAG and WebQSP the product form is lower than `lr`, by 1.56 points each, with intervals that exclude zero but are called LEVEL on the 1.0-point line.
+- **M3 HELD.** Prime `lr6` +2.98 [+1.08, +5.15] and `lr26` +4.61 [+2.44, +7.05], both ABOVE.
+- **M4 HELD.** On MuSiQue (-0.78, 0.00, -0.26, -0.26) and Amazon (+0.26, +0.26, +0.26, 0.00) all four variants against the control are LEVEL (the prior said "four new variants": `lr6`, `lr2`, `lr26` are new, `lr` is section 7's; all four are read).
+- **M5 HELD.** The largest pool ratio is 1.006 (Prime `lr2`).
+- **M6 HELD.** G-L0, G-L3 and the gates of section 3 hold on all five sets.
+
+**What it says.** The gain is Prime's, and it does not depend on the fit: all four learned variants are ABOVE the control there (+3.0 to +4.6 at the same pool size). On MAG (+0.0 to +1.0) and WebQSP (+0.3 to +1.8) every variant is positive or zero and none is ABOVE: 6 training chunks instead of 3 changes nothing beyond the noise of the interval (-0.26 on both), the product form is lower, so more data and a richer form do not turn those two into gains on a 384-question read, whose interval is about plus or minus 2 points. `lr26`'s +4.61 on Prime is the largest of four and was not picked in advance (against `lr`: +1.08, LEVEL). MuSiQue and Amazon gain nothing under any fit, as before. What is open is whether MAG's and WebQSP's small positive differences are real, which a read on more questions settles; the fit stays the one declared (`lr6`, the larger fit), the read is the whole split minus the fit's chunks: BRG6 (`docs/BRG6_LEARNED_ORDER_REMAINDER.md`).

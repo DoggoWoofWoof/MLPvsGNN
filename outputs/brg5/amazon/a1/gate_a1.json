@@ -1,0 +1,106 @@
+{
+ "stage": "BRG5 amendment 1 gates",
+ "declared_in": "docs/BRG5_LEARNED_ORDER_SCREEN.md",
+ "set": "amazon",
+ "cell": "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+ "variants": [
+  "control",
+  "lr",
+  "lr6",
+  "lr2",
+  "lr26"
+ ],
+ "train3": [
+  9,
+  1,
+  10
+ ],
+ "train6": [
+  9,
+  1,
+  10,
+  6,
+  2,
+  8
+ ],
+ "eval_chunks": [
+  7,
+  11,
+  5
+ ],
+ "train": {
+  "6": {
+   "questions": 128,
+   "G-L1_recount_mismatches": 0,
+   "G-L2_nonfinite": 0,
+   "seconds": 14.2,
+   "positives": {
+    "1": 156,
+    "2": 183,
+    "3": 0
+   }
+  },
+  "2": {
+   "questions": 128,
+   "G-L1_recount_mismatches": 0,
+   "G-L2_nonfinite": 0,
+   "seconds": 14.8,
+   "positives": {
+    "1": 154,
+    "2": 188,
+    "3": 0
+   }
+  },
+  "8": {
+   "questions": 128,
+   "G-L1_recount_mismatches": 0,
+   "G-L2_nonfinite": 0,
+   "seconds": 13.7,
+   "positives": {
+    "1": 209,
+    "2": 129,
+    "3": 0
+   }
+  }
+ },
+ "chunks": {
+  "7": {
+   "questions": 128,
+   "G-L0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-L3": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 39.7
+  },
+  "11": {
+   "questions": 128,
+   "G-L0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-L3": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 42.2
+  },
+  "5": {
+   "questions": 128,
+   "G-L0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-L3": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 40.1
+  }
+ },
+ "utc": "2026-11-28T14:36:32Z",
+ "verdict": "PASS"
+}

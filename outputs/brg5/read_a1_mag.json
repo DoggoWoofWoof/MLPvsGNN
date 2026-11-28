@@ -1,0 +1,271 @@
+{
+ "stage": "BRG5 amendment 1 read",
+ "declared_in": "docs/BRG5_LEARNED_ORDER_SCREEN.md",
+ "set": "mag",
+ "cell": "dense_top200+STRUCT:h3_bf_v2000~cs-fu",
+ "utc": "2026-11-28T14:55:42Z",
+ "chunks": [
+  "scr_c0008.npz",
+  "scr_c0010.npz",
+  "scr_c0017.npz"
+ ],
+ "train_chunks_lr": [
+  18,
+  12,
+  16
+ ],
+ "train_chunks_lr6": [
+  18,
+  12,
+  16,
+  7,
+  9,
+  13
+ ],
+ "fit": {
+  "lr": {
+   "1": {
+    "rows": 91651,
+    "positives": 451,
+    "fitted": true,
+    "iterations": 22
+   },
+   "2": {
+    "rows": 400272,
+    "positives": 273,
+    "fitted": true,
+    "iterations": 19
+   },
+   "3": {
+    "rows": 400070,
+    "positives": 71,
+    "fitted": true,
+    "iterations": 12
+   }
+  },
+  "lr6": {
+   "1": {
+    "rows": 178220,
+    "positives": 884,
+    "fitted": true,
+    "iterations": 23
+   },
+   "2": {
+    "rows": 800672,
+    "positives": 674,
+    "fitted": true,
+    "iterations": 17
+   },
+   "3": {
+    "rows": 800172,
+    "positives": 174,
+    "fitted": true,
+    "iterations": 12
+   }
+  },
+  "lr2": {
+   "1": {
+    "rows": 91651,
+    "positives": 451,
+    "fitted": true,
+    "iterations": 39
+   },
+   "2": {
+    "rows": 400272,
+    "positives": 273,
+    "fitted": true,
+    "iterations": 32
+   },
+   "3": {
+    "rows": 400070,
+    "positives": 71,
+    "fitted": true,
+    "iterations": 16
+   }
+  },
+  "lr26": {
+   "1": {
+    "rows": 178220,
+    "positives": 884,
+    "fitted": true,
+    "iterations": 40
+   },
+   "2": {
+    "rows": 800672,
+    "positives": 674,
+    "fitted": true,
+    "iterations": 27
+   },
+   "3": {
+    "rows": 800172,
+    "positives": 174,
+    "fitted": true,
+    "iterations": 21
+   }
+  }
+ },
+ "questions": 384,
+ "golds": 1064,
+ "variants": {
+  "control": {
+   "ALL": 0.9244791666666666,
+   "golds_in_pool": 0.9323308270676691,
+   "mean_nodes": 2044.5546875,
+   "ceiling_ALL": 0.9739583333333334,
+   "hops": {
+    "1": {
+     "candidate_golds": 450,
+     "kept_golds": 450
+    },
+    "2": {
+     "candidate_golds": 318,
+     "kept_golds": 264
+    },
+    "3": {
+     "candidate_golds": 73,
+     "kept_golds": 29
+    }
+   }
+  },
+  "lr": {
+   "ALL": 0.9348958333333334,
+   "golds_in_pool": 0.9492481203007519,
+   "mean_nodes": 2046.265625,
+   "ceiling_ALL": 0.9765625,
+   "vs_control": {
+    "diff": 0.010416666666666666,
+    "ci95": [
+     0.0,
+     0.0234375
+    ],
+    "call": "LEVEL"
+   },
+   "nodes_over_control": 1.0008368264788712,
+   "hops": {
+    "1": {
+     "candidate_golds": 450,
+     "kept_golds": 450
+    },
+    "2": {
+     "candidate_golds": 319,
+     "kept_golds": 285
+    },
+    "3": {
+     "candidate_golds": 54,
+     "kept_golds": 25
+    }
+   }
+  },
+  "lr6": {
+   "ALL": 0.9322916666666666,
+   "golds_in_pool": 0.9492481203007519,
+   "mean_nodes": 2045.7578125,
+   "ceiling_ALL": 0.9739583333333334,
+   "vs_control": {
+    "diff": 0.0078125,
+    "ci95": [
+     -0.005208333333333333,
+     0.0234375
+    ],
+    "call": "LEVEL"
+   },
+   "nodes_over_control": 1.0005884533230418,
+   "vs_lr": {
+    "diff": -0.0026041666666666665,
+    "ci95": [
+     -0.010416666666666666,
+     0.005208333333333333
+    ],
+    "call": "LEVEL"
+   },
+   "hops": {
+    "1": {
+     "candidate_golds": 450,
+     "kept_golds": 450
+    },
+    "2": {
+     "candidate_golds": 319,
+     "kept_golds": 284
+    },
+    "3": {
+     "candidate_golds": 54,
+     "kept_golds": 26
+    }
+   }
+  },
+  "lr2": {
+   "ALL": 0.9192708333333334,
+   "golds_in_pool": 0.9370300751879699,
+   "mean_nodes": 2049.0260416666665,
+   "ceiling_ALL": 0.9713541666666666,
+   "vs_control": {
+    "diff": -0.005208333333333333,
+    "ci95": [
+     -0.0234375,
+     0.013020833333333334
+    ],
+    "call": "LEVEL"
+   },
+   "nodes_over_control": 1.0021869574797893,
+   "vs_lr": {
+    "diff": -0.015625,
+    "ci95": [
+     -0.03125,
+     -0.0026041666666666665
+    ],
+    "call": "LEVEL"
+   },
+   "hops": {
+    "1": {
+     "candidate_golds": 450,
+     "kept_golds": 450
+    },
+    "2": {
+     "candidate_golds": 319,
+     "kept_golds": 281
+    },
+    "3": {
+     "candidate_golds": 55,
+     "kept_golds": 17
+    }
+   }
+  },
+  "lr26": {
+   "ALL": 0.9244791666666666,
+   "golds_in_pool": 0.9426691729323309,
+   "mean_nodes": 2047.3697916666667,
+   "ceiling_ALL": 0.9713541666666666,
+   "vs_control": {
+    "diff": 0.0,
+    "ci95": [
+     -0.018229166666666668,
+     0.018229166666666668
+    ],
+    "call": "LEVEL"
+   },
+   "nodes_over_control": 1.0013768788792385,
+   "vs_lr": {
+    "diff": -0.010416666666666666,
+    "ci95": [
+     -0.026041666666666668,
+     0.005208333333333333
+    ],
+    "call": "LEVEL"
+   },
+   "hops": {
+    "1": {
+     "candidate_golds": 450,
+     "kept_golds": 450
+    },
+    "2": {
+     "candidate_golds": 319,
+     "kept_golds": 279
+    },
+    "3": {
+     "candidate_golds": 56,
+     "kept_golds": 24
+    }
+   }
+  }
+ }
+}

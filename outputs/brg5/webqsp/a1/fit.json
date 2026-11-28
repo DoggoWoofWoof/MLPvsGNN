@@ -1,0 +1,101 @@
+{
+ "stage": "BRG5 amendment 1 fit",
+ "declared_in": "docs/BRG5_LEARNED_ORDER_SCREEN.md",
+ "set": "webqsp",
+ "utc": "2026-11-28T14:41:41Z",
+ "train3": [
+  4,
+  1,
+  6
+ ],
+ "train6": [
+  4,
+  1,
+  6,
+  8,
+  5,
+  9
+ ],
+ "fits": {
+  "lr": {
+   "1": {
+    "rows": 94302,
+    "positives": 1044,
+    "fitted": true,
+    "iterations": 17
+   },
+   "2": {
+    "rows": 400830,
+    "positives": 831,
+    "fitted": true,
+    "iterations": 20
+   },
+   "3": {
+    "rows": 400272,
+    "positives": 273,
+    "fitted": true,
+    "iterations": 14
+   }
+  },
+  "lr6": {
+   "1": {
+    "rows": 197149,
+    "positives": 2016,
+    "fitted": true,
+    "iterations": 13
+   },
+   "2": {
+    "rows": 801709,
+    "positives": 1711,
+    "fitted": true,
+    "iterations": 18
+   },
+   "3": {
+    "rows": 800601,
+    "positives": 603,
+    "fitted": true,
+    "iterations": 12
+   }
+  },
+  "lr2": {
+   "1": {
+    "rows": 94302,
+    "positives": 1044,
+    "fitted": true,
+    "iterations": 71
+   },
+   "2": {
+    "rows": 400830,
+    "positives": 831,
+    "fitted": true,
+    "iterations": 60
+   },
+   "3": {
+    "rows": 400272,
+    "positives": 273,
+    "fitted": true,
+    "iterations": 28
+   }
+  },
+  "lr26": {
+   "1": {
+    "rows": 197149,
+    "positives": 2016,
+    "fitted": true,
+    "iterations": 69
+   },
+   "2": {
+    "rows": 801709,
+    "positives": 1711,
+    "fitted": true,
+    "iterations": 55
+   },
+   "3": {
+    "rows": 800601,
+    "positives": 603,
+    "fitted": true,
+    "iterations": 27
+   }
+  }
+ }
+}
