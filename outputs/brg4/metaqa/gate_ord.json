@@ -1,0 +1,48 @@
+{
+ "stage": "BRG4 amendment 2 gates",
+ "declared_in": "docs/BRG4_CAP_WALK_TRACE.md",
+ "set": "metaqa",
+ "cell": "rrf1000_b800+STRUCT:h3_c25_v2000",
+ "variants": [
+  "cap25_control",
+  "cap25_sup",
+  "cap25_ppr",
+  "cap25_vr",
+  "cap50_control",
+  "cap50_sup",
+  "cap50_ppr",
+  "cap50_vr",
+  "cap100_control",
+  "cap100_sup",
+  "cap100_ppr",
+  "cap100_vr"
+ ],
+ "chunks": {
+  "70": {
+   "questions": 128,
+   "G-C3": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 8.4
+  },
+  "4": {
+   "questions": 128,
+   "G-C3": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 7.8
+  },
+  "43": {
+   "questions": 128,
+   "G-C3": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 5.3
+  }
+ },
+ "utc": "2026-11-28T13:56:55Z",
+ "verdict": "PASS"
+}

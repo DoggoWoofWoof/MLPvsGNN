@@ -108,6 +108,33 @@ Declared after section 8 and before any number of this amendment. A new command 
 - **K4.** Every variant's mean pool size is within 10 percent of the control's.
 - **K5.** G-C3 holds (0 mismatches).
 
-## 10. Results of Amendment 2
+## 10. Results of Amendment 2 (28 Nov 2026 19:27 IST)
 
-None yet.
+`ordsweep` on MetaQA, the same three chunks (384 questions), module sha256 prefix `bcd149132d7c4611` (local = host; committed 7947be85), G-C3 PASS on all 3 chunks (0 mismatches). Records: `outputs/brg4/metaqa/gate_ord.json`, `ord_c*.npz`, `outputs/brg4/read_ord_metaqa.json`. Subset read (a screen).
+
+| per-node cap | order | ALL | golds in the pool | mean nodes (over the control) | ceiling ALL | minus the control [95% interval], call |
+| --- | --- | --- | --- | --- | --- | --- |
+| 25 | arrival (the cell) | 93.8 | 95.3 | 2,509 | 95.3 | |
+| 25 | `sup` | 92.4 | 92.1 | 2,506 (0.999) | 95.3 | -1.30 [-3.12, +0.26] LEVEL |
+| 25 | `ppr` | 93.0 | 93.4 | 2,507 (0.999) | 95.3 | -0.78 [-2.34, +0.78] LEVEL |
+| 25 | `vr` | 84.4 | 85.5 | 2,486 (0.991) | 95.3 | -9.38 [-12.24, -6.25] BELOW |
+| 50 | arrival | 93.0 | 90.5 | 2,623 (1.045) | 100.0 | -0.78 [-3.39, +1.82] LEVEL |
+| 50 | `sup` | 89.1 | 83.6 | 2,614 (1.042) | 100.0 | -4.69 [-7.81, -1.56] BELOW |
+| 50 | `ppr` | 89.1 | 86.8 | 2,617 (1.043) | 100.0 | -4.69 [-7.81, -1.82] BELOW |
+| 50 | `vr` | 79.9 | 76.2 | 2,567 (1.023) | 100.0 | -13.80 [-17.45, -9.90] BELOW |
+| 100 | arrival | 81.8 | 66.8 | 2,685 (1.070) | 99.7 | -11.98 [-15.89, -8.59] BELOW |
+| 100 | `sup` | 85.4 | 73.0 | 2,673 (1.065) | 99.7 | -8.33 [-11.72, -5.21] BELOW |
+| 100 | `ppr` | 85.2 | 76.0 | 2,679 (1.068) | 99.7 | -8.59 [-11.98, -5.21] BELOW |
+| 100 | `vr` | 75.3 | 62.0 | 2,591 (1.032) | 99.7 | -18.49 [-22.40, -14.32] BELOW |
+
+**Calls on the priors.**
+
+- **K1 HELD.** At the cap of 25 `sup` (-1.30) and `ppr` (-0.78) are LEVEL and `vr` (-9.38) is BELOW; none is ABOVE.
+- **K2 NOT HELD.** At the cap of 50 `sup` and `ppr` are -4.69 BELOW (an ABOVE was expected).
+- **K3 HELD.** `vr` is BELOW at the caps of 50 (-13.80) and 100 (-18.49) (and at 25, -9.38).
+- **K4 HELD.** Mean pool sizes are 0.991 to 1.070 times the control's (within 1.10).
+- **K5 HELD.** 0 mismatches on all 3 chunks.
+
+**What it says.** No variant is ABOVE the control, so the whole-split read declared for an ABOVE variant does not run, and **MetaQA's cell, the first 25 neighbours of a row in arrival order, is the best of the twelve (cap and order) combinations**: a larger cap, the frontier's agreement (`sup`, `ppr`) and the question's cosine (`vr`) all lose, `vr` by 9 to 18 points. The ceiling at the cap of 50 is 100.0 (every gold a candidate) against 93.0 reached, a headroom of 7.0 points that none of the parameter-free keys reaches. This is the result of BRG2 and BRG3 on a pure-entity set: the candidates contain the golds and the orders do not pick them. Nothing is adopted.
+
+**What the four pages say together (BRG1 to BRG4, subset screens on the six sets below 95).** MuSiQue is missing links (72 percent of the missed golds have no path in two hops). Prime, MAG, WebQSP and MetaQA lose their golds to the order inside a budget: the golds are candidates (ceilings 9.8, 5.0, 5.4 above ALL on the first three, 7.0 at cap 50 on MetaQA), and the order keys tried (arrival or row order, the question's cosine, frontier support, a ppr-style sum, their fusions, a wider window, more hops, a beam of 100) are LEVEL or BELOW the cell's own on every set. Amazon is a first-stage lexical gap (+2.5 at 2,500 nodes for the fused first stage) plus window cuts. What is left for the four order sets is a scorer that sees the question and the edge together, trained on the golds: the stage after the rules.
