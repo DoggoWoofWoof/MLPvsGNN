@@ -148,7 +148,7 @@ The MetaQA rows are printed because they are the record, not because they are re
 
 **12.6 What is not known (post-hoc, no number here depends on it).** Why MetaQA's shuffled arm stays strong is not tested. A first guess, that a within-question permutation keeps each question's positive rate and features tied to candidate-list size predict it, is not supported: MuSiQue's shuffled fit has the same inflated training AUC (0.62 to 0.68 per hop) and its shuffled arm collapses. What remains is that MetaQA's budgeted walk from the topic entity reaches the gold without learned labels (B1 against B0 above), which the shuffled control does not separate from the learned part. A control that permutes the labels among the candidates of one source node would keep the per-source positive counts and remove the choice among siblings; it is not declared and would be a new amendment that keeps this failure on record.
 
-**12.7 The SPLADE gap (A2.6), parameter-free reads, five seed variants.** SQuAD, MuSiQue, MetaQA and HotpotQA are read; 2Wiki and WebQSP are running.
+**12.7 The SPLADE gap (A2.6), parameter-free reads, five seed variants (all six host datasets read; 2Wiki and WebQSP added at 06:30 IST).** Records: `outputs/jnt2/<dataset>/read_b*.json`.
 
 | Dataset | SPLADE seeds against dense-only seeds | Name seeds (qn) against dense-only seeds | Gap |
 |---|---|---|---|
@@ -156,5 +156,20 @@ The MetaQA rows are printed because they are the record, not because they are re
 | MuSiQue | LEVEL at all five widths (+0.7 to +3.3) | ABOVE at four of five widths (+3.3 to +4.3; +3.0 and LEVEL at the widest); name-seed precision 64.8 percent | NO_GAP |
 | MetaQA | BELOW at the three narrowest widths (-9.7 to -12.7) | LEVEL; precision 0 against the golds (the name seed is the topic entity) | NO_GAP |
 | HotpotQA | LEVEL at all five widths (+1.0 to -3.7) | BELOW at 65, 205 and 594 nodes (-4.3, -5.3, -4.7); precision 23.6 percent | NO_GAP |
+| 2Wiki | BELOW at 205, 595 and 1,983 nodes (-5.7, -5.7, -7.0); LEVEL at the other two | ABOVE at all five widths (+3.0 to +4.7); name-seed precision 91.3 percent | NO_GAP |
+| WebQSP | LEVEL at all five widths (-1.3 to 0.0) | LEVEL up to 1,975 nodes, BELOW at 4,033 (-4.0); name-seed precision 1.2 percent | NO_GAP |
 
-In every dataset read so far SPLADE's seeds are not ABOVE the dense-only seeds, so the declared gap is NO_GAP and there is nothing for a rule to recover on these four. The question-name rule is not a universal addition: it gains on MuSiQue, does nothing on SQuAD and MetaQA, and costs points on HotpotQA. Q1 fails (MetaQA LEVEL), Q3 fails (HotpotQA BELOW), Q4 fails (MetaQA precision 0), Q6's first half fails (the group variant is not ABOVE the name rule on SQuAD) while its second half holds on HotpotQA (group precision 5.1 percent against 23.6); Q2 holds; Q5 holds so far (2Wiki pending). On HotpotQA the dense walk B1 is ahead of the flat list B0 by 17 points at 594 nodes (94.3 against 77.0).
+In none of the six datasets are SPLADE's seeds ABOVE the dense-only seeds (on MetaQA and 2Wiki they are BELOW at the narrower widths), so the declared gap is NO_GAP everywhere and there is nothing for a rule to recover. The question-name rule is not a universal addition: it gains where a question names its documents and the name matches uniquely (2Wiki at five widths, MuSiQue at four), does nothing on SQuAD and MetaQA, and costs points on HotpotQA and, at the widest triple, WebQSP. Its gain tracks its precision: 91.3 percent on 2Wiki and 64.8 on MuSiQue against 23.6 on HotpotQA, 1.2 on WebQSP and 0 on MetaQA. Q1 fails as stated (it needs both 2Wiki and MetaQA; 2Wiki is ABOVE at 595 nodes, MetaQA is LEVEL), Q3 fails (HotpotQA BELOW), Q4 fails as stated (2Wiki and HotpotQA hold, MetaQA 0), Q6's first half fails (the group variant is not ABOVE the name rule on SQuAD) while its second half holds on HotpotQA (group precision 5.1 percent against 23.6); Q2 holds; Q5 holds (no dataset of SQuAD, HotpotQA and 2Wiki has a gap to recover). On HotpotQA the dense walk B1 is ahead of the flat list B0 by 17 points at 594 nodes (94.3 against 77.0), on 2Wiki by 26.7 (67.7 against 41.0) and on WebQSP by 18.0 (39.7 against 21.7).
+
+**12.8 Where the dense-only walk stands against the target (post-hoc read of the same records; the target is the user's: every gold in the pool at 95 percent or more at about 2,500 distinct nodes or fewer).** The triple nearest to that budget from below is the fourth (about 2,000 nodes). ALL at that triple, percent:
+
+| Dataset | Nodes | Dense seeds, walk (B1) | Name seeds (qn) | Flat list (B0) | Short of 95 (B1, best seed variant) |
+|---|---:|---:|---:|---:|---|
+| SQuAD | 1,954 | 98.0 | 98.0 | 99.7 | met |
+| HotpotQA | 1,976 | 98.0 | 95.0 | 85.7 | met |
+| MetaQA | 1,956 | 94.3 | 93.0 | 23.0 | 0.7 |
+| 2Wiki | 1,983 | 84.3 | 88.0 | 47.7 | 7.0 |
+| MuSiQue | 1,980 | 85.3 | 88.7 | 89.0 | 6.0 (flat list) |
+| WebQSP | 1,975 | 56.3 | 53.7 | 33.0 | 38.7 |
+
+Two of six datasets meet the target at that budget with the parameter-free pool, MetaQA is 0.7 short, and the three that remain are different problems: 2Wiki gains from the name rule and reaches 97.3 only at 4,034 nodes; MuSiQue's flat list is ahead of every walk arm, so its loss is in how the walk spends nodes; WebQSP's walk stops at 63.3 even at 4,033 nodes, with a gold among the seeds on 11.0 percent of questions, so its limit is the links, as UL5 found. MultiHop-RAG (plumbing only) and the three STaRK sets are not in this table: `zjnt2.py` has no loader for the STaRK sets.
