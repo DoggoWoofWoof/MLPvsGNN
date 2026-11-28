@@ -1,0 +1,270 @@
+{
+ "stage": "BRG9 read",
+ "declared_in": "docs/BRG11_HOP_BUDGET_SCHEDULE.md",
+ "set": "amazon",
+ "cell": "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+ "utc": "2026-11-28T17:15:25Z",
+ "variants": [
+  [
+   "eng",
+   null,
+   null
+  ],
+  [
+   "same",
+   1,
+   1
+  ],
+  [
+   "f2",
+   1,
+   2
+  ],
+  [
+   "f4",
+   1,
+   4
+  ],
+  [
+   "f8",
+   1,
+   8
+  ],
+  [
+   "b2",
+   2,
+   1
+  ],
+  [
+   "b4",
+   4,
+   1
+  ],
+  [
+   "b8",
+   8,
+   1
+  ]
+ ],
+ "chunks_read": 3,
+ "all": {
+  "questions": 384,
+  "golds": 1957,
+  "variants": {
+   "eng": {
+    "ALL": 0.8567708333333334,
+    "golds_in_pool": 0.9315278487480838,
+    "mean_nodes": 2439.5416666666665,
+    "nodes_over_eng": 1.0
+   },
+   "same": {
+    "ALL": 0.8567708333333334,
+    "golds_in_pool": 0.9315278487480838,
+    "mean_nodes": 2439.5416666666665,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "f2": {
+    "ALL": 0.8567708333333334,
+    "golds_in_pool": 0.9315278487480838,
+    "mean_nodes": 2439.5416666666665,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "f4": {
+    "ALL": 0.8567708333333334,
+    "golds_in_pool": 0.9315278487480838,
+    "mean_nodes": 2439.5416666666665,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "f8": {
+    "ALL": 0.8567708333333334,
+    "golds_in_pool": 0.9315278487480838,
+    "mean_nodes": 2439.5416666666665,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "b2": {
+    "ALL": 0.8567708333333334,
+    "golds_in_pool": 0.9315278487480838,
+    "mean_nodes": 2439.5416666666665,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "b4": {
+    "ALL": 0.8567708333333334,
+    "golds_in_pool": 0.9305058763413387,
+    "mean_nodes": 2440.2734375,
+    "nodes_over_eng": 1.0002999624246358,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "b8": {
+    "ALL": 0.8541666666666666,
+    "golds_in_pool": 0.9294839039345938,
+    "mean_nodes": 2441.40625,
+    "nodes_over_eng": 1.0007643170677554,
+    "vs_eng": {
+     "diff": -0.0026041666666666665,
+     "ci95": [
+      -0.0078125,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   }
+  }
+ },
+ "screen": {
+  "questions": 384,
+  "golds": 1957,
+  "variants": {
+   "eng": {
+    "ALL": 0.8567708333333334,
+    "golds_in_pool": 0.9315278487480838,
+    "mean_nodes": 2439.5416666666665,
+    "nodes_over_eng": 1.0
+   },
+   "same": {
+    "ALL": 0.8567708333333334,
+    "golds_in_pool": 0.9315278487480838,
+    "mean_nodes": 2439.5416666666665,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "f2": {
+    "ALL": 0.8567708333333334,
+    "golds_in_pool": 0.9315278487480838,
+    "mean_nodes": 2439.5416666666665,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "f4": {
+    "ALL": 0.8567708333333334,
+    "golds_in_pool": 0.9315278487480838,
+    "mean_nodes": 2439.5416666666665,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "f8": {
+    "ALL": 0.8567708333333334,
+    "golds_in_pool": 0.9315278487480838,
+    "mean_nodes": 2439.5416666666665,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "b2": {
+    "ALL": 0.8567708333333334,
+    "golds_in_pool": 0.9315278487480838,
+    "mean_nodes": 2439.5416666666665,
+    "nodes_over_eng": 1.0,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "b4": {
+    "ALL": 0.8567708333333334,
+    "golds_in_pool": 0.9305058763413387,
+    "mean_nodes": 2440.2734375,
+    "nodes_over_eng": 1.0002999624246358,
+    "vs_eng": {
+     "diff": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   },
+   "b8": {
+    "ALL": 0.8541666666666666,
+    "golds_in_pool": 0.9294839039345938,
+    "mean_nodes": 2441.40625,
+    "nodes_over_eng": 1.0007643170677554,
+    "vs_eng": {
+     "diff": -0.0026041666666666665,
+     "ci95": [
+      -0.0078125,
+      0.0
+     ],
+     "call": "LEVEL"
+    }
+   }
+  }
+ }
+}

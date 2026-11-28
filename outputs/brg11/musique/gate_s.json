@@ -1,0 +1,101 @@
+{
+ "stage": "BRG9 gates",
+ "declared_in": "docs/BRG11_HOP_BUDGET_SCHEDULE.md",
+ "set": "musique",
+ "cell": "rrf1000_b800+FULL:h2_bf_v2000~cs-vr-rr",
+ "variants": [
+  [
+   "eng",
+   null,
+   null
+  ],
+  [
+   "same",
+   1,
+   1
+  ],
+  [
+   "f2",
+   1,
+   2
+  ],
+  [
+   "f4",
+   1,
+   4
+  ],
+  [
+   "f8",
+   1,
+   8
+  ],
+  [
+   "b2",
+   2,
+   1
+  ],
+  [
+   "b4",
+   4,
+   1
+  ],
+  [
+   "b8",
+   8,
+   1
+  ]
+ ],
+ "chunks": {
+  "12": {
+   "position": 0,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 175.1
+  },
+  "15": {
+   "position": 1,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 191.1
+  },
+  "11": {
+   "position": 2,
+   "questions": 128,
+   "G-S0": {
+    "mismatches": 0,
+    "first": []
+   },
+   "G-S1": {
+    "mismatches": 0,
+    "first": []
+   },
+   "seconds": 96.0
+  }
+ },
+ "order": [
+  12,
+  15,
+  11
+ ],
+ "questions_expected": 384,
+ "questions_read": 384,
+ "G-S3": {
+  "complete": true
+ },
+ "verdict": "PASS",
+ "utc": "2026-11-28T17:15:13Z"
+}
